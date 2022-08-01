@@ -31,7 +31,20 @@ import androidx.compose.ui.unit.sp
 import com.example.tiptime.ui.theme.TipTimeTheme
 import java.text.NumberFormat
 
+/**
+ * This is the main activity of our `TipTime` tip calculating app.
+ */
 class MainActivity : ComponentActivity() {
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we call [setContent] to Compose the composable given in its content lambda into our
+     * activity. That content will become the root view of our activity. This composable consists of
+     * our [TipTimeTheme] app theme wrapping a [Surface] whose modifier is a [Modifier.fillMaxSize]
+     * (the content will fill the space allowed it) whose background `color` is the backgound color
+     * defined by [TipTimeTheme], with the ultimate content being our [TipTimeScreen] composable.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so we ignore it.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -48,6 +61,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun TipTimeScreen() {
     var amountInput by remember { mutableStateOf("") }
