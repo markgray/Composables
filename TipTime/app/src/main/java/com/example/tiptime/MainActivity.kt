@@ -201,8 +201,8 @@ fun RoundTheTipRow(
 }
 
 /**
- * Calculates the tip based on the user input and format the tip amount
- * according to the local currency and displays it onscreen.
+ * Calculates the tip based on the user input and formats the tip amount
+ * according to the local currency for its display onscreen.
  *
  * Example would be "$10.00".
  *
@@ -210,6 +210,10 @@ fun RoundTheTipRow(
  * relaxed, so that it is more widely visible than otherwise necessary to make code testable.
  * You can optionally specify what the visibility should have been if not for testing; this allows
  * tools to catch unintended access from within production code.
+ *
+ * @param amount the amount of the purchase
+ * @param tipPercent the tip percent you want to tip
+ * @param roundUp a flag which when `true` will round the tip up to the nearest dollar.
  */
 @VisibleForTesting
 fun calculateTip(amount: Double, tipPercent: Double = 15.0, roundUp: Boolean): String {
@@ -219,6 +223,9 @@ fun calculateTip(amount: Double, tipPercent: Double = 15.0, roundUp: Boolean): S
     return NumberFormat.getCurrencyInstance().format(tip)
 }
 
+/**
+ * This is just the `Preview` of the [TipTimeScreen].
+ */
 @Preview
 @Composable
 fun TipTimeScreenPreview() {
