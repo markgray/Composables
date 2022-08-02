@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">DessertClickerCompose</string>
+    <string name="hello_world">Hello World!</string>
+    <string name="dollar_sign">$</string>
+    <string name="zero">0</string>
+    <string name="dessert_sold">Desserts Sold</string>
+    <string name="share_text" tools:ignore="PluralsCandidate">I\'ve clicked %1$d Desserts for a total of %2$d$ #AndroidDessertClicker</string>
+    <string name="share">Share</string>
+    <string name="sharing_not_available">Sharing Not Available</string>
+</resources>

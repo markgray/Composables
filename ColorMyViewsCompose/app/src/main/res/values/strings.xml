@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">ColorMyViewsCompose</string>
+    <string name="hello_world">Hello World</string>
+    <string name="box_one" tools:keep="@string/box_one">Box One</string>
+    <string name="box_two" tools:keep="@string/box_two">Box Two</string>
+    <string name="box_three" tools:keep="@string/box_three">Box Three</string>
+    <string name="box_four" tools:keep="@string/box_four">Box Four</string>
+    <string name="box_five" tools:keep="@string/box_five">Box Five</string>
+    <string name="how_to_play" tools:keep="@string/how_to_play">How to play:</string>
+    <string name="tap_the_boxes_and_buttons" tools:keep="@string/tap_the_boxes_and_buttons">Tap the screen and buttons.</string>
+
+    <string name="button_red" tools:keep="@string/button_red">RED</string>
+    <string name="button_yellow" tools:keep="@string/button_yellow">YELLOW</string>
+    <string name="button_green" tools:keep="@string/button_green">GREEN</string>
+</resources>
