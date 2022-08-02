@@ -97,6 +97,40 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * This is the main screen of our app. We remember three values between re-compositions:
+ *  - `var amountInput` is the [String] that the user has so far entered into the "Cost of Service"
+ *  [EditNumberField] and is the value of the purchase for which the tip needs to be calculated.
+ *  - `var tipInput` is the [String] that the user has so far entered into the "Tip (%)"
+ *  [EditNumberField] and is the tip percentage to use for our calculation.
+ *  - `var roundUp` is a [Boolean] flag which indicates that we should round the tip up to the
+ *  nearest dollar. It is updated by the position of the [Switch] in our [RoundTheTipRow] and the
+ *  [Text] in the [RoundTheTipRow] displays the text "Round up tip?".
+ *
+ * On every re-composition forced by a change to one of the `remember`'ed variables we calculate
+ * three values:
+ *  - `val amount` is the [Double] value converted from the `amountInput` variable (or 0.0 if that
+ *  is `null`.
+ *  - `val tipPercent` is the [Double] value converted from the `tipInput` variable (or 0.0 if that
+ *  is `null`.
+ *  - `val tip` is the [String] that our [calculateTip] method creates when called with `amount`,
+ *  `tipPercent`, and `roundUp`. This is the [String] that is displayed in the "Tip Amount: %s"
+ *  [Text], where `tip` is substituted for the "%s" in the format [String].
+ *
+ * We next initialize our [FocusManager] variable `val focusManager` to the CompositionLocal that
+ * can be used to control focus within Compose. We will use this to move the focus from the
+ * "Cost of Service" [EditNumberField] down to the "Tip (%)" [EditNumberField] when the user clicks
+ * the "Next" key of the IME keyboard and to clear the focus when the user clicks the "Done" key of
+ * the "Tip (%)" [EditNumberField] IME keyboard.
+ *
+ * The UI uses a [Column] layout whose `modifier` is a [Modifier.padding] of 32.dp, and whose
+ * `verticalArrangement` uses a [Arrangement.spacedBy] of 8.dp to place its children with 8.dp of
+ * space between them. The top widget in the column is a [Text] displaying the [String] "Calculate
+ * Tip" whose `fontSize` is 24.sp, and whose `modifier` is a `Modifier.align` which is used to have
+ * the text centered horizontally. This is followed by a 16.dp high [Spacer], and then the
+ * [EditNumberField] labelled "Cost of Service" which the user is to use to enter the price of the
+ * purchase that the tip is to be calculated for.
+ */
 @Composable
 fun TipTimeScreen() {
     var amountInput: String by rememberSaveable { mutableStateOf("") }
