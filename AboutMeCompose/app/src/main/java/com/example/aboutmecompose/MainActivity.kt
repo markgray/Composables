@@ -83,6 +83,33 @@ fun AboutMeApp() {
     )
 }
 
+/**
+ * This is the Composable which draws our UI. It uses four [rememberSaveable] variables to control
+ * its state:
+ *  - `var nickNameEntry` is a [String] that holds the content of whatever the user has entered so
+ *  far in the "What is your Nickname?" [OutlinedTextField]
+ *  - `var nickNameSaved` is the current string to be displayed in the nickname [Text] when the user
+ *  clicks the "Done" [Button].
+ *  - `var showDoneButton` is a [Boolean] flag which controls whether the "DONE" [Button] is shown.
+ *  If `false` the "DONE" [Button] is not composed into the UI thanks to the [HideOrShow] Composable
+ *  which wraps it.
+ *  - `var showEnterNickNameTextField` is a [Boolean] flag which controls whether the "What is your
+ *  Nickname?" [OutlinedTextField] is shown. If `false` it is not composed into the UI thanks to the
+ *  [HideOrShow] Composable which wraps it.
+ *
+ * The layout uses a [Column] whose `modifier` is our `modifier` argument and whose `horizontalAlignment`
+ * is [Alignment.CenterHorizontally] to have its children centered horizontally. The top widget is a
+ * [Text] displaying "Alecks Haecky" (the author of the original app?), followed by a [HideOrShow]
+ * whose `show` argument is `showEnterNickNameTextField` and whose `content` is a [OutlinedTextField]
+ * whose `value` is `nickNameEntry` and whose `onValueChange` is a lambda which sets `nickNameEntry`
+ * to the new value entered. Its label is a [Text] displaying "What is your Nickname?". Note that
+ * this [OutlinedTextField] is only composed into the UI if `showEnterNickNameTextField` is `true`.
+ * This is followed by a [HideOrShow] whose `show` argument is `showDoneButton` and whose `content`
+ * is a [DoneButton] with an `onClick` lambda which sets `nickNameSaved` to `nickNameEntry`. The
+ * content of the [HideOrShow] then includes an `if` statement which when `nickNameSaved` is not
+ * the empty string sets both `showDoneButton` and `showEnterNickNameTextField` to `false`. Note that
+ * this [DoneButton] is only composed into the UI if `showDoneButton` is `true`.
+ */
 @Composable
 fun NameNicknameButtonAndFishtail(modifier: Modifier = Modifier) {
     /**
@@ -113,6 +140,7 @@ fun NameNicknameButtonAndFishtail(modifier: Modifier = Modifier) {
     var showEnterNickNameTextField by rememberSaveable {
         mutableStateOf(true)
     }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -121,7 +149,7 @@ fun NameNicknameButtonAndFishtail(modifier: Modifier = Modifier) {
             text = stringResource(id = R.string.name),
             fontSize = 20.sp
         )
-        HideOrShow(showEnterNickNameTextField) {
+        HideOrShow(show = showEnterNickNameTextField) {
             OutlinedTextField(
                 value = nickNameEntry,
                 onValueChange = {
@@ -148,11 +176,13 @@ fun NameNicknameButtonAndFishtail(modifier: Modifier = Modifier) {
                 nickNameSaved = ""
             }
         )
-        Box(modifier = Modifier
-            .height(40.dp)
-            .width(40.dp)) {
+        Box(
+            modifier = Modifier
+                .height(40.dp)
+                .width(40.dp)
+        ) {
             Image(
-                modifier =Modifier.fillMaxSize(1f),
+                modifier = Modifier.fillMaxSize(1f),
                 painter = painterResource(id = android.R.drawable.btn_star_big_on),
                 contentDescription = stringResource(id = R.string.yellow_star)
             )
