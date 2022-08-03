@@ -33,7 +33,10 @@ import com.example.colormyviewscompose.ui.theme.ColorMyViewsComposeTheme
 
 /**
  * This is the main activity of our `ColorMyViewCompose`. It is a Compose version of the "Constraint
- * Layout using Layout Editor codelab" of the android-kotlin-fundamentals-apps course.
+ * Layout using Layout Editor codelab" of the android-kotlin-fundamentals-apps course. (It uses
+ * [Column] and [Row] instead of Compose `ConstraintLayout` because I was too lazy to learn how to
+ * use Compose `ConstraintLayout` when I wrote it. I have since learned how to use Compose
+ * `ConstraintLayout` so I am tempted to rewrite it when I have nothing better to do.)
  */
 class MainActivity : ComponentActivity() {
     /**
