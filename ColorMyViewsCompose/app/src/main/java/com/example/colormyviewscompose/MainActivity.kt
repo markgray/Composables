@@ -31,7 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.colormyviewscompose.ui.theme.ColorMyViewsComposeTheme
 
+/**
+ * This is the main activity of our `ColorMyViewCompose`. It is a Compose version of the "Constraint
+ * Layout using Layout Editor codelab" of the android-kotlin-fundamentals-apps course.
+ */
 class MainActivity : ComponentActivity() {
+    /**
+     * Called when the activity is starting.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -161,7 +168,7 @@ fun ColumnContent(modifier: Modifier = Modifier) {
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Button(onClick = { boxFourColor =Color.Yellow }) {
+            Button(onClick = { boxFourColor = Color.Yellow }) {
                 Text(
                     text = stringResource(id = R.string.button_yellow)
                 )
