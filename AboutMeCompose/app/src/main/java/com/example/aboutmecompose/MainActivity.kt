@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -109,6 +110,23 @@ fun AboutMeApp() {
  * content of the [HideOrShow] then includes an `if` statement which when `nickNameSaved` is not
  * the empty string sets both `showDoneButton` and `showEnterNickNameTextField` to `false`. Note that
  * this [DoneButton] is only composed into the UI if `showDoneButton` is `true`.
+ *
+ * Next in the [Column] is a [Text] displaying the current value of `nickNameSaved`. Its `modifier`
+ * argument is a [Modifier.clickable] whose lambda sets `showDoneButton` and `showEnterNickNameTextField`
+ * to `true` to allow the user the enter a new nickname, and sets `nickNameSaved` to the empty [String].
+ * There follows a 40.dp by 40.dp [Box] holding an [Image] whose [Modifier.fillMaxSize] `modifier`
+ * causes it to fill the [Box] with the [android.R.drawable.btn_star_big_on] (big yellow star) that
+ * the `painter` [Painter] of the [Image] draws.
+ *
+ * The last widget of that [Column] is a [Column] which adds a [Modifier.verticalScroll] to the
+ * `modifier` argument of its parent [Column] to be its `modifier` argument in order to make it
+ * scrollable, and uses [Alignment.CenterHorizontally] as its `horizontalAlignment` argument to
+ * center its children. The content of this [Column] consists of three [Text] widgets displaying
+ * some trivia about fish.
+ *
+ * @param modifier a [Modifier] our parent can use to modify our looks and behavior. In our case our
+ * parent uses [Modifier.fillMaxSize] to make us fill our available space and [Modifier.wrapContentSize]
+ * to have use center align our content.
  */
 @Composable
 fun NameNicknameButtonAndFishtail(modifier: Modifier = Modifier) {
