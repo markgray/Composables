@@ -15,8 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Shapes
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +44,17 @@ import com.example.colormyviewscompose.ui.theme.ColorMyViewsComposeTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting.
+     * Called when the activity is starting. First we call our super's implementation of [onCreate],
+     * then we call [setContent] to Compose the composable which consists of our custom material
+     * theme [ColorMyViewsComposeTheme] wrapped composable [ColorMyViewApp] into our activity. The
+     * content will become the root view of our activity. This is roughly equivalent to calling
+     * [ComponentActivity.setContentView] with a [ComposeView]. The [ColorMyViewsComposeTheme]
+     * composable is our custom [MaterialTheme] which defines the default color palette, [Typography],
+     * and [Shapes] to be used by the [ColorMyViewApp] composable.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use, but it is
+     * used by Compose to persist the values of several [MutableState] variables across configuration
+     * changes.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +69,7 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun ColorMyViewApp() {
-    ColumnContent(
+    ColumnAndRowLayout(
         modifier = Modifier
             .fillMaxSize()
             .wrapContentSize(Alignment.TopCenter)
@@ -63,7 +77,7 @@ fun ColorMyViewApp() {
 }
 
 @Composable
-fun ColumnContent(modifier: Modifier = Modifier) {
+fun ColumnAndRowLayout(modifier: Modifier = Modifier) {
     var boxOneColor by remember {
         mutableStateOf(Color.White)
     }
