@@ -66,6 +66,13 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * This Composable exists only to provide some flexibility in case I needed to hoist some variabales
+ * when I was writing the app. I also decreases the amount of indentation. Its content composes
+ * [ColumnAndRowLayout] into the UI, passing it a [Modifier] which uses [Modifier.fillMaxSize] to
+ * have [ColumnAndRowLayout] occupy the entire space allowed it, and [Modifier.wrapContentSize] to
+ * have it align its children to the top center of its space.
+ */
 @Preview(showBackground = true)
 @Composable
 fun ColorMyViewApp() {
@@ -76,6 +83,14 @@ fun ColorMyViewApp() {
     )
 }
 
+/**
+ * This is the actual main layout of our app.
+ *
+ * @param modifier a [Modifier] for us to use to modify the looks and behavior of our contents.
+ * The instance passed us by [ColorMyViewApp] uses [Modifier.fillMaxSize] to have us occupy the
+ * entire space allowed us, and [Modifier.wrapContentSize] to have us align our children to the
+ * top center of our space.
+ */
 @Composable
 fun ColumnAndRowLayout(modifier: Modifier = Modifier) {
     var boxOneColor by remember {
