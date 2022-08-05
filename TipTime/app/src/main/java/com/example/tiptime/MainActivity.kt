@@ -129,7 +129,12 @@ class MainActivity : ComponentActivity() {
  * Tip" whose `fontSize` is 24.sp, and whose `modifier` is a `Modifier.align` which is used to have
  * the text centered horizontally. This is followed by a 16.dp high [Spacer], and then the
  * [EditNumberField] labelled "Cost of Service" which the user is to use to enter the price of the
- * purchase that the tip is to be calculated for.
+ * purchase that the tip is to be calculated for. Below this is another [EditNumberField] labelled
+ * "Tip (%)" where the user enters the percnt tip they want to leave. Below this is a [RoundTheTipRow]
+ * which contains a [Switch] labeled "Round up tip?" that allows the user to flip the switch so that
+ * that tip is rounded up to the nearest dollar. At the bottom of the [Column] is a [Text] that
+ * displays the formatted string "Tip Amount: %s", where the current value of `tip` is substituted
+ * for the "%s" in the format.
  */
 @Composable
 fun TipTimeScreen() {
@@ -188,6 +193,10 @@ fun TipTimeScreen() {
     }
 }
 
+/**
+ * This is basically just a front end for a [TextField] which simplifies our use of the [TextField]
+ * in our UI.
+ */
 @Composable
 fun EditNumberField(
     @StringRes label: Int,
