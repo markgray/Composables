@@ -19,7 +19,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,9 +51,7 @@ class MainActivity : ComponentActivity() {
      * composable is our custom [MaterialTheme] which defines the default color palette, [Typography],
      * and [Shapes] to be used by the [ColorMyViewApp] composable.
      *
-     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use, but it is
-     * used by Compose to persist the values of several [MutableState] variables across configuration
-     * changes.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +81,27 @@ fun ColorMyViewApp() {
 }
 
 /**
- * This is the actual main layout of our app.
+ * This is the actual main layout of our app. We [remember] five variables to hold the [Color]'s of
+ * the background of the five [Text] widgets in our UI (all start out as [Color.White]):
+ *  - `var boxOneColor` holds the [Color] of the "Box One" [Text]. It is the top box in the [Column]
+ *  and occupies the entire width of the [Column]. When the box is clicked it turns its color to
+ *  [Color.DarkGray].
+ *  - `var boxTwoColor` holds the [Color] of the "Box Two" [Text]. It is the left most box in the
+ *  second row of the layout, and is 130.dp by 130dp (it shares this [Row] with a [Column] that
+ *  holds "Box Three", "Box Four" and "Box Five"). When the box is clicked it turns its color to
+ *  [Color.DarkGray].
+ *  - `var boxThreeColor` holds the [Color] of the "Box Three" [Text]. It is the top box in the
+ *  [Column] of three boxes that shares the [Row] with "Box Two". When the box is clicked it changes
+ *  its color to [Color.Blue], and when the [Button] labeled "RED" is clicked its color is changed
+ *  to [Color.Red].
+ *  - `var boxFourColor` holds the [Color] of the "Box Four" [Text]. It is the middle box in the
+ *  [Column] of three boxes that shares the [Row] with "Box Two". When the box is clicked it changes
+ *  its color to [Color.Magenta], and when the [Button] labeled "YELLOW" is clicked its color is
+ *  changed to [Color.Yellow].
+ *  - `var boxFiveColor` holds the [Color] of the "Box Five" [Text]. It is the bottom box in the
+ *  [Column] of three boxes that shares the [Row] with "Box Two". When the box is clicked it changes
+ *  its color to [Color.Blue], and when the [Button] labeled "GREEN" is clicked its color is
+ *  changed to [Color.Green].
  *
  * @param modifier a [Modifier] for us to use to modify the looks and behavior of our contents.
  * The instance passed us by [ColorMyViewApp] uses [Modifier.fillMaxSize] to have us occupy the
