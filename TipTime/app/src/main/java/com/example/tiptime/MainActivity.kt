@@ -195,7 +195,28 @@ fun TipTimeScreen() {
 
 /**
  * This is basically just a front end for a [TextField] which simplifies our use of the [TextField]
- * in our UI.
+ * in our UI. What it does is documented by the parameters:
+ *
+ * @param label the resource ID of a [String] resource which will be retrieved using [stringResource]
+ * and used as the `text` parameter of a [Text] that is used as the Composable contents of the `label`
+ * parameter of our [TextField].
+ * @param keyboardOptions the [KeyboardOptions] that have been configured for this [EditNumberField],
+ * used as the `keyboardOptions` parameter of our [TextField]. The [KeyboardOptions] for the "Cost of
+ * Service" sets the `keyboardType` to [KeyboardType.Number], and the `imeAction` to [ImeAction.Next],
+ * while the "Tip (%)" sets the `keyboardType` to [KeyboardType.Number], and the `imeAction` to
+ * [ImeAction.Done]
+ * @param keyboardActions the [KeyboardActions] that have been configured for this [EditNumberField],
+ * used as the `keyboardActions` parameter of our [TextField]. The [KeyboardActions] for the "Cost of
+ * Service" sets the `onNext` lambda to [FocusManager.moveFocus] with [FocusDirection.Down] as the
+ * direction to move the focus to the "Tip (%)", while the "Tip (%)" sets the `onDone` lambda to
+ * [FocusManager.clearFocus] to clear the focus.
+ * @param value the input text to be shown in the text field, used as the `value` parameter of our
+ * [TextField]
+ * @param onValueChanged the (String) -> Unit lambda that should be executed with the new `value` of
+ * the [TextField] whenever it changes, used as the `value` parameter of our [TextField].
+ * @param modifier a [Modifier] instance. Neither of our usages pass a value for this so the default
+ * [Modifier] is used after applying [Modifier.fillMaxWidth] to it as the `modifier` parameter of our
+ * [TextField].
  */
 @Composable
 fun EditNumberField(
@@ -217,6 +238,25 @@ fun EditNumberField(
     )
 }
 
+/**
+ * This Composable is a [Row] that contains the [Switch] that allows the user to specify that the
+ * tip should be rounded up to the nearest dollar along with a [Text] labeling it "Round up tip?".
+ * The [Row] uses our [modifier] parameter with [Modifier.fillMaxWidth] to have the [Row] fill its
+ * entire allowed width and [Modifier.size] of 48.dp which limits its height to 48.dp, and for its
+ * `verticalAlignment` parameter it uses [Alignment.CenterVertically]. The contents of the [Row]
+ * consists of the [Text] with the text "Round up tip?", and the [Switch] whose `modifier` parameter
+ * applies [Modifier.fillMaxWidth] to our [modifier] parameter and [Modifier.wrapContentWidth] to
+ * align it to the [Alignment.End] of the [Row]. For its `checked` parameter we pass [roundUp] and
+ * for its `onCheckedChange` parameter we pass [onRoundUpChanged]. For its `colors` parameter we pass
+ * [SwitchDefaults.colors] setting its `uncheckedThumbColor` parameter to [Color.DarkGray].
+ *
+ * @param roundUp the [Boolean] variable that we should use as the `checked` parameter of our [Switch]
+ * it represents the current checked (`true`) or unchecked (`false`) state of the [Switch].
+ * @param onRoundUpChanged a (Boolean) -> Unit lambda that will be called with the new state whenever
+ * the state of the [Switch] changes.
+ * @param modifier a [Modifier] instance we can use to modify the looks and behavior of our contents.
+ * In our case it is just the default [Modifier] since no value is passed us by our caller.
+ */
 @Composable
 fun RoundTheTipRow(
     roundUp: Boolean,
