@@ -34,7 +34,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.android.composetutorial.ui.theme.ComposeTutorialTheme
 
+/**
+ * This is the result of completing the "Jetpack Compose Tutorial" that is to be found at:
+ *
+ *     https://developer.android.com/jetpack/compose/tutorial
+ */
 class MainActivity : ComponentActivity() {
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`.
+     * Then we call [setContent] to have it compose the lambda we pass as its `content` argument into
+     * our activity. That lambda consists of our [ComposeTutorialTheme] custom [MaterialTheme] wrapping
+     * our [Conversation] Composable which is called with the [List] of [Message] that is to be found
+     * in [SampleData.conversationSample]. It will display each [Message] in the [List] using a
+     * [MessageCard] in a [LazyColumn].
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use this.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -45,8 +60,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * The data class we use to hold a [Message].
+ *
+ * @param author a [String] identifying the author of the [Message].
+ * @param body the contents of the message.
+ */
 data class Message(val author: String, val body: String)
 
+/**
+ * This Composable displays a single [Message]
+ */
 @Composable
 fun MessageCard(msg: Message) {
     Row(modifier = Modifier.padding(all = 8.dp)) {
@@ -60,8 +84,7 @@ fun MessageCard(msg: Message) {
         )
         Spacer(modifier = Modifier.width(8.dp))
 
-        // We keep track if the message is expanded or not in this
-        // variable
+        // We keep track if the message is expanded or not in this variable
         var isExpanded by remember { mutableStateOf(false) }
         // surfaceColor will be updated gradually from one color to the other
         val surfaceColor by animateColorAsState(
