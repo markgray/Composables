@@ -27,6 +27,13 @@ private val LightColorPalette = lightColors(
     */
 )
 
+/**
+ * This is the custom [MaterialTheme] we use to wrap the composables used in our UI.
+ *
+ * @param darkTheme if `true` we should use our [DarkColorPalette] for the `colors` of our theme,
+ * and if `false` we should use our [LightColorPalette]
+ * @param content the `Composable` we are wrapping in our custom [MaterialTheme]
+ */
 @Composable
 fun ComposeTutorialTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
