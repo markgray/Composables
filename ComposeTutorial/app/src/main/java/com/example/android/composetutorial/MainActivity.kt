@@ -69,7 +69,18 @@ class MainActivity : ComponentActivity() {
 data class Message(val author: String, val body: String)
 
 /**
- * This Composable displays a single [Message]
+ * This Composable displays a single [Message], and toggles the number of lines of the [Message.body]
+ * displayed between one line and the entire string when it is clicked. The layout consists of a [Row]
+ * whose `modifier` uses [Modifier.padding] with its `all` parameter specified as 8.dp to add 8.dp
+ * padding to all sides of the [Row]. The `contents` of the [Row] consists of an [Image] displaying
+ * the jpg with resource ID [R.drawable.shakespeare_droeshout_1623] whose `modifier` uses
+ * [Modifier.size] to set its size to 40.dp by 40.dp, [Modifier.clip] to clip it to a [CircleShape],
+ * and [Modifier.border] to add a border of 1.5.dp of the `secondaryVariant` color of
+ * [MaterialTheme.colors] (a dark teal). This is followed by a [Spacer] of 8.dp, and a [Column] with
+ * a [Modifier.clickable] `modifier` argument whose lambda toggles the value of the remembered
+ * [Boolean] variable `isExpanded` when it is clicked.
+ *
+ * @param msg the [Message] we are to display.
  */
 @Composable
 fun MessageCard(msg: Message) {

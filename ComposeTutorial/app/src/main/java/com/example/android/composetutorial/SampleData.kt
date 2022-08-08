@@ -1,8 +1,16 @@
 package com.example.android.composetutorial
 
+import androidx.compose.foundation.lazy.LazyColumn
+
+/**
+ * This singleton exists to hold the [List] of fake [Message]'s in [conversationSample] that the
+ * [Conversation] Composable displays in its [LazyColumn]
+ */
 object SampleData {
-    // Sample conversation data
-    val conversationSample = listOf(
+    /**
+     * Sample conversation data
+     */
+    val conversationSample: List<Message> = listOf(
         Message(
             "Colleague",
             "Test...Test...Test..."
