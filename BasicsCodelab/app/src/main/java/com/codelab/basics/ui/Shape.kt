@@ -17,10 +17,17 @@
 package com.codelab.basics.ui
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
 import androidx.compose.ui.unit.dp
 
-val shapes = Shapes(
+/**
+ * This is the Shape scheme that is used by our [MaterialTheme] class [BasicsCodelabTheme]. Small
+ * components will use a [RoundedCornerShape] with the corners rounded by 4.dp, and Medium components
+ * will use a [RoundedCornerShape] with the corners rounded by 8.dp, while Large components will use
+ * 0.dp rounded corners.
+ */
+val shapes: Shapes = Shapes(
     small = RoundedCornerShape(4.dp),
     medium = RoundedCornerShape(8.dp),
     large = RoundedCornerShape(0.dp)

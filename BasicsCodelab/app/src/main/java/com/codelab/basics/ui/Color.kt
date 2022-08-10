@@ -18,7 +18,24 @@ package com.codelab.basics.ui
 
 import androidx.compose.ui.graphics.Color
 
-val Navy = Color(0xFF073042)
-val Blue = Color(0xFF4285F4)
-val LightBlue = Color(0xFFD7EFFE)
-val Chartreuse = Color(0xFFEFF7CF)
+/**
+ * This [Color] is used for the `onSurface` and `primary` colors of `DarkColorPalette` and the
+ * `onPrimary` color of `LightColorPalette` in our [BasicsCodelabTheme].
+ */
+val Navy: Color = Color(0xFF073042)
+
+/**
+ * This [Color] is used for the `surface` color of `DarkColorPalette` and the `surface` color of
+ * `LightColorPalette` in our [BasicsCodelabTheme].
+ */
+val Blue: Color = Color(0xFF4285F4)
+
+/**
+ * This [Color] is used for the `primary` color of `LightColorPalette` in our [BasicsCodelabTheme].
+ */
+val LightBlue: Color = Color(0xFFD7EFFE)
+
+/**
+ * This [Color] is used for the `onPrimary` color of `DarkColorPalette` in our [BasicsCodelabTheme].
+ */
+val Chartreuse: Color = Color(0xFFEFF7CF)
