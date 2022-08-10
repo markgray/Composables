@@ -66,7 +66,9 @@ class MainActivity : ComponentActivity() {
      * That lambda consists of our [MyApp] Composable wrapped by our [BasicsCodelabTheme] custom
      * [MaterialTheme].
      *
-     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use here. It is
+     * used by [rememberSaveable] though to remember the value of the `var shouldShowOnboarding`
+     * [Boolean] flag used by [MyApp].
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +80,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * This Composable exists to choose between the [OnboardingScreen] Composable or the [Greetings]
+ * Composable.
+ */
 @Composable
 private fun MyApp() {
     var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
