@@ -131,10 +131,18 @@ private fun OnboardingScreen(onContinueClicked: () -> Unit) {
     }
 }
 
+/**
+ * This Composable fills a [LazyColumn] with [Greeting] objects whose `name` is taken from its [List]
+ * of [String] parameter [names]. The default value of [names] is a list of [String] whose values
+ * are the [String] value of the position of the [String] in the [List] (from "0" to "999").
+ *
+ * @param names the [List] of [String] to use for the `name` of each of the [Greeting] items in our
+ * [LazyColumn].
+ */
 @Composable
 private fun Greetings(names: List<String> = List(1000) { "$it" }) {
     LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
-        items(items = names) { name ->
+        items(items = names) { name: String ->
             Greeting(name = name)
         }
     }
