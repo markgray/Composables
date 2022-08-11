@@ -82,7 +82,15 @@ class MainActivity : ComponentActivity() {
 
 /**
  * This Composable exists to choose between the [OnboardingScreen] Composable or the [Greetings]
- * Composable.
+ * Composable based on the `true` or `false` value of the [Boolean] `var shouldShowOnboarding`. It
+ * delegates using [rememberSaveable] to a [mutableStateOf] which starts out as `true`. If it is
+ * `true` the [OnboardingScreen] Composable is called with its `onContinueClicked` argument set to
+ * a lambda which sets `shouldShowOnboarding` to `false`. This lambda is executed when the user
+ * clicks the [Button] labeled "Continue" in [OnboardingScreen]. If `shouldShowOnboarding` is `false`
+ * our [Greetings] Composable is called which displays a [LazyColumn] holding 1,000 [Greeting]
+ * objects whose `name` parameter is the position in the list. Each [Greeting] object holds a
+ * [Card] (Cards contain content and actions about a single subject) with a [CardContent] Composable
+ * that can be expanded or collapsed when its [IconButton] is clicked.
  */
 @Composable
 private fun MyApp() {
@@ -95,6 +103,15 @@ private fun MyApp() {
     }
 }
 
+/**
+ * This Composable displays a "Welcome to the Basics Codelab!" [Text] and a [Button] labeled
+ * "Continue" which executes our `onContinueClicked` parameter when it is clicked. In our case that
+ * lambda sets the `shouldShowOnboarding` [mutableStateOf] to `false` which causes our caller [MyApp]
+ * to be recomposed and since the `shouldShowOnboarding` is now `false` the [Greetings] Composable
+ * will be displayed instead of [OnboardingScreen].
+ *
+ * @param onContinueClicked a lambda to be executed when our "Continue" [Button] is clicked.
+ */
 @Composable
 private fun OnboardingScreen(onContinueClicked: () -> Unit) {
     Surface {
@@ -180,6 +197,12 @@ private fun CardContent(name: String) {
     }
 }
 
+/**
+ * This Preview Composable generates two previews of our [BasicsCodelabTheme] wrapped [Greetings]
+ * Composable, one labeled "DefaultPreviewDark" is done using `uiMode` set to [UI_MODE_NIGHT_YES]
+ * which will use the `DarkColorPalette` defined in [BasicsCodelabTheme] and one labeled
+ * [DefaultPreview] which will use the `LightColorPalette` of [BasicsCodelabTheme].
+ */
 @Preview(
     showBackground = true,
     widthDp = 320,
@@ -194,6 +217,9 @@ fun DefaultPreview() {
     }
 }
 
+/**
+ * This is a Preview of our [BasicsCodelabTheme] wrapped [OnboardingScreen] Composable.
+ */
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun OnboardingPreview() {
