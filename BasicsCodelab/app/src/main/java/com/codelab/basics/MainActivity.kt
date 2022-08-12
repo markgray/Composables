@@ -48,11 +48,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codelab.basics.ui.BasicsCodelabTheme
+import com.codelab.basics.ui.LightBlue
+import com.codelab.basics.ui.Navy
 
 /**
  * This is the main activity of the "Jetpack Compose Basics codelab":
@@ -148,6 +151,16 @@ private fun Greetings(names: List<String> = List(1000) { "$it" }) {
     }
 }
 
+/**
+ * Used as the [items] that fill the [LazyColumn] in the [Greetings] Composable. It consists of a
+ * [Card] whose `backgroundColor` is `MaterialTheme.colors.primary` ([LightBlue] for `LightColorPalette`
+ * or [Navy] for `DarkColorPalette`), whose `modifier` is a [Modifier.padding] of 4.dp `vertical` and
+ * 8.dp `horizontal`, and whose `content` Composable lambda is a [CardContent] whose `name` is our
+ * parameter [name].
+ *
+ * @param name a [String] to be used as the `name` parameter of the [CardContent] which is held by
+ * our [Card] Composable. In our case this is the [String] value of an [Int] from 0 to 999.
+ */
 @Composable
 private fun Greeting(name: String) {
     Card(
@@ -158,6 +171,24 @@ private fun Greeting(name: String) {
     }
 }
 
+/**
+ * This is the `content` of the [Card] used by our [Greeting] Composable for each of the [items] in
+ * the [LazyColumn] of the [Greetings] Composable. It [remember]'s the [mutableStateOf] of a single
+ * [Boolean] variable `var expanded` which when `true` displays an additional [Text] in the [Column]
+ * contained as the first Composable in the [Row] of our layout (when `false` it is skipped, it starts
+ * out `false` and is toggled when the [IconButton] at the end of the [Row] is clicked). The layout
+ * consists of a [Row] whose `modifier` is a [Modifier.padding] of 12.dp, with a daisy chained
+ * [Modifier.animateContentSize] that makes the [Row] animate its size when its children change size.
+ * The `content` of the [Row] has a [Column] which holds three [Text] Composables, the first one
+ * displaying the `text` "Hello", and the second displaying our [name] parameter as its `text`. The
+ * third `text` is only displayed if `expanded` is `true` and consists of a multi-line bit of
+ * gibberish. At the end of the [Row] is an [IconButton] whose `onClick` toggles the value of
+ * `expanded`. It [Icon] `content` will display the [ImageVector] drawn by [Filled.ExpandLess] if
+ * `expanded` is `true` or [Filled.ExpandMore] if it is `false` with the `contentDescription`
+ * "Show less" if `true` or "Show more" if `false`.
+ *
+ * @param name the [String] we should display in the middle [Text] of our [Column].
+ */
 @Composable
 private fun CardContent(name: String) {
     var expanded by remember { mutableStateOf(false) }
