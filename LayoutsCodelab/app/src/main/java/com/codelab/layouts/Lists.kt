@@ -35,9 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -91,12 +89,12 @@ fun LazyListPreview() {
     LazyList()
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ImageListItem(index: Int) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Image(
-            painter = rememberAsyncImagePainter(model = "https://developer.android.com/images/brand/Android_Robot.png"
+            painter = rememberAsyncImagePainter(
+                model = "https://developer.android.com/images/brand/Android_Robot.png"
             ),
             contentDescription = "Android Logo",
             modifier = Modifier.size(50.dp)

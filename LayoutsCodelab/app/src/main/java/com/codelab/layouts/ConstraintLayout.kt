@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
@@ -32,8 +33,16 @@ import com.codelab.layouts.ui.LayoutsCodelabTheme
 
 @Composable
 fun ConstraintLayoutContent() {
+    /**
+     * Layout that positions its children according to the constraints between them.
+     */
     ConstraintLayout {
-        val (button, text) = createRefs()
+        /**
+         * This creates `ConstrainedLayoutReference`'s for the variables `button` and `text` which
+         * we can assign to layouts within this ConstraintLayout by creating modifiers using
+         * `Modifier.constrainAs`.
+         */
+        val (button: ConstrainedLayoutReference, text: ConstrainedLayoutReference) = createRefs()
 
         Button(
             onClick = { /* Do something */ },
@@ -45,6 +54,10 @@ fun ConstraintLayoutContent() {
         }
 
         Text("Text", Modifier.constrainAs(text) {
+            /**
+             * Creates a link from the `top` of this [Text] to the `bottom` of the Composable
+             * which has the [ConstrainedLayoutReference] of `button` assigned to it.
+             */
             top.linkTo(button.bottom, margin = 16.dp)
         })
 
@@ -54,7 +67,7 @@ fun ConstraintLayoutContent() {
 @Composable
 fun DecoupledConstraintLayout() {
     BoxWithConstraints {
-        val constraints = if (maxWidth < maxHeight) {
+        val constraints: ConstraintSet = if (maxWidth < maxHeight) {
             decoupledConstraints(margin = 16.dp) // Portrait constraints
         } else {
             decoupledConstraints(margin = 32.dp) // Landscape constraints
@@ -75,8 +88,8 @@ fun DecoupledConstraintLayout() {
 
 private fun decoupledConstraints(margin: Dp): ConstraintSet {
     return ConstraintSet {
-        val button = createRefFor("button")
-        val text = createRefFor("text")
+        val button: ConstrainedLayoutReference = createRefFor("button")
+        val text: ConstrainedLayoutReference = createRefFor("text")
 
         constrain(button) {
             top.linkTo(parent.top, margin = margin)

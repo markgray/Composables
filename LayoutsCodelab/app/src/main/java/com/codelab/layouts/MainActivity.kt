@@ -19,6 +19,7 @@ package com.codelab.layouts
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,22 +28,55 @@ import com.codelab.layouts.ui.LayoutsCodelabTheme
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        /**
+         * Composes the LayoutsCodelabTheme wrapped LayoutsCodelab composable into our activity. The
+         * content will become the root view of the activity. This is roughly equivalent to calling
+         * ComponentActivity.setContentView with a ComposeView.
+         */
         setContent {
+            /**
+             * This is our custom MaterialTheme located in the file ui/Theme.kt which overrides the
+             * default `colors` parameter with our custom palettes DarkColorPalette and LightColorPalette
+             * depending on whether `isSystemInDarkTheme` is `true` or not. A MaterialTheme supplies
+             * the values for the `colors`, `typography`, and `shapes` attributes of the content
+             * Composable ([LayoutsCodelab] in our case).
+             */
             LayoutsCodelabTheme {
+                /**
+                 * This is the main Composable of our app, and holds a [Scaffold] with a Material
+                 * Design top app bar and whose content is a `BodyContent` Composable (both of these
+                 * are in the file LayoutsCodelab.kt
+                 */
                 LayoutsCodelab()
             }
         }
     }
 }
 
+/**
+ * This is just a very simple example Composable which is used by [DefaultPreview] to demonstrate
+ * how a Preview is done. It composes a [Text] Composable whose `text` is formed by appending our
+ * [String] parameter [name] to the end of the [String] "Hello ".
+ */
 @Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
 
+/**
+ * This is the Preview for the [Greeting] Composable, the `showBackground` parameter of the
+ * Preview annotation when `true` causes the Composable to use a default background color.
+ */
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    /**
+     * This is our custom MaterialTheme located in the file ui/Theme.kt which overrides the default
+     * `colors` parameter with our custom palettes DarkColorPalette and LightColorPalette depending
+     * on whether `isSystemInDarkTheme` is `true` or not. A MaterialTheme supplies the values for
+     * the `colors`, `typography`, and `shapes` attributes of the content Composable ([Greeting] in
+     * our case).
+     */
     LayoutsCodelabTheme {
         Greeting("Android")
     }

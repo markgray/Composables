@@ -20,6 +20,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -40,8 +42,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.codelab.layouts.ui.LayoutsCodelabTheme
@@ -55,38 +61,92 @@ val topics = listOf(
 
 @Composable
 fun LayoutsCodelab() {
+    /**
+     * Scaffold implements the basic material design visual layout structure. This component provides
+     * API to put together several material components to construct your screen, by ensuring proper
+     * layout strategy for them and collecting necessary data so these components will work together
+     * correctly.
+     *
+     * Parameters:
+     *
+     * topBar - top app bar of the screen, which is a  `Composable () -> Unit = {}`
+     * We use a TopAppBar.
+     *
+     * content - content of your screen. The lambda receives an PaddingValues that should be applied
+     * to the content root via Modifier.padding to properly offset top and bottom bars. If you're
+     * using VerticalScroller, apply this modifier to the child of the scroller, and not on the
+     * scroller itself. Our content is our [BodyContent] Composable which is called with a padding
+     * [Modifier] created from the [PaddingValues] parameter of the content lambda.
+     */
     Scaffold(
         topBar = {
+            /**
+             * Material Design top app bar. The top app bar displays information and actions relating
+             * to the current screen. This TopAppBar has slots for a title, navigation icon, and
+             * actions. Note that the title slot is inset from the start according to spec - for
+             * custom use cases such as horizontally centering the title, use the other TopAppBar
+             * overload for a generic TopAppBar with no restriction on content.
+             *
+             * Parameters:
+             *
+             * title - The title to be displayed in the center of the TopAppBar. A Composable fun,
+             * we use a [Text] Composable displaying the `text` "LayoutsCodelab".
+             *
+             * actions - The actions displayed at the end of the TopAppBar. This should typically be
+             * IconButtons. The default layout here is a Row, so icons inside will be placed
+             * horizontally. We use a [IconButton] Composable which holds an [Icon] Composable that
+             * displays the [Icons.Filled.Favorite] system [ImageVector].
+             */
             TopAppBar(
                 title = {
                     Text(text = "LayoutsCodelab")
                 },
                 actions = {
                     IconButton(onClick = { /* doSomething() */ }) {
-                        Icon(Icons.Filled.Favorite, contentDescription = null)
+                        Icon(imageVector = Icons.Filled.Favorite, contentDescription = null)
                     }
                 }
             )
         }
-    ) { innerPadding ->
+    ) { innerPadding: PaddingValues ->
         BodyContent(Modifier.padding(innerPadding))
     }
 }
 
 @Composable
 fun BodyContent(modifier: Modifier = Modifier) {
-    Row(modifier = modifier
-        .background(color = Color.LightGray)
-        .padding(16.dp)
-        .size(200.dp)
-        .horizontalScroll(rememberScrollState()),
+    /**
+     * A layout composable that places its children in a horizontal sequence. For a layout composable
+     * that places its children in a vertical sequence, see [Column]. Note that by default items do
+     * not scroll; see `Modifier.horizontalScroll` to add this behavior. For a horizontally
+     * scrollable list that only composes and lays out the currently visible items see `LazyRow`.
+     *
+     * Parameters:
+     *
+     * modifier - The modifier to be applied to the Row, we take our padding [Modifier] parameter
+     * [modifier], set its background color to [Color.LightGray], set its padding to 16dp, set its
+     * size to 200dp, and modify it using `horizontalScroll` to allow to scroll horizontally with
+     * the `state` of the scroll using [rememberScrollState] to create and automatically remember
+     * that ScrollState with default parameters.
+     *
+     * content - The Composable lambda that we are to layout horizontally, in our case this is a
+     * [StaggeredGrid] Composable which holds a [Chip] Composable for each of strings in our
+     * [topics] list.
+     */
+    Row(
+        modifier = modifier
+            .background(color = Color.LightGray)
+            .padding(16.dp)
+            .size(200.dp)
+            .horizontalScroll(state = rememberScrollState()),
         content = {
             StaggeredGrid {
                 for (topic in topics) {
                     Chip(modifier = Modifier.padding(8.dp), text = topic)
                 }
             }
-        })
+        }
+    )
 }
 
 @Composable
@@ -95,10 +155,20 @@ fun StaggeredGrid(
     rows: Int = 3,
     content: @Composable () -> Unit
 ) {
+    /**
+     * Layout is the main core component for layout. It can be used to measure and position zero or
+     * more layout children. The measurement, layout and intrinsic measurement behaviours of this
+     * layout will be defined by the measurePolicy instance. See MeasurePolicy for more details.
+     *
+     * modifier - Modifiers to be applied to the layout.
+     *
+     * content - The children composable to be laid out, in our case the `content` Composable that
+     * [StaggeredGrid] is called with which is a bunch of `Chip` Composables.
+     */
     Layout(
         modifier = modifier,
         content = content
-    ) { measurables, constraints ->
+    ) { measurables: List<Measurable>, constraints: Constraints ->
 
         // Keep track of the width of each row
         val rowWidths = IntArray(rows) { 0 }
@@ -106,14 +176,21 @@ fun StaggeredGrid(
         // Keep track of the max height of each row
         val rowHeights = IntArray(rows) { 0 }
 
-        // Don't constrain child views further, measure them with given constraints
-        // List of measured children
-        val placeables = measurables.mapIndexed { index, measurable ->
+        /**
+         * This is where we have each of our children in our [List] of [Measurable] parameter measure
+         * itself by calling its [Measurable.measure] method given our [Constraints] parameter
+         * [constraints] returning a [Placeable] child layout that has its new size which we can
+         * then position as its parent layout. The [mapIndexed] extension function places each of
+         * these [Placeable] objects in a new [List] of [Placeable] objects.
+         */
+        val placeables: List<Placeable> = measurables.mapIndexed { index, measurable ->
             // Measure each child
-            val placeable = measurable.measure(constraints)
+            // Don't constrain child views further, measure them with given constraints
+            // List of measured children
+            val placeable: Placeable = measurable.measure(constraints)
 
             // Track the width and max height of each row
-            val row = index % rows
+            val row: Int = index % rows
             rowWidths[row] += placeable.width
             rowHeights[row] = max(rowHeights[row], placeable.height)
 
@@ -140,6 +217,12 @@ fun StaggeredGrid(
             // x co-ord we have placed up to, per row
             val rowX = IntArray(rows) { 0 }
 
+            /**
+             * This is where we go through all of the [Placeable] objects in the [List] of [Placeable]
+             * that we created from our [List] of [Measurable] parameter and place them a X and Y
+             * positions relative to this parent coordinate system using the `Placeable.placeRelative`
+             * method.
+             */
             placeables.forEachIndexed { index, placeable ->
                 val row = index % rows
                 placeable.placeRelative(
