@@ -18,7 +18,24 @@ package com.codelab.layouts.ui
 
 import androidx.compose.ui.graphics.Color
 
-val purple200 = Color(0xFFBB86FC)
-val purple500 = Color(0xFF6200EE)
-val purple700 = Color(0xFF3700B3)
-val teal200 = Color(0xFF03DAC5)
+/**
+ * Color used as the `primary` [Color] of the `DarkColorPalette` of our [LayoutsCodelabTheme]
+ */
+val purple200: Color = Color(0xFFBB86FC)
+
+/**
+ * Color used as the `primary` [Color] of the `LightColorPalette` of our [LayoutsCodelabTheme]
+ */
+val purple500: Color = Color(0xFF6200EE)
+
+/**
+ * Color used as the `primaryVariant` [Color] of the `LightColorPalette` and the `DarkColorPalette`
+ * of our [LayoutsCodelabTheme]
+ */
+val purple700: Color = Color(0xFF3700B3)
+
+/**
+ * Color used as the `secondary` [Color] of the `LightColorPalette` and the `DarkColorPalette`
+ * of our [LayoutsCodelabTheme]
+ */
+val teal200: Color = Color(0xFF03DAC5)

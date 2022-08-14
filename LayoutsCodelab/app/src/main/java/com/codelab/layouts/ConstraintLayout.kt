@@ -31,6 +31,9 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.codelab.layouts.ui.LayoutsCodelabTheme
 
+/**
+ * This demonstrates how to use a [ConstraintLayout] Composable to position widgets inside it.
+ */
 @Composable
 fun ConstraintLayoutContent() {
     /**
@@ -64,6 +67,12 @@ fun ConstraintLayoutContent() {
     }
 }
 
+/**
+ * This example decouples the constaints from the layout they apply to, with the [ConstraintLayout]
+ * being passed the [ConstraintSet] as its `constraintSet` parameter instead of specifying them
+ * inline with a modifier in the composable they're applied to. Then the widgets identify themselves
+ * for the constraints in the [ConstraintSet] using [Modifier.layoutId].
+ */
 @Composable
 fun DecoupledConstraintLayout() {
     BoxWithConstraints {
@@ -73,7 +82,7 @@ fun DecoupledConstraintLayout() {
             decoupledConstraints(margin = 32.dp) // Landscape constraints
         }
 
-        ConstraintLayout(constraints) {
+        ConstraintLayout(constraintSet = constraints) {
             Button(
                 onClick = { /* Do something */ },
                 modifier = Modifier.layoutId("button")
@@ -86,16 +95,23 @@ fun DecoupledConstraintLayout() {
     }
 }
 
+/**
+ * This method creates a [ConstraintSet] that uses its [margin] parameter as the `margin` parameter
+ * of the `linkTo`'s it creates for the [ConstrainedLayoutReference] id's "button" and "text". In
+ * the [ConstraintLayout] those two widgets will then use [Modifier.layoutId] to identify themselves.
+ *
+ * @param margin the value we should use as the `margin` parameter of our `linkTo` calls.
+ */
 private fun decoupledConstraints(margin: Dp): ConstraintSet {
     return ConstraintSet {
         val button: ConstrainedLayoutReference = createRefFor("button")
         val text: ConstrainedLayoutReference = createRefFor("text")
 
         constrain(button) {
-            top.linkTo(parent.top, margin = margin)
+            top.linkTo(anchor = parent.top, margin = margin)
         }
         constrain(text) {
-            top.linkTo(button.bottom, margin)
+            top.linkTo(anchor = button.bottom, margin = margin)
         }
     }
 }
