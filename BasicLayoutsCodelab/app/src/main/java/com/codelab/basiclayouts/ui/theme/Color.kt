@@ -16,14 +16,62 @@
 
 package com.codelab.basiclayouts.ui.theme
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.graphics.Color
 
-val taupe100 = Color(0xFFF0EAE2)
-val taupe800 = Color(0xFF655454)
-val rust300 = Color(0xFFE1AFAF)
-val rust600 = Color(0xFF886363)
-val gray900 = Color(0xFF333333)
-val white150 = Color.White.copy(alpha = 0.15f)
-val white800 = Color.White.copy(alpha = 0.8f)
-val white850 = Color.White.copy(alpha = 0.85f)
-val gray800 = gray900.copy(alpha = 0.8f)
+/**
+ * This is the [Color] used for the `onBackground` color of the `DarkColorPalette` and the `background`
+ * color of the `LightColorPalette` that our [MySootheTheme] custom [MaterialTheme] uses for the
+ * `colors` parameter of [MaterialTheme] (a gray-brown color)
+ */
+val taupe100: Color = Color(0xFFF0EAE2)
+
+/**
+ * This is the [Color] used for the `onBackground` color of the `LightColorPalette` that our
+ * [MySootheTheme] custom [MaterialTheme] uses for the `colors` parameter of [MaterialTheme]
+ * (a dark gray-brown color)
+ */
+val taupe800: Color = Color(0xFF655454)
+
+/**
+ * This is the [Color] used for the `secondary` color of the `DarkColorPalette` that our
+ * [MySootheTheme] custom [MaterialTheme] uses for the `colors` parameter of [MaterialTheme]
+ */
+val rust300: Color = Color(0xFFE1AFAF)
+
+/**
+ * This is the [Color] used for the `secondary` color of the `LightColorPalette` that our
+ * [MySootheTheme] custom [MaterialTheme] uses for the `colors` parameter of [MaterialTheme]
+ */
+val rust600: Color = Color(0xFF886363)
+
+/**
+ * This is the [Color] used for the `background`, `onPrimary` and `onSecondary` colors of the
+ * `DarkColorPalette` and the `primary` color of the `LightColorPalette` that our [MySootheTheme]
+ * custom [MaterialTheme] uses for the `colors` parameter of [MaterialTheme]. It is also used with
+ * an `alpha` of 0.8f for the color [gray800], and the `onSurface` color of the `LightColorPalette`
+ */
+val gray900: Color = Color(0xFF333333)
+
+/**
+ * This is a variant of the [Color.White] whose `alpha` is changed to 0.15f - it is unused.
+ */
+@Suppress("unused")
+val white150: Color = Color.White.copy(alpha = 0.15f)
+
+/**
+ * This is a variant of the [Color.White] whose `alpha` is changed to 0.8f - it is unused.
+ */
+@Suppress("unused")
+val white800: Color = Color.White.copy(alpha = 0.8f)
+
+/**
+ * This is a variant of the [Color.White] whose `alpha` is changed to 0.85f - it is unused.
+ */
+@Suppress("unused")
+val white850: Color = Color.White.copy(alpha = 0.85f)
+
+/**
+ * This is a variant of the [gray900] color whose `alpha` is changed to 0.8f - it is unused.
+ */
+val gray800: Color = gray900.copy(alpha = 0.8f)

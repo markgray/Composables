@@ -45,8 +45,15 @@ private val DarkColorPalette = darkColors(
     onSurface = Color.White.copy(alpha = .8f)
 )
 
+/**
+ * This is the custom [MaterialTheme] we use to wrap the composables used in our UI.
+ *
+ * @param darkTheme if `true` we should use our [DarkColorPalette] for the `colors` of our theme,
+ * and if `false` we should use our [LightColorPalette]
+ * @param content the `Composable` we are wrapping in our custom [MaterialTheme]
+ */
 @Composable
-fun MySootheTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun MySootheTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {

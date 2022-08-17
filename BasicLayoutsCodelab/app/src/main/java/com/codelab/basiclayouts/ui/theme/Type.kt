@@ -48,7 +48,19 @@ private val fontFamilyLato = FontFamily(
     )
 )
 
-val typography = Typography(
+/**
+ * Set of Material typography styles to use. The parameters to the [Typography] constructor are:
+ *  - `defaultFontFamily` - the default FontFamily to be used for TextStyles provided in the
+ *  constructor is [fontFamilyLato]. This default will be used if the FontFamily of the [TextStyle]
+ *  is `null`.
+ *  - `h1` - `h1` is the largest headline, reserved for short, important text or numerals. We use
+ *  a [TextStyle] whose `fontFamily` is [fontFamilyKulim], whose `fontWeight` is [FontWeight.Light],
+ *  whose `fontSize` is 28.sp, and whose `letterSpacing` is (1.15).sp
+ *  - `h2` - `h2` is the second largest headline, reserved for short, important text or numerals. We
+ *  use a [TextStyle] whose `fontFamily` is [fontFamilyKulim], whose `fontSize` is 28.sp, and whose
+ *  `letterSpacing` is (1.15).sp
+ */
+val typography: Typography = Typography(
     defaultFontFamily = fontFamilyLato,
     h1 = TextStyle(
         fontFamily = fontFamilyKulim,
