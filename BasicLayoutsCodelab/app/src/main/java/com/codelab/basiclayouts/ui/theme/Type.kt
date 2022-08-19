@@ -24,6 +24,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.codelab.basiclayouts.R
 
+/**
+ * Font family that contains a [Font] created from the kulim_park_light.ttf font file contained in
+ * our resources (resource ID [R.font.kulim_park_regular]), and a [Font] created from the
+ * kulim_park_light.ttf font file contained in our resources (resource ID [R.font.kulim_park_light])
+ * whose `weight` is [FontWeight.Light] (The system uses this to match a font to a font request).
+ * The [Font] built from [R.font.kulim_park_regular] is used for the `h2`, and `caption` [TextStyle]
+ * of our [typography] custom [Typography], the [Font] built from [R.font.kulim_park_light] is used
+ * for the `h1` [TextStyle] (because its `fontWeight` is specified to be [FontWeight.Light]).
+ */
 private val fontFamilyKulim = FontFamily(
     listOf(
         Font(
@@ -36,6 +45,17 @@ private val fontFamilyKulim = FontFamily(
     )
 )
 
+/**
+ * Font family that contains a [Font] created from the lato_regular.ttf font file contained in
+ * our resources (resource ID [R.font.lato_regular]), and a [Font] created from the
+ * lato_bold.ttf font file contained in our resources (resource ID [R.font.lato_bold])
+ * whose `weight` is [FontWeight.Bold] (The system uses this to match a font to a font request)
+ * It is used as the `defaultFontFamily` of our [typography] custom [Typography], and because of
+ * this the [Font] built from [R.font.lato_regular] is used for the `body1` [TextStyle]
+ * of our [typography] custom [Typography], and the [Font] built from [R.font.lato_bold] is used
+ * for the `h3` and `button` [TextStyle] (because their `fontWeight` is specified to be
+ * [FontWeight.Bold]).
+ */
 private val fontFamilyLato = FontFamily(
     listOf(
         Font(
@@ -59,6 +79,19 @@ private val fontFamilyLato = FontFamily(
  *  - `h2` - `h2` is the second largest headline, reserved for short, important text or numerals. We
  *  use a [TextStyle] whose `fontFamily` is [fontFamilyKulim], whose `fontSize` is 28.sp, and whose
  *  `letterSpacing` is (1.15).sp
+ *  - `h3` - `h3` is the third largest headline, reserved for short, important text or numerals. We
+ *  use a [TextStyle] whose `fontFamily` is the default font family [fontFamilyLato], whose `fontWeight`
+ *  is [FontWeight.Bold], whose `fontSize` is 14.sp, and whose `letterSpacing` is 0.sp
+ *  - `body1` - `body1` is the largest body, and is typically used for long-form writing as it works
+ *  well for small text sizes. We use a [TextStyle] whose `fontFamily` is the default font family
+ *  [fontFamilyLato], whose `fontSize` is 14.sp, and whose `letterSpacing` is 0.sp
+ *  - `button` - `button` text is a call to action used in different types of buttons (such as text,
+ *  outlined and contained buttons) and in tabs, dialogs, and cards. We use a [TextStyle] whose
+ *  `fontFamily` is the default font family [fontFamilyLato], whose `fontSize` is 14.sp, and whose
+ *  `letterSpacing` is (1.15).sp
+ *  - caption - caption is one of the smallest font sizes. It is used sparingly to annotate imagery
+ *  or to introduce a headline. We use a [TextStyle] whose `fontFamily` is [fontFamilyKulim], whose
+ *  `fontSize` is 12.sp, and whose `letterSpacing` is (1.15).sp
  */
 val typography: Typography = Typography(
     defaultFontFamily = fontFamilyLato,
