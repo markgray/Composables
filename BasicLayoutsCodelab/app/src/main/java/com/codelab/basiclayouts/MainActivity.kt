@@ -51,6 +51,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -60,6 +61,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -91,6 +94,19 @@ class MainActivity : ComponentActivity() {
  *  - `onValueChange` - an empty lambda. In a functional "Search bar" this would be a lamdba which
  *  would update the remembered variable used for the `value` argument as well as doing things to
  *  assist the user in his construction or a search, such as offering suggested searches to use.
+ *  - `leadingIcon` - an [Icon] to be displayed at the beginning of the text field container, in our
+ *  case we use the `Search` [ImageVector] of [Icons.Default] (a magnifying glass).
+ *  - `colors` - [TextFieldColors] that will be used to resolve color of the text, content (including
+ *  label, placeholder, leading and trailing icons, indicator line) and background for the [TextField]
+ *  in different states. We use the defaults produced by [TextFieldDefaults.textFieldColors] except
+ *  for the `backgroundColor` which we replace with the `surface` color of [MaterialTheme.colors]
+ *  ([Color.White] with an alpha of 0.85 for the `LightColorPalette`, and [Color.White] with an alpha
+ *  of 0.15 for the `DarkColorPalette`)
+ *  - `placeholder` - placeholder to be displayed when the text field is in focus and the input text
+ *  is empty, we use the string with resource ID [R.string.placeholder_search] ("Search").
+ *  - `modifier` - the [Modifier] for the [TextField], we use our parameter [modifier] as a starter
+ *  and chain a [Modifier.fillMaxWidth] (have the content fill its incoming measurement constraints,
+ *  followed by a [Modifier.heightIn] specifying 56.dp as the minimum height of the [TextField].
  *
  * @param modifier a [Modifier] that the Composables which use this Composable can use to modify its
  * behavior and appearance, or a default, or starter [Modifier] that contains no elements if they do
@@ -113,7 +129,7 @@ fun SearchBar(
             backgroundColor = MaterialTheme.colors.surface
         ),
         placeholder = {
-            Text(stringResource(R.string.placeholder_search))
+            Text(stringResource(id = R.string.placeholder_search))
         },
         modifier = modifier
             .fillMaxWidth()
@@ -122,7 +138,7 @@ fun SearchBar(
 }
 
 /**
- * Step: Align your body - Alignment
+ * Step: Align your body - Alignment.
  */
 @Composable
 fun AlignYourBodyElement(
