@@ -82,7 +82,19 @@ class MainActivity : ComponentActivity() {
 }
 
 /**
- * Step: Search bar - Modifiers
+ * Step: Search bar - Modifiers. This Composable is the top item in the [Column] of [HomeScreen].
+ * If it were functional it would be usable to search for something or other as "Search bars" are
+ * used in other apps, but it is just used here to demonstrate the use of [Modifier]. Our `content`
+ * consists of a [TextField] whose arguments are:
+ *  - `value` - an empty string. In a functional "Search bar" this would be a "remembered" string
+ *  which is updated by the `onValueChange` lambda of the [TextField].
+ *  - `onValueChange` - an empty lambda. In a functional "Search bar" this would be a lamdba which
+ *  would update the remembered variable used for the `value` argument as well as doing things to
+ *  assist the user in his construction or a search, such as offering suggested searches to use.
+ *
+ * @param modifier a [Modifier] that the Composables which use this Composable can use to modify its
+ * behavior and appearance, or a default, or starter [Modifier] that contains no elements if they do
+ * not specify one.
  */
 @Composable
 fun SearchBar(
