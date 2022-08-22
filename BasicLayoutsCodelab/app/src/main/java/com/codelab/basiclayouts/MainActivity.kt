@@ -203,7 +203,14 @@ fun AlignYourBodyElement(
 }
 
 /**
- * Step: Favorite collection card - Material Surface
+ * Step: Favorite collection card - Material Surface.
+ *
+ * @param drawable the resource ID of the [Drawable] that we are supposed to display in our [Image]
+ * @param text the resource ID of the [String] that we are supposed to use as the text or our [Text]
+ * @param modifier a [Modifier] that our caller can use to modify our behavior and appearance. We
+ * use it as the `modifier` argument of our root [Surface] Composable. The [FavoriteCollectionCardPreview]
+ * preview uses a [Modifier.padding] of 8.dp, and [FavoriteCollectionsGrid] uses a [Modifier.height]
+ * of 56.dp to have the preferred height of our content to be exactly 56.dp
  */
 @Composable
 fun FavoriteCollectionCard(
