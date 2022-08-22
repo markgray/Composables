@@ -18,6 +18,7 @@
 
 package com.codelab.basiclayouts
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -53,6 +54,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
@@ -66,17 +68,24 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codelab.basiclayouts.ui.theme.MySootheTheme
 import java.util.Locale
 
 /**
- *
+ * This is the main activity of the solution of the "Basic Layouts in Compose Codelab"
+ * https://developer.android.com/codelabs/jetpack-compose-layouts
  */
 class MainActivity : ComponentActivity() {
     /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we call [setContent] to have it Compose the composable [MySootheApp] into our activity.
+     * The content will become the root view of the activity.
      *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +119,8 @@ class MainActivity : ComponentActivity() {
  *
  * @param modifier a [Modifier] that the Composables which use this Composable can use to modify its
  * behavior and appearance, or a default, or starter [Modifier] that contains no elements if they do
- * not specify one.
+ * not specify one. [HomeScreen] uses a [Modifier.padding] whose `horizontal` padding is 16.dp, and
+ * the preview [SearchBarPreview] uses 8.dp for `all` padding.
  */
 @Composable
 fun SearchBar(
@@ -138,7 +148,31 @@ fun SearchBar(
 }
 
 /**
- * Step: Align your body - Alignment.
+ * Step: Align your body - Alignment. Our root Composable is a [Column] which is invoked with our
+ * [Modifier] parameter [modifier] as its `modifier` argument, and [Alignment.CenterHorizontally]
+ * as its `horizontalAlignment` argument to have the horizontal alignment of its children be
+ * horizontally centered. The children of the [Column] are an [Image] displaying the [Drawable]
+ * whose resource ID is our [drawable] parameter, and a [Text] whose text is the [String] whose
+ * resource ID is our [text] parameter. The [Image] uses [ContentScale.Crop] as its `contentScale`
+ * argument to Scale the source uniformly (maintaining the source's aspect ratio) so that both
+ * dimensions (width and height) of the source will be equal to or larger than the corresponding
+ * dimension of the destination, and uses [Modifier.size] to size the [Image] to be 88.dp and a
+ * [Modifier.clip] of [CircleShape] to clip the [Image] to be a circle shape. The [Text] uses a
+ * `style` argument of the `h3` font of [MaterialTheme.typography]. The `h3` font in our custom
+ * [Typography] uses [FontWeight.Bold] as the `fontWeight`, 14.sp as the `fontSize`, a `letterSpacing`
+ * of 0.sp and the default `defaultFontFamily` of `fontFamilyLato`, so the [Font] is loaded from the
+ * resource ID [R.font.lato_bold] (which is the file "font/lato_bold.ttf"). The `modifier` argument
+ * of the [Text] is [Modifier.paddingFromBaseline] with the padding from the top of the layout to
+ * the baseline of the first line of text in the content given by `top` = 24.dp, and the distance
+ * from the baseline of the last line of text in the content to the bottom of the layout given by
+ * `bottom` = 8.dp.
+ *
+ * @param drawable the resource ID of a [Drawable] to use for our [Image]
+ * @param text the resource ID of a [String] to use as the text of our [Text]
+ * @param modifier a [Modifier] that our caller can use to modify our behavior or appearance (or the
+ * default [Modifier] if they do not specify one). It is used as the `modifier` parameter of the
+ * root [Column] of our Composable. Preview [AlignYourBodyElementPreview] passes a [Modifier.padding]
+ * with 8.dp for all padding, and [AlignYourBodyRow] passes no [Modifier] so the default is used.
  */
 @Composable
 fun AlignYourBodyElement(
