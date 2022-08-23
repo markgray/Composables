@@ -259,7 +259,17 @@ fun FavoriteCollectionCard(
 }
 
 /**
- * Step: Align your body row - Arrangements
+ * Step: Align your body row - Arrangements. Our root Composable is a [LazyRow] that uses our [modifier]
+ * parameter as its `modifier` argument, uses [Arrangement.spacedBy] as its `horizontalArrangement`
+ * argument to space its children by 8.dp, and uses a `contentPadding` of 16.dp as the [PaddingValues]
+ * for the ends of its content. The contents of the [LazyRow] is an [items] which uses the [List] of
+ * [DrawableStringPair] in our [alignYourBodyData] field to provide the `drawable` resource ID and
+ * `text` resource ID for a call to our [AlignYourBodyElement] for each [DrawableStringPair] in the
+ * [List].
+ *
+ * @param modifier a [Modifier] that our caller can specify to modify our behavior or appearance. In
+ * our case none of our callers specify one so the empty, default, or starter [Modifier] that
+ * contains no elements is used instead.
  */
 @Composable
 fun AlignYourBodyRow(
@@ -271,13 +281,25 @@ fun AlignYourBodyRow(
         modifier = modifier
     ) {
         items(alignYourBodyData) { (drawable, text): DrawableStringPair ->
-            AlignYourBodyElement(drawable, text)
+            AlignYourBodyElement(drawable = drawable, text = text)
         }
     }
 }
 
 /**
- * Step: Favorite collections grid - LazyGrid
+ * Step: Favorite collections grid - LazyGrid. Our root Composable is a [LazyHorizontalGrid] that
+ * uses a [GridCells.Fixed] of 2 for its `rows` argument to specify that it is a grid with 2 rows,
+ * uses a [PaddingValues] of 16.dp `horizontal` for its `contentPadding` to put 16.dp padding at the
+ * ends of its content, uses [Arrangement.spacedBy] of 8.dp for both its `horizontalArrangement` and
+ * its `verticalArrangement` to put 8.dp between its children cells, and adds a [Modifier.height]
+ * of 120.dp to our [Modifier] parameter [modifier] to set its height to be 120.dp. The `content` of
+ * the [LazyHorizontalGrid] are [items] of [FavoriteCollectionCard] that are created to display the
+ * [List] of [DrawableStringPair] `drawable` and `text` resource IDs in our [favoriteCollectionsData]
+ * field with a [Modifier.height] of 56.dp setting the height of each cell to be 56.dp
+ *
+ * @param modifier a [Modifier] that our caller can specify to modify our behavior or appearance. In
+ * our case none of our callers specify one so the empty, default, or starter [Modifier] that
+ * contains no elements is used instead.
  */
 @Composable
 fun FavoriteCollectionsGrid(
