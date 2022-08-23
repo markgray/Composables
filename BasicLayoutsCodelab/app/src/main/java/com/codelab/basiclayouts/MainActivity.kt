@@ -43,6 +43,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -68,7 +69,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -203,7 +206,21 @@ fun AlignYourBodyElement(
 }
 
 /**
- * Step: Favorite collection card - Material Surface.
+ * Step: Favorite collection card - Material Surface. Our root Composable is a [Surface] which uses
+ * our [Modifier] parameter [modifier] as its `modifier` argument, and the `small` [RoundedCornerShape]
+ * of [MaterialTheme.shapes] (in our case a [RoundedCornerShape] with 4.dp corners). The contents of
+ * the [Surface] is a [Row] with a [Modifier.width] `modifier` of 192.dp, and whose `verticalAlignment`
+ * is [Alignment.CenterVertically] (its children are vertically centered in it). The [Row] holds an
+ * [Image] that displays the [Drawable] whose resource ID is our [drawable] parameter, with its size
+ * set to 56.dp by the [Modifier.size] used as its `modifier` argument and whose `contentScale`
+ * argument setting the aspect ratio scaling to be [ContentScale.Crop] (scales the source uniformly,
+ * maintaining the source's aspect ratio, so that both width and height dimensions of the source will
+ * be equal to or larger than the corresponding dimension of the destination). This [Image] is then
+ * followed by a [Text] Composable that displays the string whose resource ID is our [text] parameter,
+ * using the `h3` [TextStyle] of [MaterialTheme.typography] (in our case the [FontFamily] whose
+ * [FontWeight.Bold] is provided by the [Font] with ID [R.font.lato_bold] (the file lato_bold.ttf)
+ * whose `fontSize` is 14.sp, and whose `letterSpacing` is 0.sp), and as its `modifier` argument it
+ * uses a [Modifier.padding] whose `horizontal` padding is 16.dp
  *
  * @param drawable the resource ID of the [Drawable] that we are supposed to display in our [Image]
  * @param text the resource ID of the [String] that we are supposed to use as the text or our [Text]
