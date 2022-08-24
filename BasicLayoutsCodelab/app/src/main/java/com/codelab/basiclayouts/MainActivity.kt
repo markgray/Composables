@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -323,7 +324,23 @@ fun FavoriteCollectionsGrid(
 }
 
 /**
- * Step: Home section - Slot APIs
+ * Step: Home section - Slot APIs. This Composable holds a [Text] that displays a title string whose
+ * resource ID is our [title] and a Composable [content] in a [Column]. [HomeScreen] uses it for the
+ * [AlignYourBodyRow] and [FavoriteCollectionsGrid] Composables. Our root Composable is a [Column]
+ * that we pass our [Modifier] parameter [modifier] to as its ``modifier` argument. The `content` of
+ * the [Column] is a [Text] displaying an uppercase version of the string with resource ID [title]
+ * using the `h2` [TextStyle] of our custom [MaterialTheme.typography] which is a `fontFamilyKulim`
+ * [FontFamily] that uses the [Font] with resource ID [R.font.lato_regular] (the lato_regular.ttf
+ * font file), with a `fontSize` of 15.sp and `letterSpacing` of (1.15).sp, and its `modifier`
+ * argument is a [Modifier.paddingFromBaseline] whose `top` padding is 40.dp, and whose `bottom`
+ * padding is 8.dp, and a [Modifier.padding] whose `horizontal` argument is 16.dp adds 16.dp to each
+ * end of the [Text]. Below this title [Text] in our [Column] is our [content] Composable.
+ *
+ * @param title the resource ID of the title string that should be displayed in our [Text].
+ * @param modifier a [Modifier] that can be used by our caller to modify our appearance and behavior,
+ * none of our callers pass us one so the empty, default, or starter [Modifier] that contains no
+ * elements is used instead.
+ * @param content the Composable that we should use in our "slot".
  */
 @Composable
 fun HomeSection(
@@ -344,15 +361,15 @@ fun HomeSection(
 }
 
 /**
- * Step: Home screen - Scrolling
+ * Step: Home screen - Scrolling.
  */
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
     Column(
         modifier
             .verticalScroll(rememberScrollState())
-            .padding(vertical = 16.dp)
     ) {
+        Spacer(Modifier.height(16.dp))
         SearchBar(Modifier.padding(horizontal = 16.dp))
         HomeSection(title = R.string.align_your_body) {
             AlignYourBodyRow()
@@ -360,6 +377,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         HomeSection(title = R.string.favorite_collections) {
             FavoriteCollectionsGrid()
         }
+        Spacer(Modifier.height(16.dp))
     }
 }
 
