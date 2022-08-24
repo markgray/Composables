@@ -362,6 +362,13 @@ fun HomeSection(
 
 /**
  * Step: Home screen - Scrolling.
+ *
+ * @param modifier a [Modifier] that can be used by our caller to modify our appearance and behavior,
+ * the [MySootheApp] Composable passes us a [Modifier.padding] that uses the [PaddingValues] that
+ * [Scaffold] passes to its `content` Composable lambda as the `padding` to use along each edge of
+ * our content's left, top, right and bottom. We in turn use [modifier] for our [Column], chaining
+ * a [Modifier.verticalScroll] with a [rememberScrollState] as its `state` argument onto it to make
+ * the [Column] scrollable.
  */
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
