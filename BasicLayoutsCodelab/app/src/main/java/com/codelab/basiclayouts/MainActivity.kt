@@ -361,7 +361,17 @@ fun HomeSection(
 }
 
 /**
- * Step: Home screen - Scrolling.
+ * Step: Home screen - Scrolling. Our root Composable is a [Column] whose `modifier` argument is
+ * our [Modifier] parameter [modifier] with a [Modifier.verticalScroll] added to it that uses a
+ * [rememberScrollState] as its `state` argument (this makes the [Column] vertically scrollable).
+ * The children of the [Column] are
+ *  - a [Spacer] with its `modifier` argument a [Modifier.height] of 16.dp
+ *  - a [SearchBar] with its `modifier` argument a [Modifier.padding] of 16.dp `horizontal`
+ *  - a [HomeSection] whose `title` is the string with resource ID [R.string.align_your_body]
+ *  ("Align your body") and a `content` Composable of [AlignYourBodyRow]
+ *  - a [HomeSection] whose `title` is the string with resource ID [R.string.favorite_collections]
+ *  ("Favorite Collections") and a `content` Composable of [FavoriteCollectionsGrid]
+ *  - a [Spacer] with its `modifier` argument a [Modifier.height] of 16.dp
  *
  * @param modifier a [Modifier] that can be used by our caller to modify our appearance and behavior,
  * the [MySootheApp] Composable passes us a [Modifier.padding] that uses the [PaddingValues] that
@@ -373,18 +383,17 @@ fun HomeSection(
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
     Column(
-        modifier
-            .verticalScroll(rememberScrollState())
+        modifier = modifier.verticalScroll(state = rememberScrollState())
     ) {
-        Spacer(Modifier.height(16.dp))
-        SearchBar(Modifier.padding(horizontal = 16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
+        SearchBar(modifier = Modifier.padding(horizontal = 16.dp))
         HomeSection(title = R.string.align_your_body) {
             AlignYourBodyRow()
         }
         HomeSection(title = R.string.favorite_collections) {
             FavoriteCollectionsGrid()
         }
-        Spacer(Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
     }
 }
 
@@ -440,6 +449,13 @@ fun MySootheApp() {
     }
 }
 
+/**
+ * This [List] of [DrawableStringPair] is used to populate the [LazyRow] in the [AlignYourBodyRow]
+ * Composable. The [DrawableStringPair.drawable] of each element in the [List] is the resource ID of
+ * a [Drawable] to display in the [AlignYourBodyElement] created from the element, and the
+ * [DrawableStringPair.text] of each element in the [List] is the resource ID of a [String] to
+ * display in the [AlignYourBodyElement] created from the element.
+ */
 private val alignYourBodyData: List<DrawableStringPair> = listOf(
     R.drawable.ab1_inversions to R.string.ab1_inversions,
     R.drawable.ab2_quick_yoga to R.string.ab2_quick_yoga,
@@ -449,6 +465,13 @@ private val alignYourBodyData: List<DrawableStringPair> = listOf(
     R.drawable.ab6_pre_natal_yoga to R.string.ab6_pre_natal_yoga
 ).map { DrawableStringPair(it.first, it.second) }
 
+/**
+ * This [List] of [DrawableStringPair] is used to populate the [LazyHorizontalGrid] in the
+ * [FavoriteCollectionsGrid] Composable. The [DrawableStringPair.drawable] of each element in the
+ * [List] is the resource ID of a [Drawable] to display in the [FavoriteCollectionCard] created from
+ * the element, and the [DrawableStringPair.text] of each element in the [List] is the resource ID
+ * of a [String] to display in the [FavoriteCollectionCard] created from the element.
+ */
 private val favoriteCollectionsData: List<DrawableStringPair> = listOf(
     R.drawable.fc1_short_mantras to R.string.fc1_short_mantras,
     R.drawable.fc2_nature_meditations to R.string.fc2_nature_meditations,
