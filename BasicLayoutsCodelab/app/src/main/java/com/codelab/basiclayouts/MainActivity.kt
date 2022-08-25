@@ -77,6 +77,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codelab.basiclayouts.ui.theme.MySootheTheme
+import com.codelab.basiclayouts.ui.theme.gray900
+import com.codelab.basiclayouts.ui.theme.taupe100
 import java.util.Locale
 
 /**
@@ -398,7 +400,27 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 }
 
 /**
- * Step: Bottom navigation - Material
+ * Step: Bottom navigation - Material. We use this as the `bottomBar` argument (the bottom bar of
+ * the screen) of the [Scaffold] in the [MySootheApp] Composable. Our root Composable is a
+ * [BottomNavigation] whose `backgroundColor` is the `background` [Color] of [MaterialTheme.colors]
+ * ([taupe100] for the `LightColorPalette` and [gray900] for the `DarkColorPalette`), and whose
+ * `modifier` argument is our [Modifier] parameter [modifier]. Its children Composables are two
+ * [BottomNavigationItem]:
+ *  - First one uses as the `label` the string with resource ID [R.string.bottom_navigation_home]
+ *  ("HOME"), and its [Icon] argument `icon` is the [ImageVector] drawn by [Icons.Filled.Spa]
+ *  ([Icons.Default] is an alias for [Icons.Filled])
+ *  - Second one uses as the `label` the string with resource ID [R.string.bottom_navigation_profile]
+ *  ("PROFILE"), and its [Icon] argument `icon` is the [ImageVector] drawn by
+ *  [Icons.Filled.AccountCircle] ([Icons.Default] is an alias for [Icons.Filled])
+ *
+ * The `selected` argument of the "HOME" [BottomNavigationItem] is hard coded to be `true`, and the
+ * `selected` argument of the "PROFILE" [BottomNavigationItem] is hard coded to be `false`, and the
+ * `onClick` argument of both is an empty lambda.
+ *
+ * @param modifier a [Modifier] that can be used by our caller to modify our appearance and behavior,
+ * the preview [BottomNavigationPreview] uses a [Modifier.padding] whose `top` is 24.dp, and the
+ * [Scaffold] in the [MySootheApp] Composable does not specify a value so the empty, default, or
+ * starter [Modifier] that contains no elements is used instead.
  */
 @Composable
 private fun SootheBottomNavigation(modifier: Modifier = Modifier) {
@@ -436,15 +458,21 @@ private fun SootheBottomNavigation(modifier: Modifier = Modifier) {
 }
 
 /**
- * Step: MySoothe App - Scaffold
+ * Step: MySoothe App - Scaffold. This is the Composable that we use as the root view of our activity.
+ * Wrapped in our [MySootheTheme] custom [MaterialTheme] is a [Scaffold] whose `bottomBar` argument
+ * (the bottom bar of the screen) is our [SootheBottomNavigation] Composable (it contains a
+ * [BottomNavigation] with two [BottomNavigationItem] children, "HOME" and "PROFILE"). Our `content`
+ * is a [HomeScreen] Composable whose `modifier` argument is a [Modifier.padding] with its
+ * `paddingValues` argument the [PaddingValues] that are necessary to properly offset top and bottom
+ * bars.
  */
 @Composable
 fun MySootheApp() {
     MySootheTheme {
         Scaffold(
             bottomBar = { SootheBottomNavigation() }
-        ) { padding ->
-            HomeScreen(Modifier.padding(padding))
+        ) { padding: PaddingValues ->
+            HomeScreen(modifier = Modifier.padding(paddingValues = padding))
         }
     }
 }
@@ -481,13 +509,20 @@ private val favoriteCollectionsData: List<DrawableStringPair> = listOf(
     R.drawable.fc6_nightly_wind_down to R.string.fc6_nightly_wind_down
 ).map { DrawableStringPair(it.first, it.second) }
 
+/**
+ * Data class holding a [Drawable] resource ID, and a [String] resource ID in its [drawable] and
+ * [text] fields respectively.
+ *
+ * @param drawable a [Drawable] resource ID
+ * @param text a [String] resource ID
+ */
 private data class DrawableStringPair(
     @DrawableRes val drawable: Int,
     @StringRes val text: Int
 )
 
 /**
- *
+ * The Preview for our [SearchBar] Composable.
  */
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
@@ -496,7 +531,7 @@ fun SearchBarPreview() {
 }
 
 /**
- *
+ * The Preview for our [AlignYourBodyElement] Composable.
  */
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
@@ -511,7 +546,7 @@ fun AlignYourBodyElementPreview() {
 }
 
 /**
- *
+ * The Preview for our [FavoriteCollectionCard] Composable.
  */
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
@@ -526,7 +561,7 @@ fun FavoriteCollectionCardPreview() {
 }
 
 /**
- *
+ * The Preview for our [FavoriteCollectionsGrid] Composable.
  */
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
@@ -535,7 +570,7 @@ fun FavoriteCollectionsGridPreview() {
 }
 
 /**
- *
+ * The Preview for our [AlignYourBodyRow] Composable.
  */
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
@@ -544,7 +579,7 @@ fun AlignYourBodyRowPreview() {
 }
 
 /**
- *
+ * The Preview for our [HomeSection] Composable with an [AlignYourBodyRow] in its slot.
  */
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
@@ -557,7 +592,7 @@ fun HomeSectionPreview() {
 }
 
 /**
- *
+ * The Preview for our [HomeScreen] Composable.
  */
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
@@ -566,7 +601,7 @@ fun ScreenContentPreview() {
 }
 
 /**
- *
+ * The Preview for our [SootheBottomNavigation] Composable.
  */
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
@@ -575,7 +610,7 @@ fun BottomNavigationPreview() {
 }
 
 /**
- *
+ * The Preview for our [MySootheApp] Composable.
  */
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
