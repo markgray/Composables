@@ -6,7 +6,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
+/**
+ * Set of Material typography styles to start with. We just configure the [TextStyle] for body1,
+ * which is the largest body, and is typically used for long-form writing as it works well for
+ * small text sizes.
+ */
 val Typography = Typography(
     body1 = TextStyle(
         fontFamily = FontFamily.Default,
