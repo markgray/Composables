@@ -20,4 +20,4 @@ class WellnessViewModel : ViewModel() {
 
 }
 
-private fun getWellnessTasks() = List(30) { i -> WellnessTask(i, "Task # $i") }
+private fun getWellnessTasks() = List(30) { i -> WellnessTask(id = i, label = "Task # $i") }
