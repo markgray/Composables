@@ -34,6 +34,6 @@ class WellnessTask(
      * [WellnessTaskItem] that displays this [WellnessTask] using the method
      * [WellnessViewModel.changeTaskChecked] of the viewmodel.
      */
-    var checked by mutableStateOf(initialChecked)
+    var checked: Boolean by mutableStateOf(initialChecked)
 }
 

@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
  * Small components will use a [RoundedCornerShape] with the corners rounded by 4.dp, as will the
  * Medium components, while Large components will use 0.dp rounded corners.
  */
-val Shapes = Shapes(
+val Shapes: Shapes = Shapes(
     small = RoundedCornerShape(4.dp),
     medium = RoundedCornerShape(4.dp),
     large = RoundedCornerShape(0.dp)

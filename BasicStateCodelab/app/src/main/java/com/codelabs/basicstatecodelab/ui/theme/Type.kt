@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.sp
  * which is the largest body, and is typically used for long-form writing as it works well for
  * small text sizes.
  */
-val Typography = Typography(
+val Typography: Typography = Typography(
     body1 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
