@@ -46,11 +46,12 @@ import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
 
 @Composable
 fun PlantDetailDescription(plantDetailViewModel: PlantDetailViewModel) {
-    // Observes values coming from the VM's LiveData<Plant> field
+    // Observes values coming from the VM's LiveData<Plant> field as State<Plant?>
     val plant by plantDetailViewModel.plant.observeAsState()
 
-    // If plant is not null, display the content
+    // New emissions from plant will make PlantDetailDescription recompose as the state's read here
     plant?.let {
+        // If plant is not null, display the content
         PlantDetailContent(it)
     }
 }
@@ -74,7 +75,7 @@ private fun PlantName(name: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(R.dimen.margin_small))
-            .wrapContentWidth(Alignment.CenterHorizontally)
+            .wrapContentWidth(align = Alignment.CenterHorizontally)
     )
 }
 
@@ -128,30 +129,8 @@ private fun PlantDescription(description: String) {
 
 @Preview
 @Composable
-private fun PlantDescriptionPreview() {
-    MdcTheme {
-        PlantDescription("HTML<br><br>description")
-    }
-}
-
-@Preview
-@Composable
-private fun PlantWateringPreview() {
-    MdcTheme {
-        PlantWatering(7)
-    }
-}
-@Preview
-@Composable
 private fun PlantDetailContentPreview() {
-    val plant = Plant(
-        plantId = "id",
-        name = "Apple",
-        description = "HTML<br><br>description",
-        growZoneNumber = 3,
-        wateringInterval = 30,
-        imageUrl = ""
-    )
+    val plant = Plant("id", "Apple", "HTML<br><br>description", 3, 30, "")
     MdcTheme {
         PlantDetailContent(plant)
     }
@@ -163,5 +142,29 @@ private fun PlantDetailContentDarkPreview() {
     val plant = Plant("id", "Apple", "HTML<br><br>description", 3, 30, "")
     MdcTheme {
         PlantDetailContent(plant)
+    }
+}
+
+@Preview
+@Composable
+private fun PlantNamePreview() {
+    MdcTheme {
+        PlantName("Apple")
+    }
+}
+
+@Preview
+@Composable
+private fun PlantWateringPreview() {
+    MdcTheme {
+        PlantWatering(7)
+    }
+}
+
+@Preview
+@Composable
+private fun PlantDescriptionPreview() {
+    MdcTheme {
+        PlantDescription("HTML<br><br>description")
     }
 }

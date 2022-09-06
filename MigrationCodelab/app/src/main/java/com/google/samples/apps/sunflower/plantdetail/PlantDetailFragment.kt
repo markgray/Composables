@@ -108,21 +108,26 @@ class PlantDetailFragment : Fragment() {
                     else -> false
                 }
             }
+
             composeView.apply {
-                // Dispose the Composition when the view's LifecycleOwner
-                // is destroyed
+                // By default, the Composition is disposed when ComposeView is detached
+                // from the window. This causes problems during transitions as the ComposeView
+                // will still be visible on the screen after it's detached from the window.
+                // Instead, to dispose the Composition when the Fragment view lifecycle is
+                // destroyed, we set the DisposeOnViewTreeLifecycleDestroyed strategy as the
+                // ViewCompositionStrategy for this ComposeView
                 setViewCompositionStrategy(
                     ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
                 )
+
+                // Add Jetpack Compose content to this View
                 setContent {
                     MdcTheme {
                         PlantDetailDescription(plantDetailViewModel)
                     }
                 }
             }
-
         }
-        @Suppress("DEPRECATION")
         setHasOptionsMenu(true)
 
         return binding.root
