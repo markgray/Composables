@@ -128,6 +128,7 @@ class PlantDetailFragment : Fragment() {
                 }
             }
         }
+        @Suppress("DEPRECATION")
         setHasOptionsMenu(true)
 
         return binding.root

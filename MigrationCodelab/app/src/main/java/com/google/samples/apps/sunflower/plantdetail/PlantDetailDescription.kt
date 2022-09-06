@@ -130,7 +130,14 @@ private fun PlantDescription(description: String) {
 @Preview
 @Composable
 private fun PlantDetailContentPreview() {
-    val plant = Plant("id", "Apple", "HTML<br><br>description", 3, 30, "")
+    val plant = Plant(
+        plantId = "id",
+        name = "Apple",
+        description = "HTML<br><br>description",
+        growZoneNumber = 3,
+        wateringInterval = 30,
+        imageUrl = ""
+    )
     MdcTheme {
         PlantDetailContent(plant)
     }
@@ -139,7 +146,14 @@ private fun PlantDetailContentPreview() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PlantDetailContentDarkPreview() {
-    val plant = Plant("id", "Apple", "HTML<br><br>description", 3, 30, "")
+    val plant = Plant(
+        plantId = "id",
+        name = "Apple",
+        description = "HTML<br><br>description",
+        growZoneNumber = 3,
+        wateringInterval = 30,
+        imageUrl = ""
+    )
     MdcTheme {
         PlantDetailContent(plant)
     }
