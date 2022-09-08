@@ -92,6 +92,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -99,7 +100,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -135,23 +135,23 @@ private enum class TabPage {
 @Composable
 fun Home() {
     // String resources.
-    val allTasks = stringArrayResource(R.array.tasks)
-    val allTopics = stringArrayResource(R.array.topics).toList()
+    val allTasks: Array<String> = stringArrayResource(R.array.tasks)
+    val allTopics: List<String> = stringArrayResource(R.array.topics).toList()
 
     // The currently selected tab.
-    var tabPage by remember { mutableStateOf(TabPage.Home) }
+    var tabPage: TabPage by remember { mutableStateOf(TabPage.Home) }
 
     // True if the whether data is currently loading.
-    var weatherLoading by remember { mutableStateOf(false) }
+    var weatherLoading: Boolean by remember { mutableStateOf(false) }
 
     // Holds all the tasks currently shown on the task list.
-    val tasks = remember { mutableStateListOf(*allTasks) }
+    val tasks: SnapshotStateList<String> = remember { mutableStateListOf(*allTasks) }
 
     // Holds the topic that is currently expanded to show its body.
-    var expandedTopic by remember { mutableStateOf<String?>(null) }
+    var expandedTopic: String? by remember { mutableStateOf(null) }
 
     // True if the message about the edit feature is shown.
-    var editMessageShown by remember { mutableStateOf(false) }
+    var editMessageShown: Boolean by remember { mutableStateOf(false) }
 
     // Simulates loading weather data. This takes 3 seconds.
     suspend fun loadWeather() {
@@ -176,7 +176,7 @@ fun Home() {
         loadWeather()
     }
 
-    val lazyListState = rememberLazyListState()
+    val lazyListState: LazyListState = rememberLazyListState()
 
     // The background color. The value is changed by the current tab.
     // TODO 1: Animate this color change. DONE
