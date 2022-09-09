@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.MainTestClock
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,7 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * Test to showcase [MainTestClock] present in [ComposeTestRule]. It allows for animation
+ * Test to showcase [MainTestClock] present in [ComposeContentTestRule]. It allows for animation
  * testing at specific points in time.
  *
  * For assertions, a simple screenshot testing framework is used. It requires SDK 26+ and to
@@ -47,7 +48,7 @@ import org.junit.Test
 class AnimatingCircleTests {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule: ComposeContentTestRule = createComposeRule()
 
     @Test
     fun circleAnimation_idle_screenshot() {
