@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintLayoutBaseScope
+import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.codelab.layouts.ui.LayoutsCodelabTheme
@@ -116,6 +118,25 @@ private fun decoupledConstraints(margin: Dp): ConstraintSet {
     }
 }
 
+/**
+ * This Composable uses [ConstraintLayout] to position two [Button] widgets and a [Text] widget.
+ * First it uses [ConstraintLayoutScope.createRefs] to create three [ConstrainedLayoutReference]'s
+ * `button1`, `button2`, and `text`. It then creates its three widgets and a guideline:
+ *  - a [Button] labeled "Button 1" whose `modifier` argument uses `Modifier.constrainAs` to
+ *  constrain it as the [ConstrainedLayoutReference] `button1` and to link its `top` to its parent's
+ *  `top` with a `margin` of 16.dp
+ *  - a [Text] with the `text` "Text" whose `modifier` argument uses `Modifier.constrainAs` to
+ *  constrain it as the [ConstrainedLayoutReference] `text` to `link` its `top` to the `bottom`
+ *  of `button1` with a margin of 16.dp and to use `centerAround` to add start and end links towards
+ *  the vertical anchor represented by the `end` of `button1`
+ *  - it uses `createEndBarrier` to create a [ConstraintLayoutBaseScope.VerticalAnchor] for the
+ *  variable `val barrier` containing the elements `button1`, and `text` (this represents a vertical
+ *  anchor or guideline that contains the ends of both `button1`, and `text` that layouts can link
+ *  to.)
+ *  - a [Button] labeled "Button 2" whose `modifier` argument uses `Modifier.constrainAs` to
+ *  constrain it as the [ConstrainedLayoutReference] `button2`, linking its `top` to its parent's
+ *  `top` with a `margin` of 16.dp, and linking its `start` to the guideline `barrier`.
+ */
 @Composable
 fun ConstraintLayoutContentExample2() {
     ConstraintLayout {
@@ -130,12 +151,12 @@ fun ConstraintLayoutContentExample2() {
             Text("Button 1")
         }
 
-        Text("Text", Modifier.constrainAs(text) {
+        Text(text = "Text", modifier = Modifier.constrainAs(text) {
             top.linkTo(button1.bottom, margin = 16.dp)
             centerAround(button1.end)
         })
 
-        val barrier = createEndBarrier(button1, text)
+        val barrier: ConstraintLayoutBaseScope.VerticalAnchor = createEndBarrier(button1, text)
         Button(
             onClick = { /* Do something */ },
             modifier = Modifier.constrainAs(button2) {
@@ -148,15 +169,26 @@ fun ConstraintLayoutContentExample2() {
     }
 }
 
+/**
+ * This Composable demonstrates how to use [ConstraintLayout] to modify the width of its children
+ * if necessary. First it uses [ConstraintLayoutScope.createRef] to create a [ConstrainedLayoutReference]
+ * for its variable `val text` and [ConstraintLayoutScope.createGuidelineFromStart] to create a vertical
+ * guideline at the center of the [ConstraintLayout] for its variable `val guideline`. It then creates
+ * a [Text] widget whose `text` is a very long string (which will require wrapping) and whose `modifier`
+ * argument uses `Modifier.constrainAs` to contrain the widget using the `text` [ConstrainedLayoutReference]
+ * with `linkTo` linking its `start` to `guideline` and its `end` to the `end` of parent, with the
+ * width of the [Text] child of [ConstraintLayout] specified as [Dimension.preferredWrapContent]
+ * (which is a A [Dimension] with "suggested" wrap content behavior).
+ */
 @Composable
 fun LargeConstraintLayout() {
     ConstraintLayout {
-        val text = createRef()
+        val text: ConstrainedLayoutReference = createRef()
 
-        val guideline = createGuidelineFromStart(fraction = 0.5f)
+        val guideline: ConstraintLayoutBaseScope.VerticalAnchor = createGuidelineFromStart(fraction = 0.5f)
         Text(
-            "This is a very very very very very very very long text",
-            Modifier.constrainAs(text) {
+            text = "This is a very very very very very very very long text",
+            modifier = Modifier.constrainAs(text) {
                 linkTo(start = guideline, end = parent.end)
                 width = Dimension.preferredWrapContent
             }
