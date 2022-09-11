@@ -18,6 +18,7 @@ package com.codelab.layouts
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -73,7 +74,17 @@ fun ConstraintLayoutContent() {
  * This example decouples the constaints from the layout they apply to, with the [ConstraintLayout]
  * being passed the [ConstraintSet] as its `constraintSet` parameter instead of specifying them
  * inline with a modifier in the composable they're applied to. Then the widgets identify themselves
- * for the constraints in the [ConstraintSet] using [Modifier.layoutId].
+ * for the constraints in the [ConstraintSet] using [Modifier.layoutId]. If the `maxWidth` of our
+ * [BoxWithConstraints] is less than its `maxHeight` we set our variable `val constraints` to the
+ * [ConstraintSet] returned by our [decoupledConstraints] method for a `margin` of 16.dp (Portrait
+ * constraints) otherwise we set it to the [ConstraintSet] returned by our [decoupledConstraints]
+ * method for a `margin` of 32.dp (Landscape constraints). We then create a [ConstraintLayout] whose
+ * `constraintSet` argument is `constraints` which contains a [Button] labeled "Button" that uses
+ * [Modifier.layoutId] as its `modifier` argument to have it constrained by its [ConstraintLayout]
+ * as the "button" [ConstrainedLayoutReference] of `constraints`, and the [ConstraintLayout] also
+ * contains a [Text] displaying the `text` "Text" that uses [Modifier.layoutId] as its `modifier`
+ * argument to have it constrained by its [ConstraintLayout] as the "text" [ConstrainedLayoutReference]
+ * of `constraints`.
  */
 @Composable
 fun DecoupledConstraintLayout() {
@@ -175,7 +186,7 @@ fun ConstraintLayoutContentExample2() {
  * for its variable `val text` and [ConstraintLayoutScope.createGuidelineFromStart] to create a vertical
  * guideline at the center of the [ConstraintLayout] for its variable `val guideline`. It then creates
  * a [Text] widget whose `text` is a very long string (which will require wrapping) and whose `modifier`
- * argument uses `Modifier.constrainAs` to contrain the widget using the `text` [ConstrainedLayoutReference]
+ * argument uses `Modifier.constrainAs` to constrain the widget using the `text` [ConstrainedLayoutReference]
  * with `linkTo` linking its `start` to `guideline` and its `end` to the `end` of parent, with the
  * width of the [Text] child of [ConstraintLayout] specified as [Dimension.preferredWrapContent]
  * (which is a A [Dimension] with "suggested" wrap content behavior).
@@ -196,6 +207,10 @@ fun LargeConstraintLayout() {
     }
 }
 
+/**
+ * This is the Preview of the [ConstraintLayoutContent] Composable wrapped in our [LayoutsCodelabTheme]
+ * custom [MaterialTheme].
+ */
 @Preview
 @Composable
 fun ConstraintLayoutContentPreview() {
@@ -204,6 +219,10 @@ fun ConstraintLayoutContentPreview() {
     }
 }
 
+/**
+ * This is the Preview of the [ConstraintLayoutContentExample2] Composable wrapped in our
+ * [LayoutsCodelabTheme] custom [MaterialTheme].
+ */
 @Preview
 @Composable
 fun ConstraintLayoutContentExample2Preview() {
@@ -212,6 +231,10 @@ fun ConstraintLayoutContentExample2Preview() {
     }
 }
 
+/**
+ * This is the Preview of the [LargeConstraintLayout] Composable wrapped in our [LayoutsCodelabTheme]
+ * custom [MaterialTheme].
+ */
 @Preview
 @Composable
 fun LargeConstraintLayoutPreview() {
@@ -220,6 +243,10 @@ fun LargeConstraintLayoutPreview() {
     }
 }
 
+/**
+ * This is the Preview of the [DecoupledConstraintLayout] Composable wrapped in our
+ * [LayoutsCodelabTheme] custom [MaterialTheme].
+ */
 @Preview
 @Composable
 fun DecoupledConstraintLayoutPreview() {
