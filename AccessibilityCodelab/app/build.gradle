@@ -59,15 +59,15 @@ android {
     }
 
     // Tests can be Robolectric or instrumented tests
-    sourceSets {
-        String sharedTestDir = 'src/sharedTest/java'
-        test {
-            java.srcDir sharedTestDir
-        }
-        androidTest {
-            java.srcDir sharedTestDir
-        }
-    }
+//    sourceSets {
+//        String sharedTestDir = 'src/sharedTest/java'
+//        test {
+//            java.srcDir sharedTestDir
+//        }
+//        androidTest {
+//            java.srcDir sharedTestDir
+//        }
+//    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
