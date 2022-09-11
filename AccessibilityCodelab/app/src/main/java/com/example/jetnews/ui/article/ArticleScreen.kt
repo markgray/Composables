@@ -17,7 +17,6 @@
 package com.example.jetnews.ui.article
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
@@ -35,8 +34,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.jetnews.R
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
@@ -45,7 +46,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.supportWideScreen
 
 /**
- * Stateful Article Screen that manages state using [produceUiState]
+ * Stateful Article Screen that manages state using `produceUiState`
  *
  * @param postId (state) the post to show
  * @param postsRepository data source for this screen
@@ -97,7 +98,9 @@ fun ArticleScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = null
+                            contentDescription = stringResource(
+                                R.string.cd_navigate_up
+                            )
                         )
                     }
                 }
@@ -145,6 +148,6 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
 @Composable
 fun PreviewArticle() {
     JetnewsTheme {
-        ArticleScreen(PostsRepository().getPost(post3.id)!!, {})
+        ArticleScreen(PostsRepository().getPost(post3.id)!!) {}
     }
 }
