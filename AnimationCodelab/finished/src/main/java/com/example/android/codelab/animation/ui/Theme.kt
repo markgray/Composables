@@ -16,10 +16,19 @@
 
 package com.example.android.codelab.animation.ui
 
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Shapes
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
+/**
+ * This is the custom [MaterialTheme] used to wrap the Composables in our app. It only modifies some
+ * of the `colors` of the default [MaterialTheme].
+ *
+ * @param content the Composable fun we are wrapping in order to provide it with default values for
+ * the `colors`: [Colors], `typography`: [Typography], and `shapes`: [Shapes] it can use.
+ */
 @Composable
 fun AnimationCodelabTheme(content: @Composable () -> Unit) {
     val colors = lightColors(

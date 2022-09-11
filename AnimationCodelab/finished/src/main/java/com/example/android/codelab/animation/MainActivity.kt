@@ -19,11 +19,23 @@ package com.example.android.codelab.animation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material.MaterialTheme
 import com.example.android.codelab.animation.ui.AnimationCodelabTheme
 import com.example.android.codelab.animation.ui.home.Home
 
+/**
+ * This is the main [ComponentActivity] of this app.
+ */
 class MainActivity : ComponentActivity() {
 
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we call [setContent] to have it Compose the composable [Home], wrapped by our
+     * [AnimationCodelabTheme] custom [MaterialTheme] into our activity. The content will become the
+     * root view of our activity.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
