@@ -51,14 +51,26 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.codelab.layouts.ui.LayoutsCodelabTheme
+import com.codelab.layouts.ui.teal200
 import kotlin.math.max
 
+/**
+ * The strings displayed as the `text` of the [Chip]'s displayed in the [StaggeredGrid] used in the
+ * [BodyContent] Composable.
+ */
 val topics: List<String> = listOf(
     "Arts & Crafts", "Beauty", "Books", "Business", "Comics", "Culinary",
     "Design", "Fashion", "Film", "History", "Maths", "Music", "People", "Philosophy",
     "Religion", "Social sciences", "Technology", "TV", "Writing"
 )
 
+/**
+ * This is the Composable that our [MainActivity] uses as its root view. It consists of a [Scaffold]
+ * that uses as its `topBar` Composable a do nothing [TopAppBar] labeled "LayoutsCodelab" with a
+ * filled heart [IconButton] icon as its only `action`, and as the `content` of the [Scaffold] it
+ * uses a [BodyContent] Composable whose `modifier` uses a [Modifier.padding] created from the
+ * [PaddingValues] parameter of the content lambda.
+ */
 @Composable
 fun LayoutsCodelab() {
     /**
@@ -113,6 +125,10 @@ fun LayoutsCodelab() {
     }
 }
 
+/**
+ * This is the `content` of the [Scaffold] of the [LayoutsCodelab] Composable. See the code for more
+ * detailed description.
+ */
 @Composable
 fun BodyContent(modifier: Modifier = Modifier) {
     /**
@@ -149,6 +165,17 @@ fun BodyContent(modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * This [Layout] Composable positions its children one by one at the end of each of the [rows] rows
+ * in round robin order until it runs our of children to place.
+ *
+ * @param modifier a [Modifier] that our caller can use to modify our appearance of behavior. Our
+ * caller does pass any, so the empty, default, or starter [Modifier] that contains no elements is
+ * used.
+ * @param rows the number of rows to use to display our children. Our caller does not specify this
+ * so the default of 3 is used.
+ * @param content the Composable children we are to place in our staggered grid.
+ */
 @Composable
 fun StaggeredGrid(
     modifier: Modifier = Modifier,
@@ -235,6 +262,18 @@ fun StaggeredGrid(
     }
 }
 
+/**
+ * The Composable that is used to display each of the strings in the [topics] list. It consists of
+ * of a [Row] holding a 16.dp by 16.dp `MaterialTheme.colors.secondary` [teal200] colored [Box],
+ * with a 4.dp [Spacer] between it and a [Text] whose `text` argument is our [String] parameter
+ * [text]. This [Row] is the `content` of a [Card] whose `border` is a [BorderStroke] colored
+ * [Color.Black] with `width` of [Dp.Hairline]. The `shape` of the [Card] is a [RoundedCornerShape]
+ * of 8.dp.
+ *
+ * @param modifier a [Modifier] that our caller can use to modify our appearance or behavior. The
+ * [StaggeredGrid] of [BodyContent] passes us a [Modifier.padding] of 8.dp to set our padding.
+ * @param text the [String] we are to display in our [Text].
+ */
 @Composable
 fun Chip(modifier: Modifier = Modifier, text: String) {
     Card(
@@ -257,6 +296,10 @@ fun Chip(modifier: Modifier = Modifier, text: String) {
     }
 }
 
+/**
+ * A Preview of a [LayoutsCodelabTheme] custom [MaterialTheme] wrapped [Chip] Composable displaying
+ * the `text` "Hi there".
+ */
 @Preview
 @Composable
 fun ChipPreview() {
@@ -265,6 +308,9 @@ fun ChipPreview() {
     }
 }
 
+/**
+ * A Preview of a [LayoutsCodelabTheme] custom [MaterialTheme] wrapped [LayoutsCodelab] Composable
+ */
 @Preview
 @Composable
 fun LayoutsCodelabPreview() {
