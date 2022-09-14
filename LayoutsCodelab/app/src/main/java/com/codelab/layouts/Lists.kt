@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
 
@@ -134,7 +136,20 @@ fun LazyListPreview() {
 /**
  * This Composable consists of a [Row] that holds a 50.dp by 50.dp [Image], a 10.dp [Spacer] and a
  * [Text] displaying the `text` "Item #$index" where "$index" refers to our [Int] parameter [index].
- * This Composable is used for each of the 100 `items` in the [LazyColumn] of [ImageList].
+ * This Composable is used for each of the 100 `items` in the [LazyColumn] of [ImageList]. The root
+ * Composable is a [Row] whose `verticalAlignment` argument is [Alignment.CenterVertically] (which
+ * centers its children vertically in the space allotted to the [Row]). The children of the [Row]
+ * consist of an [Image] which uses for its `painter` argument an [AsyncImagePainter] created using
+ * the [rememberAsyncImagePainter] method for the `model` URL:
+ * "https://developer.android.com/images/brand/Android_Robot.png" (this `painter` will execute an
+ * `ImageRequest` asynchronously to download the URL and render the result). The `contentDescription`
+ * argument of the [Image] is "Android Logo", and its `modifier` argument is a [Modifier.size] of
+ * 50.dp (which sizes the [Image] to be 50.dp by 50.dp). The [Image] is followed by a [Spacer] that
+ * uses a [Modifier.width] of 10.dp as its `modifier` argument to size it to be 10.dp wide. At the
+ * end of the [Row] is a [Text] displaying the `text` "Item #$index" (where $index refers to our
+ * [Int] parameter [index]) using the `subtitle1` [TextStyle] of [MaterialTheme.typography] (the
+ * default value from [MaterialTheme] which is: Font: Roboto, Weight: Normal, Size: 16px, and Letter
+ * spacing: 0.15px).
  *
  * @param index the number we should display in our [Text], in our case it will be the index of the
  * [ImageListItem] in the [LazyColumn] of [ImageList].
@@ -149,35 +164,55 @@ fun ImageListItem(index: Int) {
             contentDescription = "Android Logo",
             modifier = Modifier.size(50.dp)
         )
-        Spacer(Modifier.width(10.dp))
+        Spacer(modifier = Modifier.width(width = 10.dp))
         Text(text = "Item #$index", style = MaterialTheme.typography.subtitle1)
     }
 }
 
+/**
+ * This is the Preview of our [ImageListItem] Composable, created using an `index` argument of 1.
+ */
 @Preview
 @Composable
 fun ImageListItemPreview() {
-    ImageListItem(1)
+    ImageListItem(index = 1)
 }
 
+/**
+ * This Composable displays 100 [ImageListItem] Composables in a [LazyColumn], with each [ImageListItem]
+ * displaying the item's index in the [LazyColumn] in its [Text] Composable. We initialize our
+ * [LazyListState] variable `val scrollState` using the instance returned by [rememberLazyListState]
+ * and pass `scrollState` as the `state` argument of a [LazyColumn] (state object to be used to
+ * control or observe the list's state) then use an `items` call with its `count` argument set to
+ * 100 to create 100 [ImageListItem] Composables whose `index` argument is the position of the item
+ * in the [LazyColumn].
+ */
 @Composable
 fun ImageList() {
     // We save the scrolling position with this state
-    val scrollState = rememberLazyListState()
+    val scrollState: LazyListState = rememberLazyListState()
 
     LazyColumn(state = scrollState) {
-        items(100) {
-            ImageListItem(it)
+        items(count = 100) {
+            ImageListItem(index = it)
         }
     }
 }
 
+/**
+ * This is the Preview of our [ImageList] Composable.
+ */
 @Preview
 @Composable
 fun ImageListPreview() {
     ImageList()
 }
 
+/**
+ * This Composable consists of a [Column] holding a [Row] with two [Button]'s labeled "Scroll to the
+ * top" and "Scroll to the end". Below that [Row] in the [Column] is a [LazyColumn] which displays
+ * 100 [ImageListItem] Composables.
+ */
 @Composable
 fun ScrollingList() {
     val listSize = 100
@@ -191,25 +226,25 @@ fun ScrollingList() {
             Button(onClick = {
                 coroutineScope.launch {
                     // 0 is the first item index
-                    scrollState.animateScrollToItem(0)
+                    scrollState.animateScrollToItem(index = 0)
                 }
             }) {
-                Text("Scroll to the top")
+                Text(text = "Scroll to the top")
             }
 
             Button(onClick = {
                 coroutineScope.launch {
                     // listSize - 1 is the last index of the list
-                    scrollState.animateScrollToItem(listSize - 1)
+                    scrollState.animateScrollToItem(index = listSize - 1)
                 }
             }) {
-                Text("Scroll to the end")
+                Text(text = "Scroll to the end")
             }
         }
 
         LazyColumn(state = scrollState) {
-            items(listSize) {
-                ImageListItem(it)
+            items(count = listSize) {
+                ImageListItem(index = it)
             }
         }
     }
