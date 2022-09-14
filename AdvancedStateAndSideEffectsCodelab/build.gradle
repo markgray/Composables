@@ -20,7 +20,9 @@ import com.example.crane.buildsrc.Versions
 
 buildscript {
     repositories {
+        gradlePluginPortal()
         google()
+        mavenCentral()
     }
     dependencies {
         classpath Libs.androidGradlePlugin
@@ -31,6 +33,7 @@ buildscript {
 
 plugins {
     id 'com.diffplug.spotless' version '6.7.0'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin' version '2.0.1' apply false
 }
 
 subprojects {
