@@ -40,7 +40,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 /**
  * An example [Column] whose children consist of 100 [Text] Composables displaying the text "Item #n"
@@ -211,15 +213,35 @@ fun ImageListPreview() {
 /**
  * This Composable consists of a [Column] holding a [Row] with two [Button]'s labeled "Scroll to the
  * top" and "Scroll to the end". Below that [Row] in the [Column] is a [LazyColumn] which displays
- * 100 [ImageListItem] Composables.
+ * 100 [ImageListItem] Composables. We initialize our [Int] variable `val listSize` to 100 (this
+ * will be the number of [ImageListItem] Composables in our [LazyColumn]), initialize our
+ * [LazyListState] varible `val scrollState` using [rememberLazyListState] (which creates a
+ * [LazyListState] that is remembered across re-compositions), and initialize our [CoroutineScope]
+ * variable `val coroutineScope` using [rememberCoroutineScope] (returns a CoroutineScope bound to
+ * this point in the composition using the optional [CoroutineContext] provided by `getContext`.
+ * `getContext` will only be called once and the same [CoroutineScope] instance will be returned
+ * across recompositions. This scope will be cancelled when this call leaves the composition.) We
+ * then use a [Column] Composable as our root Composable with a [Row] Composable at its top which
+ * holds a [Button] labeled "Scroll to the top" whose `onClick` argument is a lambda which uses the
+ * [CoroutineScope.launch] method of `coroutineScope` to launch a coroutine which calls the
+ * [LazyListState.animateScrollToItem] method of `scrollState` to Animate (smooth scroll) to the 0th
+ * entry of the [LazyColumn] with a second [Button] in the [Row] labeled "Scroll to the end" whose
+ * `onClick` argument is a lambda which uses the [CoroutineScope.launch] method of `coroutineScope`
+ * to launch a coroutine which calls the [LazyListState.animateScrollToItem] method of `scrollState`
+ * to Animate (smooth scroll) to the last index of the list in the [LazyColumn]. Below this [Row] in
+ * the [Column] is a [LazyColumn] whose `state` argument is `scrollState` (the state object to be
+ * used to control or observe the list's state.) The `content` of the [LazyColumn] is an `items`
+ * whose `count` argument is `listSize` causing it to create `listSize` [ImageListItem] for the
+ * [LazyColumn] to display, each [ImageListItem] created with its `index` argument set to `it` (the
+ * position 0-99 of the [ImageListItem] in the [LazyColumn]).
  */
 @Composable
 fun ScrollingList() {
     val listSize = 100
     // We save the scrolling position with this state
-    val scrollState = rememberLazyListState()
+    val scrollState: LazyListState = rememberLazyListState()
     // We save the coroutine scope where our animated scroll will be executed
-    val coroutineScope = rememberCoroutineScope()
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
     Column {
         Row {
@@ -250,6 +272,9 @@ fun ScrollingList() {
     }
 }
 
+/**
+ * This is the Preview of our [ScrollingList] Composable.
+ */
 @Preview
 @Composable
 fun ScrollingListPreview() {

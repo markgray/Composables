@@ -19,13 +19,25 @@ package com.codelab.layouts
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.codelab.layouts.ui.LayoutsCodelabTheme
 
+/**
+ * This is the main activity of our "Layouts Codelab" demo app.
+ */
 class MainActivity : AppCompatActivity() {
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we call the [setContent] method to have it Compose the composable [LayoutsCodelab]
+     * (wrapped by our [LayoutsCodelabTheme] custom [MaterialTheme]) into our activity. The content
+     * will become the root view of our activity.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /**
