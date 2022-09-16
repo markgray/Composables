@@ -34,15 +34,29 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codelab.layouts.ui.LayoutsCodelabTheme
 
+/**
+ * This Composable consists of a [Row] holding a 50.dp by 50.dp [Surface] at its left end and a
+ * [Column] holding two [Text] widgets at its right end. The `modifier` argument of the [Row] adds
+ * a [Modifier.padding] of 8.dp to the [Row], uses [Modifier.clip] to clip the [Row] using a
+ * [RoundedCornerShape] of 4.dp, uses [Modifier.background] to set its background `color` to the
+ * `surface` [Color] of [MaterialTheme.colors] ([Color.White]), uses [Modifier.clickable] to set
+ * its `onClick` to an empty lambda, and finally uses [Modifier.padding] to add another 16.dp to
+ * its padding.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance or behavior.
+ * Our caller does not pass one so the empty, default, or starter [Modifier] that contains no elements
+ * is used.
+ */
 @Composable
 fun PhotographerCard(modifier: Modifier = Modifier) {
     Row(
-        modifier
+        modifier = modifier
             .padding(8.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(color = MaterialTheme.colors.surface)
@@ -69,6 +83,9 @@ fun PhotographerCard(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Preview of [PhotographerCard] wrapped in our [LayoutsCodelabTheme] custom [MaterialTheme].
+ */
 @Preview
 @Composable
 fun PhotographerCardPreview() {

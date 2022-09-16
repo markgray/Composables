@@ -32,7 +32,21 @@ import com.codelab.layouts.ui.LayoutsCodelabTheme
 
 /**
  * This Composable demonstrates how to use the [Layout] method to create a custom layout that will
- * measure and position zero or more layout children.
+ * measure and position zero or more layout children. Our root Composable is a [Layout] whose
+ * `modifier` argument is our [modifier] parameter, and whose `content` argument is our [content]
+ * parameter. The arguments of the lambda argument of [Layout] are `measurables` (a [List] of
+ * [Measurable]) and `constraints` (the [Constraints] imposed on our Composable by its parent).
+ * We start by initializing our [List] of [Placeable] variable to the [List] created by using the
+ * [List.map] method of `measurables` to create a [Placeable] out of every [Measurable] in
+ * `measurables` using its [Measurable.measure] method with the [Constraints] `constraints` as its
+ * argument. When done creating the [List] of [Placeable]'s we initialize our [Int] variable
+ * `var yPosition` to 0 (we will use this to track the `y` coordinate we have placed children up to).
+ * Next we call the [layout] method with its `width` argument the [Constraints.maxWidth] property
+ * of `constraints` and its `height` argument the [Constraints.maxHeight] property of `constraints`.
+ * In the lambda argument of [layout] we loop over all or the [Placeable] entries in `placeables`
+ * calling the `placeRelative` extension function of [Placeable] to position the item at `x` = 0,
+ * and `y` = `yPosition` and then add the [Placeable.height] of the `placeable` to `yPosition` to
+ * produce the `y` coordinate for the next [Placeable] to be positioned.
  *
  * @param modifier a [Modifier] that our caller can use to modify our appearance or behavior.
  * @param content zero or more Composables for us to measure and position in the space allotted us.
