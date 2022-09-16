@@ -29,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.details.launchDetailsActivity
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.core.view.WindowCompat
-import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,12 +40,10 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            ProvideWindowInsets {
-                CraneTheme {
-                    MainScreen(
-                        onExploreItemClicked = { launchDetailsActivity(context = this, item = it) }
-                    )
-                }
+            CraneTheme {
+                MainScreen(
+                    onExploreItemClicked = { launchDetailsActivity(context = this, item = it) }
+                )
             }
         }
     }
