@@ -34,6 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codelab.layouts.ui.LayoutsCodelabTheme
 
+/**
+ * A Composable that consists of a [Row] root Composable holding a [Text], a 1.dp wide [Divider],
+ * and a second [Text].
+ */
 @Composable
 fun TwoTexts(modifier: Modifier = Modifier, text1: String, text2: String) {
     Row(modifier = modifier.height(IntrinsicSize.Min)) {
