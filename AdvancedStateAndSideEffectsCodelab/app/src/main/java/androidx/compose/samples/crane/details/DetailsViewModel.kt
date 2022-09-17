@@ -16,6 +16,7 @@
 
 package androidx.compose.samples.crane.details
 
+import android.content.Intent
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
@@ -30,6 +31,11 @@ class DetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    /**
+     * The [SavedStateHandle] is automatically populated by Hilt with the arguments passed in the
+     * [Intent] that started our activity, using the same key that [launchDetailsActivity] used when
+     * it stored the `cityName` of the item clicked as an extra.
+     */
     private val cityName = savedStateHandle.get<String>(KEY_ARG_DETAILS_CITY_NAME)!!
 
     val cityDetails: Result<ExploreModel>

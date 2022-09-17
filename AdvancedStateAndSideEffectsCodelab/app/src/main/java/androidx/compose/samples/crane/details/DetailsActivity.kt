@@ -50,6 +50,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.ExploreModel
+import androidx.compose.samples.crane.home.MainActivity
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,6 +80,15 @@ fun createDetailsActivityIntent(context: Context, item: ExploreModel): Intent {
     return intent
 }
 
+/**
+ * This activity displays the "details" of a city clicked in [MainActivity]. The AndroidEntryPoint
+ * annotation Marks an Android component class to be setup for injection with the standard Hilt
+ * Dagger Android components. This will generate a base class that the annotated class should extend,
+ * either directly or via the Hilt Gradle Plugin (as we do). This base class will take care of
+ * injecting members into the Android class as well as handling instantiating the proper Hilt
+ * components at the right point in the lifecycle. The name of the base class will be
+ * "Hilt_DetailsActivity.java".
+ */
 @AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
 
