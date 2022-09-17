@@ -30,7 +30,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
@@ -56,9 +58,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
@@ -89,16 +88,14 @@ class DetailsActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            ProvideWindowInsets {
-                CraneTheme {
-                    Surface {
-                        DetailsScreen(
-                            onErrorLoading = { finish() },
-                            modifier = Modifier
-                                .statusBarsPadding()
-                                .navigationBarsPadding()
-                        )
-                    }
+            CraneTheme {
+                Surface {
+                    DetailsScreen(
+                        onErrorLoading = { finish() },
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .navigationBarsPadding()
+                    )
                 }
             }
         }
@@ -139,7 +136,9 @@ fun DetailsScreen(
                 )
             }
         }
-        else -> { onErrorLoading() }
+        else -> {
+            onErrorLoading()
+        }
     }
 }
 
