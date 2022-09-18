@@ -58,6 +58,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.MapView
@@ -67,12 +70,38 @@ import com.google.maps.android.ktx.awaitMap
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * The key under which the city name is stored as an extra in the [Intent] used to launch
+ * [DetailsActivity], and which is used by Hilt when it stores the city name in the [SavedStateHandle]
+ * passed to [DetailsViewModel].
+ */
 internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
 
+/**
+ * Launches the [Intent] created by [createDetailsActivityIntent] to launch the [DetailsActivity]
+ * activity. It just uses the [Context.startActivity] of its [Context] parameter [context] to launch
+ * the [Intent] created by [createDetailsActivityIntent] when passed our [context] parameter and our
+ * [item] parameter.
+ *
+ * @param context the [Context] of [MainActivity].
+ * @param item the [ExploreModel] displayed by the `ExploreItem` that was clicked (see the file
+ * ExploreSection.kt)
+ */
 fun launchDetailsActivity(context: Context, item: ExploreModel) {
-    context.startActivity(createDetailsActivityIntent(context, item))
+    context.startActivity(createDetailsActivityIntent(context = context, item = item))
 }
 
+/**
+ * Creates an [Intent] to launch the [DetailsActivity] so the user can view the details of the
+ * [ExploreModel] parameter [item]. The `name` property of the [ExploreModel.city] of [item] is
+ * added is added as an extra under the key [KEY_ARG_DETAILS_CITY_NAME]. It will be placed in the
+ * [SavedStateHandle] passed to [DetailsViewModel] under the same key by Hilt when it creates that
+ * [ViewModel].
+ *
+ * @param context the [Context] of [MainActivity].
+ * @param item the [ExploreModel] displayed by the `ExploreItem` that was clicked (see the file
+ * ExploreSection.kt)
+ */
 @VisibleForTesting
 fun createDetailsActivityIntent(context: Context, item: ExploreModel): Intent {
     val intent = Intent(context, DetailsActivity::class.java)
@@ -92,6 +121,20 @@ fun createDetailsActivityIntent(context: Context, item: ExploreModel): Intent {
 @AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
 
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`.
+     * We then call the [WindowCompat.setDecorFitsSystemWindows] method with `false` so that the
+     * framework will not fit the content view to the insets and will just pass through the
+     * [WindowInsetsCompat] to the content view. Finally we call the [setContent] method to have
+     * it compose the composable lambda it is passed into our activity. The content will become the
+     * root view of our activity. That lambda uses our [CraneTheme] custom [MaterialTheme] to wrap
+     * a [Surface] whose `content` is a [DetailsScreen] whose `onErrorLoading` argument is a lambda
+     * which calls [finish] to close this activity, and whose `modifier` argument uses
+     * [Modifier.statusBarsPadding] to add padding to accommodate the status bars insets, and
+     * [Modifier.navigationBarsPadding] to add padding to accommodate the navigation bars insets.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -112,6 +155,9 @@ class DetailsActivity : ComponentActivity() {
     }
 }
 
+/**
+ *
+ */
 data class DetailsUiState(
     val cityDetails: ExploreModel? = null,
     val isLoading: Boolean = false,
