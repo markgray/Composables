@@ -17,16 +17,36 @@
 package com.example.jetnews
 
 import android.app.Application
+import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.AppContainerImpl
+import com.example.jetnews.data.interests.InterestsRepository
+import com.example.jetnews.data.posts.PostsRepository
 
+/**
+ * This custom [Application] allows any classes of this [Application] to use the method
+ * [AppCompatActivity.getApplication] to get a reference to this [Application] and to use
+ * that reference to access our fields and methods (in our case our [AppContainer] field
+ * [container]).
+ */
 class JetnewsApplication : Application() {
 
-    // AppContainer instance used by the rest of classes to obtain dependencies
+    /**
+     * [AppContainer] instance used by the rest of our classes to obtain dependencies. The field
+     * [AppContainer.postsRepository] contains a reference to our [PostsRepository], and the field
+     * [AppContainer.interestsRepository] contains a reference to our [InterestsRepository].
+     */
     lateinit var container: AppContainer
 
+    /**
+     * Called when the application is starting, before any activity, service, or receiver objects
+     * (excluding content providers) have been created. First we call our super's implementation of
+     * `onCreate`, then we initialize our [AppContainer] field [container] with a new instance of
+     * [AppContainerImpl] using our [Context] as its `applicationContext` argument.
+     */
     override fun onCreate() {
         super.onCreate()
-        container = AppContainerImpl(this)
+        container = AppContainerImpl(applicationContext = this)
     }
 }
