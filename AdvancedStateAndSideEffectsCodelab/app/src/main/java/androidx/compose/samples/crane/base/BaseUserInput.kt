@@ -37,9 +37,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+/**
+ * This Composable widget uses [CraneUserInput] to display its [String] parameter [text] in the
+ * [Text] of [CraneUserInput], its [String] parameter [caption] in the `caption` of the
+ * [CraneBaseUserInput] of [CraneUserInput], and the drawable whose resource ID is [vectorImageId]
+ * in the [Icon] of the [CraneBaseUserInput] of [CraneUserInput]. It is used twice as arguments to
+ * the `CraneSearch` Composable that is used by `EatSearchContent` (see file home/HomeFeatures.kt),
+ * and once by the `CraneSearch` Composable that is used by `SleepSearchContent` (also in the file
+ * home/HomeFeatures.kt). These three usages only use our [caption] and [vectorImageId] parameter
+ * with the values: "Select Time" [R.drawable.ic_time], "Select Location" [R.drawable.ic_restaurant]
+ * and "Select Location" [R.drawable.ic_hotel] respectively.
+ *
+ * @param text the [String] we should use as the `text` argument of [CraneUserInput].
+ * @param caption the [String] we should use as the `caption` argument of [CraneUserInput].
+ * @param vectorImageId the drawable resource ID we should use as the `vectorImageId` argument of
+ * [CraneUserInput].
+ */
 @Composable
 fun SimpleUserInput(
     text: String? = null,
@@ -53,6 +70,26 @@ fun SimpleUserInput(
     )
 }
 
+/**
+ * A Composable widget which uses [CraneBaseUserInput] to host a [Text] as its `content` which will
+ * display our [String] parameter [text] using [tint] as the [Color] for the [TextStyle] `body1`
+ * of [MaterialTheme.typography] (which is the ttf whose resource ID is [R.font.raleway_semibold],
+ * whose `fontWeight` is `FontWeight.W600`, and `fontSize` is 16.sp). It is used by the [SimpleUserInput]
+ * Composable (see above), the `DatesUserInput` Composable, the `FromDestination` Composable and the
+ * `PeopleUserInput` Composable (see the file home/SearchUserInput.kt for the last three).
+ *
+ * @param text the [String] that should be displayed in our [Text].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and or
+ * behavior. None of our callers pass one so the empty, default, or starter Modifier that contains
+ * no elements is used instead.
+ * @param onClick a lambda that we use as the `onClick` argument of [CraneBaseUserInput]. The only
+ * one of our callers to pass one is the `PeopleUserInput` Composable (see the file
+ * home/SearchUserInput.kt) and it is a lambda which increments the number of people traveling.
+ * @param caption the [String] we use as the `caption` argument of [CraneBaseUserInput].
+ * @param vectorImageId the resource ID we use as the `vectorImageId` argument of [CraneBaseUserInput]
+ * @param tint the [Color] we use as the `tint` argument of [CraneBaseUserInput] and as the [Color]
+ * of the [text] displayed in our [Text].
+ */
 @Composable
 fun CraneUserInput(
     text: String,
@@ -144,6 +181,20 @@ fun CraneBaseUserInput(
     }
 }
 
+/**
+ * This is a Preview of our [CraneBaseUserInput] Composable created using the arguments:
+ *  - `tintIcon` is a lambda returning `true` which causes the [Icon] created from the argument
+ *  `vectorImageId` to be tinted using the default `LocalContentColor.current`.
+ *  - `vectorImageId` is the drawable whose resource ID is [R.drawable.ic_plane]
+ *  - `caption` is the [String] "Caption"
+ *  - `showCaption` is a lambda returning `true`
+ *  - `content` Composable lambda argument is a [Text] displaying the [String] "text" using the
+ *  `body1` [TextStyle] of [MaterialTheme.typography] which is the ttf whose resource ID is
+ *  [R.font.raleway_semibold], whose `fontWeight` is `FontWeight.W600`, and `fontSize` is 16.sp
+ *
+ * The [CraneBaseUserInput] Composable is wrapped in a [Surface] (for some reason) which is in turn
+ * wrapped in our [CraneTheme] custom [MaterialTheme].
+ */
 @Preview
 @Composable
 fun PreviewInput() {
