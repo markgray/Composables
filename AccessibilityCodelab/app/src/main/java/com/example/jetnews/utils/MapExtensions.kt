@@ -16,6 +16,13 @@
 
 package com.example.jetnews.utils
 
+/**
+ * This extension function of [MutableSet] will add its [E] parameter [element] to the [MutableSet]
+ * if it is not there already, or remove it from the [MutableSet] if it is already there.
+ *
+ * @param element the [E] instance which should be added to the [MutableSet] if it is not in the set
+ * already or removed if it is.
+ */
 internal fun <E> MutableSet<E>.addOrRemove(element: E) {
     if (!add(element)) {
         remove(element)

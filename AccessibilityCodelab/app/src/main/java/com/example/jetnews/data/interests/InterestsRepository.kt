@@ -16,6 +16,8 @@
 
 package com.example.jetnews.data.interests
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Modifier
 import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,28 +52,48 @@ class InterestsRepository {
     }
 
     /**
-     * for now, keep the selections in memory
+     * This [MutableStateFlow] will emit its value whenever it changes. [observeTopicsSelected]
+     * returns a reference to this private field as a [Flow] which the `InterestsScreen` Composable
+     * collects using the `collectAsState` method which Collects values from the Flow and represents
+     * its latest value via State. Every time there would be new value posted into the Flow the
+     * returned State will be updated causing recomposition of every State.value usage. (See the
+     * file ui/interests/InterestsScreen.kt). It is updated by the [toggleTopicSelection] method
+     * which is called from the `onTopicSelect` lambda which is called from the `onToggle` lambda
+     * argument of `TopicItem` which is used as the `onValueChange` argument of the `Modifier.toggleable`
+     * [Modifier] of the root [Row] Composable of `TopicItem` (See the file ui/interests/InterestsScreen.kt).
      */
     private val selectedTopics = MutableStateFlow(setOf<TopicSelection>())
 
     /**
-     * Used to make suspend functions that read and update state safe to call from any thread
+     * Used to make suspend functions that read and update state safe to call from any thread. This
+     * is used by the [toggleTopicSelection] method to protect its modification of [selectedTopics].
      */
     private val mutex = Mutex()
 
     /**
-     * Toggle between selected and unselected
+     * Toggle the [TopicSelection] parameter [topic] between selected and unselected. It does this
+     * by using the [Mutex.withLock] method of [mutex] to execute a lambda under this mutex's lock
+     * which retrieves the [MutableSet] of [TopicSelection] from the [MutableStateFlow.value] of
+     * [selectedTopics] to initialize the variable `val set`, then uses the [MutableSet.addOrRemove]
+     * extension function to add [topic] to the set if it is not already there or remove it if it is
+     * there. Finally it sets the value of [selectedTopics] to `set` (this will cause [selectedTopics]
+     * to emit its new value to anyone collecting it).
      */
     suspend fun toggleTopicSelection(topic: TopicSelection) {
         mutex.withLock {
-            val set = selectedTopics.value.toMutableSet()
+            val set: MutableSet<TopicSelection> = selectedTopics.value.toMutableSet()
             set.addOrRemove(topic)
             selectedTopics.value = set
         }
     }
 
     /**
-     * Currently selected topics
+     * Read-only access to our Currently selected topics in the [MutableStateFlow] of [Set] of
+     * [TopicSelection] field [selectedTopics]. This [Flow] is collected in the `InterestsScreen`
+     * Composable using the `collectAsState` method which Collects values from the [Flow] and
+     * represents its latest value via State. Every time there would be new value posted into the
+     * [Flow] the returned State will be updated causing recomposition of every State.value usage.
+     * (See the file ui/interests/InterestsScreen.kt).
      */
     fun observeTopicsSelected(): Flow<Set<TopicSelection>> = selectedTopics
 }

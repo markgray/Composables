@@ -77,7 +77,7 @@ fun InterestsScreen(
     val coroutineScope = rememberCoroutineScope()
 
     // collectAsState will read a [Flow] in Compose
-    val selectedTopics by interestsRepository.observeTopicsSelected().collectAsState(setOf())
+    val selectedTopics: Set<TopicSelection> by interestsRepository.observeTopicsSelected().collectAsState(setOf())
     val onTopicSelect: (TopicSelection) -> Unit = {
         coroutineScope.launch { interestsRepository.toggleTopicSelection(it) }
     }
@@ -177,7 +177,7 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-    Image(
+        Image(
             painter = image,
             contentDescription = null,
             modifier = Modifier
@@ -212,6 +212,10 @@ private fun TopicDivider() {
     )
 }
 
+/**
+ * These Previews show what the [JetnewsTheme] custom [MaterialTheme] wrapped [InterestsScreen]
+ * looks like for different device configurations.
+ */
 @Preview("Interests screen", "Interests")
 @Preview("Interests screen (dark)", "Interests", uiMode = UI_MODE_NIGHT_YES)
 @Preview("Interests screen (big font)", "Interests", fontScale = 1.5f)
