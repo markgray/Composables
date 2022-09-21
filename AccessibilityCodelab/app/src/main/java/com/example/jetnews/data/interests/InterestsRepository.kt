@@ -91,8 +91,8 @@ class InterestsRepository {
      * Read-only access to our Currently selected topics in the [MutableStateFlow] of [Set] of
      * [TopicSelection] field [selectedTopics]. This [Flow] is collected in the `InterestsScreen`
      * Composable using the `collectAsState` method which Collects values from the [Flow] and
-     * represents its latest value via State. Every time there would be new value posted into the
-     * [Flow] the returned State will be updated causing recomposition of every State.value usage.
+     * represents its latest value via State. Every time a new value is posted into the [Flow] the
+     * returned State will be updated causing recomposition of every State.value usage.
      * (See the file ui/interests/InterestsScreen.kt).
      */
     fun observeTopicsSelected(): Flow<Set<TopicSelection>> = selectedTopics
