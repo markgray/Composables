@@ -40,6 +40,7 @@ import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -103,7 +104,7 @@ fun CraneTabBar(
 
 /**
  * This Composable is used as the `children` content of the [CraneTabBar] that is used by `HomeTabBar`
- * (see the file home/CraneHome.kt). It consists of a [TabRow] which hold a [Tab] for all of the
+ * (see the file home/CraneHome.kt). It consists of a [TabRow] which holds a [Tab] for each of the
  * entries in its [List] of [String] parameter [titles]. It is called by `HomeTabBar` with the [List]
  * of [CraneScreen.name] strings of the enum [CraneScreen], and the `onClick` argument passed to each
  * [Tab] uses the fact that the `index` of each [String] in [titles] is the same as the `index` in
@@ -122,6 +123,31 @@ fun CraneTabBar(
  * For the `tabs` argument we loop over the entries in our [List] of [String] parameter [titles] using
  * the [forEachIndexed] extension function and for each [Int] `index` and [String] `title` in the
  * [List] we:
+ *  - Initialize our [Boolean] variable `val selected` to `true` if the `index` of the current entry
+ *  in the [titles] list is equal to the [CraneScreen.ordinal] value of our [tabSelected] parameter.
+ *  - Initialize our [Modifier] variable `var textModifier` to a [Modifier.padding] whose `vertical`
+ *  padding is 8.dp and whose `horizontal` padding is 16.dp
+ *  - If `selected` is `true` we set `textModifier` to a [Modifier.border] whose [BorderStroke] is
+ *  2.dp in `width`, and whose `color` is [Color.White] with the [Shape] a [RoundedCornerShape] of
+ *  16.dp, then use the [Modifier.then] to concatenate this modifier with the previous value of
+ *  `textModifier` (cute huh, need to remember this one).
+ *  - We call the [Tab] Composable with its `selected` argument set to our `selected` variable, and
+ *  its `onClick` argument set to a call to our [onTabSelected] parameter lambda with the [CraneScreen]
+ *  in [CraneScreen.values] that corresponds to the `index` of the current entry in the [titles] list.
+ *  - The `content` of the [Tab] is a [Text] whose `modifier` argument is our `textModifier` variable,
+ *  and whose `text` argument is the [String.uppercase] conversion of `title` using the current locale.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. `HomeTabBar` (file home/CraneHome.kt) uses us as the `children` Composable content of
+ * [CraneTabBar] passing the [Modifier] that [CraneTabBar] uses as the argument of `children` which
+ * is the `RowScope` `Modifier.weight` of 1f with a `Modifier.align` of [Alignment.CenterVertically]
+ * added to it.
+ * @param titles the [List] of [String] that is created from the [CraneScreen.name] of all of the
+ * [CraneScreen.values] in the [CraneScreen] enum. This Composable assumes it can it can determine
+ * the [CraneScreen] that each [String] refers to by the index of the [String] in the [List].
+ * @param tabSelected the [CraneScreen] that the currently selected [Tab] represents.
+ * @param onTabSelected a lambda that a [Tab] should call with the [CraneScreen] it represents when
+ * it is clicked.
  */
 @Composable
 fun CraneTabs(
@@ -138,14 +164,16 @@ fun CraneTabs(
         divider = { }
     ) {
         titles.forEachIndexed { index, title ->
-            val selected = index == tabSelected.ordinal
+            val selected: Boolean = index == tabSelected.ordinal
 
             var textModifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
             if (selected) {
                 textModifier =
                     Modifier
-                        .border(BorderStroke(2.dp, Color.White), RoundedCornerShape(16.dp))
-                        .then(textModifier)
+                        .border(
+                            border = BorderStroke(width = 2.dp, color = Color.White),
+                            shape = RoundedCornerShape(16.dp)
+                        ).then(textModifier)
             }
 
             Tab(

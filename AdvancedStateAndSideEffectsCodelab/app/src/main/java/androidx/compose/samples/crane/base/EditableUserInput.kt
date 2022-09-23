@@ -16,14 +16,15 @@
 
 package androidx.compose.samples.crane.base
 
+import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -31,8 +32,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.ui.captionTextStyle
 import androidx.compose.ui.graphics.SolidColor
 
+/**
+ * This class is the "saveable" `state` used by [CraneEditableUserInput]. It holds a [MutableState]
+ * of [String] in its `var text` field whose reads and writes are observed by Compose when it is
+ * "remembered" using [rememberSaveable] which is done for a new class instance by the Composable
+ * method [rememberEditableUserInputState]. The [Saver] in our companion object is used to [Bundle]
+ * up the class for the call to [rememberSaveable].
+ */
 class EditableUserInputState(private val hint: String, initialText: String) {
-    var text by mutableStateOf(initialText)
+    var text: String by mutableStateOf(value = initialText)
 
     val isHint: Boolean
         get() = text == hint
@@ -53,12 +61,12 @@ class EditableUserInputState(private val hint: String, initialText: String) {
 @Composable
 fun rememberEditableUserInputState(hint: String): EditableUserInputState =
     rememberSaveable(hint, saver = EditableUserInputState.Saver) {
-        EditableUserInputState(hint, hint)
+        EditableUserInputState(hint = hint, initialText = hint)
     }
 
 @Composable
 fun CraneEditableUserInput(
-    state: EditableUserInputState = rememberEditableUserInputState(""),
+    state: EditableUserInputState = rememberEditableUserInputState(hint = ""),
     caption: String? = null,
     @DrawableRes vectorImageId: Int? = null
 ) {
