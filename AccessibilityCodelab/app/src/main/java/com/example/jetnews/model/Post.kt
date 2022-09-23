@@ -17,7 +17,28 @@
 package com.example.jetnews.model
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.lazy.LazyColumn
 
+/**
+ * Data type that holds the data needed to display a single "Post".
+ *
+ * @param id a 12 digit hexadecimal number used to uniquely identify the [Post].
+ * @param title The title of the [Post].
+ * @param subtitle the subtitle of the [Post].
+ * @param url a https url string to access the post.
+ * @param publication the [Publication] that the post appears in (always uses [Publication.name]
+ * of "Android Developers", and the same [Publication.logoUrl] for the png to display)
+ * @param metadata the [Metadata] for the [Post] (contains `author`, `date` and `readTimeMinutes`
+ * values.
+ * @param paragraphs the [List] of [Paragraph] which the `PostContent` Composable displays in its
+ * [LazyColumn] (see the file ui/article/PostContent.kt).
+ * @param imageId the resource ID of a drawable to draw as a header [Image] at its top when the
+ * [Post] is displayed. It is used in the `PostHeaderImage` Composable (file ui/article/PostContent.kt)
+ * and in `PostCardPopular` (file ui/home/PostCards.kt)
+ * @param imageThumbId the resource ID of a drawable to draw a thumbnail [Image] for the [Post]. It
+ * is used in the `PostCardHistory` Composable (file ui/home/PostCards.kt)
+ */
 data class Post(
     val id: String,
     val title: String,
