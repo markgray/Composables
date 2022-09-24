@@ -19,6 +19,7 @@ package com.example.jetnews.model
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 
 /**
  * Data type that holds the data needed to display a single "Post".
@@ -51,17 +52,48 @@ data class Post(
     @DrawableRes val imageThumbId: Int
 )
 
+/**
+ * Contains some "trivia" about the [Post]. Its fields are displayed by the `PostMetadata` Composable
+ * (file ui/article/PostContent.kt) which is added as an `item` to its [LazyColumn] by the `PostContent`
+ * Composable (file ui/article/PostContent.kt), and also displayed by the `PostCardPopular` Composable
+ * (file ui/home/PostCards.kt) which is used for the items in the [LazyRow] of `PostListPopularSection`
+ * (file ui/home/HomeScreen.kt).
+ *
+ * @param author a [PostAuthor] instance naming the author of the [Post] in its [PostAuthor.name]
+ * field, and a URL in its [PostAuthor.url] field that links to a page on "medium.com" which has
+ * a list of all or the articles that author has posted to "medium.com" (not used by app).
+ * @param date the date the [Post] was published.
+ * @param readTimeMinutes an estimate of the number of minutes it will take to read the [Post].
+ */
 data class Metadata(
     val author: PostAuthor,
     val date: String,
     val readTimeMinutes: Int
 )
 
+/**
+ * Contains the name of the author and a URL that links to a "medium.com" web page listing all of
+ * the articles that the author has posted to "medium.com"
+ *
+ * @param name the name of the author.
+ * @param url a URL that links to a "medium.com" web page listing all of the articles that the
+ * author has posted to "medium.com"
+ */
 data class PostAuthor(
     val name: String,
     val url: String? = null
 )
 
+/**
+ * The name of the "publication" that the [Post] was published to, and a URL to a png which has the
+ * logo image of the "publication".
+ *
+ * @param name the name of the "publication" that the [Post] was published to, always "Android
+ * Developers" for our samples (see the `publication` field in file data/posts/PostsData.kt)
+ * @param logoUrl a URL to a png which has the logo image of the "publication", always
+ * "https://cdn-images-1.medium.com/max/258/1*u7oZc2_5mrkcFaxkXEyfYA@2x.png" for our samples (see
+ * the `publication` field in file data/posts/PostsData.kt)
+ */
 data class Publication(
     val name: String,
     val logoUrl: String
