@@ -18,8 +18,16 @@ package com.example.jetnews.model
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 
 /**
  * Data type that holds the data needed to display a single "Post".
@@ -99,12 +107,44 @@ data class Publication(
     val logoUrl: String
 )
 
+/**
+ * Data class that holds a single paragraph in a [Post]. [Post.paragraphs] holds a [List] of these
+ * in each [Post].
+ *
+ * @param type the [ParagraphType] of this [Paragraph].  The `Paragraph` Composable (in the file
+ * ui/article/PostContent.kt) uses the `ParagraphType.getTextAndParagraphStyle` extension function
+ * to construct a `ParagraphStyling` (file ui/article/PostContent.kt) for the [Paragraph], and also
+ * uses a `when` to choose which Composable to use to display the [Paragraph] in its [Box].
+ * @param text the [String] containing the text of the [Paragraph].
+ * @param markups a [List] of [Markup] instances which is interpreted by the `Markup.toAnnotatedStringItem`
+ * extension function (file ui/article/PostContent.kt) to construct [AnnotatedString.Range] objects
+ * for the portion of the [text] between the [Markup.start] and [Markup.end] that will reflect the
+ * [MarkupType] specified by the [Markup.type] field of each [Markup]. These [AnnotatedString.Range]
+ * objects are used by the `paragraphToAnnotatedString` method (file ui/article/PostContent.kt) to
+ * create an [AnnotatedString] from the [text] of the [Paragraph].
+ */
 data class Paragraph(
     val type: ParagraphType,
     val text: String,
     val markups: List<Markup> = emptyList()
 )
 
+/**
+ * Markup to be applied to the [Paragraph.text] string to produce an [AnnotatedString]. A [List] of
+ * these is included in the [Paragraph.markups] field of each [Paragraph]. The [Markup]'s are
+ * interpreted by the `Markup.toAnnotatedStringItem` extension function (file ui/article/PostContent.kt)
+ * to construct [AnnotatedString.Range] objects for the portion of the [Paragraph.text] between the
+ * [start] and [end] that will reflect the [MarkupType] specified by the [type] field of each [Markup].
+ * These [AnnotatedString.Range] objects are used by the `paragraphToAnnotatedString` method
+ * (file ui/article/PostContent.kt) to create an [AnnotatedString] from the [Paragraph.text] of the
+ * [Paragraph].
+ *
+ * @param type the [MarkupType] of the [Markup], one of [MarkupType.Link], [MarkupType.Code],
+ * [MarkupType.Italic] or [MarkupType.Bold].
+ * @param start The start of the range where the [Markup] takes effect. It's inclusive.
+ * @param end The end of the range where [Markup] takes effect. It's exclusive.
+ * @param href Not actually used, I assume it was intended for use when links in text are clickable.
+ */
 data class Markup(
     val type: MarkupType,
     val start: Int,
@@ -112,15 +152,50 @@ data class Markup(
     val href: String? = null
 )
 
+/**
+ * The type of [Markup] to be applied to a range of text in an [AnnotatedString]. Choices are
+ * [MarkupType.Link], [MarkupType.Code], [MarkupType.Italic] or [MarkupType.Bold].
+ */
 enum class MarkupType {
+    /**
+     * Uses [TextDecoration.Underline] for the span of text.
+     */
     Link,
+
+    /**
+     * Uses [FontFamily.Monospace] as the `fontFamily` for the span of text.
+     */
     Code,
+
+    /**
+     * Uses [FontStyle.Italic] as the `fontStyle` for the span of text.
+     */
     Italic,
+
+    /**
+     * Uses [FontWeight.Bold] as the `fontWeight` for the span of text.
+     */
     Bold,
 }
 
+/**
+ * The type of the [Paragraph]. Determines how the [Paragraph.text] will be rendered.
+ */
 enum class ParagraphType {
+    /**
+     * The title of the [Post], the `ParagraphType.getTextAndParagraphStyle` extension function
+     * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the `h4` [TextStyle] of
+     * [MaterialTheme.typography] ([FontWeight.SemiBold], `fontSize` of 30.sp, and `letterSpacing`
+     * of 0.sp, using the `Montserrat` [FontFamily] file ui/theme/Type.kt).
+     */
     Title,
+
+    /**
+     * The caption of the [Post], the `ParagraphType.getTextAndParagraphStyle` extension function
+     * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the `body1` [TextStyle]
+     * of [MaterialTheme.typography] ([FontWeight.Normal], `fontSize` of 16.sp, and `letterSpacing`
+     * of 0.5.sp, using the `Domine` [FontFamily] file ui/theme/Type.kt).
+     */
     Caption,
     Header,
     Subhead,
