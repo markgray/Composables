@@ -19,8 +19,11 @@ package androidx.compose.samples.crane.base
 import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -31,9 +34,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.EditableUserInputState.Companion.Saver
+import androidx.compose.samples.crane.home.CraneScreen
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.samples.crane.ui.captionTextStyle
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 
 /**
@@ -109,7 +114,42 @@ fun rememberEditableUserInputState(hint: String): EditableUserInputState =
  * [CraneBaseUserInput] are controlled by lambdas which return `true` if the user has changed the
  * text content of the [BasicTextField] from the original `hint` that our [EditableUserInputState]
  * parameter [state] was constructed with (the [EditableUserInputState.isHint] property returns
- * `false`).
+ * `false`). The arguments we call [CraneBaseUserInput] with are:
+ *  - `caption` our [caption] parameter.
+ *  - `tintIcon` a lambda which returns `true` if the [EditableUserInputState.isHint] property of
+ *  our [state] parameter returns `false` (the user has changed the text)
+ *  - `showCaption` a lambda which returns `true` if the [EditableUserInputState.isHint] property of
+ *  our [state] parameter returns `false` (the user has changed the text)
+ *  - `vectorImageId` our [vectorImageId] parameter.
+ *
+ * The arguments we call [BasicTextField] with are:
+ *  - `value` the [EditableUserInputState.text] field of our [state] parameter.
+ *  - `onValueChange` a lambda which sets the [EditableUserInputState.text] field of our [state]
+ *  parameter to the new text content of the [BasicTextField].
+ *  - `textStyle` if the [EditableUserInputState.isHint] property of our [state] parameter returns
+ *  `true` (the text is still the same as the hint) we pass the [captionTextStyle] as the
+ *  [TextStyle], otherwise we pass the `body1` [TextStyle] of [MaterialTheme.typography], with both
+ *  using the `current` [LocalContentColor] as its `color`
+ *  - `cursorBrush` we pass a [SolidColor] that uses the `current` [LocalContentColor] as its `value`
+ *
+ * This Composable is used by the `ToDestinationUserInput` Composable (file home/SearchUserInput.kt)
+ * which is called by the `FlySearchContent` Composable (file home/HomeFeatures.kt) which is called
+ * by the `SearchContent` Composable (file home/CraneHome.kt) when the [CraneScreen] `tabSelected`
+ * is [CraneScreen.Fly]. `SearchContent` is the `backLayerContent` argument of the [BackdropScaffold]
+ * used by the `CraneHomeContent` Composable (file home/CraneHome.kt), and `CraneHomeContent` is the
+ * `content` of the [Scaffold] used by `CraneHome` (file home/CraneHome.kt) which is the `content` of
+ * the [Surface] used by the `MainScreen` Composable (file home/MainActivity.kt), which is wrapped in
+ * our [CraneTheme] custom [MaterialTheme] and used in the `onCreate` override of `MainActivity`
+ * (file home/MainActivity.kt) in its call to `setContent` and is thus the root view of our activity.
+ *
+ * @param state a [EditableUserInputState] instance which has been "remembered" using our method
+ * [rememberEditableUserInputState]. Our caller `ToDestinationUserInput` uses one constructed by
+ * [rememberEditableUserInputState] using "Choose Destination" as the `hint` argument.
+ * @param caption a caption [String] for the `caption` argument of our [CraneBaseUserInput]. Our
+ * caller `ToDestinationUserInput` uses the [String] "To" when it calls us.
+ * @param vectorImageId a drawable resource ID for the `vectorImageId` argument of our
+ * [CraneBaseUserInput]. Our caller `ToDestinationUserInput` uses [R.drawable.ic_plane] when it
+ * calls us.
  */
 @Composable
 fun CraneEditableUserInput(
@@ -137,6 +177,16 @@ fun CraneEditableUserInput(
     }
 }
 
+/**
+ * Preview of our [CraneEditableUserInput] wrapped in our [CraneTheme] custom [MaterialTheme]. We
+ * initialize our [EditableUserInputState] variable `val editableUserInputState` to the instance
+ * that our [rememberEditableUserInputState] "remembers" and returns when called with the `hint`
+ * argument "Choose Destination". Then wrapped in our [CraneTheme] custom [MaterialTheme] we call
+ * [CraneEditableUserInput] with the arguments:
+ *  - `state` our [EditableUserInputState] variable `editableUserInputState`
+ *  - `caption` the [String] "To"
+ *  - `vectorImageId` the drawable resource ID [R.drawable.ic_plane].
+ */
 @Preview
 @Composable
 fun CraneEditableUserInputPreview() {

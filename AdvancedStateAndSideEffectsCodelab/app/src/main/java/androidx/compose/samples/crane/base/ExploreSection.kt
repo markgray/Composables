@@ -36,6 +36,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.MaterialTheme
@@ -47,7 +48,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.samples.crane.R
+import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.ExploreModel
+import androidx.compose.samples.crane.home.MainViewModel
 import androidx.compose.samples.crane.home.OnExploreItemClicked
 import androidx.compose.samples.crane.ui.BottomSheetShape
 import androidx.compose.samples.crane.ui.crane_caption
@@ -64,6 +67,16 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest.Builder
 import kotlinx.coroutines.launch
 
+/**
+ * This Composable displays a [List] of [ExploreModel] objects in its [ExploreList] Composable. The
+ * [ExploreModel] is a data class holding a [City] in its [ExploreModel.city] field which allows one
+ * to locate the city using the Google map api, as well as a description in its [String] field
+ * [ExploreModel.description] and a URL for an appropriate photo in is [ExploreModel.imageUrl] field.
+ * The [List] of [ExploreModel] objects comes from the [MainViewModel.suggestedDestinations],
+ * [MainViewModel.hotels], and [MainViewModel.restaurants] fields depending on which tab is selected
+ * by the `HomeTabBar` that is the `appBar` argument of the [BackdropScaffold] of the `CraneHomeContent`
+ * Composable (file home/CraneHome.kt).
+ */
 @Composable
 fun ExploreSection(
     modifier: Modifier = Modifier,
