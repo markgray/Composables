@@ -22,12 +22,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextIndent
 
 /**
  * Data type that holds the data needed to display a single "Post".
@@ -143,7 +145,8 @@ data class Paragraph(
  * [MarkupType.Italic] or [MarkupType.Bold].
  * @param start The start of the range where the [Markup] takes effect. It's inclusive.
  * @param end The end of the range where [Markup] takes effect. It's exclusive.
- * @param href Not actually used, I assume it was intended for use when links in text are clickable.
+ * @param href Not actually used by the code (although there are 37 of them in the example [Post]'s),
+ * I assume it was intended for use when links in text are clickable.
  */
 data class Markup(
     val type: MarkupType,
@@ -197,10 +200,67 @@ enum class ParagraphType {
      * of 0.5.sp, using the `Domine` [FontFamily] file ui/theme/Type.kt).
      */
     Caption,
+
+    /**
+     * The header of a section of the [Post], the `ParagraphType.getTextAndParagraphStyle` extension
+     * function (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the `h5` [TextStyle]
+     * of [MaterialTheme.typography] ([FontWeight.SemiBold], `fontSize` of 24.sp, and `letterSpacing`
+     * of 0sp, using the `Montserrat` [FontFamily] file ui/theme/Type.kt), it also sets the
+     * `trailingPadding` that will be used in the `ParagraphStyling` to 16.dp which will be added to
+     * the bottom padding of the [Box] that the `Paragraph` Composable renders the text in (file
+     * ui/article/PostContent.kt). The `Paragraph` Composable also switches using a when statement
+     * and for [ParagraphType.Header] renders the [AnnotatedString] of the text of the [Paragraph]
+     * in a [Text] whose `modifier` argument is a `Modifier.padding` of 4.dp to which it adds a
+     * `Modifier.semantics` of a `heading` instance of [SemanticsPropertyReceiver].
+     */
     Header,
+
+    /**
+     * The sub-heading of a section of the [Post], the `ParagraphType.getTextAndParagraphStyle` extension
+     * function (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the `h6` [TextStyle]
+     * of [MaterialTheme.typography] ([FontWeight.SemiBold], `fontSize` of 20.sp, and `letterSpacing`
+     * of 0sp, using the `Montserrat` [FontFamily] file ui/theme/Type.kt), it also sets the
+     * `trailingPadding` that will be used in the `ParagraphStyling` to 16.dp which will be added to
+     * the bottom padding of the [Box] that the `Paragraph` Composable renders the text in (file
+     * ui/article/PostContent.kt).
+     */
     Subhead,
+
+    /**
+     * The `text` of a [Paragraph], the `ParagraphType.getTextAndParagraphStyle` extension function
+     * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to a copy of the `body1`
+     * [TextStyle] of [MaterialTheme.typography] whose `lineHeight` is 28.sp ([FontWeight.Normal],
+     * `fontSize` of 16.sp, and `letterSpacing` of 0.5.sp, using the `Domine` [FontFamily] (file
+     * ui/theme/Type.kt). It also modifies the `paragraphStyle` to have a `lineHeight` of 28.sp
+     */
     Text,
+
+    /**
+     * A [Paragraph] containing code, the `ParagraphType.getTextAndParagraphStyle` extension function
+     * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to a copy of the `body1`
+     * [TextStyle] of [MaterialTheme.typography] modifying its `fontFamily` to [FontFamily.Monospace]
+     * ([FontWeight.Normal], `fontSize` of 16.sp, and `letterSpacing` of 0.5.sp). The `Paragraph`
+     * Composable also switches using a when statement and for [ParagraphType.CodeBlock] renders the
+     * [AnnotatedString] of the text of the [Paragraph] in a `CodeBlockParagraph` Composable (file
+     * ui/article/PostContent.kt)
+     */
     CodeBlock,
+
+    /**
+     * Not sure about the use of this [ParagraphType], the `ParagraphType.getTextAndParagraphStyle`
+     * extension function (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the
+     * `body1` [TextStyle] of [MaterialTheme.typography] ([FontWeight.Normal], `fontSize` of 16.sp,
+     * and `letterSpacing` of 0.5.sp, using the `Domine` [FontFamily] file ui/theme/Type.kt).
+     */
     Quote,
+
+    /**
+     * A "Bullet Point", the `ParagraphType.getTextAndParagraphStyle` extension function (file
+     * ui/article/PostContent.kt) sets the `paragraphStyle` to be used to a `ParagraphStyle` with
+     * a [TextIndent] for the `firstLine` of 8.sp as its `textIndent` argument. The `Paragraph`
+     * Composable also switches using a when statement and for [ParagraphType.Bullet] renders the
+     * [AnnotatedString] of the text of the [Paragraph] in a `BulletParagraph` Composable (file
+     * ui/article/PostContent.kt)
+     */
     Bullet,
 }
