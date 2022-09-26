@@ -43,6 +43,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -50,9 +51,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.ExploreModel
+import androidx.compose.samples.crane.details.DetailsActivity
+import androidx.compose.samples.crane.details.launchDetailsActivity
+import androidx.compose.samples.crane.home.CraneScreen
 import androidx.compose.samples.crane.home.MainViewModel
 import androidx.compose.samples.crane.home.OnExploreItemClicked
 import androidx.compose.samples.crane.ui.BottomSheetShape
+import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.samples.crane.ui.crane_caption
 import androidx.compose.samples.crane.ui.crane_divider_color
 import androidx.compose.ui.Alignment
@@ -61,21 +66,87 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest.Builder
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
  * This Composable displays a [List] of [ExploreModel] objects in its [ExploreList] Composable. The
  * [ExploreModel] is a data class holding a [City] in its [ExploreModel.city] field which allows one
  * to locate the city using the Google map api, as well as a description in its [String] field
- * [ExploreModel.description] and a URL for an appropriate photo in is [ExploreModel.imageUrl] field.
- * The [List] of [ExploreModel] objects comes from the [MainViewModel.suggestedDestinations],
- * [MainViewModel.hotels], and [MainViewModel.restaurants] fields depending on which tab is selected
- * by the `HomeTabBar` that is the `appBar` argument of the [BackdropScaffold] of the `CraneHomeContent`
- * Composable (file home/CraneHome.kt).
+ * [ExploreModel.description] and a URL for an appropriate photo in its [ExploreModel.imageUrl] field.
+ * The [List] of [ExploreModel] objects depends on which tab is selected by the `HomeTabBar` that is
+ * the `appBar` argument of the [BackdropScaffold] of the `CraneHomeContent` Composable (see the file
+ * home/CraneHome.kt). The [CraneScreen.Fly] tab uses [MainViewModel.suggestedDestinations], the
+ * [CraneScreen.Sleep] tab uses [MainViewModel.hotels], and the [CraneScreen.Eat] tab uses
+ * [MainViewModel.restaurants].
+ *
+ * The root Composable is a [Surface] which adds a [Modifier.fillMaxSize] to our [modifier] parameter,
+ * for its `modifier` argument, uses [Color.White] for its `color` background color argument, and
+ * `shape` argument is a [BottomSheetShape] (which is a [RoundedCornerShape] whose `topStart` corner
+ * is 20.dp, `topEnd` corner is 20.dp, and whose `bottomStart` and `bottomEnd` corners are both 0.dp
+ * and it is defined in the file ui/CraneTheme.kt) The `content` of the [Surface] is a [Column] whose
+ * `modifier` argument is a [Modifier.padding] whose `start` padding is 24.dp, whose `top` padding is
+ *  20.dp, and whose `end` padding is 24.dp. The `content` of the [Column] is:
+ *   - A [Text] whose `text` argument is our [String] parameter [title], and whose `style` argument
+ *   is a copy of the `caption` [TextStyle] of [MaterialTheme.typography] whose `color` is modified
+ *   to be the [crane_caption] color [Color.DarkGray] (defined in the file ui/CraneTheme.kt). The
+ *   `caption` [TextStyle] uses `craneFontFamily` as its `fontFamily`, uses a `fontWeight` of
+ *   [FontWeight.W500] and a `fontSize` of 12.sp (`craneFontFamily` uses the [Font] whose resource ID
+ *   is [R.font.raleway_medium] for [FontWeight.W500] (file res/font/raleway_medium.ttf).
+ *   - A [Spacer] whose `height` is 8.dp
+ *   - A [Box] whose `modifier` argument is a `ColumnScope` `Modifier.weight` of 1f which causes it
+ *   to take up all space left after its siblings in the [Column] are measured and placed.
+ *
+ * The inside of the [Box] is where all the interesting stuff takes place. We use the [LazyListState]
+ * that [rememberLazyListState] returns to initialize our variable `val listState`, then call the
+ * Composable [ExploreList] with its `exploreList` argument our [List] of [ExploreModel] parameter
+ * [exploreList], with its `onItemClicked` argument our [onItemClicked] parameter, and its `listState`
+ * argument our `listState` [LazyListState] variable. [ExploreList] will then display each of the
+ * [ExploreModel]'s in the [List] of [ExploreModel]'s in a [LazyColumn] using an [ExploreItem] to
+ * display each individual [ExploreModel]. It will use the [LazyListState] in our variable `listState`
+ * as the `state` of the [LazyColumn] which will allow us to use `listState` to to observe and control
+ * scrolling from the [Box]. Next we initialize our [Boolean] variable `val showButton` by using the
+ * [remember] method to remember a derived [State] which returns `true` if the `listState` method
+ * [LazyListState.firstVisibleItemIndex] indicates that the index of the first item that is visible
+ * is greater than 0. Then if `showButton` is `true` we initialize our [CoroutineScope] variable
+ * `val coroutineScope` using the [rememberCoroutineScope] method, and call the [FloatingActionButton]
+ * Composable using the `primary` [Color] of [MaterialTheme.colors] (`crane_purple_800` aka a [Color]
+ * of 0xFF5D1049) in our [CraneTheme] custom [MaterialTheme]) as its `backgroundColor` argument, for
+ * its `modifier` we use a`BoxScope` `Modifier.align` of [Alignment.BottomEnd], to which we add a
+ * [Modifier.navigationBarsPadding] to add padding to accommodate the navigation bars insets, along
+ * with an additional [Modifier.padding] of 8.dp to the bottom of the [FloatingActionButton]. The
+ * `onClick` argument is a lambda which launches a coroutine using the `coroutineScope` [CoroutineScope]
+ * which calls the [LazyListState.scrollToItem] method of `listState` to scroll to item 0 when the
+ * [FloatingActionButton] is clicked. The `content` of the [FloatingActionButton] is a [Text] that
+ * displays the [String] "Up!".
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance or behavior.
+ * Our callers do not pass one so the empty, default, or starter [Modifier] that contains no elements
+ * is used instead.
+ * @param title the title of our contents, the [CraneScreen.Fly] tab uses "Explore Flights by Destination",
+ * the [CraneScreen.Sleep] tab uses "Explore Properties by Destination" and the [CraneScreen.Eat] tab
+ * uses "Explore Restaurants by Destination". This is displayed in a [Text] at the top of the [Column]
+ * contents of our root [Surface] Composable.
+ * @param exploreList the [List] of [ExploreModel] objects that our [ExploreList] Composable will display
+ * in its [LazyColumn].
+ * @param onItemClicked an [OnExploreItemClicked] lambda that we pass to [ExploreList] in its `onItemClicked`
+ * argument. [ExploreList] passes this on to each [ExploreItem] in its [LazyColumn] which uses it as
+ * the argument of the [Modifier.clickable] it adds to the [Row] in which it renders the [ExploreModel]
+ * it is responsible for. All three of the tabs ([CraneScreen.Fly], [CraneScreen.Sleep], and
+ * [CraneScreen.Eat]) use the `onExploreItemClicked` that their `CraneHomeContent` parent was called
+ * with (file home/CraneHome.kt) which is the `onExploreItemClicked` that its `CraneHome` parent was
+ * called with, which is the `onExploreItemClicked` that its parent `MainScreen` was called with (file
+ * home/MainActivity.kt), which is a lambda that the `onCreate` override calls `MainScreen` with when
+ * its has the `setContent` method compose `MainScreen` into the activity. That lambda calls the
+ * [launchDetailsActivity] method to have it launch the [DetailsActivity] to display the [ExploreModel]
+ * that was clicked.
  */
 @Composable
 fun ExploreSection(
@@ -93,20 +164,24 @@ fun ExploreSection(
             Spacer(Modifier.height(8.dp))
             // TODO Codelab: derivedStateOf step DONE
             // TODO: Show "Scroll to top" button when the first item of the list is not visible DONE
-            Box(Modifier.weight(1f)) {
-                val listState = rememberLazyListState()
-                ExploreList(exploreList, onItemClicked, listState = listState)
+            Box(modifier = Modifier.weight(1f)) {
+                val listState: LazyListState = rememberLazyListState()
+                ExploreList(
+                    exploreList = exploreList,
+                    onItemClicked = onItemClicked,
+                    listState = listState
+                )
 
                 // Show the button if the first visible item is past
                 // the first item. We use a remembered derived state to
                 // minimize unnecessary compositions
-                val showButton by remember {
+                val showButton: Boolean by remember {
                     derivedStateOf {
                         listState.firstVisibleItemIndex > 0
                     }
                 }
                 if (showButton) {
-                    val coroutineScope = rememberCoroutineScope()
+                    val coroutineScope: CoroutineScope = rememberCoroutineScope()
                     FloatingActionButton(
                         backgroundColor = MaterialTheme.colors.primary,
                         modifier = Modifier
@@ -135,8 +210,8 @@ private fun ExploreList(
     listState: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(modifier = modifier, state = listState) {
-        items(exploreList) { exploreItem ->
-            Column(Modifier.fillParentMaxWidth()) {
+        items(items = exploreList) { exploreItem ->
+            Column(modifier = Modifier.fillParentMaxWidth()) {
                 ExploreItem(
                     modifier = Modifier.fillParentMaxWidth(),
                     item = exploreItem,
