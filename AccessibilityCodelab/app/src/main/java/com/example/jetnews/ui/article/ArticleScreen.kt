@@ -52,14 +52,13 @@ import com.example.jetnews.utils.supportWideScreen
  * @param postsRepository data source for this screen
  * @param onBack (event) request back navigation
  */
-@Suppress("DEPRECATION") // allow ViewModelLifecycleScope call
 @Composable
 fun ArticleScreen(
     postId: String?,
     postsRepository: PostsRepository,
     onBack: () -> Unit
 ) {
-    val postData = postsRepository.getPost(postId)!!
+    val postData = postsRepository.getPost(postId) ?: return
 
     ArticleScreen(
         post = postData,
@@ -141,6 +140,15 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     )
 }
 
+/**
+ * Previews of a [JetnewsTheme] custom [MaterialTheme] wrapped [ArticleScreen] using different settings:
+ *  - "Article screen" uses default settings
+ *  - "Article screen (dark)" uses [UI_MODE_NIGHT_YES] for the `uiMode` which shows the [ArticleScreen]
+ *  in night mode.
+ *  - "Article screen (big font)" uses 1.5f as the `fontScale` -- the scaling factor for fonts,
+ *  relative to the base density scaling
+ *  - "Article screen (large screen)" uses [Devices.PIXEL_C] as the `device` to use in the preview.
+ */
 @Preview("Article screen")
 @Preview("Article screen (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Preview("Article screen (big font)", fontScale = 1.5f)
@@ -148,6 +156,6 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
 @Composable
 fun PreviewArticle() {
     JetnewsTheme {
-        ArticleScreen(PostsRepository().getPost(post3.id)!!) {}
+        ArticleScreen(PostsRepository().getPost(post3.id) ?: return@JetnewsTheme) {}
     }
 }
