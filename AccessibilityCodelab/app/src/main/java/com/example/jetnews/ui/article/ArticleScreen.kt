@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.article
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
@@ -29,6 +30,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,12 +43,18 @@ import com.example.jetnews.R
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.Publication
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.supportWideScreen
 
 /**
- * Stateful Article Screen that manages state using `produceUiState`
+ * At one time in the distant past this was a Stateful Article Screen that managed state using
+ * `produceUiState`. Now there are no state variables involved, it simply fetchs the [Post] whose
+ * ID is its [String] parameter [postId] to initialize its [Post] variable `val postData` using the
+ * [PostsRepository.getPost] method of its parameter [postsRepository] and calls the "Stateless
+ * Article Screen" with `postData` as its `post` argument and our [onBack] lambda parameter as its
+ * `onBack` argument.
  *
  * @param postId (state) the post to show
  * @param postsRepository data source for this screen
@@ -58,7 +66,7 @@ fun ArticleScreen(
     postsRepository: PostsRepository,
     onBack: () -> Unit
 ) {
-    val postData = postsRepository.getPost(postId) ?: return
+    val postData: Post = postsRepository.getPost(postId) ?: return
 
     ArticleScreen(
         post = postData,
@@ -67,9 +75,24 @@ fun ArticleScreen(
 }
 
 /**
- * Stateless Article Screen that displays a single post.
+ * Stateless Article Screen that displays a single [Post]. First we use the [rememberSaveable] method
+ * to remember the [Boolean] variable `var showDialog` starting with a [MutableState] of `false`.
+ * Then if `showDialog` is `true we call the [FunctionalityNotAvailablePopup] Composable to show
+ * an [AlertDialog] informing the user that "Functionality not available" (`showDialog` is never set
+ * to `true` so this is obviously another left over from an ancient version of the sample, the latest
+ * JetNews sample has a `BottomAppBar` which has unimplemented features and uses the variable
+ * `showUnimplementedActionDialog` to control the display of [FunctionalityNotAvailablePopup]).
+ * The root Composable is a [Scaffold] whose `topBar` argument is a [InsetAwareTopAppBar] whose
+ * `title` argument is a [Text] displaying the [Publication.name] of the [Post.publication] field
+ * of our [post] parameter, and whose `navigationIcon` argument is an [IconButton] whose `onClick`
+ * is our [onBack] parameter and whose `content` is an [Icon] whose `imageVector` is the drawable
+ * [Icons.Filled.ArrowBack], and whose `contentDescription` is the [String] with resource ID
+ * [R.string.cd_navigate_up] ("Navigate up"). The `content` of the [Scaffold] is a [PostContent]
+ * Composable whose `post` argument is our [post] parameter, and whose `modifier` argument is a
+ * [Modifier.padding] of the [PaddingValues] passed the `content` in `innerPadding` with a
+ * [Modifier.supportWideScreen] added to it to center content in landscape mode.
  *
- * @param post (state) item to display
+ * @param post (state) [Post] to display
  * @param onBack (event) request navigate back
  */
 @Composable
@@ -78,7 +101,7 @@ fun ArticleScreen(
     onBack: () -> Unit
 ) {
 
-    var showDialog by rememberSaveable { mutableStateOf(false) }
+    var showDialog: Boolean by rememberSaveable { mutableStateOf(false) }
     if (showDialog) {
         FunctionalityNotAvailablePopup { showDialog = false }
     }
@@ -105,7 +128,7 @@ fun ArticleScreen(
                 }
             )
         }
-    ) { innerPadding ->
+    ) { innerPadding: PaddingValues ->
         PostContent(
             post = post,
             modifier = Modifier

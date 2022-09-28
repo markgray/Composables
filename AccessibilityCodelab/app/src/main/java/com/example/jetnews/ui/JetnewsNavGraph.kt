@@ -70,7 +70,7 @@ fun JetnewsNavGraph(
                 openDrawer = openDrawer
             )
         }
-        composable("${MainDestinations.ARTICLE_ROUTE}/{$ARTICLE_ID_KEY}") { backStackEntry ->
+        composable(route = "${MainDestinations.ARTICLE_ROUTE}/{$ARTICLE_ID_KEY}") { backStackEntry ->
             ArticleScreen(
                 postId = backStackEntry.arguments?.getString(ARTICLE_ID_KEY),
                 onBack = actions.upPress,
