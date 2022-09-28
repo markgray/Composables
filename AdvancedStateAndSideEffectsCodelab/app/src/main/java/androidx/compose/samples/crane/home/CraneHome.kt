@@ -83,7 +83,7 @@ fun CraneHomeContent(
     viewModel: MainViewModel = viewModel(),
 ) {
     // TODO Codelab: collectAsState step - consume stream of data from the ViewModel DONE
-    val suggestedDestinations by viewModel.suggestedDestinations.collectAsState()
+    val suggestedDestinations: List<ExploreModel> by viewModel.suggestedDestinations.collectAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
     var tabSelected by remember { mutableStateOf(CraneScreen.Fly) }

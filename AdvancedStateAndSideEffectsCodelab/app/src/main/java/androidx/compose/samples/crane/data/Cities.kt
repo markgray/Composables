@@ -16,6 +16,9 @@
 
 package androidx.compose.samples.crane.data
 
+/**
+ * The [City] object for Madrid, Spain.
+ */
 val MADRID = City(
     name = "Madrid",
     country = "Spain",
@@ -23,6 +26,9 @@ val MADRID = City(
     longitude = "-3.703790"
 )
 
+/**
+ * The [City] object for Naples, Italy.
+ */
 val NAPLES = City(
     name = "Naples",
     country = "Italy",
@@ -30,6 +36,9 @@ val NAPLES = City(
     longitude = "14.305573"
 )
 
+/**
+ * The [City] object for Dallas, US.
+ */
 val DALLAS = City(
     name = "Dallas",
     country = "US",
@@ -37,6 +46,9 @@ val DALLAS = City(
     longitude = "-96.808891"
 )
 
+/**
+ * The [City] object for Cordoba, Argentina.
+ */
 val CORDOBA = City(
     name = "Cordoba",
     country = "Argentina",
@@ -44,6 +56,9 @@ val CORDOBA = City(
     longitude = "-64.183334"
 )
 
+/**
+ * The [City] object for Maldivas, South Asia.
+ */
 val MALDIVAS = City(
     name = "Maldivas",
     country = "South Asia",
@@ -51,6 +66,9 @@ val MALDIVAS = City(
     longitude = "73.399658"
 )
 
+/**
+ * The [City] object for Aspen, Colorado.
+ */
 val ASPEN = City(
     name = "Aspen",
     country = "Colorado",
@@ -58,6 +76,9 @@ val ASPEN = City(
     longitude = "-106.817535"
 )
 
+/**
+ * The [City] object for Bali, Indonesia.
+ */
 val BALI = City(
     name = "Bali",
     country = "Indonesia",
@@ -65,6 +86,9 @@ val BALI = City(
     longitude = "115.0920"
 )
 
+/**
+ * The [City] object for Big Sur, California.
+ */
 val BIGSUR = City(
     name = "Big Sur",
     country = "California",
@@ -72,6 +96,9 @@ val BIGSUR = City(
     longitude = "-121.8081"
 )
 
+/**
+ * The [City] object for Khumbu Valley, Nepal.
+ */
 val KHUMBUVALLEY = City(
     name = "Khumbu Valley",
     country = "Nepal",
@@ -79,6 +106,9 @@ val KHUMBUVALLEY = City(
     longitude = "86.8050"
 )
 
+/**
+ * The [City] object for Rome, Italy.
+ */
 val ROME = City(
     name = "Rome",
     country = "Italy",
@@ -86,6 +116,9 @@ val ROME = City(
     longitude = "12.496366"
 )
 
+/**
+ * The [City] object for Granada, Spain.
+ */
 val GRANADA = City(
     name = "Granada",
     country = "Spain",
@@ -93,6 +126,9 @@ val GRANADA = City(
     longitude = "-3.60667"
 )
 
+/**
+ * The [City] object for Washington DC, USA.
+ */
 val WASHINGTONDC = City(
     name = "Washington DC",
     country = "USA",
@@ -100,6 +136,9 @@ val WASHINGTONDC = City(
     longitude = "-77.0369"
 )
 
+/**
+ * The [City] object for Barcelona, Spain.
+ */
 val BARCELONA = City(
     name = "Barcelona",
     country = "Spain",
@@ -107,6 +146,9 @@ val BARCELONA = City(
     longitude = "2.154007"
 )
 
+/**
+ * The [City] object for Crete, Greece.
+ */
 val CRETE = City(
     name = "Crete",
     country = "Greece",
@@ -114,6 +156,9 @@ val CRETE = City(
     longitude = "24.8093"
 )
 
+/**
+ * The [City] object for London, United Kingdom.
+ */
 val LONDON = City(
     name = "London",
     country = "United Kingdom",
@@ -121,6 +166,9 @@ val LONDON = City(
     longitude = "-0.118092"
 )
 
+/**
+ * The [City] object for Paris, France.
+ */
 val PARIS = City(
     name = "Paris",
     country = "France",

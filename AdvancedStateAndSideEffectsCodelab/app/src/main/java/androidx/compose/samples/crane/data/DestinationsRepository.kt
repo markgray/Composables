@@ -18,6 +18,16 @@ package androidx.compose.samples.crane.data
 
 import javax.inject.Inject
 
+/**
+ * A Repository allows the app to use different Data Sources, but in our case we only use the static
+ * fake data supplied by the Singleton [DestinationsLocalDataSource]. The `Inject` annotation
+ * identifies our constructor as a injectable constructor to Hilt and Hilt generates a
+ * [DestinationsRepository_Factory] java class from this file which it will use when a
+ * [DestinationsRepository] class injection is requested.
+ *
+ * @param destinationsLocalDataSource the Singleton instance of [DestinationsLocalDataSource] that
+ * will be injected by Hilt
+ */
 class DestinationsRepository @Inject constructor(
     private val destinationsLocalDataSource: DestinationsLocalDataSource
 ) {

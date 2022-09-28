@@ -16,11 +16,33 @@
 
 package androidx.compose.samples.crane.base
 
+import androidx.compose.samples.crane.data.DestinationsRepository
+import androidx.compose.samples.crane.data.ExploreModel
+import androidx.compose.samples.crane.details.DetailsViewModel
+
 /**
- * A generic class that holds a value.
- * @param <T>
+ * A generic class that holds a value. It has two subclasses: [Success] which holds a result value
+ * in its [Success.data] field, and [Error] which holds an [Exception] in its [Error.exception]
+ * field. This is used by [DetailsViewModel] as the return type of its [DetailsViewModel.cityDetails]
+ * property, and it returns a [Result.Success] of the [ExploreModel] that it retrieves from the
+ * [DestinationsRepository] if the [DestinationsRepository.getDestination] method finds the `cityName`
+ * or a [Result.Error] of an [IllegalArgumentException] ("City doesn't exist") if the method returns
+ * `null`.
+ *
+ * @param <T> the type of [Result] that will be returned.
  */
 sealed class Result<out R> {
+    /**
+     * This subclass of [Result] returns results of a successful query in its [data] field
+     *
+     * @param data data to be returned to the caller, in our case an [ExploreModel]
+     */
     data class Success<out T>(val data: T) : Result<T>()
+
+    /**
+     * This subclass of [Result] returns an [Exception] in its [exception] field.
+     *
+     * @param exception an [Exception] explaining an error that occurred.
+     */
     data class Error(val exception: Exception) : Result<Nothing>()
 }

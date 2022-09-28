@@ -16,17 +16,32 @@
 
 package androidx.compose.samples.crane.data
 
+import androidx.compose.samples.crane.home.CraneScreen
+import androidx.compose.samples.crane.home.MainViewModel
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * The default image width to use when requesting an image from unsplash.com, it is used as the value
+ * of the url query parameter &w=
+ */
 private const val DEFAULT_IMAGE_WIDTH = "250"
 
 /**
- * Annotated with Singleton as the class created a lot of objects.
+ * Annotated with Singleton as the class created a lot of objects. The `Inject` annotation
+ * identifies our constructor as a injectable constructor to Hilt and Hilt generates a
+ * [DestinationsLocalDataSource_Factory] java class from this file which it will use when a
+ * [DestinationsLocalDataSource] class injection is requested.
  */
 @Singleton
 class DestinationsLocalDataSource @Inject constructor() {
 
+    /**
+     * This [List] of [ExploreModel] is returned by the [DestinationsRepository.restaurants] property,
+     * and is used by [MainViewModel] for its [MainViewModel.restaurants] property, which is used when
+     * the [CraneScreen.Eat] tab of `CraneHomeContent` is selected (file home/CraneHome.kt)
+     */
     val craneRestaurants = listOf(
         ExploreModel(
             city = NAPLES,
@@ -65,6 +80,11 @@ class DestinationsLocalDataSource @Inject constructor() {
         )
     )
 
+    /**
+     * This [List] of [ExploreModel] is returned by the [DestinationsRepository.hotels] property,
+     * and is used by [MainViewModel] for its [MainViewModel.hotels] property, which is used when
+     * the [CraneScreen.Sleep] tab of `CraneHomeContent` is selected (file home/CraneHome.kt)
+     */
     val craneHotels = listOf(
         ExploreModel(
             city = MALDIVAS,
@@ -103,6 +123,14 @@ class DestinationsLocalDataSource @Inject constructor() {
         )
     )
 
+    /**
+     * This [List] of [ExploreModel] is returned by the [DestinationsRepository.destinations] property,
+     * and is used by [MainViewModel] in its [MainViewModel.toDestinationChanged] method, and its
+     * [MainViewModel.updatePeople] method to update its [MainViewModel.suggestedDestinations] property
+     * of [StateFlow] of [List] of [ExploreModel], which is collected as "state" for the variable
+     * `suggestedDestinations` in `CraneHomeContent` (file home/CraneHome.kt) which is used when
+     * the [CraneScreen.Fly] tab of `CraneHomeContent` is selected (file home/CraneHome.kt)
+     */
     val craneDestinations = listOf(
         ExploreModel(
             city = KHUMBUVALLEY,
