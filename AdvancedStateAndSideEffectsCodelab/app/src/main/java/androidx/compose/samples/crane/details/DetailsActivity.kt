@@ -156,7 +156,23 @@ class DetailsActivity : ComponentActivity() {
 }
 
 /**
+ * This data class it used by [DetailsScreen] to determine whether it is currently "loading" the
+ * [ExploreModel] it needs ([isLoading] is `true`) in which case it should display a
+ * [CircularProgressIndicator]; done loading ([cityDetails] is not `null`) in which it displays
+ * the [ExploreModel] in a [DetailsContent] Composable; or if [cityDetails] is still `null` but
+ * [isLoading] is `false` it will call its `onErrorLoading` lambda parameter. [DetailsScreen] uses
+ * the [produceState] delegate to construct the [DetailsUiState] it uses which returns an observable
+ * snapshot State that produces values over time without a defined data source with the initial value
+ * of a [DetailsUiState] whose [isLoading] field is `true` and in the suspend lambda of [produceState]
+ * it fetches a [Result] of [ExploreModel] from the [DetailsViewModel.cityDetails] property and then
+ * assigns to the [DetailsUiState] `value` either a [DetailsUiState] whose [cityDetails] field is
+ * the [Result.Success.data] of the [Result] if the [Result] was a [Result.Success] or else a
+ * [DetailsUiState] whose [throwError] field is `true`.
  *
+ * @param cityDetails the [ExploreModel] fetched from the [DetailsViewModel.cityDetails] property or
+ * `null` if none was found.
+ * @param isLoading `true` if we are waiting for [DetailsViewModel.cityDetails] to return a [Result]
+ * @param throwError `true` is no [ExploreModel] was found by [DetailsViewModel.cityDetails].
  */
 data class DetailsUiState(
     val cityDetails: ExploreModel? = null,
@@ -164,6 +180,9 @@ data class DetailsUiState(
     val throwError: Boolean = false
 )
 
+/**
+ *
+ */
 @Composable
 fun DetailsScreen(
     onErrorLoading: () -> Unit,
@@ -171,10 +190,10 @@ fun DetailsScreen(
     viewModel: DetailsViewModel = viewModel()
 ) {
     // TODO Codelab: produceState step - Show loading screen while fetching city details DONE
-    val uiState by produceState(initialValue = DetailsUiState(isLoading = true)) {
-        val cityDetailsResult = viewModel.cityDetails
+    val uiState: DetailsUiState by produceState(initialValue = DetailsUiState(isLoading = true)) {
+        val cityDetailsResult: Result<ExploreModel> = viewModel.cityDetails
         value = if (cityDetailsResult is Result.Success<ExploreModel>) {
-            DetailsUiState(cityDetailsResult.data)
+            DetailsUiState(cityDetails = cityDetailsResult.data)
         } else {
             DetailsUiState(throwError = true)
         }
@@ -182,7 +201,7 @@ fun DetailsScreen(
 
     when {
         uiState.cityDetails != null -> {
-            DetailsContent(uiState.cityDetails!!, modifier.fillMaxSize())
+            DetailsContent(exploreModel = uiState.cityDetails!!, modifier = modifier.fillMaxSize())
         }
         uiState.isLoading -> {
             Box(modifier.fillMaxSize()) {
