@@ -76,20 +76,26 @@ import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 
+/**
+ * The default spacer size that is used by several [Spacer] Composables
+ */
 private val defaultSpacerSize = 16.dp
 
+/**
+ * Displays the contents of a [Post].
+ */
 @Composable
 fun PostContent(post: Post, modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier.padding(horizontal = defaultSpacerSize)
     ) {
         item {
-            Spacer(Modifier.height(defaultSpacerSize))
-            PostHeaderImage(post)
+            Spacer(modifier = Modifier.height(defaultSpacerSize))
+            PostHeaderImage(post = post)
         }
         item {
             Text(text = post.title, style = MaterialTheme.typography.h4)
-            Spacer(Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
         post.subtitle?.let { subtitle ->
             item {
@@ -100,18 +106,18 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
                         lineHeight = 20.sp
                     )
                 }
-                Spacer(Modifier.height(defaultSpacerSize))
+                Spacer(modifier = Modifier.height(defaultSpacerSize))
             }
         }
         item {
-            PostMetadata(post.metadata)
-            Spacer(Modifier.height(24.dp))
+            PostMetadata(metadata = post.metadata)
+            Spacer(modifier = Modifier.height(24.dp))
         }
         items(post.paragraphs) {
             Paragraph(paragraph = it)
         }
         item {
-            Spacer(Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }
@@ -128,7 +134,7 @@ private fun PostHeaderImage(post: Post) {
         modifier = imageModifier,
         contentScale = ContentScale.Crop
     )
-    Spacer(Modifier.height(defaultSpacerSize))
+    Spacer(modifier = Modifier.height(defaultSpacerSize))
 }
 
 @Composable
@@ -142,7 +148,7 @@ private fun PostMetadata(metadata: Metadata) {
             colorFilter = ColorFilter.tint(LocalContentColor.current),
             contentScale = ContentScale.Fit
         )
-        Spacer(Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(8.dp))
         Column {
             Text(
                 text = metadata.author.name,
@@ -164,7 +170,7 @@ private fun PostMetadata(metadata: Metadata) {
 private fun Paragraph(paragraph: Paragraph) {
     val (textStyle, paragraphStyle, trailingPadding) = paragraph.type.getTextAndParagraphStyle()
 
-    val annotatedString = paragraphToAnnotatedString(
+    val annotatedString: AnnotatedString = paragraphToAnnotatedString(
         paragraph,
         MaterialTheme.typography,
         MaterialTheme.colors.codeBlockBackground
@@ -299,6 +305,10 @@ private fun paragraphToAnnotatedString(
     return AnnotatedString(text = paragraph.text, spanStyles = styles)
 }
 
+/**
+ * Extension function of a [Markup] which interprets it and produces an [AnnotatedString.Range] based
+ * on its [Markup.type] that applies for the range [Markup.start] to [Markup.end].
+ */
 fun Markup.toAnnotatedStringItem(
     typography: Typography,
     codeBlockBackground: Color
@@ -306,34 +316,34 @@ fun Markup.toAnnotatedStringItem(
     return when (this.type) {
         MarkupType.Italic -> {
             AnnotatedString.Range(
-                typography.body1.copy(fontStyle = FontStyle.Italic).toSpanStyle(),
-                start,
-                end
+                item = typography.body1.copy(fontStyle = FontStyle.Italic).toSpanStyle(),
+                start = start,
+                end = end
             )
         }
         MarkupType.Link -> {
             AnnotatedString.Range(
-                typography.body1.copy(textDecoration = TextDecoration.Underline).toSpanStyle(),
-                start,
-                end
+                item = typography.body1.copy(textDecoration = TextDecoration.Underline).toSpanStyle(),
+                start = start,
+                end = end
             )
         }
         MarkupType.Bold -> {
             AnnotatedString.Range(
-                typography.body1.copy(fontWeight = FontWeight.Bold).toSpanStyle(),
-                start,
-                end
+                item = typography.body1.copy(fontWeight = FontWeight.Bold).toSpanStyle(),
+                start = start,
+                end = end
             )
         }
         MarkupType.Code -> {
             AnnotatedString.Range(
-                typography.body1
+                item = typography.body1
                     .copy(
                         background = codeBlockBackground,
                         fontFamily = FontFamily.Monospace
                     ).toSpanStyle(),
-                start,
-                end
+                start = start,
+                end = end
             )
         }
     }
@@ -342,6 +352,12 @@ fun Markup.toAnnotatedStringItem(
 private val Colors.codeBlockBackground: Color
     get() = onSurface.copy(alpha = .15f)
 
+/**
+ * Two Previews of our [PostContent] Composable displaying the [post3] sample [Post] in a [Surface]
+ * that is wrapped by our [JetnewsTheme] custom [MaterialTheme]. The first is named "Post content"
+ * and uses the default `LightThemeColors`, and the second is named "Post content (dark)" and uses
+ * [UI_MODE_NIGHT_YES] as the `uiMode` argument of Preview so that the `DarkThemeColors` are used.
+ */
 @Preview("Post content")
 @Preview("Post content (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable

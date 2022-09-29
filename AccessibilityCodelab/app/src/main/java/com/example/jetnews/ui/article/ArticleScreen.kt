@@ -37,6 +37,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.jetnews.R
@@ -141,7 +144,13 @@ fun ArticleScreen(
 }
 
 /**
- * Display a popup explaining functionality not available.
+ * Display a popup explaining functionality not available. Our root Composable is an [AlertDialog]
+ * whose `onDismissRequest` argument is our [onDismiss] lambda parameter, whose `text` argument is
+ * a [Text] displaying the message "Functionality not available" using the `body2` [TextStyle] of
+ * [MaterialTheme.typography] (in our case the `Montserrat` [FontFamily] with a `fontWeight` of
+ * [FontWeight.Medium], `fontSize` of 14.sp, and `letterSpacing` of 0.25.sp), and the `confirmButton`
+ * argument of the [AlertDialog] is a [TextButton] whose `onClick` argument is our [onDismiss]
+ * parameter, and whose `content` is a [Text] displaying the `text` "CLOSE".
  *
  * @param onDismiss (event) request the popup be dismissed
  */
