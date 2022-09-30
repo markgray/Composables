@@ -54,6 +54,7 @@ import androidx.compose.samples.crane.home.MainActivity
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -181,7 +182,35 @@ data class DetailsUiState(
 )
 
 /**
+ * This is the main screen of [DetailsActivity] and is composed into the activity by the [setContent]
+ * method in the [ComponentActivity.onCreate] override of [DetailsActivity]. It uses a [DetailsUiState]
+ * observable snapshot State that is created by the [produceState] method (which it stores in its
+ * varible `val uiState`) to decide what it needs to do during the current recomposition:
+ *  - If the [DetailsUiState.cityDetails] field is not `null` then [produceState] has succeeded in
+ *  retrieving a [Result] of [ExploreModel] from the [DetailsViewModel.cityDetails] property of our
+ *  [viewModel] and constructed a [DetailsUiState] whose [DetailsUiState.cityDetails] is the
+ *  [ExploreModel] returned in a [Result.Success] so it calls the [DetailsContent] Composable with
+ *  the `exploreModel` argument the [DetailsUiState.cityDetails] of `uiState` and the `modifier`
+ *  argument our [modifier] parameter with a [Modifier.fillMaxSize] added on to have [DetailsContent]
+ *  fill its incoming measurement constraints.
+ *  - If the [DetailsUiState.isLoading] field of `uiState` is `true` [produceState] is still trying
+ *  to retrieve a [Result] from [DetailsViewModel.cityDetails] property of our [viewModel] so we
+ *  call [Box] with its `modifier` argument our [modifier] parameter with a [Modifier.fillMaxSize]
+ *  added on to have [Box] fill its incoming measurement constraints, and for its `content` we
+ *  call the [CircularProgressIndicator] Composable with its `color` argument the `onSurface` [Color]
+ *  of [MaterialTheme.colors] (which in our [CraneTheme] is [Color.White]).
+ *  - For any other condition we call our [onErrorLoading] lambda parameter.
  *
+ * @param onErrorLoading a lambda to call if we are unable to retrieve an [ExploreModel] instance to
+ * display from the [DetailsViewModel.cityDetails] property of our [viewModel]. Our caller (the
+ * [setContent] method called in the [ComponentActivity.onCreate] override of [DetailsActivity])
+ * passes us a lambda which calls [ComponentActivity.finish] to close the activity.
+ * @param modifier a [Modifier] instance which our caller can use to modify our appearance and/or
+ * behavior. Our caller uses a [Modifier.statusBarsPadding] (Adds padding to accommodate the status
+ * bars insets) to which it adds a [Modifier.navigationBarsPadding] (adds padding to accommodate the
+ * navigation bars insets).
+ * @param viewModel the [DetailsViewModel] we should use. Our caller does not pass any, so we use
+ * the [viewModel] default value of the parameter, which is the [DetailsViewModel] injected by Hilt.
  */
 @Composable
 fun DetailsScreen(
@@ -204,7 +233,7 @@ fun DetailsScreen(
             DetailsContent(exploreModel = uiState.cityDetails!!, modifier = modifier.fillMaxSize())
         }
         uiState.isLoading -> {
-            Box(modifier.fillMaxSize()) {
+            Box(modifier = modifier.fillMaxSize()) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colors.onSurface,
                     modifier = Modifier.align(Alignment.Center)
@@ -217,6 +246,9 @@ fun DetailsScreen(
     }
 }
 
+/**
+ * This Composable displays the information contained in its [ExploreModel] parameter [exploreModel].
+ */
 @Composable
 fun DetailsContent(
     exploreModel: ExploreModel,
