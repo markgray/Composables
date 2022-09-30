@@ -75,6 +75,7 @@ import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.ui.theme.JetnewsTypography
 
 /**
  * The default spacer size that is used by several [Spacer] Composables
@@ -82,7 +83,27 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 private val defaultSpacerSize = 16.dp
 
 /**
- * Displays the contents of a [Post].
+ * Displays the contents of a [Post]. Our root Composable is a [LazyColumn] whose `modifier` argument
+ * adds a [Modifier.padding] to our [modifier] parameter whose `horizontal` (space along the left and
+ * right edges) argument is [defaultSpacerSize] (16.dp). The `content` of the [LazyColumn] is:
+ *  - an `item` which contains a [Spacer] whose `modifier` argument uses a [Modifier.height] of
+ *  [defaultSpacerSize] set to its height to 16.dp, followed by a [PostHeaderImage] Composable whose
+ *  `post` argument is our [Post] parameter [post].
+ *  - an `item` which contains a [Text] displaying the [Post.title] of our [Post] parameter [post]
+ *  using as its `style` the `h4` [TextStyle] of [MaterialTheme.typography] (which is defined in
+ *  our [JetnewsTypography] to be [FontFamily] `Montserrat` with `fontWeight` [FontWeight.SemiBold],
+ *  `fontSize` of 30.sp, and `letterSpacing` of 0.sp), below this in the `item` is a [Spacer] whose
+ *  `modifier` argument uses a [Modifier.height] of 8.dp set to its height.
+ *  - If the [Post.subtitle] field of our parameter [post] is not `null` we compose an `item` which
+ *  contains a [CompositionLocalProvider] which has [LocalContentAlpha] (the `CompositionLocal` of
+ *  the preferred content alpha for a given position in the hierarchy) provide [ContentAlpha.medium]
+ *  (A medium level of content alpha, used to represent medium emphasis text such as placeholder text
+ *  in a TextField) to material design widgets when ask for the [LocalContentAlpha]. The `content`
+ *  of the [CompositionLocalProvider] is a [Text] displaying the [Post.subtitle] of [post] (passed
+ *  as `subtitle` to the lambda of the [let] extension function), using `body2` [TextStyle] of
+ *  [MaterialTheme.typography] (which is defined in our [JetnewsTypography] to be [FontFamily]
+ *  `Montserrat` with `fontWeight` [FontWeight.Medium], `fontSize` of 14.sp, and `letterSpacing` of
+ *  0.25.sp)), and the `lineHeight` argument of the [Text] is 20.sp
  */
 @Composable
 fun PostContent(post: Post, modifier: Modifier = Modifier) {
