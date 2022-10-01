@@ -21,6 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,14 +30,18 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.Typography
@@ -44,10 +49,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.LocalDensity
@@ -76,6 +84,7 @@ import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.theme.JetnewsTypography
+import com.example.jetnews.utils.supportWideScreen
 
 /**
  * The default spacer size that is used by several [Spacer] Composables
@@ -104,6 +113,22 @@ private val defaultSpacerSize = 16.dp
  *  [MaterialTheme.typography] (which is defined in our [JetnewsTypography] to be [FontFamily]
  *  `Montserrat` with `fontWeight` [FontWeight.Medium], `fontSize` of 14.sp, and `letterSpacing` of
  *  0.25.sp)), and the `lineHeight` argument of the [Text] is 20.sp
+ *  - an `item` which contains a [PostMetadata] Composable whose `metadata` argument is the [Metadata]
+ *  in the [Post.metadata] field of [post], and this [PostMetadata] is followed by a [Spacer] whose
+ *  `modifier` argument specifies a height of [defaultSpacerSize] (16.dp)
+ *  - an `items` whose `items` argument is the [Post.paragraphs] list of [Paragraph] field of [post].
+ *  The `itemContent` is a [Paragraph] Composable for every [Paragraph] in the [Post.paragraphs] list.
+ *  - at the bottom of the [LazyColumn] is a [Spacer] whose `modifier` argument specifies a height
+ *  of 48.dp
+ *
+ * @param post the [Post] whose information we are to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller ([ArticleScreen]) calls us with a [Modifier.padding] of the [PaddingValues]
+ * passed as the parameter of the `content` lambda of the [Scaffold] of [ArticleScreen] to which it
+ * adds a [Modifier.supportWideScreen] (file utils/Modifiers.kt) which supports wide screen by making
+ * the content width max 840dp, centered horizontally using a [Modifier.fillMaxWidth] to which is
+ * added a [Modifier.wrapContentWidth] whose `align` argument is [Alignment.CenterHorizontally] to
+ * which is added a [Modifier.widthIn] whose `max` argument is 840.dp
  */
 @Composable
 fun PostContent(post: Post, modifier: Modifier = Modifier) {
@@ -134,7 +159,7 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
             PostMetadata(metadata = post.metadata)
             Spacer(modifier = Modifier.height(24.dp))
         }
-        items(post.paragraphs) {
+        items(items = post.paragraphs) {
             Paragraph(paragraph = it)
         }
         item {
@@ -143,14 +168,34 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Used to display in an [Image] the drawable whose resource ID is in the [Post.imageId] field of
+ * our [Post] parameter [post]. We start by initializing our [Modifier] variable `val imageModifier`
+ * to a [Modifier.heightIn] whose `min` argument is 180.dp (constrains the height of the content to
+ * be at least 180.dp) to which is added a [Modifier.fillMaxWidth] to have it occupy the entire width
+ * allowed it by the incoming constraints, to which is added a [Modifier.clip] whose `shape` argument
+ * is the `medium` [Shape] of [MaterialTheme.shapes] (which is a [RoundedCornerShape] of 4.dp in our
+ * [JetnewsTheme] custom [MaterialTheme]) and this will Clip the content to that shape.
+ *
+ * Our Composables consist of an [Image] whose `painter` argument is the [Painter] that the method
+ * [painterResource] returns for the resource ID in the [Post.imageId] field of our [Post] parameter
+ * [post], whose `contentDescription` argument is `null`, whose `modifier` argument is our [Modifier]
+ * variable `imageModifier`, and whose `contentScale` argument is [ContentScale.Crop] (which will
+ * Scale the source uniformly, maintaining the source's aspect ratio). Below the [Image] is a
+ * [Spacer] whose `modifier` argument uses a [Modifier.height] of [defaultSpacerSize] to set its
+ * height to 16.dp
+ *
+ * @param post the [Post] whose [Post.imageId] drawable resource ID we are supposed to display in an
+ * [Image].
+ */
 @Composable
 private fun PostHeaderImage(post: Post) {
-    val imageModifier = Modifier
+    val imageModifier: Modifier = Modifier
         .heightIn(min = 180.dp)
         .fillMaxWidth()
         .clip(shape = MaterialTheme.shapes.medium)
     Image(
-        painter = painterResource(post.imageId),
+        painter = painterResource(id = post.imageId),
         contentDescription = null,
         modifier = imageModifier,
         contentScale = ContentScale.Crop
@@ -158,6 +203,10 @@ private fun PostHeaderImage(post: Post) {
     Spacer(modifier = Modifier.height(defaultSpacerSize))
 }
 
+/**
+ * This Composable displays the information found in its [Metadata] parameter [metadata]. Every
+ * [Post] in our fake dataset holds an instance of [Metadata] in its [Post.metadata] field.
+ */
 @Composable
 private fun PostMetadata(metadata: Metadata) {
     val typography = MaterialTheme.typography

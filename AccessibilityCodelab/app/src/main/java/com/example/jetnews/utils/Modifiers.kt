@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 /**
  * Support wide screen by making the content width max 840dp, centered horizontally.
  */
-fun Modifier.supportWideScreen() = this
+fun Modifier.supportWideScreen(): Modifier = this
     .fillMaxWidth()
     .wrapContentWidth(align = Alignment.CenterHorizontally)
     .widthIn(max = 840.dp)
