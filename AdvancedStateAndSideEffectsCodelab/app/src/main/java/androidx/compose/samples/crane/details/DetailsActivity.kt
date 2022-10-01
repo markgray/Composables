@@ -48,13 +48,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.Result
+import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.home.MainActivity
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -64,6 +70,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.libraries.maps.CameraUpdateFactory
+import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
 import com.google.maps.android.ktx.addMarker
@@ -248,6 +255,40 @@ fun DetailsScreen(
 
 /**
  * This Composable displays the information contained in its [ExploreModel] parameter [exploreModel].
+ * Our root Composable is a [Column], whose `modifier` argument is our [Modifier] parameter [modifier],
+ * and whose `verticalArrangement` argument is [Arrangement.Center] which causes the [Column] to place
+ * its children such that they are as close as possible to the middle of the main axis. The `content`
+ * of the [Column] is:
+ *  - a [Spacer] whose `modifier` argument specifies a height of 32.dp
+ *  - a [Text] whose `modifier` argument is a `ColumnScope` `Modifier.align` whose `alignment` argument
+ *  of [Alignment.CenterHorizontally] causes it to be centered in the [Column], whose `text` argument
+ *  is the [City.nameToDisplay] field of the [ExploreModel.city] field of our [exploreModel] parameter,
+ *  whose `style` parameter is the `h4` [TextStyle] of [MaterialTheme.typography] (our [CraneTheme]
+ *  defines this to be the `craneFontFamily` [FontFamily] with a [FontWeight] of [FontWeight.W600]
+ *  and a `fontSize` of 34.sp, which is the [Font] with resource ID [R.font.raleway_semibold] see the
+ *  file ui/Typography.kt), and the `textAlign` argument of the [Text] is [TextAlign.Center] which
+ *  aligns the text in the center of the container.
+ *  - a [Text] whose `modifier` argument is a `ColumnScope` `Modifier.align` whose `alignment` argument
+ *  of [Alignment.CenterHorizontally] causes it to be centered in the [Column], whose `text` argument
+ *  is the [ExploreModel.description] field of our [exploreModel] parameter, whose `style` parameter
+ *  is the `h6` [TextStyle] of [MaterialTheme.typography] (our [CraneTheme] defines this to be the
+ *  `craneFontFamily` [FontFamily] with a [FontWeight] of [FontWeight.W400] and a `fontSize` of 20.sp,
+ *  which is the [Font] with resource ID [R.font.raleway_regular] see the file ui/Typography.kt), and
+ *  the `textAlign` argument of the [Text] is [TextAlign.Center] which aligns the text in the center
+ *  of the container.
+ *  - a [Spacer] whose `modifier` argument specifies a height of 16.dp
+ *  - a [CityMapView] Composable whose `latitude` argument is the [City.latitude] field of the
+ *  [ExploreModel.city] field of our parameter [exploreModel], and whose `longitude` argument is the
+ *  [City.longitude] field of the [ExploreModel.city] field of our parameter [exploreModel] which
+ *  will create a [MapView] and cause a [GoogleMap] at that `latitude` and `longitude` to be loaded
+ *  into it.
+ *
+ * @param exploreModel the [ExploreModel] whose information we are supposed to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our [DetailsScreen] caller adds a [Modifier.fillMaxSize] to its own `modifier` parameter,
+ * which is the [Modifier.statusBarsPadding] chained to a [Modifier.navigationBarsPadding] that is
+ * passed to [DetailsScreen] when it is called by the [ComponentActivity.setContent] method in the
+ * [DetailsActivity.onCreate] override of [ComponentActivity.onCreate] in [DetailsActivity].
  */
 @Composable
 fun DetailsContent(
@@ -255,52 +296,68 @@ fun DetailsContent(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
-        Spacer(Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
             text = exploreModel.city.nameToDisplay,
             style = MaterialTheme.typography.h4,
             textAlign = TextAlign.Center
         )
         Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
             text = exploreModel.description,
             style = MaterialTheme.typography.h6,
             textAlign = TextAlign.Center
         )
-        Spacer(Modifier.height(16.dp))
-        CityMapView(exploreModel.city.latitude, exploreModel.city.longitude)
+        Spacer(modifier = Modifier.height(16.dp))
+        CityMapView(latitude = exploreModel.city.latitude, longitude = exploreModel.city.longitude)
     }
 }
 
+/**
+ * This Composable exists to handle the lifecycle of a [MapView] which it passes to [MapViewContainer]
+ * as its `map` argument to have it load a [GoogleMap] into it. The updates to the [MapView] needed
+ * when the "Zoom" buttons are clicked are handled by the [MapViewContainer] so that when an update
+ * to the [MapView] happens, this composable won't recompose and the [MapView] won't need to be recreated.
+ * We use our [rememberMapViewWithLifecycle] method to create and "remember" a [MapView] which we use
+ * to initialize our variable `val mapView`. Then we call the [MapViewContainer] Composable with
+ * `mapView` as its `map` [MapView] argument, our [String] parameter [latitude] as its `latitude`
+ * argument, and our [String] parameter [longitude] as its `longitude` argument.
+ *
+ * @param latitude the [City.latitude] location of the city whose map we are to show.
+ * @param longitude the [City.longitude] location of the city whose map we are to show.
+ */
 @Composable
 private fun CityMapView(latitude: String, longitude: String) {
     // The MapView lifecycle is handled by this composable. As the MapView also needs to be updated
     // with input from Compose UI, those updates are encapsulated into the MapViewContainer
     // composable. In this way, when an update to the MapView happens, this composable won't
     // recompose and the MapView won't need to be recreated.
-    val mapView = rememberMapViewWithLifecycle()
-    MapViewContainer(mapView, latitude, longitude)
+    val mapView: MapView = rememberMapViewWithLifecycle()
+    MapViewContainer(map = mapView, latitude = latitude, longitude = longitude)
 }
 
+/**
+ *
+ */
 @Composable
 private fun MapViewContainer(
     map: MapView,
     latitude: String,
     longitude: String
 ) {
-    val cameraPosition = remember(latitude, longitude) {
+    val cameraPosition: LatLng = remember(latitude, longitude) {
         LatLng(latitude.toDouble(), longitude.toDouble())
     }
 
     LaunchedEffect(map) {
-        val googleMap = map.awaitMap()
+        val googleMap: GoogleMap = map.awaitMap()
         googleMap.addMarker { position(cameraPosition) }
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraPosition))
     }
 
-    var zoom by rememberSaveable(map) { mutableStateOf(InitialZoom) }
-    ZoomControls(zoom) {
+    var zoom: Float by rememberSaveable(map) { mutableStateOf(InitialZoom) }
+    ZoomControls(zoom = zoom) {
         zoom = it.coerceIn(MinZoom, MaxZoom)
     }
 
@@ -308,9 +365,9 @@ private fun MapViewContainer(
     AndroidView({ map }) { mapView ->
         // Reading zoom so that AndroidView recomposes when it changes. The getMapAsync lambda
         // is stored for later, Compose doesn't recognize state reads
-        val mapZoom = zoom
+        val mapZoom: Float = zoom
         coroutineScope.launch {
-            val googleMap = mapView.awaitMap()
+            val googleMap: GoogleMap = mapView.awaitMap()
             googleMap.setZoom(mapZoom)
             // Move camera to the same place to trigger the zoom update
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraPosition))
