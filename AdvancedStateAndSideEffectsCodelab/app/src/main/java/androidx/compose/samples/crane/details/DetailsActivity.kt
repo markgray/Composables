@@ -41,6 +41,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -69,14 +70,18 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.libraries.maps.CameraUpdate
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
+import com.google.android.libraries.maps.model.MarkerOptions
 import com.google.maps.android.ktx.addMarker
 import com.google.maps.android.ktx.awaitMap
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 /**
  * The key under which the city name is stored as an extra in the [Intent] used to launch
@@ -338,7 +343,50 @@ private fun CityMapView(latitude: String, longitude: String) {
 }
 
 /**
+ * This Composable holds an [AndroidView] that displays its [MapView] parameter [map] and the [Row]
+ * of two [ZoomButton]'s rendered by the [ZoomControls] Composable. It starts by "remembering"
+ * in its [LatLng] variable `val cameraPosition` the [LatLng] constructed from the double values
+ * of its [String] parameters [latitude] and [longitude] using [latitude] and [longitude] as the
+ * `key1` and `key2 arguments of remember (this will remember the value returned by its lambda
+ * argument if `key1` and `key2` are equal to the previous composition, otherwise it will produce
+ * and remember a new value by re-executing the lambda). Then it calls [LaunchedEffect] with [map]
+ * as its `key1` (When [LaunchedEffect] enters the composition it will launch its lambda block into
+ * the composition's [CoroutineContext]. The coroutine will be cancelled and re-launched when
+ * [LaunchedEffect] is recomposed with a different `key1`. The coroutine will be cancelled when the
+ * [LaunchedEffect] leaves the composition). The lambda `block` of [LaunchedEffect] initializes its
+ * [GoogleMap] variable `val googleMap` to the [GoogleMap] that the [MapView.awaitMap] suspend function
+ * of [map] returns. When resumed it calls the [GoogleMap.addMarker] method of `googleMap` with the
+ * [MarkerOptions] returned by the [MarkerOptions.position] method when called with the [LatLng]
+ * variable `cameraPosition`. The lambda then calls the [GoogleMap.moveCamera] method of `googleMap`
+ * with the [CameraUpdate] returned by the [CameraUpdateFactory.newLatLng] method for `cameraPosition`.
  *
+ * Next we call [rememberSaveable] with [map] as its `inputs` argument (when it changes it will cause
+ * the state to reset and `init` lambda to be rerun) to initialize our [Float] variable `var zoom`
+ * to a [MutableState] whose initial value is [InitialZoom] (5f). Then we call the [ZoomControls]
+ * Composable with `zoom` as its `zoom` argument, and as its `onZoomChanged` lambda a lambda which
+ * sets `zoom` to the [Float] argument of the lambda after "coercing" it to be between [MinZoom] (2f)
+ * and [MaxZoom] (20f).
+ *
+ * We initialize and remember our [CoroutineScope] variable `val coroutineScope` to the [CoroutineScope]
+ * bound to this point in the composition that [rememberCoroutineScope] returns (the same [CoroutineScope]
+ * instance will be returned across recompositions).
+ *
+ * Finally we call the [AndroidView] Composable with a lambda returning our [MapView] parameter [map]
+ * as its `factory` argument. The `update` lambda then has it as its [MapView] argument `mapView`.
+ * the lambda sets its [Float] varible `val mapZoom` so that the [AndroidView] recomposes when `zoom`
+ * changes, then it launches a new coroutine (without blocking the current thread) using [CoroutineScope]
+ * `coroutineScope` and then in the lambda `block` of the launched coroutine it initializes its
+ * [GoogleMap] variable `val googleMap` to the [GoogleMap] that the [MapView.awaitMap] suspend
+ * function of [map] returns. On resuming it calls our [GoogleMap.setZoom] extension function on
+ * `googleMap` with `mapZoom` as its `zoom` argument which does the magic needed to "zoom" the
+ * [GoogleMap]. Finally the lambda calls the [GoogleMap.moveCamera] method of `googleMap` with the
+ * [CameraUpdate] returned by the [CameraUpdateFactory.newLatLng] method for `cameraPosition` (it
+ * moves the camera to the same place to trigger the zoom update).
+ *
+ * @param map the [MapView] instance that we are to have load a [GoogleMap] of the area around our
+ * [latitude] and [longitude] parameters then display in an [AndroidView].
+ * @param latitude the [String] value of the [latitude] of the location of interest.
+ * @param longitude the [String] value of the [longitude] of the location of interest.
  */
 @Composable
 private fun MapViewContainer(
@@ -361,20 +409,23 @@ private fun MapViewContainer(
         zoom = it.coerceIn(MinZoom, MaxZoom)
     }
 
-    val coroutineScope = rememberCoroutineScope()
-    AndroidView({ map }) { mapView ->
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    AndroidView(factory = { map }) { mapView: MapView ->
         // Reading zoom so that AndroidView recomposes when it changes. The getMapAsync lambda
         // is stored for later, Compose doesn't recognize state reads
         val mapZoom: Float = zoom
         coroutineScope.launch {
             val googleMap: GoogleMap = mapView.awaitMap()
-            googleMap.setZoom(mapZoom)
+            googleMap.setZoom(zoom = mapZoom)
             // Move camera to the same place to trigger the zoom update
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraPosition))
         }
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun ZoomControls(
     zoom: Float,
