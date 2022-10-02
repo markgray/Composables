@@ -52,10 +52,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.LocalDensity
@@ -66,6 +68,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -75,6 +78,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
@@ -82,6 +86,7 @@ import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.theme.JetnewsTypography
 import com.example.jetnews.utils.supportWideScreen
@@ -205,17 +210,46 @@ private fun PostHeaderImage(post: Post) {
 
 /**
  * This Composable displays the information found in its [Metadata] parameter [metadata]. Every
- * [Post] in our fake dataset holds an instance of [Metadata] in its [Post.metadata] field.
+ * [Post] in our fake dataset holds an instance of [Metadata] in its [Post.metadata] field. First
+ * we initialize our [Typography] variable `val typography` to [MaterialTheme.typography] (the
+ * current [Typography] at the call site's position in the hierarchy). We then use a [Row] Composable
+ * as our root Composable whose `modifier` argument is a [Modifier.semantics] whose `mergeDescendants`
+ * argument is `true` (this adds the semantic key/value pair to the layout node for use in testing,
+ * accessibility, etc. With `mergeDescendants` equal to `true` semantic information provided by the
+ * owning component and its descendants will be treated as one logical entity). The content of the
+ * [Row] is:
+ *  - an [Image] displaying the `imageVector` [Icons.Filled.AccountCircle] (this is a stylized line
+ *  drawing a head and shoulders, white on black, with a circle for the head and a irregular ovoid
+ *  for the shoulders), the `contentDescription` argument is `null`, the `modifier` argument is a
+ *  [Modifier.size] of 40.dp to set its size, the `colorFilter` argument is a [ColorFilter.tint] of
+ *  the `current` [LocalContentColor] `color` (this sets the [ColorFilter] to apply for the [ImageVector]
+ *  when it is rendered onscreen to one which uses the current `onPrimary` color using the [ColorFilter.tint]
+ *  default [BlendMode.SrcIn] as the [BlendMode] used to blend source content which shows the source
+ *  image, but only where the two images overlap), and the `contentScale` argument is [ContentScale.Fit]
+ *  which scales the source uniformly maintaining the source's aspect ratio.
+ *  - a [Spacer] whose [Modifier.width] `modifier` argument sets its width to 8.dp
+ *  - a [Column] which holds a [Text] displaying the [PostAuthor.name] of the [Metadata.author] field
+ *  of our parameter [metadata] using the `caption` [TextStyle] of `typography` (which is the [FontFamily]
+ *  Montserrat, with `fontWeight` [FontWeight.Medium], `fontSize` of 12.sp, and `letterSpacing` 0.4.sp
+ *  which is the [Font] with resource ID [R.font.montserrat_medium]), and the `modifier` argument of
+ *  the [Text] is a [Modifier.padding] that adds 4.dp padding to the `top` of the [Text]. Below this
+ *  is a [Text] wrapped in a [CompositionLocalProvider] which has its `content` use [ContentAlpha.medium]
+ *  for its [LocalContentAlpha] (a medium level of content alpha, used to represent medium emphasis
+ *  text such as placeholder text in a TextField). The [Text] `content` of the [CompositionLocalProvider]
+ *  displays the [Metadata.date] and [Metadata.readTimeMinutes] fields of [metadata] as its `text`
+ *  also using the `caption` [TextStyle] of `typography`.
+ *
+ * @param metadata the [Metadata] whose information we are supposed to display.
  */
 @Composable
 private fun PostMetadata(metadata: Metadata) {
-    val typography = MaterialTheme.typography
+    val typography: Typography = MaterialTheme.typography
     Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
         Image(
             imageVector = Icons.Filled.AccountCircle,
             contentDescription = null,
-            modifier = Modifier.size(40.dp),
-            colorFilter = ColorFilter.tint(LocalContentColor.current),
+            modifier = Modifier.size(size = 40.dp),
+            colorFilter = ColorFilter.tint(color = LocalContentColor.current),
             contentScale = ContentScale.Fit
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -236,14 +270,40 @@ private fun PostMetadata(metadata: Metadata) {
     }
 }
 
+/**
+ * This Composable converts the contents of its [Paragraph] parameter [paragraph] to an [AnnotatedString]
+ * and displays it. First we destructure the [ParagraphStyling] object returned by the extension function
+ * [ParagraphType.getTextAndParagraphStyle] when applied to the [ParagraphType] in the [Paragraph.type]
+ * field of [paragraph] resulting in the variables:
+ *  - `textStyle` the [TextStyle] that is appropriate for the [ParagraphType]
+ *  - `paragraphStyle` the [ParagraphStyle] that is appropriate for the [ParagraphType]
+ *  - `trailingPadding` the padding that should be added to the `bottom` of the [Box] which holds
+ *  the rendering of the [Paragraph].
+ *
+ * Next we initialize our [AnnotatedString] variable `val annotatedString` to the [AnnotatedString]
+ * that the [paragraphToAnnotatedString] creates when called with our [Paragraph] parameter [paragraph]
+ * as its `paragraph` argument, [MaterialTheme.typography] as its `typography` argument, and the
+ * `codeBlockBackground` [Color] of [MaterialTheme.colors] (which is a copy of `onSurface` with an
+ * `alpha` of 0.15f, `onSurface` is the default [Color.Black] since our [JetnewsTheme] does not
+ * specify it). The root Composable of this Composable is a [Box] whose `modifier` is a
+ * [Modifier.padding] that set its `bottom` padding to `trailingPadding`. The `content` of the [Box]
+ * depends on the [ParagraphType] that is in the [Paragraph.type] field of [paragraph]:
+ *  - [ParagraphType.Bullet] causes a [BulletParagraph] to be displayed whose `text` argument is
+ *  the [AnnotatedString] in `annotatedString`, whose `textStyle` argument is the [TextStyle] in
+ *  `textStyle` and whose `paragraphStyle` argument is the [ParagraphStyle] in `paragraphStyle`.
+ */
 @Composable
 private fun Paragraph(paragraph: Paragraph) {
-    val (textStyle, paragraphStyle, trailingPadding) = paragraph.type.getTextAndParagraphStyle()
+    val (
+        textStyle: TextStyle,
+        paragraphStyle: ParagraphStyle,
+        trailingPadding: Dp
+    ) = paragraph.type.getTextAndParagraphStyle()
 
     val annotatedString: AnnotatedString = paragraphToAnnotatedString(
-        paragraph,
-        MaterialTheme.typography,
-        MaterialTheme.colors.codeBlockBackground
+        paragraph = paragraph,
+        typography = MaterialTheme.typography,
+        codeBlockBackground = MaterialTheme.colors.codeBlockBackground
     )
     Box(modifier = Modifier.padding(bottom = trailingPadding)) {
         when (paragraph.type) {
