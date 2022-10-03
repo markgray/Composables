@@ -30,8 +30,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -60,6 +60,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.heading
@@ -75,6 +76,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -291,6 +293,20 @@ private fun PostMetadata(metadata: Metadata) {
  *  - [ParagraphType.Bullet] causes a [BulletParagraph] to be displayed whose `text` argument is
  *  the [AnnotatedString] in `annotatedString`, whose `textStyle` argument is the [TextStyle] in
  *  `textStyle` and whose `paragraphStyle` argument is the [ParagraphStyle] in `paragraphStyle`.
+ *  - [ParagraphType.CodeBlock] causes a [CodeBlockParagraph] to be displayed whose `text` argument
+ *  is the [AnnotatedString] in `annotatedString`, whose `textStyle` argument is the [TextStyle] in
+ *  `textStyle` and whose `paragraphStyle` argument is the [ParagraphStyle] in `paragraphStyle`.
+ *  - [ParagraphType.Header] causes a [Text] to be displayed whose `modifier` argument is a
+ *  [Modifier.padding] of 4.dp for all sides of the contents to which is chained a [Modifier.semantics]
+ *  of [heading] to mark the node as a "heading" for accessibility. Its `text` argument is the
+ *  [AnnotatedString] in `annotatedString`, and its `style` is the [TextStyle] `textStyle` to which
+ *  [TextStyle.merge] is used to create a new text style that is a combination of `textStyle` and
+ *  `paragraphStyle`.
+ *  - For all other [ParagraphType] a [Text] is displayed whose `modifier` argument is a
+ *  [Modifier.padding] of 4.dp for all sides of the contents, whose `text` argument is the
+ *  [AnnotatedString] in `annotatedString`, and whose `style` is the [TextStyle] `textStyle`
+ *
+ * @param paragraph the [Paragraph] whose information we are to display.
  */
 @Composable
 private fun Paragraph(paragraph: Paragraph) {
@@ -319,14 +335,14 @@ private fun Paragraph(paragraph: Paragraph) {
             )
             ParagraphType.Header -> {
                 Text(
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(all = 4.dp)
                         .semantics { heading() },
                     text = annotatedString,
                     style = textStyle.merge(paragraphStyle)
                 )
             }
             else -> Text(
-                modifier = Modifier.padding(4.dp),
+                modifier = Modifier.padding(all = 4.dp),
                 text = annotatedString,
                 style = textStyle
             )
@@ -334,6 +350,25 @@ private fun Paragraph(paragraph: Paragraph) {
     }
 }
 
+/**
+ * This Composable is called to display a [Paragraph] whose [ParagraphType] field [Paragraph.type]
+ * is [ParagraphType.CodeBlock]. Our root Composable is a [Surface] whose `color` argument sets its
+ * background color to the `codeBlockBackground` [Color] of [MaterialTheme.colors] (which is a copy
+ * of `onSurface` with an `alpha` of 0.15f, `onSurface` is the default [Color.Black] since our
+ * [JetnewsTheme] does not specify it), whose `shape` argument is the `small` [Shape] of
+ * [MaterialTheme.shapes] which is a [RoundedCornerShape] of 4.dp in our [JetnewsTheme], and whose
+ * `modifier` argument is a [Modifier.fillMaxWidth] to have its `content` fill the maximum incoming
+ * measurement constraints. It `content` Composable is a [Text] whose `modifier` argument is a
+ * [Modifier.padding] that adds 16.dp to all sides of the contents of the [Text], whose `text` is
+ * the [AnnotatedString] in our parameter [text], and whose `style` is our [TextStyle] parameter
+ * `textStyle` to which [TextStyle.merge] is used to create a new text style that is a combination of
+ * `textStyle` and our [ParagraphStyle] parameter `paragraphStyle`.
+ *
+ * @param text the [AnnotatedString] that we should display in our [Text]
+ * @param textStyle the [TextStyle] that our [Text] should use to display our [text] parameter.
+ * @param paragraphStyle the [ParagraphStyle] that our [Text] should use to display our [text]
+ * parameter.
+ */
 @Composable
 private fun CodeBlockParagraph(
     text: AnnotatedString,
@@ -346,13 +381,39 @@ private fun CodeBlockParagraph(
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(all = 16.dp),
             text = text,
             style = textStyle.merge(paragraphStyle)
         )
     }
 }
 
+/**
+ * This Composable is called to display a [Paragraph] whose [ParagraphType] field [Paragraph.type]
+ * is [ParagraphType.Bullet]. Our root Composable is a [Row] which contains a [Box] which is wrapped
+ * in a [with] scope function that causes the  `current` [LocalDensity] (the [Density] to be used to
+ * transform between density-independent pixelunits (DP) and pixel units or scale-independent pixel
+ * units (SP) and pixel units) to be the `this` receiver for the conversions used by its [Modifier].
+ * The `modifier` argument of the [Box] is a [Modifier.size] that sets its width to 8.sp (converted
+ * to Dp) and its `height` to 8.sp (converted to Dp). A `RowScope` `Modifier.alignBy` is added to
+ * the [Modifier.size] that adds an alignment "baseline" 1sp below the bottom of the circle, which
+ * is created by a [Modifier.background] whose `color` argument is the `current` [LocalContentColor]
+ * (the preferred content color for our position in the hierarchy), and whose `shape` argument is
+ * [CircleShape] (Circular [RoundedCornerShape] with all the corners sized as the 50 percent of the
+ * shape size). The other Composable in the [Row] is a [Text] whose `modifier` parameter is a
+ * `RowScope` `Modifier.weight` with a `weight` of 1f (the [Text] gets all the space left over in
+ * the [Row] after its sibling is measured and placed) to which is added a `RowScope` `Modifier.alignBy`
+ * of [FirstBaseline] (the [HorizontalAlignmentLine] defined by the baseline of the first line of the
+ * text contents of the [Text]), whose `text` argument is our [AnnotatedString] parameter [text],
+ * and whose `style` is our [TextStyle] parameter `textStyle` to which [TextStyle.merge] is used to
+ * create a new text style that is a combination of `textStyle` and our [ParagraphStyle] parameter
+ * `paragraphStyle`.
+ *
+ * @param text the [AnnotatedString] that we should display in our [Text]
+ * @param textStyle the [TextStyle] that our [Text] should use to display our [text] parameter.
+ * @param paragraphStyle the [ParagraphStyle] that our [Text] should use to display our [text]
+ * parameter.
+ */
 @Composable
 private fun BulletParagraph(
     text: AnnotatedString,
@@ -364,17 +425,17 @@ private fun BulletParagraph(
             // this box is acting as a character, so it's sized with font scaling (sp)
             Box(
                 modifier = Modifier
-                    .size(8.sp.toDp(), 8.sp.toDp())
+                    .size(width = 8.sp.toDp(), height = 8.sp.toDp())
                     .alignBy {
                         // Add an alignment "baseline" 1sp below the bottom of the circle
                         9.sp.roundToPx()
                     }
-                    .background(LocalContentColor.current, CircleShape),
+                    .background(color = LocalContentColor.current, shape = CircleShape),
             ) { /* no content */ }
         }
         Text(
             modifier = Modifier
-                .weight(1f)
+                .weight(weight = 1f)
                 .alignBy(FirstBaseline),
             text = text,
             style = textStyle.merge(paragraphStyle)
@@ -382,6 +443,9 @@ private fun BulletParagraph(
     }
 }
 
+/**
+ *
+ */
 private data class ParagraphStyling(
     val textStyle: TextStyle,
     val paragraphStyle: ParagraphStyle,
