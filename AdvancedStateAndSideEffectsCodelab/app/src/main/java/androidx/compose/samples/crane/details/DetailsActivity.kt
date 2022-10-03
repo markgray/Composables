@@ -39,6 +39,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -55,6 +56,7 @@ import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.home.MainActivity
 import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.samples.crane.ui.craneTypography
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -424,23 +426,56 @@ private fun MapViewContainer(
 }
 
 /**
+ * This Composable holds two [ZoomButton] Composables in a [Row] which allow the user to decrease or
+ * increase the [zoom] that [MapViewContainer] applies to the [GoogleMap] displayed in its [MapView].
+ * The `modifier` argument of the [Row] root Composable is a [Modifier.fillMaxWidth] to have its
+ * content fill the maximum incoming measurement constraints, and its `horizontalArrangement` argument
+ * is [Arrangement.Center] so that its children are placed as close as possible to the middle of the
+ * main axis. The `content` of the [Row] is two [ZoomButton] Composables, the `text` argument of the
+ * first one is the [String] "-" and its `onClick` argument is a lambda which calls our [onZoomChanged]
+ * parameter with our [zoom] parameter multiplied by 0.8f. The `text` argument of the second one is
+ * the [String] "+" and its `onClick` argument is a lambda which calls our [onZoomChanged] parameter
+ * with our [zoom] parameter multiplied by 1.2f.
  *
+ * @param zoom the current value of "zoom" that has been applied to the [GoogleMap] displayed in the
+ * [MapView] used by the [MapViewContainer] Composable.
+ * @param onZoomChanged a lambda which should be called with a new value for [zoom] when one of our
+ * [ZoomButton] Composables is clicked.
  */
 @Composable
 private fun ZoomControls(
     zoom: Float,
     onZoomChanged: (Float) -> Unit
 ) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        ZoomButton("-", onClick = { onZoomChanged(zoom * 0.8f) })
-        ZoomButton("+", onClick = { onZoomChanged(zoom * 1.2f) })
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+        ZoomButton(text = "-", onClick = { onZoomChanged(zoom * 0.8f) })
+        ZoomButton(text = "+", onClick = { onZoomChanged(zoom * 1.2f) })
     }
 }
 
+/**
+ * This Composable holds a [Button] whose label is our [String] parameter [text] and whose `onClick`
+ * argument calls our [onClick] lambda when the [Button] is clicked. The `modifier` argument of the
+ * [Button] is a [Modifier.padding] that adds 8.dp padding to all sides of the [Button], the `colors`
+ * argument is a [ButtonDefaults.buttonColors] whose `backgroundColor` (background color of the Button
+ * when it is enabled) is the `onPrimary` [Color] of [MaterialTheme.colors] (our [CraneTheme] custom
+ * [MaterialTheme] does not specify one, so the default [Color.White] is used), and whose `contentColor`
+ * (content color of the [Button] when enabled) is the `primary` [Color] of [MaterialTheme.colors]
+ * (`crane_purple_800` aka `Color(0xFF5D1049)` is specified by our [CraneTheme] custom [MaterialTheme]),
+ * and the `onClick` argument of the [Button] is our [onClick] lambda parameter. The `content` of the
+ * [Button] is a [Text] whose `text` argument is our [text] parameter, and whose `style` parameter is
+ * the `h5` [TextStyle] of [MaterialTheme.typography] which our [CraneTheme] custom [MaterialTheme]
+ * specifies in its [craneTypography] custom [Typography] to be the [FontFamily] `craneFontFamily`
+ * with a [FontWeight] of [FontWeight.W600] (the [Font] with resource ID [R.font.raleway_semibold])
+ * and with a `fontSize` of 24.sp
+ *
+ * @param text the label of the [Button] (ie. its [Text] `content` displays it).
+ * @param onClick a lambda that the [Button] should call when it is clicked.
+ */
 @Composable
 private fun ZoomButton(text: String, onClick: () -> Unit) {
     Button(
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier.padding(all = 8.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colors.onPrimary,
             contentColor = MaterialTheme.colors.primary
@@ -451,6 +486,22 @@ private fun ZoomButton(text: String, onClick: () -> Unit) {
     }
 }
 
+/**
+ * The initial value of "zoom" that is applied to the [GoogleMap] contained in the [MapView] of the
+ * [MapViewContainer] Composable.
+ */
 private const val InitialZoom = 5f
+
+/**
+ * The minimum value of "zoom" that can be applied to the [GoogleMap] contained in the [MapView] of
+ * the [MapViewContainer] Composable. The value that the user requests by clicking the [ZoomButton]
+ * Composables is "coerced" to be between [MinZoom] and [MaxZoom].
+ */
 const val MinZoom = 2f
+
+/**
+ * The maximum value of "zoom" that can be applied to the [GoogleMap] contained in the [MapView] of
+ * the [MapViewContainer] Composable. The value that the user requests by clicking the [ZoomButton]
+ * Composables is "coerced" to be between [MinZoom] and [MaxZoom].
+ */
 const val MaxZoom = 20f
