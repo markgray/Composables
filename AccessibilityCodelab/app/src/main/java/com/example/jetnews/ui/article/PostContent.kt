@@ -444,7 +444,13 @@ private fun BulletParagraph(
 }
 
 /**
+ * This class only exists to be a return type, allowing the return of three values from a the extension
+ * function [ParagraphType.getTextAndParagraphStyle].
  *
+ * @param textStyle the [TextStyle] that is appropriate for the [ParagraphType] receiver.
+ * @param paragraphStyle the [ParagraphStyle] that is appropriate for the [ParagraphType] receiver.
+ * @param trailingPadding the bottom padding to be applied to the bottom of the [Box] holding the
+ * rendering of a [Paragraph] whose type is [ParagraphType].
  */
 private data class ParagraphStyling(
     val textStyle: TextStyle,
@@ -452,9 +458,15 @@ private data class ParagraphStyling(
     val trailingPadding: Dp
 )
 
+/**
+ * Extension function of [ParagraphType] that returns a [ParagraphStyling] instance that contains
+ * styling information for rendering a [Paragraph] of type [ParagraphType]. First we initialize our
+ * [Typography] variable `val typography` to [MaterialTheme.typography] (the current [Typography] at
+ * the call site's position in the hierarchy).
+ */
 @Composable
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
-    val typography = MaterialTheme.typography
+    val typography: Typography = MaterialTheme.typography
     var textStyle: TextStyle = typography.body1
     var paragraphStyle = ParagraphStyle()
     var trailingPadding = 24.dp
