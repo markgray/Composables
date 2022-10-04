@@ -460,9 +460,21 @@ private data class ParagraphStyling(
 
 /**
  * Extension function of [ParagraphType] that returns a [ParagraphStyling] instance that contains
- * styling information for rendering a [Paragraph] of type [ParagraphType]. First we initialize our
- * [Typography] variable `val typography` to [MaterialTheme.typography] (the current [Typography] at
- * the call site's position in the hierarchy).
+ * styling information for rendering a [Paragraph] of type [ParagraphType]. The [ParagraphStyling]
+ * class holds the [TextStyle] for this type of [Paragraph] in its [ParagraphStyling.textStyle] field,
+ * the [ParagraphStyle] for this type of [Paragraph] in its [ParagraphStyling.paragraphStyle] field,
+ * and the bottom padding to be applied to the bottom of the [Box] holding the rendering of a
+ * [Paragraph] of this type in its [ParagraphStyling.trailingPadding] field.
+ *
+ * First we initialize our [Typography] variable `val typography` to [MaterialTheme.typography] (the
+ * current [Typography] at the call site's position in the hierarchy, which is [JetnewsTypography]
+ * in our case). We initialize our [TextStyle] variable `var textStyle` to the `body1` [TextStyle]
+ * of `typography`. Our [JetnewsTheme] custom [MaterialTheme] supplies a [TextStyle] whose [FontFamily]
+ * is `Domine` with a [FontWeight] of [FontWeight.Normal] (which is the [Font] with resource ID
+ * [R.font.domine_regular]), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp (see the
+ * [Typography.body1] entry of [JetnewsTypography] in the file ui/theme/Type.kt). We initialize our
+ * [ParagraphStyle] variable `var paragraphStyle` to a new instance, and initialize our variable
+ * `var trailingPadding` to 24.dp
  */
 @Composable
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
