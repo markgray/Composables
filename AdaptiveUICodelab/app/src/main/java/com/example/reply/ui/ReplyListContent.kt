@@ -90,7 +90,7 @@ fun ReplyListAndDetailContent(
 fun ReplyEmailListItem(
     email: Email,
     modifier: Modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-    Card(modifier = modifier,) {
+    Card(modifier = modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -153,7 +153,7 @@ fun ReplyEmailListItem(
 fun ReplyEmailThreadItem(
     email: Email,
     modifier: Modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-    Card(modifier = modifier,  colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+    Card(modifier = modifier, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -200,13 +200,13 @@ fun ReplyEmailThreadItem(
                 color = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
             )
-            
+
             Text(
                 text = email.body,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -268,15 +268,17 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
         )
         Text(text = stringResource(id = R.string.search_replies),
             modifier = Modifier
-            .weight(1f)
-            .padding(16.dp),
+                .weight(1f)
+                .padding(16.dp),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.outline
         )
         ReplyProfileImage(
             drawableResource = R.drawable.avatar_6,
             description = stringResource(id = R.string.profile),
-            modifier = Modifier.padding(12.dp).size(32.dp)
+            modifier = Modifier
+                .padding(12.dp)
+                .size(32.dp)
         )
     }
 }

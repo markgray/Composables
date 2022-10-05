@@ -61,7 +61,7 @@ object LocalEmailsDataProvider {
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
-                    "very quick to put together.",
+                "very quick to put together.",
             createAt = "2 hours ago",
             mailbox = MailboxType.SENT
         ),
@@ -199,7 +199,7 @@ object LocalEmailsDataProvider {
             listOf(LocalAccountsDataProvider.getDefaultUserAccount()),
             "Recipe to try",
             "Raspberry Pie: We should make this pie recipe tonight! The filling is " +
-                    "very quick to put together.",
+                "very quick to put together.",
             createAt = "2 hours ago",
             mailbox = MailboxType.SENT
         ),
@@ -297,7 +297,6 @@ object LocalEmailsDataProvider {
             createAt = "Just now",
         )
     }
-
 
     /**
      * Get a list of [EmailFolder]s by which [Email]s can be categorized.
