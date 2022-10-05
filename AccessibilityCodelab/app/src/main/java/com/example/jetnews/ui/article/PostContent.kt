@@ -475,6 +475,9 @@ private data class ParagraphStyling(
  * [Typography.body1] entry of [JetnewsTypography] in the file ui/theme/Type.kt). We initialize our
  * [ParagraphStyle] variable `var paragraphStyle` to a new instance, and initialize our variable
  * `var trailingPadding` to 24.dp
+ *
+ * We then branch on the value of the [ParagraphType] we are being called on:
+ *  - [ParagraphType.Caption] we set `textStyle` to the `body1` [TextStyle] of `typography`
  */
 @Composable
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
