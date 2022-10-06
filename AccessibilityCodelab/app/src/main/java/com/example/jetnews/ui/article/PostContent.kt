@@ -477,7 +477,29 @@ private data class ParagraphStyling(
  * `var trailingPadding` to 24.dp
  *
  * We then branch on the value of the [ParagraphType] we are being called on:
- *  - [ParagraphType.Caption] we set `textStyle` to the `body1` [TextStyle] of `typography`
+ *  - [ParagraphType.Caption] we set `textStyle` to the `body1` [TextStyle] of `typography` which is
+ *  [FontFamily] `Domine` with a [FontWeight] of [FontWeight.Normal] (which is the [Font] with
+ *  resource ID [R.font.domine_regular]), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp
+ *  - [ParagraphType.Title] we set `textStyle` to the `h4` [TextStyle] of `typography` which is
+ *  [FontFamily] `Montserrat`, [FontWeight.SemiBold], `fontSize` of 30.sp, and `letterSpacing` 0.sp
+ *  (which is the [Font] with resource ID [R.font.montserrat_semibold]).
+ *  - [ParagraphType.Subhead] we set `textStyle` to the `h6` [TextStyle] of `typography` which is
+ *  [FontFamily] `Montserrat`, [FontWeight.SemiBold], `fontSize` of 20.sp, and `letterSpacing` 0.sp
+ *  (which is the [Font] with resource ID [R.font.montserrat_semibold]), and we set `trailingPadding`
+ *  to 16.dp
+ *  - [ParagraphType.Text] we set `textStyle` to a copy of the `body1` [TextStyle] of `typography`
+ *  (which is [FontFamily] `Domine` with a [FontWeight] of [FontWeight.Normal] (which is the [Font]
+ *  with resource ID [R.font.domine_regular]), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp)
+ *  and set its `lineHeight` argument to 28.sp (the line height), and we also set `paragraphStyle`
+ *  to a copy of `paragraphStyle` with its `lineHeight` argument set to 28.sp
+ *  - [ParagraphType.Header] we set `textStyle` to the `h5` [TextStyle] of `typography` which is
+ *  [FontFamily] `Montserrat`, [FontWeight.SemiBold], `fontSize` of 24.sp, and `letterSpacing` 0.sp
+ *  (which is the [Font] with resource ID [R.font.montserrat_semibold]), and we set `trailingPadding`
+ *  to 16.dp
+ *  - [ParagraphType.CodeBlock] we set `textStyle` to a copy of the `body1` [TextStyle] of `typography`
+ *  with the `fontFamily` argument set to [FontFamily.Monospace] which is the default [FontFamily]
+ *  for [FontFamily.Monospace] provided by [MaterialTheme] since our [JetnewsTypography] custom
+ *  [Typography] used by [JetnewsTheme] does not specify one.
  */
 @Composable
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
