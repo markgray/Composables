@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.BackdropScaffold
+import androidx.compose.material.BackdropScaffoldState
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -29,6 +30,8 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.rememberBackdropScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,10 +44,12 @@ import androidx.compose.samples.crane.base.CraneTabs
 import androidx.compose.samples.crane.base.ExploreSection
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.details.launchDetailsActivity
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -131,7 +136,54 @@ fun CraneHome(
 }
 
 /**
- * This Composable is called to be the `content` of the [Scaffold] of [CraneHome].
+ * This Composable is called to be the `content` of the [Scaffold] of [CraneHome]. We initialize
+ * our [List] of [ExploreModel] variable `val suggestedDestinations` as a [State] using the
+ * [StateFlow.collectAsState] method on the [StateFlow] of [List] of [ExploreModel] property
+ * [MainViewModel.suggestedDestinations] of our [viewModel] parameter (which has been injected by
+ * Hilt btw) so that every time a new value is posted into the [StateFlow] the [State] will be
+ * updated causing recomposition of every Composable that uses `suggestedDestinations`. We initialize
+ * our function reference variable `val onPeopleChanged` to a lambda which calls the method
+ * [MainViewModel.updatePeople] of our [viewModel] parameter with the [Int] passed the function
+ * reference (returning [Unit]). We remember our [CraneScreen] variable `var tabSelected` as a
+ * [MutableState] whose initial value is [CraneScreen.Fly]. We then call on [BackdropScaffold] to be
+ * our root Composable content with the arguments:
+ *  - `modifier` we pass it our [Modifier] parameter [modifier]. Our [CraneHome] caller passes us its
+ *  `modifier` parameter with an added [Modifier.padding] of the [PaddingValues] that its [Scaffold]
+ *  passes its `content`. The [MainScreen] Composable does not pass [CraneHome] a `modifier` argument
+ *  so the `modifier` parameter of [CraneHome] is the empty, default, or starter [Modifier] that
+ *  contains no elements, so our [modifier] parameter is just the [Modifier.padding] of the
+ *  [PaddingValues] that [Scaffold] of [CraneHome] passes its `content`.
+ *  - `scaffoldState` we pass the [BackdropScaffoldState] that the [rememberBackdropScaffoldState]
+ *  creates and remembers with the initial value [BackdropValue.Revealed].
+ *  - `frontLayerScrimColor` we pass it [Color.Unspecified] (this represents an unset value without
+ *  having to box the [Color]. It will be treated as `Transparent` when drawn).
+ *  - `appBar` we pass the Composable [HomeTabBar] whose `openDrawer` argument is our [openDrawer]
+ *  lambda parameter, whose `tabSelected` argument is our `tabSelected` variable, and whose
+ *  `onTabSelected` argument is a lambda which sets `tabSelected` to the [CraneScreen] of the [Tab]
+ *  in the [HomeTabBar] that was clicked (selected) by the user.
+ *  - `backLayerContent` we pass the Composable [SearchContent] whose `tabSelected` argument is our
+ *  `tabSelected` [CraneScreen] variable, whose [MainViewModel] argument `viewModel` is our [viewModel]
+ *  parameter, and whose `onPeopleChanged` lambda argument is our `onPeopleChanged` lambda variable.
+ *  - `frontLayerContent` we pass a block whose Composable depends on the value of `tabSelected`:
+ *      - [CraneScreen.Fly] we call the Composable [ExploreSection] with its `title` argument "Explore
+ *      Flights by Destination", its `exploreList` argument our `suggestedDestinations` variable and
+ *      its `onItemClicked` argument our [onExploreItemClicked] parameter.
+ *      - [CraneScreen.Sleep] we call the Composable [ExploreSection] with its `title` argument
+ *      "Explore Properties by Destination", its `exploreList` argument the [MainViewModel.hotels]
+ *      field of our [viewModel] parameter and its `onItemClicked` argument our [onExploreItemClicked]
+ *      parameter.
+ *      - [CraneScreen.Eat] we call the Composable [ExploreSection] with its `title` argument
+ *      "Explore Restaurants by Destination", its `exploreList` argument the [MainViewModel.restaurants]
+ *      field of our [viewModel] parameter and its `onItemClicked` argument our [onExploreItemClicked]
+ *      parameter.
+ *
+ * @param onExploreItemClicked the [OnExploreItemClicked] lambda that we should pass to [ExploreSection]
+ * @param openDrawer a lambda that [HomeTabBar] can call to open the drawer of the [Scaffold] used
+ * by the [CraneHome] Composable.
+ * @param modifier a [Modifier] instance that our user can use to modify our appearance and/or behavior.
+ * Our [CraneHome] caller passes us a [Modifier.padding] of the [PaddingValues] that its [Scaffold]
+ * passes its `content`.
+ * @param viewModel our singleton [MainViewModel] (injected by Hilt).
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -145,7 +197,7 @@ fun CraneHomeContent(
     val suggestedDestinations: List<ExploreModel> by viewModel.suggestedDestinations.collectAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
-    var tabSelected by remember { mutableStateOf(CraneScreen.Fly) }
+    var tabSelected: CraneScreen by remember { mutableStateOf(CraneScreen.Fly) }
 
     BackdropScaffold(
         modifier = modifier,
@@ -193,6 +245,29 @@ fun CraneHomeContent(
     )
 }
 
+/**
+ * This is used as the App bar for the back layer of the [BackdropScaffold] of [CraneHomeContent]
+ * (its `appBar` argument). Our root Composable is a [CraneTabBar] whose `modifier` argument is our
+ * [modifier] parameter, and whose `onMenuClicked` lambda argument is our [openDrawer] parameter.
+ * Its `children` argument is a [CraneTabs] Composable whose `modifier` argument is the [Modifier]
+ * passed it by [CraneTabBar] (which is a `RowScope` `Modifier.weight` of 1f with a `Modifier.align`
+ * of [Alignment.CenterVertically] (this causes the [CraneTabs] to occupy the entire width of the
+ * incoming measurement constraints, and to center itself and its children vertically). The `titles`
+ * argument of the [CraneTabs] is a the [List] of [String] that is created from the [CraneScreen.name]
+ * of all of the [CraneScreen.values] in the [CraneScreen] enum. Its `tabSelected` argument is our
+ * [tabSelected] parameter, and its `onTabSelected` lambda argument is a lambda which calls our
+ * [onTabSelected] parameter with the [CraneScreen] that it is called with (which is the [CraneScreen]
+ * of the [Tab] that has been selected of course).
+ *
+ * @param openDrawer a that [CraneTabBar] can call to open the drawer of the [Scaffold] used
+ * by the [CraneHome] Composable. We pass it as the `onMenuClicked` argument of [CraneTabBar].
+ * @param tabSelected the [CraneScreen] of the [Tab] that has been selected by the user.
+ * @param onTabSelected a lambda that we can call with the [CraneScreen] of the [Tab] when the user
+ * selects a different [Tab].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our [CraneHomeContent] caller does not specify on so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
+ */
 @Composable
 private fun HomeTabBar(
     openDrawer: () -> Unit,
@@ -208,11 +283,14 @@ private fun HomeTabBar(
             modifier = tabBarModifier,
             titles = CraneScreen.values().map { it.name },
             tabSelected = tabSelected,
-            onTabSelected = { newTab -> onTabSelected(CraneScreen.values()[newTab.ordinal]) }
+            onTabSelected = { tab: CraneScreen -> onTabSelected(CraneScreen.values()[tab.ordinal]) }
         )
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun SearchContent(
     tabSelected: CraneScreen,
