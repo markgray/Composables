@@ -36,6 +36,7 @@ class PlantListFragment : Fragment() {
         InjectorUtils.providePlantListViewModelFactory(this)
     }
 
+    @Suppress("RedundantNullableReturnType")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,15 +49,19 @@ class PlantListFragment : Fragment() {
         binding.plantList.adapter = adapter
         subscribeUi(adapter)
 
+        @Suppress("DEPRECATION")
         setHasOptionsMenu(true)
         return binding.root
     }
 
+    @Deprecated("Deprecated in Java", ReplaceWith("inflater.inflate(R.menu.menu_plant_list, menu)"))
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_plant_list, menu)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        @Suppress("DEPRECATION")
         return when (item.itemId) {
             R.id.filter_zone -> {
                 updateData()

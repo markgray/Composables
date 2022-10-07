@@ -42,7 +42,8 @@ class GardenPlantingDaoTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @Before fun createDb() = runBlocking {
+    @Before
+    fun createDb() = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
         gardenPlantingDao = database.gardenPlantingDao()
@@ -51,11 +52,13 @@ class GardenPlantingDaoTest {
         testGardenPlantingId = gardenPlantingDao.insertGardenPlanting(testGardenPlanting)
     }
 
-    @After fun closeDb() {
+    @After
+    fun closeDb() {
         database.close()
     }
 
-    @Test fun testGetGardenPlantings() = runBlocking {
+    @Test
+    fun testGetGardenPlantings() = runBlocking {
         val gardenPlanting2 = GardenPlanting(
             testPlants[1].plantId,
             testCalendar,
@@ -65,7 +68,8 @@ class GardenPlantingDaoTest {
         assertThat(getValue(gardenPlantingDao.getGardenPlantings()).size, equalTo(2))
     }
 
-    @Test fun testDeleteGardenPlanting() = runBlocking {
+    @Test
+    fun testDeleteGardenPlanting() = runBlocking {
         val gardenPlanting2 = GardenPlanting(
             testPlants[1].plantId,
             testCalendar,
@@ -77,15 +81,18 @@ class GardenPlantingDaoTest {
         assertThat(getValue(gardenPlantingDao.getGardenPlantings()).size, equalTo(1))
     }
 
-    @Test fun testGetGardenPlantingForPlant() {
+    @Test
+    fun testGetGardenPlantingForPlant() {
         assertTrue(getValue(gardenPlantingDao.isPlanted(testPlant.plantId)))
     }
 
-    @Test fun testGetGardenPlantingForPlant_notFound() {
+    @Test
+    fun testGetGardenPlantingForPlant_notFound() {
         assertFalse(getValue(gardenPlantingDao.isPlanted(testPlants[2].plantId)))
     }
 
-    @Test fun testGetPlantAndGardenPlantings() {
+    @Test
+    fun testGetPlantAndGardenPlantings() {
         val plantAndGardenPlantings = getValue(gardenPlantingDao.getPlantedGardens())
         assertThat(plantAndGardenPlantings.size, equalTo(1))
 

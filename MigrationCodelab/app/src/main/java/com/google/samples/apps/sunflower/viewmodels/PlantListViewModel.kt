@@ -42,11 +42,11 @@ class PlantListViewModel internal constructor(
     }
 
     fun setGrowZoneNumber(num: Int) {
-        savedStateHandle.set(GROW_ZONE_SAVED_STATE_KEY, num)
+        savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] = num
     }
 
     fun clearGrowZoneNumber() {
-        savedStateHandle.set(GROW_ZONE_SAVED_STATE_KEY, NO_GROW_ZONE)
+        savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] = NO_GROW_ZONE
     }
 
     fun isFiltered() = getSavedGrowZoneNumber().value != NO_GROW_ZONE
