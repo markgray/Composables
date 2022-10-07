@@ -34,12 +34,12 @@ fun AccountsBody(accounts: List<Account>) {
         colors = { account -> account.color },
         amountsTotal = accounts.map { account -> account.balance }.sum(),
         circleLabel = stringResource(R.string.total),
-        rows = { account ->
+        rows = { (name, number, balance, color) ->
             AccountRow(
-                name = account.name,
-                number = account.number,
-                amount = account.balance,
-                color = account.color
+                name = name,
+                number = number,
+                amount = balance,
+                color = color
             )
         }
     )

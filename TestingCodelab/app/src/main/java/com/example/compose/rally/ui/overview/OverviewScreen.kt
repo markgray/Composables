@@ -18,7 +18,6 @@ package com.example.compose.rally.ui.overview
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateValue
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -43,7 +42,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -113,7 +111,7 @@ private fun AlertCard() {
     )
     Card(elevation = animatedElevation) {
 
-    Column {
+        Column {
             AlertHeader {
                 showDialog = true
             }
@@ -251,12 +249,12 @@ private fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
         data = UserData.accounts,
         colors = { it.color },
         values = { it.balance }
-    ) { account ->
+    ) { (name, number, balance, color) ->
         AccountRow(
-            name = account.name,
-            number = account.number,
-            amount = account.balance,
-            color = account.color
+            name = name,
+            number = number,
+            amount = balance,
+            color = color
         )
     }
 }
@@ -276,12 +274,12 @@ private fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
         data = UserData.bills,
         colors = { it.color },
         values = { it.amount }
-    ) { bill ->
+    ) { (name, due, amount1, color) ->
         BillRow(
-            name = bill.name,
-            due = bill.due,
-            amount = bill.amount,
-            color = bill.color
+            name = name,
+            due = due,
+            amount = amount1,
+            color = color
         )
     }
 }

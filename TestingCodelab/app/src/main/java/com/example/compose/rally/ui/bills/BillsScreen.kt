@@ -34,8 +34,8 @@ fun BillsBody(bills: List<Bill>) {
         colors = { bill -> bill.color },
         amountsTotal = bills.map { bill -> bill.amount }.sum(),
         circleLabel = stringResource(R.string.due),
-        rows = { bill ->
-            BillRow(bill.name, bill.due, bill.amount, bill.color)
+        rows = { (name, due, amount, color) ->
+            BillRow(name, due, amount, color)
         }
     )
 }

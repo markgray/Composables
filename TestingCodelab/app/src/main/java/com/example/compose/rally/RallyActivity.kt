@@ -59,7 +59,7 @@ fun RallyApp() {
             }
         ) { innerPadding ->
             Box(Modifier.padding(innerPadding)) {
-                currentScreen.content(onScreenChange = { screen -> currentScreen = screen })
+                currentScreen.Content(onScreenChange = { screen -> currentScreen = screen })
             }
         }
     }

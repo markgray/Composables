@@ -49,7 +49,7 @@ enum class RallyScreen(
     );
 
     @Composable
-    fun content(onScreenChange: (RallyScreen) -> Unit) {
+    fun Content(onScreenChange: (RallyScreen) -> Unit) {
         body(onScreenChange)
     }
 }
