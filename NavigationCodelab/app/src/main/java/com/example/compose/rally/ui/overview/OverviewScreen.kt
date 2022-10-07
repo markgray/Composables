@@ -234,13 +234,13 @@ private fun AccountsCard(onClickSeeAll: () -> Unit, onAccountClick: (String) -> 
         data = UserData.accounts,
         colors = { it.color },
         values = { it.balance }
-    ) { account ->
+    ) { (name, number, balance, color) ->
         AccountRow(
-            modifier = Modifier.clickable { onAccountClick(account.name) },
-            name = account.name,
-            number = account.number,
-            amount = account.balance,
-            color = account.color
+            modifier = Modifier.clickable { onAccountClick(name) },
+            name = name,
+            number = number,
+            amount = balance,
+            color = color
         )
     }
 }
@@ -258,12 +258,12 @@ private fun BillsCard(onClickSeeAll: () -> Unit) {
         data = UserData.bills,
         colors = { it.color },
         values = { it.amount }
-    ) { bill ->
+    ) { (name, due, amount1, color) ->
         BillRow(
-            name = bill.name,
-            due = bill.due,
-            amount = bill.amount,
-            color = bill.color
+            name = name,
+            due = due,
+            amount = amount1,
+            color = color
         )
     }
 }

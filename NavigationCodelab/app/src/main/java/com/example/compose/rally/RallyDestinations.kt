@@ -63,7 +63,7 @@ object SingleAccount : RallyDestination {
         navArgument(accountTypeArg) { type = NavType.StringType }
     )
     val deepLinks = listOf(
-        navDeepLink { uriPattern = "rally://$route/{$accountTypeArg}"}
+        navDeepLink { uriPattern = "rally://$route/{$accountTypeArg}" }
     )
 
 }
