@@ -500,6 +500,18 @@ private data class ParagraphStyling(
  *  with the `fontFamily` argument set to [FontFamily.Monospace] which is the default [FontFamily]
  *  for [FontFamily.Monospace] provided by [MaterialTheme] since our [JetnewsTypography] custom
  *  [Typography] used by [JetnewsTheme] does not specify one.
+ *  - [ParagraphType.Quote] we set `textStyle` to the `body1` [TextStyle] of `typography` which is
+ *  [FontFamily] `Domine` with a [FontWeight] of [FontWeight.Normal] (which is the [Font] with
+ *  resource ID [R.font.domine_regular]), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp
+ *  - [ParagraphType.Bullet] we set `paragraphStyle` to a [ParagraphStyle] whose `textIndent`
+ *  argument is a [TextIndent] whose `firstLine` argument is 8.sp (the amount of indentation applied
+ *  to the first line).
+ *
+ * Finally we return a new instance of [ParagraphStyling] whose `textStyle` argument is `textStyle`,
+ * `paragraphStyle` argument is `paragraphStyle`, and `trailingPadding` argument is `trailingPadding`
+ *
+ * @return a [ParagraphStyling] instance which is constructed with the correct [TextStyle],
+ * [ParagraphStyle], and `trailingPadding` for our [ParagraphType] receiver.
  */
 @Composable
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
@@ -532,12 +544,28 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
         }
     }
     return ParagraphStyling(
-        textStyle,
-        paragraphStyle,
-        trailingPadding
+        textStyle = textStyle,
+        paragraphStyle = paragraphStyle,
+        trailingPadding = trailingPadding
     )
 }
 
+/**
+ * Creates a [List] of [AnnotatedString.Range] of the [SpanStyle]'s which are specified by the
+ * [List] of [Markup]'s in the [Paragraph.markups] field of our [Paragraph] parameter [paragraph]
+ * to initialize its variable `val styles` and returns an [AnnotatedString] whose `text` argument
+ * is the [Paragraph.text] field of [paragraph], and whose `spanStyles` argument is the [List]
+ * in our variable `styles`.
+ *
+ * @param paragraph the [Paragraph] that we are to convert to an [AnnotatedString]
+ * @param typography the [Typography] instance which contains information about the [TextStyle]'s
+ * that are available.
+ * @param codeBlockBackground the background color used for the [TextStyle] of a [MarkupType.Code]
+ * annotated [AnnotatedString.Range].
+ * @return the [AnnotatedString] that results from applying all of the [Markup]'s in the
+ * [Paragraph.markups] [List] of [Markup]'s of our [paragraph] parameter to the text that is in its
+ * [Paragraph.text] field.
+ */
 private fun paragraphToAnnotatedString(
     paragraph: Paragraph,
     typography: Typography,
@@ -550,7 +578,16 @@ private fun paragraphToAnnotatedString(
 
 /**
  * Extension function of a [Markup] which interprets it and produces an [AnnotatedString.Range] based
- * on its [Markup.type] that applies for the range [Markup.start] to [Markup.end].
+ * on its [Markup.type] that applies for the range [Markup.start] to [Markup.end]. A when expression
+ * returns different [AnnotatedString.Range] instances based on the [Markup.type] of its receiver:
+ *  - [MarkupType.Italic] returns an [AnnotatedString.Range] whose [SpanStyle] argument `item` is a
+ *  copy of the `body1` [TextStyle] of `typography` with its `fontStyle` argument [FontStyle.Italic]
+ *  converted to a [SpanStyle], whose `start` argument is our receiver's `start` field and whose `end`
+ *  argument is our receiver's `end` field.
+ *  - [MarkupType.Link] returns an [AnnotatedString.Range] whose [SpanStyle] argument `item` is a
+ *  copy of the `body1` [TextStyle] of `typography` with its `textDecoration` argument
+ *  [TextDecoration.Underline] converted to a [SpanStyle], whose `start` argument is our receiver's
+ *  `start` field and whose `end` argument is our receiver's `end` field.
  */
 fun Markup.toAnnotatedStringItem(
     typography: Typography,
