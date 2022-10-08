@@ -20,12 +20,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BackdropScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.SimpleUserInput
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.Tab
 
+/**
+ * This Composable is displayed by the [SearchContent] Composable when the [Tab] selected in the
+ * [HomeTabBar] that is used as the `appBar` argument of the [BackdropScaffold] of [CraneHomeContent]
+ * is the one for [CraneScreen.Fly] (the one labeled "Fly").
+ */
 @Composable
 fun FlySearchContent(
     onPeopleChanged: (Int) -> Unit,
@@ -45,6 +52,11 @@ fun FlySearchContent(
     }
 }
 
+/**
+ * This Composable is displayed by the [SearchContent] Composable when the [Tab] selected in the
+ * [HomeTabBar] that is used as the `appBar` argument of the [BackdropScaffold] of [CraneHomeContent]
+ * is the one for [CraneScreen.Sleep] (the one labeled "Sleep")
+ */
 @Composable
 fun SleepSearchContent(onPeopleChanged: (Int) -> Unit) {
     CraneSearch {
@@ -56,6 +68,11 @@ fun SleepSearchContent(onPeopleChanged: (Int) -> Unit) {
     }
 }
 
+/**
+ * This Composable is displayed by the [SearchContent] Composable when the [Tab] selected in the
+ * [HomeTabBar] that is used as the `appBar` argument of the [BackdropScaffold] of [CraneHomeContent]
+ * is the one for [CraneScreen.Eat] (the one labeled "Eat")
+ */
 @Composable
 fun EatSearchContent(onPeopleChanged: (Int) -> Unit) {
     CraneSearch {

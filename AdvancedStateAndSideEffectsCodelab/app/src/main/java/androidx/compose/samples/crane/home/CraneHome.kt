@@ -42,6 +42,7 @@ import androidx.compose.samples.crane.base.CraneDrawer
 import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
 import androidx.compose.samples.crane.base.ExploreSection
+import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.details.launchDetailsActivity
 import androidx.compose.ui.Alignment
@@ -289,7 +290,26 @@ private fun HomeTabBar(
 }
 
 /**
+ * This Composable is used as the `backLayerContent` argument (the content of the back layer) of the
+ * [BackdropScaffold] in [CraneHomeContent]. It displays one of three Composables depending on the
+ * value of its [CraneScreen] parameter [tabSelected]:
+ *  - [CraneScreen.Fly] it displays a [FlySearchContent] whose `onPeopleChanged` lambda argument is
+ *  our [onPeopleChanged] parameter, and whose `onToDestinationChanged` is a lambda which calls the
+ *  [MainViewModel.toDestinationChanged] method of our [viewModel] parameter with the [City.nameToDisplay]
+ *  of the new destination.
+ *  - [CraneScreen.Sleep] it displays a [SleepSearchContent] whose `onPeopleChanged` lambda argument
+ *  is our [onPeopleChanged] parameter.
+ *  - [CraneScreen.Eat] it displays a [EatSearchContent] whose `onPeopleChanged` lambda argument is
+ *  our [onPeopleChanged] parameter.
  *
+ * @param tabSelected the [CraneScreen] of the [Tab] selected in the [HomeTabBar] used as the `appBar`
+ * argument of the [BackdropScaffold] of [CraneHomeContent]. One of [CraneScreen.Fly], [CraneScreen.Eat]
+ * or [CraneScreen.Sleep].
+ * @param viewModel the [MainViewModel] used by [MainActivity]. It is injected by Hilt as the default
+ * value of the `viewModel` parameter of [CraneHomeContent].
+ * @param onPeopleChanged a lambda which takes an [Int] and returns [Unit], [CraneHomeContent] assigns
+ * a lambda which calls the [MainViewModel.updatePeople] method of [viewModel] with the new number of
+ * people traveling.
  */
 @Composable
 private fun SearchContent(
