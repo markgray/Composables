@@ -53,11 +53,12 @@ import com.example.jetnews.utils.supportWideScreen
 
 /**
  * At one time in the distant past this was a Stateful Article Screen that managed state using
- * `produceUiState`. Now there are no state variables involved, it simply fetchs the [Post] whose
- * ID is its [String] parameter [postId] to initialize its [Post] variable `val postData` using the
- * [PostsRepository.getPost] method of its parameter [postsRepository] and calls the "Stateless
- * Article Screen" with `postData` as its `post` argument and our [onBack] lambda parameter as its
- * `onBack` argument.
+ * `produceUiState` (a class that used to be included in the project's source code and can now only
+ * be found in ancient commits of the git repository). Now there are no state variables involved, it
+ * simply fetchs the [Post] whose ID is its [String] parameter [postId] to initialize its [Post]
+ * variable `val postData` using the [PostsRepository.getPost] method of its parameter [postsRepository]
+ * and calls the "Stateless Article Screen" with `postData` as its `post` argument and our [onBack]
+ * lambda parameter as its `onBack` argument.
  *
  * @param postId (state) the post to show
  * @param postsRepository data source for this screen

@@ -588,6 +588,22 @@ private fun paragraphToAnnotatedString(
  *  copy of the `body1` [TextStyle] of `typography` with its `textDecoration` argument
  *  [TextDecoration.Underline] converted to a [SpanStyle], whose `start` argument is our receiver's
  *  `start` field and whose `end` argument is our receiver's `end` field.
+ *  - [MarkupType.Bold] returns an [AnnotatedString.Range] whose [SpanStyle] argument `item` is a
+ *  copy of the `body1` [TextStyle] of `typography` with its `fontWeight` argument [FontWeight.Bold]
+ *  converted to a [SpanStyle], whose `start` argument is our receiver's `start` field and whose
+ *  `end` argument is our receiver's `end` field.
+ *  - [MarkupType.Code] returns an [AnnotatedString.Range] whose [SpanStyle] argument `item` is a
+ *  copy of the `body1` [TextStyle] of `typography` with its `background` argument our parameter
+ *  [codeBlockBackground] ([Paragraph] passes [paragraphToAnnotatedString] the `codeBlockBackground`
+ *  [Color] of [MaterialTheme.colors] which is a copy of the `onSurface` [Color] of [MaterialTheme]
+ *  with its `alpha` argument .15f, and [paragraphToAnnotatedString] passes us this as our
+ *  [codeBlockBackground] parameter) converted to a [SpanStyle], whose `start` argument is our
+ *  receiver's `start` field and whose `end` argument is our receiver's `end` field.
+ *
+ * @param typography the [MaterialTheme.typography] whose [Typography] we are to use to fetch the
+ * [TextStyle]'s we need.
+ * @param codeBlockBackground the [Color] that should be used as the background color of the
+ * [TextStyle] of the [SpanStyle] of a [String] range that uses [MarkupType.Code] as its [MarkupType].
  */
 fun Markup.toAnnotatedStringItem(
     typography: Typography,
@@ -629,6 +645,10 @@ fun Markup.toAnnotatedStringItem(
     }
 }
 
+/**
+ * This extension property of [Colors] returns a [Color] which is a copy of the `onSurface` [Color]
+ * of [MaterialTheme] with its `alpha` argument .15f
+ */
 private val Colors.codeBlockBackground: Color
     get() = onSurface.copy(alpha = .15f)
 

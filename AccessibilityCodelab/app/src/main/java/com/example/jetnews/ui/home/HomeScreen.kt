@@ -30,7 +30,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -55,7 +54,9 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.launch
 
 /**
- * Stateful HomeScreen which manages state using [produceUiState]
+ * At one time in the distant past this was a Stateful HomeScreen Screen that managed state using
+ * `produceUiState` (a class that used to be included in the project's source code and can now only
+ * be found in ancient commits of the git repository).
  *
  * @param postsRepository data source for this screen
  * @param navigateToArticle (event) request navigation to Article screen
@@ -83,13 +84,10 @@ fun HomeScreen(
  * Stateless composable is not coupled to any specific state management.
  *
  * @param posts (state) the data to show on the screen
- * @param favorites (state) favorite posts
- * @param onToggleFavorite (event) toggles favorite for a post
  * @param navigateToArticle (event) request navigation to Article screen
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) state for the [Scaffold] component on this screen
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     posts: List<Post>,
@@ -199,12 +197,15 @@ private fun PostListDivider() {
  * Determine the content padding to apply to the different screens of the app
  */
 @Composable
-fun rememberContentPaddingForScreen(additionalTop: Dp = 0.dp) =
+fun rememberContentPaddingForScreen(additionalTop: Dp = 0.dp): PaddingValues =
     WindowInsets.systemBars
         .only(WindowInsetsSides.Bottom)
         .add(WindowInsets(top = additionalTop))
         .asPaddingValues()
 
+/**
+ * Four Previews of our [JetnewsTheme] wrapped [HomeScreen] Composable.
+ */
 @Preview("Home screen")
 @Preview("Home screen (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Preview("Home screen (big font)", fontScale = 1.5f)
