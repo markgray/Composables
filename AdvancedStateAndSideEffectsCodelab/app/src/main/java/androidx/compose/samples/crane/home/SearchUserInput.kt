@@ -46,7 +46,7 @@ import kotlinx.coroutines.flow.filter
 enum class PeopleUserInputAnimationState { Valid, Invalid }
 
 class PeopleUserInputState {
-    var people by mutableStateOf(1)
+    var people: Int by mutableStateOf(1)
         private set
 
     val animationState: MutableTransitionState<PeopleUserInputAnimationState> =
