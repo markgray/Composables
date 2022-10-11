@@ -51,12 +51,17 @@ import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
  * At one time in the distant past this was a Stateful HomeScreen Screen that managed state using
  * `produceUiState` (a class that used to be included in the project's source code and can now only
- * be found in ancient commits of the git repository).
+ * be found in ancient commits of the git repository). We call our overloaded [HomeScreen] Composable
+ * with the [List] of [Post] objects returned by the [PostsRepository.getPosts] method of our parameter
+ * [postsRepository] as its `posts` argument, our parameter [navigateToArticle] as its `navigateToArticle`
+ * argument, our parameter [openDrawer] as its `openDrawer` argument, and our parameter [scaffoldState]
+ * as its `scaffoldState` argument,
  *
  * @param postsRepository data source for this screen
  * @param navigateToArticle (event) request navigation to Article screen
@@ -79,9 +84,26 @@ fun HomeScreen(
 }
 
 /**
- * Responsible for displaying the Home Screen of this application.
- *
- * Stateless composable is not coupled to any specific state management.
+ * Responsible for displaying the Home Screen of this application. Stateless composable that is not
+ * coupled to any specific state management. We initialize and remember our [CoroutineScope] variable
+ * `val coroutineScope` using the [rememberCoroutineScope] method, then call our [Scaffold] root
+ * Composable with our [ScaffoldState] parameter [scaffoldState] as its `scaffoldState` argument, and
+ * as its `topBar` argument we use the [stringResource] method to retrieve the [String] whose resource
+ * ID is [R.string.app_name] ("Jetnews") and call our [InsetAwareTopAppBar] Composable with a [Text]
+ * displaying our [String] variable `title` as its `title` argument, and as its `navigationIcon`
+ * argument we use a lambda to create an [IconButton] whose `onClick` argument uses the method
+ * [CoroutineScope.launch] of our `coroutineScope` variable to launch a new coroutine which calls
+ * our [openDrawer] lambda parameter. The `content` of the [IconButton] is an [Icon] whose `painter`
+ * argument renders the drawable with resource ID [R.drawable.ic_jetnews_logo], and whose
+ * contentDescription` argument is the [String] with resource ID [R.string.cd_open_navigation_drawer]
+ * ("Open navigation drawer"). The `content` of the [Scaffold] is a lambda which receives as its
+ * argument an [PaddingValues] variable `innerPadding` that should be applied to the content root via
+ * [Modifier.padding] to properly offset top and bottom bars. To do this we initialize our [Modifier]
+ * variable `val modifier` to a [Modifier.padding] whose `paddingValues` argument is the lambda's
+ * `innerPadding` argument. Then we call the [PostList] Composable with our [List] of [Post] parameter
+ * [posts] as its `posts` argument, our [navigateToArticle] lambda parameter as its `navigateToArticle`
+ * argument, and our [Modifier] variable `modifier` as its `modifier` argument. It will display the
+ * [List] of [Post] in [posts] in a [LazyColumn].
  *
  * @param posts (state) the data to show on the screen
  * @param navigateToArticle (event) request navigation to Article screen
@@ -95,11 +117,11 @@ fun HomeScreen(
     openDrawer: () -> Unit,
     scaffoldState: ScaffoldState
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            val title = stringResource(id = R.string.app_name)
+            val title: String = stringResource(id = R.string.app_name)
             InsetAwareTopAppBar(
                 title = { Text(text = title) },
                 navigationIcon = {
@@ -112,17 +134,15 @@ fun HomeScreen(
                 }
             )
         }
-    ) { innerPadding ->
-        val modifier = Modifier.padding(innerPadding)
-        PostList(posts, navigateToArticle, modifier)
+    ) { innerPadding: PaddingValues ->
+        val modifier: Modifier = Modifier.padding(paddingValues = innerPadding)
+        PostList(posts = posts, navigateToArticle = navigateToArticle, modifier = modifier)
     }
 }
 
 /**
- * Display a list of posts.
- *
- * When a post is clicked on, [navigateToArticle] will be called to navigate to the detail screen
- * for that post.
+ * Display a list of posts. When a post is clicked on, [navigateToArticle] will be called to navigate
+ * to the detail screen for that post.
  *
  * @param posts (state) the list to display
  * @param navigateToArticle (event) request navigation to Article screen
@@ -134,19 +154,19 @@ private fun PostList(
     navigateToArticle: (postId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val postsHistory = posts.subList(0, 3)
-    val postsPopular = posts.subList(3, 5)
-    val contentPadding = rememberContentPaddingForScreen(additionalTop = 8.dp)
+    val postsHistory: List<Post> = posts.subList(0, 3)
+    val postsPopular: List<Post> = posts.subList(3, 5)
+    val contentPadding: PaddingValues = rememberContentPaddingForScreen(additionalTop = 8.dp)
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding
     ) {
         items(postsHistory) { post ->
-            PostCardHistory(post, navigateToArticle)
+            PostCardHistory(post = post, navigateToArticle = navigateToArticle)
             PostListDivider()
         }
         item {
-            PostListPopularSection(postsPopular, navigateToArticle)
+            PostListPopularSection(posts = postsPopular, navigateToArticle = navigateToArticle)
         }
     }
 }
