@@ -142,7 +142,18 @@ fun HomeScreen(
 
 /**
  * Display a list of posts. When a post is clicked on, [navigateToArticle] will be called to navigate
- * to the detail screen for that post.
+ * to the detail screen for that post. First we initialize our [List] of [Post] variable `val postsHistory`
+ * using the [List.subList] method of our [posts] parameter to a [List] containing the 3 [Post]'s whose
+ * index is between 0 (inclusive) and 3 (exclusive) and our [List] of [Post] variable `val postsPopular`
+ * using the [List.subList] method of our [posts] parameter to a [List] containing the 2 [Post]'s whose
+ * index is between 3 (inclusive) and 5 (exclusive). We initialize our [PaddingValues] variable
+ * `val contentPadding` to the [PaddingValues] it returns when it adds 8.dp to the `top` of the
+ * [WindowInsets] of the [WindowInsetsSides.Bottom] of the [WindowInsets.Companion.systemBars]
+ * (All system bars. Includes statusBars(), captionBar() as well as navigationBars(), but not ime()).
+ * Then we call our root Composable [LazyColumn] using our [modifier] parameter as its `modifier`
+ * argument and the [PaddingValues] variable `contentPadding` as its `contentPadding` argument.
+ * The `content` of the [LazyColumn] consists of:
+ *  - An [items]
  *
  * @param posts (state) the list to display
  * @param navigateToArticle (event) request navigation to Article screen
@@ -154,14 +165,14 @@ private fun PostList(
     navigateToArticle: (postId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val postsHistory: List<Post> = posts.subList(0, 3)
-    val postsPopular: List<Post> = posts.subList(3, 5)
+    val postsHistory: List<Post> = posts.subList(fromIndex = 0, toIndex = 3)
+    val postsPopular: List<Post> = posts.subList(fromIndex = 3, toIndex = 5)
     val contentPadding: PaddingValues = rememberContentPaddingForScreen(additionalTop = 8.dp)
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding
     ) {
-        items(postsHistory) { post ->
+        items(postsHistory) { post: Post ->
             PostCardHistory(post = post, navigateToArticle = navigateToArticle)
             PostListDivider()
         }
@@ -214,13 +225,20 @@ private fun PostListDivider() {
 }
 
 /**
- * Determine the content padding to apply to the different screens of the app
+ * Determine the content padding to apply to the different screens of the app. We call the method
+ * [WindowInsets.Companion.systemBars] to retrieve the [WindowInsets] of all system bars (includes
+ * `statusBars()`, `captionBar()` as well as `navigationBars()`, but not `ime()`) and apply the
+ * [WindowInsets.only] method to it to eliminate all dimensions except the [WindowInsetsSides.Bottom]
+ * (Indicates a WindowInsets bottom side) and then we use the [WindowInsets.add] method on that
+ * [WindowInsets] to add a [WindowInsets] whose `top` is our [additionalTop] parameter. Finally we
+ * use the [WindowInsets.asPaddingValues] convert the [WindowInsets] to a [PaddingValues] and using
+ * `LocalDensity` for DP to pixel conversion, and we return this [PaddingValues] to our caller.
  */
 @Composable
 fun rememberContentPaddingForScreen(additionalTop: Dp = 0.dp): PaddingValues =
     WindowInsets.systemBars
-        .only(WindowInsetsSides.Bottom)
-        .add(WindowInsets(top = additionalTop))
+        .only(sides = WindowInsetsSides.Bottom)
+        .add(insets = WindowInsets(top = additionalTop))
         .asPaddingValues()
 
 /**
