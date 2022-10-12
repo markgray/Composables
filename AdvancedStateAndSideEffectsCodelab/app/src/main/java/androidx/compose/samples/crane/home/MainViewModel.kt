@@ -18,7 +18,9 @@ package androidx.compose.samples.crane.home
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.BackdropScaffold
+import androidx.compose.runtime.State
 import androidx.compose.samples.crane.base.ExploreSection
+import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.di.DefaultDispatcher
@@ -29,11 +31,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.internal.lifecycle.HiltViewModelFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -85,7 +89,14 @@ class MainViewModel @Inject constructor(
     val restaurants: List<ExploreModel> = destinationsRepository.restaurants
 
     /**
-     *
+     * This private [MutableStateFlow] of a [List] of [ExploreModel] objects is read using our publicly
+     * accessible field [suggestedDestinations] to be used as the dataset for the `frontLayerContent`
+     * of the [BackdropScaffold] of [CraneHomeContent] when the [CraneScreen.Fly] tab of
+     * [CraneHomeContent] is selected (file home/CraneHome.kt). It is wrapped in a [MutableStateFlow]
+     * so that it will `emit` its [List] to every Composable which uses the `collectAsState` extension
+     * function on [suggestedDestinations] whenever the `value` of [_suggestedDestinations] changes,
+     * and the use of the collected [State] by a Composable will cause it to be recomposed. It is set
+     * to a new value by our [toDestinationChanged] method and our [updatePeople] method.
      */
     private val _suggestedDestinations = MutableStateFlow<List<ExploreModel>>(emptyList())
 
@@ -106,6 +117,22 @@ class MainViewModel @Inject constructor(
         _suggestedDestinations.value = destinationsRepository.destinations
     }
 
+    /**
+     * This method is called whenever the user increments the number of people traveling. We use the
+     * [CoroutineScope] tied to this [ViewModel] to launch a new coroutine and if the new number of
+     * people traveling is greater than [MAX_PEOPLE] (4) we set the value of our [List] of
+     * [ExploreModel] field [_suggestedDestinations] to an [emptyList], otherwise we use our
+     * [CoroutineDispatcher] field [defaultDispatcher] (that is injected by Hilt) as the
+     * [CoroutineContext] for a coroutine which sets the [List] of [ExploreModel] variable
+     * `val newDestinations` to a randomly shuffled copy of the [DestinationsRepository.destinations]
+     * field of [destinationsRepository] with our [Int] parameter [people] used to create a random
+     * seed for the shuffle. When the coroutine that is initializing `newDestinations` finishes we
+     * set  the value of our [List] of [ExploreModel] field [_suggestedDestinations] to `newDestinations`
+     * causing any Composable using a variable collected from [suggestedDestinations] as a [State] to
+     * recompose.
+     *
+     * @param people the new number of people traveling.
+     */
     fun updatePeople(people: Int) {
         viewModelScope.launch {
             if (people > MAX_PEOPLE) {
@@ -120,6 +147,25 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * This method is called by the [ToDestinationUserInput] Composable that is inside of the
+     * [FlySearchContent] (which is called by the [SearchContent] Composable which is the `backLayerContent`
+     * of the [BackdropScaffold] of [CraneHomeContent] when the [CraneScreen.Fly] tab is selected) to
+     * filter the [DestinationsRepository.destinations] field of [destinationsRepository] for [ExploreModel]'s
+     * which contain the [String] parameter [newDestination] in their [City.nameToDisplay] property.
+     * We use the [CoroutineScope] tied to this [ViewModel] to launch a new coroutine, and in that
+     * coroutine we use our [CoroutineDispatcher] field [defaultDispatcher] (that is injected by Hilt)
+     * as the [CoroutineContext] for a coroutine which sets the [List] of [ExploreModel] variable
+     * `val newDestinations` to a [List] of [ExploreModel] created using the [List.filter] method of
+     * the [DestinationsRepository.destinations] field of [destinationsRepository] to filter for only
+     * those [ExploreModel]'s whose [City.nameToDisplay] property contains our [String] parameter
+     * [newDestination]. When that coroutine finishes we set  the value of our [List] of [ExploreModel]
+     * field [_suggestedDestinations] to `newDestinations` causing any Composable using a variable
+     * collected from [suggestedDestinations] as a [State] to recompose.
+     *
+     * @param newDestination the [String] entered by the user that we will use to filter for
+     * [ExploreModel]'s whose [City.nameToDisplay] property contains [newDestination].
+     */
     fun toDestinationChanged(newDestination: String) {
         viewModelScope.launch {
             val newDestinations: List<ExploreModel> = withContext(defaultDispatcher) {
