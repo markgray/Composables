@@ -19,6 +19,7 @@ package com.example.jetnews.ui.home
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
@@ -40,6 +41,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -49,6 +51,8 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.JetnewsNavGraph
+import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.CoroutineScope
@@ -150,10 +154,24 @@ fun HomeScreen(
  * `val contentPadding` to the [PaddingValues] it returns when it adds 8.dp to the `top` of the
  * [WindowInsets] of the [WindowInsetsSides.Bottom] of the [WindowInsets.Companion.systemBars]
  * (All system bars. Includes statusBars(), captionBar() as well as navigationBars(), but not ime()).
+ * NOTE: [rememberContentPaddingForScreen] is NOT a Compose "remember" method so it will be called
+ * to set `contentPadding` every time [PostList] is recomposed (a potentially confusing name choice)
  * Then we call our root Composable [LazyColumn] using our [modifier] parameter as its `modifier`
  * argument and the [PaddingValues] variable `contentPadding` as its `contentPadding` argument.
  * The `content` of the [LazyColumn] consists of:
- *  - An [items]
+ *  - An [items] whose lambda feeds every [Post] in our [List] of [Post] variable `postsHistory` as
+ *  the variable `post` to its two Composables: a [PostCardHistory] whose `post` argument is `post`
+ *  and whose `navigateToArticle` lambda argument is our [navigateToArticle] parameter (it displays
+ *  a information about the [Post] in a "clickable" [Row] which will call [navigateToArticle] to
+ *  navigate to [ArticleScreen] to display the entire [Post] thanks to [JetnewsNavGraph]). The other
+ *  Composable is a [PostListDivider] which is a full-width [Divider] with padding whose `color` is
+ *  a copy of the `onSurface` [Color] of [MaterialTheme.colors] with its alpha set to 0.08 (this is
+ *  a very light Gray in light theme, and hardly visible in dark theme)
+ *  - Following the [items] is an `item` containing a [PostListPopularSection] Composable whose `posts`
+ *  argument is our [List] of [Post] variable `postsPopular` and whose whose `navigateToArticle`
+ *  lambda argument is our [navigateToArticle] parameter ([PostListPopularSection] displays each of
+ *  its `posts` in a [PostCardPopular] contained in its [LazyRow] Composable, and [PostCardPopular]
+ *  calls [navigateToArticle] with the [Post.id] of its [Post] if it is clicked).
  *
  * @param posts (state) the list to display
  * @param navigateToArticle (event) request navigation to Article screen
@@ -183,7 +201,7 @@ private fun PostList(
 }
 
 /**
- * Horizontal scrolling cards for [PostList]
+ * Horizontal scrolling cards for [PostList] to display its `postsPopular` [List] of [Post]'s.
  *
  * @param posts (state) to display
  * @param navigateToArticle (event) request navigation to Article screen
