@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import com.example.crane.buildsrc.Libs
-import com.example.crane.buildsrc.Urls
-import com.example.crane.buildsrc.Versions
-
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -25,8 +21,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
+        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20"
         classpath "com.google.dagger:hilt-android-gradle-plugin:2.43.2"
     }
 }
@@ -41,13 +37,6 @@ subprojects {
         google()
         mavenCentral()
 
-        if (!Libs.AndroidX.Compose.snapshot.isEmpty()) {
-            maven { url Urls.composeSnapshotRepo }
-        }
-
-        if (Libs.Accompanist.version.endsWith('SNAPSHOT')) {
-            maven { url Urls.mavenCentralSnapshotRepo }
-        }
     }
 
     apply plugin: 'com.diffplug.spotless'
@@ -72,7 +61,7 @@ subprojects {
     // androidx.test and hilt are forcing JUnit, 4.12. This forces them to use 4.13
     configurations.configureEach {
         resolutionStrategy {
-            force Libs.JUnit.junit
+            force "junit:junit:4.13"
         }
     }
 }
