@@ -100,6 +100,12 @@ class PeopleUserInputState {
         updateAnimationState()
     }
 
+    /**
+     * Updates the [MutableTransitionState.targetState] of our [animationState] field to [Valid] or
+     * [Invalid] depending on whether our [people] property is greater than [MAX_PEOPLE] ([Invalid])
+     * or less than or equal to [MAX_PEOPLE] ([Valid]) only if the new value is not equal to the
+     * value of the [MutableTransitionState.currentState] of our [animationState] field.
+     */
     private fun updateAnimationState() {
         val newState: PeopleUserInputAnimationState =
             if (people > MAX_PEOPLE) Invalid
@@ -109,6 +115,9 @@ class PeopleUserInputState {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun PeopleUserInput(
     titleSuffix: String? = "",
