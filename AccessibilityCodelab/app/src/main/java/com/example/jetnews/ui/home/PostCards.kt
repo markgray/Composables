@@ -91,7 +91,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
  *  - The next Composable in the [Row] is a [Column] whose `modifier` argument is a `RowScope`
  *  `Modifier.weight` of 1f (the [Column] will occupy all remaining space after its unweighted
  *  siblings are measured and placed), to which a [Modifier.padding] that adds 16.dp padding to the
- *  `top` of the [Column] and 16.dp to the `bottom`.
+ *  `top` of the [Column] and 16.dp to the `bottom` is added.
  */
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
