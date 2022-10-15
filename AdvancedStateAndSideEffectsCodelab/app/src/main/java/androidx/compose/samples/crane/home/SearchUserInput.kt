@@ -22,6 +22,7 @@ import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.samples.crane.R
+import androidx.compose.samples.crane.base.CraneBaseUserInput
 import androidx.compose.samples.crane.base.CraneEditableUserInput
 import androidx.compose.samples.crane.base.CraneUserInput
 import androidx.compose.samples.crane.base.rememberEditableUserInputState
@@ -42,6 +44,10 @@ import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Invalid
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.flow.filter
 
@@ -116,7 +122,54 @@ class PeopleUserInputState {
 }
 
 /**
+ * This Composable displays the currrent number of people traveling in a [CraneUserInput] Composable
+ * and when the [MutableTransitionState.targetState] is [Invalid] it displays an additional [Text]
+ * which displays the [String] "Error: We don't support more than $[MAX_PEOPLE] people". Our root
+ * Composable is a [Column] wherein we `remember` a [MutableTransitionState] variable `val transitionState`
+ * whose initial value is the current value of the [PeopleUserInputState.animationState] property of
+ * our [peopleState] parameter, then we initialize our [State] of [Color] variable `val tint` to the
+ * instance that the [tintPeopleUserInput] method returns (the current value of the `tint` [Color]
+ * is used to "tint" the [Icon] and the text of the `caption` [Text] of the [CraneBaseUserInput] that
+ * [CraneUserInput] uses to display the number of people traveling (its [Color] is animated using the
+ * [Transition.animateColor] method by [tintPeopleUserInput] between the `onSurface` [Color] of
+ * [MaterialTheme.colors] ([Color.White]) and the `secondary` [Color] of [MaterialTheme.colors] (which
+ * our [CraneTheme] custom [MaterialTheme] specifies to be `crane_red`: the [Color] 0xFFE30425, a
+ * bright blood red). Next we initialize our [Int] variable `val people` to the [PeopleUserInputState.people]
+ * property of our [peopleState] parameter.
  *
+ * As long as the [MutableTransitionState.targetState] of `transitionState` is not [Invalid] the only
+ * child of the [Column] is a [CraneUserInput] Composable whose `text` argument displays the value of
+ * `people` followed by the [String] "Adult" (or "Adults" if `people` is greater than 1) followed by
+ * our [titleSuffix] parameter (which is the empty string except when we are called to be part of the
+ * [FlySearchContent] Composable in which case it is the string ", Economy"). The `vectorImageId`
+ * argument is the resource ID [R.drawable.ic_person] (a stylized silhouette of the bust of a person).
+ * The `tint` argument is the current [State.value] color of our [State] of [Color] variable `tint`.
+ * The `onClick` argument is a lambda which calls the [PeopleUserInputState.addPerson] method of our
+ * [peopleState] parameter to add another person to the current number of people traveling, followed
+ * by a call to our [onPeopleChanged] lambda with the new value of the [PeopleUserInputState.people]
+ * property of [peopleState].
+ *
+ * When the [MutableTransitionState.targetState] of `transitionState` is [Invalid] a [Text] is added
+ * to the [Column] displaying the `text` "Error: We don't support more than $[MAX_PEOPLE] people"
+ * using as its `style` argument a copy of the `body1` [TextStyle] of [MaterialTheme.typography]
+ * (the `craneFontFamily` [FontFamily] with a `fontWeight` of [FontWeight.W600] (the [Font] with
+ * resource ID [R.font.raleway_semibold]) and a `fontSize` of 16.dp) with the `color` of the [Font]
+ * the `secondary` [Color] of [MaterialTheme.colors] (which our [CraneTheme] custom [MaterialTheme]
+ * specifies to be `crane_red`: the [Color] 0xFFE30425, a bright blood red).
+ *
+ * @param titleSuffix a [String] to be added to the end of the text displayed by our [CraneUserInput]
+ * which is the empty string except when we are called to be part of the [FlySearchContent] Composable,
+ * in which case it is the string ", Economy"
+ * @param onPeopleChanged a lambda to be called with the current number of people traveling (ie. the
+ * value of the [PeopleUserInputState.people] property of our parameter [peopleState]) whenever it
+ * changes value. [CraneHomeContent] passes [SearchContent] a lambda which calls the
+ * [MainViewModel.updatePeople] method of its `viewModel` with the [Int] passed to [onPeopleChanged],
+ * and [SearchContent] passes it to [EatSearchContent], [FlySearchContent] and [SleepSearchContent]
+ * who pass it on to us.
+ * @param peopleState the [PeopleUserInputState] instance that keeps track of the current number of
+ * people traveling. Our callers do not pass us one, so the default `remember`'ed instance constructed
+ * as our parameter default is always used instead (a new instance is created every time that the user
+ * switches to a different tab, ie. the old values of [PeopleUserInputState.people] are forgotten).
  */
 @Composable
 fun PeopleUserInput(
@@ -129,7 +182,7 @@ fun PeopleUserInput(
             remember { peopleState.animationState }
         val tint: State<Color> = tintPeopleUserInput(transitionState)
 
-        val people = peopleState.people
+        val people: Int = peopleState.people
         CraneUserInput(
             text = if (people == 1) "$people Adult$titleSuffix" else "$people Adults$titleSuffix",
             vectorImageId = R.drawable.ic_person,
@@ -148,6 +201,9 @@ fun PeopleUserInput(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun FromDestination() {
     CraneUserInput(text = "Seoul, South Korea", vectorImageId = R.drawable.ic_location)
