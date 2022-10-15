@@ -79,7 +79,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion composeCompiler_version
+        kotlinCompilerExtensionVersion "1.3.2"
     }
     packagingOptions {
         resources {
@@ -91,22 +91,22 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
 
-    implementation "androidx.compose.runtime:runtime:$compose_version"
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.foundation:foundation-layout:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "androidx.compose.animation:animation:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.compose.runtime:runtime:1.2.1"
+    implementation "androidx.compose.ui:ui:1.2.1"
+    implementation "androidx.compose.foundation:foundation-layout:1.2.1"
+    implementation "androidx.compose.material:material:1.2.1"
+    implementation "androidx.compose.material:material-icons-extended:1.2.1"
+    implementation "androidx.compose.foundation:foundation:1.2.1"
+    implementation "androidx.compose.animation:animation:1.2.1"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.2.1"
+    implementation "androidx.compose.runtime:runtime-livedata:1.2.1"
+    debugImplementation "androidx.compose.ui:ui-tooling:1.2.1"
 
-    implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.25.1"
+    implementation "com.google.accompanist:accompanist-insets:0.25.1"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.25.1"
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.activity:activity-ktx:1.6.0'
@@ -122,13 +122,13 @@ dependencies {
 
     androidTestImplementation 'androidx.test:rules:1.4.0'
     androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation "androidx.compose.ui:ui-test:$compose_version"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    androidTestImplementation "androidx.compose.ui:ui-test:1.2.1"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.2.1"
 
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:1.2.1"
 
     // Robolectric dependencies
-    testImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    testImplementation "androidx.compose.ui:ui-test-junit4:1.2.1"
     // TODO: Bump to latest after Espresso 3.5.0 goes stable
     //  (due to https://github.com/robolectric/robolectric/issues/6593)
     testImplementation 'org.robolectric:robolectric:4.8.1'
