@@ -25,6 +25,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
@@ -60,16 +63,44 @@ import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post1
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.theme.JetnewsShapes
 import com.example.jetnews.ui.theme.JetnewsTheme
 
+/**
+ * This Composable is used by the `PostList` Composable (file ui/home/HomeScreen.kt) as the [items]
+ * of the [LazyColumn] that is uses to display all of the [Post] objects in its `postsHistory` [List]
+ * of [Post] (which is arbitrarily chosen to be the first 3 posts in its `posts` [List] of [Post]
+ * parameter). We start by `remember`ing our [Boolean] variable `var openDialog` with an initial
+ * value of a [mutableStateOf] `false`, and initializing our [String] variable `val showFewerLabel`
+ * to the [String] with resource ID [R.string.cd_show_fewer] ("Show fewer like this"). Our root
+ * Composable is a [Row] whose `modifier` argument is a [Modifier.clickable] whose `onClickLabel`
+ * is the [String] with resource ID [R.string.action_read_article] ("read article") and whose
+ * `onClick` lambda argument is a lambda which calls our [navigateToArticle] lambda parameter with
+ * the [Post.id] property of our [post] parameter. A [Modifier.semantics] is chained to the
+ * [Modifier.clickable] whose Custom actions is a [listOf] a single [CustomAccessibilityAction]
+ * whose `label` is our [String] variable `showFewerLabel`, and whose `action` argument is a lambda
+ * which sets `openDialog` to `true` and returns `true` to indicate success. The `content` of the
+ * [Row] is:
+ *  - an [Image] whose `painter` draws the drawable whose resource ID is the [Post.imageThumbId]
+ *  of our [post] parameter, whose `contentDescription` argument is `null`, and whose `modifier`
+ *  argument is a [Modifier.padding] whose `top` is 16.dp, `start` is 16.dp and whose `end` is
+ *  16.dp, to which is chained a [Modifier.size] of 40.dp by 40.dp, followed by a [Modifier.clip]
+ *  whose `shape` argument is the `small` [RoundedCornerShape] of [MaterialTheme.shapes] (which the
+ *  [JetnewsShapes] used as the `shapes` of our [JetnewsTheme] custom [MaterialTheme] specifies to
+ *  be a [RoundedCornerShape] whose `size` is 4.dp).
+ *  - The next Composable in the [Row] is a [Column] whose `modifier` argument is a `RowScope`
+ *  `Modifier.weight` of 1f (the [Column] will occupy all remaining space after its unweighted
+ *  siblings are measured and placed), to which a [Modifier.padding] that adds 16.dp padding to the
+ *  `top` of the [Column] and 16.dp to the `bottom`.
+ */
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
-    var openDialog by remember { mutableStateOf(false) }
-    val showFewerLabel = stringResource(R.string.cd_show_fewer)
+    var openDialog: Boolean by remember { mutableStateOf(false) }
+    val showFewerLabel: String = stringResource(R.string.cd_show_fewer)
     Row(
-        Modifier
+        modifier = Modifier
             .clickable(
-                onClickLabel = stringResource(R.string.action_read_article)
+                onClickLabel = stringResource(id = R.string.action_read_article)
             ) {
                 navigateToArticle(post.id)
             }
@@ -89,16 +120,16 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
             contentDescription = null,
             modifier = Modifier
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                .size(40.dp, 40.dp)
-                .clip(MaterialTheme.shapes.small)
+                .size(width = 40.dp, height = 40.dp)
+                .clip(shape = MaterialTheme.shapes.small)
         )
         Column(
-            Modifier
+            modifier = Modifier
                 .weight(1f)
                 .padding(top = 16.dp, bottom = 16.dp)
         ) {
-            Text(post.title, style = MaterialTheme.typography.subtitle1)
-            Row(Modifier.padding(top = 4.dp)) {
+            Text(text = post.title, style = MaterialTheme.typography.subtitle1)
+            Row(modifier = Modifier.padding(top = 4.dp)) {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     val textStyle = MaterialTheme.typography.body2
                     Text(

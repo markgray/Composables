@@ -44,6 +44,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -55,6 +59,7 @@ import com.example.jetnews.ui.JetnewsNavGraph
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.ui.theme.JetnewsTypography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -201,7 +206,22 @@ private fun PostList(
 }
 
 /**
- * Horizontal scrolling cards for [PostList] to display its `postsPopular` [List] of [Post]'s.
+ * Horizontal scrolling cards for [PostList] to display its `postsPopular` [List] of [Post]'s. Our
+ * root Composable is a [Column] whose top child is a [Text] whose `modifier` argument is a
+ * [Modifier.padding] of 16.dp for all sides, whose `text` argument is the [String] with resource ID
+ * [R.string.home_popular_section_title] ("Popular on Jetnews") and whose `style` argument is the
+ * `subtitle1` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography] of our
+ * [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat` [FontFamily] with a
+ * `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID [R.font.montserrat_semibold])
+ * with a `fontSize` of 16.sp, and `letterSpacing` of 0.15.sp. The next Composable in the [Column]
+ * is a [LazyRow] whose `contentPadding` argument is a [PaddingValues] of 16.dp at the `end` of the
+ * [LazyRow], and its `content` is an [items] which feeds each [Post] in our [List] of [Post] parameter
+ * [posts] as the variable `post` to [PostCardPopular] Composables whose `post` argument is `post`,
+ * whose `navigateToArticle` argument is our [navigateToArticle] lambda parameter, and whose `modifier`
+ * argument is a [Modifier.padding] whose `start` padding is 16.dp, and whose `bottom` padding is
+ * 16.dp. The bottom child in the [Column] is a [PostListDivider] which is a full-width [Divider]
+ * with padding whose `color` is  a copy of the `onSurface` [Color] of [MaterialTheme.colors] with
+ * its alpha set to 0.08 (this is a very light Gray in light theme, and hardly visible in dark theme)
  *
  * @param posts (state) to display
  * @param navigateToArticle (event) request navigation to Article screen
@@ -213,17 +233,17 @@ private fun PostListPopularSection(
 ) {
     Column {
         Text(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(all = 16.dp),
             text = stringResource(id = R.string.home_popular_section_title),
             style = MaterialTheme.typography.subtitle1
         )
 
         LazyRow(contentPadding = PaddingValues(end = 16.dp)) {
-            items(posts) { post ->
+            items(posts) { post: Post ->
                 PostCardPopular(
-                    post,
-                    navigateToArticle,
-                    Modifier.padding(start = 16.dp, bottom = 16.dp)
+                    post = post,
+                    navigateToArticle = navigateToArticle,
+                    modifier = Modifier.padding(start = 16.dp, bottom = 16.dp)
                 )
             }
         }
@@ -232,7 +252,11 @@ private fun PostListPopularSection(
 }
 
 /**
- * Full-width divider with padding for [PostList]
+ * Full-width divider with padding for [PostList]. Our `content` is just a [Divider] whose `modifier`
+ * argument is a [Modifier.padding] with `horizontal` padding of 14.dp at each end of the [Divider],
+ * and whose `color` argument is a copy of the `onSurface` [Color] of [MaterialTheme.colors] (black)
+ * with its alpha set to 0.08f (this is a very light Gray in light theme, and hardly visible in dark
+ * theme).
  */
 @Composable
 private fun PostListDivider() {
@@ -251,6 +275,11 @@ private fun PostListDivider() {
  * [WindowInsets] to add a [WindowInsets] whose `top` is our [additionalTop] parameter. Finally we
  * use the [WindowInsets.asPaddingValues] convert the [WindowInsets] to a [PaddingValues] and using
  * `LocalDensity` for DP to pixel conversion, and we return this [PaddingValues] to our caller.
+ *
+ * @param additionalTop the additional padding to add to the `top` of the current value of the
+ * [WindowInsetsSides.Bottom] side of the [WindowInsets.Companion.systemBars] (system bars).
+ * @return a [PaddingValues] with [additionalTop] added to the `top` of the current value of the
+ * [WindowInsetsSides.Bottom] side of the [WindowInsets.Companion.systemBars] (system bars).
  */
 @Composable
 fun rememberContentPaddingForScreen(additionalTop: Dp = 0.dp): PaddingValues =
@@ -260,7 +289,14 @@ fun rememberContentPaddingForScreen(additionalTop: Dp = 0.dp): PaddingValues =
         .asPaddingValues()
 
 /**
- * Four Previews of our [JetnewsTheme] wrapped [HomeScreen] Composable.
+ * Four Previews of our [JetnewsTheme] wrapped [HomeScreen] Composable:
+ *  - "Home screen" [HomeScreen] with the default configuration arguments
+ *  - "Home screen (dark)" [HomeScreen] with the Bit mask of the ui mode set to [UI_MODE_NIGHT_YES]
+ *  (value that corresponds to the night resource qualifier).
+ *  - "Home screen (big font)" [HomeScreen] with the `fontScale` set to 1.5f (User preference for
+ *  the scaling factor for fonts, relative to the base density scaling).
+ *  - "Home screen (large screen)" [HomeScreen] with the `device` specified to be a [Devices.PIXEL_C]
+ *  (Device string indicating the device to use in the preview. See the available devices in [Devices]).
  */
 @Preview("Home screen")
 @Preview("Home screen (dark)", uiMode = UI_MODE_NIGHT_YES)
