@@ -22,6 +22,7 @@ import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -33,12 +34,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.CraneBaseUserInput
 import androidx.compose.samples.crane.base.CraneEditableUserInput
 import androidx.compose.samples.crane.base.CraneUserInput
+import androidx.compose.samples.crane.base.EditableUserInputState
 import androidx.compose.samples.crane.base.rememberEditableUserInputState
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Invalid
 import androidx.compose.samples.crane.home.PeopleUserInputAnimationState.Valid
@@ -49,7 +53,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
+import kotlin.coroutines.CoroutineContext
 
 /**
  * This enum is used to indicate whether the value of [PeopleUserInputState.people] (the number of
@@ -202,23 +208,81 @@ fun PeopleUserInput(
 }
 
 /**
- *
+ * This Composable is used by the [CraneSearch] Composable that is used by the [FlySearchContent]
+ * that is displayed by the `SearchContent` that is used as the `backLayerContent` argument (the
+ * content of the back layer) of the [BackdropScaffold] in [CraneHomeContent] when the [CraneScreen.Fly]
+ * tab is selected. Its `content` is a [CraneUserInput] whose `text` argument is "Seoul, South Korea"
+ * and whose `vectorImageId` argument is the drawable with resource ID [R.drawable.ic_location] (the
+ * "inverted tear drop with a circular hole" that is used as a location marker on Google Maps and
+ * elsewhere). The text is not modifiable, and no `onClick` argument is given so the Composable just
+ * "ripples" when clicked.
  */
 @Composable
 fun FromDestination() {
     CraneUserInput(text = "Seoul, South Korea", vectorImageId = R.drawable.ic_location)
 }
 
+/**
+ * This Composable is used by the [CraneSearch] Composable that is used by the [FlySearchContent]
+ * that is displayed by the `SearchContent` that is used as the `backLayerContent` argument (the
+ * content of the back layer) of the [BackdropScaffold] in [CraneHomeContent] when the [CraneScreen.Fly]
+ * tab is selected. It allows the user to enter a [String] which it feeds to its [onToDestinationChanged]
+ * parameter whenever the text entered changes. It starts by "remembering" its [EditableUserInputState]
+ * variable `val editableUserInputState` using the [rememberEditableUserInputState] method with an
+ * initial `hint` value of "Choose Destination". The [EditableUserInputState] has two fields:
+ * [EditableUserInputState.text] which holds the current text, and [EditableUserInputState.hint]
+ * which holds the `hint` passed to its constructor, as well as a [EditableUserInputState.isHint]
+ * property which returns `true` if the two fields are still equal. Its companion object also has
+ * a [Saver] which allows [rememberEditableUserInputState] to use [rememberSaveable] to remember the
+ * instance of [EditableUserInputState] it constructs across Activity recreation. The [EditableUserInputState]
+ * returned has both the `text` and the `hint` fields set to the `hint` argument passed to
+ * [rememberEditableUserInputState]. Our Composable `content` consists of a [CraneEditableUserInput]
+ * whose `state` argument is our [EditableUserInputState] variable `editableUserInputState` (its `text`
+ * field will be updated with the text entered by the user), whose `caption` argument is the [String]
+ * "To", and whose `vectorImageId` is the drawable with resource ID [R.drawable.ic_plane] (a stylized
+ * airplane).
+ *
+ * We next use the [rememberUpdatedState] method to initialize and remember our lambda variable
+ * `val currentOnDestinationChanged` to our [onToDestinationChanged] parameter (this function
+ * remembers a `mutableStateOf` [onToDestinationChanged] and updates the value of
+ * `currentOnDestinationChanged` to the new Value of [onToDestinationChanged] on each recomposition
+ * of the [rememberUpdatedState] call. [rememberUpdatedState] should be used when parameters or values
+ * computed during composition are referenced by a long-lived lambda or object expression.
+ * Recomposition will update the resulting State without recreating the long-lived lambda or object,
+ * allowing that object to persist without cancelling and resubscribing, or relaunching a long-lived
+ * operation that may be expensive or prohibitive to recreate and restart. This may be common when
+ * working with [LaunchedEffect] for example). Next we use [LaunchedEffect] with a `key1` of
+ * `editableUserInputState` to launch its lambda `block` argument into the composition's
+ * [CoroutineContext]. The coroutine will be cancelled when the [LaunchedEffect] leaves the composition.
+ * The lambda block uses the [snapshotFlow] method to create a [Flow] that runs its lambda block when
+ * collected and emits the result (the current value of the [EditableUserInputState.text] field of
+ * `editableUserInputState`, recording any snapshot state that was accessed. While collection continues,
+ * if a new Snapshot is applied that changes state accessed by block, the flow will run block again,
+ * re-recording the snapshot state that was accessed. If the result of block is not equal to the
+ * previous result, the flow will emit that new result. A [Flow.filter] is applied to the [Flow] which
+ * will return a flow containing only values of the original flow where the [EditableUserInputState.isHint]
+ * property is `false` (the user has altered the original text), and [Flow.collect] will be used on
+ * this [Flow] in order to pass the new value of the [EditableUserInputState.text] field of
+ * `editableUserInputState` to our `currentOnDestinationChanged` lambda (which is being kept up to
+ * date with our [onToDestinationChanged] lambda parameter by [rememberUpdatedState] recall).
+ *
+ * @param onToDestinationChanged a lambda we should call with the text entered by the user whenever
+ * that changes value. The [CraneSearch] Composable passes us the `onToDestinationChanged` that is
+ * passed to its [FlySearchContent] parent and [SearchContent] passes it a lambda which calls the
+ * [MainViewModel.toDestinationChanged] method of its `viewModel` parameter with the new value of
+ * text entered. (The `viewModel` is the one that Hilt injects as the default value of the `viewModel`
+ * parameter of [CraneHomeContent] BTW).
+ */
 @Composable
 fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
-    val editableUserInputState = rememberEditableUserInputState(hint = "Choose Destination")
+    val editableUserInputState: EditableUserInputState = rememberEditableUserInputState(hint = "Choose Destination")
     CraneEditableUserInput(
         state = editableUserInputState,
         caption = "To",
         vectorImageId = R.drawable.ic_plane
     )
 
-    val currentOnDestinationChanged by rememberUpdatedState(onToDestinationChanged)
+    val currentOnDestinationChanged: (String) -> Unit by rememberUpdatedState(onToDestinationChanged)
     LaunchedEffect(editableUserInputState) {
         snapshotFlow { editableUserInputState.text }
             .filter { !editableUserInputState.isHint }
@@ -228,6 +292,9 @@ fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun DatesUserInput() {
     CraneUserInput(
