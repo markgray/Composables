@@ -48,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,15 +57,22 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post1
 import com.example.jetnews.data.posts.impl.post3
+import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.theme.JetnewsShapes
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.ui.theme.JetnewsTypography
 
 /**
  * This Composable is used by the `PostList` Composable (file ui/home/HomeScreen.kt) as the [items]
@@ -92,6 +100,40 @@ import com.example.jetnews.ui.theme.JetnewsTheme
  *  `Modifier.weight` of 1f (the [Column] will occupy all remaining space after its unweighted
  *  siblings are measured and placed), to which a [Modifier.padding] that adds 16.dp padding to the
  *  `top` of the [Column] and 16.dp to the `bottom` is added.
+ *
+ * The `content` of the [Column] is:
+ *  - A [Text] whose `text` is the [String] in the [Post.title] property of [post] and whose `style`
+ *  is the `subtitle1` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography] of
+ *  our [JetnewsTheme] custom [MaterialTheme] specifies to be the Montserrat` [FontFamily] with a
+ *  `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID [R.font.montserrat_semibold])
+ *  `fontSize` of 16.sp, and `letterSpacing` of 0.15.sp
+ *  - A [Row] whose `modifier` argument is a [Modifier.padding] that adds 4.dp to the `top` of the
+ *  [Row]. And the `content` of the [Row] is two [Text] wrapped in a [CompositionLocalProvider] which
+ *  causes the value [ContentAlpha.medium] to be supplied as the [LocalContentAlpha]. Within the
+ *  [CompositionLocalProvider] block we initialize our [TextStyle] variable `val textStyle` to the
+ *  `body2` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography] of our
+ *  [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat` [FontFamily] with a
+ *  `fontWeight` of [FontWeight.Medium] (the [Font] with resource ID [R.font.montserrat_medium]),
+ *  `fontSize` of 14.sp, and `letterSpacing` of 0.25.sp. The two [Text] Composables use `textStyle`
+ *  as their `style` argument, with the `text` argument of the first [Text] using the property
+ *  [PostAuthor.name] of the [Metadata.author] of the [Post.metadata] field of our [Post] parameter
+ *  [post], and the `text` argument of the second [Text] using the property the [Metadata.readTimeMinutes]
+ *  of the [Post.metadata] field of our [Post] parameter [post] as the number of minutes to read in
+ *  the String interpolation: " - ${post.metadata.readTimeMinutes} min read"
+ *
+ *  - At the end of the root [Row] we have an [IconButton] wrapped in a [CompositionLocalProvider]
+ *  which causes the value [ContentAlpha.medium] to be supplied as the [LocalContentAlpha]. The
+ *  `modifier` argument of the [IconButton] is a an [Modifier.clearAndSetSemantics] (which Clears
+ *  the semantics of all the descendant nodes and sets the new semantics to an empty block), and the
+ *  `onClick` argument is a lambda which set `openDialog` to `true`. The `content` of the [IconButton]
+ *  is an [Icon] whose `imageVector` argument is the `Close` [ImageVector] of [Icons.Default] (an "X"),
+ *  and whose `contentDescription` argument is the [String] with resource ID [R.string.cd_show_fewer]
+ *  ("Show fewer like this").
+ *
+ * At the end of this Composable is an `if` statement which will (if `openDialog` is `true`) call an
+ * [AlertDialog] whose arguments are:
+ *  - `modifier` a [Modifier.padding] that adds 20.dp to all sides of the content of [AlertDialog]
+ *  - `onDismissRequest` a lambda which sets `openDialog` to `false`.
  */
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
@@ -131,7 +173,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
             Text(text = post.title, style = MaterialTheme.typography.subtitle1)
             Row(modifier = Modifier.padding(top = 4.dp)) {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    val textStyle = MaterialTheme.typography.body2
+                    val textStyle: TextStyle = MaterialTheme.typography.body2
                     Text(
                         text = post.metadata.author.name,
                         style = textStyle
@@ -158,7 +200,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
     }
     if (openDialog) {
         AlertDialog(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(all = 20.dp),
             onDismissRequest = { openDialog = false },
             title = {
                 Text(
