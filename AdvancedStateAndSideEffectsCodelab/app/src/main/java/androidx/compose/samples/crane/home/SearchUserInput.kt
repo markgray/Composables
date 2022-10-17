@@ -293,7 +293,11 @@ fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
 }
 
 /**
- *
+ * This Composable is used as part of the [CraneSearch] Composables used by [EatSearchContent],
+ * [FlySearchContent] and [SleepSearchContent]. It does nothing except ripple when clicked. Its
+ * `content` is a [CraneUserInput] whose `caption` argument is the [String] "Select Dates", whose
+ * `text` argument is the empty [String] and whose `vectorImageId` argument is the drawable with
+ * resource ID [R.drawable.ic_calendar] (a stylized picture of a hanging calendar).
  */
 @Composable
 fun DatesUserInput() {
@@ -304,6 +308,32 @@ fun DatesUserInput() {
     )
 }
 
+/**
+ * This Composable animates the [Color] of a [State] of [Color] depending on the value of the
+ * [PeopleUserInputAnimationState] ([Valid] or [Invalid]) of its [MutableTransitionState] of
+ * [PeopleUserInputAnimationState] parameter [transitionState]. The [Color] for [Valid] (our variable
+ * `val validColor`) is the `onSurface` [Color] of [MaterialTheme.colors] which our [CraneTheme]
+ * custom [MaterialTheme] specifies to be `crane_white` ([Color.White]), and the [Color] for [Invalid]
+ * (our variable `val invalidColor`) is the `secondary` [Color] of [MaterialTheme.colors] which our
+ * [CraneTheme] custom [MaterialTheme] specifies to be `crane_red` (the [Color] 0xFFE30425 which is
+ * a bright blood red). We use the [updateTransition] method to create a [Transition] and put it in
+ * the [MutableTransitionState.currentState] of our [transitionState] parameter to initialize our
+ * variable `val transition`. Whenever the [MutableTransitionState.targetState] of [transitionState]
+ * changes, the [Transition] will animate to the new target state. Finally we return the [State] of
+ * [Color] that the [Transition.animateColor] method of `transition` creates when its `transitionSpec`
+ * argument is a [tween] whose `durationMillis` argument is 300 milliseconds, whose `label` argument
+ * is the empty [String] and whose `targetValueByState` lambda argument returns `validColor` if its
+ * `state` argument is [Valid] or `invalidColor` if it is not.
+ *
+ * @param transitionState the [MutableTransitionState] created from the [PeopleUserInputState.animationState]
+ * enum ([Valid] or [Invalid]) of the `peopleState` [PeopleUserInputState] parameter of [PeopleUserInput].
+ * A [MutableTransitionState] contains two fields: [MutableTransitionState.currentState] and
+ * [MutableTransitionState.targetState]. Our `currentState` is initialized to [Valid], and can only
+ * be mutated by a [Transition]. `targetState` is also initialized to [Valid]. It can be mutated
+ * to alter the course of a transition animation that is created with the [MutableTransitionState]
+ * using [updateTransition]. Both `currentState` and `targetState` are backed by a [State] object.
+ * @return a [State] object holding the current [Color] in its [State.value] field.
+ */
 @Composable
 private fun tintPeopleUserInput(
     transitionState: MutableTransitionState<PeopleUserInputAnimationState>
@@ -314,11 +344,15 @@ private fun tintPeopleUserInput(
     val transition: Transition<PeopleUserInputAnimationState> = updateTransition(transitionState, label = "")
     return transition.animateColor(
         transitionSpec = { tween(durationMillis = 300) }, label = ""
-    ) {
-        if (it == Valid) validColor else invalidColor
+    ) { state: PeopleUserInputAnimationState ->
+        if (state == Valid) validColor else invalidColor
     }
 }
 
+/**
+ * A Preview of our [CraneTheme] wrapped [PeopleUserInput] Composable whose `onPeopleChanged` lambda
+ * argument is an empty block.
+ */
 @Preview
 @Composable
 fun PeopleUserInputPreview() {
