@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
@@ -48,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -64,15 +66,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post1
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
+import com.example.jetnews.ui.MainActions
 import com.example.jetnews.ui.theme.JetnewsShapes
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.theme.JetnewsTypography
+import com.example.jetnews.ui.theme.Red300
+import com.example.jetnews.ui.theme.Red700
+import com.example.jetnews.ui.JetnewsNavGraph
+import com.example.jetnews.ui.MainDestinations
+import com.example.jetnews.ui.article.ArticleScreen
 
 /**
  * This Composable is used by the `PostList` Composable (file ui/home/HomeScreen.kt) as the [items]
@@ -132,8 +141,42 @@ import com.example.jetnews.ui.theme.JetnewsTypography
  *
  * At the end of this Composable is an `if` statement which will (if `openDialog` is `true`) call an
  * [AlertDialog] whose arguments are:
- *  - `modifier` a [Modifier.padding] that adds 20.dp to all sides of the content of [AlertDialog]
+ *  - `modifier` a [Modifier.padding] that adds 20.dp to all sides of [AlertDialog] (this is added to
+ *  the outside of the [AlertDialog] oddly enough, making it smaller which was a bit of a surprise).
  *  - `onDismissRequest` a lambda which sets `openDialog` to `false`.
+ *  - `title` The title of the Dialog (which should specify the purpose of the Dialog) uses a [Text]
+ *  Composable whose `text` is the [String] with resource ID [R.string.fewer_stories] ("Show fewer
+ *  stories like this?"), and whose `style` is the `h6` [TextStyle] of [MaterialTheme.typography]
+ *  which the [JetnewsTypography] of our [JetnewsTheme] custom [MaterialTheme] specifies to be the
+ *  `Montserrat` [FontFamily] with a `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource
+ *  ID [R.font.montserrat_semibold]), `fontSize` of 20.sp, and `letterSpacing` of 0.sp.
+ *  - `text` The text which presents the details regarding the Dialog's purpose uses a [Text]
+ *  Composable whose `text` is the [String] with resource ID [R.string.fewer_stories_content]
+ *  ("This feature is not yet implemented"), and whose `style` is the `body1` [TextStyle] of
+ *  [MaterialTheme.typography] which the [JetnewsTypography] of our [JetnewsTheme] custom
+ *  [MaterialTheme] specifies to be the `Domine` [FontFamily] with a `fontWeight` of
+ *  [FontWeight.Normal] (the [Font] with resource ID [R.font.domine_regular]), `fontSize` of 16.sp,
+ *  and `letterSpacing` of 0.5.sp.
+ *  - `confirmButton` the button which is meant to confirm a proposed action, thus resolving what
+ *  triggered the dialog uses a [Text] as its lambda argument whose `text` is the [String] with
+ *  resource ID [R.string.agree] ("AGREE"), whose `style` argument is the `button` [TextStyle] of
+ *  [MaterialTheme.typography] which the [JetnewsTypography] of our [JetnewsTheme] custom
+ *  [MaterialTheme] specifies to be the `Montserrat` [FontFamily] with a `fontWeight` of
+ *  [FontWeight.SemiBold] (the [Font] with resource ID [R.font.montserrat_semibold]), `fontSize`
+ *  of 14.sp, and `letterSpacing` of 1.25.sp, whose `color` argument will apply to the text the
+ *  `primary` [Color] of [MaterialTheme.colors] which our [JetnewsTheme] custom [MaterialTheme]
+ *  defines to be [Red700] (a bright blood red: 0xffdd0d3c) for light theme, and [Red300] (a light
+ *  red: 0xffea6d7e) for dark theme, and its `modifier` argument is a [Modifier.padding] that adds
+ *  15.dp padding to all sides of the [Text], to which is chained a [Modifier.clickable] whose lambda
+ *  argument sets `openDialog` to `false` when the [Text] is clicked.
+ *
+ * @param post the [Post] whose basic information we are supposed to display.
+ * @param navigateToArticle a lambda which should be called with the [Post.id] field of our [post]
+ * parameter when our Composable is clicked. [PostList] passes us its own [navigateToArticle] parameter
+ * and [HomeScreen] passed it its own [navigateToArticle] parameter, which [JetnewsNavGraph] passed
+ * it, and which is the [MainActions.navigateToArticle] method which uses is [NavHostController] to
+ * navigate to the [MainDestinations.ARTICLE_ROUTE] which will use [ArticleScreen] to display the
+ * [Post].
  */
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
@@ -220,7 +263,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                     style = MaterialTheme.typography.button,
                     color = MaterialTheme.colors.primary,
                     modifier = Modifier
-                        .padding(15.dp)
+                        .padding(all = 15.dp)
                         .clickable { openDialog = false }
                 )
             }
@@ -228,6 +271,13 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
     }
 }
 
+/**
+ * This Composable is used by the [PostListPopularSection] Composable to hold each of the [Post]
+ * objects that [PostListPopularSection] is passed by the [PostList] Composable from its
+ * `postsPopular` [List] of [Post] (which is arbitrarily chosen to be the posts at index 3 and 4
+ * of its `posts` [List] of [Post] parameter). Our parent displays its [PostCardPopular] Composables
+ * using the [items] method in a [LazyRow] so we are running in a `LazyListScope`
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PostCardPopular(
@@ -235,11 +285,11 @@ fun PostCardPopular(
     navigateToArticle: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val readArticleLabel = stringResource(id = R.string.action_read_article)
+    val readArticleLabel: String = stringResource(id = R.string.action_read_article)
     Card(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier
-            .size(280.dp, 240.dp)
+            .size(width = 280.dp, height = 240.dp)
             .semantics { onClick(label = readArticleLabel, action = null) },
         onClick = { navigateToArticle(post.id) }
     ) {
@@ -250,11 +300,11 @@ fun PostCardPopular(
                 contentDescription = null, // decorative
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(100.dp)
+                    .height(height = 100.dp)
                     .fillMaxWidth()
             )
 
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(all = 16.dp)) {
                 Text(
                     text = post.title,
                     style = MaterialTheme.typography.h6,
