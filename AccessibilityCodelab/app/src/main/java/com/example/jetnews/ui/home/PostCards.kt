@@ -39,6 +39,7 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
@@ -50,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -276,7 +278,54 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
  * objects that [PostListPopularSection] is passed by the [PostList] Composable from its
  * `postsPopular` [List] of [Post] (which is arbitrarily chosen to be the posts at index 3 and 4
  * of its `posts` [List] of [Post] parameter). Our parent displays its [PostCardPopular] Composables
- * using the [items] method in a [LazyRow] so we are running in a `LazyListScope`
+ * using the [items] method in a [LazyRow] so we are running in a `LazyListScope`. We initialize our
+ * [String] variable `val readArticleLabel` to the string with resource ID [R.string.action_read_article]
+ * ("read article"), then call our [Card] root Composable with its `shape` argument the `medium`
+ * [Shape] of [MaterialTheme.shapes] (which the [JetnewsShapes] used by our [JetnewsTheme] custom
+ * [MaterialTheme] specifies to be a [RoundedCornerShape] with 4.dp rounded corners). For its
+ * `modifier` argument we add a [Modifier.size] whose `width` is 280.dp, and whose `height` is 240.dp,
+ * then add a [Modifier.semantics] whose lambda argument is an [onClick] whose `label` is the [String]
+ * variable `readArticleLabel` and whose `action` is `null`. The `onClick` argument of the [Card] is
+ * a lambda that calls our [navigateToArticle] lambda parameter with the [Post.id] field of our [post]
+ * parameter.
+ *
+ * The `content` of the [Card] is a [Column] which contains:
+ *  - An [Image] whose `painter` draws the drawable with the resource ID in the [Post.imageId] field
+ *  of our [post], whose `contentDescription` is `null`, whose `contentScale` is [ContentScale.Crop]
+ *  (scales the source image uniformly to fit its destination), and whose `modifier` is a [Modifier.height]
+ *  of 100.dp to which is chained a [Modifier.fillMaxWidth].
+ *  - An inner [Column] whose `modifier` is a [Modifier.padding] that adds 16.dp to all sides. The
+ *  `content` of this [Column] is three [Text] Composables:
+ *
+ *  1. A [Text] whose `text` is the [Post.title] field of our [post] parameter, whose `style` is the
+ *  `h6` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography] custom [Typography]
+ *  used by our [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat` [FontFamily]
+ *  with a `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID [R.font.montserrat_semibold])
+ *  with `fontSize` = 20.sp, and `letterSpacing` = 0.sp. The `maxLines` argument of the [Text] is "2",
+ *  and the `overflow` argument is [TextOverflow.Ellipsis] (uses an ellipsis to indicate that the text
+ *  has overflowed).
+ *  2. A [Text] whose `text` is the [PostAuthor.name] field of the [Metadata.author] field of the
+ *  [Post.metadata] field of our parameter [post] (aka the `Post.metadata.author.name` field of [post]),
+ *  whose `maxLines` argument is "1", and whose `overflow` argument is [TextOverflow.Ellipsis] (uses
+ *  an ellipsis to indicate that the text has overflowed). The `style` argument of this [Text] is the
+ *  `body2` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography] custom [Typography]
+ *  used by our [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat` [FontFamily]
+ *  with a `fontWeight` of [FontWeight.Medium] (the [Font] with resource ID [R.font.montserrat_medium])
+ *  with `fontSize` = 14.sp, and `letterSpacing` = 0.25.sp
+ *  3. A [Text] whose `text` is a [String] formatted using the format [String] with resource ID
+ *  [R.string.home_post_min_read] ("%1$s - %2$d min read") which displays the [Metadata.date] and
+ *  [Metadata.readTimeMinutes] fields of the [Post.metadata] field of our [post] parameter, and whose
+ *  `style` parameter is the `body2` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography]
+ *  custom [Typography] used by our [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat`
+ *  [FontFamily] with a `fontWeight` of [FontWeight.Medium] (the [Font] with resource ID
+ *  [R.font.montserrat_medium]) with `fontSize` = 14.sp, and `letterSpacing` = 0.25.sp
+ *
+ * @param post the [Post] whose information we are supposed to display.
+ * @param navigateToArticle a lambda which we should call with the [Post.id] field of our [post]
+ * parameter when our [Card] is clicked.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [PostListPopularSection] calls us in the [items] of its [LazyRow] with a [Modifier.padding]
+ * that adds 16.dp of padding to our `start` and our `bottom`.
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -333,8 +382,14 @@ fun PostCardPopular(
     }
 }
 
-@Preview("Regular colors")
-@Preview("Dark colors", uiMode = Configuration.UI_MODE_NIGHT_YES)
+/**
+ * Two Previews of a [Surface] wrapped [PostCardPopular] all wrapped in our [JetnewsTheme] custom
+ * [MaterialTheme]. The one whose `name` is "Regular colors" uses the default `LightThemeColors` and
+ * the one whose `name` is "Dark colors" sets the `uiMode` to [Configuration.UI_MODE_NIGHT_YES] in
+ * order to use the `DarkThemeColors`.
+ */
+@Preview(name = "Regular colors")
+@Preview(name = "Dark colors", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewPostCardPopular() {
     JetnewsTheme {
@@ -344,7 +399,11 @@ fun PreviewPostCardPopular() {
     }
 }
 
-@Preview("Post History card")
+/**
+ * A Preview of a [Surface] wrapped [PostCardHistory] all wrapped in our [JetnewsTheme] custom
+ * [MaterialTheme]. Its `name` is "Post History card"
+ */
+@Preview(name = "Post History card")
 @Composable
 fun HistoryPostPreview() {
     JetnewsTheme {
