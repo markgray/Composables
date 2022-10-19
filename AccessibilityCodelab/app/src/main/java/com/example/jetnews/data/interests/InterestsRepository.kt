@@ -38,7 +38,7 @@ typealias TopicsMap = Map<String, List<String>>
 class InterestsRepository {
 
     /**
-     * List]'s of `topics` indexed by `sections`. There are 3 sections: "Android", "Programming",
+     * [List]'s of `topics` indexed by `sections`. There are 3 sections: "Android", "Programming",
      * and "Technology". "Android" holds the `topics` "Jetpack Compose", "Kotlin", and "Jetpack";
      * "Programming" holds the `topics` "Kotlin", "Declarative UIs", and "Java"; and "Technology"
      * holds the `topics` "Pixel", and "Google".

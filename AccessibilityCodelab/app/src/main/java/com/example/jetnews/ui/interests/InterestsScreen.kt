@@ -36,6 +36,7 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,14 +57,37 @@ import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.ui.JetnewsNavGraph
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 /**
- * Stateful InterestsScreen that handles the interaction with the repository
+ * Stateful InterestsScreen that handles the interaction with the repository. First we use the
+ * [rememberCoroutineScope] method to create and remember a [CoroutineScope] which we use to
+ * initialize our variable `val coroutineScope`. We initialize our [Set] of [TopicSelection]
+ * variable `val selectedTopics` by using the [Flow.collectAsState] method with an initial value
+ * of an empty set on the [Flow] returned by the [InterestsRepository.observeTopicsSelected] method
+ * of our [interestsRepository] parameter. We initialize our variable `val onTopicSelect` to a
+ * lambda which takes a [TopicSelection] as its parameter then uses the [CoroutineScope.launch]
+ * method of our `coroutineScope` variable to launch a new coroutine whose lambda block calls the
+ * [InterestsRepository.toggleTopicSelection] method of our [interestsRepository] parameter with
+ * the [TopicSelection] passed it. Finally we call the stateless interest screen with the arguments:
+ *  - `topics` the [Map] of [String] to [List] of [String] field [InterestsRepository.topics] of our
+ *  [interestsRepository] parameter.
+ *  - `selectedTopics` our [Set] of [TopicSelection] variable `selectedTopics` (which is wrapped in
+ *  a [State] so that any change to it will cause a recomposition of every [State.value] usage).
+ *  - `onTopicSelect` our `onTopicSelect` variable.
+ *  - `openDrawer` our [openDrawer] parameter
+ *  - `modifier` our [modifier] parameter
+ *  - `scaffoldState` our [scaffoldState] parameter
  *
  * @param interestsRepository data source for this screen
  * @param openDrawer (event) request opening the app drawer
- * @param scaffoldState (state) state for screen Scaffold
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller, the [JetnewsNavGraph] Composable, does not pass one so the empty, default,
+ * or starter [Modifier] that contains no elements is used.
+ * @param scaffoldState (state) state for screen [Scaffold]
  */
 @Composable
 fun InterestsScreen(
@@ -74,12 +98,14 @@ fun InterestsScreen(
 ) {
     // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
     // screen is removed from composition, the scope will be cancelled.
-    val coroutineScope = rememberCoroutineScope()
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
     // collectAsState will read a [Flow] in Compose
-    val selectedTopics: Set<TopicSelection> by interestsRepository.observeTopicsSelected().collectAsState(setOf())
-    val onTopicSelect: (TopicSelection) -> Unit = {
-        coroutineScope.launch { interestsRepository.toggleTopicSelection(it) }
+    val selectedTopics: Set<TopicSelection> by interestsRepository
+        .observeTopicsSelected()
+        .collectAsState(setOf())
+    val onTopicSelect: (TopicSelection) -> Unit = { topic: TopicSelection ->
+        coroutineScope.launch { interestsRepository.toggleTopicSelection(topic) }
     }
     InterestsScreen(
         topics = interestsRepository.topics,
@@ -99,6 +125,10 @@ fun InterestsScreen(
  * @param onTopicSelect (event) request a topic selection be changed
  * @param openDrawer (event) request opening the app drawer
  * @param scaffoldState (state) the state for the screen's [Scaffold]
+ * @param modifier a [Modifier] instance our caller can use to modify our appearance and/or behavior.
+ * Our caller (the Stateful InterestsScreen) passes us its own `modifier` parameter which is the
+ * empty, default, or starter [Modifier] that contains no elements since its caller did not pass one
+ * to it.
  */
 @Composable
 fun InterestsScreen(
