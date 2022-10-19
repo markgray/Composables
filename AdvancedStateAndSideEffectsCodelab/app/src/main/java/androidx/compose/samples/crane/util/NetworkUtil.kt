@@ -16,30 +16,72 @@
 
 package androidx.compose.samples.crane.util
 
+import android.app.Application
 import coil.intercept.Interceptor
 import coil.request.ImageResult
 import coil.size.Size
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import androidx.compose.samples.crane.CraneApplication
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.request.ImageRequest
 
 /**
- * A Coil [Interceptor] which appends query params to Unsplash urls to request sized images.
+ * A Coil [Interceptor] which appends query params to Unsplash urls to request sized images. Our
+ * [CraneApplication] custom [Application] implements the [ImageLoaderFactory] interface and Hilt
+ * injects the [ImageLoader] that its [CraneApplication.newImageLoader] constructs when one is
+ * needed. That factory appends this [Interceptor] to the end of the list of all the components that
+ * the [ImageLoader] it constructs uses to fulfil image requests.
  */
 object UnsplashSizingInterceptor : Interceptor {
+    /**
+     * This method intercepts requests to an [ImageLoader]'s image engine and if the [ImageRequest]
+     * contains an Unsplash url appends query params to the url to request images whose width and
+     * height match the [Size.width] and [Size.height] that the [ImageRequest] requested. We start
+     * by initializing our [Any] variable `val data` to the [ImageRequest.data] field of the
+     * [Interceptor.Chain.request] field of our parameter [chain], an our [Size] variable `val size`
+     * to the [Interceptor.Chain.size] field of [chain]. Then is `data` is a [String] and starts with
+     * the `prefix` "https://images.unsplash.com/photo-" we:
+     *  - Initialize our [HttpUrl] variable `val url` by using the [toHttpUrl] extension function on
+     *  `data` to create an [HttpUrl] from it, use the [HttpUrl.newBuilder] method to create a builder
+     *  from that, then use the [HttpUrl.Builder.addQueryParameter] method to add the query parameter
+     *  "w" with the value of the [Size.width] field of `size` and the query parameter "h" with the
+     *  value of the [Size.height] field of `size` to the URL's query string, then use the
+     *  [HttpUrl.Builder.build] method to build the [HttpUrl].
+     *  - We then initialize our [ImageRequest] variable `val request` by using the
+     *  [ImageRequest.newBuilder] on the [Interceptor.Chain.request] field of [chain] to create a
+     *  builder which we use to set the data to load to `url` then we use the
+     *  [ImageRequest.Builder.build] method to build the [ImageRequest].
+     *  - Finally we return the [ImageResult] that the [Interceptor.Chain.proceed] method returns
+     *  when called with `request` as its `request` argument.
+     *
+     * If `data` is not a [String] or is not an Unsplash url we just return the [ImageResult] that
+     * the [Interceptor.Chain.proceed] method returns when called with the [Interceptor.Chain.request]
+     * of [chain] as its `request` argument.
+     *
+     * @param chain the [Interceptor.Chain] that is passed to us by the previous interceptors. When
+     * done processing the [ImageRequest] we pass the [ImageRequest] on to the next interceptor in
+     * the chain using [Interceptor.Chain.proceed] method. The [coil.intercept.EngineInterceptor]
+     * is the last interceptor in the chain and will execute the [ImageRequest].
+     * @return the [ImageResult] that will be returned by [coil.intercept.EngineInterceptor] which
+     * represents the result of an executed [ImageRequest] (either a [coil.request.SuccessResult]
+     * or a [coil.request.ErrorResult], both of which implement the [ImageResult] sealed class).
+     */
     override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
         val data: Any = chain.request.data
         val size: Size = chain.size
         if (data is String &&
-            data.startsWith("https://images.unsplash.com/photo-")
+            data.startsWith(prefix = "https://images.unsplash.com/photo-")
         ) {
             val url: HttpUrl = data.toHttpUrl()
                 .newBuilder()
-                .addQueryParameter("w", size.width.toString())
-                .addQueryParameter("h", size.height.toString())
+                .addQueryParameter(name = "w", value = size.width.toString())
+                .addQueryParameter(name = "h", value = size.height.toString())
                 .build()
-            val request = chain.request.newBuilder().data(url).build()
-            return chain.proceed(request)
+            val request: ImageRequest = chain.request.newBuilder().data(url).build()
+            return chain.proceed(request = request)
         }
-        return chain.proceed(chain.request)
+        return chain.proceed(request = chain.request)
     }
 }
