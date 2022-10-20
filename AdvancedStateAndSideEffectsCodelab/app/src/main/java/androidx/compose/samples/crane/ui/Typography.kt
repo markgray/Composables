@@ -61,7 +61,7 @@ private val craneFontFamily = FontFamily(fonts = listOf(light, regular, medium, 
  * of the [Font] changed according to their needs. The resource ID of the [Font] that is used it
  * [R.font.raleway_regular].
  */
-val captionTextStyle = TextStyle(
+val captionTextStyle: TextStyle = TextStyle(
     fontFamily = craneFontFamily,
     fontWeight = FontWeight.W400,
     fontSize = 16.sp
@@ -96,7 +96,7 @@ val captionTextStyle = TextStyle(
  *  - `overline` - is one of the smallest font sizes. It is used sparingly to annotate imagery or to
  *  introduce a headline.
  */
-val craneTypography = Typography(
+val craneTypography: Typography = Typography(
     h1 = TextStyle(
         fontFamily = craneFontFamily,
         fontWeight = FontWeight.W300,

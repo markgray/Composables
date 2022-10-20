@@ -36,14 +36,14 @@ import androidx.compose.ui.unit.dp
  * Composable (same file) for the [Text] displaying its `title` parameter.
  * and
  */
-val crane_caption = Color.DarkGray
+val crane_caption: Color = Color.DarkGray
 
 /**
  * [Color] used by the `ExploreList` Composable (file: base/ExploreSection.kt) for the [Divider] it
  * places between the `ExploreItem` items in the [LazyColumn] it uses to display the [ExploreModel]
  * objects in its [List] of [ExploreModel] parameter `exploreList`
  */
-val crane_divider_color = Color.LightGray
+val crane_divider_color: Color = Color.LightGray
 
 /**
  * Used as the `secondary` [Color] of the [lightColors] in our [Colors] field [craneColors].
@@ -100,7 +100,7 @@ val craneColors: Colors = lightColors(
  * base/ExploreSection.kt). The top two corners are rounded by 20.dp, and the bottom two
  * corners are not rounded.
  */
-val BottomSheetShape = RoundedCornerShape(
+val BottomSheetShape: RoundedCornerShape = RoundedCornerShape(
     topStart = 20.dp,
     topEnd = 20.dp,
     bottomStart = 0.dp,

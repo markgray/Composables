@@ -42,7 +42,7 @@ class DestinationsLocalDataSource @Inject constructor() {
      * and is used by [MainViewModel] for its [MainViewModel.restaurants] property, which is used when
      * the [CraneScreen.Eat] tab of `CraneHomeContent` is selected (file home/CraneHome.kt)
      */
-    val craneRestaurants = listOf(
+    val craneRestaurants: List<ExploreModel> = listOf(
         ExploreModel(
             city = NAPLES,
             description = "1286 Restaurants",
@@ -85,7 +85,7 @@ class DestinationsLocalDataSource @Inject constructor() {
      * and is used by [MainViewModel] for its [MainViewModel.hotels] property, which is used when
      * the [CraneScreen.Sleep] tab of `CraneHomeContent` is selected (file home/CraneHome.kt)
      */
-    val craneHotels = listOf(
+    val craneHotels: List<ExploreModel> = listOf(
         ExploreModel(
             city = MALDIVAS,
             description = "1286 Available Properties",
@@ -131,7 +131,7 @@ class DestinationsLocalDataSource @Inject constructor() {
      * `suggestedDestinations` in `CraneHomeContent` (file home/CraneHome.kt) which is used when
      * the [CraneScreen.Fly] tab of `CraneHomeContent` is selected (file home/CraneHome.kt)
      */
-    val craneDestinations = listOf(
+    val craneDestinations: List<ExploreModel> = listOf(
         ExploreModel(
             city = KHUMBUVALLEY,
             description = "Nonstop - 5h 16m+",

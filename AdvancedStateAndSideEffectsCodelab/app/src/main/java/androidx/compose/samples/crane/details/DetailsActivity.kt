@@ -497,11 +497,11 @@ private const val InitialZoom = 5f
  * the [MapViewContainer] Composable. The value that the user requests by clicking the [ZoomButton]
  * Composables is "coerced" to be between [MinZoom] and [MaxZoom].
  */
-const val MinZoom = 2f
+const val MinZoom: Float = 2f
 
 /**
  * The maximum value of "zoom" that can be applied to the [GoogleMap] contained in the [MapView] of
  * the [MapViewContainer] Composable. The value that the user requests by clicking the [ZoomButton]
  * Composables is "coerced" to be between [MinZoom] and [MaxZoom].
  */
-const val MaxZoom = 20f
+const val MaxZoom: Float = 20f

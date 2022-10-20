@@ -44,7 +44,7 @@ import kotlin.random.Random
 /**
  * The maximum number of people that can travel
  */
-const val MAX_PEOPLE = 4
+const val MAX_PEOPLE: Int = 4
 
 /**
  * This is the [ViewModel] used by [MainActivity]. It is injected as the default value of the

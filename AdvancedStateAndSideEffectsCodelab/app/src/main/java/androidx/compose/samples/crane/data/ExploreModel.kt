@@ -45,7 +45,7 @@ data class City(
     /**
      * The [String] to display to a user for this [City].
      */
-    val nameToDisplay = "$name, $country"
+    val nameToDisplay: String = "$name, $country"
 }
 
 /**

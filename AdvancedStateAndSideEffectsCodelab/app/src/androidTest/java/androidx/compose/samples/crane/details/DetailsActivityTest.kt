@@ -53,10 +53,10 @@ class DetailsActivityTest {
     private val testExploreModel = ExploreModel(city, "description", "imageUrl")
 
     @get:Rule(order = 0)
-    var hiltRule = HiltAndroidRule(this)
+    var hiltRule: HiltAndroidRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = AndroidComposeTestRule(
+    val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<DetailsActivity>, DetailsActivity> = AndroidComposeTestRule(
         activityRule = ActivityScenarioRule<DetailsActivity>(
             createDetailsActivityIntent(
                 InstrumentationRegistry.getInstrumentation().targetContext,

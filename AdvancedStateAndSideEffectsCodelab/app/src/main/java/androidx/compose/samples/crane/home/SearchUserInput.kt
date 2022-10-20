@@ -62,7 +62,17 @@ import kotlin.coroutines.CoroutineContext
  * people traveling) is greater than [MAX_PEOPLE] (an [Invalid] value) or less than or equal to
  * [MAX_PEOPLE] (a [Valid] value).
  */
-enum class PeopleUserInputAnimationState { Valid, Invalid }
+enum class PeopleUserInputAnimationState {
+    /**
+     * The number of people traveling is less than or equal to [MAX_PEOPLE]
+     */
+    Valid,
+
+    /**
+     * The number of people traveling is greater than [MAX_PEOPLE]
+     */
+    Invalid
+}
 
 /**
  * This class holds the current number of people traveling in its read-only [PeopleUserInputState.people]
