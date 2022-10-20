@@ -24,28 +24,60 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 
+/**
+ * This is unused, but I leave it in just to provide an example use of Compose [Canvas].
+ *
+ * @param color The color or fill to be applied to the circle
+ */
+@Suppress("unused")
 @Composable
 fun Circle(color: Color) {
-    Canvas(Modifier.fillMaxSize()) {
-        drawCircle(color)
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        drawCircle(color = color)
     }
 }
 
+/**
+ * This is unused, but I leave it in just to provide an example use of Compose [Canvas].
+ *
+ * @param color The color to be applied to the rectangle
+ * @param lookingLeft if `true` the SemiRect should face left
+ */
+@Suppress("unused")
 @Composable
 fun SemiRect(color: Color, lookingLeft: Boolean = true) {
-    val layoutDirection = LocalLayoutDirection.current
-    Canvas(Modifier.fillMaxSize()) {
+    val layoutDirection: LayoutDirection = LocalLayoutDirection.current
+    Canvas(modifier = Modifier.fillMaxSize()) {
         // The SemiRect should face left EITHER the lookingLeft param is true
         // OR the layoutDirection is Rtl
-        val offset = if (lookingLeft xor (layoutDirection == LayoutDirection.Rtl)) {
-            Offset(0f, 0f)
+        val offset: Offset = if (lookingLeft xor (layoutDirection == LayoutDirection.Rtl)) {
+            Offset(x = 0f, y = 0f)
         } else {
-            Offset(size.width / 2, 0f)
+            Offset(x = size.width / 2, y = 0f)
         }
         val size = Size(width = size.width / 2, height = size.height)
 
         drawRect(size = size, topLeft = offset, color = color)
     }
+}
+
+/**
+ * Preview of our [Circle] Composable with the `color` argument [Color.Magenta].
+ */
+@Preview
+@Composable
+fun CirclePreview() {
+    Circle(color = Color.Magenta)
+}
+
+/**
+ * Preview of our [SemiRect] Composable with the `color` argument [Color.Cyan].
+ */
+@Preview
+@Composable
+fun SemiRectPreview() {
+    SemiRect(color = Color.Cyan)
 }
