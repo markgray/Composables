@@ -18,6 +18,7 @@ package com.example.jetnews.ui.interests
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -118,7 +119,25 @@ fun InterestsScreen(
 }
 
 /**
- * Stateless interest screen displays the topics the user can subscribe to
+ * Stateless interest screen displays the topics the user can subscribe to. Our root Composable is a
+ * [Scaffold] whose `scaffoldState` argument is our [ScaffoldState] parameter [scaffoldState], and
+ * whose `topBar` argument is an [InsetAwareTopAppBar]. The `title` argument of the [InsetAwareTopAppBar]
+ * is a lambda which composes a [Text] displaying the `text` "Interests", the `navigationIcon`openDrawer
+ * argument is an [IconButton] whose `onClick` argument is our [openDrawer] parameter, and whose
+ * `content` is an [Icon] whose `painter` draws the drawable with resource ID [R.drawable.ic_jetnews_logo]
+ * (which is a "greater than" symbol followed by an underline). The `content` of the [Scaffold] is a
+ * [LazyColumn] whose `modifier` argument adds a [Modifier.padding] of the [PaddingValues] passed to
+ * the `content` of the [Scaffold] in the `padding` variable to the [modifier] parameter of
+ * [InterestsScreen]. The `content` of the [LazyColumn] is provided by a [forEach] loop over the
+ * entries in our [TopicsMap] parameter [topics] with the [String] variable `section` holding the
+ * map key, and the [List] of [String] variable `topicsList` holding the value. The loop creates
+ * an `item` which holds a [Text] Composable whose `text` displays the current `section` value,
+ * and an [items] created from the current `topicsList` [List] of [String] each `topic` in that
+ * [List] is then used as the `itemTitle` of a [TopicItem] Composable. The `selected` argument of
+ * the [TopicItem] is `true` if our [Set] of [TopicSelection] parameter [selectedTopics] contains
+ * a [TopicSelection] constructed from `section` and `topic`, and its `onToggle` argument is a call
+ * to our [onTopicSelect] parameter with a [TopicSelection] constructed from `section` and `topic`.
+ * The [items] is followed by a [TopicDivider] (our full-width divider for topics)
  *
  * @param topics (state) topics to display, mapped by section
  * @param selectedTopics (state) currently selected topics
@@ -143,35 +162,38 @@ fun InterestsScreen(
         scaffoldState = scaffoldState,
         topBar = {
             InsetAwareTopAppBar(
-                title = { Text("Interests") },
+                title = { Text(text = "Interests") },
                 navigationIcon = {
                     IconButton(onClick = openDrawer) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_jetnews_logo),
-                            contentDescription = stringResource(R.string.cd_open_navigation_drawer)
+                            painter = painterResource(id = R.drawable.ic_jetnews_logo),
+                            contentDescription = stringResource(id = R.string.cd_open_navigation_drawer)
                         )
                     }
                 }
             )
         }
-    ) { padding ->
+    ) { padding: PaddingValues ->
         LazyColumn(
-            modifier = modifier.padding(padding)
+            modifier = modifier.padding(paddingValues = padding)
         ) {
-            topics.forEach { (section, topics) ->
+            topics.forEach { (section: String, topicsList: List<String>) ->
                 item {
                     Text(
                         text = section,
-                        modifier = Modifier
-                            .padding(16.dp),
+                        modifier = Modifier.padding(all = 16.dp),
                         style = MaterialTheme.typography.subtitle1
                     )
                 }
-                items(topics) { topic ->
+                items(topicsList) { topic: String ->
                     TopicItem(
                         itemTitle = topic,
-                        selected = selectedTopics.contains(TopicSelection(section, topic))
-                    ) { onTopicSelect(TopicSelection(section, topic)) }
+                        selected = selectedTopics
+                            .contains(TopicSelection(section = section, topic = topic)),
+                        onToggle = {
+                            onTopicSelect(TopicSelection(section = section, topic = topic))
+                        }
+                    )
                     TopicDivider()
                 }
             }
@@ -180,7 +202,7 @@ fun InterestsScreen(
 }
 
 /**
- * Display a full-width topic item
+ * Display a full-width topic item.
  *
  * @param itemTitle (state) topic title
  * @param selected (state) is topic currently selected
