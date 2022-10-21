@@ -101,7 +101,7 @@ object LocalEmailsDataProvider {
         )
     )
 
-    val allEmails = mutableListOf(
+    val allEmails: MutableList<Email> = mutableListOf(
         Email(
             0L,
             LocalAccountsDataProvider.getContactAccountByUid(9L),
