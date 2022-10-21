@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
     /**
      * Called when the activity is starting.
      *
-     * @param savedInstanceState we do not implement [onSaveInstanceState] so ignore it.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so ignore it.
      */
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
