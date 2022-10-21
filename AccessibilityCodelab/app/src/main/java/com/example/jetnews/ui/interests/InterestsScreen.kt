@@ -44,9 +44,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Devices
@@ -202,7 +204,24 @@ fun InterestsScreen(
 }
 
 /**
- * Display a full-width topic item.
+ * Display a full-width topic item. First we initialize our [Painter] variable `val imagePainter`
+ * to an instance which will draw the drawable with resource ID [R.drawable.placeholder_1_1] (a
+ * triangle intersecting a circle), initialize our [String] variable `val stateNotSubscribed` to
+ * the string with resource ID [R.string.state_not_subscribed] ("not subscribed"), and our [String]
+ * variable `val stateSubscribed` to the string with resource ID [R.string.state_subscribed]
+ * ("subscribed"). Our root Composable is a [Row] whose `modifier` argument is a [Modifier.semantics]
+ * whose `properties` argument is a lambda which sets the [SemanticsPropertyReceiver.stateDescription]
+ * of its receiver to `stateSubscribed` if `selected` is `true` or to `stateNotSubscribed` if it is
+ * `false`. A [Modifier.toggleable] (configures component to make it toggleable via input and
+ * accessibility events) is appended to that [Modifier] whose `value` is our [Boolean] parameter
+ * [selected], whose `onValueChange` argument (callback to be invoked when toggleable is clicked) is
+ * a lambda calling our [onToggle] lambda parameter, and whose `role` argument (the type of user
+ * interface element) is [Role.Checkbox] (element is a Checkbox which is a component that represents
+ * two states checked or unchecked). And then a [Modifier.padding] is appended which sets the
+ * `horizontal` padding along the left and right edges of the content to 16.dp, and the `vertical`
+ * padding along the top and bottom edges to 8.dp
+ *
+ * The `content` of the [Row] is an [Image], a [Text], a [Spacer], and a [Checkbox].
  *
  * @param itemTitle (state) topic title
  * @param selected (state) is topic currently selected
@@ -210,9 +229,9 @@ fun InterestsScreen(
  */
 @Composable
 private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit) {
-    val image = painterResource(R.drawable.placeholder_1_1)
-    val stateNotSubscribed = stringResource(R.string.state_not_subscribed)
-    val stateSubscribed = stringResource(R.string.state_subscribed)
+    val imagePainter: Painter = painterResource(id = R.drawable.placeholder_1_1)
+    val stateNotSubscribed: String = stringResource(id = R.string.state_not_subscribed)
+    val stateSubscribed: String = stringResource(id = R.string.state_subscribed)
     Row(
         modifier = Modifier
             .semantics {
@@ -230,25 +249,25 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Image(
-            painter = image,
+            painter = imagePainter,
             contentDescription = null,
             modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .size(56.dp, 56.dp)
-                .clip(RoundedCornerShape(4.dp))
+                .align(alignment = Alignment.CenterVertically)
+                .size(width = 56.dp, height = 56.dp)
+                .clip(shape = RoundedCornerShape(size = 4.dp))
         )
         Text(
             text = itemTitle,
             modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(16.dp),
+                .align(alignment = Alignment.CenterVertically)
+                .padding(all = 16.dp),
             style = MaterialTheme.typography.subtitle1
         )
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.weight(weight = 1f))
         Checkbox(
             checked = selected,
             onCheckedChange = null,
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier.align(alignment = Alignment.CenterVertically)
         )
     }
 }
