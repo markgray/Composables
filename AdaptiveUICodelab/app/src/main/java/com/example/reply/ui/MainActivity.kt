@@ -17,7 +17,10 @@
 package com.example.reply.ui
 
 import android.app.Activity
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -30,6 +33,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.window.layout.FoldingFeature
@@ -41,6 +46,7 @@ import com.example.reply.ui.theme.ReplyTheme
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.isBookPosture
 import com.example.reply.ui.utils.isSeparating
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -52,7 +58,7 @@ import kotlinx.coroutines.flow.stateIn
  * be found at: https://codelabs.developers.google.com/jetpack-compose-adaptability
  * It uses the [ExperimentalMaterial3WindowSizeClassApi] to calculate the [WindowSizeClass] for our
  * [Activity] and our Composables adjust the UI that they display to take advantage of the different
- * screen sizes and [DevicePosture]'s that.
+ * screen sizes and [DevicePosture]'s that can occur.
  */
 class MainActivity : ComponentActivity() {
 
@@ -67,7 +73,55 @@ class MainActivity : ComponentActivity() {
     private val viewModel: ReplyHomeViewModel by viewModels()
 
     /**
-     * Called when the activity is starting.
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`.
+     * Then we create a [StateFlow] of [DevicePosture] which is our sealed interface whose three
+     * implementors [DevicePosture.NormalPosture] (has no special features that require consideration),
+     * [DevicePosture.BookPosture] (device has a feature that describes a fold in its flexible
+     * display or a hinge between two physical display panels), and [DevicePosture.Separating] (the
+     * device has a [FoldingFeature] that should be thought of as splitting the window into multiple
+     * physical areas that can be seen by users as logically separate. Display panels connected by a
+     * hinge are always separated). To create this [StateFlow] we use the [WindowInfoTracker.getOrCreate]
+     * method to get a [WindowInfoTracker] associated with `this` [Context], which we use to call
+     * its [WindowInfoTracker.windowLayoutInfo] to obtain a [Flow] of [WindowLayoutInfo] to which we
+     * apply the [flowWithLifecycle] extension function with its `lifecycle` the [Lifecycle] of this
+     * (this will cancel the upstream [Flow] when the [Lifecycle] falls below [Lifecycle.State.STARTED]),
+     * we then apply the [map] extension function to this [Flow] whose lambda block initializes its
+     * [FoldingFeature] variable `val foldingFeature` by filtering the [WindowLayoutInfo.displayFeatures]
+     * from the incoming [Flow] of [WindowLayoutInfo] for instances of [FoldingFeature] and uses the
+     * [firstOrNull] extension function on the [List] to filter it down to one [FoldingFeature] or
+     * `null` if there are none. Then a `when` statement transforms the [FoldingFeature] to a
+     * [DevicePosture] like so:
+     *  - if the [isBookPosture] method returns `true` for the [FoldingFeature] it creates a
+     *  [DevicePosture.BookPosture] with its `hingePosition` field the [Rect] stored in the
+     *  [FoldingFeature.bounds] property.
+     *  - if the [isSeparating] method returns `true` for the [FoldingFeature] it creates a
+     *  [DevicePosture.Separating] with its `hingePosition` field the [Rect] stored in the
+     *  [FoldingFeature.bounds] property, and its `orientation` field the [FoldingFeature.Orientation]
+     *  found in the [FoldingFeature.orientation] property.
+     *  - else it creates a [DevicePosture.NormalPosture]
+     *
+     * The [Flow] of [DevicePosture] produced by the [map] is then fed to the [stateIn] extension
+     * function with its `scope` argument the [CoroutineScope] tied to this [LifecycleOwner]'s
+     * [Lifecycle] that is returned by [lifecycleScope], its `started` argument [SharingStarted.Eagerly]
+     * (Sharing is started immediately and never stops), and its `initialValue` [DevicePosture.NormalPosture].
+     * The resulting output of all of this is a [StateFlow] of [DevicePosture].
+     *
+     * Finally we call [setContent] with a lambda block which wraps its `content` in our [ReplyTheme]
+     * custom [MaterialTheme]. Inside of the [ReplyTheme] we initialize our [ReplyHomeUIState] variable
+     * `val uiState` by using the [collectAsState] extension function on the [ReplyHomeViewModel.uiState]
+     * field of [viewModel] using the [State.value] of the [State]. We initialize our [WindowSizeClass]
+     * variable `val windowSize` to the value returned by the [calculateWindowSizeClass] method for
+     * our [Activity] (calculates the [WindowSizeClass] of our [Window]. A new [WindowSizeClass] will
+     * be returned whenever a configuration change causes the width or height of the window to cross
+     * a breakpoint, such as when the device is rotated or the window is resized). And we initialize
+     * our [DevicePosture] variable `val devicePosture` by using the [collectAsState] extension function
+     * on the `devicePostureFlow` using the [State.value] of that [State]. We then call our [ReplyApp]
+     * Composable with the arguments:
+     *  - `replyHomeUIState` = `uiState` the decendents of [ReplyApp] use the [ReplyHomeUIState.emails]
+     *  [List] of [Email] for the data they display.
+     *  - `windowSize` is the [WindowSizeClass.widthSizeClass] of `windowSize`, [ReplyApp] will use a
+     *  `when` statement to determine the value of the arguments it feeds to [ReplyNavigationWrapperUI]
+     *  - `foldingDevicePosture` is the latest [DevicePosture] of `devicePosture`
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so ignore it.
      */

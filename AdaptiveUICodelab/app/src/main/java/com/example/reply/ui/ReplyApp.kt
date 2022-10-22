@@ -107,7 +107,11 @@ fun ReplyApp(
         }
     }
 
-    ReplyNavigationWrapperUI(navigationType, contentType, replyHomeUIState)
+    ReplyNavigationWrapperUI(
+        navigationType = navigationType,
+        contentType = contentType,
+        replyHomeUIState = replyHomeUIState
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
