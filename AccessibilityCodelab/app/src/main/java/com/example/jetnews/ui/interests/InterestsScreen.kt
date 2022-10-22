@@ -44,6 +44,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,6 +52,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,6 +66,7 @@ import com.example.jetnews.data.interests.TopicsMap
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.JetnewsNavGraph
+import com.example.jetnews.ui.theme.JetnewsTypography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -221,7 +227,35 @@ fun InterestsScreen(
  * `horizontal` padding along the left and right edges of the content to 16.dp, and the `vertical`
  * padding along the top and bottom edges to 8.dp
  *
- * The `content` of the [Row] is an [Image], a [Text], a [Spacer], and a [Checkbox].
+ * The `content` of the [Row] is an [Image], a [Text], a [Spacer], and a [Checkbox]. The arguments
+ * for the [Image] Composable are:
+ *  - `painter` = `imagePainter` The [Painter] that will draw the drawable [R.drawable.placeholder_1_1]
+ *  - `contentDescription` = `null` The [Image] is decorative and does not represent an action
+ *  - `modifier` is a `RowScope` `Modifier.align` whose `alignment` argument is [Alignment.CenterVertically]
+ *  to center the [Image] in the [Row], to which is chained a [Modifier.size] that sets its `width`
+ *  and `height` to 56.dp, to which a [Modifier.clip] clips its `shape` to a [RoundedCornerShape]
+ *  with 4.dp corners.
+ *
+ * The arguments for the [Text] Composable are:
+ *  - `text` = [itemTitle] the topic title we were called with.
+ *  - `modifier` is a `RowScope` `Modifier.align` whose `alignment` argument is [Alignment.CenterVertically]
+ *  to center the [Text] in the [Row], to which is chained a [Modifier.padding] that adds 16.dp to
+ *  all sides of the [Text].
+ *  - `style` is the `subtitle1` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography]
+ *  of our [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat` [FontFamily] with a
+ *  `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID [R.font.montserrat_semibold])
+ *  with a `fontSize` of 16.sp, and `letterSpacing` of 0.15.sp.
+ *
+ * The `modifier` argument for the [Spacer] Composable is a `RowScope` `Modifier.weight` with a
+ * `weight` of 1f which will cause the [Spacer] to occupy all space remaining after its sidlings are
+ * measured and place.
+ *
+ * The arguments for the [Checkbox] Composable are:
+ *  - `checked` is our [Boolean] parameter [selected] (whether the [Checkbox] is checked or unchecked)
+ *  - `onCheckedChange` = `null` since the [Modifier.toggleable] of the [Row] we are in already takes
+ *  care of this.
+ *  - `modifier` is a `RowScope` `Modifier.align` whose `alignment` argument is [Alignment.CenterVertically]
+ *  to center the [Checkbox] in the [Row].
  *
  * @param itemTitle (state) topic title
  * @param selected (state) is topic currently selected
@@ -263,7 +297,7 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
                 .padding(all = 16.dp),
             style = MaterialTheme.typography.subtitle1
         )
-        Spacer(Modifier.weight(weight = 1f))
+        Spacer(modifier = Modifier.weight(weight = 1f))
         Checkbox(
             checked = selected,
             onCheckedChange = null,
@@ -273,7 +307,11 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
 }
 
 /**
- * Full-width divider for topics
+ * Full-width divider for topics is just a convenience wrapper for a [Divider] whose `modifier`
+ * argument is a [Modifier.padding] that adds 90.dp to the `start` of the [Divider], and whose
+ * `color` argument is a copy of the `onSurface` [Color] of [MaterialTheme.colors] (black)
+ * with its `alpha` set to 0.1f (this is a very light Gray in light theme, and hardly visible in dark
+ * theme).
  */
 @Composable
 private fun TopicDivider() {
