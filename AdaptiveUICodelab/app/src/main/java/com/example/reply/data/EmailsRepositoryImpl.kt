@@ -17,10 +17,13 @@
 package com.example.reply.data
 
 import com.example.reply.data.local.LocalEmailsDataProvider
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+/**
+ * This is an implementation of the [EmailsRepository] Interface contract to get all emails info
+ * for a User.
+ */
 class EmailsRepositoryImpl : EmailsRepository {
 
     override fun getAllEmails(): Flow<List<Email>> = flow {
@@ -36,6 +39,7 @@ class EmailsRepositoryImpl : EmailsRepository {
         return LocalEmailsDataProvider.getAllFolders()
     }
 
+    @Suppress("UNUSED_VARIABLE")
     override fun getEmailFromId(id: Long): Flow<Email?> = flow {
         val categoryEmails = LocalEmailsDataProvider.allEmails.firstOrNull { it.id == id }
     }
