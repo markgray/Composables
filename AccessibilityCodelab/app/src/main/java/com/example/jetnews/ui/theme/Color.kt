@@ -16,10 +16,34 @@
 
 package com.example.jetnews.ui.theme
 
+import androidx.compose.material.Colors
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.graphics.Color
 
-val Red200 = Color(0xfff297a2)
-val Red300 = Color(0xffea6d7e)
-val Red700 = Color(0xffdd0d3c)
-val Red800 = Color(0xffd00036)
-val Red900 = Color(0xffc20029)
+/**
+ * Used as the [Colors.error] color of the `DarkThemeColors` of our [JetnewsTheme] custom [MaterialTheme]
+ */
+val Red200: Color = Color(0xfff297a2)
+
+/**
+ * Used as the [Colors.primary] and [Colors.secondary] colors of the `DarkThemeColors` of our
+ * [JetnewsTheme] custom [MaterialTheme]
+ */
+val Red300: Color = Color(0xffea6d7e)
+
+/**
+ * Used as the [Colors.primaryVariant] color of the `DarkThemeColors` of our [JetnewsTheme] custom
+ * [MaterialTheme], and as the [Colors.primary] and [Colors.secondary] colors of its `LightThemeColors`
+ */
+val Red700: Color = Color(0xffdd0d3c)
+
+/**
+ * Used as the [Colors.error] color of the `LightThemeColors` of our [JetnewsTheme] custom [MaterialTheme]
+ */
+val Red800: Color = Color(0xffd00036)
+
+/**
+ * Used as the [Colors.primaryVariant] and [Colors.secondaryVariant] colors of the `LightThemeColors`
+ * of our [JetnewsTheme] custom [MaterialTheme]
+ */
+val Red900: Color = Color(0xffc20029)
