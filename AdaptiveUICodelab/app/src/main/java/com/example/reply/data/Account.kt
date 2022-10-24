@@ -21,6 +21,17 @@ import androidx.annotation.DrawableRes
 /**
  * An object which represents an account which can belong to a user. A single user can have
  * multiple accounts.
+ *
+ * @param id Unique ID of this [Account], no two [Account]'s will share the same [id]
+ * @param uid The ID of the user of the [Account], a single user can have multiple accounts.
+ * @param firstName The first name of the user of the [Account].
+ * @param lastName The last name of the user of the [Account].
+ * @param email The primary email address associated with the [Account].
+ * @param altEmail An alternate email address associated with the [Account].
+ * @param avatar The resource of a drawable that can be used to represent the [Account] or its user.
+ * @param isCurrentAccount No idea what the intended use of this is, it defaults to `false` for all
+ * execpt the [Account] whose [Account.id] is 1L which is the first of the three accounts owned by
+ * [Account.uid] 0L, whose is the "current user" of the app (aka "Jeff Hansen")
  */
 data class Account(
     val id: Long,
@@ -32,6 +43,9 @@ data class Account(
     @DrawableRes val avatar: Int,
     var isCurrentAccount: Boolean = false
 ) {
+    /**
+     * The "full name" of the owner of the [Account].
+     */
     val fullName: String = "$firstName $lastName"
 
 }
