@@ -45,8 +45,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
+import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
 
+/**
+ *
+ */
 @Composable
 fun AppDrawer(
     currentRoute: String,
@@ -56,8 +60,8 @@ fun AppDrawer(
 ) {
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(Modifier.height(24.dp))
-        JetNewsLogo(Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+        JetNewsLogo(modifier = Modifier.padding(all = 16.dp))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(
             icon = Icons.Filled.Home,
@@ -157,8 +161,20 @@ private fun DrawerButton(
     }
 }
 
-@Preview("Drawer contents")
-@Preview("Drawer contents (dark)", uiMode = UI_MODE_NIGHT_YES)
+/**
+ * These are two Previews of a [Surface] holding our [AppDrawer] Composable, all wrapped by our
+ * [JetnewsTheme] custom [MaterialTheme]. The `name` of the first is "Drawer contents" and it uses
+ * the default `LightThemeColors`, and the `name` of the second is "Drawer contents (dark)" and it
+ * uses the [UI_MODE_NIGHT_YES] `uiMode` and it uses the `DarkThemeColors`. The arguments passed to
+ * [AppDrawer] are:
+ *  - `currentRoute`: [MainDestinations.HOME_ROUTE], the [JetnewsNavGraph] route to load the
+ *  [HomeScreen] is passed
+ *  - `navigateToHome`: an empty lambda.
+ *  - `navigateToInterests`: an empty lambda.
+ *  - `closeDrawer`: an empty lambda.
+ */
+@Preview(name = "Drawer contents")
+@Preview(name = "Drawer contents (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewAppDrawer() {
     JetnewsTheme {

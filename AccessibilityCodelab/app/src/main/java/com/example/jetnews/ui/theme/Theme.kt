@@ -19,6 +19,7 @@ package com.example.jetnews.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Shapes
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
@@ -101,7 +102,20 @@ private val DarkThemeColors: Colors = darkColors(
 )
 
 /**
- * This is the custom [MaterialTheme] used by this app.
+ * This is the custom [MaterialTheme] used by this app. It just calls [MaterialTheme] with the
+ * arguments:
+ *  - `colors`: If [darkTheme] is `true` we pass [DarkThemeColors], otherwise we pass [LightThemeColors].
+ *  This represents a complete definition of the Material Color theme for this hierarchy.
+ *  - `typography`: We pass it our [JetnewsTypography] custom [Typography] as the set of text styles
+ *  to be used as this hierarchy's typography system.
+ *  - `shapes`: We pass it our [JetnewsShapes] custom [Shapes] as the set of shapes to be used by
+ *  the components in this hierarchy.
+ *  - `content`: We pass it our [content] Composable lambda block, ie. the Composable hierarchy that
+ *  will be governed by our [JetnewsTheme] custom [MaterialTheme].
+ *
+ * @param darkTheme `true` is the system considered to be in 'dark theme', defaults to the value
+ * returned by [isSystemInDarkTheme].
+ * @param content The Composable lambda block that we are wrapping.
  */
 @Composable
 fun JetnewsTheme(
