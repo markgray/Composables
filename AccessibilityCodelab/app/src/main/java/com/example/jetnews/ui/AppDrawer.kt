@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -43,13 +44,34 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 /**
- *
+ * This is used as the `drawerContent` argument of the [Scaffold] used by the [JetnewsApp] Composable
+ * (content of the Drawer sheet that can be pulled from the left side or right for RTL). Our root
+ * Composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxSize] (has its `content`
+ * fill the [Constraints.maxWidth] and [Constraints.maxHeight] of the incoming measurement constraints).
+ * Its `content` consists of:
+ *  - A [Spacer] whose `modifier` argument uses a [Modifier.height] to set its height to 24.dp
+ *  - A [JetNewsLogo] whose `modifier` argument uses a [Modifier.padding] to set the padding on all
+ *  sides to 16.dp
+ *  - A [Divider] whose `color` argument sets its [Color] to a copy of the `onSurface` [Color] of
+ *  [MaterialTheme.colors] with its `alpha` set to .2f (Since our [JetnewsTheme] custom [MaterialTheme]
+ *  does not specify an `onSurface` [Color] this is the default [Color.Black] for LightThemeColors,
+ *  and [Color.White] for DarkThemeColors.
+ *  - A [DrawerButton] whose `icon` argument is [Icons.Filled.Home] (a stylized "house"), whose
+ *  `label` argument is the [String] "Home", whose `isSelected` argument is `true` if our [String]
+ *  parameter [currentRoute] is equal to [MainDestinations.HOME_ROUTE], and whose `action` argument
+ *  is a lambda which calls our [navigateToHome] parameter then calls our [closeDrawer] parameter.
+ *  - A [DrawerButton] whose `icon` argument is [Icons.Filled.ListAlt] (a stylized "list"), whose
+ *  `label` argument is the [String] "Interests", whose `isSelected` argument is `true` if our
+ *  [String] parameter [currentRoute] is equal to [MainDestinations.INTERESTS_ROUTE], and whose
+ *  `action` argument is a lambda which calls our [navigateToInterests] parameter then calls our
+ *  [closeDrawer] parameter.
  */
 @Composable
 fun AppDrawer(
@@ -60,7 +82,7 @@ fun AppDrawer(
 ) {
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(height = 24.dp))
         JetNewsLogo(modifier = Modifier.padding(all = 16.dp))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(
@@ -85,6 +107,9 @@ fun AppDrawer(
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
