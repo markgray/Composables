@@ -49,6 +49,8 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.ui.theme.Red300
+import com.example.jetnews.ui.theme.Red700
 
 /**
  * This is used as the `drawerContent` argument of the [Scaffold] used by the [JetnewsApp] Composable
@@ -108,25 +110,44 @@ fun AppDrawer(
 }
 
 /**
+ * This Composable displays two [Image]'s in a [Row], and is used as the top "line" in the [Column]
+ * root Composable of [AppDrawer]. Our root Composable is a [Row] whose `modifier` argument is our
+ * [modifier] parameter. The `content` of the [Row] is an [Image] whose `painter` draws the drawable
+ * with resource ID [R.drawable.ic_jetnews_logo] (a "greater than" character followed by an underline),
+ * with a `colorFilter` argument is a [ColorFilter.tint] whose `color` argument is the `primary` color
+ * of [MaterialTheme.colors] ([Red700] for `LightThemeColors` and [Red300] for `DarkThemeColors` is
+ * specified by our [JetnewsTheme] custom [MaterialTheme]). This is followed by a [Spacer] whose
+ * `width` is 8.dp, and that is followed by a second [Image] whose `painter` draws the drawable
+ * with resource ID [R.drawable.ic_jetnews_wordmark] (which is the word "jetnews" written in a fancy
+ * font), with a `colorFilter` argument is a [ColorFilter.tint] whose `color` argument is the
+ * `onSurface` color of [MaterialTheme.colors] (our [JetnewsTheme] custom [MaterialTheme] does not
+ * specify one so the default [Color.Black] is used for `LightThemeColors` and [Color.White] is used
+ * for `DarkThemeColors`).
  *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our [AppDrawer] caller uses a [Modifier.padding] that sets the padding on all sides
+ * of our [Row] to 16.dp
  */
 @Composable
 private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
         Image(
-            painter = painterResource(R.drawable.ic_jetnews_logo),
+            painter = painterResource(id = R.drawable.ic_jetnews_logo),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary)
         )
-        Spacer(Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(width = 8.dp))
         Image(
-            painter = painterResource(R.drawable.ic_jetnews_wordmark),
+            painter = painterResource(id = R.drawable.ic_jetnews_wordmark),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onSurface)
         )
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun DrawerButton(
     icon: ImageVector,
