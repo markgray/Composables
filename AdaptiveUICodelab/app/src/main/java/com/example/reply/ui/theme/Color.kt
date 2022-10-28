@@ -254,111 +254,169 @@ val replyDarkPrimaryContainer: Color = Color(0xFF624000)
 val replyDarkOnPrimaryContainer: Color = Color(0xFFFFDDAE)
 
 /**
- *
+ * Used as the [ColorScheme.secondary] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. The secondary color provides more ways to accent and distinguish your product. Secondary
+ * colors are best for:
+ *  - Floating action buttons
+ *  - Selection controls, like checkboxes and radio buttons
+ *  - Highlighting selected text
+ *  - Links and headlines
  */
 val replyDarkSecondary: Color = Color(0xFFDDC3A2)
 
 /**
- *
+ * Used as the [ColorScheme.onSecondary] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. Color used for text and icons displayed on top of the secondary color.
  */
 val replyDarkOnSecondary: Color = Color(0xFF3E2E16)
 
 /**
- *
+ * Used as the [ColorScheme.secondaryContainer] color of the `replyDarkColorScheme` custom
+ * `darkColorScheme` that our [ReplyTheme] custom [MaterialTheme] uses when the system is
+ * considered to be in 'dark theme'. This is a tonal color to be used in containers.
  */
 val replyDarkSecondaryContainer: Color = Color(0xFF56442B)
 
 /**
- *
+ * Used as the [ColorScheme.onSecondaryContainer] color of the `replyDarkColorScheme` custom
+ * `darkColorScheme` that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered
+ * to be in 'dark theme'. The color (and state variants) that should be used for content on
+ * top of [ColorScheme.secondaryContainer].
  */
 val replyDarkOnSecondaryContainer: Color = Color(0xFFFADEBC)
 
 /**
- *
+ * Used as the [ColorScheme.tertiary] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. The tertiary color that can be used to balance primary and secondary colors, or bring
+ * heightened attention to an element such as an input field.
  */
 val replyDarkTertiary: Color = Color(0xFFB8CEA2)
 
 /**
- *
+ * Used as the [ColorScheme.onTertiary] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. Color used for text and icons displayed on top of the tertiary color.
  */
 val replyDarkOnTertiary: Color = Color(0xFF243516)
 
 /**
- *
+ * Used as the [ColorScheme.tertiaryContainer] color of the `replyDarkColorScheme` custom
+ * `darkColorScheme` that our [ReplyTheme] custom [MaterialTheme] uses when the system is
+ * considered to be in 'dark theme'. A tonal color to be used in containers.
  */
 val replyDarkTertiaryContainer: Color = Color(0xFF3A4C2B)
 
 /**
- *
+ * Used as the [ColorScheme.onTertiaryContainer] color of the `replyDarkColorScheme` custom
+ * `darkColorScheme` that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered
+ * to be in 'dark theme'. The color (and state variants) that should be used for content on
+ * top of [ColorScheme.tertiaryContainer].
  */
 val replyDarkOnTertiaryContainer: Color = Color(0xFFD3EABC)
 
 /**
- *
+ * Used as the [ColorScheme.error] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. The error color is used to indicate errors in components, such as invalid text in a text
+ * field.
  */
 val replyDarkError: Color = Color(0xFFFFB4A9)
 
 /**
- *
+ * Used as the [ColorScheme.errorContainer] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. The preferred tonal color of error containers.
  */
 val replyDarkErrorContainer: Color = Color(0xFF930006)
 
 /**
- *
+ * Used as the [ColorScheme.onError] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. Color used for text and icons displayed on top of the error color.
  */
 val replyDarkOnError: Color = Color(0xFF680003)
 
 /**
- *
+ * Used as the [ColorScheme.onErrorContainer] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. The color (and state variants) that should be used for content on
+ * top of [ColorScheme.errorContainer].
  */
 val replyDarkOnErrorContainer: Color = Color(0xFFFFDAD4)
 
 /**
- *
+ * Used as the [ColorScheme.background] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. The background color that appears behind scrollable content.
  */
 val replyDarkBackground: Color = Color(0xFF1F1B16)
 
 /**
- *
+ * Used as the [ColorScheme.onBackground] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. Color used for text and icons displayed on top of the background color.
  */
 val replyDarkOnBackground: Color = Color(0xFFEAE1D9)
 
 /**
- *
+ * Used as the [ColorScheme.surface] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. The surface color that affect surfaces of components, such as cards, sheets, and menus.
  */
 val replyDarkSurface: Color = Color(0xFF1F1B16)
 
 /**
- *
+ * Used as the [ColorScheme.onSurface] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. Color used for text and icons displayed on top of the surface color.
  */
 val replyDarkOnSurface: Color = Color(0xFFEAE1D9)
 
 /**
- *
+ * Used as the [ColorScheme.surfaceVariant] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. Another option for a color with similar uses of [ColorScheme.surface].
  */
 val replyDarkSurfaceVariant: Color = Color(0xFF4F4539)
 
 /**
- *
+ * Used as the [ColorScheme.onSurfaceVariant] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. The color (and state variants) that can be used for content on top of [ColorScheme.surface].
  */
 val replyDarkOnSurfaceVariant: Color = Color(0xFFD3C4B4)
 
 /**
- *
+ * Used as the [ColorScheme.outline] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. Subtle color used for boundaries. Outline color role adds contrast for accessibility
+ * purposes.
  */
 val replyDarkOutline: Color = Color(0xFF9C8F80)
 
 /**
- *
+ * Used as the [ColorScheme.inverseOnSurface] color of the `replyDarkColorScheme` custom
+ * `darkColorScheme` that our [ReplyTheme] custom [MaterialTheme] uses when the system is
+ * considered to be in 'dark theme'. A color that contrasts well with [ColorScheme.inverseSurface].
+ * Useful for content that sits on top of containers that are [ColorScheme.inverseSurface].
  */
 val replyDarkInverseOnSurface: Color = Color(0xFF1F1B16)
 
 /**
- *
+ * Used as the [ColorScheme.inverseSurface] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. A color that contrasts sharply with [ColorScheme.surface]. Useful for surfaces that sit
+ * on top of other surfaces with [ColorScheme.surface] color.
  */
 val replyDarkInverseSurface: Color = Color(0xFFEAE1D9)
 
 /**
- *
+ * Used as the [ColorScheme.inversePrimary] color of the `replyDarkColorScheme` custom `darkColorScheme`
+ * that our [ReplyTheme] custom [MaterialTheme] uses when the system is considered to be in 'dark
+ * theme'. Color to be used as a "primary" color in places where the inverse color scheme is needed,
+ * such as the button on a SnackBar.
  */
 val replyDarkPrimaryInverse: Color = Color(0xFF825500)

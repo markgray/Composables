@@ -19,6 +19,7 @@ package com.example.reply.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -29,10 +30,10 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 
 // Material 3 color schemes
-private val replyDarkColorScheme = darkColorScheme(
+private val replyDarkColorScheme: ColorScheme = darkColorScheme(
     primary = replyDarkPrimary,
     onPrimary = replyDarkOnPrimary,
     primaryContainer = replyDarkPrimaryContainer,
@@ -61,7 +62,7 @@ private val replyDarkColorScheme = darkColorScheme(
     outline = replyDarkOutline
 )
 
-private val replyLightColorScheme = lightColorScheme(
+private val replyLightColorScheme: ColorScheme = lightColorScheme(
     primary = replyLightPrimary,
     onPrimary = replyLightOnPrimary,
     primaryContainer = replyLightPrimaryContainer,
@@ -90,6 +91,9 @@ private val replyLightColorScheme = lightColorScheme(
     outline = replyLightOutline
 )
 
+/**
+ *
+ */
 @Composable
 fun ReplyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -106,9 +110,13 @@ fun ReplyTheme(
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
+        /* getting the current window by tapping into the Activity */
+        val currentWindow = (view.context as? Activity)?.window
+            ?: throw Exception("Not in an activity - unable to get Window reference")
         SideEffect {
-            (view.context as Activity).window.statusBarColor = replyColorScheme.primary.toArgb()
-            ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
+            currentWindow.statusBarColor = replyColorScheme.primary.toArgb()
+            WindowCompat.getInsetsController(currentWindow, view)
+                .isAppearanceLightStatusBars = darkTheme
         }
     }
 
