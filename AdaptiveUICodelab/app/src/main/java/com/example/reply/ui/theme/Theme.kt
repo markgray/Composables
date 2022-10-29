@@ -17,10 +17,15 @@
 package com.example.reply.ui.theme
 
 import android.app.Activity
+import android.content.Context
 import android.os.Build
+import android.view.View
+import android.view.Window
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -92,7 +97,42 @@ private val replyLightColorScheme: ColorScheme = lightColorScheme(
 )
 
 /**
+ * This is our custom [MaterialTheme] which we use to provide values to Material components such as
+ * `Button` and `Checkbox` when they retrieve default values for their [ColorScheme], [Typography]
+ * and [Shapes]. We use a `when` expression to set our [ColorScheme] variable `val replyColorScheme`
+ * different values depending on the value of our parameters:
+ *  - Our [Boolean] parameter [dynamicColor] is `true` and [Build.VERSION.SDK_INT] is greater than
+ *  or equal to [Build.VERSION_CODES.S] we set `replyColorScheme` to [dynamicDarkColorScheme] if the
+ *  [darkTheme] is `true` (the system is considered to be in 'dark theme') or [dynamicLightColorScheme]
+ *  if [darkTheme] is `false` (these are color schemes based on the colors of the system wallpaper).
+ *  - If use of dynamic color shemes is precluded we set `replyColorScheme` to [replyDarkColorScheme]
+ *  if [darkTheme] is `true` or to [replyLightColorScheme] if it is `false`.
  *
+ * We initialize our [View] variable `val view` to the current Compose [View] that is returned by
+ * `LocalView.current`. If the [View.isInEditMode] method returns `false` (we are not being rendered
+ * for a design tool) we initialize our [Window] variable `val currentWindow` to the current [Window]
+ * for the activity, then we call the [SideEffect] Composable to schedule its `effect` lambda argument
+ * to run when the current composition completes successfully ([SideEffect] can be used to apply side
+ * effects to objects managed by the composition that are not backed by snapshots so as not to leave
+ * those objects in an inconsistent state if the current composition operation fails. `effect` will
+ * always be run on the composition's apply dispatcher. A [SideEffect] runs after every recomposition).
+ * The `effect` lambda of the [SideEffect] sets the the color of the status bar of `currentWindow` to
+ * the ARGB color of the [ColorScheme.primary] of `replyColorScheme`, and then uses the method
+ * [WindowCompat.getInsetsController] to retrieve the single `WindowInsetsControllerCompat` of the
+ * window this view is attached to, and sets its `isAppearanceLightStatusBars` property to our
+ * [Boolean] parameter [darkTheme] (If `true`, changes the foreground color of the status bars to
+ * light so that the items on the bar can be read clearly. If `false`, reverts to the default
+ * appearance).
+ *
+ * Finally we call the [MaterialTheme] Composable with its `colorScheme` argument our [ColorScheme]
+ * variable `replyColorScheme`, its `typography` argument our [replyTypography] custom [Typography]
+ * and as its `content` argument our [content] parameter (the Composable hierarchy that we are
+ * wrapping).
+ *
+ * @param darkTheme `true` if the system is considered to be in 'dark theme'.
+ * @param dynamicColor if `true` we try to use the dynamic color scheme api that was introduced in
+ * [Build.VERSION_CODES.S] to provide the [ColorScheme].
+ * @param content the Composable hierarchy that we are wrapping.
  */
 @Composable
 fun ReplyTheme(
@@ -100,18 +140,18 @@ fun ReplyTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val replyColorScheme = when {
+    val replyColorScheme: ColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
+            val context: Context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
         darkTheme -> replyDarkColorScheme
         else -> replyLightColorScheme
     }
-    val view = LocalView.current
+    val view: View = LocalView.current
     if (!view.isInEditMode) {
         /* getting the current window by tapping into the Activity */
-        val currentWindow = (view.context as? Activity)?.window
+        val currentWindow: Window = (view.context as? Activity)?.window
             ?: throw Exception("Not in an activity - unable to get Window reference")
         SideEffect {
             currentWindow.statusBarColor = replyColorScheme.primary.toArgb()
