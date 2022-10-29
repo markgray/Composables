@@ -27,6 +27,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Colors
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -48,6 +50,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.ui.home.HomeScreen
+import com.example.jetnews.ui.theme.JetnewsShapes
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.theme.Red300
 import com.example.jetnews.ui.theme.Red700
@@ -146,7 +149,19 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
 }
 
 /**
- *
+ * This Composable is used for each of the two navigation choices in the [AppDrawer]. It is just a
+ * fancy wrapper for a [TextButton] which modifies the alpha and colors based on whether this
+ * [DrawerButton] is the selected one ([isSelected] is `true`), surrounds the [TextButton] in a
+ * [Surface] which has a `small` [MaterialTheme.shapes] as its `shape` argument (our [JetnewsShapes]
+ * specifies a [RoundedCornerShape] with 4.dp corners), and passes arguments to the [TextButton]
+ * that reflect the intent of the parameters passed to [DrawerButton]. We initialize our [Colors]
+ * variable `val colors` to [MaterialTheme.colors] and initialize our [Float] variable `val imageAlpha`
+ * to 1f if our [Boolean] parameter [isSelected] is `true` (`this` [DrawerButton] is the one that
+ * is slected) or to 0.6f if [isSelected] is `false`. We set our [Color] variable `val textIconColor`
+ * to [Colors.primary] if our [Boolean] parameter [isSelected] is `true`, or to a copy of
+ * [Colors.onSurface] with an alpha of 0.6f if [isSelected] is `false`. We set our [Color] variable
+ * `val backgroundColor` to a copy of [Colors.primary] with an alpha of 0.12f if our [Boolean]
+ * parameter [isSelected] is `true`, or [Color.Transparent] if [isSelected] is `false`.
  */
 @Composable
 private fun DrawerButton(
@@ -156,24 +171,24 @@ private fun DrawerButton(
     action: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val colors = MaterialTheme.colors
-    val imageAlpha = if (isSelected) {
+    val colors: Colors = MaterialTheme.colors
+    val imageAlpha: Float = if (isSelected) {
         1f
     } else {
         0.6f
     }
-    val textIconColor = if (isSelected) {
+    val textIconColor: Color = if (isSelected) {
         colors.primary
     } else {
         colors.onSurface.copy(alpha = 0.6f)
     }
-    val backgroundColor = if (isSelected) {
+    val backgroundColor: Color = if (isSelected) {
         colors.primary.copy(alpha = 0.12f)
     } else {
         Color.Transparent
     }
 
-    val surfaceModifier = modifier
+    val surfaceModifier: Modifier = modifier
         .padding(start = 8.dp, top = 8.dp, end = 8.dp)
         .fillMaxWidth()
     Surface(
@@ -196,7 +211,7 @@ private fun DrawerButton(
                     colorFilter = ColorFilter.tint(textIconColor),
                     alpha = imageAlpha
                 )
-                Spacer(Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(width = 16.dp))
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body2,
