@@ -32,9 +32,11 @@ import androidx.compose.material.Colors
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Shapes
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
@@ -43,8 +45,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -52,6 +59,7 @@ import com.example.jetnews.R
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.ui.theme.JetnewsShapes
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.ui.theme.JetnewsTypography
 import com.example.jetnews.ui.theme.Red300
 import com.example.jetnews.ui.theme.Red700
 
@@ -161,7 +169,43 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
  * to [Colors.primary] if our [Boolean] parameter [isSelected] is `true`, or to a copy of
  * [Colors.onSurface] with an alpha of 0.6f if [isSelected] is `false`. We set our [Color] variable
  * `val backgroundColor` to a copy of [Colors.primary] with an alpha of 0.12f if our [Boolean]
- * parameter [isSelected] is `true`, or [Color.Transparent] if [isSelected] is `false`.
+ * parameter [isSelected] is `true`, or [Color.Transparent] if [isSelected] is `false`. We initialize
+ * our [Modifier] variable `val surfaceModifier` to a [Modifier.padding] which sets the padding at
+ * each size to 8.dp, and then chain a [Modifier.fillMaxWidth] to it so that the `content` of any
+ * Composable will fill  the [Constraints.maxWidth] of the incoming measurement constraints.
+ *
+ * Having initialized we set our root Composable to a [Surface] with its `modifier` argument our
+ * [Modifier] variable `surfaceModifier`, its `color` argument our [Color] variable `backgroundColor`,
+ * and its `shape` argument the `small` [Shape] of [MaterialTheme.shapes] which our [JetnewsShapes]
+ * custom [Shapes] defines to be a [RoundedCornerShape] with 4.dp corners. The `content` of the
+ * [Surface] is a [TextButton] whose `onClick` argument is our [action] lambda parameter, and whose
+ * `modifier` argument is a [Modifier.fillMaxWidth] to have it fill  the [Constraints.maxWidth] of
+ * its incoming measurement constraints. Its `content` is a [Row] whose `horizontalArrangement`
+ * argument is [Arrangement.Start] (places children horizontally such that they are as close as
+ * possible to the beginning of the horizontal axis), whose `verticalAlignment` argument is
+ * [Alignment.CenterVertically] to have its children centered verically, and whose `modifier`
+ * argument is a [Modifier.fillMaxWidth] to have it fill  the [Constraints.maxWidth] of its incoming
+ * measurement constraints. The `content` of the [Row] is a an [Image] whose `imageVector` argument
+ * is our [ImageVector] parameter [icon] (the [ImageVector] it will draw), whose `contentDescription`
+ * is `null`, whose `colorFilter` argument is a [ColorFilter.tint] whose `color` parameter is our
+ * [Color] variable `textIconColor` (the tint that the painter should apply when drawing), and whose
+ * `alpha` argument is our [Float] variable `imageAlpha` (opacity to be applied to the [ImageVector]
+ * when it is rendered onscreen). The [Image] is followed by a [Spacer] whose `modifier` argument
+ * uses a [Modifier.width] to set its `width` to 16.dp, and that is followed by a [Text] whose `text`
+ * is our [String] parameter [label], whose `style` argument is the `body2` [TextStyle] of
+ * [MaterialTheme.typography] which our [JetnewsTypography] custom [Typography] defines to be
+ * `Montserrat` [FontFamily] with `fontWeight` = [FontWeight.Medium], `fontSize` = 14.sp, and
+ * `letterSpacing` = 0.25.sp (the [Font] with resource ID [R.font.montserrat_medium]). The `color`
+ * of the text is our [Color] variable `textIconColor`.
+ *
+ * @param icon the [ImageVector] that our [Image] Composable should draw.
+ * @param label the text that our [Text] Composable should display.
+ * @param isSelected if `true` our [DrawerButton] has been selected by the user.
+ * @param action a lambda that the [TextButton] should call when the user clicks the button.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller ([AppDrawer]) does not pass us one so the empty, default, or starter
+ * [Modifier] that contains no elements (the default value for our [modifier] parameter) is used
+ * instead.
  */
 @Composable
 private fun DrawerButton(
@@ -208,7 +252,7 @@ private fun DrawerButton(
                 Image(
                     imageVector = icon,
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(textIconColor),
+                    colorFilter = ColorFilter.tint(color = textIconColor),
                     alpha = imageAlpha
                 )
                 Spacer(modifier = Modifier.width(width = 16.dp))
