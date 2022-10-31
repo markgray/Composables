@@ -17,9 +17,21 @@
 package com.example.reply.ui.utils
 
 import android.graphics.Rect
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
+import com.example.reply.data.Email
+import com.example.reply.ui.ReplyBottomNavigationBar
+import com.example.reply.ui.ReplyListAndDetailContent
+import com.example.reply.ui.ReplyListOnlyContent
+import com.example.reply.ui.ReplyNavigationRail
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -76,7 +88,13 @@ sealed interface DevicePosture {
 }
 
 /**
- *
+ * Returns `true` if its [FoldingFeature] parameter [foldFeature] indicates that the [DevicePosture]
+ * of the device is [DevicePosture.BookPosture]. This is so if the [FoldingFeature.state] property
+ * of [foldFeature] is [FoldingFeature.State.HALF_OPENED] (The foldable device's hinge is in an
+ * intermediate position between opened and closed state, there is a non-flat angle between parts of
+ * the flexible screen or between physical screen panels) and its [FoldingFeature.orientation] property
+ * is [FoldingFeature.Orientation.VERTICAL] (the height of the [FoldingFeature] is greater than or
+ * equal to the width).
  */
 @OptIn(ExperimentalContracts::class)
 fun isBookPosture(foldFeature: FoldingFeature?): Boolean {
@@ -86,7 +104,12 @@ fun isBookPosture(foldFeature: FoldingFeature?): Boolean {
 }
 
 /**
- *
+ * Returns `true` if its [FoldingFeature] parameter [foldFeature] indicates that the [DevicePosture]
+ * of the device is [DevicePosture.Separating]. This is so if the [FoldingFeature.state] property
+ * of [foldFeature] is [FoldingFeature.State.FLAT] (the foldable device is completely open, the screen
+ * space that is presented to the user is flat) and its [FoldingFeature.isSeparating] property is
+ * `true` (the [FoldingFeature] should be thought of as splitting the window into multiple physical
+ * areas that can be seen by users as logically separate).
  */
 @OptIn(ExperimentalContracts::class)
 fun isSeparating(foldFeature: FoldingFeature?): Boolean {
@@ -99,17 +122,35 @@ fun isSeparating(foldFeature: FoldingFeature?): Boolean {
  */
 enum class ReplyNavigationType {
     /**
-     *
+     * This type of navigation uses [ReplyBottomNavigationBar] which uses the Material Design bottom
+     * navigation bar [NavigationBar] to navigate between screens (which are yet to be written, so the
+     * `onClick` of the [NavigationBarItem]'s do nothing yet). This type of navigation is chosen if
+     * [WindowWidthSizeClass] of the device is [WindowWidthSizeClass.Compact] (Represents the majority
+     * of phones in portrait) or is not a known [WindowWidthSizeClass].
      */
     BOTTOM_NAVIGATION,
 
     /**
-     *
+     * This type of navigation uses [ReplyNavigationRail] which uses the Material Design bottom
+     * navigation rail [NavigationRail] to navigate between screens (which are yet to be written, so the
+     * `onClick` of the [NavigationRailItem]'s do nothing yet). This type of navigation is chosen if
+     * [WindowWidthSizeClass] of the device is [WindowWidthSizeClass.Medium] (Represents the majority
+     * of tablets in portrait and large unfolded inner displays in portrait) or [WindowWidthSizeClass.Expanded]
+     * (Represents the majority of tablets in landscape and large unfolded inner displays in landscape)
+     * and the [DevicePosture] of the device is [DevicePosture.BookPosture] (The foldable device's hinge
+     * is in an intermediate position between opened and closed state, there is a non-flat angle between
+     * parts of the flexible screen or between physical screen panels, and the height of its [FoldingFeature]
+     * is greater than or equal to the width).
      */
     NAVIGATION_RAIL,
 
     /**
-     *
+     * This type of navigation uses [PermanentNavigationDrawer] (the Material Design navigation
+     * permanent drawer, which is always visible and usually used for frequently switching
+     * destinations). This type of navigation is chosen if [WindowWidthSizeClass] of the device is
+     * [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large
+     * unfolded inner displays in landscape) but the [DevicePosture] of the device is NOT
+     * [DevicePosture.BookPosture].
      */
     PERMANENT_NAVIGATION_DRAWER
 }
@@ -119,12 +160,22 @@ enum class ReplyNavigationType {
  */
 enum class ReplyContentType {
     /**
-     *
+     * This content type uses [ReplyListOnlyContent] to display [Email] objects with only 2 lines
+     * of the [Email.body] of the [Email]. It is chosen if the [WindowWidthSizeClass] of the device
+     * is [WindowWidthSizeClass.Compact] (Represents the majority of phones in portrait) or
+     * [WindowWidthSizeClass.Medium] (Represents the majority of tablets in portrait and large
+     * unfolded inner displays in portrait) and the [DevicePosture] is neither [DevicePosture.BookPosture]
+     * nor [DevicePosture.Separating], or is not a known [WindowWidthSizeClass].
      */
     LIST_ONLY,
 
     /**
-     *
+     * This content type uses [ReplyListAndDetailContent] to display [Email] objects with only 2 lines
+     * of the [Email.body] of the [Email], along with a separate [LazyColumn] which displays all the
+     * [Email.threads] associated with the selected [Email]. It is chosen if the [WindowWidthSizeClass]
+     * of the device is [WindowWidthSizeClass.Medium] and the [DevicePosture] of the device is either
+     * [DevicePosture.BookPosture] or [DevicePosture.Separating], or the [WindowWidthSizeClass] of
+     * the device is [WindowWidthSizeClass.Expanded].
      */
     LIST_AND_DETAIL
 }
