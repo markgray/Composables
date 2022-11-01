@@ -60,11 +60,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
+import com.example.reply.data.Email
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 import kotlinx.coroutines.launch
 
+/**
+ * This is the root Composable of our app. Its responsibilities are to determine the [ReplyNavigationType]
+ * and [ReplyContentType] based on its [WindowWidthSizeClass] parameter [windowSize] and [DevicePosture]
+ * parameter [foldingDevicePosture]. It then calls the Composable [ReplyNavigationWrapperUI] with the
+ * values it decides on as well as its [ReplyHomeUIState] parameter [replyHomeUIState] to supply the
+ * [List] of [Email] object that its children will display.
+ */
 @Composable
 fun ReplyApp(
     replyHomeUIState: ReplyHomeUIState,
@@ -155,6 +163,9 @@ private fun ReplyNavigationWrapperUI(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ReplyAppContent(
     navigationType: ReplyNavigationType,
@@ -188,6 +199,9 @@ fun ReplyAppContent(
     }
 }
 
+/**
+ *
+ */
 @Composable
 @Preview
 fun ReplyNavigationRail(
@@ -222,6 +236,9 @@ fun ReplyNavigationRail(
     }
 }
 
+/**
+ *
+ */
 @Composable
 @Preview
 fun ReplyBottomNavigationBar() {
@@ -249,6 +266,9 @@ fun ReplyBottomNavigationBar() {
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationDrawerContent(
