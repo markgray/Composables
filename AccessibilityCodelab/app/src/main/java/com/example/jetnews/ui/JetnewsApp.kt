@@ -20,19 +20,24 @@ import android.annotation.SuppressLint
 import android.view.View
 import android.view.Window
 import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -44,6 +49,14 @@ import kotlinx.coroutines.launch
  * [SystemUiController.setSystemBarsColor] of `systemUiController` to set the color of the status and
  * navigation bars [Color.Transparent], and to set its `darkIcons` property to `false` to prevent the
  * use of dark navigation bar icons.
+ *
+ * Next we initialize and remember our [NavHostController] variable `val navController`, initialize
+ * and remember our [CoroutineScope] variable `val coroutineScope`, and initialize and remember our
+ * [ScaffoldState] variable `val scaffoldState`.
+ *
+ * We initialize our [NavBackStackEntry] variable `val navBackStackEntry` to the [State] wrapped
+ * [NavBackStackEntry] that is returned by the [NavHostController.currentBackStackEntryAsState]
+ * method of `navController`
  */
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -56,15 +69,16 @@ fun JetnewsApp(
             systemUiController.setSystemBarsColor(color = Color.Transparent, darkIcons = false)
         }
 
-        val navController = rememberNavController()
-        val coroutineScope = rememberCoroutineScope()
+        val navController: NavHostController = rememberNavController()
+        val coroutineScope: CoroutineScope = rememberCoroutineScope()
         // This top level scaffold contains the app drawer, which needs to be accessible
         // from multiple screens. An event to open the drawer is passed down to each
         // screen that needs it.
-        val scaffoldState = rememberScaffoldState()
+        val scaffoldState: ScaffoldState = rememberScaffoldState()
 
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route ?: MainDestinations.HOME_ROUTE
+        val navBackStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
+        val currentRoute: String = navBackStackEntry?.destination?.route
+            ?: MainDestinations.HOME_ROUTE
         Scaffold(
             scaffoldState = scaffoldState,
             drawerContent = {
