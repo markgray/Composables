@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Chat
@@ -72,6 +73,45 @@ import kotlinx.coroutines.launch
  * parameter [foldingDevicePosture]. It then calls the Composable [ReplyNavigationWrapperUI] with the
  * values it decides on as well as its [ReplyHomeUIState] parameter [replyHomeUIState] to supply the
  * [List] of [Email] object that its children will display.
+ *
+ * We start by declaring our [ReplyNavigationType] variable `val navigationType` and our [ReplyContentType]
+ * variable `val contentType`. Then we branch on our [WindowWidthSizeClass] parameter [windowSize]:
+ *  - [WindowWidthSizeClass.Compact] - (represents the majority of phones in portrait) we set our
+ *  variable `navigationType`to [ReplyNavigationType.BOTTOM_NAVIGATION] (uses [ReplyBottomNavigationBar]
+ *  which uses uses the Material Design bottom navigation bar [NavigationBar] to navigate between
+ *  screens), and set our `contentType` variable to [ReplyContentType.LIST_ONLY] (uses [ReplyListOnlyContent]
+ *  to display [Email] objects with only 2 lines of the [Email.body] of the [Email]).
+ *  - [WindowWidthSizeClass.Medium] - (Represents the majority of tablets in portrait and large unfolded
+ *  inner displays in portrait) we set our variable `navigationType`to [ReplyNavigationType.NAVIGATION_RAIL]
+ *  (uses [ReplyNavigationRail] which uses the Material Design bottom navigation rail [NavigationRail]
+ *  to navigate between screens), then if our [DevicePosture] parameter [foldingDevicePosture] is
+ *  [DevicePosture.BookPosture] or [DevicePosture.Separating] we set our `contentType` variable to
+ *  [ReplyContentType.LIST_AND_DETAIL] (uses [ReplyListAndDetailContent] to display [Email] objects
+ *  with only 2 lines of the [Email.body] of the [Email], along with a separate [LazyColumn] which
+ *  displays all the [Email.threads] associated with the selected [Email]), or else we set it to
+ *  [ReplyContentType.LIST_ONLY] if it is neither (uses [ReplyListOnlyContent] to display [Email]
+ *  objects with only 2 lines of the [Email.body] of the [Email]).
+ *  - [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large
+ *  unfolded inner displays in landscape) if our [DevicePosture] parameter [foldingDevicePosture] is
+ *  [DevicePosture.BookPosture] we set our variable `navigationType`to [ReplyNavigationType.NAVIGATION_RAIL]
+ *  (uses [ReplyNavigationRail] which uses the Material Design bottom navigation rail [NavigationRail]
+ *  to navigate between screens), and if not we set it to [ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER]
+ *  (uses [PermanentNavigationDrawer], the Material Design navigation permanent drawer, which is always
+ *  visible and usually used for frequently switching destinations). In either case we set our
+ *  `contentType` variable to [ReplyContentType.LIST_AND_DETAIL] (uses [ReplyListAndDetailContent]
+ *  to display [Email] objects with only 2 lines of the [Email.body] of the [Email], along with a
+ *  separate [LazyColumn] which displays all the [Email.threads] associated with the selected [Email])
+ *  - Unknown [WindowWidthSizeClass] - we set our variable `navigationType`to
+ *  [ReplyNavigationType.BOTTOM_NAVIGATION] (uses [ReplyBottomNavigationBar] which uses uses the
+ *  Material Design bottom navigation bar [NavigationBar] to navigate between screens), and set our
+ *  `contentType` variable to [ReplyContentType.LIST_ONLY] (uses [ReplyListOnlyContent] to display
+ *  [Email] objects with only 2 lines of the [Email.body] of the [Email]).
+ *
+ * Having determined the [ReplyNavigationType] and [ReplyContentType] that should be used for the
+ * device we call the [ReplyNavigationWrapperUI] Composable with the arguments:
+ *  - `navigationType` our [ReplyNavigationType] variable `navigationType`,
+ *  - `contentType` our [ReplyContentType] variable `contentType`,
+ *  - `replyHomeUIState` our [ReplyHomeUIState] parameter [replyHomeUIState]
  */
 @Composable
 fun ReplyApp(
@@ -92,6 +132,7 @@ fun ReplyApp(
             navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
             contentType = ReplyContentType.LIST_ONLY
         }
+
         WindowWidthSizeClass.Medium -> {
             navigationType = ReplyNavigationType.NAVIGATION_RAIL
             contentType = if (foldingDevicePosture is DevicePosture.BookPosture
@@ -101,6 +142,7 @@ fun ReplyApp(
                 ReplyContentType.LIST_ONLY
             }
         }
+
         WindowWidthSizeClass.Expanded -> {
             navigationType = if (foldingDevicePosture is DevicePosture.BookPosture) {
                 ReplyNavigationType.NAVIGATION_RAIL
@@ -109,6 +151,7 @@ fun ReplyApp(
             }
             contentType = ReplyContentType.LIST_AND_DETAIL
         }
+
         else -> {
             navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
             contentType = ReplyContentType.LIST_ONLY
@@ -122,6 +165,9 @@ fun ReplyApp(
     )
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReplyNavigationWrapperUI(
