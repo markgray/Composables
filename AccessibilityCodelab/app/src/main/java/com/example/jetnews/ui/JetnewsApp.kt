@@ -17,8 +17,10 @@
 package com.example.jetnews.ui
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.view.View
 import android.view.Window
+import androidx.compose.material.DrawerState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
@@ -30,10 +32,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
+import com.example.jetnews.data.interests.InterestsRepository
+import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -56,7 +62,31 @@ import kotlinx.coroutines.launch
  *
  * We initialize our [NavBackStackEntry] variable `val navBackStackEntry` to the [State] wrapped
  * [NavBackStackEntry] that is returned by the [NavHostController.currentBackStackEntryAsState]
- * method of `navController`
+ * method of `navController`, and we initialize our [String] variable `val currentRoute` to the
+ * the value returned for the [NavDestination.route] property of the [NavBackStackEntry.destination]
+ * property of `navBackStackEntry` (which is the unique route of the destination associated with the
+ * entry), defaulting to [MainDestinations.HOME_ROUTE] if the result is `null`.
+ *
+ * Finally we call our root [Scaffold] Composable with its `scaffoldState` argument our [ScaffoldState]
+ * variable `scaffoldState`, and its `drawerContent` argument an [AppDrawer] whose `currentRoute`
+ * argument is our `currentRoute` [String] variable, whose `navigateToHome` argument is a lambda
+ * which calls the [NavHostController.navigate] method of `navController` to navigate to the
+ * [MainDestinations.HOME_ROUTE] route in the current [NavGraph]. Its `navigateToInterests` argument
+ * is a lambda which calls the [NavHostController.navigate] method of `navController` to navigate to
+ * the [MainDestinations.INTERESTS_ROUTE] route in the current [NavGraph]. And its `closeDrawer`
+ * argument is a lambda which uses the [CoroutineScope.launch] method of `coroutineScope` to launch
+ * a new coroutine without blocking the current thread which calls the [DrawerState.close] method
+ * of the [ScaffoldState.drawerState] of `scaffoldState` to close the drawer with animation and
+ * suspend until it is fully closed or the animation has been cancelled.
+ *
+ * The `content` of the [Scaffold] is the [JetnewsNavGraph] Composable with its `appContainer`
+ * argument our [AppContainer] parameter [appContainer], its `navController` argument our
+ * [NavHostController] variable `navController`, and its `scaffoldState` argument our [ScaffoldState]
+ * variable `scaffoldState`.
+ *
+ * @param appContainer the [AppContainer] which contains the [Application]'s dependencies:
+ * [AppContainer.postsRepository] contains a reference to our [PostsRepository], and the field
+ * [AppContainer.interestsRepository] contains a reference to our [InterestsRepository].
  */
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
