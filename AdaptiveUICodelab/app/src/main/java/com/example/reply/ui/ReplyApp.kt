@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.MenuOpen
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Videocam
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -60,11 +61,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.window.layout.FoldingFeature
 import com.example.reply.R
 import com.example.reply.data.Email
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -166,7 +169,71 @@ fun ReplyApp(
 }
 
 /**
+ * This Composable is responsible for calling the Composables needed to implement the type of
+ * [ReplyNavigationType] navigation that is sepecified by our [navigationType] parameter. We
+ * initialize and remember our [DrawerState] variable `val drawerState` with the initial value
+ * [DrawerValue.Closed]. We use the [rememberCoroutineScope] method to initialize our [CoroutineScope]
+ * variable `val scope` to a [CoroutineScope] bound to this point in the composition, the same
+ * [CoroutineScope] instance will be returned across recompositions, and the scope will be cancelled
+ * when this call leaves the composition. We initialize our [String] variable ``val selectedDestination`
+ * to [ReplyDestinations.INBOX] which is the [String] "Inbox" (although we have not got around to
+ * actually implementing any form of navigation, [ReplyDestinations] is a good candidate for the
+ * "routes" in a navigation graph).
  *
+ * Having initialized the variables we need we branch on the value of our [ReplyNavigationType]
+ * parameter [navigationType]:
+ *
+ *  - [ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER]
+ *
+ * We call the Composable [PermanentNavigationDrawer] with its `drawerContent` argument a
+ * [NavigationDrawerContent] Composable whose `selectedDestination` is our [String] variable
+ * `selectedDestination`. The `content` of the [PermanentNavigationDrawer] is a [ReplyAppContent]
+ * Composable whose `navigationType` argument is our [navigationType] parameter, whose `contentType`
+ * argument is our [contentType] parameter, and whose `replyHomeUIState` argument is our
+ * [replyHomeUIState] parameter.
+ *
+ *  - [ReplyNavigationType.BOTTOM_NAVIGATION] or [ReplyNavigationType.NAVIGATION_RAIL]
+ *
+ * We call the Composable [ModalNavigationDrawer] with its `drawerState` argument our [DrawerState]
+ * variable `drawerState`, and with its `drawerContent` argument a [NavigationDrawerContent] Composable
+ * whose `selectedDestination` is our [String] variable `selectedDestination`, and whose `onDrawerClicked`
+ * argument is a lambda which calls the [CoroutineScope.launch] method of our `scope` variable to launch
+ * a new coroutine which calls the [DrawerState.close] method of our `drawerState` variable. The `content`
+ * of the [ModalNavigationDrawer] is a [ReplyAppContent] Composable whose `navigationType` argument is
+ * our [navigationType] parameter, whose `contentType` argument is our [contentType] parameter, whose
+ * `replyHomeUIState` argument is our [replyHomeUIState] parameter, and whose `onDrawerClicked` argument
+ * is a lambda which calls the [CoroutineScope.launch] method of our `scope` variable to launch a new
+ * coroutine which calls the [DrawerState.open] method of our `drawerState` variable.
+ *
+ * @param navigationType the [ReplyNavigationType] that will be used for navigation (someday), one of:
+ *  - [ReplyNavigationType.BOTTOM_NAVIGATION] chosen if the [WindowWidthSizeClass] of the device is
+ *  [WindowWidthSizeClass.Compact] (Represents the majority of phones in portrait) or is not a known
+ *  [WindowWidthSizeClass]
+ *  - [ReplyNavigationType.NAVIGATION_RAIL] chosen if [WindowWidthSizeClass] of the device is
+ *  [WindowWidthSizeClass.Medium] (Represents the majority of tablets in portrait and large unfolded
+ *  inner displays in portrait) or [WindowWidthSizeClass.Expanded] (Represents the majority of tablets
+ *  in landscape and large unfolded inner displays in landscape) and the [DevicePosture] of the device
+ *  is [DevicePosture.BookPosture] (The foldable device's hinge is in an intermediate position between
+ *  opened and closed state, there is a non-flat angle between parts of the flexible screen or between
+ *  physical screen panels, and the height of its [FoldingFeature] is greater than or equal to the width).
+ *  - [ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER] chosen if [WindowWidthSizeClass] of the device is
+ *  [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large unfolded
+ *  inner displays in landscape) but the [DevicePosture] of the device is NOT [DevicePosture.BookPosture].
+ *@param contentType the [ReplyContentType] that will be used to determine the amount of information to
+ * be displayed:
+ *  - [ReplyContentType.LIST_ONLY] displays [Email] objects with only 2 lines of the [Email.body] of
+ *  the [Email], chosen if the [WindowWidthSizeClass] of the device is [WindowWidthSizeClass.Compact]
+ *  (Represents the majority of phones in portrait) or [WindowWidthSizeClass.Medium] (Represents the
+ *  majority of tablets in portrait and large unfolded inner displays in portrait) and the [DevicePosture]
+ *  is neither [DevicePosture.BookPosture] nor [DevicePosture.Separating], or is not a known
+ *  [WindowWidthSizeClass].
+ *  - [ReplyContentType.LIST_AND_DETAIL] displays [Email] objects with only 2 lines of the [Email.body]
+ *  of the [Email], along with a separate [LazyColumn] which displays all the [Email.threads] associated
+ *  with the selected [Email], chosen if the [WindowWidthSizeClass] of the device is [WindowWidthSizeClass.Medium]
+ *  and the [DevicePosture] of the device is either [DevicePosture.BookPosture] or [DevicePosture.Separating],
+ *  or the [WindowWidthSizeClass] of the device is [WindowWidthSizeClass.Expanded].
+ * @param replyHomeUIState the [ReplyHomeUIState] which our children Composables will use to access the
+ * fake [Email] objects they display.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -175,16 +242,25 @@ private fun ReplyNavigationWrapperUI(
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-    val selectedDestination = ReplyDestinations.INBOX
+    val drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope: CoroutineScope = rememberCoroutineScope()
+    val selectedDestination: String = ReplyDestinations.INBOX
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
-        PermanentNavigationDrawer(drawerContent = { NavigationDrawerContent(selectedDestination) }) {
-            ReplyAppContent(navigationType, contentType, replyHomeUIState)
+        PermanentNavigationDrawer(
+            drawerContent = {
+                NavigationDrawerContent(selectedDestination = selectedDestination)
+            }
+        ) {
+            ReplyAppContent(
+                navigationType = navigationType,
+                contentType = contentType,
+                replyHomeUIState = replyHomeUIState
+            )
         }
     } else {
         ModalNavigationDrawer(
+            drawerState = drawerState,
             drawerContent = {
                 NavigationDrawerContent(
                     selectedDestination,
@@ -194,11 +270,12 @@ private fun ReplyNavigationWrapperUI(
                         }
                     }
                 )
-            },
-            drawerState = drawerState
+            }
         ) {
             ReplyAppContent(
-                navigationType, contentType, replyHomeUIState,
+                navigationType = navigationType,
+                contentType = contentType,
+                replyHomeUIState = replyHomeUIState,
                 onDrawerClicked = {
                     scope.launch {
                         drawerState.open()
