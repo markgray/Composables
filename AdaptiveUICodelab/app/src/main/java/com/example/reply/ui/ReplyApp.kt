@@ -374,7 +374,32 @@ fun ReplyAppContent(
 }
 
 /**
+ * This Composable is both a skeletal implementation of the [NavigationRail] that the [ReplyAppContent]
+ * Composable uses to navigate with when the [ReplyNavigationType] is [ReplyNavigationType.NAVIGATION_RAIL]
+ * and a preview of the same. The root Composable is a [NavigationRail] (Material Design navigation rail)
+ * whose `modifier` argument is a [Modifier.fillMaxHeight] that causes it to occupy the entire incoming
+ * measurement height constraints. It has five [NavigationRailItem] children:
+ *  - "Navigation Drawer" its `onClick` argument is our [onDrawerClicked] lambda parameter which traces
+ *  back to a suspend lambda that [ReplyNavigationWrapperUI] passes to our [ReplyAppContent] caller
+ *  which opens the [ModalNavigationDrawer]. Its `selected` argument is `false` and its `icon` argument
+ *  displays the `Menu` `imageVector` of [Icons.Default].
+ *  - "Inbox" its `selected` argument is `true` and its `icon` argument displays the `Inbox` `imageVector`
+ *  of [Icons.Default]. Its `onClick` argument is a lambda which does nothing, but in the future would be
+ *  used to navigate to an "Inbox" screen (which is either the screen [ReplyListAndDetailContent]
+ *  of the screen [ReplyListOnlyContent] depending on the size of the device apparently).
+ *  - "Articles" its `selected` argument is `false` and its `icon` argument displays the `Article`
+ *  `imageVector` of [Icons.Default]. Its `onClick` argument is a lambda which does nothing, but in
+ *  the future would be used to navigate to an "Article" screen which is yet to be written.
+ *  - "Direct Messages" its `selected` argument is `false` and its `icon` argument displays the `Chat`
+ *  `imageVector` of [Icons.Default]. Its `onClick` argument is a lambda which does nothing, but in
+ *  the future would be used to navigate to an "Direct Messages" screen which is yet to be written.
+ *  - "Groups" its `selected` argument is `false` and its `icon` argument displays the `People`
+ *  `imageVector` of [Icons.Default]. Its `onClick` argument is a lambda which does nothing, but in
+ *  the future would be used to navigate to an "Groups" screen which is yet to be written.
  *
+ * @param onDrawerClicked a lambda which will be passed to the "Navigation Drawer" [NavigationRailItem]
+ * as its `onClick` argument. In our case it is a suspend lambda that [ReplyNavigationWrapperUI] passes
+ * to our [ReplyAppContent] caller which opens the [ModalNavigationDrawer].
  */
 @Composable
 @Preview
@@ -411,7 +436,17 @@ fun ReplyNavigationRail(
 }
 
 /**
- *
+ * This Composable is both a skeletal implementation of the [NavigationBar] that the [ReplyAppContent]
+ * Composable uses to navigate with when the [ReplyNavigationType] is [ReplyNavigationType.BOTTOM_NAVIGATION]
+ * and a preview of the same. The root Composable is a [NavigationBar] (Material Design bottom navigation
+ * bar) whose `modifier` argument is a [Modifier.fillMaxWidth] that causes it to occupy the entire
+ * incoming measurement width constraints. It has four do nothing [NavigationBarItem] children the
+ * `selected` argument of the first item is `true` and the `selected` argument of the rest is `false`.
+ * The only other difference between the [NavigationBarItem]'s is the `icon` argument:
+ *  1. the `Inbox` `imageVector` of [Icons.Default].
+ *  2. the `Article` `imageVector` of [Icons.Default].
+ *  3. the `Chat` `imageVector` of [Icons.Outlined].
+ *  4. the `Videocam` `imageVector` of [Icons.Outlined].
  */
 @Composable
 @Preview
