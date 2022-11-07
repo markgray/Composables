@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui
 
+import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -61,7 +62,9 @@ object MainDestinations {
 }
 
 /**
- *
+ * This Composable is used as the `content` of the [Scaffold] of the [JetnewsApp] Composable and
+ * contains the [NavHost] which is used to navigate between the [HomeScreen], [InterestsScreen],
+ * and [ArticleScreen] Composables.
  */
 @Composable
 fun JetnewsNavGraph(
