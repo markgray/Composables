@@ -62,6 +62,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -69,7 +71,9 @@ import androidx.window.layout.FoldingFeature
 import com.example.reply.R
 import com.example.reply.data.Email
 import com.example.reply.ui.theme.replyDarkInverseOnSurface
+import com.example.reply.ui.theme.replyDarkPrimary
 import com.example.reply.ui.theme.replyLightInverseOnSurface
+import com.example.reply.ui.theme.replyLightPrimary
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
@@ -269,7 +273,7 @@ private fun ReplyNavigationWrapperUI(
             drawerState = drawerState,
             drawerContent = {
                 NavigationDrawerContent(
-                    selectedDestination,
+                    selectedDestination = selectedDestination,
                     onDrawerClicked = {
                         scope.launch {
                             drawerState.close()
@@ -476,6 +480,40 @@ fun ReplyBottomNavigationBar() {
 }
 
 /**
+ * This Composable is used as the `drawerContent` parameter of both the [PermanentNavigationDrawer]
+ * Material Design navigation permanent drawer and the [ModalNavigationDrawer] Material Design modal
+ * navigation drawer which are used by [ReplyNavigationWrapperUI] depending on the value of
+ * [ReplyNavigationType] required for the size of the device we are running. Both of these drawers
+ * execute [NavigationDrawerContent] in a `ColumnScope`, and call it with `selectedDestination` set
+ * to [ReplyDestinations.INBOX], but the [ModalNavigationDrawer] also passes a lambda that launches
+ * a coroutine that calls the [DrawerState.close] method that will close the drawer as the value or
+ * our `onDrawerClicked` argument. Our root Composable is a [Column] whose `modifier` argument is a
+ * [Modifier.wrapContentWidth] which allows the `content` to measure at its desired width, to which
+ * is chained a [Modifier.fillMaxHeight] to have the content fill the [Constraints.maxHeight] of the
+ * incoming measurement constraints, and this is followed by a [Modifier.background] that sets the
+ * background [Color] to the `inverseOnSurface` [Color] of [MaterialTheme.colorScheme] which is
+ * [replyDarkInverseOnSurface] for our [darkColorScheme] (Color(0xFF1F1B16), a shade of Black) or
+ * [replyLightInverseOnSurface] for our [lightColorScheme] (Color(0xFFF9EFE6), a shade of White).
+ * To all of this is added a [Modifier.padding] that adds 24.dp padding to `all` sides.
+ *
+ * The `content` of the [Column] starts with a [Row] whose `modifier` argument is a [Modifier.fillMaxWidth]
+ * that causes the [Row] to occupy the entire incoming width constraint, to which a [Modifier.padding]
+ * is added which sets the padding on all sides of the [Row] to 16.dp. The `horizontalArrangement`
+ * argument of the [Row] is [Arrangement.SpaceBetween] that cause the [Row] to place children such
+ * that they are spaced evenly across the main axis, without free space before the first child or
+ * after the last child, and the `verticalAlignment` argument of the [Row] is [Alignment.CenterVertically]
+ * causing the children to be centered vertically. The `content` of the [Row] is a [Text] displaying
+ * the `text` "REPY" using as its `style` the `titleMedium` [TextStyle] of [MaterialTheme.typography]
+ * (`fontWeight` is [FontWeight.SemiBold], `fontSize` is 16.sp, `lineHeight` is 24.sp, and `letterSpacing`
+ * is 0.15.sp), and the `color` of the text is the `primary` [Color] of [MaterialTheme.colorScheme]
+ * (which is [replyDarkPrimary] for our [darkColorScheme] (Color(0xFFFFB945), a shade of Orange) and
+ * [replyLightPrimary] for our [lightColorScheme] (Color(0xFF825500), a shade of Brown). Next to the
+ * [Text] in the [Row] is an [IconButton] whose `onClick` argument calls our [onDrawerClicked] lambda
+ * parameter, and whose `content` is an [Icon] displaying the `MenuOpen` `imageVector` of [Icons.Default]
+ * (which is three horizontal lines followed by a `<` symbol).
+ *
+ * Below the [Row] in the [Column] are four [NavigationDrawerItem] Composables (A [NavigationDrawerItem]
+ * represents a destination within drawers for [ModalNavigationDrawer], or [PermanentNavigationDrawer]).
  *
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -486,16 +524,16 @@ fun NavigationDrawerContent(
     onDrawerClicked: () -> Unit = {}
 ) {
     Column(
-        modifier
+        modifier = modifier
             .wrapContentWidth()
             .fillMaxHeight()
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
-            .padding(24.dp)
+            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+            .padding(all = 24.dp)
     ) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(all = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
