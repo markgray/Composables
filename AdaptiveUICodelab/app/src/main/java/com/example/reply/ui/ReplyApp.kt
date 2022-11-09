@@ -61,6 +61,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -514,7 +515,31 @@ fun ReplyBottomNavigationBar() {
  *
  * Below the [Row] in the [Column] are four [NavigationDrawerItem] Composables (A [NavigationDrawerItem]
  * represents a destination within drawers for [ModalNavigationDrawer], or [PermanentNavigationDrawer]).
+ * Their `selected` argument is `true` when our [String] parameter [selectedDestination] is equal to
+ * the [ReplyDestinations] that they represent:
+ *  - [ReplyDestinations.INBOX] uses a [Text] displaying the text "Inbox" as its `label` argument,
+ *  and an [Icon] drawing the `Inbox` [ImageVector] of [Icons.Default] as its `icon` argument.
+ *  - [ReplyDestinations.ARTICLES] uses a [Text] displaying the text "Articles" as its `label` argument,
+ *  and an [Icon] drawing the `Article` [ImageVector] of [Icons.Default] as its `icon` argument.
+ *  - [ReplyDestinations.DM] uses a [Text] displaying the text "Direct Messages" as its `label` argument,
+ *  and an [Icon] drawing the `Chat` [ImageVector] of [Icons.Default] as its `icon` argument.
+ *  - [ReplyDestinations.GROUPS] uses a [Text] displaying the text "Groups" as its `label` argument,
+ *  and an [Icon] drawing the `Article` [ImageVector] of [Icons.Default] as its `icon` argument.
  *
+ * All four use a [NavigationDrawerItemDefaults.colors] with its `unselectedContainerColor` [Color]
+ * specified to be [Color.Transparent] as its `colors` argument, and all four use a "do nothing"
+ * lambda as their `onClick` arguments.
+ *
+ * @param selectedDestination which of the four [NavigationDrawerItem]'s should be considered to be
+ * selected. The `selected` argument of a [NavigationDrawerItem] is `true` if [selectedDestination]
+ * is equal to the [ReplyDestinations] const [String] that is assigned to that [NavigationDrawerItem].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our callers do not specify one so the empty, default, or starter [Modifier] that contains
+ * no elements is used.
+ * @param onDrawerClicked a lambda that our "Navigation Drawer" [IconButton] should use as its `onClick`
+ * argument. None is passed when we are used in the [PermanentNavigationDrawer] of [ReplyNavigationWrapperUI],
+ * and a lambda which launches a coroutine which closes the [ModalNavigationDrawer] is passed when we
+ * are used in the [ModalNavigationDrawer] of [ReplyNavigationWrapperUI].
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
