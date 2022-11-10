@@ -23,32 +23,61 @@ import com.example.reply.data.EmailsRepository
 import com.example.reply.data.EmailsRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = EmailsRepositoryImpl()) : ViewModel() {
+/**
+ * This is the [ViewModel] used to access the [StateFlow] of [ReplyHomeUIState] which holds the [List]
+ * of [Email] objects read from the [EmailsRepository]. The `onCreate` override of [MainActivity] uses
+ * the [collectAsState] extension method of [StateFlow] to collect the [ReplyHomeUIState] from the
+ * [StateFlow] as a [State], and passes that [ReplyHomeUIState] as the `replyHomeUIState` argument
+ * of the [ReplyApp] Composable that it uses as the root Composable of the app. [ReplyApp] then passes
+ * it to any of its children that need the [Email] objects in the [ReplyHomeUIState.emails] list of
+ * [Email].
+ *
+ * @param emailsRepository the instance of [EmailsRepositoryImpl] to use to read [Email] objects from.
+ */
+class ReplyHomeViewModel(
+    private val emailsRepository: EmailsRepository = EmailsRepositoryImpl()
+) : ViewModel() {
 
-    // UI state exposed to the UI
+    /**
+     * UI state exposed to the UI by our [uiState] field.
+     */
     private val _uiState = MutableStateFlow(ReplyHomeUIState(loading = true))
+
+    /**
+     * Public read-only access to our [_uiState] field.
+     */
     val uiState: StateFlow<ReplyHomeUIState> = _uiState
 
     init {
         observeEmails()
     }
 
+    /**
+     *
+     */
     private fun observeEmails() {
         viewModelScope.launch {
             emailsRepository.getAllEmails()
-                .catch { ex ->
+                .catch { ex: Throwable ->
                     _uiState.value = ReplyHomeUIState(error = ex.message)
                 }
-                .collect { emails ->
+                .collect { emails: List<Email> ->
                     _uiState.value = ReplyHomeUIState(emails = emails)
                 }
         }
     }
 }
 
+/**
+ * @param emails the [List] of [Email] objects to be displayed
+ * @param loading if `true` we are in the process of loading our [emails] field.
+ * @param error if `true` an [Exception] was thrown while downloading.
+ */
 data class ReplyHomeUIState(
     val emails: List<Email> = emptyList(),
     val loading: Boolean = false,
