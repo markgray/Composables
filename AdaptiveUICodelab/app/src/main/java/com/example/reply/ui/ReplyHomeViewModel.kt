@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -58,7 +60,15 @@ class ReplyHomeViewModel(
     }
 
     /**
-     *
+     * This function lauches a coroutine on the [CoroutineScope] tied to this [ViewModel] returned
+     * by the [viewModelScope] extension function whose `block` calls the [EmailsRepository.getAllEmails]
+     * and processes the [Flow] of [List] of [Email] that it returns by using the [catch] extension
+     * function on it to catch any exceptions thrown in order to set the [MutableStateFlow.value] of
+     * [_uiState] to a new instance of [ReplyHomeUIState] whose `error` field contains the contents
+     * of the [Throwable.message] field of the exception that was thrown (and then returning). If no
+     * exception is thrown the [Flow.collect] method "collects" the [List] of [Email] emitted by the
+     * [EmailsRepository.getAllEmails] and sets the [MutableStateFlow.value] of [_uiState] to a new
+     * instance of [ReplyHomeUIState] whose `emails` field is that [List] of [Email].
      */
     private fun observeEmails() {
         viewModelScope.launch {
@@ -74,9 +84,13 @@ class ReplyHomeViewModel(
 }
 
 /**
+ * This data class holds the "state" that the UI is supposed to display, and is used by the various
+ * Composables to get the [Email] objects that they are interested in.
+ *
  * @param emails the [List] of [Email] objects to be displayed
  * @param loading if `true` we are in the process of loading our [emails] field.
- * @param error if `true` an [Exception] was thrown while downloading.
+ * @param error contains the [Throwable.message] of any [Exception] that was thrown while downloading,
+ * otherwise it is `null`.
  */
 data class ReplyHomeUIState(
     val emails: List<Email> = emptyList(),

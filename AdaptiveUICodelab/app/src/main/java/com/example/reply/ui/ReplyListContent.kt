@@ -50,6 +50,9 @@ import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
 
+/**
+ *
+ */
 @Composable
 fun ReplyListOnlyContent(
     replyHomeUIState: ReplyHomeUIState,
@@ -60,36 +63,55 @@ fun ReplyListOnlyContent(
             ReplySearchBar(modifier = Modifier.fillMaxWidth())
         }
         items(replyHomeUIState.emails) { email ->
-            ReplyEmailListItem(email = email)
+            ReplyEmailListItem(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                email = email
+            )
         }
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ReplyListAndDetailContent(
     replyHomeUIState: ReplyHomeUIState,
     modifier: Modifier = Modifier,
     selectedItemIndex: Int = 0
 ) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         LazyColumn(modifier = modifier.weight(1f)) {
             items(replyHomeUIState.emails) { email ->
-                ReplyEmailListItem(email = email)
+                ReplyEmailListItem(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    email = email
+                )
             }
         }
         LazyColumn(modifier = modifier.weight(1f)) {
             items(replyHomeUIState.emails[selectedItemIndex].threads) { email ->
-                ReplyEmailThreadItem(email = email)
+                ReplyEmailThreadItem(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    email = email
+                )
             }
         }
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyEmailListItem(
     email: Email,
-    modifier: Modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+    modifier: Modifier = Modifier
+) {
     Card(modifier = modifier) {
         Column(
             modifier = Modifier
@@ -100,6 +122,7 @@ fun ReplyEmailListItem(
                 ReplyProfileImage(
                     drawableResource = email.sender.avatar,
                     description = email.sender.fullName,
+                    modifier = Modifier.size(40.dp)
                 )
                 Column(
                     modifier = Modifier
@@ -148,12 +171,19 @@ fun ReplyEmailListItem(
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyEmailThreadItem(
     email: Email,
-    modifier: Modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-    Card(modifier = modifier, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -163,6 +193,7 @@ fun ReplyEmailThreadItem(
                 ReplyProfileImage(
                     drawableResource = email.sender.avatar,
                     description = email.sender.fullName,
+                    modifier = Modifier.size(40.dp)
                 )
                 Column(
                     modifier = Modifier
@@ -239,11 +270,14 @@ fun ReplyEmailThreadItem(
 }
 
 
+/**
+ *
+ */
 @Composable
 fun ReplyProfileImage(
     drawableResource: Int,
     description: String,
-    modifier: Modifier = Modifier.size(40.dp),
+    modifier: Modifier = Modifier
 ) {
     Image(
         modifier = modifier.clip(CircleShape),
@@ -252,6 +286,9 @@ fun ReplyProfileImage(
     )
 }
 
+/**
+ *
+ */
 @Composable
 fun ReplySearchBar(modifier: Modifier = Modifier) {
     Row(modifier = modifier
