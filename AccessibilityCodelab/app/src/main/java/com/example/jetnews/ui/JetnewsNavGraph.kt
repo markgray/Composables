@@ -90,9 +90,17 @@ object MainDestinations {
  *  [InterestsRepository] argument `interestsRepository` is the [AppContainer.interestsRepository]
  *  field of our [appContainer] parameter, and whose `openDrawer` argument is our `openDrawer`
  *  suspend lambda.
- *  - [MainDestinations.ARTICLE_ROUTE] (with [ARTICLE_ID_KEY] spliced to the end of that [String]
+ *  - [MainDestinations.ARTICLE_ROUTE] with [ARTICLE_ID_KEY] spliced to the end of that [String]
  *  with a '/' character separating them to specify the key under which the article ID will be stored
- *  in the [NavBackStackEntry.arguments] bundle)
+ *  in the [NavBackStackEntry.arguments] bundle when the destination is navigated to using the
+ *  [NavHostController.navigate] method with [ARTICLE_ID_KEY] replaced by the [Post.id] string of
+ *  the [Post] that is to be viewed.
+ * @param appContainer the apps [AppContainer] instance which contains references for the singleton
+ * [PostsRepository] and singleton [InterestsRepository].
+ * @param navController the [NavHostController] that will be used to navigate within our [NavHost]
+ * @param scaffoldState the [ScaffoldState] that can be used to open and close the drawer of the
+ * [Scaffold] in our [JetnewsApp] parent.
+ * @param startDestination the route for the start destination of our [NavHost].
  */
 @Composable
 fun JetnewsNavGraph(
@@ -134,6 +142,8 @@ fun JetnewsNavGraph(
 
 /**
  * Models the navigation actions in the app.
+ *
+ * @param navController the [NavHostController] that we should use to navigate with.
  */
 class MainActions(navController: NavHostController) {
     /**
