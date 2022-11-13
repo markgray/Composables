@@ -39,6 +39,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,12 +47,35 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
+import com.example.reply.ui.utils.DevicePosture
+import com.example.reply.ui.utils.ReplyContentType
 
 /**
+ * This Composable is used when the [ReplyContentType] chosen given the size of the device is
+ * [ReplyContentType.LIST_ONLY]. Devices sized as [WindowWidthSizeClass.Compact] (most phones),
+ * and devices sized as [WindowWidthSizeClass.Medium] that are not [DevicePosture.BookPosture] or
+ * [DevicePosture.Separating] devices use this Composable to display their [Email] list.
  *
+ * The root Composable is a [LazyColumn] whose `modifier` argument is our [Modifier] parameter
+ * [modifier]. The top `item` in the [LazyColumn] is a [ReplySearchBar] Composable whose `modifier`
+ * argument is a [Modifier.fillMaxWidth] to have it fill the [Constraints.maxWidth] of the incoming
+ * [Constraints]. This is followed by an [items] whose `items` argument is the [ReplyHomeUIState.emails]
+ * field of our [replyHomeUIState] parameter which display each of the [Email] objects in the [List]
+ * of [Email] in a [ReplyEmailListItem] whose `modifier` argument uses a [Modifier.padding] to set
+ * the `horizontal` padding to 16.dp, and the `vertical` padding to 4.dp, and whose `email` argument
+ * is the particular [Email] object int the [List] that the [ReplyEmailListItem] is supposed to
+ * display.
+ *
+ * @param replyHomeUIState the [ReplyHomeUIState] whose [ReplyHomeUIState.emails] field contains the
+ * [List] of [Email] that we should display.
+ * @param modifier a [Modifier] that our caller can use to modify our appearance and/or behavior.
+ * Our [ReplyAppContent] caller calls us with a `ColumnScope` `Modifier.weight` of 1f to have us
+ * use all space available in the [Column] of [ReplyAppContent] we are in once our siblings are
+ * measured and placed.
  */
 @Composable
 fun ReplyListOnlyContent(
@@ -62,7 +86,7 @@ fun ReplyListOnlyContent(
         item {
             ReplySearchBar(modifier = Modifier.fillMaxWidth())
         }
-        items(replyHomeUIState.emails) { email ->
+        items(items = replyHomeUIState.emails) { email: Email ->
             ReplyEmailListItem(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                 email = email
@@ -72,7 +96,18 @@ fun ReplyListOnlyContent(
 }
 
 /**
+ * This Composable is used when the [ReplyContentType] chosen given the size of the device is
+ * [ReplyContentType.LIST_AND_DETAIL]. Devices sized as [WindowWidthSizeClass.Expanded] (the majority
+ * of tablets in landscape and large unfolded inner displays in landscape) or when the size of the
+ * device is [WindowWidthSizeClass.Medium] and the [DevicePosture] is [DevicePosture.BookPosture] or
+ * [DevicePosture.Separating] (the majority of tablets in portrait and large unfolded inner displays
+ * in portrait). It displays both the [List] of [Email] objects in the [ReplyHomeUIState.emails] that
+ * [ReplyListOnlyContent] displays, and the [List] of [Email] objects in the [Email.threads] field
+ * of the [Email] whose index in the [ReplyHomeUIState.emails] list is [selectedItemIndex].
  *
+ * The root Composable is a [Row] whose `modifier` argument is our [Modifier] parameter [modifier],
+ * and whose `horizontalArrangement` argument uses a [Arrangement.spacedBy] to place its children
+ * with a `space` of 12.dp between them. The `content` of the [Row]
  */
 @Composable
 fun ReplyListAndDetailContent(
@@ -82,9 +117,9 @@ fun ReplyListAndDetailContent(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(space = 12.dp)
     ) {
-        LazyColumn(modifier = modifier.weight(1f)) {
+        LazyColumn(modifier = modifier.weight(weight = 1f)) {
             items(replyHomeUIState.emails) { email ->
                 ReplyEmailListItem(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
@@ -92,8 +127,8 @@ fun ReplyListAndDetailContent(
                 )
             }
         }
-        LazyColumn(modifier = modifier.weight(1f)) {
-            items(replyHomeUIState.emails[selectedItemIndex].threads) { email ->
+        LazyColumn(modifier = modifier.weight(weight = 1f)) {
+            items(items = replyHomeUIState.emails[selectedItemIndex].threads) { email: Email ->
                 ReplyEmailThreadItem(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                     email = email
