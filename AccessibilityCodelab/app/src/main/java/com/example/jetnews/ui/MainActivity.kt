@@ -20,17 +20,38 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.jetnews.JetnewsApplication
+import com.example.jetnews.data.AppContainer
+import com.example.jetnews.data.interests.InterestsRepository
+import com.example.jetnews.data.posts.PostsRepository
 
+/**
+ * This is the Main Activity of our codelab's sample code.
+ */
 class MainActivity : AppCompatActivity() {
 
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we call the [WindowCompat.setDecorFitsSystemWindows] method with the current Window for
+     * the activity, and `false` for the `decorFitsSystemWindows` argument so that the framework
+     * will not fit the content view to the insets and will just pass through the [WindowInsetsCompat]
+     * to the content view. We initialize our [AppContainer] variable `val appContainer` to the
+     * [JetnewsApplication.container] singleton instance which holds the singleton [PostsRepository]
+     * in its [AppContainer.postsRepository] field and the singleton [InterestsRepository] in its
+     * [AppContainer.interestsRepository] field. We then call the [setContent] method to Compose
+     * the [JetnewsApp] composable into our activity using our `appContainer` variable as its
+     * `appContainer` argument . The content will become the root view of our activity.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        val appContainer = (application as JetnewsApplication).container
+        val appContainer: AppContainer = (application as JetnewsApplication).container
         setContent {
-            JetnewsApp(appContainer)
+            JetnewsApp(appContainer = appContainer)
         }
     }
 }

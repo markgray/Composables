@@ -95,6 +95,7 @@ object MainDestinations {
  *  in the [NavBackStackEntry.arguments] bundle when the destination is navigated to using the
  *  [NavHostController.navigate] method with [ARTICLE_ID_KEY] replaced by the [Post.id] string of
  *  the [Post] that is to be viewed.
+ *
  * @param appContainer the apps [AppContainer] instance which contains references for the singleton
  * [PostsRepository] and singleton [InterestsRepository].
  * @param navController the [NavHostController] that will be used to navigate within our [NavHost]
@@ -147,14 +148,20 @@ fun JetnewsNavGraph(
  */
 class MainActions(navController: NavHostController) {
     /**
-     *
+     * Navigates to [ArticleScreen] to display an article that the user has chosen. We append the
+     * [String] that we are called with to the end of [MainDestinations.ARTICLE_ROUTE] (separted by
+     * a "/" character) and call the [NavHostController.navigate] method of the `navController` that
+     * our class was constructed to use.
      */
     val navigateToArticle: (String) -> Unit = { postId: String ->
         navController.navigate(route = "${MainDestinations.ARTICLE_ROUTE}/$postId")
     }
 
     /**
-     *
+     * Attempts to navigate up in the navigation hierarchy. Suitable for when the user presses the
+     * "Up" button marked with a left (or start)-facing arrow in the upper left (or starting) corner
+     * of the app UI. We just call the [NavHostController.navigateUp] method of the `navController`
+     * that our class was constructed to use.
      */
     val upPress: () -> Unit = {
         navController.navigateUp()
