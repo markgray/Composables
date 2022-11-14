@@ -107,7 +107,25 @@ fun ReplyListOnlyContent(
  *
  * The root Composable is a [Row] whose `modifier` argument is our [Modifier] parameter [modifier],
  * and whose `horizontalArrangement` argument uses a [Arrangement.spacedBy] to place its children
- * with a `space` of 12.dp between them. The `content` of the [Row]
+ * with a `space` of 12.dp between them. The `content` of the [Row] consists of two [LazyColumn],
+ * both of which add a `RowScope` `Modifier.weight` of 1f to our [Modifier] parameter [modifier] so
+ * that they share the [Row] equally. The first displays all of the [Email] objects in the [List]
+ * of [Email] field [ReplyHomeUIState.emails] of [replyHomeUIState] using a [ReplyEmailListItem]
+ * Composable to display each [Email] and the second displays all of the [Email] objects in the
+ * [List] of [Email] field [Email.threads] of the [Email] at index [selectedItemIndex] in the [List]
+ * of [Email] field [ReplyHomeUIState.emails] of [replyHomeUIState] using a [ReplyEmailThreadItem].
+ * The `modifier` argument of both the [ReplyEmailListItem] and [ReplyEmailThreadItem] Composables
+ * is a [Modifier.padding] which adds 16.dp to the `horizontal` (left and right edges) and 4.dp to
+ * the `vertical` (top and bottom edges) padding.
+ *
+ * @param replyHomeUIState the [ReplyHomeUIState] which holds the [List] of [Email] we are interested
+ * in in its [ReplyHomeUIState.emails] field.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our [ReplyAppContent] caller passes a `ColumnScope` `Modifier.weight` of 1f, which will
+ * cause us to occupy all the space left after any unweighted siblings are measured and placed.
+ * @param selectedItemIndex the index of the [Email] in our [List] of [Email] that should be considered
+ * to be selected for the purpose of displaying the [List] of [Email] in its [Email.threads] field.
+ * Our [ReplyAppContent] caller does not pass a value so this is always the default of 0.
  */
 @Composable
 fun ReplyListAndDetailContent(
