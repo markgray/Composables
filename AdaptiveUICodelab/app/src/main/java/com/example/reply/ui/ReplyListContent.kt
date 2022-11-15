@@ -50,6 +50,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
+import com.example.reply.data.Account
 import com.example.reply.data.Email
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
@@ -157,7 +158,23 @@ fun ReplyListAndDetailContent(
 }
 
 /**
+ * This Composable is used to display an individual [Email] from the [List] of [Email] found in the
+ * [ReplyHomeUIState.emails] field. It is used to populate a [LazyColumn] by [ReplyListOnlyContent]
+ * and [ReplyListAndDetailContent]. Its root Composable is a [Card] whose `modifier` argument is our
+ * [modifier] parameter. The `content` of the [Card] is a [Column] whose `modifier` argument is a
+ * [Modifier.fillMaxWidth] with a [Modifier.padding] that adds 20.dp to all sides chained to it. The
+ * `content` of the [Column] is a [Row] and two [Text] Composables, with the [Row] acting as a header
+ * to the [Text]s which display the [Email.subject] and [Email.body] of our [Email] parameter [email].
+ * The [Row] header holds a [ReplyProfileImage] which displays the [Account.avatar] drawable of the
+ * [Email.sender] of [email], in a 40.dp by 40.dp [Image], followed by a [Column] holding a [Text]
+ * displaying the [Account.firstName] of the [Email.sender] and a [Text] displaying the [Email.createAt]
+ * date of the [email]. At the end of the [Row] is an [IconButton] with a do nothing `onClick` lambda,
+ * holding a circular [Icon] that displays the `StarBorder` imageVector of [Icons.Default] (a star).
  *
+ * @param email the [Email] instance that we are to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our two calling sites pass a [Modifier.padding] that adds 16.dp to the `horizontal`
+ * (left and right edges) and 4.dp to the `vertical` (top and bottom edges) padding.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -169,17 +186,17 @@ fun ReplyEmailListItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(all = 20.dp)
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 ReplyProfileImage(
                     drawableResource = email.sender.avatar,
                     description = email.sender.fullName,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(size = 40.dp)
                 )
                 Column(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(weight = 1f)
                         .padding(horizontal = 12.dp, vertical = 4.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -196,8 +213,8 @@ fun ReplyEmailListItem(
                 IconButton(
                     onClick = { /*TODO*/ },
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface)
+                        .clip(shape = CircleShape)
+                        .background(color = MaterialTheme.colorScheme.surface)
                 ) {
                     Icon(
                         imageVector = Icons.Default.StarBorder,
@@ -225,7 +242,25 @@ fun ReplyEmailListItem(
 }
 
 /**
+ * This Composable is used to display an individual [Email] from the [List] of [Email] found in the
+ * [Email.threads] field of a "selected" [Email]. It is used to populate a [LazyColumn] by the
+ * [ReplyListAndDetailContent] Composable. Its root Composable is a [Card] whose `modifier` argument
+ * is our [modifier] parameter. The `content` of the [Card] is a [Column] whose `modifier` argument
+ * is a [Modifier.fillMaxWidth] with a [Modifier.padding] that adds 20.dp to all sides chained to it.
+ * The `content` of the [Column] is a [Row] and two [Text] Composables, with the [Row] acting as a
+ * header to the [Text]s which display the [Email.subject] and [Email.body] of our [Email] parameter
+ * [email]. The [Row] header holds a [ReplyProfileImage] which displays the [Account.avatar] drawable
+ * of the [Email.sender] of [email], in a 40.dp by 40.dp [Image], followed by a [Column] holding a
+ * [Text] displaying the [Account.firstName] of the [Email.sender] and a [Text] displaying the
+ * [Email.createAt] date of the [email]. At the end of the [Row] is an [IconButton] with a do nothing
+ * `onClick` lambda, holding a circular [Icon] that displays the `StarBorder` imageVector of [Icons.Default]
+ * (a star). At the end of the [Column] is [Row] which holds a "Reply" [Button] and a "Reply All"
+ * [Button].
  *
+ * @param email the [Email] instance that we are to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our [ReplyListAndDetailContent] caller passes a [Modifier.padding] that adds 16.dp to
+ * the `horizontal` (left and right edges) and 4.dp to the `vertical` (top and bottom edges) padding.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -240,17 +275,17 @@ fun ReplyEmailThreadItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(all = 20.dp)
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 ReplyProfileImage(
                     drawableResource = email.sender.avatar,
                     description = email.sender.fullName,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(size = 40.dp)
                 )
                 Column(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(weight = 1f)
                         .padding(horizontal = 12.dp, vertical = 4.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -267,8 +302,8 @@ fun ReplyEmailThreadItem(
                 IconButton(
                     onClick = { /*TODO*/ },
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface)
+                        .clip(shape = CircleShape)
+                        .background(color = MaterialTheme.colorScheme.surface)
                 ) {
                     Icon(
                         imageVector = Icons.Default.StarBorder,
@@ -295,11 +330,11 @@ fun ReplyEmailThreadItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(space = 4.dp),
             ) {
                 Button(
                     onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(weight = 1f),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface)
                 ) {
                     Text(
@@ -309,7 +344,7 @@ fun ReplyEmailThreadItem(
                 }
                 Button(
                     onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(weight = 1f),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface)
                 ) {
                     Text(
@@ -324,7 +359,18 @@ fun ReplyEmailThreadItem(
 
 
 /**
+ * This Composable is used to display the drawable whose resource ID is found in the [Account.avatar]
+ * field of the [Email.sender] field of an [Email]. Our root Composable is an [Image] whose `modifier`
+ * argument adds a [Modifier.clip] of a [CircleShape] to our [modifier] parameter, with a `painter`
+ * argument that uses a [painterResource] of our [drawableResource] parameter to draw the image, and
+ * the `contentDescription` argument is our [description] parameter.
  *
+ * @param drawableResource the resource ID of the jpeg we are to draw.
+ * @param description the [String] we should use as the `contentDescription` of our [Image].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [ReplyEmailListItem] passes a [Modifier.size] to size us at 40.dp by 40.dp, as does
+ * [ReplyEmailThreadItem]. [ReplySearchBar] passes a [Modifier.padding] that adds 12.dp to all sides
+ * with a [Modifier.size] chained to it that sizes us at 32.dp by 32.dp
  */
 @Composable
 fun ReplyProfileImage(
@@ -333,7 +379,7 @@ fun ReplyProfileImage(
     modifier: Modifier = Modifier
 ) {
     Image(
-        modifier = modifier.clip(CircleShape),
+        modifier = modifier.clip(shape = CircleShape),
         painter = painterResource(id = drawableResource),
         contentDescription = description,
     )
@@ -346,8 +392,8 @@ fun ReplyProfileImage(
 fun ReplySearchBar(modifier: Modifier = Modifier) {
     Row(modifier = modifier
         .fillMaxWidth()
-        .padding(16.dp)
-        .background(MaterialTheme.colorScheme.surface, CircleShape),
+        .padding(all = 16.dp)
+        .background(color = MaterialTheme.colorScheme.surface, shape = CircleShape),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -358,8 +404,8 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
         )
         Text(text = stringResource(id = R.string.search_replies),
             modifier = Modifier
-                .weight(1f)
-                .padding(16.dp),
+                .weight(weight = 1f)
+                .padding(all = 16.dp),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.outline
         )
@@ -367,8 +413,8 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
             drawableResource = R.drawable.avatar_6,
             description = stringResource(id = R.string.profile),
             modifier = Modifier
-                .padding(12.dp)
-                .size(32.dp)
+                .padding(all = 12.dp)
+                .size(size = 32.dp)
         )
     }
 }
