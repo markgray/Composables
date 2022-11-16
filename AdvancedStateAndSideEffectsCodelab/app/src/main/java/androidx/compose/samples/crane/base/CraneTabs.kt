@@ -180,6 +180,7 @@ fun CraneTabs(
                 selected = selected,
                 onClick = { onTabSelected(CraneScreen.values()[index]) }
             ) {
+                @Suppress("ReplaceNotNullAssertionWithElvisReturn") // Returning would only hide error
                 Text(
                     modifier = textModifier,
                     text = title.uppercase(

@@ -244,6 +244,7 @@ fun DetailsScreen(
 
     when {
         uiState.cityDetails != null -> {
+            @Suppress("ReplaceNotNullAssertionWithElvisReturn") // Returning would only hide error
             DetailsContent(exploreModel = uiState.cityDetails!!, modifier = modifier.fillMaxSize())
         }
         uiState.isLoading -> {

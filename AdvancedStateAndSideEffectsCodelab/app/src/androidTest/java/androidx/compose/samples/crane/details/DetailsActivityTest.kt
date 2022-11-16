@@ -77,6 +77,7 @@ class DetailsActivityTest {
     @Before
     fun setUp() {
         hiltRule.inject()
+        @Suppress("ReplaceNotNullAssertionWithElvisReturn") // Returning would only hide error
         cityDetails = destinationsRepository.getDestination(MADRID.name)!!
     }
 
