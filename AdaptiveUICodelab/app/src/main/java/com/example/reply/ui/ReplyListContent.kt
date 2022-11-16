@@ -34,24 +34,35 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Account
 import com.example.reply.data.Email
+import com.example.reply.ui.theme.replyDarkOutline
+import com.example.reply.ui.theme.replyDarkSurface
+import com.example.reply.ui.theme.replyLightOutline
+import com.example.reply.ui.theme.replyLightSurface
 import com.example.reply.ui.utils.DevicePosture
 import com.example.reply.ui.utils.ReplyContentType
 
@@ -386,6 +397,35 @@ fun ReplyProfileImage(
 }
 
 /**
+ * This Composable renders a "fake" do nothing Search Bar and is used as the first `item` in the
+ * [LazyColumn] of [ReplyListOnlyContent]. Its root Composable is a [Row] whose `modifier` argument
+ * adds a [Modifier.fillMaxWidth] to our [Modifier] parameter [modifier], followed by [Modifier.padding]
+ * which adds 16.dp padding to all sides, followed by a [Modifier.background] whose `color` argument
+ * is the [ColorScheme.surface] color of the [MaterialTheme.colorScheme] ([replyDarkSurface] for our
+ * [darkColorScheme] (the [Color] 0xFF1F1B16 a shade of black) or [replyLightSurface] for our
+ * [lightColorScheme] (the [Color] 0xFFFCFCFC a shade of white)) and the `shape` used for the [Row]
+ * is a [CircleShape] giving it nice rounded corners. The `verticalAlignment` argument of the [Row]
+ * is [Alignment.CenterVertically] which centers its children vertically in the [Row]. The `content`
+ * of the [Row] is an [Icon] whose `imageVector` displays the `Search` [ImageVector] of [Icons.Default]
+ * (which is a magnifying glass), the `contentDescription` is the [String] "Search", its `modifier`
+ * argument is a [Modifier.padding] that adds 16.dp padding to the `start` of the [Icon], and its
+ * `tint` argument is the [ColorScheme.outline] color of the [MaterialTheme.colorScheme] ([replyDarkOutline]
+ * for our [darkColorScheme] (the [Color] 0xFF9C8F80 a shade of brown) or [replyLightOutline] for our
+ * [lightColorScheme] (the [Color] 0xFF817567 a shade of brown)). The [Icon] is followed by a [Text]
+ * that displays the `text` "search replies" whose `modifier` argument is a `RowScope` `Modifier.weight`
+ * of 1f which causes it to take all space remaining after its siblings are measured and placed, with
+ * a [Modifier.padding] that adds 16.dp to all sides of the [Text]. The `style` of the [Text] is the
+ * `bodyMedium` [TextStyle] of [MaterialTheme.typography] which uses a `fontWeight` of [FontWeight.Medium],
+ * `fontSize` of 14.sp, `lineHeight` of 20.sp, and `letterSpacing` of 0.25.sp, and its `color` argument
+ * is also the [ColorScheme.outline] color of the [MaterialTheme.colorScheme]. The last Composable in
+ * the [Row] is a [ReplyProfileImage] whose `drawableResource` argument is the jpg with Resource ID
+ * [R.drawable.avatar_6], whose `description` argument is the [String] "Profile", and whose `modifier`
+ * argument is a [Modifier.padding] that adds 12.dp to all sides, with a [Modifier.size] which sets
+ * the size of the [ReplyProfileImage] to 32.dp
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our [ReplySearchBar] caller passes [Modifier.fillMaxWidth] to have us fill the
+ * [Constraints.maxWidth] of the incoming measurement constraints.
  *
  */
 @Composable

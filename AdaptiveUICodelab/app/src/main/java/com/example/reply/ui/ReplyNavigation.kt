@@ -16,9 +16,39 @@
 
 package com.example.reply.ui
 
+import androidx.compose.material3.NavigationDrawerItem
+
+/**
+ * This class is used to identify which [NavigationDrawerItem] in the [NavigationDrawerContent]
+ * Composable is the "selected" one. The "selected" one is always [ReplyDestinations.INBOX] in this
+ * skeleton app (the `Reply` sample that this CodeLab started from has now totally redone the
+ * "Destinations" api BTW).
+ */
 object ReplyDestinations {
-    const val INBOX = "Inbox"
-    const val ARTICLES = "Articles"
-    const val DM = "DirectMessages"
-    const val GROUPS = "Groups"
+    /**
+     * The only [ReplyDestinations] that is ever "selected", so I guess it is the [ReplyListOnlyContent]
+     * or the [ReplyListAndDetailContent] screens.
+     */
+    const val INBOX: String = "Inbox"
+
+    /**
+     * No idea what this will do, as of today the `Reply` sample displays the `EmptyComingSoon` screen,
+     * it is totally unused except to compute the `selected` argument of a [NavigationDrawerItem] (it
+     * is always `false`).
+     */
+    const val ARTICLES: String = "Articles"
+
+    /**
+     * No idea what this will do, as of today the `Reply` sample displays the `EmptyComingSoon` screen,
+     * it is totally unused except to compute the `selected` argument of a [NavigationDrawerItem] (it
+     * is always `false`).
+     */
+    const val DM: String = "DirectMessages"
+
+    /**
+     * No idea what this will do, as of today the `Reply` sample displays the `EmptyComingSoon` screen,
+     * it is totally unused except to compute the `selected` argument of a [NavigationDrawerItem] (it
+     * is always `false`).
+     */
+    const val GROUPS: String = "Groups"
 }
