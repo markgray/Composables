@@ -70,8 +70,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.jetnews.R
-import com.example.jetnews.data.posts.impl.post1
-import com.example.jetnews.data.posts.impl.post3
+import com.example.jetnews.data.posts.post1
+import com.example.jetnews.data.posts.post3
 import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor

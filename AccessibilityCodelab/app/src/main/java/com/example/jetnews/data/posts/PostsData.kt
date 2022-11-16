@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.jetnews.data.posts.impl
+package com.example.jetnews.data.posts
 
 import com.example.jetnews.R
 import com.example.jetnews.model.Markup

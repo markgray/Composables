@@ -17,7 +17,6 @@
 package com.example.jetnews.data.posts
 
 import com.example.jetnews.data.interests.TopicSelection
-import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.home.HomeScreen
 import com.example.jetnews.utils.addOrRemove

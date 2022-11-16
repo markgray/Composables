@@ -44,7 +44,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.PostsRepository
-import com.example.jetnews.data.posts.impl.post3
+import com.example.jetnews.data.posts.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.Publication
 import com.example.jetnews.ui.components.InsetAwareTopAppBar
