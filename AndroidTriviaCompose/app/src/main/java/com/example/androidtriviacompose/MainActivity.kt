@@ -131,6 +131,7 @@ fun NavGraph(
         navController = navController,
         startDestination = startDestination
     ) {
+        // TODO: Refactor use of navController to use of "Actions" lambda.
         composable(Routes.About.route) {
             AboutScreen(navController = navController)
         }
