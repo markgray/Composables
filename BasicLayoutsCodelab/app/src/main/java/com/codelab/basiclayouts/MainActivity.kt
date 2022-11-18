@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("UNUSED_PARAMETER", "unused")
+@file:Suppress("UNUSED_PARAMETER", "unused") // Suggested changes would make class less reusable
 
 package com.codelab.basiclayouts
 

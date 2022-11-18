@@ -56,19 +56,19 @@ val gray900: Color = Color(0xFF333333)
 /**
  * This is a variant of the [Color.White] whose `alpha` is changed to 0.15f - it is unused.
  */
-@Suppress("unused")
+@Suppress("unused") // Suggested change would make class less reusable
 val white150: Color = Color.White.copy(alpha = 0.15f)
 
 /**
  * This is a variant of the [Color.White] whose `alpha` is changed to 0.8f - it is unused.
  */
-@Suppress("unused")
+@Suppress("unused") // Suggested change would make class less reusable
 val white800: Color = Color.White.copy(alpha = 0.8f)
 
 /**
  * This is a variant of the [Color.White] whose `alpha` is changed to 0.85f - it is unused.
  */
-@Suppress("unused")
+@Suppress("unused") // Suggested change would make class less reusable
 val white850: Color = Color.White.copy(alpha = 0.85f)
 
 /**
