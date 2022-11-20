@@ -32,8 +32,12 @@ class PlantListViewModelFactory(
     defaultArgs: Bundle? = null
 ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
 
+    /**
+     * Returns a [PlantListViewModel] that will use the factories [PlantRepository] parameter
+     * [repository] as its  [PlantRepository].
+     */
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(
+    override fun <T : ViewModel> create(
         key: String,
         modelClass: Class<T>,
         handle: SavedStateHandle
