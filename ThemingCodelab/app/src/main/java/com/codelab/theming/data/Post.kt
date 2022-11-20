@@ -17,9 +17,27 @@
 package com.codelab.theming.data
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Immutable
 import com.codelab.theming.R
 
+/**
+ * Data type that holds the data needed to display a single "Post".
+ *
+ * @param id a [Long] number used to uniquely identify the [Post].
+ * @param title The title of the [Post].
+ * @param subtitle the subtitle of the [Post].
+ * @param url a https url string to access the post.
+ * @param metadata the [Metadata] for the [Post], contains `author`, `date` and `readTimeMinutes`
+ * values.
+ * @param imageId the resource ID of a drawable to draw as a header [Image] at its top when the
+ * [Post] is displayed. It is used in the `FeaturedPost` Composable (file ui/start/Home.kt and
+ * ui/finish/Home.kt).
+ * @param imageThumbId the resource ID of a drawable to draw a thumbnail [Image] for the [Post]. It
+ * is used in the `PostItem` Composable (file ui/start/Home.kt and ui/finish/Home.kt)
+ * @param tags a [Set] of [String]'s describing the subject categories that the [Post] falls under.
+ * It is used in the `PostMetadata` Composable (file ui/start/Home.kt and ui/finish/Home.kt)
+ */
 @Immutable
 data class Post(
     val id: Long,
@@ -32,6 +50,15 @@ data class Post(
     val tags: Set<String>
 )
 
+/**
+ * Contains some "trivia" about the [Post].
+ *
+ * @param author a [PostAuthor] instance naming the author of the [Post] in its [PostAuthor.name]
+ * field, and a URL in its [PostAuthor.url] field that links to a page on "medium.com" which has
+ * a list of all or the articles that author has posted to "medium.com" (not used by app).
+ * @param date the date the [Post] was published.
+ * @param readTimeMinutes an estimate of the number of minutes it will take to read the [Post].
+ */
 @Immutable
 data class Metadata(
     val author: PostAuthor,
@@ -39,6 +66,14 @@ data class Metadata(
     val readTimeMinutes: Int
 )
 
+/**
+ * Contains the name of the author and a URL that links to a "medium.com" web page listing all of
+ * the articles that the author has posted to "medium.com"
+ *
+ * @param name the name of the author.
+ * @param url a URL that links to a "medium.com" web page listing all of the articles that the
+ * author has posted to "medium.com"
+ */
 @Immutable
 data class PostAuthor(
     val name: String,
@@ -49,7 +84,14 @@ data class PostAuthor(
  * A fake repo returning sample data
  */
 object PostRepo {
+    /**
+     * Returns our [List] of fake [Post] objects field [posts]
+     */
     fun getPosts(): List<Post> = posts
+
+    /**
+     * Returns a random [Post] from our [List] of fake [Post] objects field [posts]
+     */
     fun getFeaturedPost(): Post = posts.random()
 }
 

@@ -1,5 +1,6 @@
 package com.codelab.theming.ui.start.theme
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -8,18 +9,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.codelab.theming.R
 
+/**
+ * This [FontFamily] is used by the `h4`, `h5`, `h6`, `subtitle1`, `subtitle2`, `body2`, `button`,
+ * `caption`, and `overline` [TextStyle]'s of our [JetnewsTypography] custom [Typography].
+ */
 private val Montserrat = FontFamily(
     Font(R.font.montserrat_regular),
     Font(R.font.montserrat_medium, FontWeight.W500),
     Font(R.font.montserrat_semibold, FontWeight.W600)
 )
 
+/**
+ * This [FontFamily] is used by the `body1` [TextStyle] of our [JetnewsTypography] custom [Typography].
+ */
 private val Domine = FontFamily(
     Font(R.font.domine_regular),
     Font(R.font.domine_bold, FontWeight.Bold)
 )
 
-val JetnewsTypography = Typography(
+/**
+ * This is the custom [Typography] that is used by our [JetnewsTheme] custom [MaterialTheme].
+ */
+val JetnewsTypography: Typography = Typography(
     h4 = TextStyle(
         fontFamily = Montserrat,
         fontWeight = FontWeight.W600,

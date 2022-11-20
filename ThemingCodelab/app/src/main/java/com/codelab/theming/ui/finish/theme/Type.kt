@@ -16,6 +16,7 @@
 
 package com.codelab.theming.ui.finish.theme
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -23,25 +24,33 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.codelab.theming.R
+import com.codelab.theming.ui.start.theme.JetnewsTheme
+import com.codelab.theming.ui.start.theme.JetnewsTypography
 
 /**
+ * This [FontFamily] is used by the `h4`, `h5`, `h6`, `subtitle1`, `subtitle2`, `body2`, `button`,
+ * `caption`, and `overline` [TextStyle]'s of our [JetnewsTypography] custom [Typography].
  * https://fonts.google.com/specimen/Montserrat
  */
-private val Montserrat = FontFamily(
+private val Montserrat: FontFamily = FontFamily(
     Font(R.font.montserrat_regular),
     Font(R.font.montserrat_medium, FontWeight.W500),
     Font(R.font.montserrat_semibold, FontWeight.W600)
 )
 
 /**
+ * This [FontFamily] is used by the `body1` [TextStyle] of our [JetnewsTypography] custom [Typography].
  * https://fonts.google.com/specimen/Domine
  */
-private val Domine = FontFamily(
+private val Domine: FontFamily = FontFamily(
     Font(R.font.domine_regular),
     Font(R.font.domine_bold, FontWeight.Bold)
 )
 
-val JetnewsTypography = Typography(
+/**
+ * This is the custom [Typography] that is used by our [JetnewsTheme] custom [MaterialTheme].
+ */
+val JetnewsTypography: Typography = Typography(
     h4 = TextStyle(
         fontFamily = Montserrat,
         fontWeight = FontWeight.W600,
