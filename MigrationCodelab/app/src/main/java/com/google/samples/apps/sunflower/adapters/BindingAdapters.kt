@@ -19,6 +19,17 @@ package com.google.samples.apps.sunflower.adapters
 import android.view.View
 import androidx.databinding.BindingAdapter
 
+/**
+ * This `BindingAdapter` is called when a widget has an app:isGone="@{[Boolean]}" attribute with the
+ * [View] of the widget in our [view] parameter and the [Boolean] value in our [isGone] parameter.
+ * It is used twice in the layout/fragment_garden.xml and once in layout/fragment_plant_detail.xml
+ * When called it sets the `visibility` of [view] to [View.GONE] if [isGone] is `true` or to
+ * [View.VISIBLE] it it is `false`.
+ *
+ * @param view the [View] of the widget that has an app:isGone attribute.
+ * @param isGone if `true` we set the `visibility` of [view] to [View.GONE], and if `false` we set
+ * it to [View.VISIBLE].
+ */
 @BindingAdapter("isGone")
 fun bindIsGone(view: View, isGone: Boolean) {
     view.visibility = if (isGone) {

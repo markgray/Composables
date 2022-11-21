@@ -25,10 +25,14 @@ import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
 import com.google.samples.apps.sunflower.adapters.PLANT_LIST_PAGE_INDEX
+import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.databinding.FragmentGardenBinding
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.GardenPlantingListViewModel
 
+/**
+ * This is the [Fragment] which displays the plants that have been chosen for the garden.
+ */
 class GardenFragment : Fragment() {
 
     private lateinit var binding: FragmentGardenBinding
@@ -37,6 +41,10 @@ class GardenFragment : Fragment() {
         InjectorUtils.provideGardenPlantingListViewModelFactory(requireContext())
     }
 
+    /**
+     * TODO: Add documentation.
+     */
+    @Suppress("RedundantNullableReturnType")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,8 +63,8 @@ class GardenFragment : Fragment() {
     }
 
     private fun subscribeUi(adapter: GardenPlantingAdapter, binding: FragmentGardenBinding) {
-        viewModel.plantAndGardenPlantings.observe(viewLifecycleOwner) { result ->
-            binding.hasPlantings = !result.isNullOrEmpty()
+        viewModel.plantAndGardenPlantings.observe(viewLifecycleOwner) { result: List<PlantAndGardenPlantings> ->
+            binding.hasPlantings = result.isNotEmpty()
             adapter.submitList(result)
         }
     }

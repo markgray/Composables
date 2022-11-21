@@ -30,11 +30,18 @@ import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.databinding.ListItemGardenPlantingBinding
 import com.google.samples.apps.sunflower.viewmodels.PlantAndGardenPlantingsViewModel
 
+/**
+ * This is the [ListAdapter] that is used for the [RecyclerView] with ID [R.id.garden_list] in the
+ * file layout/fragment_garden.xml
+ */
 class GardenPlantingAdapter :
     ListAdapter<PlantAndGardenPlantings, GardenPlantingAdapter.ViewHolder>(
         GardenPlantDiffCallback()
     ) {
 
+    /**
+     * TODO: Add kdoc
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             DataBindingUtil.inflate(
@@ -44,10 +51,16 @@ class GardenPlantingAdapter :
         )
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     class ViewHolder(
         private val binding: ListItemGardenPlantingBinding
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -65,6 +78,9 @@ class GardenPlantingAdapter :
             view.findNavController().navigate(direction)
         }
 
+        /**
+         * TODO: Add kdoc
+         */
         fun bind(plantings: PlantAndGardenPlantings) {
             with(binding) {
                 viewModel = PlantAndGardenPlantingsViewModel(plantings)
