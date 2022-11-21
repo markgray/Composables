@@ -21,7 +21,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Surface
 
+/**
+ * This activity started as the start state of the codelab, the code has been modified as I worked
+ * my way through the codelab.
+ */
 class MainActivity : ComponentActivity() {
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we call [setContent] to have it Compose a [Surface] wrapped [Home] Composable into our
+     * activity. This will become the root view our activity.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use it here.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

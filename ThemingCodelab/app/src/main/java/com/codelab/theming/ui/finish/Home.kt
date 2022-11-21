@@ -19,6 +19,7 @@ package com.codelab.theming.ui.finish
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -51,6 +52,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,28 +64,45 @@ import com.codelab.theming.data.PostRepo
 import com.codelab.theming.ui.finish.theme.JetnewsTheme
 import java.util.Locale
 
+/**
+ * This is the main Composable of the app. We start by initializing and remembering our [Post] variable
+ * `val featured` to the [Post] returned by the [PostRepo.getFeaturedPost] method and initializing and
+ * remembering our [List] of [Post] variable `val posts` to the [List] of [Post] returned by the
+ * [PostRepo.getPosts] method. The root Composable [Home] is a [Scaffold] that is wrapped in our
+ * [JetnewsTheme] custom [MaterialTheme]. The `topBar` argument of the [Scaffold] is a lambda calling
+ * our [AppBar] Composable. The `content` of the [Scaffold] is a [LazyColumn] whose `contentPadding`
+ * argument is the [PaddingValues] that the [Scaffold] passes to its `content` lambda in the variable
+ * `innerPadding`. The first `item` in the [LazyColumn] is a [Header] Composable displaying the `text`
+ * "Top Story". The second `item` is a [FeaturedPost] whose `post` argument is our [Post] variable
+ * `featured` and whose `modifier` argument is a [Modifier.padding] that adds 16.dp to all sides of
+ * the Composable. The third `item` is a [Header] Composable displaying the `text` "Popular". The
+ * bottom of the [LazyColumn] is an [items] whose `items` argument is our [List] of [Post] variable
+ * `posts` and whose `itemContent` lambda feeds each [Post] that is supplied to the lambda by [items]
+ * to a [PostItem] as its `post` argument then adds a [Divider] below the [PostItem] whose `startIndent`
+ * argument is 72.dp (start offset of the line).
+ */
 @Composable
 fun Home() {
-    val featured = remember { PostRepo.getFeaturedPost() }
-    val posts = remember { PostRepo.getPosts() }
+    val featured: Post = remember { PostRepo.getFeaturedPost() }
+    val posts: List<Post> = remember { PostRepo.getPosts() }
     JetnewsTheme {
         Scaffold(
             topBar = { AppBar() }
-        ) { innerPadding ->
+        ) { innerPadding: PaddingValues ->
             LazyColumn(contentPadding = innerPadding) {
                 item {
-                    Header(stringResource(R.string.top))
+                    Header(text = stringResource(R.string.top))
                 }
                 item {
                     FeaturedPost(
                         post = featured,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(all = 16.dp)
                     )
                 }
                 item {
-                    Header(stringResource(R.string.popular))
+                    Header(text = stringResource(R.string.popular))
                 }
-                items(posts) { post ->
+                items(items = posts) { post: Post ->
                     PostItem(post = post)
                     Divider(startIndent = 72.dp)
                 }
@@ -91,6 +111,9 @@ fun Home() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 private fun AppBar() {
     TopAppBar(
@@ -108,6 +131,9 @@ private fun AppBar() {
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun Header(
     text: String,
@@ -128,6 +154,9 @@ fun Header(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun FeaturedPost(
     post: Post,
@@ -140,16 +169,16 @@ fun FeaturedPost(
                 .clickable { /* onClick */ }
         ) {
             Image(
-                painter = painterResource(post.imageId),
+                painter = painterResource(id = post.imageId),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .heightIn(min = 180.dp)
                     .fillMaxWidth()
             )
-            Spacer(Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(height = 16.dp))
 
-            val padding = Modifier.padding(horizontal = 16.dp)
+            val padding: Modifier = Modifier.padding(horizontal = 16.dp)
             Text(
                 text = post.title,
                 style = MaterialTheme.typography.h6,
@@ -160,8 +189,8 @@ fun FeaturedPost(
                 style = MaterialTheme.typography.body2,
                 modifier = padding
             )
-            PostMetadata(post, padding)
-            Spacer(Modifier.height(16.dp))
+            PostMetadata(post = post, modifier = padding)
+            Spacer(modifier = Modifier.height(height = 16.dp))
         }
     }
 }
@@ -173,20 +202,20 @@ private fun PostMetadata(
 ) {
     val divider = "  •  "
     val tagDivider = "  "
-    val text = buildAnnotatedString {
-        append(post.metadata.date)
-        append(divider)
-        append(stringResource(R.string.read_time, post.metadata.readTimeMinutes))
-        append(divider)
-        val tagStyle = MaterialTheme.typography.overline.toSpanStyle().copy(
+    val text: AnnotatedString = buildAnnotatedString {
+        append(text = post.metadata.date)
+        append(text = divider)
+        append(text = stringResource(R.string.read_time, post.metadata.readTimeMinutes))
+        append(text = divider)
+        val tagStyle: SpanStyle = MaterialTheme.typography.overline.toSpanStyle().copy(
             background = MaterialTheme.colors.primary.copy(alpha = 0.1f)
         )
-        post.tags.forEachIndexed { index, tag ->
+        post.tags.forEachIndexed { index: Int, tag: String ->
             if (index != 0) {
-                append(tagDivider)
+                append(text = tagDivider)
             }
             withStyle(tagStyle) {
-                append(" ${tag.uppercase(Locale.getDefault())} ")
+                append(text = " ${tag.uppercase(Locale.getDefault())} ")
             }
         }
     }
@@ -199,6 +228,9 @@ private fun PostMetadata(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PostItem(
@@ -211,7 +243,7 @@ fun PostItem(
             .padding(vertical = 8.dp),
         icon = {
             Image(
-                painter = painterResource(post.imageThumbId),
+                painter = painterResource(id = post.imageThumbId),
                 contentDescription = null,
                 modifier = Modifier.clip(shape = MaterialTheme.shapes.small)
             )
@@ -220,7 +252,7 @@ fun PostItem(
             Text(text = post.title)
         },
         secondaryText = {
-            PostMetadata(post)
+            PostMetadata(post = post)
         }
     )
 }
@@ -228,7 +260,7 @@ fun PostItem(
 @Preview("Post Item")
 @Composable
 private fun PostItemPreview() {
-    val post = remember { PostRepo.getFeaturedPost() }
+    val post: Post = remember { PostRepo.getFeaturedPost() }
     JetnewsTheme {
         Surface {
             PostItem(post = post)
@@ -239,7 +271,7 @@ private fun PostItemPreview() {
 @Preview("Featured Post")
 @Composable
 private fun FeaturedPostPreview() {
-    val post = remember { PostRepo.getFeaturedPost() }
+    val post: Post = remember { PostRepo.getFeaturedPost() }
     JetnewsTheme {
         FeaturedPost(post = post)
     }
@@ -248,7 +280,7 @@ private fun FeaturedPostPreview() {
 @Preview("Featured Post • Dark")
 @Composable
 private fun FeaturedPostDarkPreview() {
-    val post = remember { PostRepo.getFeaturedPost() }
+    val post: Post = remember { PostRepo.getFeaturedPost() }
     JetnewsTheme(darkTheme = true) {
         FeaturedPost(post = post)
     }
