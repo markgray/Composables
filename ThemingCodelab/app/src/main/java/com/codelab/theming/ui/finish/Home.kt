@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -39,6 +40,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.primarySurface
@@ -47,6 +49,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,7 +58,10 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,6 +69,8 @@ import com.codelab.theming.R
 import com.codelab.theming.data.Post
 import com.codelab.theming.data.PostRepo
 import com.codelab.theming.ui.finish.theme.JetnewsTheme
+import com.codelab.theming.ui.start.theme.Red300
+import com.codelab.theming.ui.start.theme.Red700
 import java.util.Locale
 
 /**
@@ -112,7 +121,16 @@ fun Home() {
 }
 
 /**
- * TODO: Add kdoc
+ * This is used as the `topBar` argument of the [Scaffold] Composable of the [Home] Composable. Its
+ * root Composable is a [TopAppBar]. Its `navigationIcon` argument (icon displayed at the start of
+ * the [TopAppBar]) is lambda displaying an [Icon] whose `imageVector` argument ([ImageVector] to
+ * draw inside the [Icon]) is the [Icons.Rounded.Palette] system [ImageVector] (a stylized artists
+ * palette), and its `modifier` argument is a [Modifier.padding] that adds 12.dp to each `horizontal`
+ * side of the [Icon]. The `title` argument of the [TopAppBar] is a lambda that displays a [Text]
+ * whose `text` is the [String] "Jetnews". The `backgroundColor` argument of the [TopAppBar] is the
+ * [Colors.primarySurface] color of [MaterialTheme.colors] which is [Colors.primary] in Light Theme
+ * ([Red700] in our [JetnewsTheme] custom [MaterialTheme]) or [Colors.surface] in Dark Theme (the
+ * default value of `Color(0xFF121212)` or almost black in our [JetnewsTheme] custom [MaterialTheme]).
  */
 @Composable
 private fun AppBar() {
@@ -132,7 +150,27 @@ private fun AppBar() {
 }
 
 /**
- * TODO: Add kdoc
+ * Displays a "header" line, used as an `item` in the [LazyColumn] of [Home] to display the [String]
+ * "Top Story" before the [FeaturedPost] Composable and to display the [String] "Popular" before the
+ * [items] which display all of the [Post] objects in the [List] of [Post] that [Home] retrieves from
+ * the [PostRepo.getPosts] method. Our root Composable is a [Surface] whose `color` argument (the
+ * background color) is a copy of the [Colors.onSurface] color of [MaterialTheme.colors] (the default
+ * [Color.Black] for light theme, or the default [Color.White] for dark theme) with the `alpha` set
+ * to 0.1f, the `contentColor` argument (preferred content color provided by this Surface to its
+ * children) is the [Colors.primary] color of [MaterialTheme.colors] ([Red700] for light theme and
+ * [Red300] for dark theme, and the `modifier` argument adds a [Modifier.semantics] of [heading] to
+ * our [Modifier] parameter [modifier]. The `content` of the [Surface] is a [Text] that displays our
+ * [text] parameter using the [Typography.subtitle2] of [MaterialTheme.typography] as its [TextStyle]
+ * `style` argument (`fontFamily` of Montserrat, `fontWeight` of [FontWeight.W500] (the [Font] with
+ * resource ID [R.font.montserrat_medium]) and a `fontSize` of 14.sp). The `modifier` argument of the
+ * [Text] is a [Modifier.fillMaxWidth] to have the [Text] use the entire width of its incoming
+ * constraints to which is added a [Modifier.padding] that adds 16.dp to each side of the [Text] and
+ * 8.dp to the top and bottom of the [Text].
+ *
+ * @param text the [String] that our [Text] should display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our two call sites do not pass one so the empty, default, or starter [Modifier] that
+ * contains no elements is used instead.
  */
 @Composable
 fun Header(
@@ -155,14 +193,22 @@ fun Header(
 }
 
 /**
- * TODO: Add kdoc
+ * Displays the [Post] in its [post] parameter. It is called to fill an `item` in the [LazyColumn]
+ * of [Home] with the random [Post] that [Home] retrieves from [PostRepo.getFeaturedPost]. Our root
+ * Composable is a [Card] whose `modifier` argument is our [modifier] parameter.
+ *
+ * @param post the [Post] we should display. [Home] calls us with the random [Post] that it retrieves
+ * from [PostRepo.getFeaturedPost].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [Home] calls us with a [Modifier.padding] that adds 16.dp to all sides of our [Card]
+ * root Composable.
  */
 @Composable
 fun FeaturedPost(
     post: Post,
     modifier: Modifier = Modifier
 ) {
-    Card(modifier) {
+    Card(modifier = modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
