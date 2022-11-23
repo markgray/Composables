@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.sunflower.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,19 +41,41 @@ class GardenPlantingAdapter :
     ) {
 
     /**
-     * TODO: Add kdoc
+     * Called when [RecyclerView] needs a new [ViewHolder] of the given type to represent an item.
+     * We return a [ViewHolder] whose `binding` argument is the [ListItemGardenPlantingBinding] that
+     * the [DataBindingUtil.inflate] method inflates from the layout file with ID
+     * [R.layout.list_item_garden_planting] using the [LayoutInflater] that the method
+     * [LayoutInflater.from] returns for the [Context] of our [ViewGroup] parameter [parent], using
+     * [parent] to provide the `LayoutParams` without attaching to it.
+     *
+     * @param parent   The [ViewGroup] into which the new [View] will be added after it is bound to
+     * an adapter position.
+     * @param viewType The view type of the new [View].
+     * @return A new [ViewHolder] that holds a View of the given view type.
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            DataBindingUtil.inflate(
+            binding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.list_item_garden_planting, parent, false
+                R.layout.list_item_garden_planting,
+                parent,
+                false
             )
         )
     }
 
     /**
-     * TODO: Add kdoc
+     * Called by [RecyclerView] to display the data at the specified position. We call the
+     * [ViewHolder.bind] method of our [ViewHolder] parameter [holder] with the [PlantAndGardenPlantings]
+     * instance that the [getItem] method returns for our [Int] parameter [position]. It will set
+     * the `viewModel` variable of the [ViewHolder.binding] of our [holder] to a new instance of
+     * [PlantAndGardenPlantingsViewModel] and call the [ListItemGardenPlantingBinding.executePendingBindings]
+     * of the [ViewHolder.binding] to have it evaluate the pending bindings, updating any Views that
+     * have expressions bound to the modified variable.
+     *
+     * @param holder The [ViewHolder] which should be updated to represent the contents of the item
+     * at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
      */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
