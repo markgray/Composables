@@ -66,9 +66,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codelab.theming.R
+import com.codelab.theming.data.Metadata
 import com.codelab.theming.data.Post
+import com.codelab.theming.data.PostAuthor
 import com.codelab.theming.data.PostRepo
 import com.codelab.theming.ui.finish.theme.JetnewsTheme
+import com.codelab.theming.ui.start.theme.JetnewsTypography
 import com.codelab.theming.ui.start.theme.Red300
 import com.codelab.theming.ui.start.theme.Red700
 import java.util.Locale
@@ -195,7 +198,33 @@ fun Header(
 /**
  * Displays the [Post] in its [post] parameter. It is called to fill an `item` in the [LazyColumn]
  * of [Home] with the random [Post] that [Home] retrieves from [PostRepo.getFeaturedPost]. Our root
- * Composable is a [Card] whose `modifier` argument is our [modifier] parameter.
+ * Composable is a [Card] whose `modifier` argument is our [modifier] parameter. The root Composable
+ * of the [Card] is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth] that causes it
+ * to fill the entire width of its incoming measurement constraints, to which is chained a
+ * [Modifier.clickable] with a do nothing lambda. The `content` of the [Column] is:
+ *  - an [Image] whose `painter` argument draws the drawable whose resource ID is the [Post.imageId]
+ *  of our [post] parameter, whose `contentDescription` argument is `null`, whose `contentScale`
+ *  argument is [ContentScale.Crop] (scales the source uniformly, maintaining the source's aspect
+ *  ratio), and whose `modifier` argument is a [Modifier.heightIn] that constrains the height of the
+ *  content to a minimum of 180.dp, with a [Modifier.fillMaxWidth] to have it fill the entire width
+ *  of its incoming measurement constraints.
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its height to 16.dp
+ *  - Since we want a `horizontal` padding of 16.dp for the next three Composables we initialize our
+ *  [Modifier] variable `val padding` to a [Modifier.padding] whose `horizontal` argument is 16.dp
+ *  - a [Text] comes next in the [Column] whose `text` argument displays the [Post.title] field of
+ *  our [post] parameter using as its `style` argument the [TextStyle] specified for [Typography.h6]
+ *  by our [JetnewsTypography] custom [Typography] (`fontFamily` is `Montserrat`, `fontWeight` is
+ *  [FontWeight.W600], and `fontSize` is 20.sp), and its `modifier` argument is our [Modifier] variable
+ *  `padding`.
+ *  - this is followed by a [Text] whose `text` argument displays the [PostAuthor.name] of the
+ *  [Metadata.author] field of the [Post.metadata] field of our [Post] parameter [post] using as its
+ *  `style` argument the [TextStyle] specified for [Typography.body2] by our [JetnewsTypography] custom
+ *  [Typography] (`fontFamily` is `Montserrat`, and `fontSize` is 14.sp), and its `modifier` argument
+ *  is our [Modifier] variable `padding`.
+ *  - next in the [Column] is a [PostMetadata] whose `post` argument is our [post] parameter, and
+ *  whose `modifier` argument is our [Modifier] variable `padding`.
+ *  - at the end of the [Column] is a [Spacer] whose `modifier` argument is a [Modifier.height] that
+ *  sets its height to 16.dp
  *
  * @param post the [Post] we should display. [Home] calls us with the random [Post] that it retrieves
  * from [PostRepo.getFeaturedPost].
@@ -241,6 +270,17 @@ fun FeaturedPost(
     }
 }
 
+/**
+ * This Composable builds an [AnnotatedString] that displays the fields [Metadata.date], and
+ * [Metadata.readTimeMinutes] of the [Post.metadata] of its [Post] parameter [post] as well as its
+ * [Post.tags] strings using appropriate [SpanStyle] styling configurations for each field.
+ *
+ * @param post the [Post] whose [Post.metadata] and [Post.tags] we are to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [FeaturedPost] calls us with a `horizontal` [Modifier.padding] of 16.dp, and [ListItem]
+ * of [PostItem] does not pass a value so the empty, default, or starter [Modifier] that contains no
+ * elements is used for it.
+ */
 @Composable
 private fun PostMetadata(
     post: Post,
@@ -260,7 +300,7 @@ private fun PostMetadata(
             if (index != 0) {
                 append(text = tagDivider)
             }
-            withStyle(tagStyle) {
+            withStyle(style = tagStyle) {
                 append(text = " ${tag.uppercase(Locale.getDefault())} ")
             }
         }
