@@ -273,7 +273,19 @@ fun FeaturedPost(
 /**
  * This Composable builds an [AnnotatedString] that displays the fields [Metadata.date], and
  * [Metadata.readTimeMinutes] of the [Post.metadata] of its [Post] parameter [post] as well as its
- * [Post.tags] strings using appropriate [SpanStyle] styling configurations for each field.
+ * [Post.tags] strings using appropriate [SpanStyle] styling configurations for each field. We
+ * initialize our [String] variable `val divider` to a &sdot; character with two spaces on either
+ * side of it, and our [String] variable to two spaces. Then we initialize our [AnnotatedString]
+ * variable `val text` to a new [AnnotatedString] by populating newly created [AnnotatedString.Builder]
+ * provided to the lambda of the [buildAnnotatedString] method. The lambda applies builder methods
+ * to the [AnnotatedString.Builder] supplied to it as `this` as follows:
+ *  - it uses [AnnotatedString.Builder.append] to append the [Metadata.date] field of the [Post.metadata]
+ *  field of our [Post] parameter [post] to te Builder.
+ *  - it uses [AnnotatedString.Builder.append] to append our `divider` variable.
+ *  - it uses [AnnotatedString.Builder.append] to append the formated [String] created from the
+ *  [Metadata.readTimeMinutes] field of the [Post.metadata] field of our [Post] parameter [post]
+ *  using the format [String] with the resource ID [R.string.read_time] ("%1$d min read").
+ *  - it uses [AnnotatedString.Builder.append] to append our `divider` variable.
  *
  * @param post the [Post] whose [Post.metadata] and [Post.tags] we are to display.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
