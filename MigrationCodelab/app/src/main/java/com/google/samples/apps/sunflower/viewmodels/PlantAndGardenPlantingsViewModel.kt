@@ -16,23 +16,51 @@
 
 package com.google.samples.apps.sunflower.viewmodels
 
+import com.google.samples.apps.sunflower.data.GardenPlanting
+import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+/**
+ * TODO: Add kdoc
+ */
 class PlantAndGardenPlantingsViewModel(plantings: PlantAndGardenPlantings) {
-    private val plant = checkNotNull(plantings.plant)
-    private val gardenPlanting = plantings.gardenPlantings[0]
+    private val plant: Plant = checkNotNull(plantings.plant)
+    private val gardenPlanting: GardenPlanting = plantings.gardenPlantings[0]
 
+    /**
+     * TODO: Add kdoc
+     */
     val waterDateString: String = dateFormat.format(gardenPlanting.lastWateringDate.time)
-    val wateringInterval
+
+    /**
+     * TODO: Add kdoc
+     */
+    val wateringInterval: Int
         get() = plant.wateringInterval
-    val imageUrl
+
+    /**
+     * TODO: Add kdoc
+     */
+    val imageUrl: String
         get() = plant.imageUrl
-    val plantName
+
+    /**
+     * TODO: Add kdoc
+     */
+    val plantName: String
         get() = plant.name
+
+    /**
+     * TODO: Add kdoc
+     */
     val plantDateString: String = dateFormat.format(gardenPlanting.plantDate.time)
-    val plantId
+
+    /**
+     * TODO: Add kdoc
+     */
+    val plantId: String
         get() = plant.plantId
 
     companion object {
