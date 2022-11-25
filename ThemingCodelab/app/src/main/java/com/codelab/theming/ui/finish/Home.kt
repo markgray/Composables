@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
@@ -37,6 +38,7 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Shapes
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -50,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -286,6 +289,24 @@ fun FeaturedPost(
  *  [Metadata.readTimeMinutes] field of the [Post.metadata] field of our [Post] parameter [post]
  *  using the format [String] with the resource ID [R.string.read_time] ("%1$d min read").
  *  - it uses [AnnotatedString.Builder.append] to append our `divider` variable.
+ *  - it initializes its [SpanStyle] variable `val tagStyle` to a copy of the [Typography.overline]
+ *  custom [TextStyle] of [MaterialTheme.typography] (`fontFamily` = Montserrat, `fontWeight` =
+ *  [FontWeight.W500], and `fontSize` = 12.sp) converted to a [SpanStyle] by its [TextStyle.toSpanStyle]
+ *  method, then copies that with the `background` color for the text set to a copy of the
+ *  [Colors.primary] color of [MaterialTheme.colors] with the `alpha` set to 0.1f ([Red700] for the
+ *  light theme, and [Red300] for the dark theme).
+ *  - then it uses the [forEachIndexed] method to loop over all of the [String]'s in the [Post.tags]
+ *  field of [post] and if the `index` of a entry is not 0 it uses `append` to append our `tagDivider`
+ *  variable, then for all the [String]'s it uses the [withStyle] method of our builder to set the
+ *  `style` to our `tagStyle` variable betore using `append` to append the `tag` [String] converted
+ *  to upper case using the rules of the [Locale.getDefault] default locale.
+ *
+ * Having built our [AnnotatedString] variable `text` we then wrap in a [CompositionLocalProvider]
+ * that has [LocalContentAlpha] provide [ContentAlpha.medium] (medium level of content alpha, used
+ * to represent medium emphasis text) we call the [Text] Composable with its `text` argument displaying
+ * our [AnnotatedString] variable `text`, with the `style` argument the [Typography.body2] font style
+ * of [MaterialTheme.typography] (`fontFamily` = `Montserrat`, `fontSize` = 14.sp), and with its
+ * `modifier` argument our [Modifier] parameter [modifier].
  *
  * @param post the [Post] whose [Post.metadata] and [Post.tags] we are to display.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
@@ -327,7 +348,24 @@ private fun PostMetadata(
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable is used for each of the [Post] `items` in the [List] of [Post] that the [Home]
+ * Composable retrieves from the [PostRepo.getPosts] method ([Home] uses the [items] method to in
+ * its [LazyColumn] to call us for each [Post] in the [List]). Our root Composable is the system
+ * [ListItem] Composable which we call with the `modifier` argument our [Modifier] parameter [modifier]
+ * with a [Modifier.clickable] added to is with do nothing lambda and a [Modifier.padding] added to
+ * that which sets the `vertical` padding to 8.dp, the `icon` argument is a lambda which calls
+ * [Image] with its [Painter] argument `painter` rendering the drawable whose resource ID is the
+ * [Post.imageThumbId] field of [post] and whose `contentDescription` argument is `null` and whose
+ * `modifier` argument is a [Modifier.clip] that clips the [Image] to the [Shapes.small] shape of
+ * [MaterialTheme.shapes] (a [CutCornerShape] whose `topStart` argument is 8.dp (only the top left
+ * corner is "cut", the rest are left uncut). The `text` argument of the [ListItem] is a lambda that
+ * calls [Text] with its `text` argument the [Post.title] field of [post]. The `secondaryText` argument
+ * is a [PostMetadata] Composable that we call with its `post` argument our [Post] parameter [post].
+ *
+ * @param post the [Post] that we are supposed to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [Home] does not pass any so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -355,6 +393,12 @@ fun PostItem(
     )
 }
 
+/**
+ * This is a Preview of the [PostItem] Composable. We initialize and [remember] our [Post] variable
+ * `val post` to the random [Post] returned by the [PostRepo.getFeaturedPost] method, then wrapped
+ * in our [JetnewsTheme] custom [MaterialTheme] we call [Surface] with its `content` a [PostItem]
+ * with our `post` variable as its `post` argument.
+ */
 @Preview("Post Item")
 @Composable
 private fun PostItemPreview() {
@@ -366,6 +410,12 @@ private fun PostItemPreview() {
     }
 }
 
+/**
+ * This is a Preview of the [FeaturedPost] Composable. We initialize and [remember] our [Post] variable
+ * `val post` to the random [Post] returned by the [PostRepo.getFeaturedPost] method, then wrapped
+ * in our [JetnewsTheme] custom [MaterialTheme] we call [FeaturedPost] with our `post` variable as
+ * its `post` argument.
+ */
 @Preview("Featured Post")
 @Composable
 private fun FeaturedPostPreview() {
