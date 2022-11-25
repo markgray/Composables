@@ -82,7 +82,7 @@ class GardenPlantingAdapter :
      * @param position The position of the item within the adapter's data set.
      */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(plantings = getItem(position))
     }
 
     /**
@@ -136,11 +136,21 @@ class GardenPlantingAdapter :
         }
 
         /**
-         * TODO: Add kdoc
+         * This method is called from [onBindViewHolder] with the [PlantAndGardenPlantings] instance
+         * that our [itemView] should display, and to do that we just call the method
+         * [ListItemGardenPlantingBinding.setViewModel] of [binding] (in kotlin we set its `viewModel`
+         * property) to a new instance of [PlantAndGardenPlantingsViewModel] constructed to use our
+         * [PlantAndGardenPlantings] parameter [plantings] to populate its fields. Then we call the
+         * [ListItemGardenPlantingBinding.executePendingBindings] method of [binding] to have it
+         * evaluate the pending bindings, updating any [View]s that have expressions bound to
+         * modified variables.
+         *
+         * @param plantings the [PlantAndGardenPlantings] instance of the plant that we are to
+         * display.
          */
         fun bind(plantings: PlantAndGardenPlantings) {
             with(binding) {
-                viewModel = PlantAndGardenPlantingsViewModel(plantings)
+                viewModel = PlantAndGardenPlantingsViewModel(plantings = plantings)
                 executePendingBindings()
             }
         }
