@@ -83,7 +83,7 @@ import java.util.Locale
  * This is the main Composable of the app. We start by initializing and remembering our [Post] variable
  * `val featured` to the [Post] returned by the [PostRepo.getFeaturedPost] method and initializing and
  * remembering our [List] of [Post] variable `val posts` to the [List] of [Post] returned by the
- * [PostRepo.getPosts] method. The root Composable [Home] is a [Scaffold] that is wrapped in our
+ * [PostRepo.getPosts] method. The root Composable of [Home] is a [Scaffold] that is wrapped in our
  * [JetnewsTheme] custom [MaterialTheme]. The `topBar` argument of the [Scaffold] is a lambda calling
  * our [AppBar] Composable. The `content` of the [Scaffold] is a [LazyColumn] whose `contentPadding`
  * argument is the [PaddingValues] that the [Scaffold] passes to its `content` lambda in the variable
@@ -106,7 +106,7 @@ fun Home() {
         ) { innerPadding: PaddingValues ->
             LazyColumn(contentPadding = innerPadding) {
                 item {
-                    Header(text = stringResource(R.string.top))
+                    Header(text = stringResource(id = R.string.top))
                 }
                 item {
                     FeaturedPost(
@@ -115,7 +115,7 @@ fun Home() {
                     )
                 }
                 item {
-                    Header(text = stringResource(R.string.popular))
+                    Header(text = stringResource(id = R.string.popular))
                 }
                 items(items = posts) { post: Post ->
                     PostItem(post = post)
@@ -149,7 +149,7 @@ private fun AppBar() {
             )
         },
         title = {
-            Text(text = stringResource(R.string.app_title))
+            Text(text = stringResource(id = R.string.app_title))
         },
         backgroundColor = MaterialTheme.colors.primarySurface
     )
@@ -425,6 +425,14 @@ private fun FeaturedPostPreview() {
     }
 }
 
+/**
+ * This preview is the same as [FeaturedPostPreview] except that it uses the `darkTheme` of our
+ * [JetnewsTheme] custom [MaterialTheme] instead of the default light theme. We initialize and
+ * [remember] our [Post] variable `val post` to the random [Post] returned by the
+ * [PostRepo.getFeaturedPost] method, then wrapped in our [JetnewsTheme] custom [MaterialTheme]
+ * with its `darkTheme` argument `true` we call [FeaturedPost] with our `post` variable as its
+ * `post` argument.
+ */
 @Preview("Featured Post • Dark")
 @Composable
 private fun FeaturedPostDarkPreview() {
@@ -434,6 +442,9 @@ private fun FeaturedPostDarkPreview() {
     }
 }
 
+/**
+ * This is a Preview of the [Home] Composable, and consists of only a call of [Home].
+ */
 @Preview("Home")
 @Composable
 private fun HomePreview() {
