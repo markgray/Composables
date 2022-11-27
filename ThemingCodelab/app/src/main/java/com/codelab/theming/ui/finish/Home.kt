@@ -283,7 +283,7 @@ fun FeaturedPost(
  * provided to the lambda of the [buildAnnotatedString] method. The lambda applies builder methods
  * to the [AnnotatedString.Builder] supplied to it as `this` as follows:
  *  - it uses [AnnotatedString.Builder.append] to append the [Metadata.date] field of the [Post.metadata]
- *  field of our [Post] parameter [post] to te Builder.
+ *  field of our [Post] parameter [post] to the Builder.
  *  - it uses [AnnotatedString.Builder.append] to append our `divider` variable.
  *  - it uses [AnnotatedString.Builder.append] to append the formated [String] created from the
  *  [Metadata.readTimeMinutes] field of the [Post.metadata] field of our [Post] parameter [post]
@@ -303,7 +303,7 @@ fun FeaturedPost(
  *
  * Having built our [AnnotatedString] variable `text` we then wrap in a [CompositionLocalProvider]
  * that has [LocalContentAlpha] provide [ContentAlpha.medium] (medium level of content alpha, used
- * to represent medium emphasis text) we call the [Text] Composable with its `text` argument displaying
+ * to represent medium emphasis text) a [Text] Composable with its `text` argument displaying
  * our [AnnotatedString] variable `text`, with the `style` argument the [Typography.body2] font style
  * of [MaterialTheme.typography] (`fontFamily` = `Montserrat`, `fontSize` = 14.sp), and with its
  * `modifier` argument our [Modifier] parameter [modifier].
@@ -352,7 +352,7 @@ private fun PostMetadata(
  * Composable retrieves from the [PostRepo.getPosts] method ([Home] uses the [items] method to in
  * its [LazyColumn] to call us for each [Post] in the [List]). Our root Composable is the system
  * [ListItem] Composable which we call with the `modifier` argument our [Modifier] parameter [modifier]
- * with a [Modifier.clickable] added to is with do nothing lambda and a [Modifier.padding] added to
+ * with a [Modifier.clickable] added to it with do nothing lambda and a [Modifier.padding] added to
  * that which sets the `vertical` padding to 8.dp, the `icon` argument is a lambda which calls
  * [Image] with its [Painter] argument `painter` rendering the drawable whose resource ID is the
  * [Post.imageThumbId] field of [post] and whose `contentDescription` argument is `null` and whose
