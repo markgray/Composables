@@ -287,7 +287,7 @@ object LocalEmailsDataProvider {
     /**
      * Create a new, blank [Email].
      */
-    @Suppress("MemberVisibilityCanBePrivate")
+    @Suppress("MemberVisibilityCanBePrivate") // I like to use kdoc [] references
     fun create(): Email {
         return Email(
             System.nanoTime(), // Unique ID generation.
@@ -299,7 +299,7 @@ object LocalEmailsDataProvider {
     /**
      * Create a new [Email] that is a reply to the email with the given [replyToId].
      */
-    @Suppress("unused")
+    @Suppress("unused") // Skeleton code for future use
     fun createReplyTo(replyToId: Long): Email {
         val replyTo = get(replyToId) ?: return create()
         return Email(

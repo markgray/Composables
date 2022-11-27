@@ -51,25 +51,25 @@ data class Email(
     /**
      * Could be used to "preview" the sender but is not used.
      */
-    @Suppress("unused")
+    @Suppress("unused") // Skeleton code for future use
     val senderPreview: String = "${sender.fullName} - 4 hrs ago"
 
     /**
      * Could be used to determine is the [Email] has an non-empty [Email.body] but is not used.
      */
-    @Suppress("unused")
+    @Suppress("unused") // Skeleton code for future use
     val hasBody: Boolean = body.isNotBlank()
 
     /**
      * Could be used to determine is the [Email] has an non-empty [Email.attachments] but is not used.
      */
-    @Suppress("unused")
+    @Suppress("unused") // Skeleton code for future use
     val hasAttachments: Boolean = attachments.isNotEmpty()
 
     /**
      * Could be used to "preview" the [List] of recipients but is not used.
      */
-    @Suppress("unused")
+    @Suppress("unused") // Skeleton code for future use
     val recipientsPreview: String = recipients
         .map { it.firstName }
         .fold("") { name, acc -> "$acc, $name" }
@@ -77,7 +77,7 @@ data class Email(
     /**
      * Could be used to "preview" the [List] of recipients other than the current user but is not used.
      */
-    @Suppress("unused")
+    @Suppress("unused") // Skeleton code for future use
     val nonUserAccountRecipients: List<Account> = recipients
         .filterNot { LocalAccountsDataProvider.isUserAccount(it.uid) }
 }

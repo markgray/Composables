@@ -54,7 +54,7 @@ class EmailsRepositoryImpl : EmailsRepository {
      * Returns a [Flow] of a single [Email] if one can be found whose [Email.id] matches our [Long]
      * parameter [id], otherwise it returns `null`.
      */
-    @Suppress("UNUSED_VARIABLE")
+    @Suppress("UNUSED_VARIABLE") // Easier to breakpoint this way
     override fun getEmailFromId(id: Long): Flow<Email?> = flow {
         val categoryEmails = LocalEmailsDataProvider.allEmails.firstOrNull { it.id == id }
     }
