@@ -27,6 +27,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.samples.apps.sunflower.GardenFragment
 import com.google.samples.apps.sunflower.HomeViewPagerFragmentDirections
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
@@ -37,7 +38,7 @@ import com.google.samples.apps.sunflower.views.MaskedCardView
 
 /**
  * This is the [ListAdapter] that is used for the [RecyclerView] with ID [R.id.garden_list] in the
- * file layout/fragment_garden.xml
+ * file layout/fragment_garden.xml used by [GardenFragment].
  */
 class GardenPlantingAdapter :
     ListAdapter<PlantAndGardenPlantings, GardenPlantingAdapter.ViewHolder>(
@@ -157,8 +158,22 @@ class GardenPlantingAdapter :
     }
 }
 
+/**
+ * This is the [DiffUtil.ItemCallback] that the [ListAdapter] will use for calculating the diff
+ * between two non-null items in a list to calculate optimal updates for its [RecyclerView].
+ */
 private class GardenPlantDiffCallback : DiffUtil.ItemCallback<PlantAndGardenPlantings>() {
 
+    /**
+     * Called to check whether two objects represent the same item, for example, if your items have
+     * unique ids, this method should check their id equality. The [Plant.plantId] field of the
+     * [PlantAndGardenPlantings.plant] field is the unique ID of the [PlantAndGardenPlantings] class,
+     * so we return `true` if it is structurally equal in our two parameters, `false` if it is not.
+     *
+     * @param oldItem The [PlantAndGardenPlantings] instance in the old list.
+     * @param newItem The [PlantAndGardenPlantings] instance in the new list.
+     * @return `true` if the two items represent the same object or `false` if they are different.
+     */
     override fun areItemsTheSame(
         oldItem: PlantAndGardenPlantings,
         newItem: PlantAndGardenPlantings
@@ -166,6 +181,16 @@ private class GardenPlantDiffCallback : DiffUtil.ItemCallback<PlantAndGardenPlan
         return oldItem.plant.plantId == newItem.plant.plantId
     }
 
+    /**
+     * Called to check whether two items have the same data. This information is used to detect if
+     * the contents of an item have changed. We return `true` if the [Plant] field
+     * [PlantAndGardenPlantings.plant] of our two [PlantAndGardenPlantings] parameters are
+     * structurally equal, `false` if they are not.
+     *
+     * @param oldItem The [PlantAndGardenPlantings] instance in the old list.
+     * @param newItem The [PlantAndGardenPlantings] instance in the new list.
+     * @return `true` if the contents of the items are the same or `false` if they are different.
+     */
     override fun areContentsTheSame(
         oldItem: PlantAndGardenPlantings,
         newItem: PlantAndGardenPlantings
