@@ -20,6 +20,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -29,6 +31,8 @@ import com.google.samples.apps.sunflower.PlantListFragment
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.databinding.ListItemPlantBinding
+import com.google.samples.apps.sunflower.plantdetail.PlantDetailFragment
+import com.google.samples.apps.sunflower.views.MaskedCardView
 
 /**
  * This is the [ListAdapter] that is used for the [RecyclerView] with ID [R.id.plant_list] in the
@@ -102,13 +106,33 @@ class PlantAdapter : ListAdapter<Plant, RecyclerView.ViewHolder>(PlantDiffCallba
         }
 
         /**
-         * TODO: Add kdoc
+         * This method is called by the lambda that the "clickListener" variable is set to by our
+         * init block in our [ListItemPlantBinding] field [binding]. The "clickListener" variable
+         * is called by the android:onClick attribute of the [MaskedCardView] in the file that
+         * [binding] is inflated from: layout/list_item_plant.xml when the [MaskedCardView] is
+         * clicked. The [Plant] parameter [plant] comes from the `plant` variable of the
+         * [ListItemPlantBinding] we are constructed with, and the [View] parameter [view] is the
+         * [View] of the [MaskedCardView] that was clicked. We initialize our [NavDirections] variable
+         * `val direction` to the [NavDirections] that is returned by the method
+         * [HomeViewPagerFragmentDirections.actionViewPagerFragmentToPlantDetailFragment] method for
+         * the [Plant.plantId] field of [plant]. Then we call the [View.findNavController]
+         * method of our [View] parameter [view] to get the view's [NavController] and call its
+         * [NavController.navigate] method with the `directions` argument `direction`.
+         *
+         * @param plant the [Plant] that we want [PlantDetailFragment] to display, the lambda that
+         * calls us retrieves it from the [ListItemPlantBinding.getPlant] method of [binding] (aka
+         * kotlin property `plant`).@param view the [View] that was clicked, the [MaskedCardView]
+         * in the file that [binding] was inflated from: layout/list_item_plant.xml
          */
         private fun navigateToPlant(
             plant: Plant,
             view: View
         ) {
-            val direction =
+            /**
+             * The [NavDirections] required to have the [PlantDetailFragment] display our [Plant]
+             * parameter [plant].
+             */
+            val direction: NavDirections =
                 HomeViewPagerFragmentDirections.actionViewPagerFragmentToPlantDetailFragment(
                     plant.plantId
                 )
@@ -116,7 +140,14 @@ class PlantAdapter : ListAdapter<Plant, RecyclerView.ViewHolder>(PlantDiffCallba
         }
 
         /**
-         * TODO: Add kdoc
+         * This method is called from [onBindViewHolder] with the [Plant] instance [item] that our
+         * [itemView] should display, and to do that we just call the [ListItemPlantBinding.setPlant]
+         * method of [binding] (in kotlin we set its `plant` property) to set the `plant` variable
+         * to our [Plant] parameter [item], then call the [ListItemPlantBinding.executeBindings]
+         * method of [binding] to have it evaluate the pending bindings, updating any [View]s that
+         * have expressions bound to modified variables.
+         *
+         * @param item the [Plant] we are to display.
          */
         fun bind(item: Plant) {
             binding.apply {
@@ -128,18 +159,32 @@ class PlantAdapter : ListAdapter<Plant, RecyclerView.ViewHolder>(PlantDiffCallba
 }
 
 /**
- * TODO: Add kdoc
+ * This is the [DiffUtil.ItemCallback] that the [ListAdapter] will use for calculating the diff
+ * between two non-null items in a list to calculate optimal updates for its [RecyclerView].
  */
 private class PlantDiffCallback : DiffUtil.ItemCallback<Plant>() {
     /**
-     * TODO: Add kdoc
+     * Called to check whether two objects represent the same item, for example, if your items have
+     * unique ids, this method should check their id equality. The [Plant.plantId] field of a
+     * [Plant] is the unique ID of the class so we return `true` if it is structurally equal in our
+     * two parameters, `false` if it is not.
+     *
+     * @param oldItem The [Plant] instance in the old list.
+     * @param newItem The [Plant] instance in the new list.
+     * @return `true` if the two items represent the same object or `false` if they are different.
      */
     override fun areItemsTheSame(oldItem: Plant, newItem: Plant): Boolean {
         return oldItem.plantId == newItem.plantId
     }
 
     /**
-     * TODO: Add kdoc
+     * Called to check whether two items have the same data. This information is used to detect if
+     * the contents of an item have changed. We return `true` if the two parameters are structurally
+     * equal, `false` if they are not.
+     *
+     * @param oldItem The [Plant] instance in the old list.
+     * @param newItem The [Plant] instance in the new list.
+     * @return `true` if the contents of the items are the same or `false` if they are different.
      */
     override fun areContentsTheSame(oldItem: Plant, newItem: Plant): Boolean {
         return oldItem == newItem

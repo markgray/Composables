@@ -27,6 +27,9 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.samples.apps.sunflower.R
 
+/**
+ * TODO: Add kdoc
+ */
 @BindingAdapter("imageFromUrl")
 fun bindImageFromUrl(view: ImageView, imageUrl: String?) {
     if (!imageUrl.isNullOrEmpty()) {
@@ -37,6 +40,9 @@ fun bindImageFromUrl(view: ImageView, imageUrl: String?) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @BindingAdapter("isGone")
 fun bindIsGone(view: FloatingActionButton, isGone: Boolean?) {
     if (isGone == null || isGone) {
@@ -46,6 +52,10 @@ fun bindIsGone(view: FloatingActionButton, isGone: Boolean?) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
+@Suppress("unused")
 @BindingAdapter("renderHtml")
 fun bindRenderHtml(view: TextView, description: String?) {
     if (description != null) {
@@ -56,6 +66,10 @@ fun bindRenderHtml(view: TextView, description: String?) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
+@Suppress("unused")
 @BindingAdapter("wateringText")
 fun bindWateringText(textView: TextView, wateringInterval: Int) {
     val resources = textView.context.resources
