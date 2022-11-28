@@ -16,6 +16,7 @@
 
 package com.example.android.codelab.animation.ui.home
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateColorAsState
@@ -99,6 +100,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -673,6 +675,7 @@ private fun TaskRow(task: String, onRemove: () -> Unit) {
  *
  * @param onDismissed Called when the element is swiped to the edge of the screen.
  */
+@SuppressLint("ReturnFromAwaitPointerEventScope", "MultipleAwaitPointerEventScopes") // There is a right way to do this, so I assume this is okay.
 private fun Modifier.swipeToDismiss(
     onDismissed: () -> Unit
 ): Modifier = composed {
@@ -685,7 +688,7 @@ private fun Modifier.swipeToDismiss(
         coroutineScope {
             while (true) {
                 // Wait for a touch down event.
-                val pointerId = awaitPointerEventScope { awaitFirstDown().id }
+                val pointerId: PointerId = awaitPointerEventScope { awaitFirstDown().id }
                 // Interrupt any ongoing animation.
                 offsetX.stop()
                 // Prepare for drag events and record velocity of a fling.

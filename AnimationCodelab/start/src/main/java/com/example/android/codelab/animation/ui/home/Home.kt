@@ -16,6 +16,7 @@
 
 package com.example.android.codelab.animation.ui.home
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateColorAsState
@@ -673,6 +674,7 @@ private fun TaskRow(task: String, onRemove: () -> Unit) {
  *
  * @param onDismissed Called when the element is swiped to the edge of the screen.
  */
+@SuppressLint("ReturnFromAwaitPointerEventScope", "MultipleAwaitPointerEventScopes") // There is a right way to do this, so I assume this is okay.
 private fun Modifier.swipeToDismiss(
     onDismissed: () -> Unit
 ): Modifier = composed {
