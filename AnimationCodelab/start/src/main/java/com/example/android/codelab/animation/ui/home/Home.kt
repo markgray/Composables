@@ -134,6 +134,11 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
+/**
+ * Enum used to identify the two [HomeTab] Composables used in the [HomeTabBar] of our app. Since we
+ * are only interested in the animations that occur when one or the other [HomeTab] is clicked, there
+ * is no need to pretend the names of the members of the enum have any meaning.
+ */
 private enum class TabPage {
     Home, Work
 }
@@ -144,25 +149,27 @@ private enum class TabPage {
 @Composable
 fun Home() {
     // String resources.
-    val allTasks: Array<String> = stringArrayResource(R.array.tasks)
-    val allTopics: List<String> = stringArrayResource(R.array.topics).toList()
+    val allTasks: Array<String> = stringArrayResource(id = R.array.tasks)
+    val allTopics: List<String> = stringArrayResource(id = R.array.topics).toList()
 
     // The currently selected tab.
-    var tabPage: TabPage by remember { mutableStateOf(TabPage.Home) }
+    var tabPage: TabPage by remember { mutableStateOf(value = TabPage.Home) }
 
     // True if the whether data is currently loading.
-    var weatherLoading: Boolean by remember { mutableStateOf(false) }
+    var weatherLoading: Boolean by remember { mutableStateOf(value = false) }
 
     // Holds all the tasks currently shown on the task list.
-    val tasks: SnapshotStateList<String> = remember { mutableStateListOf(*allTasks) }
+    val tasks: SnapshotStateList<String> = remember { mutableStateListOf(elements = allTasks) }
 
     // Holds the topic that is currently expanded to show its body.
-    var expandedTopic: String? by remember { mutableStateOf(null) }
+    var expandedTopic: String? by remember { mutableStateOf(value = null) }
 
     // True if the message about the edit feature is shown.
-    var editMessageShown: Boolean by remember { mutableStateOf(false) }
+    var editMessageShown: Boolean by remember { mutableStateOf(value = false) }
 
-    // Simulates loading weather data. This takes 3 seconds.
+    /**
+     * Simulates loading weather data. This takes 3 seconds.
+     */
     suspend fun loadWeather() {
         if (!weatherLoading) {
             weatherLoading = true
@@ -171,7 +178,9 @@ fun Home() {
         }
     }
 
-    // Shows the message about edit feature.
+    /**
+     * Shows the message about edit feature.
+     */
     suspend fun showEditMessage() {
         if (!editMessageShown) {
             editMessageShown = true
@@ -180,19 +189,26 @@ fun Home() {
         }
     }
 
-    // Load the weather at the initial composition.
+    /**
+     * Load the weather at the initial composition.
+     */
     LaunchedEffect(Unit) {
         loadWeather()
     }
 
     val lazyListState: LazyListState = rememberLazyListState()
 
-    // The background color. The value is changed by the current tab.
     // TODO 1: Animate this color change. DONE
+    /**
+     * The background color. The value is changed by the current tab.
+     */
     val backgroundColor: Color by animateColorAsState(if (tabPage == TabPage.Home) Purple100 else Green300)
 
-    // The coroutine scope for event handlers calling suspend functions.
+    /**
+     * The coroutine scope for event handlers calling suspend functions.
+     */
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             HomeTabBar(
@@ -284,7 +300,6 @@ fun Home() {
  *
  * @param extended Whether the tab should be shown in its expanded state.
  */
-// AnimatedVisibility is currently an experimental API in Compose Animation.
 @Composable
 private fun HomeFloatingActionButton(
     extended: Boolean,
