@@ -319,12 +319,12 @@ private fun EditMessage(shown: Boolean) {
     AnimatedVisibility(
         visible = shown,
         enter = slideInVertically(
-            // Enters by sliding in from offset -fullHeight to 0.
+            // Enters by sliding down from offset -fullHeight to 0.
             initialOffsetY = { fullHeight -> -fullHeight },
             animationSpec = tween(durationMillis = 150, easing = LinearOutSlowInEasing)
         ),
         exit = slideOutVertically(
-            // Exits by sliding out from offset 0 to -fullHeight.
+            // Exits by sliding up from offset 0 to -fullHeight.
             targetOffsetY = { fullHeight -> -fullHeight },
             animationSpec = tween(durationMillis = 250, easing = FastOutLinearInEasing)
         )
@@ -488,11 +488,13 @@ private fun HomeTabIndicator(
         transitionSpec = {
             if (TabPage.Home isTransitioningTo TabPage.Work) {
                 // Indicator moves to the right.
-                // Low stiffness spring for the left edge so it moves slower than the right edge.
+                // Low stiffness spring for the left edge so it
+                // moves slower than the right edge.
                 spring(stiffness = Spring.StiffnessVeryLow)
             } else {
                 // Indicator moves to the left.
-                // Medium stiffness spring for the left edge so it moves faster than the right edge.
+                // Medium stiffness spring for the left edge so it
+                // moves faster than the right edge.
                 spring(stiffness = Spring.StiffnessMedium)
             }
         },
@@ -504,11 +506,13 @@ private fun HomeTabIndicator(
         transitionSpec = {
             if (TabPage.Home isTransitioningTo TabPage.Work) {
                 // Indicator moves to the right
-                // Medium stiffness spring for the right edge so it moves faster than the left edge.
+                // Medium stiffness spring for the right edge so it
+                // moves faster than the left edge.
                 spring(stiffness = Spring.StiffnessMedium)
             } else {
                 // Indicator moves to the left.
-                // Low stiffness spring for the right edge so it moves slower than the left edge.
+                // Low stiffness spring for the right edge so it
+                // moves slower than the left edge.
                 spring(stiffness = Spring.StiffnessVeryLow)
             }
         },
@@ -610,7 +614,8 @@ private fun LoadingRow() {
     val alpha: Float by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
-        // `infiniteRepeatable` repeats the specified duration-based `AnimationSpec` infinitely.
+        // `infiniteRepeatable` repeats the specified
+        // duration-based `AnimationSpec` infinitely.
         animationSpec = infiniteRepeatable(
             // The `keyframes` animates the value by specifying multiple timestamps.
             animation = keyframes {
@@ -695,7 +700,7 @@ private fun Modifier.swipeToDismiss(
         // Wrap in a coroutine scope to use suspend functions for touch events and animation.
         coroutineScope {
             while (true) {
-                // Wait for a touch down event.
+                // Wait for a touch down event. Track the pointerId based on the touch
                 val pointerId: PointerId = awaitPointerEventScope { awaitFirstDown().id }
                 // Interrupt any ongoing animation.
                 offsetX.stop()
@@ -705,9 +710,12 @@ private fun Modifier.swipeToDismiss(
                 awaitPointerEventScope {
                     horizontalDrag(pointerId) { change: PointerInputChange ->
                         // Record the position after offset
+                        // Get the drag amount change to offset the item with
                         val horizontalDragOffset: Float = offsetX.value + change.positionChange().x
                         launch {
                             // Overwrite the `Animatable` value while the element is dragged.
+                            // Instantly set the Animable to the dragOffset to ensure its moving
+                            // as the user's finger moves
                             offsetX.snapTo(targetValue = horizontalDragOffset)
                         }
                         // Record the velocity of the drag.
@@ -722,6 +730,8 @@ private fun Modifier.swipeToDismiss(
                 val targetOffsetX: Float = decay.calculateTargetValue(initialValue = offsetX.value, initialVelocity = velocity)
                 // The animation should end as soon as it reaches these bounds.
                 offsetX.updateBounds(
+                    // Set the upper and lower bounds so that the animation stops when it
+                    // reaches the edge
                     lowerBound = -size.width.toFloat(),
                     upperBound = size.width.toFloat()
                 )

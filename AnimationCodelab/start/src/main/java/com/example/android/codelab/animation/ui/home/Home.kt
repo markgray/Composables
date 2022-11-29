@@ -405,6 +405,7 @@ private fun TopicRow(topic: String, expanded: Boolean, onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = 16.dp)
+                // This `Column` animates its size when its content changes.
                 .animateContentSize()
         ) {
             Row {
@@ -493,11 +494,13 @@ private fun HomeTabIndicator(
         transitionSpec = {
             if (TabPage.Home isTransitioningTo TabPage.Work) {
                 // Indicator moves to the right.
-                // The left edge moves slower than the right edge.
+                // Low stiffness spring for the left edge so it
+                // moves slower than the right edge.
                 spring(stiffness = Spring.StiffnessVeryLow)
             } else {
                 // Indicator moves to the left.
-                // The left edge moves faster than the right edge.
+                // Medium stiffness spring for the left edge so it
+                // moves faster than the right edge.
                 spring(stiffness = Spring.StiffnessMedium)
             }
         },
@@ -509,11 +512,13 @@ private fun HomeTabIndicator(
         transitionSpec = {
             if (TabPage.Home isTransitioningTo TabPage.Work) {
                 // Indicator moves to the right
-                // The right edge moves faster than the left edge.
+                // Medium stiffness spring for the right edge so it
+                // moves faster than the left edge.
                 spring(stiffness = Spring.StiffnessMedium)
             } else {
                 // Indicator moves to the left.
-                // The right edge moves slower than the left edge.
+                // Low stiffness spring for the right edge so it
+                // moves slower than the left edge.
                 spring(stiffness = Spring.StiffnessVeryLow)
             }
         },
@@ -611,15 +616,23 @@ private fun WeatherRow(
 @Composable
 private fun LoadingRow() {
     // TODO 5: Animate this value between 0f and 1f, then back to 0f repeatedly. DONE
+    // Creates an `InfiniteTransition` that runs infinite child animation values.
     val infiniteTransition: InfiniteTransition = rememberInfiniteTransition()
     val alpha: Float by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
+        // `infiniteRepeatable` repeats the specified
+        // duration-based `AnimationSpec` infinitely.
         animationSpec = infiniteRepeatable(
+            // The `keyframes` animates the value by specifying multiple timestamps.
             animation = keyframes {
+                // One iteration is 1000 milliseconds.
                 durationMillis = 1000
+                // 0.7f at the middle of an iteration.
                 0.7f at 500
             },
+            // When the value finishes animating from 0f to 1f, it repeats by reversing the
+            // animation direction.
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -687,6 +700,7 @@ private fun Modifier.swipeToDismiss(
     onDismissed: () -> Unit
 ): Modifier = composed {
     // TODO 6-1: Create an Animatable instance for the offset of the swiped element. DONE
+    // This `Animatable` stores the horizontal offset for the element.
     val offsetX: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) } // Add this line
     pointerInput(key1 = Unit) {
         // Used to calculate a settling position of a fling animation.
@@ -697,6 +711,7 @@ private fun Modifier.swipeToDismiss(
                 // Wait for a touch down event. Track the pointerId based on the touch
                 val pointerId: PointerId = awaitPointerEventScope { awaitFirstDown().id }
                 // TODO 6-2: Touch detected; the animation should be stopped. DONE
+                // Interrupt any ongoing animation.
                 offsetX.stop() // Add this line to cancel any on-going animations
                 // Prepare for drag events and record velocity of a fling.
                 val velocityTracker = VelocityTracker()
@@ -705,11 +720,13 @@ private fun Modifier.swipeToDismiss(
                     horizontalDrag(pointerId) { change: PointerInputChange ->
                         // TODO 6-3: Apply the drag change to the Animatable offset. DONE
                         // Add these 4 lines
+                        // Record the position after offset
                         // Get the drag amount change to offset the item with
                         val horizontalDragOffset: Float = offsetX.value + change.positionChange().x
                         // Need to call this in a launch block in order to run it separately
                         // outside of the awaitPointerEventScope
                         launch {
+                            // Overwrite the `Animatable` value while the element is dragged.
                             // Instantly set the Animable to the dragOffset to ensure its moving
                             // as the user's finger moves
                             offsetX.snapTo(targetValue = horizontalDragOffset)
@@ -726,9 +743,10 @@ private fun Modifier.swipeToDismiss(
                 //           based on the current offset value and velocity DONE
                 // Add this line to calculate where it would end up with
                 // the current velocity and position
+                // Calculate where the element eventually settles after the fling animation.
                 val targetOffsetX: Float = decay.calculateTargetValue(initialValue = offsetX.value, initialVelocity = velocity)
                 // TODO 6-5: Set the upper and lower bounds so that the animation stops when it
-                //           reaches the edge. DONE
+                // reaches the edge. DONE
                 offsetX.updateBounds(
                     lowerBound = -size.width.toFloat(),
                     upperBound = size.width.toFloat()
@@ -737,7 +755,7 @@ private fun Modifier.swipeToDismiss(
                     // TODO 6-6: Slide back the element if the settling position does not go beyond
                     //           the size of the element. Remove the element if it does. DONE
                     if (targetOffsetX.absoluteValue <= size.width) {
-                        // Not enough velocity; Slide back.
+                        // Not enough velocity; Slide back to the default position.
                         offsetX.animateTo(targetValue = 0f, initialVelocity = velocity)
                     } else {
                         // Enough velocity to slide away the element to the edge.
@@ -749,6 +767,7 @@ private fun Modifier.swipeToDismiss(
             }
         }
     }
+        // Apply the horizontal offset to the element.
         .offset {
             // TODO 6-7: Use the animating offset value here. DONE
             IntOffset(x = offsetX.value.roundToInt(), y = 0)
