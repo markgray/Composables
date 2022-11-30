@@ -82,9 +82,13 @@ fun bindIsGone(view: FloatingActionButton, isGone: Boolean?) {
 }
 
 /**
- * TODO: Add kdoc
+ * This `BindingAdapter` would be called if a [TextView] had the attribute app:renderHtml but none
+ * of the [TextView]'s in this app use it.
+ *
+ * @param view the [TextView] with the attribute app:renderHtml
+ * @param description the [String] value of the binding expression assigned to app:renderHtml
  */
-@Suppress("unused")
+@Suppress("unused") // Unused but instructional.
 @BindingAdapter("renderHtml")
 fun bindRenderHtml(view: TextView, description: String?) {
     if (description != null) {
