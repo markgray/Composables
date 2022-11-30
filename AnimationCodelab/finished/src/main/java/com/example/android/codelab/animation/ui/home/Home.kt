@@ -53,6 +53,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -295,9 +296,22 @@ fun Home() {
 }
 
 /**
- * Shows the floating action button.
+ * Shows the floating action button. Our root Composable is an [FloatingActionButton] whose `onClick`
+ * argument is our [onClick] parameter. Its `content` consists of a [Row] root Composable that holds
+ * an [Icon] whose `imageVector` argument is the system [ImageVector] `Edit` of [Icons.Default] which
+ * resolves to [Icons.Filled.Edit] which is a stylized "pencil", and its `contentDescription` argument
+ * is `null`. The other Composable in the [Row] is a [Text] that displays the `text` "EDIT" that is
+ * wrapped in a [AnimatedVisibility] whose `visible` argument is our [Boolean] parameter [extended].
+ * This [RowScope.AnimatedVisibility] animates the appearance and disappearance of its content when
+ * the [AnimatedVisibility] is in a [Row]. The default animations are tailored specific to the [Row]
+ * layout. The default `enter` animation is fading in while expanding horizontally when [extended]
+ * changes to `true` and the default `exit` animation is fading out while shrinking horizontally when
+ * [extended] changes to `false`. The [Scaffold] in our [Home] Composable uses this Composable as its
+ * `topBar` argumentt with the [extended] argument the value of the [LazyListState.isScrollingUp]
+ * property of the [LazyListState] of the [LazyColumn] it uses as the `content` of the [Scaffold].
  *
  * @param extended Whether the tab should be shown in its expanded state.
+ * @param onClick the lambda that will be called when the [FloatingActionButton] is clicked.
  */
 @Composable
 private fun HomeFloatingActionButton(
