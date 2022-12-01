@@ -775,7 +775,7 @@ private fun Modifier.swipeToDismiss(
                 // Calculate where the element eventually settles after the fling animation.
                 val targetOffsetX: Float = decay.calculateTargetValue(initialValue = offsetX.value, initialVelocity = velocity)
                 // TODO 6-5: Set the upper and lower bounds so that the animation stops when it
-                // reaches the edge. DONE
+                //           reaches the edge. DONE
                 offsetX.updateBounds(
                     lowerBound = -size.width.toFloat(),
                     upperBound = size.width.toFloat()
