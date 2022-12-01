@@ -16,7 +16,11 @@
 
 package com.google.samples.apps.sunflower.adapters
 
+import android.content.Context
+import android.content.res.Resources
 import android.text.method.LinkMovementMethod
+import android.text.Spanned
+import android.text.method.MovementMethod
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
@@ -28,6 +32,7 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.samples.apps.sunflower.R
+import com.google.samples.apps.sunflower.data.Plant
 
 /**
  * This method is called when an [ImageView] has an app:imageFromUrl attribute with the parameter
@@ -83,7 +88,14 @@ fun bindIsGone(view: FloatingActionButton, isGone: Boolean?) {
 
 /**
  * This `BindingAdapter` would be called if a [TextView] had the attribute app:renderHtml but none
- * of the [TextView]'s in this app use it.
+ * of the [TextView]'s in this app use it. If our [String] parameter [description] is not `null`
+ * we set the `text` of our [TextView] parameter [view] to the [Spanned] the [HtmlCompat.fromHtml]
+ * method returns when it parses the html string in our [String] parameter [description] with the
+ * flag [FROM_HTML_MODE_COMPACT] (Separates block-level elements with line breaks (single newline
+ * character) in between), then we set the `movementMethod` property of [view] (the [MovementMethod]
+ * for handling arrow key movement for this [TextView]) to an instance of [LinkMovementMethod]
+ * (movement method that traverses links in the text buffer and scrolls if necessary). If [description]
+ * is `null` we just set the `text` of [view] to an empty [String].
  *
  * @param view the [TextView] with the attribute app:renderHtml
  * @param description the [String] value of the binding expression assigned to app:renderHtml
@@ -100,13 +112,27 @@ fun bindRenderHtml(view: TextView, description: String?) {
 }
 
 /**
- * TODO: Add kdoc
+ * This `BindingAdapter` would be called if a [TextView] had the attribute app:wateringText but none
+ * of the [TextView]'s in this app currently use it, although layout/fragment_plant_detail.xml did
+ * use it before "Step 2) Comment out ConstraintLayout and its children" of the conversion to Compose
+ * in the [TextView] with ID `R.id.plant_watering`. We initialize our [Resources] variable `val resources`
+ * to the value returned by the [Context.getResources] method (kotlin `resources` property) of the
+ * [Context] returned by the [TextView.getContext] method (kotlin `context` property) of our parameter
+ * [textView]. Then we use the [Resources.getQuantityString] method of `resources` to get the correct
+ * plural text created from the string with resource ID [R.plurals.watering_needs_suffix] when it is
+ * used for the quantity in our [Int] parameter [wateringInterval]. Then we set the `text` of [textView]
+ * to our [String] variable `quantityString`.
+ *
+ * @param textView the [TextView] that has the attribute app:wateringText (none do anymore).
+ * @param wateringInterval the value of the binding expression assigned to attribute app:wateringText
+ * which is the watering interval in days for the [Plant], in the original xml this was:
+ * app:wateringText="@{viewModel.plant.wateringInterval}"
  */
 @Suppress("unused")
 @BindingAdapter("wateringText")
 fun bindWateringText(textView: TextView, wateringInterval: Int) {
-    val resources = textView.context.resources
-    val quantityString = resources.getQuantityString(
+    val resources: Resources = textView.context.resources
+    val quantityString: String = resources.getQuantityString(
         R.plurals.watering_needs_suffix,
         wateringInterval, wateringInterval
     )

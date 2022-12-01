@@ -21,9 +21,19 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.samples.apps.sunflower.GardenFragment
 import com.google.samples.apps.sunflower.PlantListFragment
 
-const val MY_GARDEN_PAGE_INDEX = 0
-const val PLANT_LIST_PAGE_INDEX = 1
+/**
+ * TODO: Add kdoc
+ */
+const val MY_GARDEN_PAGE_INDEX: Int = 0
 
+/**
+ * TODO: Add kdoc
+ */
+const val PLANT_LIST_PAGE_INDEX: Int = 1
+
+/**
+ * TODO: Add kdoc
+ */
 class SunflowerPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     /**
@@ -34,8 +44,14 @@ class SunflowerPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment)
         PLANT_LIST_PAGE_INDEX to { PlantListFragment() }
     )
 
-    override fun getItemCount() = tabFragmentsCreators.size
+    /**
+     * TODO: Add kdoc
+     */
+    override fun getItemCount(): Int = tabFragmentsCreators.size
 
+    /**
+     * TODO: Add kdoc
+     */
     override fun createFragment(position: Int): Fragment {
         return tabFragmentsCreators[position]?.invoke() ?: throw IndexOutOfBoundsException()
     }
