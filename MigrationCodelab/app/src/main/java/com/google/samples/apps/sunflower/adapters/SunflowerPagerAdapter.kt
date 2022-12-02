@@ -17,22 +17,32 @@
 package com.google.samples.apps.sunflower.adapters
 
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.samples.apps.sunflower.GardenFragment
+import com.google.samples.apps.sunflower.HomeViewPagerFragment
 import com.google.samples.apps.sunflower.PlantListFragment
+import com.google.samples.apps.sunflower.R
 
 /**
- * TODO: Add kdoc
+ * This is the ViewPager page index for the [GardenFragment] and is used by our override of
+ * [FragmentStateAdapter.createFragment] to select that fragment from the `tabFragmentsCreators`
+ * [Map] as the return value for the override.
  */
 const val MY_GARDEN_PAGE_INDEX: Int = 0
 
 /**
- * TODO: Add kdoc
+ * This is the ViewPager page index for the [PlantListFragment] and is used by our override of
+ * [FragmentStateAdapter.createFragment] to select that fragment from the `tabFragmentsCreators`
+ * [Map] as the return value for the override.
  */
 const val PLANT_LIST_PAGE_INDEX: Int = 1
 
 /**
- * TODO: Add kdoc
+ * This is the [RecyclerView.Adapter] used by the [ViewPager2] with resource ID [R.id.view_pager] in
+ * the layout file layout/fragment_view_pager.xml (resource ID [R.layout.fragment_view_pager]) which
+ * is used as the View for the fragment's UI by [HomeViewPagerFragment].
  */
 class SunflowerPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
