@@ -88,7 +88,7 @@ import kotlinx.coroutines.launch
  * [AppContainer.postsRepository] contains a reference to our [PostsRepository], and the field
  * [AppContainer.interestsRepository] contains a reference to our [InterestsRepository].
  */
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter") // The PaddingValues parameter is not needed
 @Composable
 fun JetnewsApp(
     appContainer: AppContainer

@@ -28,7 +28,7 @@ import kotlinx.coroutines.sync.Mutex
  * Simplified implementation of PostsRepository that returns a hardcoded list of
  * posts with resources synchronously.
  */
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate") // I like to use kdoc [] references.
 class PostsRepository {
     /**
      * This [MutableStateFlow] will emit its value whenever it changes. [observeFavorites] returns
