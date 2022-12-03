@@ -90,6 +90,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -145,36 +146,69 @@ private enum class TabPage {
 }
 
 /**
- * Shows the entire screen.
+ * Shows the entire screen. It contains one animation, the "to do 1: Animate this color change" which
+ * animates the `backgroundColor` argument of the [Scaffold] root Composable of [Home] as well as the
+ * [HomeTabBar] that is used as the `topBar` of the [Scaffold] depending on the current tab selected
+ * in the [HomeTabBar]: [Purple100] for [TabPage.Home] and [Green300] for any other [TabPage]. It uses
+ * the method [animateColorAsState] to do this. Since it returns a [State] of [Color] any Composable
+ * that has it as an argument will recompose every step of the animation between the colors.
+ *
+ * We start by using the [stringArrayResource] method to initialize our [Array] of [String] variable
+ * `val allTasks` with the `string-array` with resource ID [R.array.tasks], and using the [toList]
+ * extension function on the [Array] of [String] returned by the [stringArrayResource] method for the
+ * `string-array` with resource ID [R.array.topics] to initialize our [List] of [String] variable
+ * `val allTopics`.
  */
 @Composable
 fun Home() {
     // String resources.
+    /**
+     * All of the tasks that are initially loaded into our [SnapshotStateList] of [String] variable
+     * `val tasks` which is itself used as the current task list that is displayed in [TaskRow] items
+     * in the [LazyColumn] that is the `content` of our [Scaffold].
+     */
     val allTasks: Array<String> = stringArrayResource(id = R.array.tasks)
+
+    /**
+     * All of the topics that are displayed in [TopicRow] items in the [LazyColumn] that is the
+     * `content` of our [Scaffold].
+     */
     val allTopics: List<String> = stringArrayResource(id = R.array.topics).toList()
 
-    // The currently selected tab.
+    /**
+     * The currently selected tab.
+     */
     var tabPage: TabPage by remember { mutableStateOf(value = TabPage.Home) }
 
-    // True if the whether data is currently loading.
+    /**
+     * True if the weather data is currently loading.
+     */
     var weatherLoading: Boolean by remember { mutableStateOf(value = false) }
 
-    // Holds all the tasks currently shown on the task list.
+    /**
+     * Holds all the tasks currently shown on the task list.
+     */
     val tasks: SnapshotStateList<String> = remember { mutableStateListOf(elements = allTasks) }
 
-    // Holds the topic that is currently expanded to show its body.
+    /**
+     * Holds the topic that is currently expanded to show its body.
+     */
     var expandedTopic: String? by remember { mutableStateOf(value = null) }
 
-    // True if the message about the edit feature is shown.
+    /**
+     * True if the message about the edit feature is shown.
+     */
     var editMessageShown: Boolean by remember { mutableStateOf(value = false) }
 
     /**
-     * Simulates loading weather data. This takes 3 seconds.
+     * Simulates loading weather data. This takes 3 seconds. If `weatherLoading` is `false` we set
+     * it to `true`, call [delay] to delay for 3,000 milliseconds then set `weatherLoading` to `false`
+     * and return. If `weatherLoading` is `true` when we are called we do nothing and return.
      */
     suspend fun loadWeather() {
         if (!weatherLoading) {
             weatherLoading = true
-            delay(3000L)
+            delay(3_000L)
             weatherLoading = false
         }
     }
@@ -732,7 +766,7 @@ private fun Modifier.swipeToDismiss(
                 // Wait for a touch down event. Track the pointerId based on the touch
                 val pointerId: PointerId = awaitPointerEventScope { awaitFirstDown().id }
                 // Interrupt any ongoing animation.
-                offsetX.stop()
+                offsetX.stop() // Add this line to cancel any on-going animations
                 // Prepare for drag events and record velocity of a fling.
                 val velocityTracker = VelocityTracker()
                 // Wait for drag events.
