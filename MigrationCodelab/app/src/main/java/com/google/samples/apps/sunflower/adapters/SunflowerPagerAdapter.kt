@@ -47,7 +47,9 @@ const val PLANT_LIST_PAGE_INDEX: Int = 1
 class SunflowerPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     /**
-     * Mapping of the ViewPager page indexes to their respective Fragments
+     * Mapping of the ViewPager page indexes to a lambda that calls the constructor of their
+     * respective [Fragment]'s (when the lambda value of an item is [invoke]'d it returns a new
+     * instance of the [Fragment]).
      */
     private val tabFragmentsCreators: Map<Int, () -> Fragment> = mapOf(
         MY_GARDEN_PAGE_INDEX to { GardenFragment() },
@@ -55,12 +57,28 @@ class SunflowerPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment)
     )
 
     /**
-     * TODO: Add kdoc
+     * Returns the total number of items in the data set held by the adapter. We just return the
+     * `size` of our [tabFragmentsCreators] field.
+     *
+     * @return The total number of items in this adapter.
      */
     override fun getItemCount(): Int = tabFragmentsCreators.size
 
     /**
-     * TODO: Add kdoc
+     * Provide a new Fragment associated with the specified position. The adapter will be
+     * responsible for the Fragment lifecycle:
+     *  - The Fragment will be used to display an item.
+     *  - The Fragment will be destroyed when it gets too far from the viewport, and its state
+     *  will be saved. When the item is close to the viewport again, a new Fragment will be
+     *  requested, and a previously saved state will be used to initialize it.
+     *
+     * We retrieve the lambda in the [Map] of [Int] to lambda with the key [position] and if it is
+     * not `null` we [invoke] it and return the [Fragment] instance it returns to the caller. If it
+     * is `null` we throw an [IndexOutOfBoundsException].
+     *
+     * @param position the position in our adapter's dataset of the fragment producing lambda that is
+     * required.
+     * @return a [Fragment] instance of the type requested by our [position] parameter.
      */
     override fun createFragment(position: Int): Fragment {
         return tabFragmentsCreators[position]?.invoke() ?: throw IndexOutOfBoundsException()
