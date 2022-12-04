@@ -24,9 +24,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.work.ListenableWorker
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.samples.apps.sunflower.utilities.DATABASE_NAME
+import com.google.samples.apps.sunflower.utilities.PLANT_DATA_FILENAME
 import com.google.samples.apps.sunflower.workers.SeedDatabaseWorker
 
 /**
@@ -80,13 +83,35 @@ abstract class AppDatabase : RoomDatabase() {
         /**
          * Create and pre-populate the database. See this article for more details:
          * https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1#4785
+         *
+         * We create a [RoomDatabase.Builder] for a persistent database using our [Context] parameter
+         * [context] as the context for the database (the Application context in our case). With
+         * [AppDatabase] the abstract class which is annotated with [Database] and extends [RoomDatabase],
+         * and [DATABASE_NAME] ("sunflower-db") the name of the database file. We use its
+         * [RoomDatabase.Builder.addCallback] method to add an anonymous [RoomDatabase.Callback] to
+         * the database and override the [RoomDatabase.Callback.onCreate] method in order to have
+         * our [SeedDatabaseWorker] "seed" the database with the initial data from the [PLANT_DATA_FILENAME]
+         * ("plants.json") json file when the database is created for the first time. Finally we build
+         * the [Room.databaseBuilder] and return the [AppDatabase] it builds.
+         *
+         * @param context The [Context] for the database, the Application context in our case.
+         * @return the singleton [AppDatabase] for the app.
          */
         private fun buildDatabase(context: Context): AppDatabase {
             return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
                 .addCallback(object : Callback() {
+                    /**
+                     * Called when the database is created for the first time. This is called after
+                     * all the tables are created. First we call our super's implementation of
+                     * `onCreate`, then we initialize our [OneTimeWorkRequest] variable `val request`
+                     * with an instance that uses [SeedDatabaseWorker] as the [ListenableWorker] class
+                     * that will perform work asynchronously in [WorkManager].
+                     *
+                     * @param db The database.
+                     */
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
-                        val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>().build()
+                        val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<SeedDatabaseWorker>().build()
                         WorkManager.getInstance(context).enqueue(request)
                     }
                 })
