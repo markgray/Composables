@@ -91,6 +91,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -157,7 +158,41 @@ private enum class TabPage {
  * `val allTasks` with the `string-array` with resource ID [R.array.tasks], and using the [toList]
  * extension function on the [Array] of [String] returned by the [stringArrayResource] method for the
  * `string-array` with resource ID [R.array.topics] to initialize our [List] of [String] variable
- * `val allTopics`.
+ * `val allTopics`. We initialize and remember our [TabPage] variable `var tabPage` as a [MutableState]
+ * with the initial value of [TabPage.Home], initialize and remember our [Boolean] variable
+ * `var weatherLoading` as a [MutableState] with the initial value of `false`, initialize and
+ * remember our [SnapshotStateList] of [String] variable `val tasks` using the [mutableStateListOf]
+ * method with the initial value of our [Array] of [String] variable `allTasks`, initialize and
+ * remember our [String] variable `var expandedTopic` as a  [MutableState] with the initial value of
+ * `null`, and initialize and remember our [Boolean] variable `var editMessageShown` as a [MutableState]
+ * with the initial value of `false`.
+ *
+ * We then proceed to define two suspend methods for later use:
+ *  - `loadWeather` which sets `weatherLoading` to `true` if it is `false` then simulates loading
+ *  weather data by delaying for 3 seconds before setting `weatherLoading` back to `false`. An `if`
+ *  statement in an item of the [LazyColumn] will cause a [LoadingRow] to be displayed while
+ *  `weatherLoading` is `true`, and display a [WeatherRow] while `weatherLoading` is `false`.
+ *  `loadWeather` is called by a [LaunchedEffect] during the initial composition and by the
+ *  "Refresh" [IconButton] of the [WeatherRow] Composable.
+ *  - `showEditMessage` which sets `editMessageShown` to `true` if it is `false` then delays for 3
+ *  seconds before setting `weatherLoading` back to `false`. An [EditMessage] at the bottom of the
+ *  `content` of the [Scaffold] of [Home] uses `editMessageShown` as the `visible` argument of
+ *  [AnimatedVisibility] to animate the visibility of its `content` which is a [Text] displaying the
+ *  `text` "Edit feature is not supported". `showEditMessage` is called by the `onClick` lambda of
+ *  the [HomeFloatingActionButton].
+ *
+ * Next in the [Home] Composable is a [LaunchedEffect] with a key of [Unit] (keys are now required,
+ * but any constant including [Unit] causes the [LaunchedEffect] to only execute once) which calls
+ * `loadWeather` at the initial composition.
+ *
+ * We next initialize and remember our [LazyListState] variable `val lazyListState` using the
+ * [rememberLazyListState] method (it is used as the [LazyListState] argument `state` of the
+ * [LazyColumn] in the `content` of the [Scaffold] of [Home] and the [LazyListState.isScrollingUp]
+ * extension property is used as the `extended` argument of the [HomeFloatingActionButton]
+ * `floatingActionButton` of the [Scaffold] with an [AnimatedVisibility] using its value as its
+ * `visible` argument to animate the visibility of an "Extended" [Text] of an [FloatingActionButton]
+ * that displays the `text` "EDIT" (methinks that [isScrollingUp] returns `hasNotScrolledUpYet` since
+ * the [Text] is only visible when the [LazyColumn] is at its top but I won't quibble with the name).
  */
 @Composable
 fun Home() {
@@ -775,6 +810,8 @@ private fun Modifier.swipeToDismiss(
                         // Record the position after offset
                         // Get the drag amount change to offset the item with
                         val horizontalDragOffset: Float = offsetX.value + change.positionChange().x
+                        // Need to call this in a launch block in order to run it separately
+                        // outside of the awaitPointerEventScope
                         launch {
                             // Overwrite the `Animatable` value while the element is dragged.
                             // Instantly set the Animable to the dragOffset to ensure its moving
