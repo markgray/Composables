@@ -24,14 +24,50 @@ import androidx.room.Query
 import androidx.room.Transaction
 
 /**
- * The Data Access Object for the [GardenPlanting] class.
+ * The Data Access Object for the [GardenPlanting] class (aka "garden_plantings" table). The `@Dao`
+ * annotation Marks the class as a Data Access Object. Data Access Objects are the main classes where
+ * you define your database interactions. They can include a variety of query methods. The class
+ * marked with `@Dao` should either be an interface or an abstract class. At compile time, Room will
+ * generate an implementation of this class when it is referenced by a Database. An abstract `@Dao`
+ * class can optionally have a constructor that takes a Database as its only parameter.
  */
 @Dao
 interface GardenPlantingDao {
-    @Query("SELECT * FROM garden_plantings")
+    /**
+     * Returns a [LiveData] wrapped [List] of all the [GardenPlanting] rows in the "garden_plantings"
+     * table. The `@Query` annotation Marks a method in a Dao annotated class as a query method. The
+     * `value` argument is a SQL query that will be run when this method is called. The "SELECT *"
+     * clause specifies that the query should return all columns of the queried tables, and the
+     * "FROM garden_plantings" clause indicates the table to retrieve data from to be the
+     * "garden_plantings" table.
+     *
+     * @return a [LiveData] wrapped [List] of all the [GardenPlanting] rows in the "garden_plantings"
+     * table.
+     */
+    @Query(value = "SELECT * FROM garden_plantings")
     fun getGardenPlantings(): LiveData<List<GardenPlanting>>
 
-    @Query("SELECT EXISTS(SELECT 1 FROM garden_plantings WHERE plant_id = :plantId LIMIT 1)")
+    /**
+     * Returns a [LiveData] wrapped [Boolean] that is `true` if and only if one of the rows of the
+     * "garden_plantings" table has a "plant_id" column containing the value of our [String] parameter
+     * [plantId]. The "EXISTS" operator is used to test for the existence of any record in a subquery.
+     * The "EXISTS" operator returns `true` if the subquery returns one or more records. The subquery
+     * uses a "SELECT 1" clause to select 1 row "FROM" the "garden_plantings" table and the "WHERE"
+     * clause specifies that the "plant_id" column of the row should equal our [String] parameter
+     * [plantId] (the colon in `:plantId` tells ROOM to substitute the value of the parameter in the
+     * query) and the "LIMIT 1" clause is used to specify the number of records (1) to return. The
+     * "SELECT" clause of the outer query causes Room to infer the result contents from the method's
+     * return type and generate the code that will automatically convert the query result into the
+     * method's return type.
+     *
+     * @param plantId the "id" of the [Plant] row in the "plants" table that we are searching for in
+     * the "garden_plantings" table. The `plant_id` column of the "garden_plantings" table holds the
+     * references to [Plant] rows in the "plants" table.
+     * @return a [LiveData] wrapped [Boolean] that is `true` if and only if one of the rows of the
+     * "garden_plantings" table has a "plant_id" column containing the value of our [String] parameter
+     * [plantId].
+     */
+    @Query(value = "SELECT EXISTS(SELECT 1 FROM garden_plantings WHERE plant_id = :plantId LIMIT 1)")
     fun isPlanted(plantId: String): LiveData<Boolean>
 
     /**
@@ -42,9 +78,15 @@ interface GardenPlantingDao {
     @Query("SELECT * FROM plants WHERE id IN (SELECT DISTINCT(plant_id) FROM garden_plantings)")
     fun getPlantedGardens(): LiveData<List<PlantAndGardenPlantings>>
 
+    /**
+     * TODO: Add kdoc
+     */
     @Insert
     suspend fun insertGardenPlanting(gardenPlanting: GardenPlanting): Long
 
+    /**
+     * TODO: Add kdoc
+     */
     @Delete
     suspend fun deleteGardenPlanting(gardenPlanting: GardenPlanting)
 }

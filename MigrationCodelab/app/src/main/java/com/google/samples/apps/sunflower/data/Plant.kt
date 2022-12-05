@@ -22,22 +22,45 @@ import androidx.room.PrimaryKey
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_YEAR
 
+/**
+ * TODO: Add kdoc
+ */
 @Entity(tableName = "plants")
 data class Plant(
-    @PrimaryKey @ColumnInfo(name = "id") val plantId: String,
+    /**
+     * TODO: Add kdoc
+     */
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    val plantId: String,
+    /**
+     * TODO: Add kdoc
+     */
     val name: String,
+    /**
+     * TODO: Add kdoc
+     */
     val description: String,
+    /**
+     * TODO: Add kdoc
+     */
     val growZoneNumber: Int,
+    /**
+     * TODO: Add kdoc
+     */
     val wateringInterval: Int = 7, // how often the plant should be watered, in days
+    /**
+     * TODO: Add kdoc
+     */
     val imageUrl: String = ""
 ) {
 
     /**
-     * Determines if the plant should be watered.  Returns true if [since]'s date > date of last
-     * watering + watering Interval; false otherwise.
+     * Determines if the plant should be watered.  Returns `true` if [since]'s date > date of last
+     * watering + watering Interval; `false` otherwise.
      */
-    fun shouldBeWatered(since: Calendar, lastWateringDate: Calendar) =
+    fun shouldBeWatered(since: Calendar, lastWateringDate: Calendar): Boolean =
         since > lastWateringDate.apply { add(DAY_OF_YEAR, wateringInterval) }
 
-    override fun toString() = name
+    override fun toString(): String = name
 }
