@@ -193,6 +193,27 @@ private enum class TabPage {
  * `visible` argument to animate the visibility of an "Extended" [Text] of an [FloatingActionButton]
  * that displays the `text` "EDIT" (methinks that [isScrollingUp] returns `hasNotScrolledUpYet` since
  * the [Text] is only visible when the [LazyColumn] is at its top but I won't quibble with the name).
+ *
+ * The "to do 1: Animate this color change" step in the codelab is next, and all that is required is
+ * to in initialize our [Color] variable `val backgroundColor` by an [animateColorAsState] whose
+ * `targetValue` argument is an `if` expression which returns [Purple100] if `tabPage` (the currently
+ * selected tab) is equal to [TabPage.Home] or else [Green300] if it is not equal. `backgroundColor`
+ * is used as the `backgroundColor` argument of the [HomeTabBar] Composable that is the `topBar`
+ * of the [Scaffold] as well as the `backgroundColor` argument of the [Scaffold] itself, and the
+ * [animateColorAsState] will cause them to recompose as it smoothly animates between the colors when
+ * the value of `tabPage` changes.
+ *
+ * The last step before calling the [Scaffold] root Composable is to initialize and remember our
+ * [CoroutineScope] variable `val coroutineScope` to a a [CoroutineScope] bound to this point in the
+ * composition using the [rememberCoroutineScope] method. We will use thie coroutine scope for event
+ * handlers calling suspend functions. It is used in the `onRefresh` lambda argument of [WeatherRow]
+ * to launch the `loadWeather` suspend function and in the `onClick` lambda argument of our
+ * [HomeFloatingActionButton] to launch the `showEditMessage` suspend function.
+ *
+ * Now for the [Scaffold]. Its `topBar` argument (top app bar of the screen) is a [HomeTabBar] Composable
+ * whose `backgroundColor` is the [animateColorAsState] wrapped [Color] variable `backgroundColor` we
+ * discussed above, its `tabPage` argument is our `tabPage` variable and its `onTabSelected` argument
+ * is a lambda that sets `tabPage` to the new [TabPage] that has been selected.
  */
 @Composable
 fun Home() {
@@ -283,7 +304,7 @@ fun Home() {
             HomeTabBar(
                 backgroundColor = backgroundColor,
                 tabPage = tabPage,
-                onTabSelected = { tabPage = it }
+                onTabSelected = { select: TabPage -> tabPage = select }
             )
         },
         backgroundColor = backgroundColor,
