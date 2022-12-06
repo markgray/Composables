@@ -72,7 +72,20 @@ interface GardenPlantingDao {
 
     /**
      * This query will tell Room to query both the [Plant] and [GardenPlanting] tables and handle
-     * the object mapping.
+     * the object mapping. The `@Transaction` annotation marks this method as a transaction method.
+     * A SQL transaction is a grouping of one or more SQL statements that interact with a database.
+     * A transaction in its entirety can commit to a database as a single logical unit or rollback
+     * (become undone) as a single logical unit. The (SELECT DISTINCT(plant_id) FROM garden_plantings)
+     * subquery produces a list of all of the rows in the "garden_plantings" table with a DISTINCT
+     * "plant_id" column, and the outer query selects all of the rows in the "plants" table whose
+     * "id" column is in the list returned by the subquery. ROOM automagically populates instances
+     * of [PlantAndGardenPlantings] with the [Plant] and [GardenPlanting] from the query into a
+     * [LiveData] wrapped [List] of [PlantAndGardenPlantings]. This is due to a `@Relation` annotation
+     * in [PlantAndGardenPlantings] which can be used in a POJO to automatically fetch relation entities.
+     * When the POJO is returned from a query, all of its relations are also fetched by Room.
+     *
+     * @return a [LiveData] wrapped [List] of [PlantAndGardenPlantings] which captures the relationship
+     * between a [Plant] and a user's [GardenPlanting].
      */
     @Transaction
     @Query("SELECT * FROM plants WHERE id IN (SELECT DISTINCT(plant_id) FROM garden_plantings)")
