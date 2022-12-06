@@ -213,7 +213,53 @@ private enum class TabPage {
  * Now for the [Scaffold]. Its `topBar` argument (top app bar of the screen) is a [HomeTabBar] Composable
  * whose `backgroundColor` is the [animateColorAsState] wrapped [Color] variable `backgroundColor` we
  * discussed above, its `tabPage` argument is our `tabPage` variable and its `onTabSelected` argument
- * is a lambda that sets `tabPage` to the new [TabPage] that has been selected.
+ * is a lambda that sets `tabPage` to the new [TabPage] that has been selected. The `backgroundColor`
+ * argument of the [Scaffold] is also the [animateColorAsState] wrapped [Color] variable `backgroundColor`.
+ * The `floatingActionButton` argument of the [Scaffold] is a [HomeFloatingActionButton] whose `extended`
+ * argument is the [Boolean] value returned by the [LazyListState.isScrollingUp] extension method (which
+ * returns `true` only when the [LazyColumn] `content` of the [Scaffold] is at its top, and the `onClick`
+ * argument is a lambda which uses our [CoroutineScope] variable `coroutineScope` to launch a coroutine
+ * which calls `showEditMessage` to have it set `editMessageShown` to `true` then delay for 3 seconds
+ * and set it back to `false` (setting it to `true` causes the [EditMessage] Composable below the
+ * [LazyColumn] in the `content` of the [Scaffold] to animate the visibility of a [Text] displaying
+ * the message "Edit feature is not supported" to visible and setting it back to `false` causes the
+ * reverse animation to invisible to occur.
+ *
+ * The `content` of the [Scaffold] holds a [LazyColumn] and the [EditMessage] Composable just mentioned.
+ * The `contentPadding` argument of the [LazyColumn] (padding around the whole content) is a
+ * [PaddingValues] that sets the `horizontal` padding to 16.dp, and the `vertical` padding to. 32.dp,
+ * its `state` argument (state object to be used to control or observe the list's state) is our
+ * [LazyListState] variable `lazyListState`, and its `modifier` argument is a [Modifier.padding] whose
+ * `paddingValues` variable is the [PaddingValues] instance `padding` that the [Scaffold] passes as
+ * an argument to its `content` lambda.
+ *
+ * The `content` of the [LazyColumn] is divided into three sections: "Weather", "Topics", and "Tasks".
+ * The "Weather" section has four items in it:
+ *  - an `item` displaying a [Header] Composable displaying the `title` "Weather"
+ *  - an `item` holding a [Spacer] whose height is 16.dp
+ *  - an `item` holding a [Surface] whose `modifier` argument is a [Modifier.fillMaxWidth] and whose
+ *  `elevation` is 2.dp which has an if statement which displays a [LoadingRow] Composable if our
+ *  `weatherLoading` variable is `true` or an [WeatherRow] Composable whose `onRefresh` lambda argument
+ *  uses our [CoroutineScope] variable `coroutineScope` to launch a coroutine which calls `loadWeather`
+ *  to have it set `weatherLoading` to `true`, delay 3 seconds then set `weatherLoading` back to `false`
+ *  (causing the item to recompose and display the [LoadingRow] in the `true` path of the `if` for the
+ *  3 seconds).
+ *  - an `item` holding a [Spacer] whose height is 32.dp
+ *
+ * The "Topics" section has four items in it:
+ *  - an `item` displaying a [Header] Composable displaying the `title` "Topics"
+ *  - an `item` holding a [Spacer] whose height is 16.dp
+ *  - an [items] which displays all of the [String] entries in the [List] of [String] variable
+ *  `allTopics` using a [TopicRow] whose `topic` argument is the [String] from the [List], whose
+ *  `expanded` argument is `true` if the [State] wrapped [String] variable `expandedTopic` is equal
+ *  to the [String] from the [List], and whose `onClick` lambda sets`expandedTopic` to `null` if it
+ *  is equal to the [String] from the [List], or else to the [String] from the [List] if it was not
+ *  (the [TopicRow] will use an [Modifier.animateContentSize] to animate the visibility of a [Text]
+ *  displaying some additional nonsense words when its `expanded` parameter toggles between `true`
+ *  (visible) and `false` (invisible)).
+ *  - an `item` holding a [Spacer] whose height is 32.dp
+ *
+ * The "Tasks" section has four items in it:
  */
 @Composable
 fun Home() {
