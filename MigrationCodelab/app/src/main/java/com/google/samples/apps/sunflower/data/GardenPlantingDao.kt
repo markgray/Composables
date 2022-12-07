@@ -92,13 +92,28 @@ interface GardenPlantingDao {
     fun getPlantedGardens(): LiveData<List<PlantAndGardenPlantings>>
 
     /**
-     * TODO: Add kdoc
+     * This method inserts its [GardenPlanting] argument [gardenPlanting] into the "garden_plantings"
+     * table and returns the row id. The `@Insert` annotation Marks a method in a Dao annotated class
+     * as an insert method. The implementation of the method will insert its parameters into the
+     * database. All of the parameters of the Insert method must either be classes annotated with
+     * Entity or collections or arrays of it.
+     *
+     * @param gardenPlanting the [GardenPlanting] instance to be inserted in the "garden_plantings"
+     * table.
+     * @return The row id of the [GardenPlanting] that was inserted
      */
     @Insert
     suspend fun insertGardenPlanting(gardenPlanting: GardenPlanting): Long
 
     /**
-     * TODO: Add kdoc
+     * Removes its [GardenPlanting] parameter [gardenPlanting] from the "garden_plantings" table of
+     * the database. The `@Delete` annotation Marks a method in a Dao annotated class as a delete
+     * method. The implementation of the method will delete its parameters from the database. All of
+     * the parameters of the Delete method must either be classes annotated with Entity or collections
+     * or arrays of it.
+     *
+     * @param gardenPlanting the [GardenPlanting] that should be removed from the "garden_plantings"
+     * table of the database.
      */
     @Delete
     suspend fun deleteGardenPlanting(gardenPlanting: GardenPlanting)
