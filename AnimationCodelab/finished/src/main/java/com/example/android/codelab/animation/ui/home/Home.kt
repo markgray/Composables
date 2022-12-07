@@ -18,6 +18,7 @@ package com.example.android.codelab.animation.ui.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -70,6 +71,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Colors
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -130,6 +132,7 @@ import com.example.android.codelab.animation.ui.Green300
 import com.example.android.codelab.animation.ui.Green800
 import com.example.android.codelab.animation.ui.Purple100
 import com.example.android.codelab.animation.ui.Purple700
+import com.example.android.codelab.animation.ui.Teal200
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -260,6 +263,24 @@ private enum class TabPage {
  *  - an `item` holding a [Spacer] whose height is 32.dp
  *
  * The "Tasks" section has four items in it:
+ *  - an `item` displaying a [Header] Composable displaying the `title` "Tasks"
+ *  - an `item` holding a [Spacer] whose height is 16.dp
+ *  - if our [List] of [String] variable `tasks` is empty (the user has "swiped" away all of the
+ *  tasks) we display an `item` that consists of a [TextButton] whose `content` is a [Text] displaying
+ *  the [String] "ADD TASKS", and whose `onClick` argument is a lambda that calls the [MutableList.clear]
+ *  method of `tasks` (which is overridden by the [SnapshotStateList] that is wrapping `tasks`) to
+ *  remove all entries from `tasks` and then call the [MutableCollection.addAll] method of `tasks`
+ *  to add all of the strings in `allTasks` to it.
+ *  - the bottom of the "Tasks" section (and the [LazyColumn]) is an [items] which retrieves each of
+ *  the [String]'s in `tasks` to initialize its [String] variable `val task` (or `null` if the index
+ *  is out of bounds of this list) and if `task` is not `null` it wraps in a [key] (utility composable
+ *  that is used to "group" or "key" a block of execution inside of a composition) a [TaskRow] whose
+ *  `task` argument is the `task` variable, and whose `onRemove` argument is a lambda that calls the
+ *  [MutableCollection.remove] method of `tasks` to remove `task` from the [List].
+ *
+ * Below the [LazyColumn] at the bottom of the `content` of the [Scaffold] is an [EditMessage] whose
+ * `shown` argument is our [MutableState] wrapped [Boolean] variable `editMessageShown`.
+ *
  */
 @Composable
 fun Home() {
@@ -443,7 +464,7 @@ fun Home() {
  * layout. The default `enter` animation is fading in while expanding horizontally when [extended]
  * changes to `true` and the default `exit` animation is fading out while shrinking horizontally when
  * [extended] changes to `false`. The [Scaffold] in our [Home] Composable uses this Composable as its
- * `topBar` argumentt with the [extended] argument the value of the [LazyListState.isScrollingUp]
+ * `topBar` argument with the [extended] argument the value of the [LazyListState.isScrollingUp]
  * property of the [LazyListState] of the [LazyColumn] it uses as the `content` of the [Scaffold].
  *
  * @param extended Whether the tab should be shown in its expanded state.
@@ -477,7 +498,33 @@ private fun HomeFloatingActionButton(
 }
 
 /**
- * Shows a message that the edit feature is not available.
+ * Shows a message that the edit feature is not available when its [Boolean] parameter [shown] is
+ * `true`, and uses an [AnimatedVisibility] to animate the visibility of that message when [shown]
+ * changes from `false` to `true`, or from `true` to `false`. An [AnimatedVisibility] is our root
+ * Composable with its `visible` argument our [shown] parameter (defines whether the content should
+ * be visible), whose `enter` argument ([EnterTransition]'s used for the appearing animation) is a
+ * [slideInVertically] whose `initialOffsetY` (lambda that takes the full Height of the content and
+ * returns the initial offset for the slide-in) is minus the full Height (Enters by sliding down from
+ * offset -fullHeight to 0) and whose `animationSpec` is a [tween] with `durationMillis` of 250ms,
+ * and `easing` using [LinearOutSlowInEasing] (Incoming elements are animated using deceleration
+ * easing, which starts a transition at peak velocity (the fastest point of an element’s movement)
+ * and ends at rest). The `exit` argument of the [AnimatedVisibility] is a `slideOutVertically` whose
+ * `targetOffsetY` argument is minus the `fullHeight` (Exits by sliding up from offset 0 to
+ * -fullHeight) with a [tween] with a `durationMillis` of 250ms, and easing of [FastOutLinearInEasing]
+ * as its `animationSpec` (Elements exiting a screen use acceleration easing, where they start at rest
+ * and end at peak velocity).
+ *
+ * The `content` that the [AnimatedVisibility] is wrapping is a [Surface] whose `modifier` argument
+ * is a [Modifier.fillMaxWidth] to have it take the entire width of the incoming constraints, whose
+ * `color` argument (background color) the [Colors.secondary] of [MaterialTheme.colors] which is
+ * [Teal200] in our [AnimationCodelabTheme] custom [MaterialTheme], and its `elevation` argument is
+ * 4.dp (size of the shadow below the surface). The `content` of the [Surface] is a [Text] displaying
+ * the `text` "Edit feature is not supported" with its `modifier` argument a [Modifier.padding] that
+ * adds 16.dp to all sides of the [Text].
+ *
+ * @param shown when it changes to `true` we use [AnimatedVisibility] to animate the visibility of
+ * our content to visible, and when it changes to `false` we use [AnimatedVisibility] to animate the
+ * visibility of our content to invisible
  */
 @Composable
 private fun EditMessage(shown: Boolean) {
