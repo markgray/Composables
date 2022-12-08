@@ -42,7 +42,13 @@ class GardenPlantingRepository private constructor(
 ) {
 
     /**
-     * TODO: Add kdoc
+     * Creates a new instance of [GardenPlanting] for the [Plant] whose [Plant.plantId] is the same
+     * as our [String] parameter [plantId] to initialize its variable `val gardenPlanting`, then
+     * calls the [GardenPlantingDao.insertGardenPlanting] method of our [gardenPlantingDao] field
+     * to have it insert the [GardenPlanting] in the  "garden_plantings" table of the database.
+     *
+     * @param plantId the [Plant.plantId] field of the [Plant] that is to be "planted" as a
+     * [GardenPlanting] in the "garden_plantings" table of the database.
      */
     suspend fun createGardenPlanting(plantId: String) {
         val gardenPlanting = GardenPlanting(plantId)
@@ -50,7 +56,12 @@ class GardenPlantingRepository private constructor(
     }
 
     /**
-     * TODO: Add kdoc
+     * Removes its [GardenPlanting] parameter [gardenPlanting] from the "garden_plantings"
+     * table of the database by calling the [GardenPlantingDao.deleteGardenPlanting] method
+     * of our [gardenPlantingDao] field with [gardenPlanting] as the argument.
+     *
+     * @param gardenPlanting the [GardenPlanting] to remove from the "garden_plantings" table of the
+     * database.
      */
     @Suppress("unused")
     suspend fun removeGardenPlanting(gardenPlanting: GardenPlanting) {
@@ -58,7 +69,14 @@ class GardenPlantingRepository private constructor(
     }
 
     /**
-     * TODO: Add kdoc
+     * Returns a [LiveData] wrapped [Boolean] that is true if and only if one of the rows of the
+     * "garden_plantings" table has a "plant_id" column containing the value of our [String]
+     * parameter [plantId]. It does this by returning the value returned by the
+     * [GardenPlantingDao.isPlanted] method of our [gardenPlantingDao] field with our [plantId]
+     * parameter as its argument.
+     *
+     * @param plantId the [Plant.plantId] field of the [Plant] that we are to look for in the
+     * "garden_plantings" table of the database.
      */
     fun isPlanted(plantId: String): LiveData<Boolean> =
         gardenPlantingDao.isPlanted(plantId)
