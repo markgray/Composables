@@ -83,6 +83,7 @@ import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Check
@@ -532,12 +533,12 @@ private fun EditMessage(shown: Boolean) {
         visible = shown,
         enter = slideInVertically(
             // Enters by sliding down from offset -fullHeight to 0.
-            initialOffsetY = { fullHeight -> -fullHeight },
+            initialOffsetY = { fullHeight: Int -> -fullHeight },
             animationSpec = tween(durationMillis = 150, easing = LinearOutSlowInEasing)
         ),
         exit = slideOutVertically(
             // Exits by sliding up from offset 0 to -fullHeight.
-            targetOffsetY = { fullHeight -> -fullHeight },
+            targetOffsetY = { fullHeight: Int -> -fullHeight },
             animationSpec = tween(durationMillis = 250, easing = FastOutLinearInEasing)
         )
     ) {
@@ -555,7 +556,29 @@ private fun EditMessage(shown: Boolean) {
 }
 
 /**
- * Returns whether the lazy list is currently scrolling up.
+ * Returns whether the lazy list is currently scrolling up (no it doesn't). We initialize and remember
+ * our [Int] variable `var previousIndex` as the [MutableState] wrapped value of the
+ * [LazyListState.firstVisibleItemIndex] property of our [LazyListState] receiver (the index of the
+ * first item that is visible), with that [LazyListState] (`this`) serving as the `key1` argument of
+ * the [remember] call, and we initialize and remember our [Int] variable `var previousScrollOffset`
+ * as the [MutableState] wrapped value of the [LazyListState.firstVisibleItemScrollOffset] property
+ * of our [LazyListState] receiver (the scroll offset of the first visible item), with that
+ * [LazyListState] (`this`) serving as the `key1` argument of the [remember] call. Finally we remember
+ * (with our [LazyListState] receiver serving as the `key1` argument) and return the [State.value]
+ * of a [Boolean] `DerivedState` calculated by a block which returns `true` if our `previousIndex`
+ * variable is not equal to the current [LazyListState.firstVisibleItemIndex] AND it is greater than
+ * it (the [LazyColumn] has scrolled up since the last time the block was executed) OR if our
+ * `previousIndex` variable IS equal to the current [LazyListState.firstVisibleItemIndex] and our
+ * `previousScrollOffset` is greater than or equal to the current [LazyListState.firstVisibleItemScrollOffset]
+ * (the [LazyColumn] has scrolled up or stopped scrolling since the last time the block was executed).
+ * An [also] extension function is chained to the `if` expression which sets `previousIndex` to the
+ * current [LazyListState.firstVisibleItemIndex] and `previousScrollOffset` to the current
+ * [LazyListState.firstVisibleItemScrollOffset].
+ *
+ * @return a [State] wrapped [Boolean] which communicates information about the scrolling state of
+ * its [LazyListState] receiver (that information is more complex than the original comment and name
+ * of this extension function suggests but it is still an interesting effect when animated and that
+ * is all that really matters in an "Animation Codelab" so let it be).
  */
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {
@@ -576,7 +599,13 @@ private fun LazyListState.isScrollingUp(): Boolean {
 }
 
 /**
- * Shows the header label.
+ * Shows the header label. Our root (and only) Composable is a [Text] whose `text` argument if our
+ * [String] parameter [title] (The text to be displayed), whose `modifier` argument is a
+ * [Modifier.semantics] that adds a [heading] to the layout node (The node is marked as heading for
+ * accessibility), and whose `style` argument is [Typography.h5] of [MaterialTheme.typography] (since
+ * our [AnimationCodelabTheme] custom [MaterialTheme] does not change the default this is the fifth
+ * largest headline, reserved for short, important text or numerals and the font is Roboto, weight
+ * normal, size 24.sp, and letter spacing 0.sp).
  *
  * @param title The title to be shown.
  */
