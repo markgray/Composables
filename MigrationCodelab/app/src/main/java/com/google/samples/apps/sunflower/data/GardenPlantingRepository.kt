@@ -82,7 +82,16 @@ class GardenPlantingRepository private constructor(
         gardenPlantingDao.isPlanted(plantId)
 
     /**
-     * TODO: Add kdoc
+     * Returns the [LiveData] wrapped [List] of [PlantAndGardenPlantings] created by ROOM from both
+     * the "garden_plantings" table and the "plants" of the database by using the "plant_id" column
+     * of the row in the "garden_plantings" table to fetch the corresponding [Plant] row in the
+     * "plants" table. This is all done automatically by the [GardenPlantingDao.getPlantedGardens]
+     * method of our [gardenPlantingDao] field.
+     *
+     * @return the [LiveData] wrapped [List] of [PlantAndGardenPlantings] created by ROOM from both
+     * the "garden_plantings" table and the "plants" of the database by using the "plant_id" column
+     * of the row in the "garden_plantings" table to fetch the corresponding [Plant] row in the
+     * "plants" table.
      */
     fun getPlantedGardens(): LiveData<List<PlantAndGardenPlantings>> = gardenPlantingDao.getPlantedGardens()
 
@@ -96,7 +105,16 @@ class GardenPlantingRepository private constructor(
         private var instance: GardenPlantingRepository? = null
 
         /**
-         * TODO: Add kdoc
+         * Called to fetch a reference to our singleton [GardenPlantingRepository]. If our [instance]
+         * field is not `null` we return it, otherwise in a block [synchronized] on `this` we construct
+         * a new instance of [GardenPlantingRepository] using our [GardenPlantingDao] parameter
+         * [gardenPlantingDao] as its `gardenPlantingDao` argument and return it after using the
+         * [also] extension method to cache the new instance in our [instance] field.
+         *
+         * @param gardenPlantingDao the [GardenPlantingDao] that we should use to access the
+         * "garden_plantings" table.
+         * @return our singleton instance of [GardenPlantingRepository], with a new one created and
+         * cached if we have not been called before.
          */
         fun getInstance(gardenPlantingDao: GardenPlantingDao): GardenPlantingRepository =
             instance ?: synchronized(this) {

@@ -46,9 +46,9 @@ data class Plant(
      */
     val growZoneNumber: Int,
     /**
-     * TODO: Add kdoc
+     * How often the plant should be watered, in days
      */
-    val wateringInterval: Int = 7, // how often the plant should be watered, in days
+    val wateringInterval: Int = 7,
     /**
      * TODO: Add kdoc
      */
