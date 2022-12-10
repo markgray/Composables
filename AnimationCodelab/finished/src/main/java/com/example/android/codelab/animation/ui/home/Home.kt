@@ -621,11 +621,42 @@ private fun Header(
 }
 
 /**
- * Shows a row for one topic.
+ * Shows a row for one topic. When clicked on it will animate the visibility of a [Text] containing
+ * some verbose nonsense `text` to visible if our [Boolean] parameter [expanded] is `true` or to
+ * invisible if it is `false`. At the top of our Composable is a [TopicRowSpacer] with its `visible`
+ * argument our [Boolean] parameter [expanded]. It will use [AnimatedVisibility] to animate a
+ * [Spacer] whose height is 8.dp to invisible when our [expanded] parameter changes to `false` or to
+ * visible when it changes to `true`. Below that is a [Surface] whose `modifier` argument is a
+ * [Modifier.fillMaxWidth] causing it to use the entire incoming horizontal constains, whose `elevation`
+ * argument is 2.dp, and whose `onClick` argument is our [onClick] parameter. The `content` of the
+ * [Surface] is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth] with a [Modifier.padding]
+ * that adds 16.dp to all sides, and a [Modifier.animateContentSize] which causes the [Column] to
+ * animate its own size when its `content` Composables change size. Its `content` consists of a [Row]
+ * holding an [Icon] displaying the [ImageVector] drawn by [Icons.Filled.Info] (which is what
+ * `Icons.Default.Info` resolves to) which is a white "i" character in a black circle. Next in the
+ * [Row] is a [Spacer] that is 16.dp wide, followed by a [Text] whose `text` is our [topic] parameter
+ * and whose `style` argument is the [Typography.body1] of [MaterialTheme.typography] which is the
+ * default Roboto font, weight normal, size 16.sp, and letter spacing 0.5.sp. Below the [Row] in the
+ * [Column] is an `if` statement which causes its block to be executed only if [expanded] is `true`,
+ * and if it is a [Spacer] with a height of 8.dp is composed followed by a [Text] whose `text` is
+ * the [String] with resource `id` [R.string.lorem_ipsum] (bunch of nonsense words), and whose
+ * `textAlign` argument is [TextAlign.Justify] (Stretches lines of text that end with a soft line
+ * break to fill the width of the container, and Lines that end with hard line breaks are aligned
+ * towards the Start edge).
+ *
+ * Below the [Surface] is another [TopicRowSpacer] whose `visible` argument is our [Boolean] parameter
+ * [expanded], and like the [TopicRowSpacer] on top of the [Surface] it will use [AnimatedVisibility]
+ * to animate a [Spacer] whose height is 8.dp to invisible when our [expanded] parameter changes to
+ * `false` or to visible when it changes to `true`.
  *
  * @param topic The topic title.
- * @param expanded Whether the row should be shown expanded with the topic body.
- * @param onClick Called when the row is clicked.
+ * @param expanded Whether the row should be shown expanded with the topic body.Our caller is the
+ * [LazyColumn] of [Home], and it passes `true` if our [topic] parameter is equal to its `expandedTopic`
+ * variable.
+ * @param onClick Called when the row is clicked. Our caller is the [LazyColumn] of [Home], and it
+ * passes a lambda which toggles the value of its `expandedTopic` variable to `null` if `expandedTopic`
+ * is equal to our [topic] parameter, or to our [topic] parameter if it is not `null` (some other
+ * [TopicRow] is "expanded".
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -668,7 +699,13 @@ private fun TopicRow(topic: String, expanded: Boolean, onClick: () -> Unit) {
 }
 
 /**
- * Shows a separator for topics.
+ * Shows a separator for topics whose visibility is animated by [AnimatedVisibility] to animate a
+ * [Spacer] whose height is 8.dp to invisible when our [visible] parameter changes to `false` or to
+ * visible when it changes to `true`.
+ *
+ * @param visible when it changes to `false` [AnimatedVisibility] will animate our [Spacer] to
+ * invisible, and when it changes to `true` [AnimatedVisibility] will animate our [Spacer] to
+ * visible.
  */
 @Composable
 fun TopicRowSpacer(visible: Boolean) {
