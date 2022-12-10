@@ -23,44 +23,67 @@ import java.util.Calendar
 import java.util.Calendar.DAY_OF_YEAR
 
 /**
- * TODO: Add kdoc
+ * This data class defines the structure of a row in the "plants" table of the database. The `@Entity`
+ * annotation Marks this class as an entity, and the `tableName` argument is the table name in the
+ * SQLite database.
  */
 @Entity(tableName = "plants")
 data class Plant(
     /**
-     * TODO: Add kdoc
+     * This is the PrimaryKey for a row in the "plants" table of the database. It comes from the
+     * "value" of the "plantId" name in the JSON file assets/plants.json and is unique for all of
+     * the plants. The `@PrimaryKey` annotation Marks a field in an `Entity` as the primary key.
+     * The `@ColumnInfo` annotation specifies the column `name` for the field to be "id" (instead
+     * of the default `plantId`).
      */
     @PrimaryKey
     @ColumnInfo(name = "id")
     val plantId: String,
     /**
-     * TODO: Add kdoc
+     * This is the `name` of the [Plant] and comes from the "value" of the "name" name in the JSON
+     * file assets/plants.json.
      */
     val name: String,
     /**
-     * TODO: Add kdoc
+     * This is a long-winded description of the [Plant] and comes from the "value" of the "description"
+     * name in the JSON file assets/plants.json.
      */
     val description: String,
     /**
-     * TODO: Add kdoc
+     * This is the Grow Zone Number of the plant and comes from the "value" of the "growZoneNumber"
+     * name in the JSON file assets/plants.json. The lower the number is, the lower the temperatures
+     * in that zone. Each zone represents ten degrees of temperature difference. Each zone is also
+     * divided into “a” and “b” segments. These represent five degrees of temperature difference, but
+     * our JSON file only uses the integer so that is what we use here. For example, zone 4 represents
+     * minimum temperatures between -30 to -20 degrees F.
      */
     val growZoneNumber: Int,
     /**
-     * How often the plant should be watered, in days
+     * How often the plant should be watered in days, it comes from the "value" of the "wateringInterval"
+     * name in the JSON file assets/plants.json.
      */
     val wateringInterval: Int = 7,
     /**
-     * TODO: Add kdoc
+     * This is the URL for a picture of the [Plant] that has uploaded to upload.wikimedia.org.
      */
     val imageUrl: String = ""
 ) {
 
     /**
      * Determines if the plant should be watered.  Returns `true` if [since]'s date > date of last
-     * watering + watering Interval; `false` otherwise.
+     * watering + watering Interval; `false` otherwise. If is only used by the `test_shouldBeWatered`
+     * `unitTest`.
+     *
+     * @param since the [Calendar] for the current date and time.
+     * @param lastWateringDate the [Calendar] for the last date it was watered on.
+     * @return `true` if [since] is greater than [lastWateringDate] plus the value of our field
+     * [wateringInterval]
      */
     fun shouldBeWatered(since: Calendar, lastWateringDate: Calendar): Boolean =
         since > lastWateringDate.apply { add(DAY_OF_YEAR, wateringInterval) }
 
+    /**
+     * Simply returns our [name] field as the [String] version of our class.
+     */
     override fun toString(): String = name
 }
