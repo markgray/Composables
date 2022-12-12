@@ -720,11 +720,27 @@ fun TopicRowSpacer(visible: Boolean) {
 }
 
 /**
- * Shows the bar that holds 2 tabs.
+ * Shows the bar that holds 2 tabs, it is used as the `topBar` argument (top app bar of the screen)
+ * of the [Scaffold] of [Home]. Our root Composable is a [TabRow] whose `selectedTabIndex` argument
+ * is the [TabPage.ordinal] of our [tabPage] parameter, whose `backgroundColor` argument is our
+ * `backgroundColor` parameter, and whose `indicator` argument is a lambda which uses the [List] of
+ * [TabPosition] passed to it by [TabRow] as the `tabPositions` argument of a [HomeTabIndicator]
+ * with its `tabPage` argument our [TabPage] parameter [tabPage] (the indicator that represents
+ * which tab is currently selected). The `tabs` of the [TabRow] are two [HomeTab] Composables with
+ * the first having as its `icon` argument the [ImageVector] drawn by [Icons.Filled.Home] (which is
+ * what `Icons.Default.Home` resolves to: a stylized house), its `title` argument is the [String]
+ * "Home", and its `onClick` argument is a lambda which calls our [onTabSelected] parameter with the
+ * value [TabPage.Home]. The second has as its `icon` argument the [ImageVector] drawn by
+ * [Icons.Filled.AccountBox] (which is what `Icons.Default.AccountBox` resolves to: a stylized head
+ * and shoulders), its `title` argument is the [String] "Work", and its `onClick` argument is a
+ * lambda which calls our [onTabSelected] parameter with the value [TabPage.Work].
  *
  * @param backgroundColor The background color for the bar.
- * @param tabPage The [TabPage] that is currently selected.
- * @param onTabSelected Called when the tab is switched.
+ * @param tabPage The [TabPage] that is currently selected. Our caller [Home] passes its [State]
+ * wrapped variable `tabPage` which is changed by the lambda it passes as our [onTabSelected]
+ * parameter to the [TabPage] of the [HomeTab] that the user clicks.
+ * @param onTabSelected Called when the tab is switched. [Home] passes a lambda which changes the
+ * value of its [State] wrapped variable `tabPage` to the [TabPage] argument passed to the lambda.
  */
 @Composable
 private fun HomeTabBar(
@@ -735,7 +751,7 @@ private fun HomeTabBar(
     TabRow(
         selectedTabIndex = tabPage.ordinal,
         backgroundColor = backgroundColor,
-        indicator = { tabPositions ->
+        indicator = { tabPositions: List<TabPosition> ->
             HomeTabIndicator(tabPositions = tabPositions, tabPage = tabPage)
         }
     ) {
