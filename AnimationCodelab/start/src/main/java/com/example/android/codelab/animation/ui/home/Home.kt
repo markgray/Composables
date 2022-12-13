@@ -769,7 +769,56 @@ private fun HomeTabBar(
 }
 
 /**
- * Shows an indicator for the tab.
+ * Shows an indicator for the tab. We start by initializing our [Transition] of [TabPage] variable
+ * `val transition` to the instance returned by the [updateTransition] method for a `targetState`
+ * of our [TabPage] parameter [tabPage] ([updateTransition] sets up a [Transition], and updates it
+ * with the target provided by `targetState`. When `targetState` changes, [Transition] will run all
+ * of its child animations towards their target values specified for the new `targetState`). The
+ * `label` argument of [updateTransition] is the [String] "Tab indicator" and is used to differentiate
+ * different transitions in Android Studio. We initialize our [Dp] variable `val indicatorLeft` by
+ * the [Transition.animateDp] method of `transition` with its `transitionSpec` argument specifying a
+ * [spring] whose `stiffness` is [Spring.StiffnessVeryLow] when the indicator is moving to the right
+ * from [TabPage.Home] to [TabPage.Work] so that the Low stiffness spring for the left edge causes
+ * it to move slower than the right edge, otherwise we use a [spring] whose `stiffness` is
+ * [Spring.StiffnessMedium] when the indicator is moving to the left from [TabPage.Work] to
+ * [TabPage.Home] so that the Medium stiffness spring for the left edge causes it to move faster
+ * than the right edge. The `label` argument of [Transition.animateDp] is the [String] "Indicator left"
+ * and is used to differentiate from other animations in the same transition in Android Studio. The
+ * `targetValueByState` argument uses the [TabPage] passed it as its `page` parameter to return
+ * the [TabPosition.left] of the [TabPage.ordinal] of `page` as its [Dp] result which is then wrapped
+ * in a [State] object with its value updated by animation.
+ *
+ * Next we initialize our [Dp] variable `val indicatorRight` by the [Transition.animateDp] method of
+ * `transition` with its `transitionSpec` argument specifying a [spring] whose `stiffness` is
+ * [Spring.StiffnessMedium] when the indicator is moving to the right from [TabPage.Home] to
+ * [TabPage.Work] so that the Medium stiffness spring for the right edge causes it to move faster
+ * than the left edge, otherwise we use a [spring] whose `stiffness` is [Spring.StiffnessVeryLow]
+ * when the indicator is moving to the left from [TabPage.Work] to [TabPage.Home] so that the Low
+ * stiffness spring for the right edge causes it to move slower than the left edge. The `label`
+ * argument of [Transition.animateDp] is the [String] "Indicator right" and is used to differentiate
+ * from other animations in the same transition in Android Studio. The `targetValueByState` argument
+ * uses the [TabPage] passed it as its `page` parameter to return the [TabPosition.right] of the
+ * [TabPage.ordinal] of `page` as its [Dp] result which is then wrapped in a [State] object with its
+ * value updated by animation.
+ *
+ * We initialize our [Color] variable `val color` by the [Transition.animateColor] method of
+ * `transition` with its `label` argument the [String] "Border color" and its `targetValueByState`
+ * argument a lambda which uses the [TabPage] passed it as its `page` parameter to return the [Color]
+ * [Purple700] if `page` is [TabPage.Home] or [Green800] if `page` is [TabPage.Work] which is then
+ * wrapped in a [State] object with its value updated by animation.
+ *
+ * Having defined the animations to be performed we get to our root Composable which is a [Box] whose
+ * `modifier` argument is a [Modifier.fillMaxSize] which causes it to occupy the entirety of its
+ * incoming constraints, with a [Modifier.wrapContentSize] appended with an `align` argument of
+ * [Alignment.BottomStart] (which aligns its content to the bottom start of its constraints), and
+ * appended to that is a [Modifier.offset] whose `x` argument is our `indicatorLeft`, to which is
+ * appended a [Modifier.width] that sets its width to our `indicatorRight` variable minus our
+ * `indicatorLeft` variable, to which is appended a [Modifier.padding] that set the padding on all
+ * sides of the [Box] to 4.dp, to which is appended another [Modifier.fillMaxSize] (for some reason,
+ * which needs to be experimentaly explored at some point in time -- hint, hint), and at the end of
+ * the chain is a [Modifier.border] whose `border` argument is a [BorderStroke] whose `width` is 2.dp
+ * and whose `color` argument is our `color` variable, and whose `shape` argument is a
+ * [RoundedCornerShape] with a `size` of 4.dp
  *
  * @param tabPositions The list of [TabPosition]s from a [TabRow].
  * @param tabPage The [TabPage] that is currently selected.
@@ -826,7 +875,7 @@ private fun HomeTabIndicator(
         if (page == TabPage.Home) Purple700 else Green800
     }
     Box(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .wrapContentSize(align = Alignment.BottomStart)
             .offset(x = indicatorLeft)
@@ -834,8 +883,8 @@ private fun HomeTabIndicator(
             .padding(all = 4.dp)
             .fillMaxSize()
             .border(
-                BorderStroke(width = 2.dp, color = color),
-                RoundedCornerShape(size = 4.dp)
+                border = BorderStroke(width = 2.dp, color = color),
+                shape = RoundedCornerShape(size = 4.dp)
             )
     )
 }
