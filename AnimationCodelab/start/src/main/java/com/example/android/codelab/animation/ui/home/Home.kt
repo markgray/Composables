@@ -138,6 +138,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -338,7 +339,9 @@ fun Home() {
     }
 
     /**
-     * Shows the message about edit feature.
+     * Shows the message about edit feature. If `editMessageShown` is `false` we set it to `true`,
+     * call [delay] to delay for 3,000 milliseconds then set `editMessageShown` to `false` and
+     * return. If `editMessageShown` is `true` when we are called we do nothing and return.
      */
     suspend fun showEditMessage() {
         if (!editMessageShown) {
@@ -349,12 +352,21 @@ fun Home() {
     }
 
     /**
-     * Load the weather at the initial composition.
+     * Load the weather at the initial composition. When the [LaunchedEffect] enters the composition
+     * it launches its block into the composition's [CoroutineContext]. The coroutine will be
+     * cancelled and re-launched when [LaunchedEffect] is recomposed with a different `key1`, so to
+     * indicate that this is not wanted we pass [Unit] as the value of `key1`.
      */
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = Unit) {
         loadWeather()
     }
 
+    /**
+     * This is the [LazyListState] that is used as the `state` argument of the [LazyColumn] that is
+     * part of the `content` of the [Scaffold]. It is queried by the [HomeFloatingActionButton] to
+     * determine whether the [LazyColumn] is scrolling up by using the [isScrollingUp] extension
+     * function.
+     */
     val lazyListState: LazyListState = rememberLazyListState()
 
     // TODO 1: Animate this color change. DONE
@@ -890,12 +902,23 @@ private fun HomeTabIndicator(
 }
 
 /**
- * Shows a tab.
+ * Shows a tab. Our root Composable is a [Row] whose `modifier` argument is our [Modifier] parameter
+ * [modifier] with a [Modifier.clickable] appended to it that calls our [onClick] parameter, and a
+ * [Modifier.padding] is appended to that which sets the padding on all sides to 16.dp. Its
+ * `horizontalArrangement` argument is [Arrangement.Center] (horizontal arrangement of the layout's
+ * children is to place children such that they are as close as possible to the middle of the main
+ * axis) and its `verticalAlignment` argument is [Alignment.CenterVertically] (which centers its
+ * children vertically). Its `content` is an [Icon] whose `imageVector` argument draws our [ImageVector]
+ * parameter [icon], with `null` as its `contentDescription` argument, and the [Icon] is followed by
+ * a [Spacer] whose width is 16.dp, and a [Text] is at the end of the [Row] that uses our [title]
+ * parameter as its `text` argument.
  *
  * @param icon The icon to be shown on this tab.
  * @param title The title to be shown on this tab.
  * @param onClick Called when this tab is clicked.
- * @param modifier The [Modifier].
+ * @param modifier A [Modifier] that can be used by our caller to modify our appearance and/or
+ * behavior. Our caller [Home] does not pass any so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
  */
 @Composable
 private fun HomeTab(
