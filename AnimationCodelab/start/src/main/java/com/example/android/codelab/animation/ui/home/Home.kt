@@ -944,7 +944,23 @@ private fun HomeTab(
 }
 
 /**
- * Shows the weather.
+ * Shows the weather. Our root Composable is a [Row] whose `modifier` argument is a [Modifier.heightIn]
+ * whose `min` argument is 64.dp  (constrains the height of the [Row] to be at least 64.dp), to which
+ * is chained a [Modifier.padding] that adds 16.dp of padding to all sides of the [Row]. The
+ * `verticalAlignment` of the [Row] is [Alignment.CenterVertically] which centers all of its
+ * children about its center line. Its `content` is a [Box] whose `modifier` argument is a [Modifier.size]
+ * that sets its size to 48.dp, to which is chained a [Modifier.clip] that clips its shape to a
+ * [CircleShape], with a [Modifier.background] to that which sets the background color to [Amber600]
+ * (the [Box] is the "Sun" at the beginning of the [Row]). The [Box] is followed by a [Spacer] with
+ * its `modifier` argument a [Modifier.width] that sets its width to 16.dp. This is followed by a
+ * [Text] that displays the [String] "18 ℃" using a `fontSize` of 24.sp. This is followed by another
+ * [Spacer] whose `modifier` argument is a [RowScope] `Modifier.weight` of 1f which causes it to
+ * occupy all the horizontal space in the [Row] that is left over after its siblings have been
+ * measured and placed. At the end of the [Row] is an [IconButton] whose `onClick` argument is our
+ * [onRefresh] parameter, and whose `content` is an [Icon] whose `imageVector` argument which draws
+ * the [ImageVector] `Refresh` of [Icons.Default] which resolves to [Icons.Filled.Refresh] (a circle
+ * with an "arrow" at 3 o'clock). The `contentDescription` argument of the [Icon] is the [String]
+ * "Refresh".
  *
  * @param onRefresh Called when the refresh icon button is clicked.
  */
