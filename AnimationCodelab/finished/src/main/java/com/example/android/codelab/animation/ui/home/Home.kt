@@ -28,6 +28,8 @@ import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.InfiniteTransition
 import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.DurationBasedAnimationSpec
+import androidx.compose.animation.core.KeyframesSpec
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.Transition
@@ -987,7 +989,32 @@ private fun WeatherRow(
 }
 
 /**
- * Shows the loading state of the weather.
+ * Shows the loading state of the weather. We initialize and remember our [InfiniteTransition] variable
+ * `val infiniteTransition` using the [rememberInfiniteTransition] method, then we initialize our
+ * [Float] variable `val alpha` by the [InfiniteTransition.animateFloat] method of `infiniteTransition`
+ * (Creates an animation of [Float] type that runs infinitely as a part of the given [InfiniteTransition])
+ * with the `initialValue` argument 0f and the `targetValue` 1f. The `animationSpec` argument is a
+ * [infiniteRepeatable] (plays a [DurationBasedAnimationSpec] an infinite amount of iterations) and
+ * its `animation` argument uses the [keyframes] method to create a [KeyframesSpec] animation,
+ * initialized with a lambda which specifies a `durationMillis` of 1000ms that reaches 0.7f at 500ms,
+ * and the `repeatMode` of the `animationSpec` is [RepeatMode.Reverse] (When the value finishes
+ * animating from 0f to 1f, it repeats by reversing the animation direction).
+ *
+ * Having initialized our animation variables we specify our root Composable to be a [Row] whose
+ * `modifier` argument is a [Modifier.heightIn] whose `min` argument is 64.dp, to which is chained
+ * a [Modifier.padding] that sets the padding on all sides of the [Row] to be 16.dp. Its
+ * `verticalAlignment` argument is [Alignment.CenterVertically] to center its children around its
+ * midline. The `content` of the [Row] is essentially the same as [WeatherRow] in size and shape but
+ * has no text. At the beginning is a [Box] whose `modifier` argument is a [Modifier.size] that sets
+ * its size to 48.dp, to which is chained a [Modifier.clip] that clips its shape to a [CircleShape],
+ * with a [Modifier.background] added to that which sets the background `color` to a copy of
+ * [Color.LightGray] with its alpha our animated [Float] variable `alpha` (instead of the [Amber600]
+ * that is used for the "sun" by [WeatherRow]). The [Box] is followed by a [Spacer] with its `modifier`
+ * argument a [Modifier.width] that sets its width to 16.dp. This is followed by a [Box] whose `modifier`
+ * argument is a [Modifier.fillMaxWidth] to have it take the entire width of its incoming constaints,
+ * to which is chained a [Modifier.height] whose height is 32.dp, with a [Modifier.background] added
+ * to that which sets the background `color` to a copy of [Color.LightGray] with its alpha our
+ * animated [Float] variable `alpha`.
  */
 @Composable
 private fun LoadingRow() {
