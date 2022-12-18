@@ -36,23 +36,40 @@ import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
  */
 class PlantRepository private constructor(
     /**
-     * The [PlantDao] used to access the "plant" table in the database.
+     * The [PlantDao] used to access the "plants" table in the database.
      */
     private val plantDao: PlantDao
 ) {
 
     /**
-     * TODO: Add kdoc
+     * Returns a [LiveData] wrapped [List] of all of the [Plant] instances in the "plants" table
+     * sorted by its "name" column.
+     *
+     * @return a [LiveData] wrapped [List] of all of the [Plant] instances in the "plants" table
+     * sorted by its "name" column.
      */
     fun getPlants(): LiveData<List<Plant>> = plantDao.getPlants()
 
     /**
-     * TODO: Add kdoc
+     * Returns the [LiveData] wrapped [Plant] instance in the "plants" table whose "id" column is
+     * equal to our [plantId] parameter.
+     *
+     * @param plantId the [String] that should match the "id" column of the [Plant] returned.
+     * @return the [LiveData] wrapped [Plant] instance in the "plants" table whose "id" column is
+     * equal to our [plantId] parameter.
      */
     fun getPlant(plantId: String): LiveData<Plant> = plantDao.getPlant(plantId)
 
     /**
-     * TODO: Add kdoc
+     * Returns a [LiveData] wrapped [List] of all of the [Plant] instances in the "plants" table
+     * whose "growZoneNumber" column is equal to our [growZoneNumber] parameter, sorted by their
+     * "name" column.
+     *
+     * @param growZoneNumber the grow zone number that we want to match the "growZoneNumber" column
+     * of the [Plant]s selected to be returned.
+     * @return a [LiveData] wrapped [List] of all of the [Plant] instances in the "plants" table
+     * whose "growZoneNumber" column is equal to its [growZoneNumber] parameter, sorted by their
+     * "name" column.
      */
     fun getPlantsWithGrowZoneNumber(growZoneNumber: Int): LiveData<List<Plant>> =
         plantDao.getPlantsWithGrowZoneNumber(growZoneNumber)

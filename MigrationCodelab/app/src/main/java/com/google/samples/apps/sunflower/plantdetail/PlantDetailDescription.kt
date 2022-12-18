@@ -44,6 +44,9 @@ import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
 
+/**
+ * TODO: add kdoc
+ */
 @Composable
 fun PlantDetailDescription(plantDetailViewModel: PlantDetailViewModel) {
     // Observes values coming from the VM's LiveData<Plant> field as State<Plant?>
@@ -56,6 +59,9 @@ fun PlantDetailDescription(plantDetailViewModel: PlantDetailViewModel) {
     }
 }
 
+/**
+ * TODO: add kdoc
+ */
 @Composable
 fun PlantDetailContent(plant: Plant) {
     Surface {
@@ -67,6 +73,9 @@ fun PlantDetailContent(plant: Plant) {
     }
 }
 
+/**
+ * TODO: add kdoc
+ */
 @Composable
 private fun PlantName(name: String) {
     Text(
@@ -79,6 +88,9 @@ private fun PlantName(name: String) {
     )
 }
 
+/**
+ * TODO: add kdoc
+ */
 @Composable
 private fun PlantWatering(wateringInterval: Int) {
     Column(Modifier.fillMaxWidth()) {
@@ -106,6 +118,9 @@ private fun PlantWatering(wateringInterval: Int) {
     }
 }
 
+/**
+ * TODO: add kdoc
+ */
 @Composable
 private fun PlantDescription(description: String) {
     // Remembers the HTML formatted description. Re-executes on a new description
@@ -127,6 +142,9 @@ private fun PlantDescription(description: String) {
     )
 }
 
+/**
+ * TODO: add kdoc
+ */
 @Preview
 @Composable
 private fun PlantDetailContentPreview() {
@@ -143,6 +161,9 @@ private fun PlantDetailContentPreview() {
     }
 }
 
+/**
+ * TODO: add kdoc
+ */
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PlantDetailContentDarkPreview() {
@@ -159,6 +180,9 @@ private fun PlantDetailContentDarkPreview() {
     }
 }
 
+/**
+ * TODO: add kdoc
+ */
 @Preview
 @Composable
 private fun PlantNamePreview() {
@@ -167,6 +191,9 @@ private fun PlantNamePreview() {
     }
 }
 
+/**
+ * TODO: add kdoc
+ */
 @Preview
 @Composable
 private fun PlantWateringPreview() {
@@ -175,6 +202,9 @@ private fun PlantWateringPreview() {
     }
 }
 
+/**
+ * TODO: add kdoc
+ */
 @Preview
 @Composable
 private fun PlantDescriptionPreview() {
