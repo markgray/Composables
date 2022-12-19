@@ -1112,7 +1112,15 @@ private fun TaskRow(task: String, onRemove: () -> Unit) {
 }
 
 /**
- * The modified element can be horizontally swiped away.
+ * The element that has this [Modifier] extension used as part of its `modifier` argument can be
+ * horizontally swiped away (with some nifty animation). Then we use the [composed] method to declare
+ * a just-in-time composition of a [Modifier] that will be composed for each element it modifies, and
+ * in its `factory` lambda argument we initialize and remember our [Animatable] variable `val offsetX`
+ * with an instance whose `initialValue` argument is 0f. Then we use the [Modifier.pointerInput]
+ * extension function with a `key1` of [Unit] (prevents recomposition in an explicit way). In the
+ * `block` lambda argument of [pointerInput] we initialize our [DecayAnimationSpec] variable `val decay`
+ * using the [splineBasedDecay] method. Then we create a [CoroutineScope] using the [coroutineScope]
+ * method and in its suspend `block` we use a `while(true)` to loop forever
  *
  * @param onDismissed Called when the element is swiped to the edge of the screen.
  */
@@ -1122,10 +1130,10 @@ private fun Modifier.swipeToDismiss(
 ): Modifier = composed {
     // TODO 6-1: Create an Animatable instance for the offset of the swiped element. DONE
     // This `Animatable` stores the horizontal offset for the element.
-    val offsetX: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) } // Add this line
+    val offsetX: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0f) } // Add this line
     pointerInput(key1 = Unit) {
         // Used to calculate a settling position of a fling animation.
-        val decay: DecayAnimationSpec<Float> = splineBasedDecay(this)
+        val decay: DecayAnimationSpec<Float> = splineBasedDecay(density = this)
         // Wrap in a coroutine scope to use suspend functions for touch events and animation.
         coroutineScope {
             while (true) {
