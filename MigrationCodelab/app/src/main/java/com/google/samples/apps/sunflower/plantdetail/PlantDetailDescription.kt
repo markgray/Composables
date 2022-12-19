@@ -27,6 +27,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -39,18 +40,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.LiveData
 import com.google.accompanist.themeadapter.material.MdcTheme
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
 
 /**
- * TODO: add kdoc
+ * This Composable exists in order to "hoist" the [State] wrapped [PlantDetailViewModel.plant] field
+ * of our [plantDetailViewModel] parameter. This makes the [PlantDetailContent] which displays the
+ * description of the [Plant] stateless. We start by initializing our [Plant] variable `val plant`
+ * by the [State] wrapped [Plant] that the [observeAsState] method returns when we use it to observe
+ * the [LiveData] wrapped [Plant] field [PlantDetailViewModel.plant] of our [plantDetailViewModel]
+ * parameter. Then if `plant` is not `null` we call our [PlantDetailContent] Composable with it as
+ * its `plant` argument.
+ *
+ * @param plantDetailViewModel the [PlantDetailViewModel]
  */
 @Composable
 fun PlantDetailDescription(plantDetailViewModel: PlantDetailViewModel) {
     // Observes values coming from the VM's LiveData<Plant> field as State<Plant?>
-    val plant by plantDetailViewModel.plant.observeAsState()
+    val plant: Plant? by plantDetailViewModel.plant.observeAsState()
 
     // New emissions from plant will make PlantDetailDescription recompose as the state's read here
     plant?.let {
