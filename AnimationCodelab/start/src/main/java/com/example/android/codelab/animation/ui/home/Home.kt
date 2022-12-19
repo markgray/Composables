@@ -1068,7 +1068,19 @@ private fun LoadingRow() {
 }
 
 /**
- * Shows a row for one task.
+ * Shows a row for one task. Our root Composable is a [Surface] whose `modifier` argument is a
+ * [Modifier.fillMaxWidth] to have it fill its entire incoming horozontal constraints to which is
+ * chained our [swipeToDismiss] extension function with its `onDismissed` lambda argument is our
+ * [onRemove] parameter (our caller [Home] passes a lambda calls the [MutableList.remove] method
+ * of its variable `tasks` to remove our [String] parameter [task] from the list. The `elevation`
+ * argument of the [Surface] is 2.dp. The `content` of the [Surface] is a [Row] whose `modifier`
+ * argument is a [Modifier.fillMaxWidth] to have it fill its entire incoming horozontal constraints
+ * to which is chained a [Modifier.padding] that adds 16.dp to all sides of the [Row]. The `content`
+ * of the [Row] is an [Icon] displaying the [ImageVector] drawn by [Icons.Filled.Check] (which is
+ * what `Icons.Default.Check` resolves to and is a gray check mark), followed by a 16.dp wide [Spacer]
+ * and a [Text] which displays our [String] parameter [task] using the `style` [Typography.body1] of
+ * [MaterialTheme.typography] (which is Roboto, regular font weight, and size 16.sp). (The interesting
+ * part of this [TaskRow] is the [swipeToDismiss] custom [Modifier] extension that follows of course).
  *
  * @param task The task description.
  * @param onRemove Called when the task is swiped away and removed.
