@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
@@ -52,7 +53,7 @@ import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
  * description of the [Plant] stateless. We start by initializing our [Plant] variable `val plant`
  * by the [State] wrapped [Plant] that the [observeAsState] method returns when we use it to observe
  * the [LiveData] wrapped [Plant] field [PlantDetailViewModel.plant] of our [plantDetailViewModel]
- * parameter. Then if `plant` is not `null` we call our [PlantDetailContent] Composable with it as
+ * parameter. Then if `plant` is not `null` we call our [PlantDetailContent] Composable with `it` as
  * its `plant` argument.
  *
  * @param plantDetailViewModel the [PlantDetailViewModel]
@@ -70,12 +71,21 @@ fun PlantDetailDescription(plantDetailViewModel: PlantDetailViewModel) {
 }
 
 /**
- * TODO: add kdoc
+ * This Composable displays several fields from its [Plant] parameter [plant]. It wraps a [Column]
+ * in a [Surface], with the [Column] using the [dimensionResource] method to fetch the value it uses
+ * for its `modifier` argument (a [Modifier.padding] on all sides) from the resource value stored
+ * under the ID [R.dimen.margin_normal] in the app's resources. The `content` of the [Column] is
+ * three Composables:
+ *  - [PlantName] to display the [Plant.name] field of our [Plant] parameter [plant].
+ *  - [PlantWatering] to display the [Plant.wateringInterval] field of our [Plant] parameter [plant].
+ *  - [PlantDescription] to display the [Plant.description] field of our [Plant] parameter [plant].
+ *
+ * @param plant the [Plant] whose fields we are to display.
  */
 @Composable
 fun PlantDetailContent(plant: Plant) {
     Surface {
-        Column(Modifier.padding(dimensionResource(R.dimen.margin_normal))) {
+        Column(Modifier.padding(all = dimensionResource(R.dimen.margin_normal))) {
             PlantName(plant.name)
             PlantWatering(plant.wateringInterval)
             PlantDescription(plant.description)
@@ -84,7 +94,18 @@ fun PlantDetailContent(plant: Plant) {
 }
 
 /**
- * TODO: add kdoc
+ * This Composable displays its [String] parameter [name] in a [Text]. The `text` argument of the
+ * [Text] is our parameter [name], and its `style` argument is the [TextStyle] to be found in
+ * [MaterialTheme.typography] for the `h5` typeface (since we do not override the [MaterialTheme]
+ * this will be Rotboto Regular, with a font size of 24sp). Its `modifier` argument is a
+ * [Modifier.fillMaxWidth] to have it take all of the horizontal space of its incoming constraints,
+ * to which is chained a [Modifier.padding] whose `horizontal` padding (the padding on each side of
+ * the [Text] is the value returned by the [dimensionResource] method for the [R.dimen.margin_small]
+ * resource ID, and at the end of the chain is a [Modifier.wrapContentWidth] whose `align` argument
+ * is [Alignment.CenterHorizontally] to align the `text` displayed about the centerline of the [Text].
+ *
+ * @param name the [String] we are to display in our [Text]. It comes from the [Plant.name] field of
+ * the [Plant] instance passed our [PlantDetailContent] caller as its parameter.
  */
 @Composable
 private fun PlantName(name: String) {
