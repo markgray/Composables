@@ -113,8 +113,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -1113,7 +1115,37 @@ private fun TaskRow(task: String, onRemove: () -> Unit) {
  * extension function with a `key1` of [Unit] (prevents recomposition in an explicit way). In the
  * `block` lambda argument of [pointerInput] we initialize our [DecayAnimationSpec] variable `val decay`
  * using the [splineBasedDecay] method. Then we create a [CoroutineScope] using the [coroutineScope]
- * method and in its suspend `block` we use a `while(true)` to loop forever
+ * method and in its suspend `block` we use a `while(true)` to loop forever. At the top of that loop
+ * we use the [AwaitPointerEventScope.awaitFirstDown] method to wait for a touch down event and use
+ * the [PointerId] of that touch down event in a call to [PointerInputScope.awaitPointerEventScope]
+ * to initialize our [PointerId] variable `val pointerId`. Once we have detected a touch we need to
+ * stop any ongoing animation of our [Animatable] variable `offsetX` by calling its [Animatable.stop]
+ * method. After this we initialize our [VelocityTracker] variable `val velocityTracker`, and then we
+ * use the [AwaitPointerEventScope.horizontalDrag] method to wait for drag events of our `pointerId`
+ * [PointerId] and when they occur we use the [PointerInputChange] instance `change` passed its lambda
+ * argument as follows:
+ *  - We initialize our [Float] variable `val horizontalDragOffset` to the current value of our
+ *  `offsetX` [Animatable] (it stores the horizontal offset for the element) plus the value returned
+ *  by the `x` property of the [PointerInputChange.positionChange] of `change` (the drag amount change
+ *  to offset the item with).
+ *  - Then we launch a new coroutine using the [launch] method and in the coroutine we use the
+ *  [Animatable.snapTo] method of `offsetX` to overwrite the [Animatable] value while the element is
+ *  dragged, instantly setting the [Animatable] `targetValue` to `horizontalDragOffset` to ensure
+ *  its moving as the user's finger moves.
+ *  - We use the [VelocityTracker.addPosition] method of `velocityTracker` to record the velocity of
+ *  the drag with its `timeMillis` argument the [PointerInputChange.uptimeMillis] property of `change`
+ *  and its `position` argument the [PointerInputChange.position] property of `change`.
+ *  - Then is the [PointerInputChange.positionChange] property of `change` is not [Offset.Zero] we use
+ *  the [PointerInputChange.consume] method of `change` to consume the gesture event, do it is not
+ *  passed to external "gesture watchers".
+ *
+ * When the dragging is finished we exit the [AwaitPointerEventScope] and the first thing we do is
+ * initialize our [Float] variable `val velocity` to the velocity of the fling calculated by the
+ * [VelocityTracker.calculateVelocity] method of `velocityTracker` for the `x` direction. Next we
+ * calculate where the element eventually settles after the fling animation using the method
+ * [DecayAnimationSpec.calculateTargetValue] of `decay` for the `initialValue` of the [Animatable.value]
+ * property of `offsetX` and the `initialVelocity` of the `velocity` we just calculated in order to
+ * initialize our [Float] variable `val targetOffsetX`.
  *
  * @param onDismissed Called when the element is swiped to the edge of the screen.
  */
@@ -1125,7 +1157,7 @@ private fun Modifier.swipeToDismiss(
     val offsetX: Animatable<Float, AnimationVector1D> = remember { Animatable(0f) }
     pointerInput(key1 = Unit) {
         // Used to calculate a settling position of a fling animation.
-        val decay: DecayAnimationSpec<Float> = splineBasedDecay(this)
+        val decay: DecayAnimationSpec<Float> = splineBasedDecay(density = this)
         // Wrap in a coroutine scope to use suspend functions for touch events and animation.
         coroutineScope {
             while (true) {
@@ -1158,7 +1190,10 @@ private fun Modifier.swipeToDismiss(
                 // Dragging finished. Calculate the velocity of the fling.
                 val velocity: Float = velocityTracker.calculateVelocity().x
                 // Calculate where the element eventually settles after the fling animation.
-                val targetOffsetX: Float = decay.calculateTargetValue(initialValue = offsetX.value, initialVelocity = velocity)
+                val targetOffsetX: Float = decay.calculateTargetValue(
+                    initialValue = offsetX.value,
+                    initialVelocity = velocity
+                )
                 // The animation should end as soon as it reaches these bounds.
                 offsetX.updateBounds(
                     // Set the upper and lower bounds so that the animation stops when it
