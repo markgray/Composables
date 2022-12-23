@@ -20,6 +20,7 @@ import android.content.res.Configuration
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -39,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.LiveData
@@ -120,17 +122,31 @@ private fun PlantName(name: String) {
 }
 
 /**
- * TODO: add kdoc
+ * This Composable displays its [Int] parameter [wateringInterval] in a [Text], formatted with other
+ * text intended to indicate that it represents the "watering interval" in days of the [Plant] in
+ * question. Our root Composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth]
+ * causing it to occupy its entire incoming width constraint. In its `content` we initialize our
+ * [Modifier] variable `val centerWithPaddingModifier` with a [Modifier.padding] whose `horizontal`
+ * padding is taken from the [dimensionResource] whose resource ID is [R.dimen.margin_small] (8.dp),
+ * to which is chained a [ColumnScope] `Modifier.align` whose `alignment` argument is
+ * [Alignment.CenterHorizontally] to have the "modified" Composable center its children horizontally
+ * about its centerline (this [Modifier] is then used by both of the [Text]'s in the [Column]). Next
+ * we initialize our [Dp] variable `val normalPadding` to the [dimensionResource] whose resource ID
+ * is [R.dimen.margin_normal] (16.dp).
+ *
+ * @param wateringInterval the [String] we are to display in our [Text]. It comes from the
+ * [Plant.wateringInterval] field of the [Plant] instance passed our [PlantDetailContent] caller
+ * as its parameter.
  */
 @Composable
 private fun PlantWatering(wateringInterval: Int) {
-    Column(Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         // Same modifier used by both Texts
         val centerWithPaddingModifier = Modifier
-            .padding(horizontal = dimensionResource(R.dimen.margin_small))
-            .align(Alignment.CenterHorizontally)
+            .padding(horizontal = dimensionResource(id = R.dimen.margin_small))
+            .align(alignment = Alignment.CenterHorizontally)
 
-        val normalPadding = dimensionResource(R.dimen.margin_normal)
+        val normalPadding: Dp = dimensionResource(R.dimen.margin_normal)
 
         Text(
             text = stringResource(R.string.watering_needs_prefix),
