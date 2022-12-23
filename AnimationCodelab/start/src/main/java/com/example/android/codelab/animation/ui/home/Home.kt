@@ -128,6 +128,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android.codelab.animation.R
@@ -1152,7 +1153,19 @@ private fun TaskRow(task: String, onRemove: () -> Unit) {
  * calculate where the element eventually settles after the fling animation using the method
  * [DecayAnimationSpec.calculateTargetValue] of `decay` for the `initialValue` of the [Animatable.value]
  * property of `offsetX` and the `initialVelocity` of the `velocity` we just calculated in order to
- * initialize our [Float] variable `val targetOffsetX`.
+ * initialize our [Float] variable `val targetOffsetX`. Next we call the [Animatable.updateBounds]
+ * method of `offsetX` to set the upper and lower bounds so that the animation stops when it reaches
+ * the edge of the measured [size] of the pointer input region (the `lowerBound` is minus the
+ * [IntSize.width] of the [size], and the `upperBound` is [IntSize.width] of the [size]). Finally we
+ * launch a new coroutine which branches on whether the value of `targetOffsetX` is less than or equal
+ * to the [IntSize.width] of the [size] in which case there is not enough velocity in the fling so we
+ * slide back to the default position by calling the [Animatable.animateTo] method of `offsetX` with
+ * the `targetValue` argument 0f, and the `initialVelocity` argument the `velocity` of the fling.
+ * If on the other hand `targetOffsetX` is greater than the [IntSize.width] of the [size] there is
+ * enough `velocity` in the fling so we slide away the element to the edge by calling the
+ * [Animatable.animateDecay] method of `offsetX` with the `initialVelocity` argument `velocity`,
+ * and the `animationSpec` argument our [DecayAnimationSpec] variable `decay`, and then we call our
+ * lambda parameter [onDismissed] to report to our caller that the element was swiped away.
  *
  * @param onDismissed Called when the element is swiped to the edge of the screen.
  */
@@ -1241,6 +1254,10 @@ private fun Modifier.swipeToDismiss(
         }
 }
 
+/**
+ * This is a Preview of our [HomeTabBar] Composable with a `backgroundColor` argument of [Purple100],
+ * a `tabPage` argument of [TabPage.Home], and a do nothing lambda as its `onTabSelected` argument.
+ */
 @Preview
 @Composable
 private fun PreviewHomeTabBar() {
@@ -1251,6 +1268,10 @@ private fun PreviewHomeTabBar() {
     )
 }
 
+/**
+ * This is a Preview of our [Home] Composable wrapped in our [AnimationCodelabTheme] custom
+ * [MaterialTheme].
+ */
 @Preview
 @Composable
 private fun PreviewHome() {
