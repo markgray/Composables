@@ -16,11 +16,27 @@
 
 package com.example.compose.rally.data
 
+import androidx.compose.material.Text
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import com.example.compose.rally.ui.components.AccountRow
+import com.example.compose.rally.ui.components.AnimatedCircle
 
 /* Hard-coded data for the Rally sample. */
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param name the name of the account, used as the `name` argument of the [AccountRow] Composable,
+ * which is then used as the `title` argument of the `BaseRow` Composable which it displays in a
+ * [Text].
+ * @param number the account "number", used as the `number` argument of the [AccountRow] Composable,
+ * which is then formatted, and used as the `subtitle` argument of the `BaseRow` Composable which it
+ * displays in a [Text].
+ * @param balance the amount of money in the [Account].
+ * @param color the [Color] that should be used for this [Account] by the [AnimatedCircle] used by
+ * the `StatementBody`
+ */
 @Immutable
 data class Account(
     val name: String,
