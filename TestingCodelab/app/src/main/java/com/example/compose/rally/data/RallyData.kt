@@ -16,6 +16,7 @@
 
 package com.example.compose.rally.data
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.Text
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
@@ -35,7 +36,8 @@ import com.example.compose.rally.ui.components.AnimatedCircle
  * displays in a [Text].
  * @param balance the amount of money in the [Account].
  * @param color the [Color] that should be used for this [Account] by the [AnimatedCircle] used by
- * the `StatementBody`
+ * the `StatementBody`, as well as the `color` argument of the `AccountIndicator` which is just a
+ * 4.dp by 36.dp [Spacer] which uses `color` as its background color.
  */
 @Immutable
 data class Account(
