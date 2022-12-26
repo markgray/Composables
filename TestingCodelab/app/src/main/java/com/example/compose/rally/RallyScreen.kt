@@ -41,7 +41,7 @@ enum class RallyScreen(
     ),
     Accounts(
         icon = Icons.Filled.AttachMoney,
-        body = { AccountsBody(UserData.accounts) }
+        body = { AccountsBody(accounts = UserData.accounts) }
     ),
     Bills(
         icon = Icons.Filled.MoneyOff,
