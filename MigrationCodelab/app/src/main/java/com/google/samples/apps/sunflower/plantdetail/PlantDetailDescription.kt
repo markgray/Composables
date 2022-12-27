@@ -19,11 +19,13 @@ package com.google.samples.apps.sunflower.plantdetail
 import android.content.res.Configuration
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
+import android.content.res.Resources
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -34,6 +36,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -134,6 +137,23 @@ private fun PlantName(name: String) {
  * we initialize our [Dp] variable `val normalPadding` to the [dimensionResource] whose resource ID
  * is [R.dimen.margin_normal] (16.dp).
  *
+ * Next we have a [Text] Composable displaying as its `text` argument the [String] whose resource ID
+ * is [R.string.watering_needs_prefix] ("Watering needs"), with its `color` argument the [Color] that
+ * is specified for [Colors.primaryVariant] in the default [MaterialTheme.colors] (we use [MdcTheme]
+ * as our custom [MaterialTheme] which parses our [R.style.Base_Theme_Sunflower] and uses the [Color]
+ * whose resource ID is [R.color.sunflower_green_700] (0x005d2b) for light mode and the [Color] whose
+ * resource ID is [R.color.sunflower_green_200] (0x81ca9d) for night mode), for its `fontWeight`
+ * argument we use [FontWeight.Bold], and for its `modifier` argument we chain a [Modifier.padding]
+ * to our [Modifier] variable `centerWithPaddingModifier` that sets its `top` padding to our [Dp]
+ * variable `normalPadding` (16dp).
+ *
+ * Next we initialize our [String] variable `val wateringIntervalText` to the [String] returned by
+ * the current [Resources.getQuantityString] method using the String plural format specified by the
+ * resource ID [R.plurals.watering_needs_suffix] and applying it to our parameter [wateringInterval].
+ * We then use `wateringIntervalText` as the `text` argument of a [Text] and as its `modifier`
+ * argument we chain a [Modifier.padding] to our [Modifier] variable `centerWithPaddingModifier`
+ * that sets its `bottom` padding to our [Dp] variable `normalPadding` (16dp).
+ *
  * @param wateringInterval the [String] we are to display in our [Text]. It comes from the
  * [Plant.wateringInterval] field of the [Plant] instance passed our [PlantDetailContent] caller
  * as its parameter.
@@ -155,7 +175,7 @@ private fun PlantWatering(wateringInterval: Int) {
             modifier = centerWithPaddingModifier.padding(top = normalPadding)
         )
 
-        val wateringIntervalText = LocalContext.current.resources.getQuantityString(
+        val wateringIntervalText: String = LocalContext.current.resources.getQuantityString(
             R.plurals.watering_needs_suffix, wateringInterval, wateringInterval
         )
         Text(
