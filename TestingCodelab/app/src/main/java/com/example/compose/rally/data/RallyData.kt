@@ -21,6 +21,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import com.example.compose.rally.ui.accounts.AccountsBody
+import com.example.compose.rally.ui.bills.BillsBody
 import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.AnimatedCircle
 import com.example.compose.rally.ui.components.BillRow
@@ -54,6 +55,11 @@ data class Account(
 )
 
 /**
+ * This is the data class used to hold the fake data for each of the five `bills` that are used
+ * in the [UserData.bills] list of [Bill] instances which are then used by [BillsBody] as
+ * the data for each of the [BillRow] Composables in the [StatementBody] of the [BillsBody]
+ * of the Bills screen.
+ *
  * @param name the name of the [Bill], used as the `name` argument of the [BillRow] Composable,
  * which is then used as the `title` argument of the `BaseRow` Composable which it displays as the
  * `text` argument of a [Text].

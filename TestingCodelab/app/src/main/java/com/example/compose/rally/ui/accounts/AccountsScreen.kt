@@ -17,6 +17,7 @@
 package com.example.compose.rally.ui.accounts
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.compose.rally.R
 import com.example.compose.rally.data.Account
@@ -24,17 +25,38 @@ import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.StatementBody
 
 /**
- * The Accounts screen.
+ * The Accounts screen. We just convert the field definitions of the [Account] data class into the
+ * the type of arguments that the [StatementBody] Composable expects as its arguments and then call
+ * [StatementBody] with them:
+ *  - `items` [StatementBody] expects a [List] of `T` so we just pass it our [List] of [Account]
+ *  parameter [accounts] (our `T` for this and all other arguments is an [Account]).
+ *  - `amounts` [StatementBody] expects a lambda that takes a `T` and returns a [Float] so we
+ *  pass it a lambda that takes an [Account] and returns the [Account.balance] property of that
+ *  [Account]
+ *  - `colors` [StatementBody] expects a lambda that takes a `T` and returns a [Color] so we
+ *  pass it a lambda that takes an [Account] and returns the [Account.color] property of that
+ *  [Account]
+ *  - `amountsTotal` [StatementBody] expects a [Float] (derived from all of the [Account] instances)
+ *  so we use the [map] extension function to loop through all of the [Account] instances in our
+ *  [List] of [Account] parameter [accounts] to produce of [List] of the [Account.balance] properties
+ *  of all of the [Account] instances and feed that [List] to the [sum] extension function to produce
+ *  a sum of the [List] which is then used as the `amountsTotal` argument.
+ *  - `row` [StatementBody] expects a lambda that takes a `T` and emits a Composable, so we pass it
+ *  a lambda which destructures its [Account] into its [Account.name], [Account.number], [Account.balance],
+ *  and [Account.color] properties and feeds them as the arguments of the same name to the [AccountRow]
+ *  Composable.
+ *
+ * @param accounts the [List] of [Account] instances that we are to display.
  */
 @Composable
 fun AccountsBody(accounts: List<Account>) {
     StatementBody(
         items = accounts,
-        amounts = { account -> account.balance },
-        colors = { account -> account.color },
-        amountsTotal = accounts.map { account -> account.balance }.sum(),
+        amounts = { account: Account -> account.balance },
+        colors = { account: Account -> account.color },
+        amountsTotal = accounts.map { account: Account -> account.balance }.sum(),
         circleLabel = stringResource(R.string.total),
-        rows = { (name, number, balance, color): Account ->
+        rows = { (name: String, number: Int, balance: Float, color: Color): Account ->
             AccountRow(
                 name = name,
                 number = number,
