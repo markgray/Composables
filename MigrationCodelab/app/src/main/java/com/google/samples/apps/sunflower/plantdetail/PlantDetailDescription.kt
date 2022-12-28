@@ -16,10 +16,12 @@
 
 package com.google.samples.apps.sunflower.plantdetail
 
+import android.content.Context
 import android.content.res.Configuration
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import android.content.res.Resources
+import android.text.Spanned
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -186,19 +188,23 @@ private fun PlantWatering(wateringInterval: Int) {
 }
 
 /**
- * TODO: add kdoc
+ * This Composable uses [HtmlCompat.fromHtml] to convert its [String] parameter [description] from
+ * HTML formatted text to a [Spanned] which it then displays in a [TextView] inside an [AndroidView].
+ *
+ * @param description a HTML formatted [String] that contains the [Plant.description] field of the
+ * [Plant] being displayed.
  */
 @Composable
 private fun PlantDescription(description: String) {
     // Remembers the HTML formatted description. Re-executes on a new description
-    val htmlDescription = remember(description) {
+    val htmlDescription: Spanned = remember(description) {
         HtmlCompat.fromHtml(description, HtmlCompat.FROM_HTML_MODE_COMPACT)
     }
 
     // Displays the TextView on the screen and updates with the HTML description when inflated
     // Updates to htmlDescription will make AndroidView recompose and update the text
     AndroidView(
-        factory = { context ->
+        factory = { context: Context ->
             TextView(context).apply {
                 movementMethod = LinkMovementMethod.getInstance()
             }
