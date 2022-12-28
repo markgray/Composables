@@ -25,8 +25,8 @@ import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.StatementBody
 
 /**
- * The Accounts screen. We just convert the field definitions of the [Account] data class into the
- * the type of arguments that the [StatementBody] Composable expects as its arguments and then call
+ * The Accounts screen. We just convert the fields of the [Account] data class into the
+ * type of arguments that the [StatementBody] Composable expects as its arguments and then call
  * [StatementBody] with them:
  *  - `items` [StatementBody] expects a [List] of `T` so we just pass it our [List] of [Account]
  *  parameter [accounts] (our `T` for this and all other arguments is an [Account]).
@@ -41,10 +41,12 @@ import com.example.compose.rally.ui.components.StatementBody
  *  [List] of [Account] parameter [accounts] to produce of [List] of the [Account.balance] properties
  *  of all of the [Account] instances and feed that [List] to the [sum] extension function to produce
  *  a sum of the [List] which is then used as the `amountsTotal` argument.
- *  - `row` [StatementBody] expects a lambda that takes a `T` and emits a Composable, so we pass it
- *  a lambda which destructures its [Account] into its [Account.name], [Account.number], [Account.balance],
- *  and [Account.color] properties and feeds them as the arguments of the same name to the [AccountRow]
- *  Composable.
+ *  - `circleLabel` [StatementBody] expects a [String] so we pass it the [String] with resource ID
+ *  [R.string.total] ("Total").
+ *  - `rows` [StatementBody] expects a lambda that takes a `T` and emits a Composable, so we pass it
+ *  a lambda which destructures its [Account] parameter into its [Account.name], [Account.number],
+ *  [Account.balance], and [Account.color] properties and feeds them as the arguments of the same
+ *  name to the [AccountRow] Composable.
  *
  * @param accounts the [List] of [Account] instances that we are to display.
  */

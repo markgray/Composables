@@ -43,10 +43,14 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
+import com.example.compose.rally.data.Account
+import com.example.compose.rally.data.Bill
 import java.text.DecimalFormat
 
 /**
- * A row representing the basic information of an Account.
+ * A row representing the basic information of an [Account]. We just convert our parameters into the
+ * type of arguments that the [BaseRow] Composable expects as its arguments and then call [BaseRow]
+ * with them:
  */
 @Composable
 fun AccountRow(name: String, number: Int, amount: Float, color: Color) {
@@ -60,7 +64,9 @@ fun AccountRow(name: String, number: Int, amount: Float, color: Color) {
 }
 
 /**
- * A row representing the basic information of a Bill.
+ * A row representing the basic information of a [Bill]. We just convert our parameters into the
+ * type of arguments that the [BaseRow] Composable expects as its arguments and then call [BaseRow]
+ * with them:
  */
 @Composable
 fun BillRow(name: String, due: String, amount: Float, color: Color) {
@@ -73,6 +79,9 @@ fun BillRow(name: String, due: String, amount: Float, color: Color) {
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 private fun BaseRow(
     color: Color,
@@ -142,11 +151,17 @@ private fun AccountIndicator(color: Color, modifier: Modifier = Modifier) {
     Spacer(modifier.size(4.dp, 36.dp).background(color = color))
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun RallyDivider(modifier: Modifier = Modifier) {
     Divider(color = MaterialTheme.colors.background, thickness = 1.dp, modifier = modifier)
 }
 
+/**
+ * TODO: Add kdoc
+ */
 fun formatAmount(amount: Float): String {
     return AmountDecimalFormat.format(amount)
 }
