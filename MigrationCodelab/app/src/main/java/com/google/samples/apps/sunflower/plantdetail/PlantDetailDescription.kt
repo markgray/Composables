@@ -19,6 +19,7 @@ package com.google.samples.apps.sunflower.plantdetail
 import android.content.Context
 import android.content.res.Configuration
 import android.text.method.LinkMovementMethod
+import android.text.method.MovementMethod
 import android.widget.TextView
 import android.content.res.Resources
 import android.text.Spanned
@@ -190,6 +191,18 @@ private fun PlantWatering(wateringInterval: Int) {
 /**
  * This Composable uses [HtmlCompat.fromHtml] to convert its [String] parameter [description] from
  * HTML formatted text to a [Spanned] which it then displays in a [TextView] inside an [AndroidView].
+ * First we initialize and remember our [Spanned] variable `val htmlDescription` using our [String]
+ * parameter [description] as the `key1` argument of [remember] and with the `calculation` lambda
+ * returning the [Spanned] that the [HtmlCompat.fromHtml] method produces from [description], with
+ * the `flags` argument [HtmlCompat.FROM_HTML_MODE_COMPACT] (separates block-level elements with
+ * line breaks (single newline character) in between). Our Composable content is an [AndroidView]
+ * whose `factory` argument is a lambda constructs a [TextView] using the [Context] parameter passed
+ * the lambda and then uses the [apply] extension function to set its [TextView.setMovementMethod]
+ * property to the [MovementMethod] returned by the [LinkMovementMethod.getInstance] method (movement
+ * method that traverses links in the text buffer and scrolls if necessary, supports clicking on
+ * links with DPad Center or Enter). The `update` argument (callback to be invoked after the layout
+ * is inflated, and whenever the [AndroidView] is recomposed) sets the `text` of the [TextView] to
+ * our [Spanned] variable `htmlDescription`.
  *
  * @param description a HTML formatted [String] that contains the [Plant.description] field of the
  * [Plant] being displayed.
@@ -197,7 +210,7 @@ private fun PlantWatering(wateringInterval: Int) {
 @Composable
 private fun PlantDescription(description: String) {
     // Remembers the HTML formatted description. Re-executes on a new description
-    val htmlDescription: Spanned = remember(description) {
+    val htmlDescription: Spanned = remember(key1 = description) {
         HtmlCompat.fromHtml(description, HtmlCompat.FROM_HTML_MODE_COMPACT)
     }
 
@@ -216,7 +229,8 @@ private fun PlantDescription(description: String) {
 }
 
 /**
- * TODO: add kdoc
+ * This is a Preview of the [PlantDetailContent] Composable for a [Plant] that is constucted with
+ * some dummy data.
  */
 @Preview
 @Composable
