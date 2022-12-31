@@ -51,6 +51,24 @@ import java.text.DecimalFormat
  * A row representing the basic information of an [Account]. We just convert our parameters into the
  * type of arguments that the [BaseRow] Composable expects as its arguments and then call [BaseRow]
  * with them:
+ *  - `color` argument is just our [Color] parameter [color]
+ *  - `title` argument is just our [String] parameter [name]
+ *  - `subtitle` argument is created by concatenating the [String] whose resource ID is
+ *  [R.string.account_redacted] and the [String] returned by the [DecimalFormat.format] method of
+ *  our [AccountDecimalFormat] field when passed our [Int] parameter [number].
+ *  - `amount` argument is just our [Float] parameter [amount]
+ *  - `negative` argument is `false` (if it were `true` [BaseRow] would prepend a minus sign to its
+ *  display of [amount], which it does when called by [BillRow].
+ *
+ * @param name The title of this [AccountRow], it comes from the [Account.name] property of the
+ * [Account] whose information we are displaying.
+ * @param number the account number, it comes from the [Account.number] property of the [Account]
+ * whose information we are displaying.
+ * @param amount the amount of money in the [Account], it comes from the [Account.balance] property
+ * of the [Account] whose information we are displaying.
+ * @param color the [Color] that [BaseRow] should have its [AccountIndicator] Composable use to
+ * differentiate this [Account] from the others, it comes from the [Account.color] property of the
+ * [Account] whose information we are displaying.
  */
 @Composable
 fun AccountRow(name: String, number: Int, amount: Float, color: Color) {
@@ -67,6 +85,23 @@ fun AccountRow(name: String, number: Int, amount: Float, color: Color) {
  * A row representing the basic information of a [Bill]. We just convert our parameters into the
  * type of arguments that the [BaseRow] Composable expects as its arguments and then call [BaseRow]
  * with them:
+ *  - `color` argument is just our [Color] parameter [color]
+ *  - `title` argument is just our [String] parameter [name]
+ *  - `subtitle` argument is created by concatenating the [String] "Due" with our [String] parameter
+ *  [due]
+ *  - `amount` argument is just our [Float] parameter [amount]
+ *  - `negative` argument is `true` which causes [BaseRow] to prepend a minus sign to its display of
+ *  [amount].
+ *
+ * @param name The title of this [BillRow], it comes from the [Bill.name] property of the [Bill]
+ * whose information we are displaying.
+ * @param due The due date of the [Bill], it comes from the [Bill.due] property of the [Bill] whose
+ * information we are displaying.
+ * @param amount the amount of the [Bill], it comes from the [Bill.amount] property of the [Bill]
+ * whose information we are displaying.
+ * @param color the [Color] that [BaseRow] should have its [AccountIndicator] Composable use to
+ * differentiate this [Bill] from the others, it comes from the [Bill.color] property of the [Bill]
+ * whose information we are displaying.
  */
 @Composable
 fun BillRow(name: String, due: String, amount: Float, color: Color) {
