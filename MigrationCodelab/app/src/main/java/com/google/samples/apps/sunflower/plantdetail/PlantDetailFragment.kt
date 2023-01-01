@@ -28,28 +28,45 @@ import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.accompanist.themeadapter.material.MdcTheme
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.samples.apps.sunflower.HomeViewPagerFragmentDirections
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.databinding.FragmentPlantDetailBinding
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
+import com.google.samples.apps.sunflower.adapters.PlantAdapter
+import com.google.samples.apps.sunflower.adapters.PlantAdapter.PlantViewHolder
 
 /**
  * A fragment representing a single Plant detail screen.
  */
 class PlantDetailFragment : Fragment() {
-
+    /**
+     * This contains the "plantId" [String] that the `navigateToPlant` method of the [PlantViewHolder]
+     * of [PlantAdapter] fetches from the [Plant.plantId] field of the [Plant] to be viewed and then
+     * uses as the argument to the generated method
+     * [HomeViewPagerFragmentDirections.actionViewPagerFragmentToPlantDetailFragment] in order to
+     * construct the [NavDirections] that it uses to navigate to this fragment. That [String] is
+     * contained in its [PlantDetailFragmentArgs.plantId] property.
+     */
     private val args: PlantDetailFragmentArgs by navArgs()
 
+    /**
+     * TODO: Add kdoc
+     */
     private val plantDetailViewModel: PlantDetailViewModel by viewModels {
         InjectorUtils.providePlantDetailViewModelFactory(requireActivity(), args.plantId)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -164,7 +181,13 @@ class PlantDetailFragment : Fragment() {
         fab.hide()
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     interface Callback {
+        /**
+         * TODO: Add kdoc
+         */
         fun add(plant: Plant?)
     }
 }

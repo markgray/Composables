@@ -249,7 +249,9 @@ private fun PlantDetailContentPreview() {
 }
 
 /**
- * TODO: add kdoc
+ * This is a Preview of the [PlantDetailContent] Composable for a [Plant] that is constucted with
+ * some dummy data with the `uiMode` argument to `@Preview` [Configuration.UI_MODE_NIGHT_YES] in
+ * order to see what it looks like in night mode.
  */
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -268,7 +270,7 @@ private fun PlantDetailContentDarkPreview() {
 }
 
 /**
- * TODO: add kdoc
+ * This is a Preview of our [PlantName] Composable.
  */
 @Preview
 @Composable
@@ -279,7 +281,7 @@ private fun PlantNamePreview() {
 }
 
 /**
- * TODO: add kdoc
+ * This is a Preview of our [PlantWatering] Composable.
  */
 @Preview
 @Composable
@@ -290,7 +292,7 @@ private fun PlantWateringPreview() {
 }
 
 /**
- * TODO: add kdoc
+ * This is a Preview of our [PlantDescription] Composable.
  */
 @Preview
 @Composable
