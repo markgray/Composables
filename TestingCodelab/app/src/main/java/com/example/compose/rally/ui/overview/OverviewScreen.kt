@@ -66,6 +66,9 @@ import com.example.compose.rally.ui.components.formatAmount
 import com.example.compose.rally.ui.theme.RallyTheme
 import java.util.Locale
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun OverviewBody(onScreenChange: (RallyScreen) -> Unit = {}) {
     Column(
@@ -123,6 +126,9 @@ private fun AlertCard() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview
 @Composable
 fun AlertCardPreview() {
@@ -157,6 +163,7 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
     }
 }
 
+@Suppress("SameParameterValue")
 @Composable
 private fun AlertItem(message: String) {
     Row(
@@ -238,7 +245,7 @@ private fun <T> OverViewDivider(
  * The Accounts card within the Rally Overview screen.
  */
 @Composable
-private fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
+fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
     val amount = UserData.accounts.map { account -> account.balance }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.accounts),
@@ -263,7 +270,7 @@ private fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
  * The Bills card within the Rally Overview screen.
  */
 @Composable
-private fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
+fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
     val amount = UserData.bills.map { bill -> bill.amount }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.bills),
