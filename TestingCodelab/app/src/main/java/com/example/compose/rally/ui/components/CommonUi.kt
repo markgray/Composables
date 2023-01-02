@@ -20,6 +20,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,17 +40,22 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
 import com.example.compose.rally.data.Account
 import com.example.compose.rally.data.Bill
 import com.example.compose.rally.ui.accounts.AccountsBody
 import com.example.compose.rally.ui.bills.BillsBody
-import com.example.compose.rally.ui.overview.BillsCard
 import com.example.compose.rally.ui.overview.AccountsCard
+import com.example.compose.rally.ui.overview.BillsCard
 import com.example.compose.rally.ui.theme.RallyTheme
 import java.text.DecimalFormat
 
@@ -141,7 +147,47 @@ fun BillRow(name: String, due: String, amount: Float, color: Color) {
  *  content about the center line of the [Row].
  *
  * Inside the `content` lambda of the [Row] we first initialize our [Typography] variable `val typography`
- * to the [MaterialTheme.typography] of our [RallyTheme] custom [MaterialTheme].
+ * to the [MaterialTheme.typography] of our [RallyTheme] custom [MaterialTheme]. Then we compose a
+ * [AccountIndicator] into our [Row] with its `color` argument our [Color] parameter [color], and its
+ * `modifier` argument an empty, default, or starter [Modifier] that contains no elements. The
+ * [AccountIndicator] Composable is just a 4.dp wide by 36.dp high [Spacer] whose background [Color]
+ * is the `color` parameter of [AccountIndicator]. Next in our [Row] is a [Spacer] whose `modifier`
+ * argument is a [Modifier.width] of 12.dp and this is followed by a [Column] which contains a [Text]
+ * displaying our [title] parameter using the [TextStyle] specified for [Typography.body1] by our
+ * [RallyTheme] custom [MaterialTheme] (`fontWeight` = [FontWeight.Normal], `fontSize` = 16.sp, and
+ * `letterSpacing` = 0.1.em with the default `RobotoCondensed` [FontFamily] using the  [Font] whose
+ * resource ID is [R.font.robotocondensed_regular]. Next in the [Column] is a [CompositionLocalProvider]
+ * providing [ContentAlpha.medium] as the [LocalContentAlpha] to a [Text] that is wraps which displays
+ * our [String] parameter [subtitle] using the [TextStyle] specified for [Typography.subtitle1] by our
+ * [RallyTheme] custom [MaterialTheme] (`fontWeight` = [FontWeight.Light], `fontSize` = 14.sp,
+ * `lineHeight` = 20.sp, `letterSpacing` = 3.sp with the default `RobotoCondensed` [FontFamily] using
+ * the [Font] whose resource ID is [R.font.robotocondensed_light]. After the [Column] in the [Row]
+ * is a [Spacer] whose `modifier` argument is a [RowScope] `Modifier.weight` of 1f which will cause
+ * it to use all of the space that remains in the [Row]'s incoming horizontal constraints after its
+ * siblings have been measured and placed. We follow the [Spacer] with an inner [Row] that is used
+ * so that it can have the `horizontalArrangement` argument of [Arrangement.SpaceBetween] which will
+ * place children such that they are spaced evenly across the main axis, without free space before
+ * the first child or after the last child, and the `content` of this [Row] is a [Text] that displays
+ * our `dollarSign` variable using the [TextStyle] specified for [Typography.h6] by our [RallyTheme]
+ * custom [MaterialTheme] (`fontWeight` = [FontWeight.Normal], `fontSize` = 18.sp, `lineHeight` = 20.sp,
+ * `fontFamily` = `EczarFontFamily`, `letterSpacing` = 3.sp using the [Font] whose resource ID is
+ * [R.font.eczar_regular]), this is followed in the inner [Row] by a [Text] that displays our
+ * `formattedAmount` variable using the same [TextStyle] with both [Text] having as their `modifier`
+ * argument a [RowScope] `Modifier.align` of [Alignment.CenterVertically] which centers their `content`
+ * about the centerline of the [Row]. This is followed in the outer [Row] by another [Spacer] that
+ * is 16.dp wide, and at the end of the [Row] is a [CompositionLocalProvider] providing
+ * [ContentAlpha.medium] as the [LocalContentAlpha] to an [Icon] that displays the [ImageVector]
+ * that is drawn by [Icons.Filled.ChevronRight], with its `contentDescription` argument `null`, and
+ * its `modifier` argument a [Modifier.padding] that adds 12.dp padding to the end of the [Icon],
+ * with a [Modifier.size] chained to that which sets the size of the [Icon] to 24.dp
+ *
+ * Beneath the [Row] described above is a [RallyDivider] which is just a 1.dp `thickness` [Divider]
+ * that visually separates this [BaseRow] from any Composables that follow it.
+ *
+ * @param color the [Color] to use for our [AccountIndicator], this is the [Account.color] property
+ * of the [Account] we are displaying when we are called by [AccountRow], or the [Bill.color] property
+ * of the [Bill] we are displaying when we are called by [BillRow].
+ * @param title
  */
 @Composable
 private fun BaseRow(
