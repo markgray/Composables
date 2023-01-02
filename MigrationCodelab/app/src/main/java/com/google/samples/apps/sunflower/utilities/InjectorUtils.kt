@@ -42,23 +42,33 @@ object InjectorUtils {
         )
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun provideGardenPlantingListViewModelFactory(
         context: Context
     ): GardenPlantingListViewModelFactory {
         return GardenPlantingListViewModelFactory(getGardenPlantingRepository(context))
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun providePlantListViewModelFactory(fragment: Fragment): PlantListViewModelFactory {
         return PlantListViewModelFactory(getPlantRepository(fragment.requireContext()), fragment)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun providePlantDetailViewModelFactory(
         context: Context,
         plantId: String
     ): PlantDetailViewModelFactory {
         return PlantDetailViewModelFactory(
-            getPlantRepository(context),
-            getGardenPlantingRepository(context), plantId
+            plantRepository = getPlantRepository(context),
+            gardenPlantingRepository = getGardenPlantingRepository(context),
+            plantId = plantId
         )
     }
 }

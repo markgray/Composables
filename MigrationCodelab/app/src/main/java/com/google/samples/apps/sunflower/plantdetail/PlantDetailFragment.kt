@@ -28,6 +28,8 @@ import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
@@ -42,6 +44,9 @@ import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.adapters.PlantAdapter.PlantViewHolder
+import com.google.samples.apps.sunflower.data.GardenPlantingRepository
+import com.google.samples.apps.sunflower.data.PlantRepository
+import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModelFactory
 
 /**
  * A fragment representing a single Plant detail screen.
@@ -53,19 +58,61 @@ class PlantDetailFragment : Fragment() {
      * uses as the argument to the generated method
      * [HomeViewPagerFragmentDirections.actionViewPagerFragmentToPlantDetailFragment] in order to
      * construct the [NavDirections] that it uses to navigate to this fragment. That [String] is
-     * contained in its [PlantDetailFragmentArgs.plantId] property.
+     * contained in its [PlantDetailFragmentArgs.plantId] property. The [navArgs] method returns a
+     * Lazy delegate to access the [Fragment]'s arguments as an [PlantDetailFragmentArgs] instance.
      */
     private val args: PlantDetailFragmentArgs by navArgs()
 
     /**
-     * TODO: Add kdoc
+     * This is the [PlantDetailViewModel] that we use to retrieve data from the [PlantRepository]
+     * and [GardenPlantingRepository] and, if the user clicks the [FloatingActionButton] in our
+     * layout file, to add the [Plant] we are displaying to the [GardenPlantingRepository]. The
+     * method [InjectorUtils.providePlantDetailViewModelFactory] returns an instance of
+     * [PlantDetailViewModelFactory] constructed to use the singleton [PlantRepository] and singleton
+     * [GardenPlantingRepository] as well as the [Plant] whose [Plant.plantId] was passed us in our
+     * [PlantDetailFragmentArgs] field [args].
      */
     private val plantDetailViewModel: PlantDetailViewModel by viewModels {
-        InjectorUtils.providePlantDetailViewModelFactory(requireActivity(), args.plantId)
+        InjectorUtils.providePlantDetailViewModelFactory(
+            context = requireActivity(),
+            plantId = args.plantId
+        )
     }
 
     /**
-     * TODO: Add kdoc
+     * Called to have the fragment instantiate its user interface view. This will be called between
+     * [onCreate] and [onViewCreated]. It is recommended to only inflate the layout in this method
+     * and move logic that operates on the returned View to [onViewCreated]. We initialize our
+     * [FragmentPlantDetailBinding] variable `val binding` to the value returned by the method
+     * [DataBindingUtil.inflate] when it uses our [LayoutInflater] parameter [inflater] to inflate
+     * the layout file with resource ID [R.layout.fragment_plant_detail] with our [ViewGroup] parameter
+     * [container] supplying the LayoutParams without attaching to it. We then use the [apply]
+     * extension function on the [FragmentPlantDetailBinding] to:
+     *  - set the `viewModel` variable in the binding to our [PlantDetailViewModel] variable
+     *  `plantDetailViewModel`
+     *  - set the [LifecycleOwner] that should be used for observing changes of [LiveData] in the
+     *  binding to the a [LifecycleOwner] that represents the [Fragment]'s [View] lifecycle
+     *  (our `viewLifecycleOwner` property).
+     *  - set the `callback` variable in the binding to an anonymous [Callback] instance that
+     *  overrides the [Callback.add] method which if its [Plant] parameter `plant` is not `null`
+     *  calls our [hideAppBarFab] method with the [FloatingActionButton] whose ID is [R.id.fab]
+     *  to hide the [FloatingActionButton], then calls the [PlantDetailViewModel.addPlantToGarden]
+     *  method of our [plantDetailViewModel] to have it add the [Plant] we are displaying to the
+     *  [GardenPlantingRepository], and finally calls the [Snackbar.make] method to show the
+     *  [String] with resource ID [R.string.added_plant_to_garden] ("Added plant to garden").
+     *  - initializes our [Boolean] variable `var isToolbarShown` to `false`.
+     *  - sets the [NestedScrollView.OnScrollChangeListener] of the `plantDetailScrollview` in the
+     *  binding to an anonymous instance whose [NestedScrollView.OnScrollChangeListener.onScrollChange]
+     *  override will:
+     *
+     * @param inflater The [LayoutInflater] object that can be used to inflate any views.
+     * @param container If non-`null`, this is the parent view that the fragment's UI will be
+     * attached to. The fragment should not add the view itself, but this can be used to generate
+     * the LayoutParams of the view.
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return Return the [View] for the fragment's UI, or null.
      */
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,7 +127,7 @@ class PlantDetailFragment : Fragment() {
             callback = object : Callback {
                 override fun add(plant: Plant?) {
                     plant?.let {
-                        hideAppBarFab(fab)
+                        hideAppBarFab(fab = fab)
                         plantDetailViewModel.addPlantToGarden()
                         Snackbar.make(root, R.string.added_plant_to_garden, Snackbar.LENGTH_LONG)
                             .show()
