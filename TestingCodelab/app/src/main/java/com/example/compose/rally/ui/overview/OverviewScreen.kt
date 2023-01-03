@@ -88,7 +88,7 @@ fun OverviewBody(onScreenChange: (RallyScreen) -> Unit = {}) {
  * The Alerts card within the Rally Overview screen.
  */
 @Composable
-private fun AlertCard() {
+fun AlertCard() {
     var showDialog by remember { mutableStateOf(false) }
     val alertMessage = "Heads up, you've used up 90% of your Shopping budget for this month."
 
@@ -303,6 +303,9 @@ private fun SeeAllButton(onClick: () -> Unit) {
     }
 }
 
-private val RallyDefaultPadding = 12.dp
+/**
+ * TODO: Add kdoc
+ */
+val RallyDefaultPadding: Dp = 12.dp
 
 private const val SHOWN_ITEMS = 3

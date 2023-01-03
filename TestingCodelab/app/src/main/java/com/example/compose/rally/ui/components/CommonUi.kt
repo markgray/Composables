@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -56,6 +57,9 @@ import com.example.compose.rally.ui.accounts.AccountsBody
 import com.example.compose.rally.ui.bills.BillsBody
 import com.example.compose.rally.ui.overview.AccountsCard
 import com.example.compose.rally.ui.overview.BillsCard
+import com.example.compose.rally.ui.overview.AlertCard
+import com.example.compose.rally.ui.overview.RallyDefaultPadding
+import com.example.compose.rally.ui.theme.DarkBlue900
 import com.example.compose.rally.ui.theme.RallyTheme
 import java.text.DecimalFormat
 
@@ -187,7 +191,15 @@ fun BillRow(name: String, due: String, amount: Float, color: Color) {
  * @param color the [Color] to use for our [AccountIndicator], this is the [Account.color] property
  * of the [Account] we are displaying when we are called by [AccountRow], or the [Bill.color] property
  * of the [Bill] we are displaying when we are called by [BillRow].
- * @param title
+ * @param title either the [Account.name] field of an [Account] when we are used by [AccountRow] or
+ * the [Bill.name] of a [Bill] when we are used by [BillRow].
+ * @param subtitle either a [String] for displaying the [Account.number] of an [Account] when we are
+ * used by [AccountRow] or a [String] for displaying the [Bill.due] due date of a [Bill] when we are
+ * used by [BillRow].
+ * @param amount either the [Account.balance] field of an [Account] when we are used by [AccountRow]
+ * or the [Bill.amount] field of a [Bill] when we are used by [BillRow].
+ * @param negative if `true` we prepend a minus sign when displaying our [amount] parameter, and if
+ * `false` we do not. [AccountRow] passes us `false` when it uses us, and [BillRow] passes `true`.
  */
 @Composable
 private fun BaseRow(
@@ -251,15 +263,33 @@ private fun BaseRow(
 }
 
 /**
- * A vertical colored line that is used in a [BaseRow] to differentiate accounts.
+ * A vertical colored line that is used in a [BaseRow] to differentiate accounts. We just use a
+ * [Spacer] with its `modifier` argument our [Modifier] argument [modifier] to which is chained
+ * a [Modifier.size] whose `width` is 4.dp and whose `height` is 36.dp, followed by chained
+ * [Modifier.background] that sets the background [Color] of the [Spacer] to our [Color] parameter
+ * [color].
+ *
+ * @param color the [Color] to use as our background color.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance/and or
+ * behavior. Our caller, [BaseRow], just passes us the empty, default, or starter Modifier that
+ * contains no elements.
  */
 @Composable
 private fun AccountIndicator(color: Color, modifier: Modifier = Modifier) {
-    Spacer(modifier.size(4.dp, 36.dp).background(color = color))
+    Spacer(modifier = modifier.size(width = 4.dp, height = 36.dp).background(color = color))
 }
 
 /**
- * TODO: Add kdoc
+ * A thickness 1.dp [Divider] that is used at the end of the [BaseRow] Composable or the middle of an
+ * [AlertCard] to visually separate content. The `color` argument of our [Divider] uses the
+ * [Colors.background] of [MaterialTheme.colors] (the [Color] that our [RallyTheme] custom
+ * [MaterialTheme] specifies for this is [DarkBlue900]), the `thickness` argument is 1.dp, and the
+ * `modifier` argument is our [Modifier] parameter [modifier].
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance/and or
+ * behavior. [BaseRow] does not pass us one so the empty, default, or starter Modifier that contains
+ * no elements is used, but [AlertCard] passes us a [Modifier.padding] whose `start` and `end` are
+ * [RallyDefaultPadding] (12.dp)
  */
 @Composable
 fun RallyDivider(modifier: Modifier = Modifier) {
@@ -267,13 +297,28 @@ fun RallyDivider(modifier: Modifier = Modifier) {
 }
 
 /**
- * TODO: Add kdoc
+ * Uses the [DecimalFormat.format] method of our [AmountDecimalFormat] field to format its [Float]
+ * parameter [amount] as a [String] with comma's separating the whole part into 3 digit groups, and
+ * a decimal point separating the whole part from the fractional part (leading and trailing 0's are
+ * omitted).
+ *
+ * @param amount the [Float] value we are to format into a string.
+ * @return a [String] formatted according to the [AmountDecimalFormat] pattern of [AmountDecimalFormat].
  */
 fun formatAmount(amount: Float): String {
     return AmountDecimalFormat.format(amount)
 }
 
+/**
+ * The [DecimalFormat] used by [AccountRow] to format the [Account.number] of the [Account] it is
+ * displaying. The pattern produces a [String] with no comma or decimal point separation, and with
+ * leading 0's omitted.
+ */
 private val AccountDecimalFormat = DecimalFormat("####")
+
+/**
+ * TODO: Add kdoc
+ */
 private val AmountDecimalFormat = DecimalFormat("#,###.##")
 
 /**
