@@ -19,11 +19,13 @@ package com.google.samples.apps.sunflower.plantdetail
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
+import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -32,10 +34,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
+import androidx.navigation.NavController
 import androidx.navigation.fragment.navArgs
 import com.google.accompanist.themeadapter.material.MdcTheme
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.samples.apps.sunflower.HomeViewPagerFragmentDirections
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
@@ -103,7 +108,27 @@ class PlantDetailFragment : Fragment() {
      *  - initializes our [Boolean] variable `var isToolbarShown` to `false`.
      *  - sets the [NestedScrollView.OnScrollChangeListener] of the `plantDetailScrollview` in the
      *  binding to an anonymous instance whose [NestedScrollView.OnScrollChangeListener.onScrollChange]
-     *  override will:
+     *  override will decide whether the toolbar should be shown based on how far the
+     *  [NestedScrollView] has been scrolled. To do this it initializes its [Boolean] variable
+     *  `val shouldShowToolbar` to `true` if the current vertical scroll origin (`scrollY`) is
+     *  greater than the `height` of the [Toolbar] whose binding address in `binding` is
+     *  [FragmentPlantDetailBinding.toolbar]. Then if `isToolbarShown` is not equal to our variable
+     *  `shouldShowToolbar` we set `isToolbarShown` to `shouldShowToolbar` and then set the
+     *  [AppBarLayout.isActivated] property of the [FragmentPlantDetailBinding.appbar] of `binding`
+     *  to `shouldShowToolbar` (this will use shadow animator to add elevation if toolbar is shown),
+     *  and set the [CollapsingToolbarLayout.isTitleEnabled] property of `binding`s
+     *  [FragmentPlantDetailBinding.toolbarLayout] to `shouldShowToolbar` (shows the plant name if
+     *  toolbar is shown).
+     *  - we set a lambda as a listener to respond to navigation events on the [Toolbar] in `binding`
+     *  at binding address [FragmentPlantDetailBinding.toolbar] which calls the [View.findNavController]
+     *  method of the [View] passed the lambda to locate the [NavController] associated with the [View]
+     *  and then calls its [NavController.navigateUp] method to navigate up in the navigation hierarchy.
+     *  - we set the [Toolbar.OnMenuItemClickListener] of [FragmentPlantDetailBinding.toolbar] in
+     *  `binding` to a lambda which when the [MenuItem.getItemId] (kotlin `itemId` property) has
+     *  resource ID [R.id.action_share] calls [createShareIntent] to create a share [Intent] and
+     *  launch an activity to share the [Plant.name] of our [Plant] then returns `true` to consume
+     *  the click. If it is not resource ID [R.id.action_share] we return `false` to allow normal
+     *  system handling of the [MenuItem].
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate any views.
      * @param container If non-`null`, this is the parent view that the fragment's UI will be
@@ -143,7 +168,7 @@ class PlantDetailFragment : Fragment() {
 
                     // User scrolled past image to height of toolbar and the title text is
                     // underneath the toolbar, so the toolbar should be shown.
-                    val shouldShowToolbar = scrollY > toolbar.height
+                    val shouldShowToolbar: Boolean = scrollY > toolbar.height
 
                     // The new state of the toolbar differs from the previous state; update
                     // appbar and toolbar attributes.
@@ -163,7 +188,7 @@ class PlantDetailFragment : Fragment() {
                 view.findNavController().navigateUp()
             }
 
-            toolbar.setOnMenuItemClickListener { item ->
+            toolbar.setOnMenuItemClickListener { item: MenuItem ->
                 when (item.itemId) {
                     R.id.action_share -> {
                         createShareIntent()
