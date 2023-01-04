@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
 import androidx.appcompat.widget.Toolbar
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -129,6 +130,22 @@ class PlantDetailFragment : Fragment() {
      *  launch an activity to share the [Plant.name] of our [Plant] then returns `true` to consume
      *  the click. If it is not resource ID [R.id.action_share] we return `false` to allow normal
      *  system handling of the [MenuItem].
+     *  - Next we configure the [ComposeView] in our layout file that is bound to the resource ID
+     *  [FragmentPlantDetailBinding.composeView] by using the [apply] extension function on it and
+     *  in the [apply] `block` we call its [ComposeView.setViewCompositionStrategy] method to set
+     *  its [ViewCompositionStrategy] to [ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed]
+     *  in order to dispose the Composition when the Fragment view lifecycle is destroyed, instead
+     *  of when the [ComposeView] is detached from the window. We then call [ComposeView.setContent]
+     *  to set the Jetpack Compose content of this [View] to an [MdcTheme] wrapped call to
+     *  the [PlantDetailDescription] screen, with [plantDetailViewModel] as its `plantDetailViewModel`
+     *  argument.
+     *
+     * Having got our binding configured we call the [setHasOptionsMenu] method with `true` in order
+     * to report that this fragment would like to participate in populating the options menu by
+     * receiving a call to [onCreateOptionsMenu] and related methods, and then we return the
+     * [View] returned by the  [FragmentPlantDetailBinding.getRoot] method of `binding` (kotlin
+     * `root` property) to the caller as the [View] for our fragment's UI (`root` is the outermost
+     * [View] in the layout file associated with the Binding).
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate any views.
      * @param container If non-`null`, this is the parent view that the fragment's UI will be
@@ -212,7 +229,7 @@ class PlantDetailFragment : Fragment() {
                 // Add Jetpack Compose content to this View
                 setContent {
                     MdcTheme {
-                        PlantDetailDescription(plantDetailViewModel)
+                        PlantDetailDescription(plantDetailViewModel = plantDetailViewModel)
                     }
                 }
             }
@@ -223,8 +240,10 @@ class PlantDetailFragment : Fragment() {
         return binding.root
     }
 
-    // Helper function for calling a share functionality.
-    // Should be used when user presses a share button/menu item.
+    /**
+     * Helper function for calling a share functionality. Should be used when user presses a share
+     * button/menu item.
+     */
     @Suppress("DEPRECATION")
     private fun createShareIntent() {
         val shareText = plantDetailViewModel.plant.value.let { plant ->
@@ -242,10 +261,12 @@ class PlantDetailFragment : Fragment() {
         startActivity(shareIntent)
     }
 
-    // FloatingActionButtons anchored to AppBarLayouts have their visibility controlled by the scroll position.
-    // We want to turn this behavior off to hide the FAB when it is clicked.
-    //
-    // This is adapted from Chris Banes' Stack Overflow answer: https://stackoverflow.com/a/41442923
+    /**
+     * FloatingActionButtons anchored to AppBarLayouts have their visibility controlled by the scroll
+     * position. We want to turn this behavior off to hide the FAB when it is clicked.
+     *
+     * This is adapted from Chris Banes' Stack Overflow answer: https://stackoverflow.com/a/41442923
+     */
     private fun hideAppBarFab(fab: FloatingActionButton) {
         val params = fab.layoutParams as CoordinatorLayout.LayoutParams
         val behavior = params.behavior as FloatingActionButton.Behavior
