@@ -242,17 +242,33 @@ class PlantDetailFragment : Fragment() {
 
     /**
      * Helper function for calling a share functionality. Should be used when user presses a share
-     * button/menu item.
+     * button/menu item. We initialize our [String] variable `val shareText` by retrieving the
+     * value of the [PlantDetailViewModel.plant] property of our [plantDetailViewModel] field, then
+     * use the [let] extension function to apply an `if` expression to the `plant` which returns
+     * the empty string if `plant` is `null` or the [String] that the [getString] method returns
+     * when it formats the [Plant.name] property of the `plant` using the format string with
+     * resource ID [R.string.share_text_plant] ("Check out the %s plant in the Android Sunflower app").
+     * Then we initialize our [Intent] variable `val shareIntent` by constructing an instance of
+     * [ShareCompat.IntentBuilder], and then applying the [ShareCompat.IntentBuilder.setText] method
+     * to it to set the literal text data to be sent as part of the share to `shareText`, and then
+     * chaining a [ShareCompat.IntentBuilder.setType] method to that to set mime type to "text/plain",
+     * and finally chaining a [ShareCompat.IntentBuilder.createChooserIntent] to the end of the
+     * builder to create an [Intent] to which we apply the [Intent.addFlags] method to it to set its
+     * flags to [Intent.FLAG_ACTIVITY_NEW_DOCUMENT] (open a document into a new task rooted at the
+     * activity launched by this [Intent]) bitwise or'ed with [Intent.FLAG_ACTIVITY_MULTIPLE_TASK]
+     * (create a new task and launch an activity into it). Finally the [createShareIntent] method
+     * calls the [startActivity] method with `shareIntent` as its argument to have the user choose
+     * how to share the content of the [Intent].
      */
     private fun createShareIntent() {
-        val shareText = plantDetailViewModel.plant.value.let { plant ->
+        val shareText: String = plantDetailViewModel.plant.value.let { plant: Plant? ->
             if (plant == null) {
                 ""
             } else {
                 getString(R.string.share_text_plant, plant.name)
             }
         }
-        val shareIntent = ShareCompat.IntentBuilder(requireActivity())
+        val shareIntent: Intent = ShareCompat.IntentBuilder(requireActivity())
             .setText(shareText)
             .setType("text/plain")
             .createChooserIntent()
