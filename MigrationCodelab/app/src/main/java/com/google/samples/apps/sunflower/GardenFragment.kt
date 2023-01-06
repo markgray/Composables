@@ -44,7 +44,7 @@ class GardenFragment : Fragment() {
     /**
      * TODO: Add documentation.
      */
-    @Suppress("RedundantNullableReturnType")
+    @Suppress("RedundantNullableReturnType") // The method we override returns nullable
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

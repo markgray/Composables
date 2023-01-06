@@ -63,7 +63,7 @@ class GardenPlantingRepository private constructor(
      * @param gardenPlanting the [GardenPlanting] to remove from the "garden_plantings" table of the
      * database.
      */
-    @Suppress("unused")
+    @Suppress("unused") // Unused but instructional
     suspend fun removeGardenPlanting(gardenPlanting: GardenPlanting) {
         gardenPlantingDao.deleteGardenPlanting(gardenPlanting)
     }

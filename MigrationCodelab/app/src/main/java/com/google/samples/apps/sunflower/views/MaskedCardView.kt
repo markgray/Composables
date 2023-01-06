@@ -46,12 +46,17 @@ class MaskedCardView @JvmOverloads constructor(
 
     private val rectF = RectF(0f, 0f, 0f, 0f)
 
+    /**
+     * TODO: Add kdoc
+     */
     override fun onDraw(canvas: Canvas) {
         canvas.clipPath(path)
         super.onDraw(canvas)
     }
 
-    @SuppressLint("RestrictedApi")
+    /**
+     * TODO: Add kdoc
+     */
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         rectF.right = w.toFloat()
         rectF.bottom = h.toFloat()
