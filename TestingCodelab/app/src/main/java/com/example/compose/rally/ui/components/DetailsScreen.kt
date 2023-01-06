@@ -47,7 +47,7 @@ fun <T> StatementBody(
 ) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Box(Modifier.padding(16.dp)) {
-            val accountsProportion = items.extractProportions { amounts(it) }
+            val accountsProportion: List<Float> = items.extractProportions { amounts(it) }
             val circleColors = items.map { colors(it) }
             AnimatedCircle(
                 accountsProportion,

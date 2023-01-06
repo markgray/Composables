@@ -317,14 +317,29 @@ fun formatAmount(amount: Float): String {
 private val AccountDecimalFormat = DecimalFormat("####")
 
 /**
- * TODO: Add kdoc
+ * The [DecimalFormat] used by [formatAmount] to format its `amount` parameter into a [String].
+ * The resulting [String] has comma's separating the whole part into 3 digit groups, and a decimal
+ * point separating the whole part from the fractional part (leading and trailing 0's are omitted).
  */
 private val AmountDecimalFormat = DecimalFormat("#,###.##")
 
 /**
- * Used with accounts and bills to create the animated circle.
+ * Extension function used with [List]'s of [Account]'s or [Bill]'s to create the [AnimatedCircle]
+ * that is displayed by [StatementBody]. We initialize our [Double] variable `val total` by applying
+ * the [sumOf] extension function to our [List] of [Account]'s or [Bill]'s receiver, with its `selector`
+ * lambda a lambda which applies our [selector] parameter to each element in the [List] to convert
+ * it to a [Double] (our [selector] parameter returns the [Account.balance] for [Account]'s or the
+ * [Bill.amount] for [Bill]'s). Then we apply the [map] extension function to our receiver to produce
+ * a [List] of [Float] by applying our [selector] parameter to each element in the [List], dividing
+ * it by `total` and converting the result to a [Float], and return that [List] of [Float] to our
+ * caller.
+ *
+ * @param selector a lambda which takes either an [Account] or a [Bill] and returns a [Float]. This
+ * will be the [Account.balance] for [Account]'s or the [Bill.amount] for [Bill]'s
+ * @return a [List] of [Float] which represents the proportion of the total that each element in our
+ * [List] of [Account]'s or [Bill]'s contributes.
  */
 fun <E> List<E>.extractProportions(selector: (E) -> Float): List<Float> {
-    val total = this.sumOf { selector(it).toDouble() }
-    return this.map { (selector(it) / total).toFloat() }
+    val total: Double = this.sumOf { accountOrBill: E -> selector(accountOrBill).toDouble() }
+    return this.map { accountOrBill: E -> (selector(accountOrBill) / total).toFloat() }
 }
