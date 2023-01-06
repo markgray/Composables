@@ -244,7 +244,6 @@ class PlantDetailFragment : Fragment() {
      * Helper function for calling a share functionality. Should be used when user presses a share
      * button/menu item.
      */
-    @Suppress("DEPRECATION")
     private fun createShareIntent() {
         val shareText = plantDetailViewModel.plant.value.let { plant ->
             if (plant == null) {
@@ -253,7 +252,7 @@ class PlantDetailFragment : Fragment() {
                 getString(R.string.share_text_plant, plant.name)
             }
         }
-        val shareIntent = ShareCompat.IntentBuilder.from(requireActivity())
+        val shareIntent = ShareCompat.IntentBuilder(requireActivity())
             .setText(shareText)
             .setType("text/plain")
             .createChooserIntent()
