@@ -281,6 +281,17 @@ class PlantDetailFragment : Fragment() {
      * position. We want to turn this behavior off to hide the FAB when it is clicked.
      *
      * This is adapted from Chris Banes' Stack Overflow answer: https://stackoverflow.com/a/41442923
+     *
+     * First we initialize our [CoordinatorLayout.LayoutParams] variable `val params` to the layout
+     * params of our [FloatingActionButton] parameter [fab]. Then we initialize our
+     * [FloatingActionButton.Behavior] variable `val behavior` to the value returned by the
+     * [CoordinatorLayout.LayoutParams.getBehavior] method of `params` (kotlin `behavior` property),
+     * and then we set the [FloatingActionButton.Behavior.isAutoHideEnabled] property of `behavior`
+     * to `false` and call the [FloatingActionButton.hide] method of [fab] to animate the button
+     * hide if the view has already been laid out.
+     *
+     * @param fab the [FloatingActionButton] whose scroll position visibility control we should
+     * disable.
      */
     private fun hideAppBarFab(fab: FloatingActionButton) {
         val params = fab.layoutParams as CoordinatorLayout.LayoutParams
@@ -290,11 +301,25 @@ class PlantDetailFragment : Fragment() {
     }
 
     /**
-     * TODO: Add kdoc
+     * Interface used for the "callback" binding variable in layout/fragment_plant_detail.xml, its
+     * [add] method is called with the [Plant] that the [PlantDetailFragment] is displaying when the
+     * [FloatingActionButton] is clicked.
      */
     interface Callback {
         /**
-         * TODO: Add kdoc
+         * Method called when the user clicks the [FloatingActionButton]. The `onCreateView` overrride
+         * of [PlantDetailFragment] creates an anonymous instance of [Callback] which it sets the
+         * "callback" binding variable in layout/fragment_plant_detail.xml to. In that instance the
+         * [add] method implementation checks to make sure [plant] is not `null`, and if not it calls
+         * [hideAppBarFab] with the [FloatingActionButton] bound as [FragmentPlantDetailBinding.fab]
+         * to hide the [FloatingActionButton] and disable its auto hide property. Then we call the
+         * [PlantDetailViewModel.addPlantToGarden] method of our [plantDetailViewModel] field to add
+         * the [Plant] we are displaying to the [GardenPlantingRepository] (our "garden"). Finally it
+         * shows a [Snackbar] displaying the message "Added plant to garden".
+         *
+         * @param plant the [Plant] that we are displaying (our [PlantDetailViewModel] already knows
+         * which [Plant] so in the implementation added in `onCreateView` we only check to make sure
+         * it is not `null`).
          */
         fun add(plant: Plant?)
     }

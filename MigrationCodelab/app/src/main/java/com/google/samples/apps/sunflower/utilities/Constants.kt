@@ -16,8 +16,22 @@
 
 package com.google.samples.apps.sunflower.utilities
 
-/**
+import androidx.room.Room
+import com.google.samples.apps.sunflower.data.AppDatabase
+import com.google.samples.apps.sunflower.workers.SeedDatabaseWorker
+
+/*
  * Constants used throughout the app.
  */
-const val DATABASE_NAME = "sunflower-db"
-const val PLANT_DATA_FILENAME = "plants.json"
+
+/**
+ * This is the name of our ROOM database, which is used in the `buildDatabase` method of [AppDatabase]
+ * as the `name` argument of the [Room.databaseBuilder] it uses to build the database.
+ */
+const val DATABASE_NAME: String = "sunflower-db"
+
+/**
+ * This is the name of the file in our app's assets which contains the JSON formatted data that is
+ * read, parsed and loaded into our database by the [SeedDatabaseWorker.doWork] method.
+ */
+const val PLANT_DATA_FILENAME: String = "plants.json"
