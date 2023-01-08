@@ -31,6 +31,9 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.ui.theme.RallyDialogThemeOverlay
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun RallyAlertDialog(
     onDismiss: () -> Unit,

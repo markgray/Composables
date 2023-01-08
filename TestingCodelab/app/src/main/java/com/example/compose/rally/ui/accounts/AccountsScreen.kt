@@ -28,8 +28,8 @@ import com.example.compose.rally.ui.components.StatementBody
  * The Accounts screen. We just convert the fields of the [Account] data class into the
  * type of arguments that the [StatementBody] Composable expects as its arguments and then call
  * [StatementBody] with them:
- *  - `items` [StatementBody] expects a [List] of `T` so we just pass it our [List] of [Account]
- *  parameter [accounts] (our `T` for this and all other arguments is an [Account]).
+ *  - `accountsOrBills` [StatementBody] expects a [List] of `T` so we just pass it our [List] of
+ *  [Account] parameter [accounts] (our `T` for this and all other arguments is an [Account]).
  *  - `amounts` [StatementBody] expects a lambda that takes a `T` and returns a [Float] so we
  *  pass it a lambda that takes an [Account] and returns the [Account.balance] property of that
  *  [Account]
@@ -53,7 +53,7 @@ import com.example.compose.rally.ui.components.StatementBody
 @Composable
 fun AccountsBody(accounts: List<Account>) {
     StatementBody(
-        items = accounts,
+        accountsOrBills = accounts,
         amounts = { account: Account -> account.balance },
         colors = { account: Account -> account.color },
         amountsTotal = accounts.map { account: Account -> account.balance }.sum(),

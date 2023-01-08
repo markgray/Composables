@@ -39,14 +39,23 @@ import com.example.compose.rally.ui.accounts.AccountsBody
 import com.example.compose.rally.ui.bills.BillsBody
 
 /**
- * Generic component used by the accounts and bills screens to show a chart and a list of items. Our
- * root Composable is a [Column] whose `modifier` argument is a [Modifier.verticalScroll] whose `state`
- * argument is the [ScrollState] constructed and remembered by [rememberScrollState] (this [Modifier]
- * modifies the element to allow it to scroll vertically when the height of the content is bigger than
- * max constraints allow). The `content` of the [Column]
+ * Generic component used by the accounts and bills screens to show a chart and Composables displaying
+ * the details of the [Account]'s or [Bill]'s used to create the chart (the chart shows the fraction
+ * of the total that each [Account] or [Bill] represents).
  *
- * @param items either a [List] of [Account] objects when we are used by [AccountsBody] or a [List]
- * of [Bill] objects when we are used by [BillsBody]
+ * Our root Composable is a [Column] whose `modifier` argument is a [Modifier.verticalScroll] whose
+ * `state` argument is the [ScrollState] constructed and remembered by [rememberScrollState] (this
+ * [Modifier] modifies the element to allow it to scroll vertically when the height of the content
+ * is bigger than max constraints allow). The `content` of the [Column] consists of a [Box] which
+ * holds our [AnimatedCircle] chart as well as two [Text] Composables, one displaying our [circleLabel]
+ * parameter as the chart's label and the other displaying our [amountsTotal] parameter.
+ *
+ * Below the [Box] is a 10.dp [Spacer] followed by a [Card] which holds a [Column] that holds all of
+ * the [Account] or [Bill] instances in our [accountsOrBills] parameter each displayed in a [rows]
+ * Composable (which will be either an [AccountRow] for an [Account] or a [BillRow] for a [Bill]).
+ *
+ * @param accountsOrBills either a [List] of [Account] objects when we are used by [AccountsBody] or
+ * a [List] of [Bill] objects when we are used by [BillsBody]
  * @param colors a lambda which tales an [Account] or [Bill] instance and returns a [Color]. This
  * will return the [Account.color] property of an [Account] when we are used by [AccountsBody] or
  * the [Bill.color] property of a [Bill] when we are used by [BillsBody].
@@ -54,18 +63,18 @@ import com.example.compose.rally.ui.bills.BillsBody
  * will return the [Account.balance] property of an [Account] when we are used by [AccountsBody] or
  * the [Bill.amount] property of a [Bill] when we are used by [BillsBody].
  * @param amountsTotal the sum of all of the [Account.balance] or [Bill.amount] properties in the
- * [List] of [Account] or [List] of [Bill] that is our [items] parameter.
+ * [List] of [Account] or [List] of [Bill] that is our [accountsOrBills] parameter.
  * @param circleLabel this is the label that is displayed beneath our [AnimatedCircle], it is the
  * [String] "Total" when we are used by [AccountsBody] or the [String] "Due" when we are used by
  * [BillsBody].
  * @param rows a lambda emitting a Composable displaying the [Account] or [Bill] that we pass it as
- * the argument to the lambda that we take from our [List] of [Account] or [Bill] parameter [items].
- * The Composable will be an [AccountRow] when we are used by [AccountsBody] or a [BillRow] when
- * we are used by [BillsBody].
+ * the argument to the lambda that we take from our [List] of [Account] or [Bill] parameter
+ * [accountsOrBills]. The Composable will be an [AccountRow] when we are used by [AccountsBody] or
+ * a [BillRow] when we are used by [BillsBody].
  */
 @Composable
 fun <T> StatementBody(
-    items: List<T>,
+    accountsOrBills: List<T>,
     colors: (T) -> Color,
     amounts: (T) -> Float,
     amountsTotal: Float,
@@ -74,8 +83,8 @@ fun <T> StatementBody(
 ) {
     Column(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
         Box(Modifier.padding(all = 16.dp)) {
-            val accountsProportion: List<Float> = items.extractProportions { amounts(it) }
-            val circleColors: List<Color> = items.map { colors(it) }
+            val accountsProportion: List<Float> = accountsOrBills.extractProportions { amounts(it) }
+            val circleColors: List<Color> = accountsOrBills.map { colors(it) }
             AnimatedCircle(
                 proportions = accountsProportion,
                 colors = circleColors,
@@ -100,7 +109,7 @@ fun <T> StatementBody(
         Spacer(modifier = Modifier.height(height = 10.dp))
         Card {
             Column(modifier = Modifier.padding(all = 12.dp)) {
-                items.forEach { accountOrBill ->
+                accountsOrBills.forEach { accountOrBill ->
                     rows(accountOrBill)
                 }
             }
