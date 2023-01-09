@@ -21,15 +21,27 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 
 /**
- * Factory for creating a [GardenPlantingListViewModel] with a constructor that takes a
- * [GardenPlantingRepository].
+ * Factory for creating a [GardenPlantingListViewModel] using a constructor for the [ViewModel] that
+ * takes the apps singleton [GardenPlantingRepository].
+ *
+ * @param repository the apps singleton [GardenPlantingRepository].
  */
 class GardenPlantingListViewModelFactory(
     private val repository: GardenPlantingRepository
 ) : ViewModelProvider.Factory {
 
-    @Suppress("UNCHECKED_CAST") // TODO: Check this cast
+    /**
+     * Returns a new instance of [GardenPlantingListViewModel] constructed to use the apps singleton
+     * [GardenPlantingRepository].
+     *
+     * @return a new instance of [GardenPlantingListViewModel] constructed to use the apps singleton
+     * [GardenPlantingRepository].
+     */
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return GardenPlantingListViewModel(repository) as T
+        if (modelClass.isAssignableFrom(GardenPlantingListViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST") // It is checked by above if statement
+            return GardenPlantingListViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

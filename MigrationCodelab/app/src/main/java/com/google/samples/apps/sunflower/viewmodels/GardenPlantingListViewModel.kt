@@ -18,12 +18,28 @@ package com.google.samples.apps.sunflower.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
+import com.google.samples.apps.sunflower.GardenFragment
+import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
 import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 
+/**
+ * This is the [ViewModel] used by [GardenFragment] to read the [LiveData] wrapped [List] of
+ * [PlantAndGardenPlantings] that the [GardenPlantingRepository.getPlantedGardens] method returns
+ * (the [GardenPlantingListViewModel.plantAndGardenPlantings] property of the [ViewModel]).
+ *
+ * @param gardenPlantingRepository the apps singleton instance of [GardenPlantingRepository]
+ */
 class GardenPlantingListViewModel internal constructor(
     gardenPlantingRepository: GardenPlantingRepository
 ) : ViewModel() {
+    /**
+     * [GardenFragment] uses this to access the [LiveData] wrapped [List] of [PlantAndGardenPlantings]
+     * that the [GardenPlantingRepository.getPlantedGardens] method returns. It adds an observer in
+     * its `subscribeUi` method which submits the [List] whenever its contents change to the
+     * [GardenPlantingAdapter] which feeds data to the [RecyclerView] in its UI.
+     */
     val plantAndGardenPlantings: LiveData<List<PlantAndGardenPlantings>> =
         gardenPlantingRepository.getPlantedGardens()
 }
