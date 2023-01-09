@@ -49,8 +49,8 @@ fun AnimatedCircle(
         MutableTransitionState(AnimatedCircleProgress.START)
             .apply { targetState = AnimatedCircleProgress.END }
     }
-    val stroke = with(LocalDensity.current) { Stroke(5.dp.toPx()) }
-    val transition = updateTransition(currentState)
+    val stroke = with(LocalDensity.current) { Stroke(width = 5.dp.toPx()) }
+    val transition = updateTransition(transitionState = currentState, label = "currentState")
     val angleOffset by transition.animateFloat(
         transitionSpec = {
             tween(
@@ -58,7 +58,8 @@ fun AnimatedCircle(
                 durationMillis = 900,
                 easing = LinearOutSlowInEasing
             )
-        }
+        },
+        label = "angleOffset"
     ) { progress ->
         if (progress == AnimatedCircleProgress.START) {
             0f
@@ -71,9 +72,10 @@ fun AnimatedCircle(
             tween(
                 delayMillis = 500,
                 durationMillis = 900,
-                easing = CubicBezierEasing(0f, 0.75f, 0.35f, 0.85f)
+                easing = CubicBezierEasing(a = 0f, b = 0.75f, c = 0.35f, d = 0.85f)
             )
-        }
+        },
+        label = "shift"
     ) { progress ->
         if (progress == AnimatedCircleProgress.START) {
             0f
@@ -86,10 +88,10 @@ fun AnimatedCircle(
         val innerRadius = (size.minDimension - stroke.width) / 2
         val halfSize = size / 2.0f
         val topLeft = Offset(
-            halfSize.width - innerRadius,
-            halfSize.height - innerRadius
+            x = halfSize.width - innerRadius,
+            y = halfSize.height - innerRadius
         )
-        val size = Size(innerRadius * 2, innerRadius * 2)
+        val size = Size(width = innerRadius * 2, height = innerRadius * 2)
         var startAngle = shift - 90f
         proportions.forEachIndexed { index, proportion ->
             val sweep = proportion * angleOffset
