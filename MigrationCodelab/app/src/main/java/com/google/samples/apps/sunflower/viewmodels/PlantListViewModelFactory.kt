@@ -33,15 +33,22 @@ class PlantListViewModelFactory(
 ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
 
     /**
-     * Returns a [PlantListViewModel] that will use the factories [PlantRepository] parameter
+     * Returns a [PlantListViewModel] that will use the factories [PlantRepository] field
+     * [repository] as its  [PlantRepository].
+     *
+     * @param modelClass the [Class] of the type of [ViewModel] that we are to create.
+     * @return a [PlantListViewModel] that will use the factories [PlantRepository] field
      * [repository] as its  [PlantRepository].
      */
-    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(
         key: String,
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        return PlantListViewModel(repository, handle) as T
+        if (modelClass.isAssignableFrom(PlantListViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST") // It is checked by above if statement
+            return PlantListViewModel(repository, handle) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

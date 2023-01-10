@@ -32,8 +32,12 @@ class GardenPlantingListViewModelFactory(
 
     /**
      * Returns a new instance of [GardenPlantingListViewModel] constructed to use the apps singleton
-     * [GardenPlantingRepository].
+     * [GardenPlantingRepository]. First we make sure that our [Class] parameter [modelClass] can
+     * be hold a [GardenPlantingListViewModel] (throwing [IllegalArgumentException] is it cannot).
+     * Then we return a new instance of [GardenPlantingListViewModel] constructed to use our
+     * [GardenPlantingRepository] field [repository].
      *
+     * @param modelClass the [Class] of the type of [ViewModel] that we are to create.
      * @return a new instance of [GardenPlantingListViewModel] constructed to use the apps singleton
      * [GardenPlantingRepository].
      */
