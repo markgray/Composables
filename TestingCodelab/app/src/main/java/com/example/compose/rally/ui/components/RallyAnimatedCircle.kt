@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -45,7 +46,39 @@ import androidx.compose.ui.unit.dp
 private const val DividerLengthInDegrees = 1.8f
 
 /**
- * A donut chart that animates when loaded.
+ * A donut chart that animates when loaded. We start by initializing our variable `val currentState`
+ * to a [MutableTransitionState] that can be mutated using [updateTransition] between the enum values
+ * [AnimatedCircleProgress.START] and [AnimatedCircleProgress.END]. We initialize our [Stroke] variable
+ * `val stroke` to a new instance of 5.dp wide [Stroke] using the method [with] to use the `current`
+ * [LocalDensity] to transform between [dp] and pixels when calling the constructor. We initialize
+ * our variable `val transition` to a [Transition] of [AnimatedCircleProgress] using the method
+ * [updateTransition] with its `transitionState` argument our `currentState` variable (Creates a
+ * [Transition] and puts it in the currentState of that [MutableTransitionState]. Whenever the
+ * `targetState` of the [MutableTransitionState] changes, the [Transition] will animate to the new
+ * target state). The `label` argument to [updateTransition] ("currentState") is used to differentiate
+ * different transitions in Android Studio.
+ *
+ * We initialize our animated [Float] variable `val angleOffset` "by" the [Transition.animateFloat]
+ * method with its `transitionSpec` argument a [tween] whose `durationMillis` (duration in milliseconds)
+ * is 900ms, whose `delayMillis` (amount of time in milliseconds that animation waits before starting)
+ * is 500ms, and whose `easing` is [LinearOutSlowInEasing] (incoming elements are animated using
+ * deceleration easing, which starts a transition at peak velocity and ends at rest). The
+ * `targetValueByState` lambda argument of [Transition.animateFloat] returns 0f if the value of the
+ * [AnimatedCircleProgress] passed it is [AnimatedCircleProgress.START] or 360f if it is not.
+ *
+ * We initialize our animated [Float] variable `val shift` "by" the [Transition.animateFloat] method
+ * with its `transitionSpec` argument a [tween] whose `durationMillis` (duration in milliseconds)
+ * is 900ms, whose `delayMillis` (amount of time in milliseconds that animation waits before starting)
+ * is 500ms, and whose `easing` is a [CubicBezierEasing] with the arguments `a` = 0f, `b` = 0.75f,
+ * `c` = 0.35f, and `d` = 0.85f
+ *
+ * Having set up our animation variables, we move on to the [Canvas] on which we will draw our circle.
+ * The `modifier` argument of the [Canvas] is our [modifier] parameter. The `onDraw` lambda runs in
+ * [DrawScope] and contains code which:
+ *  - initializes its [Float] variable `val innerRadius` to half of the lesser of the magnitudes of
+ *  the width and the height of [DrawScope.size] (the dimensions of the current drawing environment)
+ *  minus the [Stroke.width] of our `stroke` variable.
+ *  - initializes its [Size] variable `val halfSize` to half of [DrawScope.size].
  *
  * @param proportions a [List] of [Float] with each entry representing the fraction of the circle we
  * are to draw to represent the contribution of the entry to the whole circle.
@@ -70,6 +103,7 @@ fun AnimatedCircle(
     val stroke: Stroke = with(LocalDensity.current) { Stroke(width = 5.dp.toPx()) }
     val transition: Transition<AnimatedCircleProgress> =
         updateTransition(transitionState = currentState, label = "currentState")
+
     val angleOffset: Float by transition.animateFloat(
         transitionSpec = {
             tween(
