@@ -17,32 +17,9 @@
 buildscript {
     // Define versions in a single place
     ext {
-        // Sdk and tools
-        compileSdkVersion = 33
-        minSdkVersion = 21
-        targetSdkVersion = 33
-
-        // App dependencies
-        appCompatVersion = '1.5.1'
-        activityComposeVersion = '1.6.1'
-        composeCompilerVersion = '1.3.2'
-        composeVersion = '1.3.1'
-        coreTestingVersion = '2.1.0'
-        coroutinesVersion = "1.5.2"
-        espressoVersion = '3.5.0'
-        fragmentVersion = '1.5.4'
         gradleVersion = '7.3.1'
-        junitVersion = '4.13.1'
         kotlinVersion = '1.7.20'
-        ktlintVersion = '0.45.2'
-        ktxVersion = '1.9.0'
-        lifecycleVersion = '2.3.0'
-        materialVersion = '1.7.0'
-        runnerVersion = '1.0.1'
-        truthVersion = '1.0.1'
-        testExtJunit = '1.1.3'
-        uiAutomatorVersion = '2.2.0'
-        viewPagerVersion = '1.0.0'
+        composeCompilerVersion = '1.3.2'
     }
 
     repositories {
