@@ -58,35 +58,45 @@ class PlantAndGardenPlantingsViewModel(plantings: PlantAndGardenPlantings) {
     val waterDateString: String = dateFormat.format(gardenPlanting.lastWateringDate.time)
 
     /**
-     * TODO: Add kdoc
+     * This property "returns" the [Plant.wateringInterval] property of the [Plant] object contained
+     * in our [PlantAndGardenPlantings] parameter `plantings`.
      */
     val wateringInterval: Int
         get() = plant.wateringInterval
 
     /**
-     * TODO: Add kdoc
+     * This property "returns" the [Plant.imageUrl] property of the [Plant] object contained in our
+     * [PlantAndGardenPlantings] parameter `plantings`.
      */
     val imageUrl: String
         get() = plant.imageUrl
 
     /**
-     * TODO: Add kdoc
+     * This property "returns" the [Plant.name] property of the [Plant] object contained in our
+     * [PlantAndGardenPlantings] parameter `plantings`.
      */
     val plantName: String
         get() = plant.name
 
     /**
-     * TODO: Add kdoc
+     * This property "returns" the [Calendar.time] of the [GardenPlanting.plantDate] property
+     * of our [PlantAndGardenPlantings] parameter `plantings` formatted into a [String] using our
+     * [SimpleDateFormat] field [dateFormat].
      */
     val plantDateString: String = dateFormat.format(gardenPlanting.plantDate.time)
 
     /**
-     * TODO: Add kdoc
+     * This property "returns" the [Plant.plantId] property of the [Plant] object contained in our
+     * [PlantAndGardenPlantings] parameter `plantings`.
      */
     val plantId: String
         get() = plant.plantId
 
     companion object {
+        /**
+         * The [SimpleDateFormat] used to format the [Calendar.time] property of [Calendar] fields
+         * contained in our [GardenPlanting] parameter `plantings` into a user friendly [String].
+         */
         private val dateFormat = SimpleDateFormat("MMM d, yyyy", Locale.US)
     }
 }
