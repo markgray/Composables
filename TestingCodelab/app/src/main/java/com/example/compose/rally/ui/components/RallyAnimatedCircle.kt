@@ -79,6 +79,33 @@ private const val DividerLengthInDegrees = 1.8f
  *  the width and the height of [DrawScope.size] (the dimensions of the current drawing environment)
  *  minus the [Stroke.width] of our `stroke` variable.
  *  - initializes its [Size] variable `val halfSize` to half of [DrawScope.size].
+ *  - initializes its [Offset] variable `val topLeft` to an instance whose `x` coordinate is the
+ *  [Size.width] of `halfSize` minus `innerRadius` and whose 'y' coordinate is the [Size.height] of
+ *  `halfSize` minus `innerRadius`.
+ *  - initializes its [Size] variable `val size` to an instance whose `width` is `innerRadius` times
+ *  2, and whose `height` is `innerRadius` times 2.
+ *  - initializes its [Float] variable `var startAngle` to `shift` minus 90.
+ *
+ * It then uses the [forEachIndexed] extension function on our [List] of [Float] parameter `proportions`
+ * to initialize `index` to the index of each item in the [List] in turn and to initialize `proportion`
+ * to the [Float] value of each item in the [List]. It proceeds then to initialize its [Float] variable
+ * `val sweep` to `proportion` times `angleOffset` and calls [DrawScope.drawArc] with the arguments:
+ *  - `color` is the `index` entry in our [List] of [Color] parameter [colors] (Color to be applied
+ *  to the arc)
+ *  - `startAngle` is our `startAngle` variable plus half of [DividerLengthInDegrees] (Starting angle
+ *  in degrees. 0 represents 3 o'clock)
+ *  - `sweepAngle` is our `sweep` variable minus [DividerLengthInDegrees] (Size of the arc in degrees
+ *  that is drawn clockwise relative to `startAngle` argument).
+ *  - `topLeft` is our `topLeft` variable (Offset from the local origin of 0, 0 relative to the
+ *  current translation)
+ *  - `size` is our [Size] variable `size` (Dimensions of the arc to draw)
+ *  - `useCenter` is `false` (if `true` the arc is to close the center of the bounds, if `false` the
+ *  center of the circle is not drawn).
+ *  - `style` is our [Stroke] variable `stroke` (Whether or not the arc is stroked or filled in - we
+ *  just stroke the arc).
+ *
+ * Then it adds `sweep` to `startAngle` and loops back to handle the next entry in our [List] of
+ * [Float] parameter [proportions].
  *
  * @param proportions a [List] of [Float] with each entry representing the fraction of the circle we
  * are to draw to represent the contribution of the entry to the whole circle.
@@ -147,7 +174,7 @@ fun AnimatedCircle(
         val size = Size(width = innerRadius * 2, height = innerRadius * 2)
         var startAngle: Float = shift - 90f
         proportions.forEachIndexed { index: Int, proportion: Float ->
-            val sweep = proportion * angleOffset
+            val sweep: Float = proportion * angleOffset
             drawArc(
                 color = colors[index],
                 startAngle = startAngle + DividerLengthInDegrees / 2,
