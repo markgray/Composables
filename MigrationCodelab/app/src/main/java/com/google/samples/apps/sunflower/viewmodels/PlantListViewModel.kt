@@ -27,12 +27,20 @@ import com.google.samples.apps.sunflower.data.PlantRepository
 
 /**
  * The ViewModel for [PlantListFragment].
+ *
+ * @param plantRepository our app's singleton [PlantRepository].
+ * @param savedStateHandle handle to saved state passed down to our [ViewModel]. We use it to save
+ * and restore the grow zone number under the key [GROW_ZONE_SAVED_STATE_KEY]. This value will
+ * persist after the process is killed by the system and remain available via the same object.
  */
 class PlantListViewModel internal constructor(
     plantRepository: PlantRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    /**
+     * TODO: Add kdoc
+     */
     val plants: LiveData<List<Plant>> = getSavedGrowZoneNumber().switchMap {
         if (it == NO_GROW_ZONE) {
             plantRepository.getPlants()
@@ -41,22 +49,41 @@ class PlantListViewModel internal constructor(
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun setGrowZoneNumber(num: Int) {
         savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] = num
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun clearGrowZoneNumber() {
         savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] = NO_GROW_ZONE
     }
 
-    fun isFiltered() = getSavedGrowZoneNumber().value != NO_GROW_ZONE
+    /**
+     * TODO: Add kdoc
+     */
+    fun isFiltered(): Boolean = getSavedGrowZoneNumber().value != NO_GROW_ZONE
 
+    /**
+     * TODO: Add kdoc
+     */
     private fun getSavedGrowZoneNumber(): MutableLiveData<Int> {
         return savedStateHandle.getLiveData(GROW_ZONE_SAVED_STATE_KEY, NO_GROW_ZONE)
     }
 
     companion object {
+        /**
+         * TODO: Add kdoc
+         */
         private const val NO_GROW_ZONE = -1
+
+        /**
+         * TODO: Add kdoc
+         */
         private const val GROW_ZONE_SAVED_STATE_KEY = "GROW_ZONE_SAVED_STATE_KEY"
     }
 }
