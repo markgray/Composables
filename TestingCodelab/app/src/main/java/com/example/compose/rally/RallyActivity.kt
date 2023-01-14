@@ -47,13 +47,13 @@ class RallyActivity : ComponentActivity() {
 @Composable
 fun RallyApp() {
     RallyTheme {
-        val allScreens = RallyScreen.values().toList()
-        var currentScreen by rememberSaveable { mutableStateOf(RallyScreen.Overview) }
+        val allScreens: List<RallyScreen> = RallyScreen.values().toList()
+        var currentScreen: RallyScreen by rememberSaveable { mutableStateOf(RallyScreen.Overview) }
         Scaffold(
             topBar = {
                 RallyTopAppBar(
                     allScreens = allScreens,
-                    onTabSelected = { screen -> currentScreen = screen },
+                    onTabSelected = { screen: RallyScreen -> currentScreen = screen },
                     currentScreen = currentScreen
                 )
             }

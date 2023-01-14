@@ -31,6 +31,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
@@ -46,8 +47,20 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.RallyScreen
+import com.example.compose.rally.RallyApp
+import com.example.compose.rally.RallyActivity
 import java.util.Locale
 
+/**
+ * This is used as the `topBar` argument (top app bar of the screen) of the [Scaffold] used in the
+ * [RallyApp] Composable that [RallyActivity] sets as the apps content in its `onCreate` override.
+ *
+ * @param allScreens a list of the all of the [RallyScreen.values] defined for the app. These are
+ * [RallyScreen.Overview], [RallyScreen.Accounts], and [RallyScreen.Bills].
+ * @param onTabSelected a lambda that we use as the `onSelected` argument of all of the [RallyTab]
+ * Composables in our [RallyTopAppBar].
+ * @param currentScreen the currently selected [RallyScreen] tab.
+ */
 @Composable
 fun RallyTopAppBar(
     allScreens: List<RallyScreen>,
@@ -55,12 +68,12 @@ fun RallyTopAppBar(
     currentScreen: RallyScreen
 ) {
     Surface(
-        Modifier
-            .height(TabHeight)
+        modifier = Modifier
+            .height(height = TabHeight)
             .fillMaxWidth()
     ) {
-        Row(Modifier.selectableGroup()) {
-            allScreens.forEach { screen ->
+        Row(modifier = Modifier.selectableGroup()) {
+            allScreens.forEach { screen: RallyScreen ->
                 RallyTab(
                     text = screen.name,
                     icon = screen.icon,
@@ -72,6 +85,9 @@ fun RallyTopAppBar(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 private fun RallyTab(
     text: String,
@@ -118,9 +134,27 @@ private fun RallyTab(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 private val TabHeight = 56.dp
+
+/**
+ * TODO: Add kdoc
+ */
 private const val InactiveTabOpacity = 0.60f
 
+/**
+ * TODO: Add kdoc
+ */
 private const val TabFadeInAnimationDuration = 150
+
+/**
+ * TODO: Add kdoc
+ */
 private const val TabFadeInAnimationDelay = 100
+
+/**
+ * TODO: Add kdoc
+ */
 private const val TabFadeOutAnimationDuration = 100
