@@ -21,7 +21,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
+import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.PlantListFragment
+import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantRepository
 
@@ -39,32 +41,60 @@ class PlantListViewModel internal constructor(
 ) : ViewModel() {
 
     /**
-     * TODO: Add kdoc
+     * Used to retrieve from the [PlantRepository] the [List] of all the [Plant] instances in the
+     * "plants" table of the database sorted by its "name" column if the grow zone found in our
+     * [SavedStateHandle] field [savedStateHandle] under the key [GROW_ZONE_SAVED_STATE_KEY] is
+     * [NO_GROW_ZONE] or else only those whose grow zone matches the grow zone found. To do this we
+     * use the [switchMap] extension function on the [Int] returned by our [getSavedGrowZoneNumber]
+     * method (which returns the value found in our [SavedStateHandle] field [savedStateHandle]
+     * under the key [GROW_ZONE_SAVED_STATE_KEY]) and if the value is [NO_GROW_ZONE] it returns the
+     * [LiveData] wrapped [List] of [Plant] that the [PlantRepository.getPlants] method of our
+     * `plantRepository` field returns, otherwise it returns the [LiveData] wrapped [List] of [Plant]
+     * that the [PlantRepository.getPlantsWithGrowZoneNumber] returns when passed the grow zone value
+     * as its `growZoneNumber` argument.
+     *
+     * An observer is added to this property by the `subscribeUi` method of [PlantListFragment] which
+     * calls the [PlantAdapter.submitList] method of the adapter that feeds [Plant] instances to the
+     * [RecyclerView] in its UI whenever [plants] changes value.
+     *
+     * @return a [LiveData] wrapped [List] of [Plant] retrieved from our [PlantRepository] filtered
+     * by our current grow zone if it is not [NO_GROW_ZONE].
      */
-    val plants: LiveData<List<Plant>> = getSavedGrowZoneNumber().switchMap {
-        if (it == NO_GROW_ZONE) {
+    val plants: LiveData<List<Plant>> = getSavedGrowZoneNumber().switchMap { growZone: Int ->
+        if (growZone == NO_GROW_ZONE) {
             plantRepository.getPlants()
         } else {
-            plantRepository.getPlantsWithGrowZoneNumber(it)
+            plantRepository.getPlantsWithGrowZoneNumber(growZoneNumber = growZone)
         }
     }
 
     /**
-     * TODO: Add kdoc
+     * Saves its [Int] parameter [num] (our new grow zone number) in our [SavedStateHandle] field
+     * [savedStateHandle] under the key [GROW_ZONE_SAVED_STATE_KEY]. It will be retrieved using the
+     * [getSavedGrowZoneNumber] method by our [plants] when it needs to decide whether to return
+     * the entire [List] of [Plant] instances stored in the "plants" table of the database, or a
+     * [List] of [Plant] instances whose [Plant.growZoneNumber] is equal to [num].
+     *
+     * @param num the new grow zone number.
      */
     fun setGrowZoneNumber(num: Int) {
         savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] = num
     }
 
     /**
-     * TODO: Add kdoc
+     * Stores [NO_GROW_ZONE] under the key [GROW_ZONE_SAVED_STATE_KEY] in our [SavedStateHandle] field
+     * [savedStateHandle] (clearing the grow zone that is used by [plants] to filter the [List] of
+     * [Plant] instances it returns).
      */
     fun clearGrowZoneNumber() {
         savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] = NO_GROW_ZONE
     }
 
     /**
-     * TODO: Add kdoc
+     * Returns `true` if the value returned by [getSavedGrowZoneNumber] is not [NO_GROW_ZONE] (ie
+     * our [plants] property is not filtering for a grow zone number).
+     *
+     * @return `true` if the value returned by [getSavedGrowZoneNumber] is not [NO_GROW_ZONE].
      */
     fun isFiltered(): Boolean = getSavedGrowZoneNumber().value != NO_GROW_ZONE
 
