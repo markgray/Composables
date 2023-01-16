@@ -92,14 +92,20 @@ class PlantListViewModel internal constructor(
 
     /**
      * Returns `true` if the value returned by [getSavedGrowZoneNumber] is not [NO_GROW_ZONE] (ie
-     * our [plants] property is not filtering for a grow zone number).
+     * our [plants] property is filtering for a grow zone number).
      *
      * @return `true` if the value returned by [getSavedGrowZoneNumber] is not [NO_GROW_ZONE].
      */
     fun isFiltered(): Boolean = getSavedGrowZoneNumber().value != NO_GROW_ZONE
 
     /**
-     * TODO: Add kdoc
+     * This method retrieves the grow zone number that we stored in our [SavedStateHandle] field
+     * [savedStateHandle] under the key [GROW_ZONE_SAVED_STATE_KEY] wrapped in a [MutableLiveData]
+     * defaulting to [NO_GROW_ZONE] if no grow zone number has been saved yet.
+     *
+     * @return the value stored in our [SavedStateHandle] field [savedStateHandle] under the key
+     * [GROW_ZONE_SAVED_STATE_KEY] wrapped in a [MutableLiveData] defaulting to [NO_GROW_ZONE] if
+     * none found.
      */
     private fun getSavedGrowZoneNumber(): MutableLiveData<Int> {
         return savedStateHandle.getLiveData(GROW_ZONE_SAVED_STATE_KEY, NO_GROW_ZONE)
@@ -107,12 +113,14 @@ class PlantListViewModel internal constructor(
 
     companion object {
         /**
-         * TODO: Add kdoc
+         * The value used if no grow zone is specified, ie. our [plants] property is not fitering for
+         * a specific grow zone.
          */
         private const val NO_GROW_ZONE = -1
 
         /**
-         * TODO: Add kdoc
+         * The key under which we store the grow zone number that we filtering for in our
+         * [SavedStateHandle] field [savedStateHandle].
          */
         private const val GROW_ZONE_SAVED_STATE_KEY = "GROW_ZONE_SAVED_STATE_KEY"
     }

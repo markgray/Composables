@@ -17,14 +17,27 @@
 package com.google.samples.apps.sunflower.viewmodels
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
+import com.google.samples.apps.sunflower.PlantListFragment
 import com.google.samples.apps.sunflower.data.PlantRepository
+import com.google.samples.apps.sunflower.utilities.InjectorUtils
 
 /**
  * Factory for creating a [PlantListViewModel] with a constructor that takes a [PlantRepository].
+ * Called by [InjectorUtils.providePlantListViewModelFactory] which is called by [PlantListFragment].
+ *
+ * @param repository the apps singleton [PlantRepository]
+ * @param owner A scope that owns [SavedStateRegistry], in our case the [Fragment] that calls the
+ * [InjectorUtils.providePlantListViewModelFactory] method: [PlantListFragment].
+ * @param defaultArgs values from this [Bundle] will be used as defaults by [SavedStateHandle]
+ * passed in ViewModels if there is no previously saved state or previously saved state misses
+ * a value by such key, none is specified by [InjectorUtils.providePlantListViewModelFactory] so
+ * it is the default value `null`.
  */
 class PlantListViewModelFactory(
     private val repository: PlantRepository,
@@ -36,7 +49,9 @@ class PlantListViewModelFactory(
      * Returns a [PlantListViewModel] that will use the factories [PlantRepository] field
      * [repository] as its  [PlantRepository].
      *
+     * @param key a key associated with the requested [ViewModel]
      * @param modelClass the [Class] of the type of [ViewModel] that we are to create.
+     * @param handle a handle to saved state associated with the requested [ViewModel]
      * @return a [PlantListViewModel] that will use the factories [PlantRepository] field
      * [repository] as its  [PlantRepository].
      */

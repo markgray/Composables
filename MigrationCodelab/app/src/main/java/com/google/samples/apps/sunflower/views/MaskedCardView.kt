@@ -22,6 +22,7 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
+import androidx.compose.ui.graphics.Shape
 import com.google.android.material.R
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -30,14 +31,24 @@ import com.google.android.material.shape.ShapeAppearancePathProvider
 /**
  * A Card view that clips the content of any shape, this should be done upstream in card,
  * working around it for now.
+ *
+ * @param context The [Context] the view is running in, through which it can access the current theme,
+ * resources, etc
+ * @param attrs The attributes of the XML tag that is inflating the view.
+ * @param defStyle An attribute in the current theme that contains a reference to a style resource
+ * that supplies default values for the view. Can be 0 to not look for defaults.
  */
 class MaskedCardView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = R.attr.materialCardViewStyle
 ) : MaterialCardView(context, attrs, defStyle) {
+    /**
+     * We use this to call its [ShapeAppearancePathProvider.calculatePath] method in our [onSizeChanged]
+     * override in order to modify the [Shape] used to clip our [MaskedCardView].
+     */
     @SuppressLint("RestrictedApi")
-    private val pathProvider = ShapeAppearancePathProvider()
+    private val pathProvider: ShapeAppearancePathProvider = ShapeAppearancePathProvider()
     private val path: Path = Path()
     private val shapeAppearance: ShapeAppearanceModel =
         ShapeAppearanceModel.builder(
