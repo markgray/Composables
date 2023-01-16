@@ -120,7 +120,26 @@ fun RallyTopAppBar(
  * the padding on all sides of the [Row] to 16.dp, to which is chained a [Modifier.animateContentSize]
  * (which causes the [Modifier] to animate its own size when its child modifier changes size). Next
  * in the chain is a [Modifier.height] that sets the [Row]'s `height` to [TabHeight] (56.dp) followed
- * by a [Modifier.selectable]
+ * by a [Modifier.selectable] which configures the [Row] to be selectable where only one of its children
+ * can be selected at any point in time. The `selected` argument of the [Modifier.selectable] is our
+ * [selected] parameter (whether or not this item is selected in a mutually exclusion set), its
+ * `onClick` argument is our [onSelected] parameter (callback to invoke when this item is clicked),
+ * its `role` argument is [Role.Tab] (the type of user interface element is a Tab which represents a
+ * single page of content using a text label and/or icon. A Tab also has two states: selected and not
+ * selected), its `interactionSource` is a remembered new instance of [MutableInteractionSource]
+ * (it will be used to emit press events when this selectable is being pressed, [MutableInteractionSource]
+ * represents a stream of Interactions corresponding to events emitted by a component. These Interactions
+ * can be used to change how components appear in different states, such as when a component is pressed
+ * or dragged), and its `indication` argument (indication to be shown when the modified element is
+ * pressed) is a remembered `Ripple` whose `bounded` argument is `false`, whose `radius` argument is
+ * [Dp.Unspecified], and whose `color` argument is [Color.Unspecified]. At the tail end of its chain
+ * is a [Modifier.clearAndSetSemantics] that sets the `contentDescription` to our [text] parameter.
+ *
+ * The `content` of the [Row] is an [Icon] whose `imageVector` to be drawn is our [icon] parameter,
+ * and whose `tint` is our animated [Color] variable `tabTintColor`. If our [selected] parameter is
+ * `true` there is also a 12.dp wide [Spacer] followed by a [Text] displaying the [String.uppercase]
+ * version of our [text] parameter using as its `color` argument our animated [Color] variable
+ * `tabTintColor`.
  *
  * @param text used as the title of this [RallyTab], it comes from the [RallyScreen.name] property
  * of the [RallyScreen] we are supposed to represent.
@@ -176,26 +195,31 @@ private fun RallyTab(
 }
 
 /**
- * TODO: Add kdoc
+ * Used as the height of a [RallyTab] and a [RallyTopAppBar].
  */
 private val TabHeight = 56.dp
 
 /**
- * TODO: Add kdoc
+ * This is used as the `alpha` that is used for the `targetValue` [Color] of the `tabTintColor`
+ * animated [Color] used to color the [RallyTab] when the `selected` parameter of the [RallyTab] is
+ * `false`.
  */
 private const val InactiveTabOpacity = 0.60f
 
 /**
- * TODO: Add kdoc
+ * Duration in milliseconds of the [tween] animation used to animate our animated [Color] variable
+ * `tabTintColor` when the `selected` parameter of the [RallyTab] is `true`.
  */
 private const val TabFadeInAnimationDuration = 150
 
 /**
- * TODO: Add kdoc
+ * Delay in milliseconds of the [tween] animation used to animate our animated [Color] variable
+ * `tabTintColor` when the `selected` parameter of the [RallyTab] is `true` or `false`.
  */
 private const val TabFadeInAnimationDelay = 100
 
 /**
- * TODO: Add kdoc
+ * Duration in milliseconds of the [tween] animation used to animate our animated [Color] variable
+ * `tabTintColor` when the `selected` parameter of the [RallyTab] is `false`.
  */
 private const val TabFadeOutAnimationDuration = 100

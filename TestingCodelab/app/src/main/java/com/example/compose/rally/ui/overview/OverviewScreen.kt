@@ -166,6 +166,9 @@ fun AlertHeader(onClickSeeAll: () -> Unit) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Suppress("SameParameterValue")
 @Composable
 private fun AlertItem(message: String) {
@@ -226,6 +229,9 @@ private fun <T> OverviewScreenCard(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 private fun <T> OverViewDivider(
     data: List<T>,
@@ -294,6 +300,9 @@ fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 private fun SeeAllButton(onClick: () -> Unit) {
     TextButton(
@@ -311,4 +320,7 @@ private fun SeeAllButton(onClick: () -> Unit) {
  */
 val RallyDefaultPadding: Dp = 12.dp
 
+/**
+ * TODO: Add kdoc
+ */
 private const val SHOWN_ITEMS = 3
