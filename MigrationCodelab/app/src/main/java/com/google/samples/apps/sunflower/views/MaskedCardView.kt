@@ -21,8 +21,8 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
+import android.graphics.drawable.shapes.Shape
 import android.util.AttributeSet
-import androidx.compose.ui.graphics.Shape
 import com.google.android.material.R
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -45,20 +45,44 @@ class MaskedCardView @JvmOverloads constructor(
 ) : MaterialCardView(context, attrs, defStyle) {
     /**
      * We use this to call its [ShapeAppearancePathProvider.calculatePath] method in our [onSizeChanged]
-     * override in order to modify the [Shape] used to clip our [MaskedCardView].
+     * override in order to write the [ShapeAppearanceModel] field [shapeAppearance] into the [Path]
+     * field [path] that we use to clip our [MaskedCardView] in our [onDraw] override.
      */
     @SuppressLint("RestrictedApi")
     private val pathProvider: ShapeAppearancePathProvider = ShapeAppearancePathProvider()
+
+    /**
+     * [Path] that we use to clip our [MaskedCardView] in our [onDraw] override. It is written to
+     * by the [ShapeAppearancePathProvider.calculatePath] method in our [onSizeChanged] override
+     * using a [RectF] that is the new width by the new height as the bounds for the path.
+     */
     private val path: Path = Path()
+
+    /**
+     * This is the [ShapeAppearanceModel] that we write to our [Path] field [path] in our [onSizeChanged]
+     * override using the method [ShapeAppearancePathProvider.calculatePath].
+     */
     private val shapeAppearance: ShapeAppearanceModel =
         ShapeAppearanceModel.builder(
             context, attrs, defStyle, R.style.Widget_MaterialComponents_CardView
         ).build()
 
+    /**
+     * This is the [RectF] that we use in our [onSizeChanged] override to provide the bounds for the
+     * [Path] that [ShapeAppearancePathProvider.calculatePath] writes to our [Path] field [path]. Its
+     * [RectF.right] is set to the new width of our view, and its [RectF.bottom] is set to the new
+     * height of the view.
+     */
     private val rectF = RectF(0f, 0f, 0f, 0f)
 
     /**
-     * TODO: Add kdoc
+     * We implement this to do our drawing. We call the [Canvas.clipPath] method of our [canvas]
+     * parameter to have it intersect its current clip with our [Path] field [path], then we call
+     * our super's implementation of `onDraw` to have it draw our view on [canvas] clipped by the
+     * new clip. [path] has had the MaterialComponents CardView [Shape] written to it in our
+     * [onSizeChanged] override with the bounds dictated by the view's new width and height.
+     *
+     * @param canvas the [Canvas] on which the background will be drawn.
      */
     override fun onDraw(canvas: Canvas) {
         canvas.clipPath(path)
