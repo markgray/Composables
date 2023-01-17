@@ -32,22 +32,42 @@ import com.example.compose.rally.ui.overview.OverviewBody
  * navigation is not supported.
  */
 enum class RallyScreen(
+    /**
+     * TODO: Add kdoc
+     */
     val icon: ImageVector,
+    /**
+     * TODO: Add kdoc
+     */
     private val body: @Composable ((RallyScreen) -> Unit) -> Unit
 ) {
+    /**
+     * TODO: Add kdoc
+     */
     Overview(
         icon = Icons.Filled.PieChart,
-        body = { onScreenChange -> OverviewBody(onScreenChange) }
+        body = { onScreenChange -> OverviewBody(onScreenChange = onScreenChange) }
     ),
+
+    /**
+     * TODO: Add kdoc
+     */
     Accounts(
         icon = Icons.Filled.AttachMoney,
         body = { AccountsBody(accounts = UserData.accounts) }
     ),
+
+    /**
+     * TODO: Add kdoc
+     */
     Bills(
         icon = Icons.Filled.MoneyOff,
-        body = { BillsBody(UserData.bills) }
+        body = { BillsBody(bills = UserData.bills) }
     );
 
+    /**
+     * TODO: Add kdoc
+     */
     @Composable
     fun Content(onScreenChange: (RallyScreen) -> Unit) {
         body(onScreenChange)

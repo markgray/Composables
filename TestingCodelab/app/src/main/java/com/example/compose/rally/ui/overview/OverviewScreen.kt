@@ -24,6 +24,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -37,6 +38,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -56,31 +58,42 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
+import com.example.compose.rally.RallyApp
 import com.example.compose.rally.RallyScreen
 import com.example.compose.rally.data.UserData
+import com.example.compose.rally.ui.accounts.AccountsBody
+import com.example.compose.rally.ui.bills.BillsBody
 import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
 import com.example.compose.rally.ui.components.RallyAlertDialog
 import com.example.compose.rally.ui.components.RallyDivider
 import com.example.compose.rally.ui.components.formatAmount
+import com.example.compose.rally.ui.components.RallyTopAppBar
 import com.example.compose.rally.ui.theme.RallyTheme
 import java.util.Locale
 
 /**
- * TODO: Add kdoc
+ * This Composable is composed when the [RallyScreen.Overview] screen `body` lambda argument is
+ * executed. That lambda is executed by the [RallyScreen.Content] method when the `RallyTab` in the
+ * [RallyTopAppBar] for the [RallyScreen.Overview] gets selected by the user. It occupies the [Box]
+ * that is the `content` of the [Scaffold] of the [RallyApp] and is swapped for the [AccountsBody]
+ * or the [BillsBody] Composables when their associated `RallyTab` is selected.
+ *
+ * @param onScreenChange a lambda which when called with a [RallyScreen] enum value will launch the
+ * associated Composable.
  */
 @Composable
 fun OverviewBody(onScreenChange: (RallyScreen) -> Unit = {}) {
     Column(
         modifier = Modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+            .padding(all = 16.dp)
+            .verticalScroll(state = rememberScrollState())
     ) {
         AlertCard()
-        Spacer(Modifier.height(RallyDefaultPadding))
-        AccountsCard(onScreenChange)
-        Spacer(Modifier.height(RallyDefaultPadding))
-        BillsCard(onScreenChange)
+        Spacer(Modifier.height(height = RallyDefaultPadding))
+        AccountsCard(onScreenChange = onScreenChange)
+        Spacer(Modifier.height(height = RallyDefaultPadding))
+        BillsCard(onScreenChange = onScreenChange)
     }
 }
 
