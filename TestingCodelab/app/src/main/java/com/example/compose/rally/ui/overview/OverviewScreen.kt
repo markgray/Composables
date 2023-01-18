@@ -16,12 +16,16 @@
 
 package com.example.compose.rally.ui.overview
 
+import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.InfiniteRepeatableSpec
+import androidx.compose.animation.core.InfiniteTransition
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateValue
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,7 +81,16 @@ import java.util.Locale
  * executed. That lambda is executed by the [RallyScreen.Content] method when the `RallyTab` in the
  * [RallyTopAppBar] for the [RallyScreen.Overview] gets selected by the user. It occupies the [Box]
  * that is the `content` of the [Scaffold] of the [RallyApp] and is swapped for the [AccountsBody]
- * or the [BillsBody] Composables when their associated `RallyTab` is selected.
+ * or the [BillsBody] Composables when their associated `RallyTab` is selected. Our root Composable
+ * is a [Column] whose `modifier` argument is a [Modifier.padding] that sets the padding on all sides
+ * to 16.dp, with a [Modifier.verticalScroll] chained to that whose `state` argument is a new instance
+ * of [ScrollState] constructed and remembered by [rememberScrollState] (modifies the [Column] to
+ * allow it to scroll vertically when the height of its content is bigger than max constraints allow).
+ *
+ * The `content` of the [Column] is an [AlertCard] followed by a [RallyDefaultPadding] (12.dp) high
+ * [Spacer], followed by an [AccountsCard] whose `onScreenChange` argument is our [onScreenChange]
+ * parameter, followed by a [RallyDefaultPadding] (12.dp) high [Spacer], followed by an [BillsCard]
+ * whose `onScreenChange` argument is our [onScreenChange] parameter.
  *
  * @param onScreenChange a lambda which when called with a [RallyScreen] enum value will launch the
  * associated Composable.
@@ -90,7 +103,7 @@ fun OverviewBody(onScreenChange: (RallyScreen) -> Unit = {}) {
             .verticalScroll(state = rememberScrollState())
     ) {
         AlertCard()
-        Spacer(Modifier.height(height = RallyDefaultPadding))
+        Spacer(modifier = Modifier.height(height = RallyDefaultPadding))
         AccountsCard(onScreenChange = onScreenChange)
         Spacer(Modifier.height(height = RallyDefaultPadding))
         BillsCard(onScreenChange = onScreenChange)
@@ -98,11 +111,31 @@ fun OverviewBody(onScreenChange: (RallyScreen) -> Unit = {}) {
 }
 
 /**
- * The Alerts card within the Rally Overview screen.
+ * The Alerts card within the Rally Overview screen. We start by initializing and remembering our
+ * [Boolean] variable `var showDialog`, and initializing our [String] variable `val alertMessage`
+ * to the string "Heads up, you've used up 90% of your Shopping budget for this month." Then if
+ * `showDialog` is `true` we compose a [RallyAlertDialog] whose `onDismiss` argument is a lambda
+ * that sets `showDialog` to `false`, whose `bodyText` argument is our `alertMessage` [String]
+ * variable, and whose `buttonText` argument is the uppercase version of the [String] "Dismiss".
+ *
+ * Next we initialize and remember our [InfiniteTransition] variable `val infiniteElevationAnimation`
+ * then use it to initialize our animated [Dp] variable `val animatedElevation` using its
+ * [InfiniteTransition.animateValue] with an `initialValue` argument of 1.dp, a `targetValue`
+ * argument of 8.dp, a `typeConverter` argument of `Dp.VectorConverter` (type converter that converts
+ * a [Dp] to a [AnimationVector1D], and vice versa), and an `animationSpec` argument that is the
+ * [InfiniteRepeatableSpec] returned by the [infiniteRepeatable] method for a 500ms duration [tween]
+ * used as its `animation` argument, and a [RepeatMode.Reverse] for its `repeatMode` argument.
+ *
+ * Our root Composable is then a [Card] whose `elevation` argument is our animated [Dp] variable
+ * `animatedElevation`. The `content` of the [Card] is a [Column] which holds an [AlertHeader] whose
+ * `onClickSeeAll` lambda argument sets `showDialog` to `true` (this launching [RallyAlertDialog]),
+ * followed by a [RallyDivider] whose `modifier` argument is a [Modifier.padding] that adds
+ * [RallyDefaultPadding] to the `start` and `end` of the [RallyDivider], and an [AlertItem] whose
+ * `message` argument is our `alertMessage` variable.
  */
 @Composable
 fun AlertCard() {
-    var showDialog by remember { mutableStateOf(false) }
+    var showDialog: Boolean by remember { mutableStateOf(false) }
     val alertMessage = "Heads up, you've used up 90% of your Shopping budget for this month."
 
     if (showDialog) {
@@ -115,7 +148,7 @@ fun AlertCard() {
         )
     }
 
-    val infiniteElevationAnimation = rememberInfiniteTransition()
+    val infiniteElevationAnimation: InfiniteTransition = rememberInfiniteTransition()
     val animatedElevation: Dp by infiniteElevationAnimation.animateValue(
         initialValue = 1.dp,
         targetValue = 8.dp,
@@ -134,13 +167,13 @@ fun AlertCard() {
             RallyDivider(
                 modifier = Modifier.padding(start = RallyDefaultPadding, end = RallyDefaultPadding)
             )
-            AlertItem(alertMessage)
+            AlertItem(message = alertMessage)
         }
     }
 }
 
 /**
- * TODO: Add kdoc
+ * Preview for our [OverviewBody] Composable wrapped in our [RallyTheme] custom [MaterialTheme].
  */
 @Preview
 @Composable
