@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,6 +49,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +60,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -184,20 +190,45 @@ fun AlertCardPreview() {
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable is the header of our [AlertCard], and consists only of a [Text] displaying the
+ * `text` "Alerts" and a [TextButton] labeled "SEE ALL" which when clicked executes the [onClickSeeAll]
+ * lambda parameter of [AlertHeader]. Our root Composable is a [Row] whose `modifier` argument is a
+ * [Modifier.padding] that sets the padding on all sides of the [Row] to [RallyDefaultPadding] (12.dp),
+ * with a [Modifier.fillMaxWidth] chained to it that causes the [Row] to occupy the entire incoming
+ * width constraints. The `content` of the [Row] is a [Text] diplaying the `text` "Alerts" using the
+ * `subtitle2` [TextStyle] of the custom [Typography] of [MaterialTheme.typography], defined by our
+ * [RallyTheme] custom [MaterialTheme] to be the [FontWeight.Normal] font of the `RobotoCondensed`
+ * [FontFamily] (the [Font] with resource ID [R.font.robotocondensed_regular]) with a `fontSize` of
+ * 14.sp, and `letterSpacing` of `0.1.em` and the `modifier` argument of the [Text] is a [RowScope]
+ * `Modifier.align` whose `alignment` argument [Alignment.CenterVertically] centers the [Text]'s
+ * `text` vertically about its center line. The [Text] is followed by a [TextButton] whose `onClick`
+ * argument is our [onClickSeeAll] parameter, whose `contentPadding` argument is a [PaddingValues]
+ * of 0.dp, and whose `modifier` argument of the [TextButton] is a [RowScope] `Modifier.align` whose
+ * `alignment` argument [Alignment.CenterVertically] centers the [TextButton]'s vertically about the
+ * center line of the [Row], and the `content` of the [TextButton] is a [Text] displaying its label
+ * "SEE ALL" using as its `style` the `button` [TextStyle] of the custom [Typography] of
+ * [MaterialTheme.typography], defined by our [RallyTheme] custom [MaterialTheme] to be the
+ * [FontWeight.Bold] font of the `RobotoCondensed` [FontFamily] (the [Font] with resource ID
+ * [R.font.robotocondensed_bold]) with a `fontSize` of 14.sp, `lineHeight` of 16.sp and
+ * `letterSpacing` of `0.2.em`.
+ *
+ * @param onClickSeeAll a lambda that is to be executed when the "SEE ALL" [TextButton] is clicked.
+ * Our [AlertCard] caller passes us a lambda which sets its `showDialog` [MutableState] wrapped
+ * [Boolean] variable to `true`, which causes the composition of a [RallyAlertDialog] that displays
+ * the `bodyText` "Heads up, you've used up 90% of your Shopping budget for this month."
  */
 @Composable
 fun AlertHeader(onClickSeeAll: () -> Unit) {
     Row(
         modifier = Modifier
-            .padding(RallyDefaultPadding)
+            .padding(all = RallyDefaultPadding)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = "Alerts",
             style = MaterialTheme.typography.subtitle2,
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier.align(alignment = Alignment.CenterVertically)
         )
         TextButton(
             onClick = onClickSeeAll,
@@ -220,7 +251,7 @@ fun AlertHeader(onClickSeeAll: () -> Unit) {
 private fun AlertItem(message: String) {
     Row(
         modifier = Modifier
-            .padding(RallyDefaultPadding)
+            .padding(all = RallyDefaultPadding)
             // Regard the whole row as one semantics node. This way each row will receive focus as
             // a whole and the focus bounds will be around the whole row content. The semantics
             // properties of the descendants will be merged. If we'd use clearAndSetSemantics instead,
@@ -230,16 +261,16 @@ private fun AlertItem(message: String) {
     ) {
         Text(
             style = MaterialTheme.typography.body2,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(weight = 1f),
             text = message
         )
         IconButton(
             onClick = {},
             modifier = Modifier
-                .align(Alignment.Top)
+                .align(alignment = Alignment.Top)
                 .clearAndSetSemantics {}
         ) {
-            Icon(Icons.Filled.Sort, contentDescription = null)
+            Icon(imageVector = Icons.Filled.Sort, contentDescription = null)
         }
     }
 }
