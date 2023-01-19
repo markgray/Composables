@@ -18,7 +18,9 @@ package com.google.samples.apps.sunflower.workers
 
 import android.content.Context
 import android.util.Log
+import androidx.room.Room
 import androidx.work.CoroutineWorker
+import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -26,12 +28,33 @@ import com.google.gson.stream.JsonReader
 import com.google.samples.apps.sunflower.data.AppDatabase
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.utilities.PLANT_DATA_FILENAME
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 
+/**
+ * This class is responsible for seeding our data base by parsing the Json data it finds in the file
+ * [PLANT_DATA_FILENAME] ("plants.json"). It is called by the `onCreate` override of the `Callback`
+ * added to the [Room.databaseBuilder] which builds the singleton [AppDatabase] used by the app.
+ *
+ * @param context The [Context] for the database, the Application context in our case.
+ * @param workerParams Parameters to setup the internal state of this worker. Nothing that our app
+ * contributes appears to be used in it.
+ */
 class SeedDatabaseWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
+    /**
+     * A suspending method to do our work. To specify which [CoroutineDispatcher] your work should
+     * run on, use `withContext()` within `doWork()`. If there is no other dispatcher declared,
+     * [Dispatchers.Default] will be used. A CoroutineWorker is given a maximum of ten minutes to
+     * finish its execution and return a [ListenableWorker.Result]. After this time has expired,
+     * the worker will be signalled to stop.
+     *
+     * @return The [ListenableWorker.Result] of the result of the background work; note that
+     * dependent work will not execute if you return [ListenableWorker.Result.failure]
+     */
     override suspend fun doWork(): Result = coroutineScope {
         try {
             applicationContext.assets.open(PLANT_DATA_FILENAME).use { inputStream ->

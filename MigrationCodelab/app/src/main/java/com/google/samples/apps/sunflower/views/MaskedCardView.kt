@@ -90,7 +90,19 @@ class MaskedCardView @JvmOverloads constructor(
     }
 
     /**
-     * TODO: Add kdoc
+     * This is called during layout when the size of this view has changed. If you were just added
+     * to the view hierarchy, you're called with the old values of 0. We set the [RectF.right]
+     * property of our [RectF] field [rectF] to the float value of our [w] parameter, and the
+     * [RectF.bottom] property of our [RectF] field [rectF] to the float value of our [h] parameter.
+     * Then we call the [ShapeAppearancePathProvider.calculatePath] method of our [pathProvider]
+     * field to have it write our [ShapeAppearanceModel] field [shapeAppearance] to our [Path] field
+     * [path] using [rectF] as the bounds for the [Path]. Finally we call our super's implementation
+     * of `onSizeChanged`.
+     *
+     * @param w Current width of this view.
+     * @param h Current height of this view.
+     * @param oldw Old width of this view.
+     * @param oldh Old height of this view.
      */
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         rectF.right = w.toFloat()
