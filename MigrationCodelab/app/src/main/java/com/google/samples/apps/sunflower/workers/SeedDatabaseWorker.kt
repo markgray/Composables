@@ -17,6 +17,7 @@
 package com.google.samples.apps.sunflower.workers
 
 import android.content.Context
+import android.content.res.AssetManager
 import android.util.Log
 import androidx.room.Room
 import androidx.work.CoroutineWorker
@@ -27,10 +28,15 @@ import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import com.google.samples.apps.sunflower.data.AppDatabase
 import com.google.samples.apps.sunflower.data.Plant
+import com.google.samples.apps.sunflower.data.PlantDao
 import com.google.samples.apps.sunflower.utilities.PLANT_DATA_FILENAME
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import java.io.InputStream
+import java.io.Reader
+import java.lang.reflect.Type
 
 /**
  * This class is responsible for seeding our data base by parsing the Json data it finds in the file
@@ -52,17 +58,39 @@ class SeedDatabaseWorker(
      * finish its execution and return a [ListenableWorker.Result]. After this time has expired,
      * the worker will be signalled to stop.
      *
+     * We return the [Result] returned by the suspend block argument we pass to the [CoroutineScope]
+     * created by the [coroutineScope] method. In this block we wrap our code in a `try` block that
+     * is intended to `catch` any [Exception], log it and return [Result.failure] if an exception
+     * occurs. The code in the `try` block we fetch the application [Context] and use it to fetch an
+     * [AssetManager] instance for the application's package then call its [AssetManager.open] method
+     * to open an [InputStream] to read the file in our `assets` whose name is [PLANT_DATA_FILENAME]
+     * ("plants.json"), and then using the [use] extension function on the [InputStream] we construct
+     * a [JsonReader] that uses the [Reader] returned by the [InputStream.reader] method of the
+     * [InputStream]. Using this [JsonReader] we define our [Type] variable `val plantType` to be
+     * the type literal that the [TypeToken] method creates for a [List] of [Plant]. We then initialize
+     * our [List] of [Plant] variable `val plantList` by constructing a [Gson] object and using its
+     * [Gson.fromJson] method to read JSON from our [JsonReader] and convert it to an object of type
+     * `plantType`.
+     *
+     * Having read all of the contents of our JSON file we initialize our [AppDatabase] variable
+     * `val database` to the singleton instance of [AppDatabase] using the [AppDatabase.getInstance]
+     * method with the Application [Context] as the `context` argument. We retrieve the [PlantDao]
+     * DAO for the [Plant] table using the [AppDatabase.plantDao] method of `database` and then call
+     * its [PlantDao.insertAll] method to insert all the [Plant] entries in our [List] of [Plant]
+     * variable `plantList`. Finally we return [Result.success] to indicate that the work completed
+     * successfully.
+     *
      * @return The [ListenableWorker.Result] of the result of the background work; note that
      * dependent work will not execute if you return [ListenableWorker.Result.failure]
      */
     override suspend fun doWork(): Result = coroutineScope {
         try {
-            applicationContext.assets.open(PLANT_DATA_FILENAME).use { inputStream ->
-                JsonReader(inputStream.reader()).use { jsonReader ->
-                    val plantType = object : TypeToken<List<Plant>>() {}.type
+            applicationContext.assets.open(PLANT_DATA_FILENAME).use { inputStream: InputStream ->
+                JsonReader(inputStream.reader()).use { jsonReader: JsonReader ->
+                    val plantType: Type = object : TypeToken<List<Plant>>() {}.type
                     val plantList: List<Plant> = Gson().fromJson(jsonReader, plantType)
 
-                    val database = AppDatabase.getInstance(applicationContext)
+                    val database = AppDatabase.getInstance(context = applicationContext)
                     database.plantDao().insertAll(plantList)
 
                     Result.success()
@@ -75,6 +103,9 @@ class SeedDatabaseWorker(
     }
 
     companion object {
+        /**
+         * TAG used for logging.
+         */
         private const val TAG = "SeedDatabaseWorker"
     }
 }
