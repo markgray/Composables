@@ -17,13 +17,32 @@
 package com.google.samples.apps.sunflower
 
 import android.os.Bundle
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.DataBindingUtil.setContentView
 import com.google.samples.apps.sunflower.databinding.ActivityGardenBinding
 
+/**
+ * This is the main activity of our app, and is used only to configure the decor view for
+ * edge-to-edge display and to set the Activity's content view to the layout file with
+ * resource ID [R.layout.activity_garden].
+ */
 class GardenActivity : AppCompatActivity() {
 
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we call the [WindowCompat.setDecorFitsSystemWindows] method with the current [Window] of
+     * the activity and `false` for the `decorFitsSystemWindows` argument (set to false, the framework
+     * will not fit the content view to the insets and will just pass through the [WindowInsetsCompat]
+     * to the content view, ie "edge-to-edge mode"). Finally we call the [setContentView] method to
+     * have it set our content view to the [ActivityGardenBinding] that [DataBindingUtil] inflates
+     * from the layout file with resource ID [R.layout.activity_garden].
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

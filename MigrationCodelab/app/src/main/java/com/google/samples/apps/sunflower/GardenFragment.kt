@@ -22,9 +22,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.button.MaterialButton
 import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
 import com.google.samples.apps.sunflower.adapters.PLANT_LIST_PAGE_INDEX
+import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.databinding.FragmentGardenBinding
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
@@ -35,14 +39,52 @@ import com.google.samples.apps.sunflower.viewmodels.GardenPlantingListViewModel
  */
 class GardenFragment : Fragment() {
 
+    /**
+     * The [FragmentGardenBinding] view binding that is inflated from the associated layout file with
+     * resource ID [R.layout.fragment_garden] in our [onCreateView] override.
+     */
     private lateinit var binding: FragmentGardenBinding
 
+    /**
+     * The [GardenPlantingListViewModel] that we use to access the [LiveData] wrapped [List] of
+     * [PlantAndGardenPlantings] that the [GardenPlantingRepository.getPlantedGardens] method returns.
+     * Our [subscribeUi] method adds an observer to [GardenPlantingListViewModel.plantAndGardenPlantings]
+     * which updates the [FragmentGardenBinding.setHasPlantings] variable in our view binding, and
+     * submits the [List] to the [GardenPlantingAdapter] that is feeding [PlantAndGardenPlantings]
+     * objects to the [RecyclerView] in our UI.
+     */
     private val viewModel: GardenPlantingListViewModel by viewModels {
         InjectorUtils.provideGardenPlantingListViewModelFactory(requireContext())
     }
 
     /**
-     * TODO: Add documentation.
+     * Called to have the fragment instantiate its user interface view. This will be called between
+     * [onCreate] and [onViewCreated]. It is recommended to only inflate the layout in this method
+     * and move logic that operates on the returned [View] to [onViewCreated].
+     *
+     * We start by initializing our [FragmentGardenBinding] field [binding] by having the
+     * [FragmentGardenBinding.inflate] method use our [LayoutInflater] parameter [inflater] to
+     * inflate its associated layout file (resource ID [R.layout.fragment_garden]) using our
+     * [ViewGroup] parameter [container] for its LayoutParams without attaching to the [ViewGroup].
+     * We initialize our [GardenPlantingAdapter] variable `val adapter` to a new instance and set
+     * the adapter of the [RecyclerView] with resource ID [R.id.garden_list] to it. Then we set the
+     * [View.OnClickListener] of the [MaterialButton] with resource ID [R.id.add_plant] to a lambda
+     * that calls our [navigateToPlantListPage] method. We call our [subscribeUi] method to have
+     * it add an observer to the [GardenPlantingListViewModel.plantAndGardenPlantings] property
+     * which will update the `hasPlantings` variable of [binding] and submit the [List] of
+     * [PlantAndGardenPlantings] to the [GardenPlantingAdapter] whenever it changes value. Finally
+     * we return the outer most [View] of our layout file ([FragmentGardenBinding.getRoot] aka
+     * kotlin `root`) to be the [View] for our fragment's UI.
+     *
+     * @param inflater The [LayoutInflater] object that can be used to inflate any views in the
+     * fragment,
+     * @param container If non-`null`, this is the parent view that the fragment's UI will be
+     * attached to. The fragment should not add the view itself, but this can be used to generate
+     * the LayoutParams of the view.
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
     @Suppress("RedundantNullableReturnType") // The method we override returns nullable
     override fun onCreateView(
