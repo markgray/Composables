@@ -244,7 +244,26 @@ fun AlertHeader(onClickSeeAll: () -> Unit) {
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable just displays its [String] parameter [message] in a [Text] and a [IconButton] in
+ * a [Row] root Composable. The `modifier` argument of the [Row] is a [Modifier.padding] that sets
+ * the padding on all sides of the [Row] to [RallyDefaultPadding] (12.dp), with a [Modifier.semantics]
+ * whose `mergeDescendants` argument is `true` so that the semantic information provided by the owning
+ * component and its descendants should be treated as one logical entity. The `content` of the [Row]
+ * is a [Text] whose `style` argument is a `body2` [TextStyle] of [MaterialTheme.typography] (which
+ * is [FontWeight.Normal] of the `RobotoCondensed` [FontFamily] (the [Font] file with resource ID
+ * [R.font.robotocondensed_regular]) with `fontSize` = 14.sp, `lineHeight` = 20.sp, and `letterSpacing`
+ * = 0.1.em, and the `modifier` argument of the [Text] is a [RowScope] `Modifier.weight` of 1f which
+ * causes the [Text] to take all the incoming width constraint that remains after its sibling is
+ * measured and placed, and the `text` argument is our [String] parameter [message]. The [IconButton]
+ * at the end of the [Row] has a do-nothing lambda as its `onClick` argument, and for its `modifier`
+ * argument a [RowScope] `Modifier.align` whose `alignment` argument aligns it to [Alignment.Top]
+ * (the top of the [Row]), and to this [Modifier] is chained a [Modifier.clearAndSetSemantics] which
+ * clears the semantics of all its descendant nodes and sets the semantics to a do-nothing lambda.
+ * The `content` of the [IconButton] is an [Icon] displaying the `imageVector` [Icons.Filled.Sort]
+ * (three horozontal lines, each line slightly shorter than the one above it), with a `null`
+ * `contentDescription` argument.
+ *
+ * @param message the [String] for our [Text] to display.
  */
 @Suppress("SameParameterValue")
 @Composable
