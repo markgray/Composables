@@ -29,6 +29,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.samples.apps.sunflower.adapters.GardenPlantingAdapter
 import com.google.samples.apps.sunflower.adapters.PLANT_LIST_PAGE_INDEX
 import com.google.samples.apps.sunflower.data.GardenPlantingRepository
+import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.databinding.FragmentGardenBinding
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
@@ -104,6 +105,16 @@ class GardenFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * This method adds an observer to the [GardenPlantingListViewModel.plantAndGardenPlantings]
+     * [LiveData] wrapped [List] of [PlantAndGardenPlantings] object. The observer lambda sets the
+     * "hasPlantings" variable of our [FragmentGardenBinding] parameter [binding] to `true` if the
+     * [List] is not empty, and submits the [List] to our [GardenPlantingAdapter] parameter [adapter]
+     * to be diffed, and displayed in the [RecyclerView] that the adapter is feeding.
+     *
+     * @param adapter the [GardenPlantingAdapter] that is feeding data to the [RecyclerView] in our UI.
+     * @param binding the [FragmentGardenBinding] that is inflated from our layout file.
+     */
     private fun subscribeUi(adapter: GardenPlantingAdapter, binding: FragmentGardenBinding) {
         viewModel.plantAndGardenPlantings.observe(viewLifecycleOwner) { result: List<PlantAndGardenPlantings> ->
             binding.hasPlantings = result.isNotEmpty()
@@ -111,7 +122,11 @@ class GardenFragment : Fragment() {
         }
     }
 
-    // TODO: convert to data binding if applicable
+    /**
+     * Calls the [ViewPager2.setCurrentItem] method (kotlin `currentItem` property) of the view with
+     * ID [R.id.view_pager] to set its item to [PLANT_LIST_PAGE_INDEX] which is the [ViewPager2] page
+     * index for the [PlantListFragment] which displays all the [Plant] objects available for planting.
+     */
     private fun navigateToPlantListPage() {
         requireActivity().findViewById<ViewPager2>(R.id.view_pager).currentItem =
             PLANT_LIST_PAGE_INDEX
