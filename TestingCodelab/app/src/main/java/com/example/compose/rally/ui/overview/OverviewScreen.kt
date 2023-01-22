@@ -70,6 +70,8 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
 import com.example.compose.rally.RallyApp
 import com.example.compose.rally.RallyScreen
+import com.example.compose.rally.data.Account
+import com.example.compose.rally.data.Bill
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.ui.accounts.AccountsBody
 import com.example.compose.rally.ui.bills.BillsBody
@@ -295,7 +297,50 @@ private fun AlertItem(message: String) {
 }
 
 /**
- * Base structure for cards in the Overview screen.
+ * Base structure for cards in the Overview screen, it is used by both [AccountsCard] and [BillsCard].
+ * Our root Composable is a [Card] which holds a [Column] as its `content`. This [Column] has three
+ * children:
+ *  - a [Column] whose `modifier` argument is a [Modifier.padding] that adds [RallyDefaultPadding]
+ *  (12.dp) to all sides and whose `content` consists of a [Text] displaying our [title] parameter
+ *  using the `subtitle2` [TextStyle] of [MaterialTheme.typography] (`fontWeight` = [FontWeight.Normal],
+ *  `fontSize` = 14.sp, `letterSpacing` = 0.1.em), and this is followed by a [Text] which displays the
+ *  formatted `text` representation of our [amount] parameter using the `h2` [TextStyle] of
+ *  [MaterialTheme.typography] (`fontWeight` = [FontWeight.SemiBold], `fontSize` = 44.sp,
+ *  `letterSpacing` = 1.5.em, `fontFamily` = `EczarFontFamily` the [Font] whose resource ID is
+ *  [R.font.eczar_semibold]).
+ *  - an [OverViewDivider] which displays different [Color] horizontal lines in a [Row] whose length
+ *  represents the relative "weight" of the [Account] or [Bill]
+ *  - a [Column] whose `modifier` argument is a [Modifier.padding] that adds 16.dp to the `start`,
+ *  4.dp to the `top` and 8.dp to the `end` of the [Column]. The `content` is a [row] for each of the
+ *  first [SHOWN_ITEMS] (3) [Account] or [Bill] objects in our [data] parameter, followed by a
+ *  [SeeAllButton] whose `onClick` argument is our [onClickSeeAll] lambda parameter.
+ *
+ * @param title the title text for the card, "Accounts" when called by [AccountsCard] and "Bills"
+ * when called by [BillsCard].
+ * @param amount the dollar amount to display, either the sum of all the [Account.balance] properties
+ * when called by [AccountsCard], or the sum of all the [Bill.amount] properties when called by
+ * [BillsCard].
+ * @param onClickSeeAll a lambda to be used as the `onClick` argument of the [SeeAllButton].
+ * [AccountsCard] passes us a lambda which calls its `onScreenChange` parameter with
+ * [RallyScreen.Accounts] in order to navigate to the [AccountsBody] Composable which displays all
+ * of the [Account] objects, and [BillsCard] passes us a lambda which calls its `onScreenChange`
+ * parameter with [RallyScreen.Bills] in order to navigate to the [BillsBody] Composable which
+ * displays all of the [Bill] objects.
+ * @param values a lambda which returns a floating point value that represents the dollar amount of
+ * the [Account] or [Bill] it is called with, [AccountsCard] passes us a lambda which returns the
+ * [Account.balance] property of its argument, and [BillsCard] passes us a lambda which returns the
+ * [Bill.amount] property of its argument. Used by [OverViewDivider] to assign a weight to the
+ * [Spacer] it displays for each of the [Account] or [Bill] objects.
+ * @param colors a lambda which returns a [Color] to be used to represent an the [Account] or [Bill]
+ * object it is called with, [AccountsCard] passes us a lambda which returns the [Account.color]
+ * property of its argument, and [BillsCard] passes us a lambda which returns the [Bill.color]
+ * property of its argument.
+ * @param data a [List] of [Account] objects when we are called by [AccountsCard] or a [List] of
+ * [Bill] objects when we are called by [BillsCard].
+ * @param row a Composable that can be used to display an individual [Account] or [Bill] from our
+ * [data] parameter. [AccountsCard] passes us a lambda which calls the [AccountRow] Composable with
+ * its [Account] argument, and [BillsCard] passes us a lambda which calls the [BillRow] Composable
+ * with its [Bill] argument.
  */
 @Composable
 private fun <T> OverviewScreenCard(
@@ -309,15 +354,15 @@ private fun <T> OverviewScreenCard(
 ) {
     Card {
         Column {
-            Column(Modifier.padding(RallyDefaultPadding)) {
+            Column(modifier = Modifier.padding(all = RallyDefaultPadding)) {
                 Text(text = title, style = MaterialTheme.typography.subtitle2)
                 val amountText = "$" + formatAmount(
                     amount
                 )
                 Text(text = amountText, style = MaterialTheme.typography.h2)
             }
-            OverViewDivider(data, values, colors)
-            Column(Modifier.padding(start = 16.dp, top = 4.dp, end = 8.dp)) {
+            OverViewDivider(data = data, values = values, colors = colors)
+            Column(modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 8.dp)) {
                 data.take(SHOWN_ITEMS).forEach { row(it) }
                 SeeAllButton(onClick = onClickSeeAll)
             }
@@ -338,9 +383,9 @@ private fun <T> OverViewDivider(
         data.forEach { item: T ->
             Spacer(
                 modifier = Modifier
-                    .weight(values(item))
-                    .height(1.dp)
-                    .background(colors(item))
+                    .weight(weight = values(item))
+                    .height(height = 1.dp)
+                    .background(color = colors(item))
             )
         }
     }
@@ -351,7 +396,7 @@ private fun <T> OverViewDivider(
  */
 @Composable
 fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
-    val amount = UserData.accounts.map { account -> account.balance }.sum()
+    val amount = UserData.accounts.map { account: Account -> account.balance }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.accounts),
         amount = amount,
@@ -376,7 +421,7 @@ fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
  */
 @Composable
 fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
-    val amount = UserData.bills.map { bill -> bill.amount }.sum()
+    val amount = UserData.bills.map { bill: Bill -> bill.amount }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.bills),
         amount = amount,
