@@ -26,17 +26,24 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
+import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.databinding.FragmentPlantListBinding
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
 
+/**
+ * This fragment displays all of the [Plant]'s that are found in the "plants" table in the database.
+ */
 class PlantListFragment : Fragment() {
 
     private val viewModel: PlantListViewModel by viewModels {
         InjectorUtils.providePlantListViewModelFactory(this)
     }
 
-    @Suppress("RedundantNullableReturnType")
+    /**
+     * TODO: Add kdoc
+     */
+    @Suppress("RedundantNullableReturnType") // The method we override returns nullable.
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,19 +56,26 @@ class PlantListFragment : Fragment() {
         binding.plantList.adapter = adapter
         subscribeUi(adapter)
 
-        @Suppress("DEPRECATION")
+        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
         setHasOptionsMenu(true)
         return binding.root
     }
 
-    @Deprecated("Deprecated in Java", ReplaceWith("inflater.inflate(R.menu.menu_plant_list, menu)"))
+    /**
+     * TODO: Add kdoc
+     */
+    @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
+    @Deprecated("Replace with MenuProvider", ReplaceWith("Replace with MenuProvider"))
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_plant_list, menu)
     }
 
-    @Deprecated("Deprecated in Java")
+    /**
+     * TODO: Add kdoc
+     */
+    @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
+    @Deprecated("Replace with MenuProvider", ReplaceWith("Replace with MenuProvider"))
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        @Suppress("DEPRECATION")
         return when (item.itemId) {
             R.id.filter_zone -> {
                 updateData()
