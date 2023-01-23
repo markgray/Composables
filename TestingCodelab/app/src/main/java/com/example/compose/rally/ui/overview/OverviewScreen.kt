@@ -371,7 +371,26 @@ private fun <T> OverviewScreenCard(
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable different colored horizontal lines in a [Row] whose lengths represent the relative
+ * contribution that each [Account] or [Bill] in its [List] parameter [data] makes to the total of
+ * amount of the [List]. The root Composable is a [Row] whose `modifier` argument is a
+ * [Modifier.fillMaxWidth] that causes the [Row] to occupy the entire incoming width constraints.
+ * For the `content` of the [Row] it loops through each of the [Account] or [Bill] objects in its
+ * [List] of `T` parameter [data] composing a [Spacer] whose `modifier` is a [RowScope]
+ * `Modifier.weight` whose `weight argument is the value that our [values] lambda parameter returns
+ * for that [Account] or [Bill]. A [Modifier.height] is chained to that which sets the height to 1.dp,
+ * and at the end of the chain is a [Modifier.background] that sets the background color to the [Color]
+ * that our [colors] lambda parameter returns for that [Account] or [Bill].
+ *
+ * @param data the [List] of [Account] or [Bill] instances that we are supposed to draw lines for.
+ * @param values a lambda that returns a [Float] that represents the value of the [Account] or [Bill]
+ * it is passed. When [AccountsCard] uses [OverviewScreenCard] this is a lambda that returns the
+ * [Account.balance] property of the [Account], and when [BillsCard] uses [OverviewScreenCard] this
+ * is a lambda that returns the [Bill.amount] property of the [Bill].
+ * @param colors a lambda that returns a [Color] to represent the [Account] of [Bill] passed it as
+ * its argument. When [AccountsCard] uses [OverviewScreenCard] this is a lambda that returns the
+ * [Account.color] property of the [Account], and when [BillsCard] uses [OverviewScreenCard] this
+ * is a lambda that returns the [Bill.color] property of the [Bill].
  */
 @Composable
 private fun <T> OverViewDivider(
@@ -379,7 +398,7 @@ private fun <T> OverViewDivider(
     values: (T) -> Float,
     colors: (T) -> Color
 ) {
-    Row(Modifier.fillMaxWidth()) {
+    Row(modifier = Modifier.fillMaxWidth()) {
         data.forEach { item: T ->
             Spacer(
                 modifier = Modifier
@@ -392,11 +411,28 @@ private fun <T> OverViewDivider(
 }
 
 /**
- * The Accounts card within the Rally Overview screen.
+ * The Accounts card within the Rally Overview screen. We use the [map] extension function to sum
+ * all of the [Account.balance] properties in the [List] of [Account] field [UserData.accounts] and
+ * initialize our [Float] variable `val amount` to the result. We use [OverviewScreenCard] as our
+ * root Composable with its `title` argument the [String] whose resource ID is [R.string.accounts]
+ * ("Accounts"), its `amount` argument is our `amount` variable, its `onClickSeeAll` argument is a
+ * lambda that calls our [onScreenChange] lambda parameter with the argument [RallyScreen.Accounts],
+ * its `data` argument is the [List] of [Account] field [UserData.accounts], its `colors` argument
+ * is a lambda that returns the [Account.color] of the [Account] it is called with, and its `values`
+ * argument is a lambda that returns the [Account.balance] of the [Account] it is called with. The
+ * `row` Composable lambda destructures the [Account] it is passed into its [Account.name],
+ * [Account.number], [Account.balance], and [Account.color] properties and calls the [AccountRow]
+ * Composable with the arguments `name` = `name`, `number` = `number`, `amount` = `balance`, and
+ * `color` = `color` that are produced by the destructuring.
+ *
+ * @param onScreenChange a lambda which when called with a [RallyScreen] will transition to the
+ * screen that displays for that [RallyScreen]. We pass it [RallyScreen.Accounts] in the lambda
+ * we use for the `onClickSeeAll` argument of [OverviewScreenCard] and that will cause the
+ * [AccountsBody] screen to be displayed.
  */
 @Composable
 fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
-    val amount = UserData.accounts.map { account: Account -> account.balance }.sum()
+    val amount: Float = UserData.accounts.map { account: Account -> account.balance }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.accounts),
         amount = amount,
@@ -406,7 +442,7 @@ fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
         data = UserData.accounts,
         colors = { it.color },
         values = { it.balance }
-    ) { (name, number, balance, color) ->
+    ) { (name: String, number: Int, balance: Float, color: Color) ->
         AccountRow(
             name = name,
             number = number,
@@ -417,7 +453,23 @@ fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
 }
 
 /**
- * The Bills card within the Rally Overview screen.
+ * The Bills card within the Rally Overview screen. We use the [map] extension function to sum
+ * all of the [Bill.amount] properties in the [List] of [Bill] field [UserData.bills] and
+ * initialize our [Float] variable `val amount` to the result. We use [OverviewScreenCard] as our
+ * root Composable with its `title` argument the [String] whose resource ID is [R.string.bills]
+ * ("Bills"), its `amount` argument is our `amount` variable, its `onClickSeeAll` argument is a
+ * lambda that calls our [onScreenChange] lambda parameter with the argument [RallyScreen.Bills],
+ * its `data` argument is the [List] of [Bill] field [UserData.bills], its `colors` argument
+ * is a lambda that returns the [Bill.color] of the [Bill] it is called with, and its `values`
+ * argument is a lambda that returns the [Bill.amount] of the [Bill] it is called with. The
+ * `row` Composable lambda destructures the [Bill] it is passed into its [Bill.name], [Bill.due],
+ * [Bill.amount] (renamed `amount1`), and [Bill.color] properties and calls the [BillRow] Composable
+ * with the arguments `name` = `name`, `due` = `due`, `amount` = `amount1`, and `color` = `color`.
+ *
+ * @param onScreenChange a lambda which when called with a [RallyScreen] will transition to the
+ * screen that displays for that [RallyScreen]. We pass it [RallyScreen.Bills] in the lambda
+ * we use for the `onClickSeeAll` argument of [OverviewScreenCard] and that will cause the
+ * [BillsBody] screen to be displayed.
  */
 @Composable
 fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
@@ -431,7 +483,7 @@ fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
         data = UserData.bills,
         colors = { it.color },
         values = { it.amount }
-    ) { (name, due, amount1, color) ->
+    ) { (name: String, due: String, amount1: Float, color: Color) ->
         BillRow(
             name = name,
             due = due,
