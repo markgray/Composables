@@ -494,7 +494,18 @@ fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
 }
 
 /**
- * TODO: Add kdoc
+ * [TextButton] used as the bottom Composable of the [OverviewScreenCard] Composable both when it is
+ * used by [AccountsCard] and when it is used by [BillsCard]. Our root Composable is a [TextButton]
+ * with the `onClick` argument our [onClick] lambda parameter, and the `modifier` argument a
+ * [Modifier.height] of 44.dp, to which is chained a [Modifier.fillMaxWidth] that causes the button
+ * to occupy the entire incoming width constraint. Its label `content` is a [Text] whose `text` is
+ * the [String] with resource ID [R.string.see_all] ("SEE ALL").
+ *
+ * @param onClick a lambda to use as the `onClick` argument of our [TextButton]. [OverviewScreenCard]
+ * passes us its `onClickSeeAll` lambda parameter which when used by [AccountsCard] is a lambda that
+ * calls the [AccountsCard] parameter `onScreenChange` with [RallyScreen.Accounts] to navigate to the
+ * [AccountsBody] Composable and when used by [BillsCard] is a lambda that calls the [BillsCard]
+ * parameter `onScreenChange` with [RallyScreen.Bills] to navigate to the [BillsBody] Composable.
  */
 @Composable
 private fun SeeAllButton(onClick: () -> Unit) {
@@ -504,16 +515,16 @@ private fun SeeAllButton(onClick: () -> Unit) {
             .height(44.dp)
             .fillMaxWidth()
     ) {
-        Text(stringResource(R.string.see_all))
+        Text(text = stringResource(id = R.string.see_all))
     }
 }
 
 /**
- * TODO: Add kdoc
+ * This is the default padding, and is used in several places.
  */
 val RallyDefaultPadding: Dp = 12.dp
 
 /**
- * TODO: Add kdoc
+ * The number of [Account] or [Bill] instances that [OverviewScreenCard] should display.
  */
 private const val SHOWN_ITEMS = 3

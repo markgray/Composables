@@ -57,7 +57,7 @@ import java.util.Locale
 /**
  * This is used as the `topBar` argument (top app bar of the screen) of the [Scaffold] used in the
  * [RallyApp] Composable that [RallyActivity] sets as the apps content in its `onCreate` override.
- * Our root Composable is a [Surface] whose `modifier` argument is a [Modifier.height] that set the
+ * Our root Composable is a [Surface] whose `modifier` argument is a [Modifier.height] that sets the
  * preferred height of its content to be exactly [TabHeight] (56.dp) to which is chained a
  * [Modifier.fillMaxWidth] which causes it to use the entire incoming width constraint. Its `content`
  * consists of a [Row] whose `modifier` argument is a [Modifier.selectableGroup] which groups its
