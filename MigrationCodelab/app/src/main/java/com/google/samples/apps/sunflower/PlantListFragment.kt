@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.sunflower
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -25,8 +26,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
 import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.data.Plant
+import com.google.samples.apps.sunflower.data.PlantDao
+import com.google.samples.apps.sunflower.data.PlantRepository
 import com.google.samples.apps.sunflower.databinding.FragmentPlantListBinding
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
@@ -36,12 +42,49 @@ import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
  */
 class PlantListFragment : Fragment() {
 
+    /**
+     * This is the [ViewModel] we use to observe and read the [PlantListViewModel.plants] field, a
+     * [LiveData] wrapped [List] of [Plant] instances which [PlantListViewModel] reads from the
+     * [PlantRepository], and which [PlantRepository] reads from the "plants" table of the ROOM
+     * database using [PlantDao].
+     */
     private val viewModel: PlantListViewModel by viewModels {
         InjectorUtils.providePlantListViewModelFactory(this)
     }
 
     /**
-     * TODO: Add kdoc
+     * Called to have the fragment instantiate its user interface view. This will be called between
+     * [onCreate] and [onViewCreated]. It is recommended to only inflate the layout in this method
+     * and move logic that operates on the returned View to [onViewCreated]. First we initialize
+     * our [FragmentPlantListBinding] variable `val binding` by having the method
+     * [FragmentPlantListBinding.inflate] use our [LayoutInflater] parameter inflate its associated
+     * layout file (the file with resource ID [R.layout.fragment_plant_list]) with our [ViewGroup]
+     * parameter [container] supplying LayoutParams without being attached to. If the the [Context]
+     * this fragment is currently associated with is `null` we just return the outermost [View]
+     * of the layout file associated with `binding` to the caller ([FragmentPlantListBinding.getRoot]
+     * aka kotlin `root` property).
+     *
+     * Otherwise we initialize our [PlantAdapter] variable `val adapter` to a new instance, and
+     * set the [RecyclerView.Adapter] of the [RecyclerView] in our layout file that is accessed
+     * using the [FragmentPlantListBinding.plantList] property of `binding` to `adapter`, then
+     * call our method [subscribeUi] with `adapter` as the argument to have it begin to observe
+     * the [PlantListViewModel.plants] field of [viewModel], submitting the [LiveData] wrapped
+     * [List] of [Plant] objects to `adapter` to be diffed, and displayed whenever it changes
+     * value. Finally we call the [setHasOptionsMenu] method with `true` to report that this
+     * fragment would like to participate in populating the options menu by receiving a call to
+     * [onCreateOptionsMenu] and related methods, then return the outermost [View] of the layout
+     * file associated with `binding` to the caller ([FragmentPlantListBinding.getRoot] aka kotlin
+     * `root` property).
+     *
+     * @param inflater The [LayoutInflater] object that can be used to inflate
+     * any views in the fragment.
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
     @Suppress("RedundantNullableReturnType") // The method we override returns nullable.
     override fun onCreateView(
@@ -62,7 +105,13 @@ class PlantListFragment : Fragment() {
     }
 
     /**
-     * TODO: Add kdoc
+     * Initialize the contents of the Fragment host's standard options menu. You should place your
+     * menu items in the [Menu] parameter [menu]. We just use our [MenuInflater] parameter [inflater]
+     * to inflate our menu layout file into our [Menu] parameter [menu] (the file with resource ID
+     * [R.menu.menu_plant_list]).
+     *
+     * @param menu The options [Menu] in which you place your items.
+     * @param inflater a [MenuInflater] for this [Context] you can use to inflate an XML menu file.
      */
     @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
     @Deprecated("Replace with MenuProvider", ReplaceWith("Replace with MenuProvider"))
@@ -71,7 +120,18 @@ class PlantListFragment : Fragment() {
     }
 
     /**
-     * TODO: Add kdoc
+     * This hook is called whenever an item in your options menu is selected. If the value returned
+     * by [MenuItem.getItemId] (kotlin `itemId` property) is [R.id.filter_zone] we call our [updateData]
+     * method to "toggle" the grow zone filtering that our [PlantListViewModel] performs (if the
+     * [PlantListViewModel.isFiltered] method returns `true` it calls the method
+     * [PlantListViewModel.clearGrowZoneNumber] to clear, and if it is `false` it call the method
+     * [PlantListViewModel.setGrowZoneNumber] to set the grow zone to "9"). If the `itemId` is not
+     * [R.id.filter_zone] we return whatever our super's implementation of `onOptionsItemSelected`
+     * returns.
+     *
+     * @param item The [MenuItem] that was selected.
+     * @return [Boolean] Return `false` to allow normal menu processing to proceed, `true` to
+     * consume it here.
      */
     @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
     @Deprecated("Replace with MenuProvider", ReplaceWith("Replace with MenuProvider"))
