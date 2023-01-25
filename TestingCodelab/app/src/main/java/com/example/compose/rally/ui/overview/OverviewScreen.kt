@@ -343,7 +343,7 @@ private fun AlertItem(message: String) {
  * with its [Bill] argument.
  */
 @Composable
-private fun <T> OverviewScreenCard(
+fun <T> OverviewScreenCard(
     title: String,
     amount: Float,
     onClickSeeAll: () -> Unit,
@@ -508,7 +508,7 @@ fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
  * parameter `onScreenChange` with [RallyScreen.Bills] to navigate to the [BillsBody] Composable.
  */
 @Composable
-private fun SeeAllButton(onClick: () -> Unit) {
+fun SeeAllButton(onClick: () -> Unit) {
     TextButton(
         onClick = onClick,
         modifier = Modifier

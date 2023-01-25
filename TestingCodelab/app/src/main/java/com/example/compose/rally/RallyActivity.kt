@@ -65,7 +65,7 @@ class RallyActivity : ComponentActivity() {
  * [RallyScreen.Overview] (this is the currently selected [RallyScreen] of the [RallyTopAppBar] in
  * our [Scaffold] and controls the screen displayed in the [Box] `content` of the [Scaffold]).
  *
- * OUr root Composable is a [Scaffold] whose `topBar` argument (top app bar of the screen) is a
+ * Our root Composable is a [Scaffold] whose `topBar` argument (top app bar of the screen) is a
  * [RallyTopAppBar] whose `allScreens` argument is our `allScreens` variable, whose `onTabSelected`
  * argument is a lambda which sets `currentScreen` to its [RallyScreen] parameter, and whose
  * [RallyScreen] `currentScreen` argument is our `currentScreen` variable (it will be recomposed
