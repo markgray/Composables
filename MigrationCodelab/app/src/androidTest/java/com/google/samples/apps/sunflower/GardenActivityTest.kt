@@ -29,7 +29,7 @@ class GardenActivityTest {
 
     @Rule
     @JvmField
-    var activityTestRule = ActivityTestRule(GardenActivity::class.java)
+    var activityTestRule: ActivityTestRule<GardenActivity> = ActivityTestRule(GardenActivity::class.java)
 
     @Test
     fun clickAddPlant_OpensPlantList() {

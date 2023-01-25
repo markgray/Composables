@@ -21,6 +21,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.Navigation.findNavController
@@ -32,6 +33,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.testing.TestListenableWorkerBuilder
@@ -50,7 +52,7 @@ class PlantDetailFragmentTest {
 
     @Rule
     @JvmField
-    val composeTestRule = createAndroidComposeRule<GardenActivity>()
+    val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<GardenActivity>, GardenActivity> = createAndroidComposeRule()
 
     // Note that keeping these references is only safe if the activity is not recreated.
     private lateinit var activity: ComponentActivity

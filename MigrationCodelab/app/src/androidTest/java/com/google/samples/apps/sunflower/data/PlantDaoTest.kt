@@ -39,10 +39,10 @@ class PlantDaoTest {
     private val plantC = Plant("3", "C", "", 2, 2, "")
 
     @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
-    fun createDb() = runBlocking {
+    fun createDb(): Unit = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
         plantDao = database.plantDao()

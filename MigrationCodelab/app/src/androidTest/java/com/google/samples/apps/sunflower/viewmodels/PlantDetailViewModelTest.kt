@@ -36,7 +36,7 @@ class PlantDetailViewModelTest {
     private lateinit var viewModel: PlantDetailViewModel
 
     @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {

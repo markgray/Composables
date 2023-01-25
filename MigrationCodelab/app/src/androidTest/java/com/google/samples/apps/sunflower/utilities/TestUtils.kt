@@ -31,12 +31,12 @@ import java.util.Calendar
 /**
  * [Plant] objects used for tests.
  */
-val testPlants = arrayListOf(
+val testPlants: ArrayList<Plant> = arrayListOf(
     Plant("1", "Apple", "A red fruit", 1),
     Plant("2", "B", "Description B", 1),
     Plant("3", "C", "Description C", 2)
 )
-val testPlant = testPlants[0]
+val testPlant: Plant = testPlants[0]
 
 /**
  * [Calendar] object used for tests.
@@ -50,12 +50,13 @@ val testCalendar: Calendar = Calendar.getInstance().apply {
 /**
  * [GardenPlanting] object used for tests.
  */
-val testGardenPlanting = GardenPlanting(testPlant.plantId, testCalendar, testCalendar)
+val testGardenPlanting: GardenPlanting = GardenPlanting(testPlant.plantId, testCalendar, testCalendar)
 
 /**
  * Returns the content description for the navigation button view in the toolbar.
  */
-fun getToolbarNavigationContentDescription(activity: Activity, toolbarId: Int) =
+@Suppress("unused") // Unused but instructional
+fun getToolbarNavigationContentDescription(activity: Activity, toolbarId: Int): String =
     activity.findViewById<Toolbar>(toolbarId).navigationContentDescription as String
 
 /**

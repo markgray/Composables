@@ -40,10 +40,10 @@ class GardenPlantingDaoTest {
     private var testGardenPlantingId: Long = 0
 
     @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
-    fun createDb() = runBlocking {
+    fun createDb(): Unit = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
         gardenPlantingDao = database.gardenPlantingDao()
@@ -58,7 +58,7 @@ class GardenPlantingDaoTest {
     }
 
     @Test
-    fun testGetGardenPlantings() = runBlocking {
+    fun testGetGardenPlantings(): Unit = runBlocking {
         val gardenPlanting2 = GardenPlanting(
             testPlants[1].plantId,
             testCalendar,
@@ -69,7 +69,7 @@ class GardenPlantingDaoTest {
     }
 
     @Test
-    fun testDeleteGardenPlanting() = runBlocking {
+    fun testDeleteGardenPlanting(): Unit = runBlocking {
         val gardenPlanting2 = GardenPlanting(
             testPlants[1].plantId,
             testCalendar,
