@@ -145,12 +145,30 @@ class PlantListFragment : Fragment() {
         }
     }
 
+    /**
+     * This method is called to add an observer to the [LiveData] wrapped [List] of [Plant] instances
+     * field [PlantListViewModel.plants] of [viewModel] which submits the list to be diffed, and
+     * displayed by our [PlantAdapter] parameter [adapter] whenever the value changes.
+     *
+     * @param adapter the [PlantAdapter] for the [RecyclerView] in our UI that displays a [List] of
+     * [Plant] instances.
+     */
     private fun subscribeUi(adapter: PlantAdapter) {
-        viewModel.plants.observe(viewLifecycleOwner) { plants ->
+        viewModel.plants.observe(viewLifecycleOwner) { plants: List<Plant> ->
             adapter.submitList(plants)
         }
     }
 
+    /**
+     * This method is called to toggle the grow zone filtering performed by [PlantRepository] on
+     * the [LiveData] wrapped [List] of [Plant] instances that it supplies to [PlantListViewModel]
+     * for its [PlantListViewModel.plants] field. If [PlantListViewModel.isFiltered] returns `true`
+     * we call [PlantListViewModel.clearGrowZoneNumber] to clear the grow zone filtering, and if it
+     * returns `false` we call [PlantListViewModel.setGrowZoneNumber] to set the grow zone filter to
+     * 9 (when the grow zone is cleared (ie. `NO_GROW_ZONE`) the [PlantListViewModel.plants] field
+     * uses the [PlantRepository.getPlants] method to retrieve its [List], otherwise if uses the
+     * [PlantRepository.getPlantsWithGrowZoneNumber] method passing it the current grow zone number.
+     */
     private fun updateData() {
         with(viewModel) {
             if (isFiltered()) {
