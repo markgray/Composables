@@ -25,6 +25,8 @@ import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.compose.rally.data.Account
+import com.example.compose.rally.data.Bill
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.ui.accounts.AccountsBody
 import com.example.compose.rally.ui.bills.BillsBody
@@ -53,15 +55,22 @@ enum class RallyScreen(
     private val body: @Composable ((RallyScreen) -> Unit) -> Unit
 ) {
     /**
-     * TODO: Add kdoc
+     * This [RallyScreen] will compose the [OverviewBody] Composable when its [body] lambda is called
+     * by the [Content] method. Its [icon] is the [ImageVector] drawn by [Icons.Filled.PieChart]
+     * which is a stylized "Pie Chart" (three slices of a circle). Its [body] lambda passes the
+     * lambda that is passed to the lambda to the Composable [OverviewBody] as its `onScreenChange`
+     * argument. It is the "Starting" [RallyScreen] of the app.
      */
     Overview(
         icon = Icons.Filled.PieChart,
-        body = { onScreenChange -> OverviewBody(onScreenChange = onScreenChange) }
+        body = { onScreenChange: (RallyScreen) -> Unit -> OverviewBody(onScreenChange = onScreenChange) }
     ),
 
     /**
-     * TODO: Add kdoc
+     * This [RallyScreen] will compose the [AccountsBody] Composable when its [body] lambda is called
+     * by the [Content] method. Its [icon] is the [ImageVector] drawn from [Icons.Filled.AttachMoney]
+     * which is a stylized "dollar sign". Its [body] lambda composes the Composable [AccountsBody]
+     * with its `accounts` argument the [UserData.accounts] list of [Account] instances.
      */
     Accounts(
         icon = Icons.Filled.AttachMoney,
@@ -69,7 +78,11 @@ enum class RallyScreen(
     ),
 
     /**
-     * TODO: Add kdoc
+     * This [RallyScreen] will compose the [BillsBody] Composable when its [body] lambda is called
+     * by the [Content] method. Its [icon] is the [ImageVector] drawn from [Icons.Filled.MoneyOff]
+     * which is a stylized "dollar sign" with a slash across it. Its [body] lambda composes the
+     * Composable [AccountsBody] with its `accounts` argument the [UserData.bills] list of [Bill]
+     * instances.
      */
     Bills(
         icon = Icons.Filled.MoneyOff,
