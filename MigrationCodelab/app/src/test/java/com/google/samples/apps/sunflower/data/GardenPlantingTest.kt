@@ -18,7 +18,7 @@ package com.google.samples.apps.sunflower.data
 
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_MONTH
