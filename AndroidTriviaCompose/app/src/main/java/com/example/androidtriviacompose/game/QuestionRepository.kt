@@ -53,13 +53,13 @@ class QuestionRepository {
     /**
      * The current question that we are asking.
      */
-    @Suppress("MemberVisibilityCanBePrivate")
+    @Suppress("MemberVisibilityCanBePrivate") // I like to use kdoc [] references
     lateinit var currentQuestion: Question
 
     /**
      * The shuffled `answers` list field of the [Question] field [currentQuestion].
      */
-    @Suppress("MemberVisibilityCanBePrivate")
+    @Suppress("MemberVisibilityCanBePrivate") // I like to use kdoc [] references
     lateinit var answers: MutableList<String>
 
     /**
