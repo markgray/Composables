@@ -1,5 +1,6 @@
 package com.example.compose.rally
 
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasParent
@@ -48,9 +49,30 @@ class TopAppBarTest {
     @get:Rule
     val composeTestRule: ComposeContentTestRule = createComposeRule()
 
+    /**
+     * The `@Test` annotation tells JUnit that the public void method to which it is attached can be
+     * run as a test case. To run the method, JUnit first constructs a fresh instance of the class
+     * then invokes the annotated method. Any exceptions thrown by the test will be reported by JUnit
+     * as a failure. If no exceptions are thrown, the test is assumed to have succeeded. This test
+     * checks to see if the [RallyScreen.Accounts] screen is selected as it should be. It does this
+     * by first initializing its [List] of [RallyScreen] variable `val allScreens` to all of the
+     * [RallyScreen.values] (needed to call [RallyTopAppBar]). It then calls the method
+     * [ComposeContentTestRule.setContent] method of our [composeTestRule] field to have it set the
+     * [RallyTopAppBar] composable as a content of the current screen (Use this in your tests
+     * to setup the UI content to be tested. This should be called exactly once per test). The
+     * `allScreens` argument of [RallyTopAppBar] is our `allScreens` variable, its `onTabSelected`
+     * lambda argument is a do-nothing lambda, and its `currentScreen` argument is the screen
+     * [RallyScreen.Accounts] (which should set the currently selected [RallyScreen] tab of the
+     * [RallyTopAppBar] to it). Finally we call the [ComposeContentTestRule.onNodeWithContentDescription]
+     * method of [composeTestRule] with the `label` argument the [RallyScreen.name] of
+     * [RallyScreen.Accounts] to find a semantics node with the that `contentDescription`. Then
+     * we use the [SemanticsNodeInteraction] returned to call its
+     * [SemanticsNodeInteraction.assertIsSelected] method which asserts that the current semantics
+     * node is selected (throws [AssertionError] if the node is unselected or not selectable).
+     */
     @Test
     fun rallyTopAppBarTest_currentTabSelected() {
-        val allScreens = RallyScreen.values().toList()
+        val allScreens: List<RallyScreen> = RallyScreen.values().toList()
         composeTestRule.setContent {
             RallyTopAppBar(
                 allScreens = allScreens,
@@ -60,10 +82,22 @@ class TopAppBarTest {
         }
 
         composeTestRule
-            .onNodeWithContentDescription(RallyScreen.Accounts.name)
+            .onNodeWithContentDescription(label = RallyScreen.Accounts.name)
             .assertIsSelected()
     }
 
+    /**
+     * This test tests whether a node exists which contains text which matches the uppercase of
+     * [RallyScreen.Accounts.name]. It does this by by first initializing its [List] of [RallyScreen]
+     * variable `val allScreens` to all of the [RallyScreen.values] (needed to call [RallyTopAppBar]).
+     * It then calls the method [ComposeContentTestRule.setContent] method of our [composeTestRule]
+     * field to have it set the [RallyTopAppBar] composable as a content of the current screen (Use
+     * this in your tests to setup the UI content to be tested. This should be called exactly once
+     * per test). The `allScreens` argument of [RallyTopAppBar] is our `allScreens` variable, its
+     * `onTabSelected` lambda argument is a do-nothing lambda, and its `currentScreen` argument is
+     * the screen [RallyScreen.Accounts]. It then calls the [ComposeContentTestRule.onNode] method
+     * of our field [composeTestRule], with its `matcher` argument
+     */
     @Test
     fun rallyTopAppBarTest_currentLabelExists() {
         val allScreens = RallyScreen.values().toList()
