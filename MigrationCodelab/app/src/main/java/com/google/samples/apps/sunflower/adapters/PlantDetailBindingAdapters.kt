@@ -128,7 +128,7 @@ fun bindRenderHtml(view: TextView, description: String?) {
  * which is the watering interval in days for the [Plant], in the original xml this was:
  * app:wateringText="@{viewModel.plant.wateringInterval}"
  */
-@Suppress("unused")
+@Suppress("unused") // Unused but instructional
 @BindingAdapter("wateringText")
 fun bindWateringText(textView: TextView, wateringInterval: Int) {
     val resources: Resources = textView.context.resources

@@ -234,7 +234,7 @@ class PlantDetailFragment : Fragment() {
                 }
             }
         }
-        @Suppress("DEPRECATION")
+        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
         setHasOptionsMenu(true)
 
         return binding.root

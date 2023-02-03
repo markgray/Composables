@@ -48,7 +48,7 @@ class MaskedCardView @JvmOverloads constructor(
      * override in order to write the [ShapeAppearanceModel] field [shapeAppearance] into the [Path]
      * field [path] that we use to clip our [MaskedCardView] in our [onDraw] override.
      */
-    @SuppressLint("RestrictedApi")
+    @SuppressLint("RestrictedApi") // TODO: Keep your eye on this one, it may be changed!
     private val pathProvider: ShapeAppearancePathProvider = ShapeAppearancePathProvider()
 
     /**
