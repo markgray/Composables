@@ -84,29 +84,29 @@ android {
 
 dependencies {
 
-    implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
-    implementation "androidx.core:core-ktx:$rootProject.ktxVersion"
-    implementation "com.google.android.material:material:$rootProject.materialVersion"
+    implementation "androidx.appcompat:appcompat:1.6.0"
+    implementation "androidx.core:core-ktx:1.9.0"
+    implementation "com.google.android.material:material:1.8.0"
 
     // Compose
-    implementation "androidx.compose.runtime:runtime:$rootProject.composeVersion"
-    implementation "androidx.compose.ui:ui:$rootProject.composeVersion"
-    implementation "androidx.compose.foundation:foundation:$rootProject.composeVersion"
-    implementation "androidx.compose.material:material:$rootProject.composeVersion"
-    implementation "androidx.compose.material:material-icons-extended:$rootProject.composeVersion"
-    implementation "androidx.activity:activity-compose:$rootProject.activityComposeVersion"
-    implementation "androidx.navigation:navigation-compose:$rootProject.navigationComposeVersion"
-    debugImplementation "androidx.compose.ui:ui-tooling:$rootProject.composeVersion"
+    implementation "androidx.compose.runtime:runtime:1.3.3"
+    implementation "androidx.compose.ui:ui:1.3.3"
+    implementation "androidx.compose.foundation:foundation:1.3.1"
+    implementation "androidx.compose.material:material:1.3.1"
+    implementation "androidx.compose.material:material-icons-extended:1.3.1"
+    implementation "androidx.activity:activity-compose:1.6.1"
+    implementation "androidx.navigation:navigation-compose:2.5.3"
+    debugImplementation "androidx.compose.ui:ui-tooling:1.3.3"
 
     // Testing dependencies
-    androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$rootProject.espressoVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoVersion"
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.5.1"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
 
     // Compose testing dependencies
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$rootProject.composeVersion"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$rootProject.composeVersion"
-    androidTestImplementation "androidx.navigation:navigation-testing:$rootProject.navigationComposeVersion"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.3.3"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:1.3.3"
+    androidTestImplementation "androidx.navigation:navigation-testing:2.5.3"
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
