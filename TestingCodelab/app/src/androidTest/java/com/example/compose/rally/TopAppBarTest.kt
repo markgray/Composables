@@ -1,5 +1,6 @@
 package com.example.compose.rally
 
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasContentDescription
@@ -96,7 +97,13 @@ class TopAppBarTest {
      * per test). The `allScreens` argument of [RallyTopAppBar] is our `allScreens` variable, its
      * `onTabSelected` lambda argument is a do-nothing lambda, and its `currentScreen` argument is
      * the screen [RallyScreen.Accounts]. It then calls the [ComposeContentTestRule.onNode] method
-     * of our field [composeTestRule], with its `matcher` argument
+     * of our field [composeTestRule], with its `matcher` argument the result of "and-ing" the
+     * two [SemanticsMatcher]'s: [hasText] with a `text` argument of the uppercase version of the
+     * [RallyScreen.name] of [RallyScreen.Accounts] (value to match), and a [hasParent] which matches
+     * the [hasContentDescription] of [RallyScreen.Accounts.name]. The `useUnmergedTree` argument of
+     * `onNode` is `true` to enable it to find within merged composables like `Button`. To the
+     * `onNode` we chain an `assertExists` to assert that the component was found and is part of
+     * the component tree.
      */
     @Test
     fun rallyTopAppBarTest_currentLabelExists() {
