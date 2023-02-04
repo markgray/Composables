@@ -154,11 +154,17 @@ private fun AccountIndicator(color: Color, modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun RallyDivider(modifier: Modifier = Modifier) {
     Divider(color = MaterialTheme.colors.background, thickness = 1.dp, modifier = modifier)
 }
 
+/**
+ * TODO: Add kdoc
+ */
 fun formatAmount(amount: Float): String {
     return AmountDecimalFormat.format(amount)
 }

@@ -23,13 +23,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.navigation.compose.NavHost
+import com.example.compose.rally.Accounts
 import com.example.compose.rally.R
+import com.example.compose.rally.RallyNavHost
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.StatementBody
 
 /**
- * The Accounts screen.
+ * The Accounts screen. This is the Composable that is used for the [Accounts.route] `route` of
+ * the [NavHost] used in [RallyNavHost].
+ *
+ * @param onAccountClick a lambda that we use as the `onClick` argument of the [Modifier.clickable]
+ * that we use as the `modifier` argument of each of the [AccountRow]'s that we have [StatementBody]
+ * compose for us.
  */
 @Composable
 fun AccountsScreen(
