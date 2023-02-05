@@ -1,10 +1,12 @@
 package com.example.compose.rally
 
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.example.compose.rally.ui.overview.AlertHeader
+import com.example.compose.rally.ui.overview.AlertCard
 import com.example.compose.rally.ui.overview.OverviewBody
 import org.junit.Rule
 import org.junit.Test
@@ -48,7 +50,13 @@ class OverviewScreenTest {
 
     /**
      * This test tests whether the "Alerts" Composable is displayed when the [OverviewBody] is on
-     * screen (the [AlertHeader] displays the text "Alerts").
+     * screen (the [AlertHeader] in the [AlertCard] of [OverviewBody] displays the text "Alerts").
+     * We start by calling the method [ComposeContentTestRule.setContent] of our [composeTestRule]
+     * field to have it set the [OverviewBody] composable as the content of the current screen. Then
+     * we call the [ComposeContentTestRule.onNodeWithText] method to find a semantics node with the
+     * text "Alerts", and then we chain a call to the [SemanticsNodeInteraction.assertIsDisplayed]
+     * on the [SemanticsNodeInteraction] returned to assert that the semantics node is displayed on
+     * screen (throws [AssertionError] if the node is not displayed).
      */
     @Test
     fun overviewScreen_alertsDisplayed() {
