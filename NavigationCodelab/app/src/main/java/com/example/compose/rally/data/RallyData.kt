@@ -145,7 +145,13 @@ object UserData {
     )
 
     /**
-     * TODO: Add kdoc
+     * Returns the first [Account] whose [Account.name] matches our [String] parameter [accountName].
+     * It does this by just using the [first] extension function on our [List] of [Account] field
+     * [accounts] using a lambda that returns `true` when the [Account.name] property of the [Account]
+     * passed it is equal to [accountName].
+     *
+     * @param accountName the [Account.name] of the [Account] we are searching for.
+     * @return the first [Account] whose [Account.name] matches our [String] parameter [accountName].
      */
     fun getAccount(accountName: String?): Account {
         return accounts.first { it.name == accountName }

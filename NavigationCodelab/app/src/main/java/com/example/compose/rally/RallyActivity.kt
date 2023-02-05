@@ -42,6 +42,9 @@ import com.example.compose.rally.ui.theme.RallyTheme
  * https://material.io/design/material-studies/rally.html
  */
 class RallyActivity : ComponentActivity() {
+    /**
+     * TODO: Add kdoc
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -50,6 +53,9 @@ class RallyActivity : ComponentActivity() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun RallyApp() {
     RallyTheme {
@@ -81,6 +87,9 @@ fun RallyApp() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun RallyNavHost(
     navController: NavHostController,
@@ -94,20 +103,20 @@ fun RallyNavHost(
         composable(route = Overview.route) {
             OverviewScreen(
                 onClickSeeAllAccounts = {
-                    navController.navigateSingleTopTo(Accounts.route)
+                    navController.navigateSingleTopTo(route = Accounts.route)
                 },
                 onClickSeeAllBills = {
-                    navController.navigateSingleTopTo(Bills.route)
+                    navController.navigateSingleTopTo(route = Bills.route)
                 },
                 onAccountClick = { accountType ->
-                    navController.navigateToSingleAccount(accountType)
+                    navController.navigateToSingleAccount(accountType = accountType)
                 }
             )
         }
         composable(route = Accounts.route) {
             AccountsScreen(
                 onAccountClick = { accountType ->
-                    navController.navigateToSingleAccount(accountType)
+                    navController.navigateToSingleAccount(accountType = accountType)
                 }
             )
         }
@@ -126,9 +135,12 @@ fun RallyNavHost(
     }
 }
 
-fun NavHostController.navigateSingleTopTo(route: String) =
-    this.navigate(route) { launchSingleTop = true }
+/**
+ * TODO: Add kdoc
+ */
+fun NavHostController.navigateSingleTopTo(route: String): Unit =
+    this.navigate(route = route) { launchSingleTop = true }
 
 private fun NavHostController.navigateToSingleAccount(accountType: String) {
-    this.navigateSingleTopTo("${SingleAccount.route}/$accountType")
+    this.navigateSingleTopTo(route = "${SingleAccount.route}/$accountType")
 }
