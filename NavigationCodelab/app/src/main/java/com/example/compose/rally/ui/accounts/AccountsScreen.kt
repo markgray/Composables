@@ -95,7 +95,18 @@ fun AccountsScreen(
  * with the `accountType` [String] argument appended to that route separated by a "/". We start by
  * initializing and remembering our [Account] variable `val account` using the [UserData.getAccount]
  * method on our [String] parameter [accountType] ([accountType] is used as the `key1` argument of
- * [remember] so that `account` will be recalculated if [accountType] changes value).
+ * [remember] so that `account` will be recalculated if [accountType] changes value). We then compose
+ * a [StatementBody] whose `items` argument is a [List] of [Account] containing only our `account`
+ * variable ([StatementBody] will use this single [Account] to call the [AccountRow] Composable that
+ * we pass as its `rows` lambda argument), the `colors` argument of [StatementBody] is a lambda that
+ * returns the [Account.color] property of our `account` variable, the `amounts` argument is a lambda
+ * that returns the [Account.balance] property of our `account` variable, the `amountsTotal` argument
+ * is the [Account.balance] property of `account`, and the `circleLabel` argument is the [Account.name]
+ * property of `account`. For the `rows` lambda argument we destructure the [Account] passed the lambda
+ * into the variables `name`: [String], `number`: [Int], `balance`: [Float], and `color`: [Color] then
+ * compose an [AccountRow] whose `name` argument` is the [Account.name], whose `number` argument` is
+ * the [Account.number], whose `amount` argument is the [Account.balance], and whose `color` argument
+ * is the [Account.color] of the [Account] passed the lambda (which is our `account` variable recall).
  *
  * @param accountType the [Account.name] of the [Account] we are to display in our [SingleAccountScreen].
  */

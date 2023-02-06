@@ -17,6 +17,7 @@
 package com.example.compose.rally.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,10 +44,35 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
+import com.example.compose.rally.data.Account
 import java.text.DecimalFormat
 
 /**
- * A row representing the basic information of an Account.
+ * A row representing the basic information of an [Account]. We just convert our parameters into the
+ * type of arguments that the [BaseRow] Composable expects as its arguments and then call [BaseRow]
+ * with them:
+ *  - `modifier` is just our [Modifier] parameter `modifier`
+ *  - `color` argument is just our [Color] parameter [color]
+ *  - `title` argument is just our [String] parameter [name]
+ *  - `subtitle` argument is created by concatenating the [String] whose resource ID is
+ *  [R.string.account_redacted] and the [String] returned by the [DecimalFormat.format] method of
+ *  our [AccountDecimalFormat] field when passed our [Int] parameter [number].
+ *  - `amount` argument is just our [Float] parameter [amount]
+ *  - `negative` argument is `false` (if it were `true` [BaseRow] would prepend a minus sign to its
+ *  display of [amount], which is done when called by [BillRow].
+ *
+ * @param modifier a [Modifier] that our caller can use to modify our appearance and/or behavior.
+ * We are called with a [Modifier.clickable] which causes our [BaseRow] to call a lambda with the
+ * `name` argument to load the detail screen for the [Account] it displays when clicked.
+ * @param name The title of this [AccountRow], it comes from the [Account.name] property of the
+ * [Account] whose information we are displaying.
+ * @param number the account number, it comes from the [Account.number] property of the [Account]
+ * whose information we are displaying.
+ * @param amount the amount of money in the [Account], it comes from the [Account.balance] property
+ * of the [Account] whose information we are displaying.
+ * @param color the [Color] that [BaseRow] should have its [AccountIndicator] Composable use to
+ * differentiate this [Account] from the others, it comes from the [Account.color] property of the
+ * [Account] whose information we are displaying.
  */
 @Composable
 fun AccountRow(
