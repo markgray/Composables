@@ -21,17 +21,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.runtime.Composable
@@ -39,12 +42,22 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
 import com.example.compose.rally.data.Account
+import com.example.compose.rally.data.Bill
+import com.example.compose.rally.ui.theme.DarkBlue900
+import com.example.compose.rally.ui.theme.RallyTheme
+import com.example.compose.rally.ui.overview.AlertCard
+import com.example.compose.rally.ui.overview.RallyDefaultPadding
 import java.text.DecimalFormat
 
 /**
@@ -93,7 +106,21 @@ fun AccountRow(
 }
 
 /**
- * A row representing the basic information of a Bill.
+ * A row representing the basic information of a [Bill]. We just call [BaseRow] with its `color`
+ * argument our [color] parameter, its `title` argument our [name] parameter, its `subtitle`
+ * argument the [String] formed by concatenating our [due] parameter to the [String] "Due ", its
+ * `amount` argument our [amount] parameter and its `negative` argument `true` (cause it to prepend
+ * a minus sign to the dollar sign when it prints the `amount` of the [Bill]).
+ *
+ * @param name The title of this [BillRow], it comes from the [Bill.name] property of the [Bill]
+ * whose information we are displaying.
+ * @param due The due date of the [Bill], it comes from the [Bill.due] property of the [Bill] whose
+ * information we are displaying.
+ * @param amount the amount of the [Bill], it comes from the [Bill.amount] property of the [Bill]
+ * whose information we are displaying.
+ * @param color the [Color] that [BaseRow] should have its [AccountIndicator] Composable use to
+ * differentiate this [Bill] from the others, it comes from the [Bill.color] property of the [Bill]
+ * whose information we are displaying.
  */
 @Composable
 fun BillRow(name: String, due: String, amount: Float, color: Color) {
@@ -106,6 +133,78 @@ fun BillRow(name: String, due: String, amount: Float, color: Color) {
     )
 }
 
+/**
+ * This Composable is used by [AccountRow] to display the information about an [Account] and by
+ * [BillRow] to display the information about a [Bill]. We start by initializing our [String]
+ * variable `val dollarSign` to the [String] "–$ " if our [Boolean] parameter [negative] is `true`
+ * or to "$ " if it is `false` (the [AccountRow] Composable calls us with `false` and the [BillRow]
+ * Composable calls us with `true`). Then we initialize our [String] variable `val formattedAmount`
+ * to the value returned by our [formatAmount] method when passed our [Float] parameter [amount].
+ *
+ * Our `content` consists of a [Row] followed by a [RallyDivider] which separates this [BaseRow] from
+ * Composables that follow it on the screen ([RallyDivider] is just a [Divider] whose `thickness` is
+ * 1.dp). The arguments of the [Row] are:
+ *  - `modifier` is a [Modifier.height] that sets the preferred height of the content to be exactly
+ *  68.dp with a [Modifier.clearAndSetSemantics] chained to it that sets the content description of
+ *  the semantics node to a [String] constructed from our parameters [title], and [subtitle], and our
+ *  variables `dollarSign` and `formattedAmount`.
+ *  - `verticalAlignment` is [Alignment.CenterVertically] to have the [Row]'s children center their
+ *  content about the center line of the [Row].
+ *
+ * Inside the `content` lambda of the [Row] we first initialize our [Typography] variable
+ * `val typography` to the [MaterialTheme.typography] of our [RallyTheme] custom [MaterialTheme].
+ * Then we compose an [AccountIndicator] into our [Row] with its `color` argument our [Color]
+ * parameter [color], and its `modifier` argument an empty, default, or starter [Modifier] that
+ * contains no elements. The [AccountIndicator] Composable is just a 4.dp wide by 36.dp high [Spacer]
+ * whose background [Color] is the `color` parameter of [AccountIndicator]. Next in our [Row] is a
+ * [Spacer] whose `modifier` argument is a [Modifier.width] of 12.dp and this is followed by a
+ * [Column] which contains a [Text] displaying our [title] parameter using the [TextStyle] specified
+ * for [Typography.body1] by our [RallyTheme] custom [MaterialTheme] (`fontWeight` = [FontWeight.Normal],
+ * `fontSize` = 16.sp, and `letterSpacing` = 0.1.em with the default `RobotoCondensed` [FontFamily]
+ * using the  [Font] whose resource ID is [R.font.robotocondensed_regular]. Next in the [Column] is
+ * a [CompositionLocalProvider] providing [ContentAlpha.medium] as the [LocalContentAlpha] to a
+ * [Text] that is wraps which displays our [String] parameter [subtitle] using the [TextStyle]
+ * specified for [Typography.subtitle1] by our [RallyTheme] custom [MaterialTheme] (`fontWeight` =
+ * [FontWeight.Light], `fontSize` = 14.sp, `lineHeight` = 20.sp, `letterSpacing` = 3.sp with the
+ * default `RobotoCondensed` [FontFamily] using the [Font] whose resource ID is
+ * [R.font.robotocondensed_light]. After the [Column] in the [Row]
+ * is a [Spacer] whose `modifier` argument is a [RowScope] `Modifier.weight` of 1f which will cause
+ * it to use all of the space that remains in the [Row]'s incoming horizontal constraints after its
+ * siblings have been measured and placed. We follow the [Spacer] with an inner [Row] that is used
+ * so that it can have the `horizontalArrangement` argument of [Arrangement.SpaceBetween] which will
+ * place children such that they are spaced evenly across the main axis, without free space before
+ * the first child or after the last child, and the `content` of this [Row] is a [Text] that displays
+ * our `dollarSign` variable using the [TextStyle] specified for [Typography.h6] by our [RallyTheme]
+ * custom [MaterialTheme] (`fontWeight` = [FontWeight.Normal], `fontSize` = 18.sp, `lineHeight` =
+ * 20.sp, `fontFamily` = `EczarFontFamily`, `letterSpacing` = 3.sp using the [Font] whose resource
+ * ID is [R.font.eczar_regular]), this is followed in the inner [Row] by a [Text] that displays our
+ * `formattedAmount` variable using the same [TextStyle] with both [Text] having as their `modifier`
+ * argument a [RowScope] `Modifier.align` of [Alignment.CenterVertically] which centers their `content`
+ * about the centerline of the [Row]. This is followed in the outer [Row] by another [Spacer] that
+ * is 16.dp wide, and at the end of the [Row] is a [CompositionLocalProvider] providing
+ * [ContentAlpha.medium] as the [LocalContentAlpha] to an [Icon] that displays the [ImageVector]
+ * that is drawn by [Icons.Filled.ChevronRight], with its `contentDescription` argument `null`, and
+ * its `modifier` argument a [Modifier.padding] that adds 12.dp padding to the end of the [Icon],
+ * with a [Modifier.size] chained to that which sets the size of the [Icon] to 24.dp
+ *
+ * Beneath the [Row] described above is a [RallyDivider] which is just a 1.dp `thickness` [Divider]
+ * that visually separates this [BaseRow] from any Composables that follow it.
+ *
+ * @param modifier a [Modifier] that our caller can use to modify our appearance and/or behavior. If
+ * none is passed then the empty, default, or starter [Modifier] that contains no elements is used.
+ * @param color the [Color] to use for our [AccountIndicator], this is the [Account.color] property
+ * of the [Account] we are displaying when we are called by [AccountRow], or the [Bill.color] property
+ * of the [Bill] we are displaying when we are called by [BillRow].
+ * @param title either the [Account.name] field of an [Account] when we are used by [AccountRow] or
+ * the [Bill.name] of a [Bill] when we are used by [BillRow].
+ * @param subtitle either a [String] for displaying the [Account.number] of an [Account] when we are
+ * used by [AccountRow] or a [String] for displaying the [Bill.due] due date of a [Bill] when we are
+ * used by [BillRow].
+ * @param amount either the [Account.balance] field of an [Account] when we are used by [AccountRow]
+ * or the [Bill.amount] field of a [Bill] when we are used by [BillRow].
+ * @param negative if `true` we prepend a minus sign when displaying our [amount] parameter, and if
+ * `false` we do not. [AccountRow] passes us `false` when it uses us, and [BillRow] passes `true`.
+ */
 @Composable
 private fun BaseRow(
     modifier: Modifier = Modifier,
@@ -169,7 +268,16 @@ private fun BaseRow(
 }
 
 /**
- * A vertical colored line that is used in a [BaseRow] to differentiate accounts.
+ * A vertical colored line that is used in a [BaseRow] to differentiate accounts. We just use a
+ * [Spacer] with its `modifier` argument our [Modifier] argument [modifier] to which is chained
+ * a [Modifier.size] whose `width` is 4.dp and whose `height` is 36.dp, followed by chained
+ * [Modifier.background] that sets the background [Color] of the [Spacer] to our [Color] parameter
+ * [color].
+ *
+ * @param color the [Color] to use as our background color.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance/and or
+ * behavior. Our caller, [BaseRow], just passes us the empty, default, or starter Modifier that
+ * contains no elements.
  */
 @Composable
 private fun AccountIndicator(color: Color, modifier: Modifier = Modifier) {
@@ -181,7 +289,16 @@ private fun AccountIndicator(color: Color, modifier: Modifier = Modifier) {
 }
 
 /**
- * TODO: Add kdoc
+ * A thickness 1.dp [Divider] that is used at the end of the [BaseRow] Composable to visually
+ * separate content. The `color` argument of our [Divider] uses the [Colors.background] of
+ * [MaterialTheme.colors] (the [Color] that our [RallyTheme] custom [MaterialTheme] specifies for
+ * this is [DarkBlue900]), the `thickness` argument is 1.dp, and the `modifier` argument is our
+ * [Modifier] parameter [modifier].
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance/and or
+ * behavior. [BaseRow] does not pass us one so the empty, default, or starter Modifier that contains
+ * no elements is used, but [AlertCard] passes us a [Modifier.padding] whose `start` and `end` are
+ * [RallyDefaultPadding] (12.dp)
  */
 @Composable
 fun RallyDivider(modifier: Modifier = Modifier) {

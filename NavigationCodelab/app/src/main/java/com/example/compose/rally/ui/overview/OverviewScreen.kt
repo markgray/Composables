@@ -48,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
 import com.example.compose.rally.data.UserData
@@ -58,6 +59,9 @@ import com.example.compose.rally.ui.components.RallyDivider
 import com.example.compose.rally.ui.components.formatAmount
 import java.util.Locale
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun OverviewScreen(
     onClickSeeAllAccounts: () -> Unit = {},
@@ -87,7 +91,7 @@ fun OverviewScreen(
  * The Alerts card within the Rally Overview screen.
  */
 @Composable
-private fun AlertCard() {
+fun AlertCard() {
     var showDialog by remember { mutableStateOf(false) }
     val alertMessage = "Heads up, you've used up 90% of your Shopping budget for this month."
 
@@ -139,6 +143,7 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
     }
 }
 
+@Suppress("SameParameterValue") // Suggested change would make the Composable less reusable.
 @Composable
 private fun AlertItem(message: String) {
     Row(
@@ -280,6 +285,9 @@ private fun SeeAllButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     }
 }
 
-private val RallyDefaultPadding = 12.dp
+/**
+ * The default passing used in several places.
+ */
+val RallyDefaultPadding: Dp = 12.dp
 
 private const val SHOWN_ITEMS = 3
