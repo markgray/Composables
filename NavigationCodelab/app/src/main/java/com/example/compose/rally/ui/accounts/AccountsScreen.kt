@@ -71,7 +71,7 @@ fun AccountsScreen(
     val amountsTotal: Float = remember { UserData.accounts.map { account -> account.balance }.sum() }
     StatementBody(
         modifier = Modifier.semantics { contentDescription = "Accounts Screen" },
-        items = UserData.accounts,
+        accountsOrBills = UserData.accounts,
         amounts = { account: Account -> account.balance },
         colors = { account: Account -> account.color },
         amountsTotal = amountsTotal,
@@ -116,7 +116,7 @@ fun SingleAccountScreen(
 ) {
     val account: Account = remember(accountType) { UserData.getAccount(accountName = accountType) }
     StatementBody(
-        items = listOf(account),
+        accountsOrBills = listOf(account),
         colors = { account.color },
         amounts = { account.balance },
         amountsTotal = account.balance,

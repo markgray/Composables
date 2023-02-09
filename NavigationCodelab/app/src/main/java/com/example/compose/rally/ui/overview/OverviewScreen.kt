@@ -117,8 +117,11 @@ fun AlertCard() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
-private fun AlertHeader(onClickSeeAll: () -> Unit) {
+fun AlertHeader(onClickSeeAll: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(RallyDefaultPadding)

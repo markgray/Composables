@@ -59,7 +59,7 @@ fun BillsScreen(
 ) {
     StatementBody(
         modifier = Modifier.clearAndSetSemantics { contentDescription = "Bills" },
-        items = bills,
+        accountsOrBills = bills,
         amounts = { bill: Bill -> bill.amount },
         colors = { bill: Bill -> bill.color },
         amountsTotal = bills.map { bill: Bill -> bill.amount }.sum(),
