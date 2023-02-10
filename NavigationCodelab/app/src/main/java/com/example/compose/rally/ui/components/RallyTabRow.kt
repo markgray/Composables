@@ -31,6 +31,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
@@ -46,8 +47,32 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.RallyDestination
+import com.example.compose.rally.RallyApp
 import java.util.Locale
 
+/**
+ * This Composable is used as the `topBar` argument of the [Scaffold] used by [RallyApp]. It contains
+ * a [Row] of [RallyTab]'s and when one of them is selected it will navigate to the [RallyDestination]
+ * route associated with the [RallyTab]. Our root Composable is a [Surface] whose `modifier` argument
+ * is a [Modifier.height] whose `height` argument sets the height of the [Surface] to [TabHeight]
+ * (56.dp), and a [Modifier.fillMaxWidth] is chained to that to have the [Surface] fill the entire
+ * incoming horizontal constraint. The `content` of the [Surface] is a [Row] whose `modifier` argument
+ * is a [Modifier.selectableGroup] which groups its list of selectable items together for accessibility
+ * purposes). For its `content` we loop over all of the [RallyDestination]'s in our [List] of
+ * [RallyDestination] parameter [allScreens] composing a [RallyTab] whose `text` argument is the
+ * [RallyDestination.route] property of the [RallyDestination], whose `icon` argument is the
+ * [RallyDestination.icon] property of the [RallyDestination], whose `onSelected` argument is a
+ * lambda which calls our [onTabSelected] lambda parameter with the [RallyDestination], and whose
+ * `selected` argument is `true` if our [currentScreen] parameter is equal to the [RallyDestination].
+ *
+ * @param allScreens a [List] of [RallyDestination]'s, each of which a [RallyTab] in our [Row] will
+ * be associated with when they are composed.
+ * @param onTabSelected a lambda which takes a [RallyDestination], it will be called when the
+ * [RallyDestination] of one of the [RallyTab]'s is the selected [currentScreen] (it is used as
+ * the `onSelected` argument of the [RallyTab] and called with the [RallyDestination] associated
+ * with the [RallyTab] when it is clicked).
+ * @param currentScreen the currently selected [RallyDestination].
+ */
 @Composable
 fun RallyTabRow(
     allScreens: List<RallyDestination>,
@@ -55,12 +80,12 @@ fun RallyTabRow(
     currentScreen: RallyDestination
 ) {
     Surface(
-        Modifier
-            .height(TabHeight)
+        modifier = Modifier
+            .height(height = TabHeight)
             .fillMaxWidth()
     ) {
-        Row(Modifier.selectableGroup()) {
-            allScreens.forEach { screen ->
+        Row(modifier = Modifier.selectableGroup()) {
+            allScreens.forEach { screen: RallyDestination ->
                 RallyTab(
                     text = screen.route,
                     icon = screen.icon,
@@ -72,6 +97,9 @@ fun RallyTabRow(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 private fun RallyTab(
     text: String,
