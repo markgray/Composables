@@ -19,6 +19,7 @@ package com.example.compose.rally.ui.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
@@ -46,8 +47,13 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.compose.rally.Accounts
+import com.example.compose.rally.Bills
+import com.example.compose.rally.Overview
 import com.example.compose.rally.RallyDestination
 import com.example.compose.rally.RallyApp
+import com.example.compose.rally.rallyTabRowScreens
 import java.util.Locale
 
 /**
@@ -98,7 +104,21 @@ fun RallyTabRow(
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable is used for tabs in [RallyTabRow]. Each of the three [RallyDestination]'s for
+ * screens in [rallyTabRowScreens]: [Overview], [Accounts], and [Bills], have a [RallyTab] assigned
+ * for it in [RallyTabRow] and clicking on a [RallyTab] will navigate to the [RallyDestination.route]
+ * of that [RallyDestination].
+ *
+ * @param text the label [String] for the [RallyTab] which comes from the [RallyDestination.route]
+ * property of the [RallyDestination] this [RallyTab] is composed for.
+ * @param icon the [ImageVector] to draw for this [RallyTab], the [RallyDestination.icon]
+ * property of the [RallyDestination] this [RallyTab] is composed for.
+ * @param onSelected the callback to invoke when this [RallyTab] is clicked, we are called with a
+ * lambda that calls the `onTabSelected` parameter of [RallyTabRow] with the [RallyDestination] we
+ * pass to `onSelected`, and the `onTabSelected` parameter of [RallyTabRow] is a lambda that calls
+ * `navigateSingleTopTo` extension function of [NavHostController] to navigate to the
+ * [RallyDestination.route] of the [RallyDestination].
+ * @param selected if `true` we are the selected [RallyTab] in the [RallyTabRow].
  */
 @Composable
 private fun RallyTab(
@@ -107,16 +127,16 @@ private fun RallyTab(
     onSelected: () -> Unit,
     selected: Boolean
 ) {
-    val color = MaterialTheme.colors.onSurface
-    val durationMillis = if (selected) TabFadeInAnimationDuration else TabFadeOutAnimationDuration
-    val animSpec = remember {
+    val color: Color = MaterialTheme.colors.onSurface
+    val durationMillis: Int = if (selected) TabFadeInAnimationDuration else TabFadeOutAnimationDuration
+    val animSpec: TweenSpec<Color> = remember {
         tween<Color>(
             durationMillis = durationMillis,
             easing = LinearEasing,
             delayMillis = TabFadeInAnimationDelay
         )
     }
-    val tabTintColor by animateColorAsState(
+    val tabTintColor: Color by animateColorAsState(
         targetValue = if (selected) color else color.copy(alpha = InactiveTabOpacity),
         animationSpec = animSpec
     )
@@ -124,7 +144,7 @@ private fun RallyTab(
         modifier = Modifier
             .padding(16.dp)
             .animateContentSize()
-            .height(TabHeight)
+            .height(height = TabHeight)
             .selectable(
                 selected = selected,
                 onClick = onSelected,
@@ -141,7 +161,7 @@ private fun RallyTab(
         Icon(imageVector = icon, contentDescription = text, tint = tabTintColor)
         if (selected) {
             Spacer(Modifier.width(12.dp))
-            Text(text.uppercase(Locale.getDefault()), color = tabTintColor)
+            Text(text = text.uppercase(Locale.getDefault()), color = tabTintColor)
         }
     }
 }
