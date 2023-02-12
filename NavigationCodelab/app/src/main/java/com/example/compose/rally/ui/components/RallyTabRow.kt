@@ -21,6 +21,8 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Indication
+import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +32,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material.Colors
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -54,6 +57,7 @@ import com.example.compose.rally.Overview
 import com.example.compose.rally.RallyDestination
 import com.example.compose.rally.RallyApp
 import com.example.compose.rally.rallyTabRowScreens
+import com.example.compose.rally.ui.theme.RallyTheme
 import java.util.Locale
 
 /**
@@ -107,7 +111,43 @@ fun RallyTabRow(
  * This Composable is used for tabs in [RallyTabRow]. Each of the three [RallyDestination]'s for
  * screens in [rallyTabRowScreens]: [Overview], [Accounts], and [Bills], have a [RallyTab] assigned
  * for it in [RallyTabRow] and clicking on a [RallyTab] will navigate to the [RallyDestination.route]
- * of that [RallyDestination].
+ * of that [RallyDestination]. We start by initializing our [Color] variable `val color` to the
+ * [Colors.onSurface] color of our [MaterialTheme.colors] (which is specified to be [Color.White] by
+ * our [RallyTheme] custom [MaterialTheme]). If our [Boolean] parameter [selected] is `true` we
+ * initialize our [Int] variable `val durationMillis` to [TabFadeInAnimationDuration] (150ms) or to
+ * [TabFadeOutAnimationDuration] (100ms) if [selected] is `false`. We initialize and remember our
+ * [TweenSpec] of [Color] to an instance by having [tween] configure one with its `durationMillis`
+ * our `durationMillis` variable, its `easing` [LinearEasing] (returns fraction unmodified since no
+ * easing is desired) and its `delayMillis` set to [TabFadeInAnimationDelay] (100ms). We initialize
+ * our [Color] variable `val tabTintColor` by [animateColorAsState] with the `targetValue` if our
+ * [selected] parameter is `true` our `color` variable, or else a [Color.copy] of `color` with the
+ * `alpha` set to [InactiveTabOpacity] (0.60f).
+ *
+ * Our root Composable is a [Row] whose `modifier` argument is a [Modifier.padding] that adds 16.dp
+ * to all sides of the [Row] to which is chained a:
+ *  - [Modifier.animateContentSize] which animates the [Modifier]'s size when its child modifiers
+ *  changes size.
+ *  - [Modifier.height] which set the height of the [Row] to [TabHeight] (56.dp)
+ *  - [Modifier.selectable] which configures it to be selectable as a part of a mutually exclusive
+ *  group, where only one item can be selected at any point in time. The `selected` argument is our
+ *  [selected] parameter, its `onClick` argument is our [onSelected] lambda parameter, its `role`
+ *  parameter is [Role.Tab] (notifies accessibility that the element is a Tab which represents a
+ *  single page of content using a text label and/or icon. A Tab also has two states: selected and
+ *  not selected), its `interactionSource` argument is a remembered [MutableInteractionSource] (used
+ *  to emit press events when this selectable is being pressed) and its `indication` argument uses
+ *  [rememberRipple] to create an [Indication] (A Ripple is a Material implementation of [Indication]
+ *  that expresses different [Interaction]s by drawing ripple animations and state layers).
+ *  - [Modifier.clearAndSetSemantics] which sets its [contentDescription] for accessibility purposes
+ *  to our [String] parameter [text].
+ *
+ * The `content` of the [Row] consists of an [Icon] whose `imageVector` argument causes it to draw
+ * our [ImageVector] parameter [icon], with a `contentDescription` for accessibility purposes using
+ * our [String] parameter [text], and its `tint` argument our animated [Color] variable `tabTintColor`.
+ * In addition if our [selected] parameter is `true` a [Spacer] whose `modifier` is a [Modifier.width]
+ * that sets its width to 12.dp and a [Text] whose `text` argument causes it to display our [text]
+ * parameter in uppercase appropriate for the `locale` of the current value of the default locale
+ * that [Locale.getDefault] returns and whose `color` argument our animated [Color] variable
+ * `tabTintColor` are also both composed.
  *
  * @param text the label [String] for the [RallyTab] which comes from the [RallyDestination.route]
  * property of the [RallyDestination] this [RallyTab] is composed for.
@@ -130,7 +170,7 @@ private fun RallyTab(
     val color: Color = MaterialTheme.colors.onSurface
     val durationMillis: Int = if (selected) TabFadeInAnimationDuration else TabFadeOutAnimationDuration
     val animSpec: TweenSpec<Color> = remember {
-        tween<Color>(
+        tween(
             durationMillis = durationMillis,
             easing = LinearEasing,
             delayMillis = TabFadeInAnimationDelay
@@ -160,15 +200,36 @@ private fun RallyTab(
     ) {
         Icon(imageVector = icon, contentDescription = text, tint = tabTintColor)
         if (selected) {
-            Spacer(Modifier.width(12.dp))
-            Text(text = text.uppercase(Locale.getDefault()), color = tabTintColor)
+            Spacer(modifier = Modifier.width(width = 12.dp))
+            Text(text = text.uppercase(locale = Locale.getDefault()), color = tabTintColor)
         }
     }
 }
 
+/**
+ * The height of the [RallyTab]
+ */
 private val TabHeight = 56.dp
+
+/**
+ * The alpha value used when the [RallyTab] is not in the selected state. Used by our animated [Color]
+ * variable `val tabTintColor` as the `targetValue` for a non-selected [RallyTab] color or tint.
+ */
 private const val InactiveTabOpacity = 0.60f
 
+/**
+ * The duration used for our `durationMillis` variable when our [RallyTab] is selected, which is then
+ * used by the [TweenSpec] of [Color] `animSpec` for its `durationMillis` value.
+ */
 private const val TabFadeInAnimationDuration = 150
+
+/**
+ * The delay used by the [TweenSpec] of [Color] `animSpec` for its `delayMillis` value.
+ */
 private const val TabFadeInAnimationDelay = 100
+
+/**
+ * The duration used for our `durationMillis` variable when our [RallyTab] is NOT selected, which is
+ * then used by the [TweenSpec] of [Color] `animSpec` for its `durationMillis` value.
+ */
 private const val TabFadeOutAnimationDuration = 100
