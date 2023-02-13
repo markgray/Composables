@@ -16,6 +16,7 @@
 
 package com.example.compose.rally.ui.overview
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,10 +29,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -50,17 +53,57 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.compose.rally.Accounts
+import com.example.compose.rally.Bills
+import com.example.compose.rally.Overview
+import com.example.compose.rally.RallyApp
 import com.example.compose.rally.R
+import com.example.compose.rally.RallyDestination
+import com.example.compose.rally.data.Account
 import com.example.compose.rally.data.UserData
+import com.example.compose.rally.navigateSingleTopTo
+import com.example.compose.rally.navigateToSingleAccount
+import com.example.compose.rally.ui.accounts.SingleAccountScreen
 import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
 import com.example.compose.rally.ui.components.RallyAlertDialog
 import com.example.compose.rally.ui.components.RallyDivider
+import com.example.compose.rally.ui.components.RallyTab
 import com.example.compose.rally.ui.components.formatAmount
 import java.util.Locale
 
 /**
- * TODO: Add kdoc
+ * This is the Composable that is navigated to for the `route` [Overview.route] and is the start
+ * screen used as the `content` of the [Scaffold] of the app's [RallyApp] root Composable, as well
+ * as the destination when the [RallyTab] associated with its [RallyDestination] is clicked. Our
+ * root Composable ia a [Column] whose `modifier` argument is a [Modifier.padding] that adds 16.dp
+ * to all sides of the [Column], to which is chained a [Modifier.verticalScroll] whose `state`
+ * argument is the [ScrollState] constructed and remembered by [rememberScrollState] which Modifies
+ * the [Column] to allow it to scroll vertically, and the end of the chain of [Modifier]'s is a
+ * [Modifier.semantics] whose [contentDescription] is the [String] "Overview Screen" for the use
+ * of the accessibility framework. The `content` of the [Column] is:
+ *  - an [AlertCard] which displays the hard coded alert message: "Heads up, you've used up 90% of
+ *  your Shopping budget for this month" and allows your to click on a [TextButton] labeled "SEE ALL"
+ *  which will launch a [RallyAlertDialog] that displays the same message in an [AlertDialog].
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is [RallyDefaultPadding]
+ *  (12.dp).
+ *  - an [AccountsCard] whose `onClickSeeAll` argument calls our [onClickSeeAllAccounts] lambda
+ *  parameter, and whose `onAccountClick` argument calls our [onAccountClick] lambda parameter.
+ *  - this is followed by another [RallyDefaultPadding] `height` [Spacer]
+ *  - the end of the [Column] is a [BillsCard] whose `onClickSeeAll` argument is our [onClickSeeAllBills]
+ *  parameter.
+ *
+ * @param onClickSeeAllAccounts this lambda is used as the `onClickSeeAll` argument of our [AccountsCard]
+ * and in our case it is a lambda that calls the [navigateSingleTopTo] method of the [NavHostController]
+ * used by the app with the `route` [Accounts.route].
+ * @param onClickSeeAllBills this lambda is used as the `onClickSeeAll` argument of our [BillsCard]
+ * and in our case it is a lambda that calls the [navigateSingleTopTo] method of the [NavHostController]
+ * used by the app with the `route` [Bills.route].
+ * @param onAccountClick this lambda is used as the `onAccountClick` argument of our [AccountsCard]
+ * and in our case it is a lambda that calls the [navigateToSingleAccount] method of the
+ * [NavHostController] used by the app with the `accountType` argument the [Account.name] of the
+ * [Account] whose details we want the [SingleAccountScreen] to display.
  */
 @Composable
 fun OverviewScreen(
@@ -70,17 +113,17 @@ fun OverviewScreen(
 ) {
     Column(
         modifier = Modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+            .padding(all = 16.dp)
+            .verticalScroll(state = rememberScrollState())
             .semantics { contentDescription = "Overview Screen" }
     ) {
         AlertCard()
-        Spacer(Modifier.height(RallyDefaultPadding))
+        Spacer(modifier = Modifier.height(height = RallyDefaultPadding))
         AccountsCard(
             onClickSeeAll = onClickSeeAllAccounts,
             onAccountClick = onAccountClick
         )
-        Spacer(Modifier.height(RallyDefaultPadding))
+        Spacer(modifier = Modifier.height(height = RallyDefaultPadding))
         BillsCard(
             onClickSeeAll = onClickSeeAllBills
         )
@@ -88,11 +131,22 @@ fun OverviewScreen(
 }
 
 /**
- * The Alerts card within the Rally Overview screen.
+ * The Alerts card within the Rally Overview screen. We start by initializing and remembering our
+ * [Boolean] variable `var showDialog`, and initializing our [String] variable `val alertMessage`
+ * to the string "Heads up, you've used up 90% of your Shopping budget for this month." Then if
+ * `showDialog` is `true` we compose a [RallyAlertDialog] whose `onDismiss` argument is a lambda
+ * that sets `showDialog` to `false`, whose `bodyText` argument is our `alertMessage` [String]
+ * variable, and whose `buttonText` argument is the uppercase version of the [String] "Dismiss".
+ *
+ * Then our root Composable is a [Card] whose `content` is a [Column] that holds a [AlertHeader]
+ * whose `onClickSeeAll` lambda argument is a lambda that sets our `showDialog` variable to `true`.
+ * This is followed in the [Column] by a [RallyDivider] whose `modifier` argument sets both the
+ * `start` and `end` padding of the Composable to [RallyDefaultPadding] (12.dp), and this is
+ * followed by an [AlertItem] whose `message` argument is our `alertMessage` variable.
  */
 @Composable
 fun AlertCard() {
-    var showDialog by remember { mutableStateOf(false) }
+    var showDialog: Boolean by remember { mutableStateOf(false) }
     val alertMessage = "Heads up, you've used up 90% of your Shopping budget for this month."
 
     if (showDialog) {
@@ -112,7 +166,7 @@ fun AlertCard() {
             RallyDivider(
                 modifier = Modifier.padding(start = RallyDefaultPadding, end = RallyDefaultPadding)
             )
-            AlertItem(alertMessage)
+            AlertItem(message = alertMessage)
         }
     }
 }

@@ -141,6 +141,9 @@ fun RallyNavHost(
 fun NavHostController.navigateSingleTopTo(route: String): Unit =
     this.navigate(route = route) { launchSingleTop = true }
 
-private fun NavHostController.navigateToSingleAccount(accountType: String) {
+/**
+ * TODO: Add kdoc
+ */
+fun NavHostController.navigateToSingleAccount(accountType: String) {
     this.navigateSingleTopTo(route = "${SingleAccount.route}/$accountType")
 }

@@ -161,7 +161,7 @@ fun RallyTabRow(
  * @param selected if `true` we are the selected [RallyTab] in the [RallyTabRow].
  */
 @Composable
-private fun RallyTab(
+fun RallyTab(
     text: String,
     icon: ImageVector,
     onSelected: () -> Unit,
