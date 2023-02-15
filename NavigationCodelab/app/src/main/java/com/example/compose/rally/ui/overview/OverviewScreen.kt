@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,6 +41,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +53,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -62,6 +68,7 @@ import com.example.compose.rally.R
 import com.example.compose.rally.RallyDestination
 import com.example.compose.rally.data.Account
 import com.example.compose.rally.data.UserData
+import com.example.compose.rally.data.Bill
 import com.example.compose.rally.navigateSingleTopTo
 import com.example.compose.rally.navigateToSingleAccount
 import com.example.compose.rally.ui.accounts.SingleAccountScreen
@@ -71,6 +78,7 @@ import com.example.compose.rally.ui.components.RallyAlertDialog
 import com.example.compose.rally.ui.components.RallyDivider
 import com.example.compose.rally.ui.components.RallyTab
 import com.example.compose.rally.ui.components.formatAmount
+import com.example.compose.rally.ui.theme.RallyTheme
 import java.util.Locale
 
 /**
@@ -172,7 +180,32 @@ fun AlertCard() {
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable is the header of our [AlertCard], and consists only of a [Text] displaying the
+ * `text` "Alerts" and a [TextButton] labeled "SEE ALL" which when clicked executes the [onClickSeeAll]
+ * lambda parameter of [AlertHeader]. Our root Composable is a [Row] whose `modifier` argument is a
+ * [Modifier.padding] that sets the padding on all sides of the [Row] to [RallyDefaultPadding] (12.dp),
+ * with a [Modifier.fillMaxWidth] chained to it that causes the [Row] to occupy the entire incoming
+ * width constraints. The `content` of the [Row] is a [Text] diplaying the `text` "Alerts" using the
+ * `subtitle2` [TextStyle] of the custom [Typography] of [MaterialTheme.typography], defined by our
+ * [RallyTheme] custom [MaterialTheme] to be the [FontWeight.Normal] font of the `RobotoCondensed`
+ * [FontFamily] (the [Font] with resource ID [R.font.robotocondensed_regular]) with a `fontSize` of
+ * 14.sp, and `letterSpacing` of `0.1.em` and the `modifier` argument of the [Text] is a [RowScope]
+ * `Modifier.align` whose `alignment` argument [Alignment.CenterVertically] centers the [Text]'s
+ * `text` vertically about its center line. The [Text] is followed by a [TextButton] whose `onClick`
+ * argument is our [onClickSeeAll] parameter, whose `contentPadding` argument is a [PaddingValues]
+ * of 0.dp, and whose `modifier` argument of the [TextButton] is a [RowScope] `Modifier.align` whose
+ * `alignment` argument [Alignment.CenterVertically] centers the [TextButton]'s vertically about the
+ * center line of the [Row], and the `content` of the [TextButton] is a [Text] displaying its label
+ * "SEE ALL" using as its `style` the `button` [TextStyle] of the custom [Typography] of
+ * [MaterialTheme.typography], defined by our [RallyTheme] custom [MaterialTheme] to be the
+ * [FontWeight.Bold] font of the `RobotoCondensed` [FontFamily] (the [Font] with resource ID
+ * [R.font.robotocondensed_bold]) with a `fontSize` of 14.sp, `lineHeight` of 16.sp and
+ * `letterSpacing` of `0.2.em`.
+ *
+ * @param onClickSeeAll a lambda that is to be executed when the "SEE ALL" [TextButton] is clicked.
+ * Our [AlertCard] caller passes us a lambda which sets its `showDialog` [MutableState] wrapped
+ * [Boolean] variable to `true`, which causes the composition of a [RallyAlertDialog] that displays
+ * the `bodyText` "Heads up, you've used up 90% of your Shopping budget for this month."
  */
 @Composable
 fun AlertHeader(onClickSeeAll: () -> Unit) {
@@ -200,6 +233,28 @@ fun AlertHeader(onClickSeeAll: () -> Unit) {
     }
 }
 
+/**
+ * This Composable just displays its [String] parameter [message] in a [Text] and a [IconButton] in
+ * a [Row] root Composable. The `modifier` argument of the [Row] is a [Modifier.padding] that sets
+ * the padding on all sides of the [Row] to [RallyDefaultPadding] (12.dp), with a [Modifier.semantics]
+ * whose `mergeDescendants` argument is `true` so that the semantic information provided by the owning
+ * component and its descendants should be treated as one logical entity. The `content` of the [Row]
+ * is a [Text] whose `style` argument is a `body2` [TextStyle] of [MaterialTheme.typography] (which
+ * is [FontWeight.Normal] of the `RobotoCondensed` [FontFamily] (the [Font] file with resource ID
+ * [R.font.robotocondensed_regular]) with `fontSize` = 14.sp, `lineHeight` = 20.sp, and `letterSpacing`
+ * = 0.1.em, and the `modifier` argument of the [Text] is a [RowScope] `Modifier.weight` of 1f which
+ * causes the [Text] to take all the incoming width constraint that remains after its sibling is
+ * measured and placed, and the `text` argument is our [String] parameter [message]. The [IconButton]
+ * at the end of the [Row] has a do-nothing lambda as its `onClick` argument, and for its `modifier`
+ * argument a [RowScope] `Modifier.align` whose `alignment` argument aligns it to [Alignment.Top]
+ * (the top of the [Row]), and to this [Modifier] is chained a [Modifier.clearAndSetSemantics] which
+ * clears the semantics of all its descendant nodes and sets the semantics to a do-nothing lambda.
+ * The `content` of the [IconButton] is an [Icon] displaying the `imageVector` [Icons.Filled.Sort]
+ * (three horozontal lines, each line slightly shorter than the one above it), with a `null`
+ * `contentDescription` argument.
+ *
+ * @param message the [String] for our [Text] to display.
+ */
 @Suppress("SameParameterValue") // Suggested change would make the Composable less reusable.
 @Composable
 private fun AlertItem(message: String) {
@@ -230,7 +285,30 @@ private fun AlertItem(message: String) {
 }
 
 /**
- * Base structure for cards in the Overview screen.
+ * Base structure for cards in the Overview screen, it is used by both [AccountsCard] and [BillsCard].
+ * Our root Composable is a [Card] which holds a [Column] as its `content`. This [Column] has three
+ * children:
+ *  - a [Column] whose `modifier` argument is a [Modifier.padding] that adds [RallyDefaultPadding]
+ *  (12.dp) to all sides and whose `content` consists of a [Text] displaying our [title] parameter
+ *  using the `subtitle2` [TextStyle] of [MaterialTheme.typography] (`fontWeight` = [FontWeight.Normal],
+ *  `fontSize` = 14.sp, `letterSpacing` = 0.1.em), and this is followed by a [Text] which displays the
+ *  formatted `text` representation of our [amount] parameter using the `h2` [TextStyle] of
+ *  [MaterialTheme.typography] (`fontWeight` = [FontWeight.SemiBold], `fontSize` = 44.sp,
+ *  `letterSpacing` = 1.5.em, `fontFamily` = `EczarFontFamily` the [Font] whose resource ID is
+ *  [R.font.eczar_semibold]).
+ *  - an [OverViewDivider] which displays different [Color] horizontal lines in a [Row] whose length
+ *  represents the relative "weight" of the [Account] or [Bill]
+ *  - a [Column] whose `modifier` argument is a [Modifier.padding] that adds 16.dp to the `start`,
+ *  4.dp to the `top` and 8.dp to the `end` of the [Column]. The `content` is a [row] for each of the
+ *  first [SHOWN_ITEMS] (3) [Account] or [Bill] objects in our [data] parameter, followed by a
+ *  [SeeAllButton] whose `onClick` argument is our [onClickSeeAll] lambda parameter.
+ *
+ * @param title the title text for the card, "Accounts" when called by [AccountsCard] and "Bills"
+ * when called by [BillsCard].
+ * @param amount the dollar amount to display, either the sum of all the [Account.balance] properties
+ * when called by [AccountsCard], or the sum of all the [Bill.amount] properties when called by
+ * [BillsCard].
+ * @param onClickSeeAll a lambda to be used as the `onClick` argument of our [SeeAllButton].
  */
 @Composable
 private fun <T> OverviewScreenCard(
