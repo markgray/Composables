@@ -71,6 +71,7 @@ import com.example.compose.rally.data.UserData
 import com.example.compose.rally.data.Bill
 import com.example.compose.rally.navigateSingleTopTo
 import com.example.compose.rally.navigateToSingleAccount
+import com.example.compose.rally.RallyNavHost
 import com.example.compose.rally.ui.accounts.SingleAccountScreen
 import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
@@ -308,7 +309,29 @@ private fun AlertItem(message: String) {
  * @param amount the dollar amount to display, either the sum of all the [Account.balance] properties
  * when called by [AccountsCard], or the sum of all the [Bill.amount] properties when called by
  * [BillsCard].
- * @param onClickSeeAll a lambda to be used as the `onClick` argument of our [SeeAllButton].
+ * @param onClickSeeAll a lambda to be used as the `onClick` argument of our [SeeAllButton]
+ * [AccountsCard] calls us with its `onClickSeeAll` parameter, which is the `onClickSeeAllAccounts`
+ * lambda parameter of [OverviewScreen] and [RallyNavHost] calls [OverviewScreen] with a lambda
+ * that calls the [navigateSingleTopTo] extension function of its [NavHostController] to have it
+ * navigate to the `route` [Accounts.route], while [BillsCard] calls us with its `onClickSeeAll`
+ * parameter, which is the `onClickSeeAllBills` lambda parameter of [OverviewScreen] and [RallyNavHost]
+ * calls [OverviewScreen] with a lambda that calls the[navigateSingleTopTo] extension function of its
+ * [NavHostController] to have it navigate to the `route` [Bills.route].
+ * @param values a lambda which returns a floating point value that represents the dollar amount of
+ * the [Account] or [Bill] it is called with, [AccountsCard] passes us a lambda which returns the
+ * [Account.balance] property of its argument, and [BillsCard] passes us a lambda which returns the
+ * [Bill.amount] property of its argument. Used by [OverViewDivider] to assign a weight to the
+ * [Spacer] it displays for each of the [Account] or [Bill] objects.
+ * @param colors a lambda which returns a [Color] to be used to represent the [Account] or [Bill]
+ * object it is called with, [AccountsCard] passes us a lambda which returns the [Account.color]
+ * property of its argument, and [BillsCard] passes us a lambda which returns the [Bill.color]
+ * property of its argument.
+ * @param data a [List] of [Account] objects when we are called by [AccountsCard] or a [List] of
+ * [Bill] objects when we are called by [BillsCard].
+ * @param row a Composable that can be used to display an individual [Account] or [Bill] from our
+ * [data] parameter. [AccountsCard] passes us a lambda which calls the [AccountRow] Composable with
+ * its [Account] argument, and [BillsCard] passes us a lambda which calls the [BillRow] Composable
+ * with its [Bill] argument.
  */
 @Composable
 private fun <T> OverviewScreenCard(
@@ -343,6 +366,28 @@ private fun <T> OverviewScreenCard(
     }
 }
 
+/**
+ * This Composable different colored horizontal lines in a [Row] whose lengths represent the relative
+ * contribution that each [Account] or [Bill] in its [List] parameter [data] makes to the total
+ * amount of the [List]. The root Composable is a [Row] whose `modifier` argument is a
+ * [Modifier.fillMaxWidth] that causes the [Row] to occupy the entire incoming width constraints.
+ * For the `content` of the [Row] it loops through each of the [Account] or [Bill] objects in its
+ * [List] of `T` parameter [data] composing a [Spacer] whose `modifier` is a [RowScope]
+ * `Modifier.weight` whose `weight argument is the value that our [values] lambda parameter returns
+ * for that [Account] or [Bill]. A [Modifier.height] is chained to that which sets the height to 1.dp,
+ * and at the end of the chain is a [Modifier.background] that sets the background color to the [Color]
+ * that our [colors] lambda parameter returns for that [Account] or [Bill].
+ *
+ * @param data the [List] of [Account] or [Bill] instances that we are supposed to draw lines for.
+ * @param values a lambda that returns a [Float] that represents the value of the [Account] or [Bill]
+ * it is passed. When [AccountsCard] uses [OverviewScreenCard] this is a lambda that returns the
+ * [Account.balance] property of the [Account], and when [BillsCard] uses [OverviewScreenCard] this
+ * is a lambda that returns the [Bill.amount] property of the [Bill].
+ * @param colors a lambda that returns a [Color] to represent the [Account] or [Bill] passed it as
+ * its argument. When [AccountsCard] uses [OverviewScreenCard] this is a lambda that returns the
+ * [Account.color] property of the [Account], and when [BillsCard] uses [OverviewScreenCard] this
+ * is a lambda that returns the [Bill.color] property of the [Bill].
+ */
 @Composable
 private fun <T> OverViewDivider(
     data: List<T>,
@@ -362,7 +407,23 @@ private fun <T> OverViewDivider(
 }
 
 /**
- * The Accounts card within the Rally Overview screen.
+ * The Accounts card within the Rally Overview screen. We use the [map] extension function to sum
+ * all of the [Account.balance] properties in the [List] of [Account] field [UserData.accounts] and
+ * initialize our [Float] variable `val amount` to the result. We use [OverviewScreenCard] as our
+ * root Composable with its `title` argument the [String] whose resource ID is [R.string.accounts]
+ * ("Accounts"), its `amount` argument is our `amount` variable, its `onClickSeeAll` argument is
+ * our [onClickSeeAll] lambda parameter. Its `data` argument is the [List] of [Account] field
+ * [UserData.accounts], its `colors` argument is a lambda that returns the [Account.color] of the
+ * [Account] it is called with, and its `values` argument is a lambda that returns the [Account.balance]
+ * of the [Account] it is called with. The `row` Composable lambda destructures the [Account] it is
+ * passed into its [Account.name], [Account.number], [Account.balance], and [Account.color] properties
+ * and calls the [AccountRow] Composable with the arguments `name` = `name`, `number` = `number`,
+ * `amount` = `balance`, and `color` = `color` that are produced by the destructuring.
+ *
+ * @param onClickSeeAll a lambda which use for the `onClickSeeAll` argument of [OverviewScreenCard].
+ * @param onAccountClick a lambda that we use in the `onClick` argument of the [Modifier.clickable]
+ * in a lambda that calls it with the [Account.name] of the [Account] that the [AccountRow] is
+ * composing.
  */
 @Composable
 private fun AccountsCard(onClickSeeAll: () -> Unit, onAccountClick: (String) -> Unit) {
@@ -386,7 +447,20 @@ private fun AccountsCard(onClickSeeAll: () -> Unit, onAccountClick: (String) -> 
 }
 
 /**
- * The Bills card within the Rally Overview screen.
+ * The Bills card within the Rally Overview screen. We use the [map] extension function to sum
+ * all of the [Bill.amount] properties in the [List] of [Bill] field [UserData.bills] and
+ * initialize our [Float] variable `val amount` to the result. We use [OverviewScreenCard] as our
+ * root Composable with its `title` argument the [String] whose resource ID is [R.string.bills]
+ * ("Bills"), its `amount` argument is our `amount` variable, its `onClickSeeAll` argument is our
+ * [onClickSeeAll] parameter, its `data` argument is the [List] of [Bill] field [UserData.bills],
+ * its `colors` argument is a lambda that returns the [Bill.color] of the [Bill] it is called with,
+ * and its `values` argument is a lambda that returns the [Bill.amount] of the [Bill] it is called
+ * with. The `row` Composable lambda destructures the [Bill] it is passed into its [Bill.name],
+ * [Bill.due], [Bill.amount] (renamed `amount1`), and [Bill.color] properties and calls the [BillRow]
+ * Composable with the arguments `name` = `name`, `due` = `due`, `amount` = `amount1`, and `color`
+ * = `color`.
+ *
+ * @param onClickSeeAll a lambda which use for the `onClickSeeAll` argument of [OverviewScreenCard].
  */
 @Composable
 private fun BillsCard(onClickSeeAll: () -> Unit) {
@@ -408,6 +482,27 @@ private fun BillsCard(onClickSeeAll: () -> Unit) {
     }
 }
 
+/**
+ * [TextButton] used as the bottom Composable of the [OverviewScreenCard] Composable both when it is
+ * used by [AccountsCard] and when it is used by [BillsCard]. Our root Composable is a [TextButton]
+ * with the `onClick` argument our [onClick] lambda parameter, and the `modifier` argument a
+ * [Modifier.height] of 44.dp, to which is chained a [Modifier.fillMaxWidth] that causes the button
+ * to occupy the entire incoming width constraint. Its label `content` is a [Text] whose `text` is
+ * the [String] with resource ID [R.string.see_all] ("SEE ALL").
+ *
+ * @param modifier a [Modifier] that our caller can use to modify our appearance and/or behavior.
+ * [OverviewScreenCard] calls us with a [Modifier.clearAndSetSemantics] that sets our `contentDescription`
+ * to the [String] "Accounts" when its is called by [AccountsCard] and "Bills" when it is called by
+ * [BillsCard].
+ * @param onClick a lambda to use as the `onClick` argument of our [TextButton]. [OverviewScreenCard]
+ * passes us its `onClickSeeAll` lambda parameter, which is the `onClickSeeAll` lambda parameter of
+ * the [AccountsCard] or the `onClickSeeAll` lambda parameter of the [BillsCard], and they are the
+ * `onClickSeeAllAccounts` and `onClickSeeAllBills` lambda parameters of [OverviewScreen] respectively.
+ * `onClickSeeAllAccounts` is a lambda that calls the [navigateSingleTopTo] method of the
+ * [NavHostController] used by the app with the `route` [Accounts.route], and `onClickSeeAllBills`
+ * is a lambda that calls the [navigateSingleTopTo] method of the [NavHostController] used by the
+ * app with the `route` [Bills.route].
+ */
 @Composable
 private fun SeeAllButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     TextButton(
@@ -421,8 +516,11 @@ private fun SeeAllButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 }
 
 /**
- * The default passing used in several places.
+ * This is the default padding, and is used in several places.
  */
 val RallyDefaultPadding: Dp = 12.dp
 
+/**
+ * The number of [Account] or [Bill] instances that [OverviewScreenCard] should display.
+ */
 private const val SHOWN_ITEMS = 3

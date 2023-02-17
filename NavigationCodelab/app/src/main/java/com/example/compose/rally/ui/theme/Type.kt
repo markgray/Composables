@@ -16,6 +16,7 @@
 
 package com.example.compose.rally.ui.theme
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -35,7 +36,10 @@ private val RobotoCondensed = FontFamily(
     Font(R.font.robotocondensed_bold, FontWeight.Bold)
 )
 
-val Typography = Typography(
+/**
+ * The custom [Typography] used by our [RallyTheme] custom [MaterialTheme].
+ */
+val Typography: Typography = Typography(
     defaultFontFamily = RobotoCondensed,
     h1 = TextStyle(
         fontWeight = FontWeight.W100,
