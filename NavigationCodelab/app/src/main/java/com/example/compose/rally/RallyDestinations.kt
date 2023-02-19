@@ -26,7 +26,10 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.example.compose.rally.ui.accounts.AccountsScreen
@@ -102,14 +105,18 @@ object SingleAccount : RallyDestination {
     val routeWithArgs: String = "${route}/{${accountTypeArg}}"
 
     /**
-     * TODO: Add kdoc
+     * The [List] of arguments to associate with destination [SingleAccount.routeWithArgs] that is
+     * used as the `arguments` argument of the [NavGraphBuilder.composable] method that adds the
+     * Composable for that route to the [NavGraphBuilder] of the [NavHost] in [RallyNavHost].
      */
     val arguments: List<NamedNavArgument> = listOf(
         navArgument(accountTypeArg) { type = NavType.StringType }
     )
 
     /**
-     * TODO: Add kdoc
+     * The [List] of [NavDeepLink] deep links to associate with the destination [SingleAccount.routeWithArgs]
+     * that is used as the `deepLinks` argument of the [NavGraphBuilder.composable] method that adds
+     * the Composable for that route to the [NavGraphBuilder] of the [NavHost] in [RallyNavHost].
      */
     val deepLinks: List<NavDeepLink> = listOf(
         navDeepLink { uriPattern = "rally://$route/{$accountTypeArg}" }
