@@ -27,6 +27,9 @@ private val LightColorPalette = lightColors(
     */
 )
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun DataStoreTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {

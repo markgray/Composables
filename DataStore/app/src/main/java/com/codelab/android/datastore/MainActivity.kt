@@ -12,7 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.codelab.android.datastore.ui.theme.DataStoreTheme
 
+/**
+ * TODO: Add kdoc
+ */
 class MainActivity : ComponentActivity() {
+    /**
+     * TODO: Add kdoc
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,11 +35,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
