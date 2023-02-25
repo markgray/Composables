@@ -16,8 +16,6 @@
 
 package com.codelab.android.datastore.data
 
-import com.codelab.android.datastore.R
-import com.codelab.android.datastore.databinding.ActivityTasksBinding
 import java.util.Date
 
 /**
@@ -48,16 +46,16 @@ enum class TaskPriority {
  * of each [Task] displayed by the UI's `RecyclerView`
  * @param deadline The "dead line" for completing the [Task], it is displayed in the
  * `TaskViewItemBinding.deadline` `TextView` of each [Task] displayed by the UI's `RecyclerView` and
- * used to sort the list of [Task]'s if the [ActivityTasksBinding.sortDeadline] `Chip` is "On" in
+ * used to sort the list of [Task]'s if the `ActivityTasksBinding.sortDeadline` `Chip` is "On" in
  * the UI.
  * @param priority The [TaskPriority] of the [Task], it is used to set the text color of the
  * `TaskViewItemBinding.priority` `TextView` of each [Task] displayed by the UI's `RecyclerView` and
- * used to sort the list of [Task]'s if the [ActivityTasksBinding.sortPriority] `Chip` is "On" in
+ * used to sort the list of [Task]'s if the `ActivityTasksBinding.sortPriority` `Chip` is "On" in
  * the UI.
  * @param completed the [Task] has been completed if this [Boolean] is `true`, it is used to disable
  * the display of the [Task] in the UI's `RecyclerView` when `true` unless the
- * [ActivityTasksBinding.showCompleted] `SwitchMaterial` is "On", and also used to set the color of
- * the background color of the entire `itemView` displaying the [Task] to [R.color.greyAlpha] when
+ * `ActivityTasksBinding.showCompleted` `SwitchMaterial` is "On", and also used to set the color of
+ * the background color of the entire `itemView` displaying the [Task] to `R.color.greyAlpha` when
  * the completed [Task] is displayed.
  */
 data class Task(
