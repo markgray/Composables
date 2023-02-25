@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id "com.google.protobuf" version "0.8.17"
 }
 
 android {
@@ -53,6 +54,13 @@ dependencies {
     implementation "androidx.compose.ui:ui:1.3.3"
     implementation "androidx.compose.ui:ui-tooling-preview:1.3.3"
     implementation 'androidx.compose.material:material:1.3.1'
+
+    // ProtBuf
+    implementation  "androidx.datastore:datastore-core:1.0.0"
+    implementation  "com.google.protobuf:protobuf-javalite:3.18.0"
+    implementation 'androidx.datastore:datastore:1.0.0'
+
+    // testing
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -60,3 +68,23 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:1.3.3"
     debugImplementation "androidx.compose.ui:ui-test-manifest:1.3.3"
 }
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.14.0"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+
