@@ -1,6 +1,11 @@
 package com.codelab.android.datastore.ui
 
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import com.codelab.android.datastore.UserPreferences
+import com.codelab.android.datastore.data.TasksRepository
+import com.codelab.android.datastore.data.UserPreferencesRepository
 
 /**
  * The main activity of our app.
@@ -145,7 +150,7 @@ class TasksActivity : AppCompatActivity() {
      * @param sortOrder the [SortOrder] that is currently being used to sort our tasks
      * @param showCompleted if `true` the completed tasks are displayed, if `false` they are omitted
      */
-    private fun updateTaskFilters(sortOrder: SortOrder, showCompleted: Boolean) {
+    private fun updateTaskFilters(sortOrder: UserPreferences.SortOrder, showCompleted: Boolean) {
         with(binding) {
             showCompletedSwitch.isChecked = showCompleted
             sortDeadline.isChecked =
