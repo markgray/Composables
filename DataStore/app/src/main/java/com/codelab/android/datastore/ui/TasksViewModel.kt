@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+
 package com.codelab.android.datastore.ui
 
 import androidx.lifecycle.LiveData

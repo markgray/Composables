@@ -10,6 +10,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.codelab.android.datastore.data.TasksRepository
+import com.codelab.android.datastore.ui.MainScreen
 import com.codelab.android.datastore.ui.theme.DataStoreTheme
 
 /**
@@ -28,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    MainScreen(tasks = TasksRepository.tasks)
                 }
             }
         }

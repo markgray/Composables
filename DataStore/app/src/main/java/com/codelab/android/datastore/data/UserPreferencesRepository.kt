@@ -22,7 +22,6 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModelProvider
 import com.codelab.android.datastore.UserPreferences
 import com.codelab.android.datastore.UserPreferences.SortOrder
-import com.codelab.android.datastore.ui.TasksActivity
 import com.codelab.android.datastore.ui.TasksViewModel
 import com.codelab.android.datastore.ui.TasksViewModelFactory
 import kotlinx.coroutines.flow.Flow
