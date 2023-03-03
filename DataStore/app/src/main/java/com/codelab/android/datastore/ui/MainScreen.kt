@@ -17,6 +17,10 @@ import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -30,10 +34,14 @@ import kotlinx.coroutines.flow.Flow
  * The main Screen of our app
  */
 @Composable
-fun MainScreen(tasks: Flow<List<Task>>) {
+fun MainScreen(
+    viewModel: TasksViewModel,
+    tasks: Flow<List<Task>>
+) {
     val taskList: List<Task> = tasks.collectAsState(initial = listOf()).value
+
     Scaffold(
-        bottomBar = { OptionsBar() }
+        bottomBar = { OptionsBar(viewModel = viewModel) }
     ) { paddingValues: PaddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
             items(taskList.size) {
@@ -48,7 +56,13 @@ fun MainScreen(tasks: Flow<List<Task>>) {
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun OptionsBar() {
+fun OptionsBar(viewModel: TasksViewModel) {
+    /**
+     * TODO: This needs to be moved to the `TasksUiModel` of course.
+     */
+    var showCompleted by remember {
+        mutableStateOf(false)
+    }
     Column {
         Row (
             horizontalArrangement = Arrangement.Start,
@@ -62,7 +76,13 @@ fun OptionsBar() {
             Spacer(modifier = Modifier.width(8.dp))
             Text(text = "Show completed tasks")
             Spacer(modifier = Modifier.width(8.dp))
-            Switch(checked = false, onCheckedChange = {})
+            Switch(
+                checked = showCompleted,
+                onCheckedChange = {
+                    viewModel.showCompletedTasks(showCompleted)
+                    showCompleted = !showCompleted
+                }
+            )
         }
         Row (
             horizontalArrangement = Arrangement.Start,
