@@ -1,12 +1,19 @@
 package com.codelab.android.datastore.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Switch
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import com.codelab.android.datastore.R
 import com.codelab.android.datastore.data.Task
 import com.google.android.material.bottomappbar.BottomAppBar
 import kotlinx.coroutines.flow.Flow
@@ -33,5 +40,22 @@ fun MainScreen(tasks: Flow<List<Task>>) {
  */
 @Composable
 fun OptionsBar() {
-
+    Column {
+        Row {
+            Icon(
+                painter = painterResource(R.drawable.ic_baseline_filter_list_24),
+                contentDescription = null
+            )
+            Text(text = "Show completed tasks")
+            Switch(checked = false, onCheckedChange = {})
+        }
+        Row {
+            Icon(
+                painter = painterResource(R.drawable.ic_baseline_reorder_24),
+                contentDescription = null
+            )
+            Text(text = "Priority")
+            Text(text = "Deadline")
+        }
+    }
 }
