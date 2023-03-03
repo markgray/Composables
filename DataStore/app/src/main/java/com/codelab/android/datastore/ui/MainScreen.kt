@@ -4,9 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Chip
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
@@ -16,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.codelab.android.datastore.R
 import com.codelab.android.datastore.data.Task
 import com.google.android.material.bottomappbar.BottomAppBar
@@ -41,6 +46,7 @@ fun MainScreen(tasks: Flow<List<Task>>) {
 /**
  * The [BottomAppBar] of the [Scaffold] used by [MainScreen]
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OptionsBar() {
     Column {
@@ -53,7 +59,9 @@ fun OptionsBar() {
                 painter = painterResource(R.drawable.ic_baseline_filter_list_24),
                 contentDescription = null
             )
+            Spacer(modifier = Modifier.width(8.dp))
             Text(text = "Show completed tasks")
+            Spacer(modifier = Modifier.width(8.dp))
             Switch(checked = false, onCheckedChange = {})
         }
         Row (
@@ -65,8 +73,18 @@ fun OptionsBar() {
                 painter = painterResource(R.drawable.ic_baseline_reorder_24),
                 contentDescription = null
             )
-            Text(text = "Priority")
-            Text(text = "Deadline")
+            Spacer(modifier = Modifier.width(8.dp))
+            Chip (
+                onClick = {}
+            ) {
+                Text(text = "Priority")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Chip (
+                onClick = {}
+            ) {
+                Text(text = "Deadline")
+            }
         }
     }
 }
