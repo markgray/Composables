@@ -1,12 +1,15 @@
 package com.codelab.android.datastore.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codelab.android.datastore.data.Task
 import com.codelab.android.datastore.data.TaskPriority
@@ -23,45 +26,49 @@ import java.util.Locale
  */
 @Composable
 fun TaskComposer(task: Task) {
-    Column (
-        modifier = Modifier.fillMaxWidth()
+    Card (
+        border = BorderStroke(1.dp,Color.LightGray)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
         ) {
-        Text(
-            text = task.name,
-            fontSize = 20.sp
-        )
-        when (task.priority) {
-            TaskPriority.HIGH -> {
-                Text(
-                    text = "Priority ${task.priority.name}",
-                    fontSize = 16.sp,
-                    color = Color.Red
-                )
+            Text(
+                text = task.name,
+                fontSize = 20.sp
+            )
+            when (task.priority) {
+                TaskPriority.HIGH -> {
+                    Text(
+                        text = "Priority ${task.priority.name}",
+                        fontSize = 16.sp,
+                        color = Color.Red
+                    )
+                }
+                TaskPriority.MEDIUM -> {
+                    Text(
+                        text = "Priority ${task.priority.name}",
+                        fontSize = 16.sp,
+                        color = Color.Yellow
+                    )
+                }
+                TaskPriority.LOW -> {
+                    Text(
+                        text = "Priority ${task.priority.name}",
+                        fontSize = 16.sp,
+                        color = Color.Green
+                    )
+                }
             }
-            TaskPriority.MEDIUM -> {
-                Text(
-                    text = "Priority ${task.priority.name}",
-                    fontSize = 16.sp,
-                    color = Color.Yellow
-                )
-            }
-            TaskPriority.LOW -> {
-                Text(
-                    text = "Priority ${task.priority.name}",
-                    fontSize = 16.sp,
-                    color = Color.Green
-                )
-            }
+            Text(
+                text = dateFormat.format(task.deadline),
+                fontSize = 16.sp,
+                color = if (task.completed) {
+                    Color.LightGray
+                } else {
+                    Color.Blue
+                }
+            )
         }
-        Text(
-            text = dateFormat.format(task.deadline),
-            fontSize = 16.sp,
-            color = if (task.completed) {
-                Color.LightGray
-            } else {
-                Color.Blue
-            }
-        )
     }
 }
 
