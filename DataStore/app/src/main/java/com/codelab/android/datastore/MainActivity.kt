@@ -8,10 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
@@ -20,10 +18,12 @@ import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import androidx.lifecycle.ViewModelProvider
 import com.codelab.android.datastore.UserPreferences.SortOrder
+import com.codelab.android.datastore.data.Task
 import com.codelab.android.datastore.data.TasksRepository
 import com.codelab.android.datastore.data.UserPreferencesRepository
 import com.codelab.android.datastore.data.UserPreferencesSerializer
 import com.codelab.android.datastore.ui.MainScreen
+import com.codelab.android.datastore.ui.TasksUiModel
 import com.codelab.android.datastore.ui.TasksViewModel
 import com.codelab.android.datastore.ui.TasksViewModelFactory
 import com.codelab.android.datastore.ui.theme.DataStoreTheme
@@ -102,8 +102,8 @@ class MainActivity : ComponentActivity() {
         viewModel = ViewModelProvider(
             this,
             TasksViewModelFactory(
-                TasksRepository,
-                UserPreferencesRepository(userPreferencesStore)
+                repository = TasksRepository,
+                userPreferencesRepository = UserPreferencesRepository(userPreferencesStore)
             )
         )[TasksViewModel::class.java]
 
@@ -114,30 +114,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    val taskList: List<Task> =
+                        TasksRepository.tasks.collectAsState(initial = listOf()).value
                     MainScreen(
                         viewModel = viewModel,
+                        tasksUiModel = TasksUiModel(
+                            tasks = taskList,
+                            showCompleted = true,
+                            sortOrder = SortOrder.BY_DEADLINE_AND_PRIORITY
+                        ),
                         tasks = TasksRepository.tasks)
                 }
             }
         }
-    }
-}
-
-/**
- * TODO: Add kdoc
- */
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-/**
- * TODO: Add kdoc
- */
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    DataStoreTheme {
-        Greeting("Android")
     }
 }

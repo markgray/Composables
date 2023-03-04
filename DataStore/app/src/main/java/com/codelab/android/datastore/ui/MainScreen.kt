@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Chip
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FilterChip
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.codelab.android.datastore.R
+import com.codelab.android.datastore.UserPreferences.SortOrder
 import com.codelab.android.datastore.data.Task
 import com.google.android.material.bottomappbar.BottomAppBar
 import kotlinx.coroutines.flow.Flow
@@ -36,12 +37,13 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun MainScreen(
     viewModel: TasksViewModel,
+    tasksUiModel: TasksUiModel,
     tasks: Flow<List<Task>>
 ) {
     val taskList: List<Task> = tasks.collectAsState(initial = listOf()).value
 
     Scaffold(
-        bottomBar = { OptionsBar(viewModel = viewModel) }
+        bottomBar = { OptionsBar(viewModel = viewModel, tasksUiModel = tasksUiModel) }
     ) { paddingValues: PaddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
             items(taskList.size) {
@@ -56,15 +58,47 @@ fun MainScreen(
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun OptionsBar(viewModel: TasksViewModel) {
+fun OptionsBar(
+    viewModel: TasksViewModel,
+    tasksUiModel: TasksUiModel
+) {
     /**
      * TODO: This needs to be moved to the `TasksUiModel` of course.
      */
     var showCompleted by remember {
         mutableStateOf(false)
     }
+    val priorityChipSelected: Boolean
+    val deadLineChipSelcted: Boolean
+    when (tasksUiModel.sortOrder) {
+        SortOrder.BY_PRIORITY -> {
+            priorityChipSelected = true
+            deadLineChipSelcted = false
+        }
+        SortOrder.UNSPECIFIED -> {
+            priorityChipSelected = false
+            deadLineChipSelcted = false
+        }
+        SortOrder.NONE -> {
+            priorityChipSelected = false
+            deadLineChipSelcted = false
+        }
+        SortOrder.BY_DEADLINE -> {
+            priorityChipSelected = false
+            deadLineChipSelcted = true
+        }
+        SortOrder.BY_DEADLINE_AND_PRIORITY -> {
+            priorityChipSelected = true
+            deadLineChipSelcted = true
+        }
+        SortOrder.UNRECOGNIZED -> {
+            priorityChipSelected = false
+            deadLineChipSelcted = false
+        }
+    }
+
     Column {
-        Row (
+        Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -84,7 +118,7 @@ fun OptionsBar(viewModel: TasksViewModel) {
                 }
             )
         }
-        Row (
+        Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -94,14 +128,16 @@ fun OptionsBar(viewModel: TasksViewModel) {
                 contentDescription = null
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Chip (
-                onClick = {}
+            FilterChip(
+                onClick = {},
+                selected = priorityChipSelected
             ) {
                 Text(text = "Priority")
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Chip (
-                onClick = {}
+            FilterChip(
+                onClick = {},
+                selected = deadLineChipSelcted
             ) {
                 Text(text = "Deadline")
             }
