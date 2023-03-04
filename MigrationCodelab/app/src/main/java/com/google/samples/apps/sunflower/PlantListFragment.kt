@@ -24,6 +24,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -70,11 +72,12 @@ class PlantListFragment : Fragment() {
      * call our method [subscribeUi] with `adapter` as the argument to have it begin to observe
      * the [PlantListViewModel.plants] field of [viewModel], submitting the [LiveData] wrapped
      * [List] of [Plant] objects to `adapter` to be diffed, and displayed whenever it changes
-     * value. Finally we call the [setHasOptionsMenu] method with `true` to report that this
-     * fragment would like to participate in populating the options menu by receiving a call to
-     * [onCreateOptionsMenu] and related methods, then return the outermost [View] of the layout
-     * file associated with `binding` to the caller ([FragmentPlantListBinding.getRoot] aka kotlin
-     * `root` property).
+     * value.
+     *
+     * We initialize our [MenuHost] variable `val menuHost` to to the `FragmentActivity` this
+     * fragment is currently associated with, then call its [MenuHost.addMenuProvider] method to
+     * add our [MenuProvider] field [menuProvider] to the [MenuHost]. Finally we return the
+     * outermost [View] in the layout file associated with `binding` to the caller.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment.
@@ -99,49 +102,48 @@ class PlantListFragment : Fragment() {
         binding.plantList.adapter = adapter
         subscribeUi(adapter)
 
-        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
-        setHasOptionsMenu(true)
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(menuProvider, viewLifecycleOwner)
         return binding.root
     }
 
     /**
-     * Initialize the contents of the Fragment host's standard options menu. You should place your
-     * menu items in the [Menu] parameter [menu]. We just use our [MenuInflater] parameter [inflater]
-     * to inflate our menu layout file into our [Menu] parameter [menu] (the file with resource ID
-     * [R.menu.menu_plant_list]).
-     *
-     * @param menu The options [Menu] in which you place your items.
-     * @param inflater a [MenuInflater] for this [Context] you can use to inflate an XML menu file.
+     * Our  [MenuProvider]
      */
-    @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
-    @Deprecated("Replace with MenuProvider", ReplaceWith("Replace with MenuProvider"))
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_plant_list, menu)
-    }
+    private val menuProvider: MenuProvider = object : MenuProvider {
+        /**
+         * Initialize the contents of the Fragment host's standard options menu. You should place
+         * your menu items in the [Menu] parameter [menu]. We just use our [MenuInflater] parameter
+         * [menuInflater] to inflate our menu layout file into our [Menu] parameter [menu] (the file
+         * with resource ID [R.menu.menu_plant_list]).
+         *
+         * @param menu The options menu in which you place your items.
+         * @param menuInflater a [MenuInflater] you can use to inflate an XML menu file with.
+         */
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(R.menu.menu_plant_list, menu)
+        }
 
-    /**
-     * This hook is called whenever an item in your options menu is selected. If the value returned
-     * by [MenuItem.getItemId] (kotlin `itemId` property) is [R.id.filter_zone] we call our [updateData]
-     * method to "toggle" the grow zone filtering that our [PlantListViewModel] performs (if the
-     * [PlantListViewModel.isFiltered] method returns `true` it calls the method
-     * [PlantListViewModel.clearGrowZoneNumber] to clear, and if it is `false` it call the method
-     * [PlantListViewModel.setGrowZoneNumber] to set the grow zone to "9"). If the `itemId` is not
-     * [R.id.filter_zone] we return whatever our super's implementation of `onOptionsItemSelected`
-     * returns.
-     *
-     * @param item The [MenuItem] that was selected.
-     * @return [Boolean] Return `false` to allow normal menu processing to proceed, `true` to
-     * consume it here.
-     */
-    @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
-    @Deprecated("Replace with MenuProvider", ReplaceWith("Replace with MenuProvider"))
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.filter_zone -> {
-                updateData()
-                true
+        /**
+         * This hook is called whenever an item in your options menu is selected. If the value
+         * returned by [MenuItem.getItemId] (kotlin `itemId` property) is [R.id.filter_zone] we call
+         * our [updateData] method to "toggle" the grow zone filtering that our [PlantListViewModel]
+         * performs (if the [PlantListViewModel.isFiltered] method returns `true` it calls the method
+         * [PlantListViewModel.clearGrowZoneNumber] to clear, and if it is `false` it call the method
+         * [PlantListViewModel.setGrowZoneNumber] to set the grow zone to "9"). If the `itemId` is not
+         * [R.id.filter_zone] we return `false`
+         *
+         * @param menuItem the menu item that was selected
+         * @return `true` if the given menu item is handled by this menu provider, `false` otherwise.
+         */
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            return when (menuItem.itemId) {
+                R.id.filter_zone -> {
+                    updateData()
+                    true
+                }
+                else -> false
             }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 

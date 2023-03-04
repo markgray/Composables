@@ -140,12 +140,9 @@ class PlantDetailFragment : Fragment() {
      *  the [PlantDetailDescription] screen, with [plantDetailViewModel] as its `plantDetailViewModel`
      *  argument.
      *
-     * Having got our binding configured we call the [setHasOptionsMenu] method with `true` in order
-     * to report that this fragment would like to participate in populating the options menu by
-     * receiving a call to [onCreateOptionsMenu] and related methods, and then we return the
-     * [View] returned by the  [FragmentPlantDetailBinding.getRoot] method of `binding` (kotlin
-     * `root` property) to the caller as the [View] for our fragment's UI (`root` is the outermost
-     * [View] in the layout file associated with the Binding).
+     * Finally we return the [View] returned by the  [FragmentPlantDetailBinding.getRoot] method of
+     * `binding` (kotlin `root` property) to the caller as the [View] for our fragment's UI (`root`
+     * is the outermost [View] in the layout file associated with the Binding).
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate any views.
      * @param container If non-`null`, this is the parent view that the fragment's UI will be
@@ -234,9 +231,6 @@ class PlantDetailFragment : Fragment() {
                 }
             }
         }
-        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
-        setHasOptionsMenu(true)
-
         return binding.root
     }
 
