@@ -77,7 +77,47 @@ object TasksRepository {
                 name = "Understand how to migrate to DataStore",
                 deadline = Date(),
                 priority = TaskPriority.HIGH
-            )
+            ),
+            Task(
+                name = "Get Born",
+                deadline = simpleDateFormat.parse("1951-12-11")!!,
+                priority = TaskPriority.HIGH
+            ),
+            Task(
+                name = "Patch Roof",
+                deadline = Date(),
+                priority = TaskPriority.MEDIUM
+            ),
+            Task(
+                name = "Fix Plumbing",
+                deadline = Date(),
+                priority = TaskPriority.MEDIUM
+            ),
+            Task(
+                name = "Fix Leak Roof",
+                deadline = Date(),
+                priority = TaskPriority.MEDIUM
+            ),
+            Task(
+                name = "Cure Cancer",
+                deadline = Date(),
+                priority = TaskPriority.HIGH
+            ),
+            Task(
+                name = "Cure Alzheimer's",
+                deadline = Date(),
+                priority = TaskPriority.HIGH
+            ),
+            Task(
+                name = "Get Back on your diet",
+                deadline = Date(),
+                priority = TaskPriority.MEDIUM
+            ),
+            Task(
+                name = "Increase Exercise",
+                deadline = Date(),
+                priority = TaskPriority.MEDIUM
+            ),
         )
     )
 }
