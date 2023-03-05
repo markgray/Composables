@@ -20,13 +20,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.codelab.android.datastore.R
-import com.codelab.android.datastore.UserPreferences.SortOrder
 import com.codelab.android.datastore.data.Task
 import com.google.android.material.bottomappbar.BottomAppBar
 import kotlinx.coroutines.flow.Flow
@@ -41,9 +39,12 @@ fun MainScreen(
     tasks: Flow<List<Task>>
 ) {
     val taskList: List<Task> = tasks.collectAsState(initial = listOf()).value
+    val filterManager by remember(tasksUiModel) {
+        mutableStateOf(FilterManager(viewModel, tasksUiModel))
+    }
 
     Scaffold(
-        bottomBar = { OptionsBar(viewModel = viewModel, tasksUiModel = tasksUiModel) }
+        bottomBar = { OptionsBar(fm = filterManager) }
     ) { paddingValues: PaddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
             items(taskList.size) {
@@ -59,43 +60,8 @@ fun MainScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OptionsBar(
-    viewModel: TasksViewModel,
-    tasksUiModel: TasksUiModel
+    fm: FilterManager
 ) {
-    /**
-     * TODO: This needs to be moved to the `TasksUiModel` of course.
-     */
-    var showCompleted by remember {
-        mutableStateOf(false)
-    }
-    val priorityChipSelected: Boolean
-    val deadLineChipSelcted: Boolean
-    when (tasksUiModel.sortOrder) {
-        SortOrder.BY_PRIORITY -> {
-            priorityChipSelected = true
-            deadLineChipSelcted = false
-        }
-        SortOrder.UNSPECIFIED -> {
-            priorityChipSelected = false
-            deadLineChipSelcted = false
-        }
-        SortOrder.NONE -> {
-            priorityChipSelected = false
-            deadLineChipSelcted = false
-        }
-        SortOrder.BY_DEADLINE -> {
-            priorityChipSelected = false
-            deadLineChipSelcted = true
-        }
-        SortOrder.BY_DEADLINE_AND_PRIORITY -> {
-            priorityChipSelected = true
-            deadLineChipSelcted = true
-        }
-        SortOrder.UNRECOGNIZED -> {
-            priorityChipSelected = false
-            deadLineChipSelcted = false
-        }
-    }
 
     Column {
         Row(
@@ -111,10 +77,9 @@ fun OptionsBar(
             Text(text = "Show completed tasks")
             Spacer(modifier = Modifier.width(8.dp))
             Switch(
-                checked = showCompleted,
+                checked = fm.deadline(),
                 onCheckedChange = {
-                    viewModel.showCompletedTasks(showCompleted)
-                    showCompleted = !showCompleted
+                    fm.showCompletedClicked()
                 }
             )
         }
@@ -129,15 +94,19 @@ fun OptionsBar(
             )
             Spacer(modifier = Modifier.width(8.dp))
             FilterChip(
-                onClick = {},
-                selected = priorityChipSelected
+                onClick = {
+                    fm.priorityClicked()
+                },
+                selected = fm.priority()
             ) {
                 Text(text = "Priority")
             }
             Spacer(modifier = Modifier.width(8.dp))
             FilterChip(
-                onClick = {},
-                selected = deadLineChipSelcted
+                onClick = {
+                   fm.deadlineClicked()
+                },
+                selected = fm.deadline()
             ) {
                 Text(text = "Deadline")
             }
