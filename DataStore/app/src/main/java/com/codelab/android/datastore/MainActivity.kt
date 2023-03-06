@@ -107,6 +107,11 @@ class MainActivity : ComponentActivity() {
             )
         )[TasksViewModel::class.java]
 
+        val startUiModel = TasksUiModel(
+            tasks = listOf(),
+            showCompleted = true,
+            sortOrder = SortOrder.BY_DEADLINE_AND_PRIORITY
+        )
         setContent {
             DataStoreTheme {
                 // A surface container using the 'background' color from the theme
@@ -114,16 +119,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    @Suppress("UNUSED_VARIABLE")
                     val taskList: List<Task> =
                         TasksRepository.tasks.collectAsState(initial = listOf()).value
                     MainScreen(
                         viewModel = viewModel,
-                        tasksUiModel = TasksUiModel(
-                            tasks = taskList,
-                            showCompleted = true,
-                            sortOrder = SortOrder.BY_DEADLINE_AND_PRIORITY
-                        ),
-                        tasks = TasksRepository.tasks)
+                        tasksUiModel = viewModel.tasksUiModel.value ?: startUiModel,
+                        tasks = viewModel.repository.tasks
+                    )
                 }
             }
         }

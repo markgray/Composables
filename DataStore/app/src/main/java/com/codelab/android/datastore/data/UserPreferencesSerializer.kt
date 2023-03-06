@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
+import com.codelab.android.datastore.MainActivity
 import com.codelab.android.datastore.UserPreferences
 import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
@@ -14,7 +15,7 @@ import java.io.OutputStream
  * [UserPreferences] when reading and writing to disk. It is used as the `serializer` parameter in
  * the call to the [DataStore] delegate `dataStore` used to create and build the Proto [DataStore]
  * of [UserPreferences] as the `userPreferencesStore` extension property of [Context] in our
- * [TasksActivity] file.
+ * [MainActivity] file.
  */
 @Suppress("BlockingMethodInNonBlockingContext")
 object UserPreferencesSerializer : Serializer<UserPreferences> {

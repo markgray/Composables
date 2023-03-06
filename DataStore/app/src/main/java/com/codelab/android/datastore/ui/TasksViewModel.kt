@@ -68,7 +68,7 @@ data class TasksUiModel(
  * [UserPreferencesRepository.userPreferencesFlow].
  */
 class TasksViewModel(
-    repository: TasksRepository,
+    val repository: TasksRepository,
     private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 

@@ -77,7 +77,7 @@ fun OptionsBar(
             Text(text = "Show completed tasks")
             Spacer(modifier = Modifier.width(8.dp))
             Switch(
-                checked = fm.deadline(),
+                checked = fm.showCompleted(),
                 onCheckedChange = {
                     fm.showCompletedClicked()
                 }

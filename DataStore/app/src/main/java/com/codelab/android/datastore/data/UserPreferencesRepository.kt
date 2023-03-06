@@ -20,6 +20,7 @@ import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModelProvider
+import com.codelab.android.datastore.MainActivity
 import com.codelab.android.datastore.UserPreferences
 import com.codelab.android.datastore.UserPreferences.SortOrder
 import com.codelab.android.datastore.ui.TasksViewModel
@@ -34,7 +35,7 @@ import java.io.IOException
  *
  * @param userPreferencesStore the Proto [DataStore] of [UserPreferences] we are to use. This is
  * the [DataStore] of [UserPreferences] extension property that is added to [Context] at the top
- * level of the [TasksActivity] which ends up being passed to the [TasksViewModel] constructor by
+ * level of the [MainActivity] which ends up being passed to the [TasksViewModel] constructor by
  * the [ViewModelProvider] using the [TasksViewModelFactory] class.
  */
 class UserPreferencesRepository(
