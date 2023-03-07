@@ -27,6 +27,8 @@ import com.codelab.android.datastore.ui.TasksUiModel
 import com.codelab.android.datastore.ui.TasksViewModel
 import com.codelab.android.datastore.ui.TasksViewModelFactory
 import com.codelab.android.datastore.ui.theme.DataStoreTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 /**
  * The name of the [SharedPreferences] file currently used (if any) whose contents we want to migrate
@@ -119,13 +121,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    @Suppress("UNUSED_VARIABLE")
                     val taskList: List<Task> =
                         TasksRepository.tasks.collectAsState(initial = listOf()).value
+                    val taskListFlow: Flow<List<Task>> = flow {
+                        emit(taskList)
+                    }
+
                     MainScreen(
                         viewModel = viewModel,
                         tasksUiModel = viewModel.tasksUiModel.value ?: startUiModel,
-                        tasks = viewModel.repository.tasks
+                        tasks = taskListFlow
                     )
                 }
             }

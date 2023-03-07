@@ -62,6 +62,9 @@ fun MainScreen(
 fun OptionsBar(
     fm: FilterManager
 ) {
+    val showCompletedChecked = fm.showCompleted()
+    val prioritySelected = fm.priority()
+    val deadlineSelected = fm.deadline()
 
     Column {
         Row(
@@ -77,7 +80,7 @@ fun OptionsBar(
             Text(text = "Show completed tasks")
             Spacer(modifier = Modifier.width(8.dp))
             Switch(
-                checked = fm.showCompleted(),
+                checked = showCompletedChecked,
                 onCheckedChange = {
                     fm.showCompletedClicked()
                 }
@@ -97,7 +100,7 @@ fun OptionsBar(
                 onClick = {
                     fm.priorityClicked()
                 },
-                selected = fm.priority()
+                selected = prioritySelected
             ) {
                 Text(text = "Priority")
             }
@@ -106,7 +109,7 @@ fun OptionsBar(
                 onClick = {
                    fm.deadlineClicked()
                 },
-                selected = fm.deadline()
+                selected = deadlineSelected
             ) {
                 Text(text = "Deadline")
             }
