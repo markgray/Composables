@@ -48,20 +48,20 @@ class FilterManager(
      * TODO: Add kdoc
      */
     fun priorityClicked() {
-        viewModel.enableSortByPriority(!priority())
+        viewModel.enableSortByPriority(priority())
     }
 
     /**
      * TODO: Add kdoc
      */
     fun deadlineClicked() {
-        viewModel.enableSortByDeadline(!deadline())
+        viewModel.enableSortByDeadline(deadline())
     }
 
     /**
      * TODO: Add kdoc
      */
     fun showCompletedClicked() {
-        viewModel.showCompletedTasks(!showCompleted())
+        viewModel.showCompletedTasks(showCompleted())
     }
 }

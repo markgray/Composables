@@ -109,13 +109,16 @@ class MainActivity : ComponentActivity() {
             )
         )[TasksViewModel::class.java]
 
-        val startUiModel = TasksUiModel(
+        var tasksUiModel = TasksUiModel(
             tasks = listOf(),
             showCompleted = true,
             sortOrder = SortOrder.BY_DEADLINE_AND_PRIORITY
         )
         setContent {
             DataStoreTheme {
+                viewModel.tasksUiModel.observe(this) { newtasksUiModel ->
+                    tasksUiModel = newtasksUiModel
+                }
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -129,7 +132,7 @@ class MainActivity : ComponentActivity() {
 
                     MainScreen(
                         viewModel = viewModel,
-                        tasksUiModel = viewModel.tasksUiModel.value ?: startUiModel,
+                        tasksUiModel = tasksUiModel,
                         tasks = taskListFlow
                     )
                 }
