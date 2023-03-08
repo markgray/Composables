@@ -8,7 +8,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
@@ -109,12 +112,15 @@ class MainActivity : ComponentActivity() {
             )
         )[TasksViewModel::class.java]
 
-        var tasksUiModel = TasksUiModel(
+        val emptyTasksUiModel = TasksUiModel(
             tasks = listOf(),
             showCompleted = true,
             sortOrder = SortOrder.BY_DEADLINE_AND_PRIORITY
         )
         setContent {
+            var tasksUiModel: TasksUiModel by remember {
+                mutableStateOf(emptyTasksUiModel)
+            }
             DataStoreTheme {
                 viewModel.tasksUiModel.observe(this) { newtasksUiModel ->
                     tasksUiModel = newtasksUiModel
@@ -124,10 +130,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val taskList: List<Task> =
-                        TasksRepository.tasks.collectAsState(initial = listOf()).value
                     val taskListFlow: Flow<List<Task>> = flow {
-                        emit(taskList)
+                        emit(tasksUiModel.tasks)
                     }
 
                     MainScreen(
