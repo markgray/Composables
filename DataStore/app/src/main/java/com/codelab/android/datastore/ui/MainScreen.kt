@@ -67,12 +67,15 @@ fun OptionsBar(
     var showCompletedChecked by remember {
         mutableStateOf(fm.showCompleted())
     }
+    Log.i("ShowCompleted", "Initial value of checked is: $showCompletedChecked")
     var prioritySelected by remember {
         mutableStateOf(fm.priority())
     }
+    Log.i("ProrityChip", "Initial value of selected is: $prioritySelected")
     var deadlineSelected by remember {
         mutableStateOf(fm.deadline())
     }
+    Log.i("DeadlineChip", "Initial value of selected is: $deadlineSelected")
 
     Column {
         Row(
@@ -91,7 +94,8 @@ fun OptionsBar(
                 checked = showCompletedChecked,
                 onCheckedChange = {
                     fm.showCompletedClicked()
-                    showCompletedChecked = !showCompletedChecked
+                    showCompletedChecked = fm.showCompleted()
+                    Log.i("ShowCompleted", "New value of checked is: $showCompletedChecked")
                 }
             )
         }

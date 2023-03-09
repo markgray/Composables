@@ -57,11 +57,13 @@ object TasksRepository {
             ),
             Task(
                 name = "Check out the code", deadline = simpleDateFormat.parse("2020-05-03")!!,
-                priority = TaskPriority.LOW
+                priority = TaskPriority.LOW,
+                completed = true
             ),
             Task(
                 name = "Read about DataStore", deadline = simpleDateFormat.parse("2020-06-03")!!,
-                priority = TaskPriority.HIGH
+                priority = TaskPriority.HIGH,
+                completed = true
             ),
             Task(
                 name = "Implement each step",
@@ -71,7 +73,8 @@ object TasksRepository {
             Task(
                 name = "Understand how to use DataStore",
                 deadline = simpleDateFormat.parse("2020-04-03")!!,
-                priority = TaskPriority.HIGH
+                priority = TaskPriority.HIGH,
+                completed = true
             ),
             Task(
                 name = "Understand how to migrate to DataStore",
@@ -81,7 +84,8 @@ object TasksRepository {
             Task(
                 name = "Get Born",
                 deadline = simpleDateFormat.parse("1951-12-11")!!,
-                priority = TaskPriority.HIGH
+                priority = TaskPriority.HIGH,
+                completed = true
             ),
             Task(
                 name = "Patch Roof",
@@ -94,7 +98,7 @@ object TasksRepository {
                 priority = TaskPriority.MEDIUM
             ),
             Task(
-                name = "Fix Leak Roof",
+                name = "Fix Leaky Roof",
                 deadline = Date(),
                 priority = TaskPriority.MEDIUM
             ),

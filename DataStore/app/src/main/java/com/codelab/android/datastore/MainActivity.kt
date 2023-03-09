@@ -112,14 +112,22 @@ class MainActivity : ComponentActivity() {
             )
         )[TasksViewModel::class.java]
 
-        val emptyTasksUiModel = TasksUiModel(
+        var initialTasksUiModel = TasksUiModel(
             tasks = listOf(),
-            showCompleted = true,
+            showCompleted = false,
             sortOrder = SortOrder.BY_DEADLINE_AND_PRIORITY
         )
+
+        viewModel.initialSetupEvent.observe(this) { initialSetupEvent: UserPreferences ->
+            initialTasksUiModel = TasksUiModel(
+                tasks = listOf(),
+                showCompleted = initialSetupEvent.showCompleted,
+                sortOrder = initialSetupEvent.sortOrder
+            )
+        }
         setContent {
             var tasksUiModel: TasksUiModel by remember {
-                mutableStateOf(emptyTasksUiModel)
+                mutableStateOf(initialTasksUiModel)
             }
             DataStoreTheme {
                 viewModel.tasksUiModel.observe(this) { newtasksUiModel ->
