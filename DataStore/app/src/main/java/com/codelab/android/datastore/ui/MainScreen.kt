@@ -93,8 +93,8 @@ fun OptionsBar(
             Switch(
                 checked = showCompletedChecked,
                 onCheckedChange = {
-                    fm.showCompletedClicked()
-                    showCompletedChecked = fm.showCompleted()
+                    showCompletedChecked = !showCompletedChecked
+                    fm.showCompletedClicked(showCompletedChecked)
                     Log.i("ShowCompleted", "New value of checked is: $showCompletedChecked")
                 }
             )
@@ -111,8 +111,8 @@ fun OptionsBar(
             Spacer(modifier = Modifier.width(8.dp))
             FilterChip(
                 onClick = {
-                    fm.priorityClicked()
                     prioritySelected = !prioritySelected
+                    fm.priorityClicked(prioritySelected)
                     Log.i("ProrityChip", "New value of selected is: $prioritySelected")
                 },
                 selected = prioritySelected
@@ -122,8 +122,8 @@ fun OptionsBar(
             Spacer(modifier = Modifier.width(8.dp))
             FilterChip(
                 onClick = {
-                   fm.deadlineClicked()
                     deadlineSelected = !deadlineSelected
+                    fm.deadlineClicked(deadlineSelected)
                     Log.i("DeadlineChip", "New value of selected is: $deadlineSelected")
                 },
                 selected = deadlineSelected
