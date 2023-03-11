@@ -115,7 +115,7 @@ class MainActivity : ComponentActivity() {
         var initialTasksUiModel = TasksUiModel(
             tasks = listOf(),
             showCompleted = false,
-            sortOrder = SortOrder.BY_DEADLINE_AND_PRIORITY
+            sortOrder = SortOrder.UNSPECIFIED
         )
 
         viewModel.initialSetupEvent.observe(this) { initialSetupEvent: UserPreferences ->
