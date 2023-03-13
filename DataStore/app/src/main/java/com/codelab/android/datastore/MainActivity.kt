@@ -26,6 +26,7 @@ import com.codelab.android.datastore.data.TasksRepository
 import com.codelab.android.datastore.data.UserPreferencesRepository
 import com.codelab.android.datastore.data.UserPreferencesSerializer
 import com.codelab.android.datastore.ui.MainScreen
+import com.codelab.android.datastore.ui.StartUpScreen
 import com.codelab.android.datastore.ui.TasksUiModel
 import com.codelab.android.datastore.ui.TasksViewModel
 import com.codelab.android.datastore.ui.TasksViewModelFactory
@@ -141,12 +142,17 @@ class MainActivity : ComponentActivity() {
                     val taskListFlow: Flow<List<Task>> = flow {
                         emit(tasksUiModel.tasks)
                     }
+                    var showStartupScreen: Boolean by remember { mutableStateOf(true) }
+                    if (showStartupScreen) {
+                        StartUpScreen(onTimeout = { showStartupScreen = false })
+                    } else {
+                        MainScreen(
+                            viewModel = viewModel,
+                            tasksUiModel = tasksUiModel,
+                            tasks = taskListFlow
+                        )
+                    }
 
-                    MainScreen(
-                        viewModel = viewModel,
-                        tasksUiModel = tasksUiModel,
-                        tasks = taskListFlow
-                    )
                 }
             }
         }
