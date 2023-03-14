@@ -108,6 +108,7 @@ object UserData {
             Color(0xFF37EFBA)
         )
     )
+
     /**
      * The [List] of [Bill] instances used by our app.
      */
