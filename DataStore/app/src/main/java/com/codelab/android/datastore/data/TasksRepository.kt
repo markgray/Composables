@@ -16,6 +16,7 @@
 
 package com.codelab.android.datastore.data
 
+import androidx.compose.foundation.lazy.LazyColumn
 import com.codelab.android.datastore.UserPreferences
 import com.codelab.android.datastore.ui.TasksViewModel
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +29,7 @@ import java.util.Locale
  * This repoository provides a [Flow] of a [List] of dummy [Task] objects to the [TasksViewModel]
  * which the view model `combine`'s with the [Flow] of [UserPreferences] created by the
  * [UserPreferencesRepository] to create a sorted and filtered [List] of [Task]'s that are
- * displayed in the UI's `RecyclerView`.
+ * displayed in the UI's [LazyColumn].
  */
 object TasksRepository {
 
