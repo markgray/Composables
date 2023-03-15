@@ -16,24 +16,33 @@
 
 package com.codelab.android.datastore.data
 
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Switch
+import androidx.compose.material.Text
+import androidx.compose.material.FilterChip
+import androidx.compose.ui.graphics.Color
 import java.util.Date
+import com.codelab.android.datastore.ui.TaskComposer
+import com.codelab.android.datastore.ui.MainScreen
 
 /**
- * TODO: Add kdoc
+ * This enum is used to assign a priority to a [Task], one of [HIGH] (highest priority), [MEDIUM]
+ * (medium priority), and [LOW] (lowest priority)
  */
 enum class TaskPriority {
     /**
-     * TODO: Add kdoc
+     * Highest priority to assign to a [Task]
      */
     HIGH,
 
     /**
-     * TODO: Add kdoc
+     * Medium priority to assign to a [Task]
      */
     MEDIUM,
 
     /**
-     * TODO: Add kdoc
+     * Lowest priority to assign to a [Task]
      */
     LOW
 }
@@ -42,21 +51,22 @@ enum class TaskPriority {
  * This is the data class that is used to hold the information about each of the tasks in the list
  * of tasks contained in the [TasksRepository.tasks] `flow` of [List] of [Task] objects.
  *
- * @param name The name of the [Task], it is displayed in the `TaskViewItemBinding.task` `TextView`
- * of each [Task] displayed by the UI's `RecyclerView`
- * @param deadline The "dead line" for completing the [Task], it is displayed in the
- * `TaskViewItemBinding.deadline` `TextView` of each [Task] displayed by the UI's `RecyclerView` and
- * used to sort the list of [Task]'s if the `ActivityTasksBinding.sortDeadline` `Chip` is "On" in
- * the UI.
- * @param priority The [TaskPriority] of the [Task], it is used to set the text color of the
- * `TaskViewItemBinding.priority` `TextView` of each [Task] displayed by the UI's `RecyclerView` and
- * used to sort the list of [Task]'s if the `ActivityTasksBinding.sortPriority` `Chip` is "On" in
- * the UI.
+ * @param name The name of the [Task], it is displayed by the [TaskComposer] Composable in a [Text],
+ * when that [Task] is displayed in the [LazyColumn] that is the 'content' of the [Scaffold] of the
+ * [MainScreen] Composable.
+ * @param deadline The "dead line" for completing the [Task], it is displayed by the [TaskComposer]
+ * Composable in a [Text], when that [Task] is displayed in the [LazyColumn] that is the 'content'
+ * of the [Scaffold] of the [MainScreen] Composable, and it is also used to sort the list of [Task]'s
+ * that are displayed in that [LazyColumn] if the "Deadline" [FilterChip] is "On" in the UI.
+ * @param priority The [TaskPriority] of the [Task], it's [TaskPriority.name] is displayed by the
+ * [TaskComposer] Composable in a [Text] and it is used to set the text color of the [Text]
+ * ([Color.Red] for [TaskPriority.HIGH], [Color.Yellow] for [TaskPriority.MEDIUM] or [Color.Green]
+ * for [TaskPriority.LOW]) and it used to sort the list of [Task]'s displayed in the [LazyColumn] if
+ * the ""Priority"" [FilterChip] is "On" in the UI.
  * @param completed the [Task] has been completed if this [Boolean] is `true`, it is used to disable
- * the display of the [Task] in the UI's `RecyclerView` when `true` unless the
- * `ActivityTasksBinding.showCompleted` `SwitchMaterial` is "On", and also used to set the color of
- * the background color of the entire `itemView` displaying the [Task] to `R.color.greyAlpha` when
- * the completed [Task] is displayed.
+ * the display of the [Task] in the UI's [LazyColumn] when `true` unless the "Show completed tasks"
+ * [Switch] is "On", and also used to set the color of the background color of the [Text] displaying
+ * the [Task.deadline] ([Color.LightGray] if `true` or [Color.Blue] if `false`).
  */
 data class Task(
     val name: String,
