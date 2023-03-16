@@ -21,6 +21,7 @@ val Purple500: Color = Color(0xFF6200EE)
  * used by our [DataStoreTheme] custom [MaterialTheme]
  */
 val Purple700: Color = Color(0xFF3700B3)
+
 /**
  * Used for the [Colors.secondary] color of both the `LightColorPalette` and `DarkColorPalette`
  * used by our [DataStoreTheme] custom [MaterialTheme]
