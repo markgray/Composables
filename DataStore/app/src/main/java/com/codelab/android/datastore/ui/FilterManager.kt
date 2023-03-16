@@ -78,14 +78,26 @@ class FilterManager(
     }
 
     /**
-     * TODO: Add kdoc
+     * Called to update the value of the "Sort by Deadline" preference. It does this by calling the
+     * [TasksViewModel.enableSortByDeadline] method of our [viewModel] field with its [enable]
+     * parameter. It is called in the `onClick` lambda argument of the "Deadline" [FilterChip] in
+     * the [OptionsBar] when the user clicks the [FilterChip] with the new "toggled" value of the
+     * `deadlineSelected` "remembered" `MutableState` variable.
+     *
+     * @param enable the new value for the "Sort by Deadline" preference.
      */
     fun deadlineClicked(enable: Boolean) {
         viewModel.enableSortByDeadline(enable)
     }
 
     /**
-     * TODO: Add kdoc
+     * Called to update the value of the "Show completed tasks" preference. It does this by calling
+     * the [TasksViewModel.showCompletedTasks] method of our [viewModel] field with its [enable]
+     * parameter. It is called in the `onCheckedChange` lambda argument of the "Show completed tasks"
+     * [Switch] in the [OptionsBar] when the user toggles the [Switch] with the new "toggled" value
+     * of the `showCompletedChecked` "remembered" `MutableState` variable.
+     *
+     * @param enable the new value for the "Show completed tasks" preference.
      */
     fun showCompletedClicked(enable: Boolean) {
         viewModel.showCompletedTasks(enable)
