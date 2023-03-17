@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
 import com.codelab.android.datastore.R
 import com.codelab.android.datastore.UserPreferences
 import com.codelab.android.datastore.data.Task
@@ -65,8 +66,8 @@ fun MainScreen(
     tasks: Flow<List<Task>>
 ) {
     val taskList: List<Task> = tasks.collectAsState(initial = listOf()).value
-    val filterManager by remember(tasksUiModel) {
-        mutableStateOf(FilterManager(viewModel, tasksUiModel))
+    val filterManager: FilterManager by remember(key1 = tasksUiModel) {
+        mutableStateOf(FilterManager(viewModel = viewModel, tasksUiModel = tasksUiModel))
     }
 
     Scaffold(
@@ -119,6 +120,33 @@ fun MainScreen(
  *  have it inform the business logic of the change in value.
  *
  * The arguments of the second [Row] are:
+ *  - `horizontalArrangement` = [Arrangement.Start] which places children horizontally such that they
+ *  are as close as possible to the beginning of the horizontal axis.
+ *  - `verticalAlignment` = [Alignment.CenterVertically] which causes the vertical alignment of the
+ *  layout's children to be centered about the centerline of the [Row].
+ *  - `modifier` = [Modifier.fillMaxWidth] which causes the [Row] to occupy its entire incoming
+ *  horizontal constraints.
+ *
+ * The `content` of the second [Row] consists of:
+ *  - an [Icon] whose `painter` argument causes it to render the drawable whose resource ID is
+ *  [R.drawable.ic_baseline_reorder_24] (four horizontal lines of equal length one atop the other,
+ *  centered horizontally in the [Icon]).
+ *  - an 8.dp wide [Spacer].
+ *  - a [FilterChip] whose `selected` argument is our `prioritySelected` [Boolean] variable, and
+ *  whose `onClick` argument is a lambda which toggles the value of `prioritySelected` and calls the
+ *  [FilterManager.priorityClicked] method of our [fm] field with the new value to inform the
+ *  business logic of the change. The `content` label argument of the [FilterChip] is a [Text] that
+ *  displays the `text` "Priority".
+ *  - an 8.dp wide [Spacer].
+ *  - a [FilterChip] whose `selected` argument is our `deadlineSelected` [Boolean] variable, and
+ *  whose `onClick` argument is a lambda which toggles the value of `deadlineSelected` and calls the
+ *  [FilterManager.deadlineClicked] method of our [fm] field with the new value to inform the
+ *  business logic of the change. The `content` label argument of the [FilterChip] is a [Text] that
+ *  displays the `text` "Deadline".
+ *
+ * @param fm a [FilterManager] constructed using the [TasksViewModel] view model of the app and the
+ * latest [TasksUiModel] that has been collected by the [TasksViewModel] and exposed to the UI
+ * as a [LiveData] wrapped [TasksUiModel].
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -171,23 +199,23 @@ fun OptionsBar(
             )
             Spacer(modifier = Modifier.width(8.dp))
             FilterChip(
+                selected = prioritySelected,
                 onClick = {
                     prioritySelected = !prioritySelected
                     fm.priorityClicked(prioritySelected)
                     Log.i("ProrityChip", "New value of selected is: $prioritySelected")
-                },
-                selected = prioritySelected
+                }
             ) {
                 Text(text = "Priority")
             }
             Spacer(modifier = Modifier.width(8.dp))
             FilterChip(
+                selected = deadlineSelected,
                 onClick = {
                     deadlineSelected = !deadlineSelected
                     fm.deadlineClicked(deadlineSelected)
                     Log.i("DeadlineChip", "New value of selected is: $deadlineSelected")
-                },
-                selected = deadlineSelected
+                }
             ) {
                 Text(text = "Deadline")
             }

@@ -99,9 +99,9 @@ class TasksViewModel(
     ) { tasks: List<Task>, userPreferences: UserPreferences ->
         return@combine TasksUiModel(
             tasks = filterSortTasks(
-                tasks,
-                userPreferences.showCompleted,
-                userPreferences.sortOrder
+                tasks = tasks,
+                showCompleted = userPreferences.showCompleted,
+                sortOrder = userPreferences.sortOrder
             ),
             showCompleted = userPreferences.showCompleted,
             sortOrder = userPreferences.sortOrder
