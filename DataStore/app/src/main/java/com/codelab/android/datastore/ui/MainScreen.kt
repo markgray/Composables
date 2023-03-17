@@ -81,18 +81,55 @@ fun MainScreen(
 }
 
 /**
- * The [BottomAppBar] of the [Scaffold] used by [MainScreen]
+ * The [BottomAppBar] of the [Scaffold] used by [MainScreen]. We start by initializing and remembering
+ * our [Boolean] variable `var showCompletedChecked` to a [MutableState] whose initial value is the
+ * result of calling the [FilterManager.showCompleted] method of our field [fm] (this will be used as
+ * the `checked` argument of our "Show completed tasks" [Switch], and controls whether the [Switch]
+ * is "checked", and its value is "toggled" by the `onCheckedChange` lambda argument of the [Switch]
+ * when the user clicks the [Switch]). Next we initialize and remember our [Boolean] variable
+ * `var prioritySelected` to a [MutableState] whose initial value is the result of calling the
+ * [FilterManager.priority] method of our field [fm] (this will be used as the `selected` argument
+ * of our "Priority" [FilterChip], and controls whether the [FilterChip] is "selected", and its
+ * value is "toggled" by the `onClick` lambda argument of the [FilterChip] when the user clicks the
+ * [FilterChip]). Then we initialize and remember our [Boolean] variable `var deadlineSelected` to a
+ * [MutableState] whose initial value is the result of calling the [FilterManager.deadline] method
+ * of our field [fm] (this will be used as the `selected` argument of our "Deadline" [FilterChip],
+ * and controls whether the [FilterChip] is "selected", and its value is "toggled" by the `onClick`
+ * lambda argument of the [FilterChip] when the user clicks the [FilterChip]).
+ *
+ * Our root Composable is a [Column] whose `content` consists of two [Row]'s. The arguments of the
+ * first [Row] are:
+ *  - `horizontalArrangement` = [Arrangement.Start] which places children horizontally such that they
+ *  are as close as possible to the beginning of the horizontal axis.
+ *  - `verticalAlignment` = [Alignment.CenterVertically] which causes the vertical alignment of the
+ *  layout's children to be centered about the centerline of the [Row].
+ *  - `modifier` = [Modifier.fillMaxWidth] which causes the [Row] to occupy its entire incoming
+ *  horizontal constraints.
+ *
+ * The `content` of the first [Row] consists of:
+ *  - an [Icon] whose `painter` argument causes it to render the drawable whose resource ID is
+ *  [R.drawable.ic_baseline_filter_list_24] (three horizontal lines of descending length one atop
+ *  the other, centered horizontally in the [Icon]).
+ *  - an 8.dp wide [Spacer].
+ *  - a [Text] displaying the `text` "Show completed tasks".
+ *  - an 8.dp wide [Spacer].
+ *  - a [Switch] whose `checked` argument is our [Boolean] variable `showCompletedChecked`, and
+ *  whose `onCheckedChange` lambda argument toggles the value of `showCompletedChecked` and then
+ *  calls the [FilterManager.showCompletedClicked] method of our [fm] field with the new value to
+ *  have it inform the business logic of the change in value.
+ *
+ * The arguments of the second [Row] are:
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OptionsBar(
     fm: FilterManager
 ) {
-    var showCompletedChecked by remember {
-        mutableStateOf(fm.showCompleted())
+    var showCompletedChecked: Boolean by remember {
+        mutableStateOf(value = fm.showCompleted())
     }
     Log.i("ShowCompleted", "Initial value of checked is: $showCompletedChecked")
-    var prioritySelected by remember {
+    var prioritySelected: Boolean by remember {
         mutableStateOf(fm.priority())
     }
     Log.i("ProrityChip", "Initial value of selected is: $prioritySelected")
@@ -111,9 +148,9 @@ fun OptionsBar(
                 painter = painterResource(R.drawable.ic_baseline_filter_list_24),
                 contentDescription = null
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(width = 8.dp))
             Text(text = "Show completed tasks")
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(width = 8.dp))
             Switch(
                 checked = showCompletedChecked,
                 onCheckedChange = {
