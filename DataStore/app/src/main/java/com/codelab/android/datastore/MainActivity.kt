@@ -19,6 +19,7 @@ import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import com.codelab.android.datastore.UserPreferences.SortOrder
 import com.codelab.android.datastore.data.Task
@@ -91,7 +92,7 @@ private val Context.userPreferencesStore: DataStore<UserPreferences> by dataStor
     }
 )
 /**
- * TODO: Add kdoc
+ * This is the main Activity of our app.
  */
 class MainActivity : ComponentActivity() {
     /**
@@ -101,7 +102,18 @@ class MainActivity : ComponentActivity() {
     private lateinit var viewModel: TasksViewModel
 
     /**
-     * TODO: Add kdoc
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`.
+     * Then we initialize our [TasksViewModel] field [viewModel] to the singleton instance that is
+     * contructed using our [TasksViewModelFactory] from the [TasksRepository] singleton and the
+     * [UserPreferencesRepository] constructed to use our apps [DataStore] of [UserPreferences]
+     * extension property [userPreferencesStore]. Next we initialize our [TasksUiModel] variable
+     * `var initialTasksUiModel` to an empty instance, then add an observer to the [LiveData] wrapped
+     * [UserPreferences] property [TasksViewModel.initialSetupEvent] which will update the contents
+     * of `initialTasksUiModel` when a new value is available.
+     *
+     * With the initial setup taken care of we call the [setContent] method to have it compose its
+     * Composable `content` into the activity. The content will become the root view of the activity.
+     *
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

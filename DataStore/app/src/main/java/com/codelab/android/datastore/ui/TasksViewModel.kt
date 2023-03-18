@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import com.codelab.android.datastore.MainActivity
 import com.codelab.android.datastore.UserPreferences
 import com.codelab.android.datastore.UserPreferences.SortOrder
 import com.codelab.android.datastore.data.Task
@@ -73,7 +74,11 @@ class TasksViewModel(
 ) : ViewModel() {
 
     /**
-     * TODO: Add kdoc
+     * This [LiveData] wrapped [UserPreferences] retrieves the initial [UserPreferences] which is
+     * returned by the [UserPreferencesRepository.fetchInitialPreferences] method of our field
+     * [userPreferencesRepository] and uses the uses `emit` to set the value.  An observer is added
+     * to it in the `onCreate` override of [MainActivity] which updates the contents of its
+     * `initialTasksUiModel` variable [TasksUiModel] when it changes value.
      */
     val initialSetupEvent: LiveData<UserPreferences> = liveData {
         emit(userPreferencesRepository.fetchInitialPreferences())
