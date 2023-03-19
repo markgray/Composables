@@ -38,6 +38,59 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 // Material 3 color schemes
+
+/**
+ * Our dark Material color scheme.
+ *
+ *  - `primary` [replyDarkPrimary] - The primary color is the color displayed most frequently across
+ *  your app’s screens and components.
+ *  - `onPrimary` [replyDarkOnPrimary] - Color used for text and icons displayed on top of the
+ *  primary color.
+ *  - `primaryContainer` [replyDarkPrimaryContainer] - The preferred tonal color of containers.
+ *  - `onPrimaryContainer` [replyDarkOnPrimaryContainer] - The color (and state variants) that
+ *  should be used for content on top of primaryContainer.
+ *  - `inversePrimary` [replyDarkPrimaryInverse] - Color to be used as a "primary" color in places
+ *  where the inverse color scheme is needed, such as the button on a SnackBar.
+ *  - `secondary` [replyDarkSecondary] - The secondary color provides more ways to accent and
+ *  distinguish your product. Secondary colors are best for: Floating action buttons; Selection
+ *  controls, like checkboxes and radio buttons; Highlighting selected text; Links and headlines.
+ *  - `onSecondary` [replyDarkOnSecondary] - Color used for text and icons displayed on top of the
+ *  secondary color.
+ *  - `secondaryContainer` [replyDarkSecondaryContainer] - A tonal color to be used in containers.
+ *  - `onSecondaryContainer` [replyDarkOnSecondaryContainer] - The color (and state variants) that
+ *  should be used for content on top of secondaryContainer.
+ *  - `tertiary` [replyDarkTertiary] - The tertiary color that can be used to balance primary and
+ *  secondary colors, or bring heightened attention to an element such as an input field.
+ *  - `onTertiary` [replyDarkOnTertiary] - Color used for text and icons displayed on top of the
+ *  tertiary color.
+ *  - `tertiaryContainer` [replyDarkTertiaryContainer] - A tonal color to be used in containers.
+ *  - `onTertiaryContainer` [replyDarkOnTertiaryContainer] - The color (and state variants) that
+ *  should be used for content on top of tertiaryContainer.
+ *  - `background` [replyDarkBackground] - The background color that appears behind scrollable content.
+ *  - `onBackground` [replyDarkOnBackground] - Color used for text and icons displayed on top of
+ *  the background color.
+ *  - `surface` [replyDarkSurface]- The surface color that affect surfaces of components, such as
+ *  cards, sheets, and menus.
+ *  - `onSurface [replyDarkOnSurface]` - Color used for text and icons displayed on top of the surface color.
+ *  - `surfaceVariant` [replyDarkSurfaceVariant] - Another option for a color with similar uses
+ *  of surface.
+ *  - `onSurfaceVariant` [replyDarkOnSurfaceVariant] - The color (and state variants) that can be
+ *  used for content on top of surface.
+ *  - `surfaceTint` (Uses default) - This color will be used by components that apply tonal elevation
+ *  and is applied on top of surface. The higher the elevation the more this color is used.
+ *  - `inverseSurface` [replyDarkInverseSurface] - A color that contrasts sharply with surface.
+ *  Useful for surfaces that sit on top of other surfaces with surface color.
+ *  - `inverseOnSurface` [replyDarkInverseOnSurface] - A color that contrasts well with inverseSurface.
+ *  Useful for content that sits on top of containers that are inverseSurface.
+ *  - `error` [replyDarkError] - The error color is used to indicate errors in components, such as
+ *  invalid text in a text field.
+ *  - `onError` [replyDarkOnError] - Color used for text and icons displayed on top of the error color.
+ *  - `errorContainer` [replyDarkErrorContainer] - The preferred tonal color of error containers.
+ *  - `onErrorContainer` [replyDarkOnErrorContainer] - The color (and state variants) that should be
+ *  used for content on top of errorContainer.
+ *  - `outline` [replyDarkOutline] - Subtle color used for boundaries. Outline color role adds
+ *  contrast for accessibility purposes.
+ */
 private val replyDarkColorScheme: ColorScheme = darkColorScheme(
     primary = replyDarkPrimary,
     onPrimary = replyDarkOnPrimary,
@@ -67,6 +120,60 @@ private val replyDarkColorScheme: ColorScheme = darkColorScheme(
     outline = replyDarkOutline
 )
 
+/**
+ * Our light Material color scheme.
+ *
+ *  - `primary` [replyLightPrimary] - The primary color is the color displayed most frequently across
+ *  your app’s screens and components.
+ *  - `onPrimary` [replyLightOnPrimary] - Color used for text and icons displayed on top of the
+ *  primary color.
+ *  - `primaryContainer` [replyLightPrimaryContainer] - The preferred tonal color of containers.
+ *  - `onPrimaryContainer` [replyLightOnPrimaryContainer] - The color (and state variants) that
+ *  should be used for content on top of primaryContainer.
+ *  - `inversePrimary` [replyLightPrimaryInverse] - Color to be used as a "primary" color in places
+ *  where the inverse color scheme is needed, such as the button on a SnackBar.
+ *  - `secondary` [replyLightSecondary] - The secondary color provides more ways to accent and
+ *  distinguish your product. Secondary colors are best for: Floating action buttons; Selection
+ *  controls, like checkboxes and radio buttons; Highlighting selected text; Links and headlines.
+ *  - `onSecondary` [replyLightOnSecondary] - Color used for text and icons displayed on top of
+ *  the secondary color.
+ *  - `secondaryContainer` [replyLightSecondaryContainer] - A tonal color to be used in containers.
+ *  - `onSecondaryContainer` [replyLightOnSecondaryContainer] - The color (and state variants) that
+ *  should be used for content on top of secondaryContainer.
+ *  - `tertiary` [replyLightTertiary] - The tertiary color that can be used to balance primary and
+ *  secondary colors, or bring heightened attention to an element such as an input field.
+ *  - `onTertiary` [replyLightOnTertiary] - Color used for text and icons displayed on top of the
+ *  tertiary color.
+ *  - `tertiaryContainer` [replyLightTertiaryContainer] - A tonal color to be used in containers.
+ *  - `onTertiaryContainer` [replyLightOnTertiaryContainer] - The color (and state variants) that
+ *  should be used for content on top of tertiaryContainer.
+ *  - `background` [replyLightBackground] - The background color that appears behind scrollable
+ *  content.
+ *  - `onBackground` [replyLightOnBackground] - Color used for text and icons displayed on top of
+ *  the background color.
+ *  - `surface` [replyLightSurface] - The surface color that affect surfaces of components, such
+ *  as cards, sheets, and menus.
+ *  - `onSurface` [replyLightOnSurface] - Color used for text and icons displayed on top of the
+ *  surface color.
+ *  - `surfaceVariant` [replyLightSurfaceVariant] - Another option for a color with similar uses
+ *  of surface.
+ *  - `onSurfaceVariant` [replyLightOnSurfaceVariant] - The color (and state variants) that can be
+ *  used for content on top of surface.
+ *  - `surfaceTint` (Uses default) - This color will be used by components that apply tonal elevation
+ *  and is applied on top of surface. The higher the elevation the more this color is used.
+ *  - `inverseSurface` [replyLightInverseSurface] - A color that contrasts sharply with surface.
+ *  Useful for surfaces that sit on top of other surfaces with surface color.
+ *  - `inverseOnSurface` [replyLightInverseOnSurface] - A color that contrasts well with
+ *  inverseSurface. Useful for content that sits on top of containers that are inverseSurface.
+ *  - `error` [replyLightError] - The error color is used to indicate errors in components, such
+ *  as invalid text in a text field.
+ *  - `onError` [replyLightOnError] - Color used for text and icons displayed on top of the error color.
+ *  - `errorContainer` [replyLightErrorContainer] - The preferred tonal color of error containers.
+ *  - `onErrorContainer` [replyLightOnErrorContainer] - The color (and state variants) that should
+ *  be used for content on top of errorContainer.
+ *  - `outline` [replyLightOutline] - Subtle color used for boundaries. Outline color role adds
+ *  contrast for accessibility purposes.
+ */
 private val replyLightColorScheme: ColorScheme = lightColorScheme(
     primary = replyLightPrimary,
     onPrimary = replyLightOnPrimary,

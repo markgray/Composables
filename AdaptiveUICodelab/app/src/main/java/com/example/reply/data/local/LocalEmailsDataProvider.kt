@@ -24,9 +24,11 @@ import com.example.reply.data.MailboxType
 /**
  * A static data store of [Email]s.
  */
-
 object LocalEmailsDataProvider {
 
+    /**
+     * A [List] of [Email] instances which belong together as the `threads` of an [Email]
+     */
     private val threads = listOf(
         Email(
             id = 4L,
@@ -105,7 +107,7 @@ object LocalEmailsDataProvider {
     )
 
     /**
-     *
+     * The [List] of all of the [Email] instances in our database.
      */
     val allEmails: MutableList<Email> = mutableListOf(
         Email(
