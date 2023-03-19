@@ -6,13 +6,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
@@ -113,7 +116,26 @@ class MainActivity : ComponentActivity() {
      *
      * With the initial setup taken care of we call the [setContent] method to have it compose its
      * Composable `content` into the activity. The content will become the root view of the activity.
+     * In the `content` we initialize and remember our [TasksUiModel] variable `var tasksUiModel`
+     * with its initial value `initialTasksUiModel`. Then we wrap our UI in [DataStoreTheme], where
+     * we add an observer to the [TasksViewModel.tasksUiModel] field of [viewModel] which updates
+     * `tasksUiModel` to the new value when the field changes value. Our root Composable is a
+     * [Surface] whose `modifier` argument is a [Modifier.fillMaxSize] that causes it to occupy the
+     * entire incoming constraints and its `color` argument is the [Colors.background] color of the
+     * [MaterialTheme.colors] (which is the default [Color.White] for light theme or `Color(0xFF121212)`
+     * for dark theme since [DataStoreTheme] does not override them). Inside the [Surface] we
+     * initialize our [Flow] of [List] of [Task] variable `val taskListFlow` using the [flow] function
+     * with the block argument of [flow] calling `emit` with its `value` argument the
+     * [TasksUiModel.tasks] field of our `tasksUiModel` variable. Next we initialize and remember our
+     * [Boolean] variable `var showStartupScreen` using a [MutableState] whose initial value is `true`.
+     * Then if `showStartupScreen` is `true` we compose a [StartUpScreen] whose `onTimeout` argument
+     * is a lambda which sets `showStartupScreen` to `false` ([StartUpScreen] will call this lambda
+     * after 2000 milliseconds causing us to be recomposed and the `else` branch of the `if` statement
+     * will be taken instead). If `showStartupScreen` is `false` we compose a [MainScreen] whose
+     * `viewModel` argument is our [viewModel] parameter, whose `tasksUiModel` argument is our
+     * `tasksUiModel` variable and whose `tasks` argument is our `taskListFlow` variable.
      *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so we ignore this.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,7 +165,7 @@ class MainActivity : ComponentActivity() {
                 mutableStateOf(initialTasksUiModel)
             }
             DataStoreTheme {
-                viewModel.tasksUiModel.observe(this) { newtasksUiModel ->
+                viewModel.tasksUiModel.observe(this) { newtasksUiModel: TasksUiModel ->
                     tasksUiModel = newtasksUiModel
                 }
                 // A surface container using the 'background' color from the theme
@@ -152,7 +174,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val taskListFlow: Flow<List<Task>> = flow {
-                        emit(tasksUiModel.tasks)
+                        emit(value = tasksUiModel.tasks)
                     }
                     var showStartupScreen: Boolean by remember { mutableStateOf(true) }
                     if (showStartupScreen) {

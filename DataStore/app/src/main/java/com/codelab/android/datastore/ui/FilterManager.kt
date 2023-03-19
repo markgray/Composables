@@ -29,6 +29,8 @@ class FilterManager(
      * or [SortOrder.BY_DEADLINE_AND_PRIORITY] we return `true`, otherwise we return `false`. This is
      * used as the initial value of the "remembered" `MutableState` `prioritySelected` variable of the
      * [OptionsBar] that is used as the `selected` argument of the "Priority" [FilterChip].
+     *
+     * @return `true` if the "Sort by Priority" option is set.
      */
     fun priority(): Boolean {
         return when (tasksUiModel.sortOrder) {
@@ -44,6 +46,8 @@ class FilterManager(
      * or [SortOrder.BY_DEADLINE_AND_PRIORITY] we return `true`, otherwise we return `false`. This is
      * used as the initial value of the "remembered" `MutableState` `deadlineSelected` variable of the
      * [OptionsBar] that is used as the `selected` argument of the "Deadline" [FilterChip].
+     *
+     * @return `true` if the "Sort by Deadline" option is set.
      */
     fun deadline(): Boolean {
         return when (tasksUiModel.sortOrder) {
@@ -59,6 +63,8 @@ class FilterManager(
      * [TasksUiModel.showCompleted] field of our [tasksUiModel] field. This is used as the initial
      * value of the "remembered" `MutableState` `showCompletedChecked` variable of the
      * [OptionsBar] that is used as the `checked` argument of the "Show completed tasks" [Switch].
+     *
+     * @return `true` if the "Show completed tasks" option is set.
      */
     fun showCompleted(): Boolean {
         return tasksUiModel.showCompleted

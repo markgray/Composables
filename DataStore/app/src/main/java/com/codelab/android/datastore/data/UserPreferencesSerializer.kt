@@ -17,7 +17,6 @@ import java.io.OutputStream
  * of [UserPreferences] as the `userPreferencesStore` extension property of [Context] in our
  * [MainActivity] file.
  */
-@Suppress("BlockingMethodInNonBlockingContext")
 object UserPreferencesSerializer : Serializer<UserPreferences> {
     /**
      * The default instance of [UserPreferences] which `SingleProcessDataStore` will return when its

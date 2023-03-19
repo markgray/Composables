@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate") // I like public variables, and the unused bits allow for future changes
 
 package com.codelab.android.datastore.ui
 
@@ -238,9 +238,18 @@ class TasksViewModelFactory(
     private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModelProvider.Factory {
 
+    /**
+     * Creates a new instance of the [modelClass] Class. If [modelClass] is either the same as, or
+     * is a superclass or superinterface of [TasksViewModel] we return a new instance of [TasksViewModel]
+     * constructed using our [TasksRepository] field [repository] and our [UserPreferencesRepository]
+     * field [userPreferencesRepository]. Otherwise we throw [IllegalArgumentException].
+     *
+     * @param modelClass a [Class] whose instance is requested
+     * @return a newly created [ViewModel]
+     */
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TasksViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
+            @Suppress("UNCHECKED_CAST") // It is checked by above if statement
             return TasksViewModel(repository, userPreferencesRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
