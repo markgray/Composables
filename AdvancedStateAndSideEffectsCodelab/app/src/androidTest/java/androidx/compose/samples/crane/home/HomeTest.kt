@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport") // "UnusedImport" left in for educational purposes
+
 package androidx.compose.samples.crane.home
 
 import androidx.compose.ui.test.assertIsDisplayed
