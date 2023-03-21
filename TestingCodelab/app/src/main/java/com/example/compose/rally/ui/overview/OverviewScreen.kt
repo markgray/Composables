@@ -267,7 +267,7 @@ fun AlertHeader(onClickSeeAll: () -> Unit) {
  *
  * @param message the [String] for our [Text] to display.
  */
-@Suppress("SameParameterValue")
+@Suppress("SameParameterValue") // Suggested change would make the Composable less reusable.
 @Composable
 private fun AlertItem(message: String) {
     Row(
