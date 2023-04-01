@@ -6,7 +6,7 @@ plugins {
 
 
 android {
-    namespace 'com.codelab.android.trackmysleepquality'
+    namespace 'com.example.android.trackmysleepquality'
     compileSdk 33
 
     defaultConfig {

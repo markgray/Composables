@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.codelab.android.trackmysleepquality.database
+package com.example.android.trackmysleepquality.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.codelab.android.trackmysleepquality.database.SleepNight
 
 
 /**

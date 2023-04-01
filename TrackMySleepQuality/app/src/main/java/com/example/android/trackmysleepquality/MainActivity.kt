@@ -1,4 +1,4 @@
-package com.codelab.android.trackmysleepquality
+package com.example.android.trackmysleepquality
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.codelab.android.trackmysleepquality.ui.theme.TrackMySleepQualityTheme
+import com.example.android.trackmysleepquality.ui.theme.TrackMySleepQualityTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

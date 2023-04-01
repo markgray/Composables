@@ -1,4 +1,4 @@
-package com.codelab.android.trackmysleepquality
+package com.example.android.trackmysleepquality
 
 import org.junit.Test
 

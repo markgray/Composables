@@ -1,4 +1,4 @@
-package com.codelab.android.trackmysleepquality.ui.theme
+package com.example.android.trackmysleepquality.ui.theme
 
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme

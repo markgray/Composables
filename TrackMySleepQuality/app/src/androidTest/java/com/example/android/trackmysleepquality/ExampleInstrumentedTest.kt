@@ -1,4 +1,4 @@
-package com.codelab.android.trackmysleepquality
+package com.example.android.trackmysleepquality
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
