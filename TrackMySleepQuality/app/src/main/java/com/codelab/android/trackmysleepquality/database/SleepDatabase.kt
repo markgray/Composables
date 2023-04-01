@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.trackmysleepquality.database
+package com.codelab.android.trackmysleepquality.database
 
 import android.content.Context
 import androidx.room.Database
