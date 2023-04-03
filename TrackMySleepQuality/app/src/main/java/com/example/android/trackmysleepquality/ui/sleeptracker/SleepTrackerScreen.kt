@@ -1,5 +1,6 @@
 package com.example.android.trackmysleepquality.ui.sleeptracker
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,22 +17,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.android.trackmysleepquality.ui.theme.Purple500
 
 /**
  * TODO: Add kdoc
  */
 @Composable
-fun SleepTrackerScreen() {
+fun SleepTrackerScreen(
+    viewModel: SleepTrackerViewModel
+) {
     Scaffold(
-        topBar = { StartStopBar() },
-        bottomBar = { ClearBar() }
+        topBar = { StartStopBar(
+            onStartClicked = { viewModel.onStart() },
+            onStopClicked = { viewModel.onStop() }
+        ) },
+        bottomBar = { ClearBar(
+            onClearClicked = { viewModel.onClear() }
+        ) }
     ) { paddingValues: PaddingValues ->
-
         LazyColumn(modifier = Modifier.padding(paddingValues))
         {
-
+            item {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .background(color = Purple500)
+                        .wrapContentSize(align = Alignment.Center),
+                    text = "Sleep Results",
+                    fontSize = 30.sp
+                )
+            }
         }
-
     }
 }
 
@@ -39,15 +57,20 @@ fun SleepTrackerScreen() {
  * TODO: Add kdoc
  */
 @Composable
-fun StartStopBar() {
-    Row(modifier = Modifier
+fun StartStopBar(
+    modifier: Modifier = Modifier,
+    onStartClicked: () -> Unit,
+    onStopClicked: () -> Unit
+) {
+    Row(modifier = modifier
         .fillMaxWidth()
-        .wrapContentSize(align = Alignment.Center)) {
-        Button(onClick = { /*TODO*/ }) {
+        .wrapContentSize(align = Alignment.Center)
+    ) {
+        Button(onClick = { onStartClicked() }) {
             Text(text = "Start")
         }
-        Spacer(modifier = Modifier.width(8.dp))
-        Button(onClick = { /*TODO*/ }) {
+        Spacer(modifier = modifier.width(8.dp))
+        Button(onClick = { onStopClicked() }) {
             Text(text = "Stop")
         }
     }
@@ -57,13 +80,17 @@ fun StartStopBar() {
  * TODO: Add kdoc
  */
 @Composable
-fun ClearBar() {
-    Box(modifier = Modifier
+fun ClearBar(
+    modifier: Modifier = Modifier,
+    onClearClicked: () -> Unit
+) {
+    Box(modifier = modifier
         .fillMaxWidth(1f)
-        .wrapContentSize(align = Alignment.Center)) {
+        .wrapContentSize(align = Alignment.Center)
+    ) {
         Button(
-            modifier = Modifier.wrapContentSize(align = Alignment.Center),
-            onClick = { /*TODO*/ }
+            modifier = modifier.wrapContentSize(align = Alignment.Center),
+            onClick = { onClearClicked() }
         ) {
             Text(text = "Clear")
         }

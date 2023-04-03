@@ -19,4 +19,22 @@ class SleepTrackerViewModel(
      * Hold a reference to SleepDatabase via SleepDatabaseDao.
      */
     val database: SleepDatabaseDao = dataSource
+
+    /**
+     * TODO: Add kdoc
+     */
+    fun onStart() {
+    }
+
+    /**
+     * TODO: Add kdoc
+     */
+    fun onStop() {
+    }
+
+    /**
+     * TODO: Add kdoc
+     */
+    fun onClear() {
+    }
 }
