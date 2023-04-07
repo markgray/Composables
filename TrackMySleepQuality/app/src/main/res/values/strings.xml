@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">TrackMySleepQuality</string>
+
+    <!-- Sleep quality strings -->
+    <string name="how_was_hour_sleep">How was your sleep?</string>
+    <string name="zero_very_bad">Very bad</string>
+    <string name="one_poor">Poor</string>
+    <string name="two_soso">So-so</string>
+    <string name="three_ok">OK</string>
+    <string name="four_pretty_good">Pretty good</string>
+    <string name="five_excellent">Excellent!</string>
 </resources>
