@@ -15,7 +15,7 @@
  */
 
 buildscript {
-    ext.composeCompiler_version = '1.4.0'
+    ext.composeCompiler_version = '1.4.1'
     repositories {
         google()
         mavenCentral()
