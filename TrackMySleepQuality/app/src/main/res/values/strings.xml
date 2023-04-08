@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">TrackMySleepQuality</string>
 
     <!-- Sleep quality strings -->
@@ -9,4 +9,8 @@
     <string name="three_ok">OK</string>
     <string name="four_pretty_good">Pretty good</string>
     <string name="five_excellent">Excellent!</string>
+
+    <string name="minutes_length" tools:ignore="PluralsCandidate">%1$d minutes on %2$s</string>
+    <string name="hours_length" tools:ignore="PluralsCandidate">%1$d hours on %2$s</string>
+    <string name="seconds_length" tools:ignore="PluralsCandidate">%1$d seconds on %2$s</string>
 </resources>

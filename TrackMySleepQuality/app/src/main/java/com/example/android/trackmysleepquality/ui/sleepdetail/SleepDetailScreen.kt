@@ -2,8 +2,8 @@ package com.example.android.trackmysleepquality.ui.sleepdetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.example.android.trackmysleepquality.R
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.ui.theme.TrackMySleepQualityTheme
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 /**
  * TODO: Add kdoc
@@ -24,7 +27,7 @@ import com.example.android.trackmysleepquality.ui.theme.TrackMySleepQualityTheme
 fun SleepDetailScreen(sleepNight: SleepNight) {
     TrackMySleepQualityTheme {
         Column(
-            modifier = Modifier.wrapContentSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             Image(
                 modifier = Modifier
@@ -37,6 +40,14 @@ fun SleepDetailScreen(sleepNight: SleepNight) {
                 modifier = Modifier
                     .align(alignment = Alignment.CenterHorizontally),
                 text = stringResource(selectSleepQualityStringId(sleepNight))
+            )
+            Text(
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally),
+                text = convertDurationToFormatted(
+                    sleepNight.startTimeMilli,
+                    sleepNight.endTimeMilli
+                )
             )
             Button(
                 modifier = Modifier
@@ -81,12 +92,46 @@ fun selectSleepQualityStringId(item: SleepNight?): Int {
 }
 
 /**
+ * Number of milliseconds in one minute
+ */
+private val ONE_MINUTE_MILLIS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES)
+
+/**
+ * Number of milliseconds in one hour
+ */
+private val ONE_HOUR_MILLIS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
+
+/**
+ * TODO: Add kdoc
+ */
+@Composable
+fun convertDurationToFormatted(startTimeMilli: Long, endTimeMilli: Long): String {
+    val durationMilli = endTimeMilli - startTimeMilli
+    val weekdayString = SimpleDateFormat("EEEE", Locale.getDefault()).format(startTimeMilli)
+    val returnString = when {
+        durationMilli < ONE_MINUTE_MILLIS -> {
+            val seconds = TimeUnit.SECONDS.convert(durationMilli, TimeUnit.MILLISECONDS)
+            stringResource(R.string.seconds_length, seconds, weekdayString)
+        }
+        durationMilli < ONE_HOUR_MILLIS -> {
+            val minutes = TimeUnit.MINUTES.convert(durationMilli, TimeUnit.MILLISECONDS)
+            stringResource(R.string.minutes_length, minutes, weekdayString)
+        }
+        else -> {
+            val hours = TimeUnit.HOURS.convert(durationMilli, TimeUnit.MILLISECONDS)
+            stringResource(R.string.hours_length, hours, weekdayString)
+        }
+    }
+    return returnString
+}
+
+/**
  * TODO: Add kdoc
  */
 fun fakeSleepNight(): SleepNight {
     val sleepNight = SleepNight()
     sleepNight.nightId = 1
-    sleepNight.startTimeMilli = sleepNight.startTimeMilli - 3600L
+    sleepNight.endTimeMilli = sleepNight.startTimeMilli + 36_500_000L
     sleepNight.sleepQuality = 4
     return sleepNight
 }

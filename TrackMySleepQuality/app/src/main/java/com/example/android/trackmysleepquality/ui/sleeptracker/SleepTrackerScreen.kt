@@ -3,6 +3,7 @@ package com.example.android.trackmysleepquality.ui.sleeptracker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,9 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.android.trackmysleepquality.R
+import com.example.android.trackmysleepquality.database.SleepNight
+import com.example.android.trackmysleepquality.ui.sleepdetail.fakeSleepNight
+import com.example.android.trackmysleepquality.ui.sleepdetail.selectSleepImageId
+import com.example.android.trackmysleepquality.ui.sleepdetail.selectSleepQualityStringId
 import com.example.android.trackmysleepquality.ui.theme.Purple500
 
 /**
@@ -33,6 +38,10 @@ import com.example.android.trackmysleepquality.ui.theme.Purple500
 fun SleepTrackerScreen(
     viewModel: SleepTrackerViewModel
 ) {
+    val sleepNightList: List<SleepNight> = listOf(
+        fakeSleepNight(), fakeSleepNight(), fakeSleepNight(), fakeSleepNight(),
+        fakeSleepNight(), fakeSleepNight(), fakeSleepNight()
+    )
     Scaffold(
         topBar = {
             StartStopBar(
@@ -64,33 +73,8 @@ fun SleepTrackerScreen(
                     fontSize = 30.sp
                 )
             }
-            item {
-                Image(
-                    modifier = Modifier.size(64.dp),
-                    painter = painterResource(id = R.drawable.ic_sleep_0),
-                    contentDescription = null
-                )
-            }
-            item {
-                Image(
-                    modifier = Modifier.size(64.dp),
-                    painter = painterResource(id = R.drawable.ic_sleep_0),
-                    contentDescription = null
-                )
-            }
-            item {
-                Image(
-                    modifier = Modifier.size(64.dp),
-                    painter = painterResource(id = R.drawable.ic_sleep_0),
-                    contentDescription = null
-                )
-            }
-            item {
-                Image(
-                    modifier = Modifier.size(64.dp),
-                    painter = painterResource(id = R.drawable.ic_sleep_0),
-                    contentDescription = null
-                )
+            items(sleepNightList.size) { index ->
+                SleepNightItem(sleepNight = sleepNightList[index])
             }
         }
     }
@@ -140,5 +124,20 @@ fun ClearBar(
         ) {
             Text(text = "Clear")
         }
+    }
+}
+
+/**
+ * TODO: Add kdoc
+ */
+@Composable
+fun SleepNightItem(sleepNight: SleepNight) {
+    Column {
+        Image(
+            modifier = Modifier.size(64.dp),
+            painter = painterResource(id = selectSleepImageId(sleepNight)),
+            contentDescription = null
+        )
+        Text(text = stringResource(id = selectSleepQualityStringId(sleepNight)))
     }
 }
