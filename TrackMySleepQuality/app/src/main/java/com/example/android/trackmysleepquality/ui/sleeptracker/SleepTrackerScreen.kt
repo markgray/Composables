@@ -2,11 +2,13 @@ package com.example.android.trackmysleepquality.ui.sleeptracker
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,12 +38,13 @@ import com.example.android.trackmysleepquality.ui.theme.Purple500
  */
 @Composable
 fun SleepTrackerScreen(
-    viewModel: SleepTrackerViewModel
+    viewModel: SleepTrackerViewModel,
+    onSleepNightClicked: (SleepNight) -> Unit
 ) {
-    val sleepNightList: List<SleepNight> = listOf(
-        fakeSleepNight(), fakeSleepNight(), fakeSleepNight(), fakeSleepNight(),
-        fakeSleepNight(), fakeSleepNight(), fakeSleepNight()
-    )
+    val sleepNightList: MutableList<SleepNight> = mutableListOf()
+    repeat(40) {
+        sleepNightList.add(fakeSleepNight())
+    }
     Scaffold(
         topBar = {
             StartStopBar(
@@ -74,7 +77,10 @@ fun SleepTrackerScreen(
                 )
             }
             items(sleepNightList.size) { index ->
-                SleepNightItem(sleepNight = sleepNightList[index])
+                SleepNightItem(
+                    sleepNight = sleepNightList[index],
+                    onClicked = onSleepNightClicked
+                )
             }
         }
     }
@@ -131,13 +137,24 @@ fun ClearBar(
  * TODO: Add kdoc
  */
 @Composable
-fun SleepNightItem(sleepNight: SleepNight) {
-    Column {
+fun SleepNightItem(
+    sleepNight: SleepNight,
+    onClicked: (SleepNight) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center)
+            .clickable { onClicked(sleepNight) }
+    ) {
         Image(
             modifier = Modifier.size(64.dp),
             painter = painterResource(id = selectSleepImageId(sleepNight)),
             contentDescription = null
         )
-        Text(text = stringResource(id = selectSleepQualityStringId(sleepNight)))
+        Text(
+            modifier = Modifier.wrapContentSize(Alignment.Center),
+            text = stringResource(id = selectSleepQualityStringId(sleepNight))
+        )
     }
 }

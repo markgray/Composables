@@ -63,8 +63,8 @@ fun SleepDetailScreen(sleepNight: SleepNight) {
 /**
  * TODO: Add kdoc
  */
-fun selectSleepImageId(item: SleepNight?): Int {
-    return when (item?.sleepQuality) {
+fun selectSleepImageId(sleepNight: SleepNight?): Int {
+    return when (sleepNight?.sleepQuality) {
         0 -> R.drawable.ic_sleep_0
         1 -> R.drawable.ic_sleep_1
         2 -> R.drawable.ic_sleep_2
@@ -79,8 +79,8 @@ fun selectSleepImageId(item: SleepNight?): Int {
 /**
  * TODO: Add kdoc
  */
-fun selectSleepQualityStringId(item: SleepNight?): Int {
-    return when (item?.sleepQuality) {
+fun selectSleepQualityStringId(sleepNight: SleepNight?): Int {
+    return when (sleepNight?.sleepQuality) {
         0 -> R.string.zero_very_bad
         1 -> R.string.one_poor
         2 -> R.string.two_soso
@@ -132,7 +132,7 @@ fun fakeSleepNight(): SleepNight {
     val sleepNight = SleepNight()
     sleepNight.nightId = 1
     sleepNight.endTimeMilli = sleepNight.startTimeMilli + 36_500_000L
-    sleepNight.sleepQuality = 4
+    sleepNight.sleepQuality = (0..5).random()
     return sleepNight
 }
 

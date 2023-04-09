@@ -2,6 +2,7 @@ package com.example.android.trackmysleepquality
 
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
+import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerScreen
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerViewModel
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerViewModelFactory
@@ -42,7 +44,10 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     SleepTrackerScreen(
-                        viewModel = sleepTrackerViewModel
+                        viewModel = sleepTrackerViewModel,
+                        onSleepNightClicked = { sleepNight: SleepNight ->
+                            Log.i("MainActivity", "SleepNight clicked: $sleepNight")
+                        }
                     )
                 }
             }
