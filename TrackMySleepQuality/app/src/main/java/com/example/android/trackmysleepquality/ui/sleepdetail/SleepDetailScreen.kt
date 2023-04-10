@@ -1,6 +1,7 @@
 package com.example.android.trackmysleepquality.ui.sleepdetail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -9,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,10 +26,13 @@ import java.util.concurrent.TimeUnit
  * TODO: Add kdoc
  */
 @Composable
-fun SleepDetailScreen(sleepNight: SleepNight) {
+fun SleepDetailScreen(
+    sleepNight: SleepNight,
+    onCloseClicked: () -> Unit
+) {
     TrackMySleepQualityTheme {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().background(Color.White)
         ) {
             Image(
                 modifier = Modifier
@@ -52,7 +57,7 @@ fun SleepDetailScreen(sleepNight: SleepNight) {
             Button(
                 modifier = Modifier
                     .align(alignment = Alignment.CenterHorizontally),
-                onClick = { /*TODO*/ }
+                onClick = { onCloseClicked() }
             ) {
                 Text(text = "Close")
             }
@@ -81,6 +86,7 @@ fun selectSleepImageId(sleepNight: SleepNight?): Int {
  */
 fun selectSleepQualityStringId(sleepNight: SleepNight?): Int {
     return when (sleepNight?.sleepQuality) {
+        -1 -> R.string.dash_dash
         0 -> R.string.zero_very_bad
         1 -> R.string.one_poor
         2 -> R.string.two_soso
@@ -142,5 +148,8 @@ fun fakeSleepNight(): SleepNight {
 @Preview
 @Composable
 fun SleepDetailScreenPreview() {
-    SleepDetailScreen(fakeSleepNight())
+    SleepDetailScreen(
+        sleepNight = fakeSleepNight(),
+        onCloseClicked = {}
+    )
 }

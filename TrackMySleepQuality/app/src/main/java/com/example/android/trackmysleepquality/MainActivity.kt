@@ -8,11 +8,17 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
+import com.example.android.trackmysleepquality.ui.sleepdetail.SleepDetailScreen
+import com.example.android.trackmysleepquality.ui.sleepdetail.fakeSleepNight
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerScreen
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerViewModel
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerViewModelFactory
@@ -38,6 +44,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             TrackMySleepQualityTheme {
+                var showDetail: Boolean by remember { mutableStateOf(false) }
+                var sleepNightClicked: SleepNight = fakeSleepNight()
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -47,8 +55,16 @@ class MainActivity : ComponentActivity() {
                         viewModel = sleepTrackerViewModel,
                         onSleepNightClicked = { sleepNight: SleepNight ->
                             Log.i("MainActivity", "SleepNight clicked: $sleepNight")
+                            showDetail = true
+                            sleepNightClicked = sleepNight
                         }
                     )
+                    if (showDetail) {
+                        SleepDetailScreen(
+                            sleepNight = sleepNightClicked,
+                            onCloseClicked = { showDetail = false }
+                        )
+                    }
                 }
             }
         }
