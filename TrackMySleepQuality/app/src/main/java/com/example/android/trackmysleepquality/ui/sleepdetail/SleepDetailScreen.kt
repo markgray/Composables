@@ -136,7 +136,7 @@ fun convertDurationToFormatted(startTimeMilli: Long, endTimeMilli: Long): String
  */
 fun fakeSleepNight(): SleepNight {
     val sleepNight = SleepNight()
-    sleepNight.nightId = 1
+    sleepNight.nightId = 0
     sleepNight.endTimeMilli = sleepNight.startTimeMilli + 36_500_000L
     sleepNight.sleepQuality = (0..5).random()
     return sleepNight

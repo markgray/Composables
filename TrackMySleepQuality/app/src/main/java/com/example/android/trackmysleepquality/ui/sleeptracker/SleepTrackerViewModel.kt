@@ -111,9 +111,24 @@ class SleepTrackerViewModel(
      * We use our [uiScope]  to launch on the UI [CoroutineScope] a call to our suspending method
      * [getTonightFromDatabase] and set the value of [tonight] to the [SleepNight] it returns.
      */
-    private fun initializeTonight() {
+    fun initializeTonight() {
         uiScope.launch {
             tonight.value = getTonightFromDatabase()
+        }
+    }
+
+    /**
+     * TODO: Add kdoc
+     */
+    fun onSetSleepQuality(quality: Int) {
+        uiScope.launch {
+            // IO is a thread pool for running operations that access the disk, such as
+            // our Room database.
+            withContext(Dispatchers.IO) {
+                val tonight: SleepNight = database.getTonight()!!
+                tonight.sleepQuality = quality
+                database.update(tonight)
+            }
         }
     }
 

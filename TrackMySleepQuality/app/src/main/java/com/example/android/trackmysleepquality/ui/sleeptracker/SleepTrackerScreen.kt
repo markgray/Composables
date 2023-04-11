@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android.trackmysleepquality.database.SleepNight
-import com.example.android.trackmysleepquality.ui.sleepdetail.fakeSleepNight
+//import com.example.android.trackmysleepquality.ui.sleepdetail.fakeSleepNight
 import com.example.android.trackmysleepquality.ui.sleepdetail.selectSleepImageId
 import com.example.android.trackmysleepquality.ui.sleepdetail.selectSleepQualityStringId
 import com.example.android.trackmysleepquality.ui.theme.Purple500
@@ -39,17 +39,23 @@ import com.example.android.trackmysleepquality.ui.theme.Purple500
 @Composable
 fun SleepTrackerScreen(
     viewModel: SleepTrackerViewModel,
-    onSleepNightClicked: (SleepNight) -> Unit
+    sleepNightList: List<SleepNight>,
+    onSleepNightClicked: (SleepNight) -> Unit,
+    onStartClicked: () -> Unit,
+    onStopClicked: () -> Unit
 ) {
-    val sleepNightList: MutableList<SleepNight> = mutableListOf()
-    repeat(40) {
-        sleepNightList.add(fakeSleepNight())
-    }
+
     Scaffold(
         topBar = {
             StartStopBar(
-                onStartClicked = { viewModel.onStart() },
-                onStopClicked = { viewModel.onStop() }
+                onStartClicked = {
+                    viewModel.onStart()
+                    onStartClicked()
+                },
+                onStopClicked = {
+                    viewModel.onStop()
+                    onStopClicked()
+                }
             )
         },
         bottomBar = {

@@ -19,10 +19,15 @@ import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.ui.sleepdetail.SleepDetailScreen
 import com.example.android.trackmysleepquality.ui.sleepdetail.fakeSleepNight
+import com.example.android.trackmysleepquality.ui.sleepquality.SleepQualityScreen
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerScreen
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerViewModel
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerViewModelFactory
 import com.example.android.trackmysleepquality.ui.theme.TrackMySleepQualityTheme
+//import kotlinx.coroutines.CoroutineScope
+//import kotlinx.coroutines.Dispatchers
+//import kotlinx.coroutines.launch
+//import kotlinx.coroutines.withContext
 
 /**
  * TODO: Add kdoc
@@ -42,9 +47,22 @@ class MainActivity : ComponentActivity() {
             ViewModelProvider(
                 this, viewModelFactory)[SleepTrackerViewModel::class.java]
 
+        var sleepNightList by mutableStateOf(listOf<SleepNight>())
+
+//        repeat(40) {
+//            val night = fakeSleepNight()
+//            sleepNightList + night
+//            CoroutineScope(Dispatchers.Main).launch {
+//                insert(night, dataSource)
+//            }
+//        }
+        sleepTrackerViewModel.nights.observe(this) {
+            sleepNightList = it
+        }
         setContent {
             TrackMySleepQualityTheme {
                 var showDetail: Boolean by remember { mutableStateOf(false) }
+                var showQuality: Boolean by remember { mutableStateOf(false) }
                 var sleepNightClicked: SleepNight = fakeSleepNight()
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -53,11 +71,14 @@ class MainActivity : ComponentActivity() {
                 ) {
                     SleepTrackerScreen(
                         viewModel = sleepTrackerViewModel,
+                        sleepNightList = sleepNightList,
                         onSleepNightClicked = { sleepNight: SleepNight ->
                             Log.i("MainActivity", "SleepNight clicked: $sleepNight")
                             showDetail = true
                             sleepNightClicked = sleepNight
-                        }
+                        },
+                        onStartClicked = { sleepTrackerViewModel.initializeTonight() },
+                        onStopClicked = { showQuality = true }
                     )
                     if (showDetail) {
                         SleepDetailScreen(
@@ -65,8 +86,23 @@ class MainActivity : ComponentActivity() {
                             onCloseClicked = { showDetail = false }
                         )
                     }
+                    if (showQuality) {
+                        SleepQualityScreen(
+                            onQualityClicked = { quality: Int ->
+                                showQuality = false
+                                sleepTrackerViewModel.onSetSleepQuality(quality)
+                                Log.i("MainActivity", "Quality clicked: $quality")
+                            }
+                        )
+                    }
                 }
             }
         }
     }
+
+//    private suspend fun insert(night: SleepNight, dataSource: SleepDatabaseDao) {
+//        withContext(Dispatchers.IO) {
+//            dataSource.insert(night)
+//        }
+//    }
 }
