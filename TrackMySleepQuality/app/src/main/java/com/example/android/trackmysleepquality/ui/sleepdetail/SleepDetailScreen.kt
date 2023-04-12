@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,13 +19,39 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.android.trackmysleepquality.R
 import com.example.android.trackmysleepquality.database.SleepNight
+import com.example.android.trackmysleepquality.ui.sleeptracker.SleepNightItem
+import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerScreen
 import com.example.android.trackmysleepquality.ui.theme.TrackMySleepQualityTheme
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 /**
- * TODO: Add kdoc
+ * This Composable is run when the user clicks one of the [SleepNightItem] in the [LazyVerticalGrid]
+ * of the [SleepTrackerScreen] with the [SleepNight] the the [SleepNightItem] is displaying in our
+ * [sleepNight] parameter. Its purpose is just to format and display all the details contained in
+ * the [SleepNight] it is called with. Wrapped in our [TrackMySleepQualityTheme] custom [MaterialTheme]
+ * our root Composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxSize] to make it
+ * occupy the entire incoming constraints, with a [Modifier.background] chained to that to set the
+ * background color to [Color.White]. The `content` of the [Column] consists of:
+ *  - an [Image] displaying the drawable whose resource ID the [selectSleepImageId] method determines
+ *  to be the one that is appropriate for the [SleepNight.sleepQuality] field of our [sleepNight]
+ *  parameter. Its `modifier` argument is a `ColumnScope` `Modifier.align` that aligns the [Image]
+ *  using [Alignment.CenterHorizontally], with a [Modifier.size] that sets the size of the [Image]
+ *  to 64.dp.
+ *  - a [Text] displaying the [String] with the resource ID that the [selectSleepQualityStringId]
+ *  method determines to be the one that is appropriate for the [SleepNight.sleepQuality] field of
+ *  our [sleepNight] parameter. Its `modifier` argument is a `ColumnScope` `Modifier.align` that
+ *  aligns the [Text] using [Alignment.CenterHorizontally].
+ *  - a [Text] displaying the [String]that the [convertDurationToFormatted] method formats using the
+ *  [SleepNight.startTimeMilli] and [SleepNight.endTimeMilli] fields of our [sleepNight] parameter.
+ *  It consists of a [String] displaying the approximate duration of sleep, followed by [String]
+ *  for the day of the week that the [SleepNight] was constructed on.
+ *  - a [Button] labeled "Close" whose `onClick` argument calls our [onCloseClicked] lambda parameter.
+ *
+ * @param sleepNight the [SleepNight] whose details we are to display.
+ * @param onCloseClicked a lambda that our "Close" [Button] should call when the user clicks on the
+ * [Button].
  */
 @Composable
 fun SleepDetailScreen(
@@ -66,7 +94,13 @@ fun SleepDetailScreen(
 }
 
 /**
- * TODO: Add kdoc
+ * This method returns the resource ID of a drawable that is appropriate to represent the value of
+ * the [SleepNight.sleepQuality] field of its [sleepNight] parameter.
+ *
+ * @param sleepNight the [SleepNight] whose [SleepNight.sleepQuality] field we are to use to select
+ * an appropriate drawable to represent it.
+ * @return one of seven resource IDs depending on the value of the [SleepNight.sleepQuality] field
+ * of our [sleepNight] parameter.
  */
 fun selectSleepImageId(sleepNight: SleepNight?): Int {
     return when (sleepNight?.sleepQuality) {
