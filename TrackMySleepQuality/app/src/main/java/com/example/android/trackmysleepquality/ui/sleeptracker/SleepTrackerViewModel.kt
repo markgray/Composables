@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER", "unused", "MemberVisibilityCanBePrivate")
+@file:Suppress("UNUSED_PARAMETER", "unused", "MemberVisibilityCanBePrivate") // I like to use kdoc [] references
 
 package com.example.android.trackmysleepquality.ui.sleeptracker
 
@@ -125,6 +125,7 @@ class SleepTrackerViewModel(
             // IO is a thread pool for running operations that access the disk, such as
             // our Room database.
             withContext(Dispatchers.IO) {
+                @Suppress("ReplaceNotNullAssertionWithElvisReturn") // Best to crash instead of returning in my opinion
                 val tonight: SleepNight = database.getTonight()!!
                 tonight.sleepQuality = quality
                 database.update(tonight)
