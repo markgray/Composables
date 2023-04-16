@@ -328,19 +328,23 @@ private fun Paragraph(paragraph: Paragraph) {
                 textStyle = textStyle,
                 paragraphStyle = paragraphStyle
             )
+
             ParagraphType.CodeBlock -> CodeBlockParagraph(
                 text = annotatedString,
                 textStyle = textStyle,
                 paragraphStyle = paragraphStyle
             )
+
             ParagraphType.Header -> {
                 Text(
-                    modifier = Modifier.padding(all = 4.dp)
+                    modifier = Modifier
+                        .padding(all = 4.dp)
                         .semantics { heading() },
                     text = annotatedString,
                     style = textStyle.merge(paragraphStyle)
                 )
             }
+
             else -> Text(
                 modifier = Modifier.padding(all = 4.dp),
                 text = annotatedString,
@@ -527,17 +531,21 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
             textStyle = typography.h6
             trailingPadding = 16.dp
         }
+
         ParagraphType.Text -> {
             textStyle = typography.body1.copy(lineHeight = 28.sp)
             paragraphStyle = paragraphStyle.copy(lineHeight = 28.sp)
         }
+
         ParagraphType.Header -> {
             textStyle = typography.h5
             trailingPadding = 16.dp
         }
+
         ParagraphType.CodeBlock -> textStyle = typography.body1.copy(
             fontFamily = FontFamily.Monospace
         )
+
         ParagraphType.Quote -> textStyle = typography.body1
         ParagraphType.Bullet -> {
             paragraphStyle = ParagraphStyle(textIndent = TextIndent(firstLine = 8.sp))
@@ -617,6 +625,7 @@ fun Markup.toAnnotatedStringItem(
                 end = end
             )
         }
+
         MarkupType.Link -> {
             AnnotatedString.Range(
                 item = typography.body1.copy(textDecoration = TextDecoration.Underline).toSpanStyle(),
@@ -624,6 +633,7 @@ fun Markup.toAnnotatedStringItem(
                 end = end
             )
         }
+
         MarkupType.Bold -> {
             AnnotatedString.Range(
                 item = typography.body1.copy(fontWeight = FontWeight.Bold).toSpanStyle(),
@@ -631,6 +641,7 @@ fun Markup.toAnnotatedStringItem(
                 end = end
             )
         }
+
         MarkupType.Code -> {
             AnnotatedString.Range(
                 item = typography.body1
