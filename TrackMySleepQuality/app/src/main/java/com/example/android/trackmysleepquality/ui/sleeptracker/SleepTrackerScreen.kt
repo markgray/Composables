@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
+import com.example.android.trackmysleepquality.ui.sleepdetail.SleepDetailScreen
 //import com.example.android.trackmysleepquality.ui.sleepdetail.fakeSleepNight
 import com.example.android.trackmysleepquality.ui.sleepdetail.selectSleepImageId
 import com.example.android.trackmysleepquality.ui.sleepdetail.selectSleepQualityStringId
@@ -60,6 +61,32 @@ import com.example.android.trackmysleepquality.ui.theme.Purple500
  * [Text], followed by a [Modifier.background] to set the background color to [Purple500], and a
  * [Modifier.wrapContentSize] whose `align` argument of [Alignment.Center] aligns its `text` content
  * in its center.
+ *
+ * The rest of the cells in the [LazyVerticalGrid] are filled with `items` that use the [SleepNightItem]
+ * to render each of the [SleepNight] in our [List] of [SleepNight] parameter [sleepNightList] as its
+ * `sleepNight` argument and our [onSleepNightClicked] parameter as its `onClicked` argument (the
+ * [SleepNightItem] will call it with the [SleepNight] it is rendering when clicked, and that will
+ * cause our caller to compose the [SleepQualityScreen] Composable which allows the user to assign a
+ * "quality of sleep" to the [SleepNight]).
+ *
+ * @param viewModel the [SleepTrackerViewModel] we should use to communicate with the business logic
+ * of the app.
+ * @param sleepNightList the [List] of [SleepNight] read from the database that we should display in
+ * our [LazyVerticalGrid].
+ * @param onSleepNightClicked a lambda which should be called when a cell in our [LazyVerticalGrid]
+ * is clicked with the [SleepNight] that it is displaying. This will cause our caller to compose the
+ * [SleepDetailScreen] into the UI which will display the details of the [SleepNight].
+ * @param onStartClicked a lambda which should be called when the "Start" [Button] in the `topBar`
+ * [StartStopBar] argument of our [Scaffold] is clicked. The lambda that our caller calls us with
+ * will call the [SleepTrackerViewModel.initializeTonight] method to have initialize and insert a
+ * new [SleepNight] to record "tonight's" sleep in.
+ * @param onStopClicked a lambda which should be called when the "Stop" [Button] in the `topBar`
+ * [StartStopBar] argument of our [Scaffold] is clicked. The lambda that our caller calls us with
+ * sets its [MutableState] wrapped [Boolean] variable `showQuality` to `true` which causes the
+ * [SleepQualityScreen] Composable to be composed into the UI allowing the user to choose a "sleep
+ * quality" for the [SleepNight] that is currently being "recorded". Assigning a "sleep quality"
+ * terminates the recording of that [SleepNight], its [SleepNight.endTimeMilli] is set to the current
+ * time as well and its entry in the database is updated.
  */
 @Composable
 fun SleepTrackerScreen(
@@ -107,7 +134,7 @@ fun SleepTrackerScreen(
                     fontSize = 30.sp
                 )
             }
-            items(sleepNightList.size) { index ->
+            items(sleepNightList.size) { index: Int ->
                 SleepNightItem(
                     sleepNight = sleepNightList[index],
                     onClicked = onSleepNightClicked
@@ -119,7 +146,23 @@ fun SleepTrackerScreen(
 
 
 /**
- * TODO: Add kdoc
+ * This is used as the `topBar` argument of the [Scaffold] of the [SleepTrackerScreen]. Its root
+ * Composable is a [Row]. Its `modifier` argument chains a [Modifier.fillMaxWidth] to our `modifier`
+ * [Modifier] parameter, followed by a [Modifier.wrapContentSize] whose `align` argument of
+ * [Alignment.Center] aligns its children to the center of the incoming constraints. Its `content`
+ * is a [Button] whose `onClick` argument is a lambda that calls our [onStartClicked] parameter,
+ * and the 'content` of the [Button] is a [Text] displaying the label "Start". This is followed by
+ * an 8.dp [Spacer] then another [Button] whose `onClick` argument is a lambda that calls our
+ * [onStopClicked] parameter, and whose 'content` is a [Text] displaying the label "Stop".
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us any so we use the empty, default, or starter [Modifier]
+ * that contains no elements instead.
+ * @param onStartClicked a lambda that we should use as the `onClick` argument of our "Start"
+ * [Button]. Clicking it will start the recording of a new [SleepNight] entry for the database.
+ * @param onStopClicked a lambda that we should use as the `onClick` argument of our "Stop" [Button].
+ * Clicking it will stop the recording of the current [SleepNight] entry, allow the user to assign a
+ * "sleep quality" rating for it, then update the entry in the database.
  */
 @Composable
 fun StartStopBar(
@@ -135,7 +178,7 @@ fun StartStopBar(
         Button(onClick = { onStartClicked() }) {
             Text(text = "Start")
         }
-        Spacer(modifier = modifier.width(8.dp))
+        Spacer(modifier = modifier.width(width = 8.dp))
         Button(onClick = { onStopClicked() }) {
             Text(text = "Stop")
         }
@@ -143,7 +186,20 @@ fun StartStopBar(
 }
 
 /**
- * TODO: Add kdoc
+ * This is used as the `bottomBar` argument of the [Scaffold] of the [SleepTrackerScreen] Composable.
+ * Its root Composable is a [Box] whose `modifier` argument adds a [Modifier.fillMaxWidth] to our
+ * [modifier] parameter to take up the entire incoming width constraint, followed by a
+ * [Modifier.wrapContentSize] with an [Alignment.Center] as its `align` argument to center its
+ * children in its space. Its `content` is a [Button] whose `onClick` argument is a lambda that calls
+ * our [onClearClicked] parameter, and whose `content` is a [Text] displaying the label "Clear".
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us any so we use the empty, default, or starter [Modifier]
+ * that contains no elements instead.
+ * @param onClearClicked a lambda that should be called when our "Clear" [Button] is clicked. Our
+ * caller passes us a lambda which calls the [SleepTrackerViewModel.onClear] method of the app's
+ * viewModel which calls the [SleepDatabaseDao.clear] method to delete the contents of the table
+ * holding our [SleepNight] results from the database.
  */
 @Composable
 fun ClearBar(
