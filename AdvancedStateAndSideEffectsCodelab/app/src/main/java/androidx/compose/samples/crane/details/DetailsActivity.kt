@@ -247,6 +247,7 @@ fun DetailsScreen(
             @Suppress("ReplaceNotNullAssertionWithElvisReturn") // Returning would only hide error
             DetailsContent(exploreModel = uiState.cityDetails!!, modifier = modifier.fillMaxSize())
         }
+
         uiState.isLoading -> {
             Box(modifier = modifier.fillMaxSize()) {
                 CircularProgressIndicator(
@@ -255,6 +256,7 @@ fun DetailsScreen(
                 )
             }
         }
+
         else -> {
             onErrorLoading()
         }

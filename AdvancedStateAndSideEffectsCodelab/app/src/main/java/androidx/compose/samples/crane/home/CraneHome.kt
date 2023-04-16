@@ -227,6 +227,7 @@ fun CraneHomeContent(
                         onItemClicked = onExploreItemClicked
                     )
                 }
+
                 CraneScreen.Sleep -> {
                     ExploreSection(
                         title = "Explore Properties by Destination",
@@ -234,6 +235,7 @@ fun CraneHomeContent(
                         onItemClicked = onExploreItemClicked
                     )
                 }
+
                 CraneScreen.Eat -> {
                     ExploreSection(
                         title = "Explore Restaurants by Destination",
@@ -322,9 +324,11 @@ private fun SearchContent(
             onPeopleChanged = onPeopleChanged,
             onToDestinationChanged = { viewModel.toDestinationChanged(it) }
         )
+
         CraneScreen.Sleep -> SleepSearchContent(
             onPeopleChanged = onPeopleChanged
         )
+
         CraneScreen.Eat -> EatSearchContent(
             onPeopleChanged = onPeopleChanged
         )

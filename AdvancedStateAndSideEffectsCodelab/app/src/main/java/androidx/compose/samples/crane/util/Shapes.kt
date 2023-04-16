@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.LayoutDirection
  *
  * @param color The color or fill to be applied to the circle
  */
-@Suppress("unused") // Unused but instructional
 @Composable
 fun Circle(color: Color) {
     Canvas(modifier = Modifier.fillMaxSize()) {
@@ -46,7 +45,6 @@ fun Circle(color: Color) {
  * @param color The color to be applied to the rectangle
  * @param lookingLeft if `true` the SemiRect should face left
  */
-@Suppress("unused") // Unused but instructional
 @Composable
 fun SemiRect(color: Color, lookingLeft: Boolean = true) {
     val layoutDirection: LayoutDirection = LocalLayoutDirection.current
