@@ -252,6 +252,7 @@ fun ReplyTheme(
             val context: Context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
+
         darkTheme -> replyDarkColorScheme
         else -> replyLightColorScheme
     }
