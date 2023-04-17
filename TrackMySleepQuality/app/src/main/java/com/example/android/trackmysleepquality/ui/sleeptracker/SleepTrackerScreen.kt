@@ -221,7 +221,24 @@ fun ClearBar(
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable is used to display individual [SleepNight] instances in the [LazyVerticalGrid] used
+ * as the `content` of the [Scaffold] in the [SleepTrackerScreen] Composable. Its root Composable is
+ * a [Column] whose `modifier` argument is a [Modifier.fillMaxSize] to have it take up its entire
+ * incoming constraints, to which is chained a [Modifier.wrapContentSize] with an `align` argument
+ * of [Alignment.Center] to center its children in its space, followed by a [Modifier.clickable]
+ * whose `onClick` lambda argument calls our [onClicked] parameter with the [SleepNight] that the
+ * [SleepNightItem] is displaying when the [Column] is clicked. The `content` of the [Column] is
+ * an [Image] whose `modifier` argument is a [Modifier.size] that sets the size of the [Image] to
+ * 64.dp, and whose `painter` argument causes it to draw the drawable whose resource ID is returned
+ * by the [selectSleepImageId] method when it is passed our [SleepNight] parameter [sleepNight] as
+ * its `sleepNight` argument. Below the [Image] in the [Column] is a [Text] whose `modifier` argument
+ * is a [Modifier.wrapContentSize] with an `align` argument of [Alignment.Center] to center its 'text'
+ * in its space, with the `text` displayed being the [String] whose resource ID is returned by the
+ * [selectSleepQualityStringId] method when it is passed our [SleepNight] parameter [sleepNight] as
+ * its `sleepNight` argument.
+ *
+ * @param sleepNight the [SleepNight] we are supposed to represent.
+ * @param onClicked a lambda that we should call with our [SleepNight] when we are clicked.
  */
 @Composable
 fun SleepNightItem(
@@ -231,17 +248,17 @@ fun SleepNightItem(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
+            .wrapContentSize(align = Alignment.Center)
             .clickable { onClicked(sleepNight) }
     ) {
         Image(
-            modifier = Modifier.size(64.dp),
-            painter = painterResource(id = selectSleepImageId(sleepNight)),
+            modifier = Modifier.size(size = 64.dp),
+            painter = painterResource(id = selectSleepImageId(sleepNight = sleepNight)),
             contentDescription = null
         )
         Text(
-            modifier = Modifier.wrapContentSize(Alignment.Center),
-            text = stringResource(id = selectSleepQualityStringId(sleepNight))
+            modifier = Modifier.wrapContentSize(align = Alignment.Center),
+            text = stringResource(id = selectSleepQualityStringId(sleepNight = sleepNight))
         )
     }
 }

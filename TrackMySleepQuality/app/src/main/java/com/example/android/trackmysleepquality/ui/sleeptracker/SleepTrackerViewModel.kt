@@ -3,6 +3,7 @@
 package com.example.android.trackmysleepquality.ui.sleeptracker
 
 import android.app.Application
+import androidx.compose.foundation.Image
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * ViewModel for `SleepTrackerFragment`.
+ * ViewModel for [SleepTrackerScreen].
  *
  * @param dataSource the [SleepDatabaseDao] to use to access the database
  * @param application the [Application] to use to access resources
@@ -27,7 +28,7 @@ class SleepTrackerViewModel(
 ) : ViewModel() {
 
     /**
-     * Hold a reference to SleepDatabase via SleepDatabaseDao.
+     * Hold a reference to the SleepDatabase via [SleepDatabaseDao].
      */
     val database: SleepDatabaseDao = dataSource
 
@@ -118,7 +119,18 @@ class SleepTrackerViewModel(
     }
 
     /**
-     * TODO: Add kdoc
+     * Called when an [Image] representing a "sleep quality" in the [SleepQualityScreen] Composable
+     * is clicked with an [Int] 0..5 denoting the [quality] rating that the user wants to assign to
+     * "tonight's" [SleepNight]. We call the [CoroutineScope.launch] method of our field [uiScope]
+     * to launch a new coroutine on the [Dispatchers.Main] main UI thread, then use the [withContext]
+     * method to execute a suspend block on the [Dispatchers.IO] coroutine context, suspending until
+     * it completes. In this suspend block we initialize our [SleepNight] variable `val tonight` to
+     * the [SleepNight] returned by the [SleepDatabaseDao.getTonight] method (the newest [SleepNight]
+     * added to the ROOM database). Upon returning we set the [SleepNight.sleepQuality] field of
+     * `tonight` to our [quality] parameter, then call the [SleepDatabaseDao.update] with `tonight`
+     * as its `night` argument to have it update the entry for that [SleepNight] in the database.
+     *
+     * @param quality the "sleep quality" 0..5 that the user wants to assign to "tonight's" [SleepNight].
      */
     fun onSetSleepQuality(quality: Int) {
         uiScope.launch {
@@ -128,7 +140,7 @@ class SleepTrackerViewModel(
                 @Suppress("ReplaceNotNullAssertionWithElvisReturn") // Best to crash instead of returning in my opinion
                 val tonight: SleepNight = database.getTonight()!!
                 tonight.sleepQuality = quality
-                database.update(tonight)
+                database.update(night = tonight)
             }
         }
     }
@@ -141,6 +153,11 @@ class SleepTrackerViewModel(
      * `getTonight` method of our [database], and if the `endTimeMilli` field of `night` is not equal
      * to its `startTimeMilli` field (the entry for the last [SleepNight] is completed already) we
      * set `night` to *null*. Finally we return `night` to the caller.
+     *
+     * @return the newest [SleepNight] added to the ROOM database if its [SleepNight.endTimeMilli]
+     * field is equal to its [SleepNight.startTimeMilli] field (clock is still "running" on it) or
+     * `null` if it is an old completed [SleepNight] (its [SleepNight.endTimeMilli] field is NOT
+     * equal to its [SleepNight.startTimeMilli] field).
      */
     private suspend fun getTonightFromDatabase(): SleepNight? {
         return withContext(Dispatchers.IO) {

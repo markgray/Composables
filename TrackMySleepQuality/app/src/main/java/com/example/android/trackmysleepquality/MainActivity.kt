@@ -24,17 +24,19 @@ import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerScree
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerViewModel
 import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerViewModelFactory
 import com.example.android.trackmysleepquality.ui.theme.TrackMySleepQualityTheme
-//import kotlinx.coroutines.CoroutineScope
-//import kotlinx.coroutines.Dispatchers
-//import kotlinx.coroutines.launch
-//import kotlinx.coroutines.withContext
 
 /**
- * TODO: Add kdoc
+ * This is the main Activity of the app.
  */
 class MainActivity : ComponentActivity() {
     /**
-     * TODO: Add kdoc
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`.
+     * We initialize our [Application] variable `val application` to the application that owns this
+     * activity. We initialize our [SleepDatabaseDao] variable `val dataSource` to the
+     * [SleepDatabase.sleepDatabaseDao] field of the singleton [SleepDatabase] instance returned by
+     * the [SleepDatabase.getInstance] method when passed our [Application] variable `application`.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,13 +51,6 @@ class MainActivity : ComponentActivity() {
 
         var sleepNightList by mutableStateOf(listOf<SleepNight>())
 
-//        repeat(40) {
-//            val night = fakeSleepNight()
-//            sleepNightList + night
-//            CoroutineScope(Dispatchers.Main).launch {
-//                insert(night, dataSource)
-//            }
-//        }
         sleepTrackerViewModel.nights.observe(this) {
             sleepNightList = it
         }
@@ -99,10 +94,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-//    private suspend fun insert(night: SleepNight, dataSource: SleepDatabaseDao) {
-//        withContext(Dispatchers.IO) {
-//            dataSource.insert(night)
-//        }
-//    }
 }
