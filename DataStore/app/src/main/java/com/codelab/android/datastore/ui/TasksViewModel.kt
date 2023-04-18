@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("unused", "MemberVisibilityCanBePrivate") // I like public variables, and the unused bits allow for future changes
+@file:Suppress("MemberVisibilityCanBePrivate") // I like public variables, and the unused bits allow for future changes
 
 package com.codelab.android.datastore.ui
 
