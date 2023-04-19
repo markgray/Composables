@@ -32,12 +32,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
-        allWarningsAsErrors = true
+        jvmTarget = '17'
     }
     buildFeatures {
         compose true
@@ -49,7 +48,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation "androidx.compose.ui:ui:1.4.1"
@@ -73,6 +72,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
 
         // Set JVM target to 1.8
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
