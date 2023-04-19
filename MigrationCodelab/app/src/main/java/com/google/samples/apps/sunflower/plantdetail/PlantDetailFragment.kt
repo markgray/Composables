@@ -208,6 +208,7 @@ class PlantDetailFragment : Fragment() {
                         createShareIntent()
                         true
                     }
+
                     else -> false
                 }
             }

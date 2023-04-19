@@ -142,6 +142,7 @@ class PlantListFragment : Fragment() {
                     updateData()
                     true
                 }
+
                 else -> false
             }
         }
