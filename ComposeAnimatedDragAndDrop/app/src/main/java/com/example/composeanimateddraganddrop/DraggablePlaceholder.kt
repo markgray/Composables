@@ -37,7 +37,7 @@ import androidx.compose.ui.zIndex
 fun DraggablePlaceholder(
     modifier: Modifier,
     dragHandler: LayoutDragHandler,
-    content: @Composable() (BoxScope.() -> Unit)
+    content: @Composable (BoxScope.() -> Unit)
 ) {
     val draggedModifier = if (dragHandler.draggedId != -1) {
         with(LocalDensity.current) {

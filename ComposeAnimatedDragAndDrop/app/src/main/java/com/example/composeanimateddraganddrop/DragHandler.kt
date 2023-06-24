@@ -25,7 +25,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -46,6 +46,9 @@ import kotlinx.coroutines.launch
 
 private const val CONTAINS_FROM_CENTER_PERCENT = 0.75f
 
+/**
+ * TODO: Add kdoc
+ */
 fun Modifier.dragAndDrop(dragHandler: LayoutDragHandler): Modifier =
     with(dragHandler) {
         pointerInput(Unit) {
@@ -54,6 +57,9 @@ fun Modifier.dragAndDrop(dragHandler: LayoutDragHandler): Modifier =
     }
 
 
+/**
+ * TODO: Add kdoc
+ */
 class LayoutDragHandler(
     private val boundsById: Map<Int, Rect>,
     private val orderedIds: SnapshotStateList<Int>,
@@ -85,9 +91,15 @@ class LayoutDragHandler(
 
     private val scrollChannel = Channel<Float>(Channel.CONFLATED)
 
-    var draggedId: Int by mutableStateOf(-1)
+    /**
+     * TODO: Add kdoc
+     */
+    var draggedId: Int by mutableIntStateOf(-1)
         private set
 
+    /**
+     * TODO: Add kdoc
+     */
     val draggedSize: Size
         get() = boundsById[draggedId]?.size ?: Size.Zero
 

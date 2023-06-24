@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalMotionApi::class)
-
 package com.example.composeanimateddraganddrop
 
 import androidx.compose.animation.core.Animatable
@@ -31,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.node.Ref
 import androidx.constraintlayout.compose.ConstraintSet
-import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionLayoutScope
 import kotlinx.coroutines.channels.Channel

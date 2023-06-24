@@ -25,7 +25,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.composeanimateddraganddrop.ui.theme.ComposeAnimatedDragAndDropTheme
 
+/**
+ * TODO: Add kdoc
+ */
 class MainActivity : ComponentActivity() {
+    /**
+     * TODO: Add kdoc
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
