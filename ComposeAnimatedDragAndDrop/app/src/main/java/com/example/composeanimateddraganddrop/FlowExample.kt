@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalMotionApi::class)
-
 package com.example.composeanimateddraganddrop
 
 import androidx.compose.foundation.background
@@ -36,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,7 +52,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.FlowStyle
 import androidx.constraintlayout.compose.HorizontalAlign
 import androidx.constraintlayout.compose.Wrap
@@ -67,7 +65,7 @@ private const val INITIAL_COLUMN_COUNT = 4
 @Composable
 internal fun FlowDragAndDropExample() {
     val itemCount = ITEM_COUNT
-    var columnCount by remember { mutableStateOf(INITIAL_COLUMN_COUNT) }
+    var columnCount by remember { mutableIntStateOf(INITIAL_COLUMN_COUNT) }
     val itemModel = remember {
         List(ITEM_COUNT) { ItemState() }
     }
@@ -109,8 +107,8 @@ internal fun FlowDragAndDropExample() {
             val widthDp =
                 if (itemModel[index].isHorizontallyExpanded) BASE_ITEM_SIZE * 2 else BASE_ITEM_SIZE
             constrain(itemRef) {
-                height = BASE_ITEM_SIZE.dp.asDimension
-                width = widthDp.dp.asDimension
+                height = BASE_ITEM_SIZE.dp.asDimension()
+                width = widthDp.dp.asDimension()
             }
         }
     }
@@ -259,11 +257,23 @@ internal fun FlowDragAndDropExample() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 class ItemState {
-    var isHorizontallyExpanded by mutableStateOf(false)
-    var isVerticallyExpanded by mutableStateOf(false)
+    /**
+     * TODO: Add kdoc
+     */
+    var isHorizontallyExpanded: Boolean by mutableStateOf(false)
+    /**
+     * TODO: Add kdoc
+     */
+    var isVerticallyExpanded: Boolean by mutableStateOf(false)
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun Item(
     text: String,
