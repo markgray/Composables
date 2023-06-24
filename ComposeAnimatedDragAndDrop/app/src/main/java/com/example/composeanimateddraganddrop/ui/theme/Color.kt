@@ -16,30 +16,41 @@
 
 package com.example.composeanimateddraganddrop.ui.theme
 
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.primary] color of the [darkColorScheme] used by our
+ * [ComposeAnimatedDragAndDropTheme] custom [MaterialTheme]
+ *
  */
 val Purple80: Color = Color(0xFFD0BCFF)
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.secondary] color of the [darkColorScheme] used by our
+ * [ComposeAnimatedDragAndDropTheme] custom [MaterialTheme]
  */
 val PurpleGrey80: Color = Color(0xFFCCC2DC)
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.tertiary] color of the [darkColorScheme] used by our
+ * [ComposeAnimatedDragAndDropTheme] custom [MaterialTheme]
  */
 val Pink80: Color = Color(0xFFEFB8C8)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.primary] color of the [lightColorScheme] used by our
+ * [ComposeAnimatedDragAndDropTheme] custom [MaterialTheme]
  */
 val Purple40: Color = Color(0xFF6650a4)
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.secondary] color of the [lightColorScheme] used by our
+ * [ComposeAnimatedDragAndDropTheme] custom [MaterialTheme]
  */
 val PurpleGrey40: Color = Color(0xFF625b71)
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.tertiary] color of the [lightColorScheme] used by our
+ * [ComposeAnimatedDragAndDropTheme] custom [MaterialTheme]
  */
 val Pink40: Color = Color(0xFF7D5260)

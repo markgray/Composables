@@ -31,6 +31,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+/**
+ *
+ */
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
@@ -54,7 +57,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 /**
- * TODO: Add kdoc
+ * This is the custom [MaterialTheme] used by our app.
  */
 @Composable
 fun ComposeAnimatedDragAndDropTheme(
