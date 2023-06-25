@@ -21,6 +21,7 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -32,7 +33,9 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 /**
- *
+ * This [ColorScheme] is used as the `colors` of our [ComposeAnimatedDragAndDropTheme] custom
+ * [MaterialTheme] when the system is considered to be in 'dark theme' (ie. it is NOT considered
+ * to be in 'light theme').
  */
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -40,6 +43,11 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = Pink80
 )
 
+/**
+ * This [ColorScheme] is used as the `colors` of our [ComposeAnimatedDragAndDropTheme] custom
+ * [MaterialTheme] when the system is NOT considered to be in 'dark theme' (ie. it is considered
+ * to be in 'light theme').
+ */
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
