@@ -19,11 +19,13 @@ package com.example.composeanimateddraganddrop
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
 import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,13 +39,36 @@ import androidx.compose.ui.node.Ref
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionLayoutScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 
 /**
  * A ConstraintLayout that animates based on changes made to [constraintSet]. This is similar to
  * using `ConstraintLayout(constraintSet, animateChanges = true)`, but this will always animate
  * forward. Making it animate always forward allows for consistency with start/end concepts. Meaning
- * that the given [constraintSet] is always the end state when animating.
+ * that the given [constraintSet] is always the end state when animating. We start by initializing
+ * and rememembering our [ConstraintSet] variable `var startConstraint` to a [MutableState] of our
+ * [ConstraintSet] parameter [constraintSet], and initializing and rememembering our [ConstraintSet]
+ * variable `var endConstraint` to a [MutableState] of our [ConstraintSet] parameter [constraintSet].
+ * We initialize and remember our [Animatable] of [Float] to [AnimationVector1D] variable `val progress`
+ * to an instance whose initial value is 0.0f ([AnimationVector1D] is a 1D vector, it contains only
+ * one Float value which is animated when the [Animatable.animateTo] method of `progress` is called).
+ * We initialize and remember our [Channel] of [ConstraintSet] variable `val channel` to an instance
+ * whose `capacity` is [Channel.CONFLATED] ([Channel] that buffers at most one element and conflates
+ * all subsequent `send` and `trySend` invocations, so that the receiver always gets the most recently
+ * sent element. Back-to-send sent elements are _conflated_ -- only the most recently sent element is
+ * received, while previously sent elements **are lost**). We initialize and remember our [Ref] of
+ * [Boolean] variable `val hasAnimated` to an instance whose initial `value` is `false` (a [Ref] is
+ * a value holder general purpose class).
+ *
+ * We use [SideEffect] to schedule a lambda to run after every recomposition, and in that lambd we
+ * call the [Channel.trySend] method of `channel` to add our [ConstraintSet] parameter [constraintSet]
+ * to the [Channel]. Next we use a [LaunchedEffect] whose `key1` is `channel` (it will be cancelled
+ * and re-launched when `channel` changes value) whose [CoroutineScope] lambda loops for all the
+ * [ConstraintSet] variable `constraints` contained in `channnel`, initializing its [ConstraintSet]
+ * variable `val newConstraints` to either the [ConstraintSet] returned by the [Channel.tryReceive]
+ * method of `channel` or if that is `null` to the current value of the `constraints` variable.
+ * Then it initializes its
  *
  * @param constraintSet The [ConstraintSet] that we are to animate to.
  * @param modifier a [Modifier] our caller can use to modify our looks and behavior. Our only caller
@@ -72,26 +97,26 @@ fun AnimatedConstraintLayout(
     animationSpec: AnimationSpec<Float> = tween(),
     content: @Composable MotionLayoutScope.() -> Unit
 ) {
-    var startConstraint by remember { mutableStateOf(constraintSet) }
-    var endConstraint by remember { mutableStateOf(constraintSet) }
-    val progress = remember { Animatable(0.0f) }
-    val channel = remember { Channel<ConstraintSet>(Channel.CONFLATED) }
-    val hasAnimated = remember { Ref<Boolean>().apply { value = false } }
+    var startConstraint: ConstraintSet by remember { mutableStateOf(constraintSet) }
+    var endConstraint: ConstraintSet by remember { mutableStateOf(constraintSet) }
+    val progress: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0.0f) }
+    val channel: Channel<ConstraintSet> = remember { Channel(capacity = Channel.CONFLATED) }
+    val hasAnimated: Ref<Boolean> = remember { Ref<Boolean>().apply { value = false } }
 
     SideEffect {
         channel.trySend(constraintSet)
     }
 
-    LaunchedEffect(channel) {
-        for (constraints in channel) {
-            val newConstraints = channel.tryReceive().getOrNull() ?: constraints
-            val currentConstraints =
+    LaunchedEffect(key1 = channel) {
+        for (constraints: ConstraintSet in channel) {
+            val newConstraints: ConstraintSet = channel.tryReceive().getOrNull() ?: constraints
+            val currentConstraints: ConstraintSet =
                 if (hasAnimated.value == false) startConstraint else endConstraint
             if (newConstraints != currentConstraints) {
                 startConstraint = currentConstraints
                 endConstraint = newConstraints
-                progress.snapTo(0f)
-                progress.animateTo(1f, animationSpec)
+                progress.snapTo(targetValue = 0f)
+                progress.animateTo(targetValue = 1f, animationSpec = animationSpec)
                 hasAnimated.value = true
             }
         }
