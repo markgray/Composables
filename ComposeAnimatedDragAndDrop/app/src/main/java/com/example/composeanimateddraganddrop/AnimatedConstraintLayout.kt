@@ -68,7 +68,19 @@ import kotlinx.coroutines.channels.Channel
  * [ConstraintSet] variable `constraints` contained in `channnel`, initializing its [ConstraintSet]
  * variable `val newConstraints` to either the [ConstraintSet] returned by the [Channel.tryReceive]
  * method of `channel` or if that is `null` to the current value of the `constraints` variable.
- * Then it initializes its
+ * Then it initializes its [ConstraintSet] variable `val currentConstraints` to `startConstraint` if
+ * the [Ref.value] of `hasAnimated` is `false` or to `endConstraint` if it is `true`. Then if the
+ * `newConstraints` we received from [Channel] `channel` is not equal to `currentConstraints` we set
+ * `endConstraint` to `newConstraints`, then call the [Animatable.snapTo] method of `progress` to set
+ * its current value `0f` without any animation, then call its [Animatable.animateTo] method to start
+ * an animation to animate from its current value to the `targetValue` of `1.0f` using our
+ * [AnimationSpec] parameter [animationSpec] as its `animationSpec`.
+ *
+ * Having set things up we then use a [MotionLayout] Composable to animate our [content] Composable
+ * as its `content` using `startConstraint` as its `start` [ConstraintSet], `endConstraint` as its
+ * `end` [ConstraintSet], the [Animatable.value] of `progress` as the interpolated position of the
+ * layout between the [ConstraintSet]'s, and our [Modifier] parameter [modifier] as the [Modifier]
+ * to apply to its layout node.
  *
  * @param constraintSet The [ConstraintSet] that we are to animate to.
  * @param modifier a [Modifier] our caller can use to modify our looks and behavior. Our only caller

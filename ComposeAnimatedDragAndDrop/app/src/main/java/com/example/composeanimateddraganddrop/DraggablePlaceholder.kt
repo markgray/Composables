@@ -21,17 +21,26 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.zIndex
 
 
 /**
- * Placeholder that reflects the dragged item from a layout.
+ * Placeholder that reflects the dragged item from a layout. This should be used alongside the
+ * layout in which the Drag And Drop takes place. Think of it as an overlay that shows the dragged
+ * item as it's dragged.
  *
- * This should be used alongside the layout in which the Drag And Drop takes place.
- *
- * Think of it as an overlay that shows the dragged item as it's dragged.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our only caller, [FlowDragAndDropExample], calls us with the empty, default, or starter
+ * [Modifier] that contains no elements.
+ * @param dragHandler that is handling the drag of our Composable.
+ * @param content the Composable we should display in our [Box]. This is the [Item] in the
+ * `movableItems` list of [Item] in the [FlowDragAndDropExample] Composable whose index is the
+ * [LayoutDragHandler.draggedId] of [dragHandler], which is set to the `id` of the [Item] that is
+ * determined to be chosen to be dragged in the `onStartDrag` method of [LayoutDragHandler] (or it
+ * is -1 if none is being dragged).
  */
 @Composable
 fun DraggablePlaceholder(
@@ -45,7 +54,7 @@ fun DraggablePlaceholder(
                 .size(dragHandler.draggedSize.toDpSize())
                 .zIndex(1f)
                 .graphicsLayer {
-                    val offset = dragHandler.placeholderOffset.value
+                    val offset: Offset = dragHandler.placeholderOffset.value
                     translationX = offset.x
                     translationY = offset.y
                 }
