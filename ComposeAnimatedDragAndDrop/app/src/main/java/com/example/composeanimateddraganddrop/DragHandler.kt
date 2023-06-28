@@ -43,11 +43,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-
+/**
+ * Used as the `percentFromCenter` argument to the [LayoutDragHandler.containsCloseToCenter] function
+ * which we call to check for collisions by checking our [Offset] against all of the [Rect] in the
+ * [LayoutDragHandler.boundsById] map looking for one that our [Offset] is within the given distance
+ * percent from the center of the [Rect].
+ */
 private const val CONTAINS_FROM_CENTER_PERCENT = 0.75f
 
 /**
- * TODO: Add kdoc
+ * This [Modifier] appends a [Modifier.pointerInput] which uses its [LayoutDragHandler] parameter
+ * [dragHandler] when it uses the [LayoutDragHandler.detectDragAndDrop] extension function in the
+ * [PointerInputScope] block to enable the DragAndDrop functionality on the receiving Composable.
+ * It is used in the [Modifier] passed to the [AnimatedConstraintLayout] of the Composable
+ * [FlowDragAndDropExample].
+ *
+ * @param dragHandler the [LayoutDragHandler] to be used for DragAndDrop functionality.
  */
 fun Modifier.dragAndDrop(dragHandler: LayoutDragHandler): Modifier =
     with(dragHandler) {
