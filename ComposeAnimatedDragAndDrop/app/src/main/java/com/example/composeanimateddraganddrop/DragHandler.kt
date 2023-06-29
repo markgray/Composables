@@ -33,6 +33,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.node.Ref
@@ -56,7 +57,8 @@ private const val CONTAINS_FROM_CENTER_PERCENT = 0.75f
  * [dragHandler] when it uses the [LayoutDragHandler.detectDragAndDrop] extension function in the
  * [PointerInputScope] block to enable the DragAndDrop functionality on the receiving Composable.
  * It is used in the [Modifier] passed to the [AnimatedConstraintLayout] of the Composable
- * [FlowDragAndDropExample].
+ * [FlowDragAndDropExample]. All the magic is done by the call to [detectDragGesturesAfterLongPress]
+ * in [LayoutDragHandler.detectDragAndDrop].
  *
  * @param dragHandler the [LayoutDragHandler] to be used for DragAndDrop functionality.
  */
@@ -69,7 +71,15 @@ fun Modifier.dragAndDrop(dragHandler: LayoutDragHandler): Modifier =
 
 
 /**
- * TODO: Add kdoc
+ * This class encapsulates all of the data needed to handle the drag of one of the [Item] in our
+ * layout (which it does).
+ *
+ * @param boundsById a map from the ID (index number) of all of the [Item]s to the [Rect] that
+ * defines the [Item]'s size and [Offset].
+ * @param orderedIds a [List] of the [Item] ID's in the order in which they should be composed.
+ * @param listBounds a [Ref] of a [Rect] that defines the full bounds of the ConstraintLayout-based
+ * list of [Item].
+ * @param windowBounds a [Ref] of a [Rect] that defines the Clipped (window) bounds of the list.
  */
 class LayoutDragHandler(
     private val boundsById: Map<Int, Rect>,
@@ -187,7 +197,7 @@ class LayoutDragHandler(
             onDragStart = ::onStartDrag,
             onDragEnd = ::onEndDrag,
             onDragCancel = ::onEndDrag,
-            onDrag = { change, dragAmount ->
+            onDrag = { change: PointerInputChange, dragAmount: Offset ->
                 change.consume()
                 onDrag(dragAmount)
             },
