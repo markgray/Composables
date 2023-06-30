@@ -16,6 +16,7 @@
 
 package com.example.composeanimateddraganddrop
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -113,7 +114,7 @@ internal fun FlowDragAndDropExample() {
         }
     }
 
-    val scrollState = rememberScrollState()
+    val scrollState: ScrollState = rememberScrollState()
     val listBounds = remember { Ref<Rect>().apply { value = Rect.Zero } }
     val windowBounds = remember { Ref<Rect>().apply { value = Rect.Zero } }
     val scope = rememberCoroutineScope()
@@ -152,7 +153,7 @@ internal fun FlowDragAndDropExample() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState, true)
+                .verticalScroll(state = scrollState, enabled = true)
         ) {
             // Controls and layout
             Column(

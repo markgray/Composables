@@ -24,8 +24,10 @@ import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -58,7 +60,8 @@ private const val CONTAINS_FROM_CENTER_PERCENT = 0.75f
  * [PointerInputScope] block to enable the DragAndDrop functionality on the receiving Composable.
  * It is used in the [Modifier] passed to the [AnimatedConstraintLayout] of the Composable
  * [FlowDragAndDropExample]. All the magic is done by the call to [detectDragGesturesAfterLongPress]
- * in [LayoutDragHandler.detectDragAndDrop].
+ * in [LayoutDragHandler.detectDragAndDrop], its callbacks use the methods and data found in the
+ * [LayoutDragHandler] that the [Modifier.dragAndDrop] is called with.
  *
  * @param dragHandler the [LayoutDragHandler] to be used for DragAndDrop functionality.
  */
@@ -80,6 +83,17 @@ fun Modifier.dragAndDrop(dragHandler: LayoutDragHandler): Modifier =
  * @param listBounds a [Ref] of a [Rect] that defines the full bounds of the ConstraintLayout-based
  * list of [Item].
  * @param windowBounds a [Ref] of a [Rect] that defines the Clipped (window) bounds of the list.
+ * @param scrollState this is the [ScrollState] that we can use to monitor and control the scrolling
+ * of the [Column] in the [FlowDragAndDropExample] Composable which holds both the controls and the
+ * [AnimatedConstraintLayout] displaying the [Item]s we drag around (it is the `state` argument to a
+ * `Modifier.verticalScroll` that is applied to the [Column]).
+ * @param scope a [CoroutineScope] we can use to launch jobs in response to callback events such as
+ * clicks or other user interaction where the response to that event needs to unfold over time and
+ * be cancelled if the composable managing that process leaves the composition. [FlowDragAndDropExample]
+ * creates it using [rememberCoroutineScope] so it is tied to the point in the composition where it
+ * is called and will be cancelled when the call leaves the composition.
+ * @param onMove a lambda to be called when the dragged [Item] is over another [Item] causing it to
+ * need to be moved.
  */
 class LayoutDragHandler(
     private val boundsById: Map<Int, Rect>,
