@@ -104,10 +104,23 @@ class LayoutDragHandler(
     private val scope: CoroutineScope,
     private val onMove: (from: Int, to: Int) -> Unit
 ) {
-    /* Ignore the bounds of the currently dragged item. To avoid "replacing" with self. */
+    /**
+     * Ignore the bounds of the currently dragged item. To avoid "replacing" with self.
+     */
     private var ignoreBounds = Rect.Zero
+
+    /**
+     * The index of the dragged [Item]
+     */
     private var draggedIndex: Int = -1
-    private var lastScrollPosition = 0
+
+    /**
+     * Used in the [onDrag] override to hold the old value of [scrollPosition] which it will use
+     * the next time it is called to calculate the `scrollChange` [Offset] which it adds to its
+     * `dragAmount` [Offset] parameter and the `old` [Offset] of [draggedOffsetFlow] when it calls
+     * the [MutableStateFlow.update] method of [draggedOffsetFlow].
+     */
+    private var lastScrollPosition: Int = 0
 
     /**
      * Flow to handle the dragging offset, since it may need to check for "collision" across
@@ -115,8 +128,10 @@ class LayoutDragHandler(
      */
     private val draggedOffsetFlow = MutableStateFlow(Offset.Unspecified)
 
-    private fun viewportBounds(): Rect =
-        windowBounds.value ?: Rect.Zero
+    /**
+     * A [Rect] surrounding the area of the layout that is currently visible on the screen
+     */
+    private fun viewportBounds(): Rect = windowBounds.value ?: Rect.Zero
 
     private val contentOffset: Float
         get() = listBounds.value?.top ?: 0f
@@ -258,7 +273,7 @@ class LayoutDragHandler(
 
         // Accumulate the total offset for the Flow, this is necessary since it's possible for a
         // slow collector to miss intermediate updates
-        draggedOffsetFlow.update { old ->
+        draggedOffsetFlow.update { old: Offset ->
             old + dragAmount + scrollChange
         }
     }

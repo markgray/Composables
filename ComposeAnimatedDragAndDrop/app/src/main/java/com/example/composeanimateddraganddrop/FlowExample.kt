@@ -51,6 +51,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.node.Ref
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.FlowStyle
@@ -65,9 +66,9 @@ private const val INITIAL_COLUMN_COUNT = 4
 @Preview
 @Composable
 internal fun FlowDragAndDropExample() {
-    val itemCount = ITEM_COUNT
-    var columnCount by remember { mutableIntStateOf(INITIAL_COLUMN_COUNT) }
-    val itemModel = remember {
+    val itemCount: Int = ITEM_COUNT
+    var columnCount: Int by remember { mutableIntStateOf(INITIAL_COLUMN_COUNT) }
+    val itemModel: List<ItemState> = remember {
         List(ITEM_COUNT) { ItemState() }
     }
 
@@ -86,7 +87,7 @@ internal fun FlowDragAndDropExample() {
         // Provide the flow with the references in the order that reflects the current layout
         // Since the list is observable, changes on it will cause the ConstraintSet to be recreated
         // on recomposition. Triggering the layout animation in AnimatedConstraintLayout
-        val flow = createFlow(
+        val flow: ConstrainedLayoutReference = createFlow(
             elements = itemOrderByIndex.map { itemRefs[it] }.toTypedArray(),
             flowVertically = false,
             maxElement = columnCount,
@@ -95,19 +96,22 @@ internal fun FlowDragAndDropExample() {
             horizontalAlign = HorizontalAlign.Center,
             wrapMode = Wrap.Chain
         )
-        constrain(flow) {
+        constrain(ref = flow) {
             width = Dimension.fillToConstraints
             top.linkTo(parent.top)
             centerHorizontallyTo(parent)
         }
 
-        itemRefs.forEachIndexed { index, itemRef ->
+        itemRefs.forEachIndexed { index: Int, itemRef: ConstrainedLayoutReference ->
             // Define the items dimensions, note that since `isHorizontallyExpanded` is an
             // observable State, changes to it will cause the ConstraintSet to be recreated and so
             // the change wil be animated by AnimatedConstraintLayout
-            val widthDp =
-                if (itemModel[index].isHorizontallyExpanded) BASE_ITEM_SIZE * 2 else BASE_ITEM_SIZE
-            constrain(itemRef) {
+            val widthDp: Int = if (itemModel[index].isHorizontallyExpanded) {
+                BASE_ITEM_SIZE * 2
+            } else {
+                BASE_ITEM_SIZE
+            }
+            constrain(ref = itemRef) {
                 height = BASE_ITEM_SIZE.dp.asDimension()
                 width = widthDp.dp.asDimension()
             }
@@ -115,15 +119,15 @@ internal fun FlowDragAndDropExample() {
     }
 
     val scrollState: ScrollState = rememberScrollState()
-    val listBounds = remember { Ref<Rect>().apply { value = Rect.Zero } }
-    val windowBounds = remember { Ref<Rect>().apply { value = Rect.Zero } }
+    val listBounds: Ref<Rect> = remember { Ref<Rect>().apply { value = Rect.Zero } }
+    val windowBounds: Ref<Rect> = remember { Ref<Rect>().apply { value = Rect.Zero } }
     val scope = rememberCoroutineScope()
     val boundsById: MutableMap<Int, Rect> = remember { mutableMapOf() }
     val onMove: (Int, Int) -> Unit = { from, to ->
         // TODO: Implement a way that moves items directionally (moving up pushes items down) instead of in a Flow
         itemOrderByIndex.add(to, itemOrderByIndex.removeAt(from))
     }
-    val dragHandler = remember {
+    val dragHandler: LayoutDragHandler = remember {
         LayoutDragHandler(
             boundsById = boundsById,
             orderedIds = itemOrderByIndex,
@@ -141,7 +145,7 @@ internal fun FlowDragAndDropExample() {
         // handed-off to the DraggablePlaceholder we need to define it before-hand, that way it may
         // be emitted in the ConstraintLayout node or the DraggablePlaceholder node as it's needed
         val movableItems = remember {
-            List(itemCount) { it }.map { id ->
+            List(itemCount) { it }.map { id: Int ->
                 movableContentOf {
                     Item(
                         text = "item$id",
@@ -211,8 +215,8 @@ internal fun FlowDragAndDropExample() {
                         val name = "item$i"
                         Box(
                             modifier = Modifier
-                                .layoutId(name)
-                                .onStartEndBoundsChanged(name) { _, endBounds ->
+                                .layoutId(layoutId = name)
+                                .onStartEndBoundsChanged(layoutId = name) { _, endBounds: Rect ->
                                     // We need bounds that will always represent the static state of
                                     // the layout, we use the End bounds since
                                     // AnimatedConstraintLayout always animates towards the End.
@@ -266,6 +270,7 @@ class ItemState {
      * TODO: Add kdoc
      */
     var isHorizontallyExpanded: Boolean by mutableStateOf(false)
+
     /**
      * TODO: Add kdoc
      */
