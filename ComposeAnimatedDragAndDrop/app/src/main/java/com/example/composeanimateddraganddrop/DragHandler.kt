@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Used as the `percentFromCenter` argument to the [LayoutDragHandler.containsCloseToCenter] function
@@ -133,22 +134,37 @@ class LayoutDragHandler(
      */
     private fun viewportBounds(): Rect = windowBounds.value ?: Rect.Zero
 
+    /**
+     * The top Y coordinate of the ConstraintLayout-based list
+     */
     private val contentOffset: Float
         get() = listBounds.value?.top ?: 0f
 
+    /**
+     * The current scroll position value in pixels of the [Column] holding our UI.
+     */
     private val scrollPosition: Int
         get() = scrollState?.value ?: 0
 
+    /**
+     * A [Channel] of [Float] that is used to send scrolling values to a coroutine started in our
+     * `init` block which calls the [ScrollState.scrollBy] method of [scrollState] to have it jump
+     * instantly by the value in pixels that it receives from the [Channel]. It is constructed using
+     * [Channel.CONFLATED] so it holds only the latest value sent it. The receiving coroutine runs
+     * as long the [CoroutineContext.isActive] method of the scope it is launched in returns `true`.
+     */
     private val scrollChannel = Channel<Float>(Channel.CONFLATED)
 
     /**
-     * TODO: Add kdoc
+     * The ID of the dragged [Item], it is set by our [onStartDrag] method.
      */
     var draggedId: Int by mutableIntStateOf(-1)
         private set
 
     /**
-     * TODO: Add kdoc
+     * The current size of the dragged [Item], or [Size.Zero] if the [boundsById] map entry for
+     * [draggedId] is `null`. It is used as the `Modifier.size` of the [Modifier] used for the
+     * [DraggablePlaceholder] that shows the dragged [Item] as it is dragged.
      */
     val draggedSize: Size
         get() = boundsById[draggedId]?.size ?: Size.Zero
@@ -162,7 +178,7 @@ class LayoutDragHandler(
     init {
         scope.launch {
             // Check and process collisions
-            draggedOffsetFlow.collect { offset ->
+            draggedOffsetFlow.collect { offset: Offset ->
                 if (offset.isUnspecified) {
                     // Reset when unspecified
                     ignoreBounds = Rect.Zero
@@ -210,8 +226,8 @@ class LayoutDragHandler(
         scope.launch {
             // Consume scroll
             while (coroutineContext.isActive) {
-                for (scrollInto in scrollChannel) {
-                    val diff = scrollChannel.tryReceive().getOrNull() ?: scrollInto
+                for (scrollInto: Float in scrollChannel) {
+                    val diff: Float = scrollChannel.tryReceive().getOrNull() ?: scrollInto
                     scrollState?.scrollBy(diff)
                 }
             }
@@ -237,14 +253,14 @@ class LayoutDragHandler(
      * Find dragged item, initialize placeholder offset.
      */
     private fun onStartDrag(offset: Offset) {
-        val currContentOffset = contentOffset
+        val currContentOffset: Float = contentOffset
         lastScrollPosition = scrollPosition
-        boundsById.forEach { (id, bounds) ->
+        boundsById.forEach { (id: Int, bounds: Rect) ->
             if (bounds.contains(offset)) {
-                val topLeft = bounds.topLeft
+                val topLeft: Offset = bounds.topLeft
                 scope.launch {
                     // The offset of the dragged item should account for the content offset
-                    placeholderOffset.snapTo(topLeft + Offset(0f, currContentOffset))
+                    placeholderOffset.snapTo(targetValue = topLeft + Offset(0f, currContentOffset))
                 }
                 draggedIndex = orderedIds.indexOf(id)
                 ignoreBounds = bounds
@@ -284,7 +300,7 @@ class LayoutDragHandler(
      */
     private fun onEndDrag() {
         if (draggedId != -1) {
-            val currContentOffset = contentOffset
+            val currContentOffset: Float = contentOffset
             boundsById[draggedId]?.topLeft?.let { targetOffset ->
                 scope.launch {
                     placeholderOffset.animateTo(targetOffset + Offset(0f, currContentOffset))
