@@ -108,7 +108,7 @@ class LayoutDragHandler(
     /**
      * Ignore the bounds of the currently dragged item. To avoid "replacing" with self.
      */
-    private var ignoreBounds = Rect.Zero
+    private var ignoreBounds: Rect = Rect.Zero
 
     /**
      * The index of the dragged [Item]
@@ -191,20 +191,16 @@ class LayoutDragHandler(
                 }
 
                 // If we are hovering over a different item, obtain its index
-                val targetIndex = boundsById.firstNotNullOfOrNull { (id, bounds) ->
+                val targetIndex = boundsById.firstNotNullOfOrNull { (id: Int, bounds: Rect) ->
                     // Consider some extra padding when checking for a "collision" to avoid possibly
                     // undesired layout changes
-                    if (draggedId != id && bounds.containsCloseToCenter(
-                            offset,
-                            CONTAINS_FROM_CENTER_PERCENT
-                        )
-                    ) {
+                    if (draggedId != id && bounds.containsCloseToCenter(offset, CONTAINS_FROM_CENTER_PERCENT)) {
                         ignoreBounds = bounds
                         id
                     } else {
                         null
                     }
-                }?.let { id ->
+                }?.let { id: Int ->
                     orderedIds.indexOf(id)
                 }
 
@@ -235,7 +231,19 @@ class LayoutDragHandler(
     }
 
     /**
-     * Extension function to enable the DragAndDrop functionality on the receiving Composable.
+     * Extension function to enable the DragAndDrop functionality on the receiving Composable. We
+     * just call the [PointerInputScope.detectDragGesturesAfterLongPress] method with [onStartDrag]
+     * as its `onDragStart` argument (called when a long press is detected with an [Offset]
+     * representing the last known pointer position relative to the containing element), with
+     * [onEndDrag] as its `onDragEnd` argument (called after all pointers are up and `onDragCancel`
+     * is called if another gesture has consumed pointer input, canceling this gesture), with
+     * [onEndDrag] as its `onDragCancel` argument. The `onDrag` argument is a lambda that is called
+     * with the [PointerInputChange] as its `change` parameter (describes a change that has occurred
+     * for a particular pointer, as well as how much of the change has been consumed) and the [Offset]
+     * as its `dragAmount` parameter (distance that the pointer has moved on the screen minus any
+     * distance that has been consumed) and the lambda is called for every change in position until
+     * the pointer is raised. Inside the lambda we call the [PointerInputChange.consume] method of
+     * the `change` parameter and our [onDrag] method with the `dragAmount` parameter.
      */
     suspend fun PointerInputScope.detectDragAndDrop() {
         detectDragGesturesAfterLongPress(
@@ -244,13 +252,42 @@ class LayoutDragHandler(
             onDragCancel = ::onEndDrag,
             onDrag = { change: PointerInputChange, dragAmount: Offset ->
                 change.consume()
-                onDrag(dragAmount)
+                onDrag(dragAmount = dragAmount)
             },
         )
     }
 
     /**
-     * Find dragged item, initialize placeholder offset.
+     * Find dragged item, initialize placeholder offset. Called by [detectDragGesturesAfterLongPress]
+     * when a long press is detected with its [Offset] parameter [offset] representing the last known
+     * pointer position relative to the containing element. We initialize our [Float] variable
+     * `val currContentOffset` to our [Float] field [contentOffset] (the top Y coordinate of the
+     * ConstraintLayout-based list), then we loop through all of the entries in the [Map] of [Int]
+     * to [Rect] field [boundsById] (contains the current bounds [Rect] of each of the [Item] objects
+     * indexed by their ID) with the index assigned to our `id` variable and its [Rect] assigned to
+     * our `bounds` variable. Inside the loop we check if the [Rect.contains] method of `bounds`
+     * returns `true` for our [Offset] parameter [offset], and if it returns `false` we just loop
+     * around to check the next `id` and `bounds`. If it returns `true` however we have found the
+     * dragged [Item] so we:
+     *  * We initialize our [Offset] variable `val topLeft` to the [Rect.topLeft] value of `bounds`.
+     *
+     *  * we call the [CoroutineScope.launch] method of our [scope] field to launch a new coroutine
+     *  which calls the [Animatable.snapTo] method our our [placeholderOffset] to have it set its
+     *  current value to the [Offset] formed when `currContentOffset` is added to `topLeft`
+     *
+     *  * we set our [Int] field [draggedIndex] to the index of the first occurrence of the `id` in
+     *  our [SnapshotStateList] of [Int] field [orderedIds]
+     *
+     *  * we set our [Rect] field [ignoreBounds] to `bounds`
+     *
+     *  * we set our [Int] field [draggedId] to `id`
+     *
+     *  * we set the [MutableStateFlow.value] of our [MutableStateFlow] of [Offset] field
+     *  [draggedOffsetFlow] to our [Offset] parameter [offset].
+     *
+     *  * we return.
+     *
+     * @param offset the current [Offset] of the [Item] that is to be dragged.
      */
     private fun onStartDrag(offset: Offset) {
         val currContentOffset: Float = contentOffset
