@@ -36,6 +36,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.node.Ref
@@ -309,9 +310,29 @@ class LayoutDragHandler(
     }
 
     /**
-     * Update placeholder offset.
+     * Update placeholder offset. Update accumulated offset flow so that it's handled separately.
+     * This is called from the lambda that is used as the `onDrag` argument of the call to the
+     * [detectDragGesturesAfterLongPress] method called by our [PointerInputScope.detectDragAndDrop]
+     * extension function. Our [Offset] parameter [dragAmount] is the [PointerInputChange.positionChange]
+     * value of the pointer event (distance that the pointer has moved on the screen minus any distance
+     * that has been consumed).
      *
-     * Update accumulated offset flow so that it's handled separately.
+     * First we have a sanity check and if our [Int] field [draggedIndex] is minus 1 or our [Int] field
+     * [draggedId] is minus 1 we log our objection and return having done nothing. Otherwise we use
+     * our [CoroutineScope] field [scope] to launch a coroutine that calls the [Animatable.snapTo]
+     * method of our [Animatable] of [Offset] field [placeholderOffset] to have it set its value to
+     * its current [Offset] plus our [Offset] parameter [dragAmount] without any animation. Then
+     * while that coroutine is still running we initialize our [Offset] variable `val scrollChange`
+     * to an [Offset] whose `x` coordinate is 0f, and whose `y` coordinate is the [Float] value of
+     * our [Int] field [scrollPosition] (current scroll position value in pixels of the [Column]
+     * holding our UI) minus our [Int] field [lastScrollPosition] (which is the value of [scrollPosition]
+     * the last time we were called). We then set [lastScrollPosition] to [scrollPosition]. Finally
+     * we call the [MutableStateFlow.update] method of our [MutableStateFlow] of [Offset] field
+     * [draggedOffsetFlow] to have it update its value by adding our [Offset] parameter [dragAmount]
+     * plus `scrollChange` to it (this is the total [Offset] of the drag)>
+     *
+     * @param dragAmount the [PointerInputChange.positionChange] value of the pointer event (distance
+     * that the pointer has moved on the screen minus any distance that has been consumed).
      */
     private fun onDrag(dragAmount: Offset) {
         if (draggedIndex == -1 || draggedId == -1) {
@@ -319,7 +340,7 @@ class LayoutDragHandler(
             return
         }
         scope.launch {
-            placeholderOffset.snapTo(placeholderOffset.value + dragAmount)
+            placeholderOffset.snapTo(targetValue = placeholderOffset.value + dragAmount)
         }
         val scrollChange = Offset(0f, (scrollPosition - lastScrollPosition).toFloat())
         lastScrollPosition = scrollPosition
@@ -333,18 +354,24 @@ class LayoutDragHandler(
 
     /**
      * End drag by animating the placeholder towards its origin, note that the origin position may
-     * have changed if a dragged was performed over a different item.
+     * have changed if a drag was performed over a different item. First we have a sanity check and
+     * return having donge nothing if our [Int] field [draggedId] is minus 1. Otherwise we initialize
+     * our [Float] variable `val currContentOffset` to our [contentOffset] property (the [Rect.top]
+     * of our [listBounds] field, which is the [Rect] that defines the full bounds of the ConstraintLayout
+     * based list of [Item]).
      */
     private fun onEndDrag() {
         if (draggedId != -1) {
             val currContentOffset: Float = contentOffset
-            boundsById[draggedId]?.topLeft?.let { targetOffset ->
+            boundsById[draggedId]?.topLeft?.let { targetOffset: Offset ->
                 scope.launch {
-                    placeholderOffset.animateTo(targetOffset + Offset(0f, currContentOffset))
+                    placeholderOffset.animateTo(
+                        targetValue = targetOffset + Offset(0f, currContentOffset)
+                    )
 
                     // Reset after animation is done
                     draggedOffsetFlow.value = Offset.Unspecified
-                    placeholderOffset.snapTo(Offset.Zero)
+                    placeholderOffset.snapTo(targetValue = Offset.Zero)
                 }
             }
         }
