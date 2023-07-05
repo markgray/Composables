@@ -225,7 +225,7 @@ class LayoutDragHandler(
             while (coroutineContext.isActive) {
                 for (scrollInto: Float in scrollChannel) {
                     val diff: Float = scrollChannel.tryReceive().getOrNull() ?: scrollInto
-                    scrollState?.scrollBy(diff)
+                    scrollState?.scrollBy(value = diff)
                 }
             }
         }
@@ -357,8 +357,16 @@ class LayoutDragHandler(
      * have changed if a drag was performed over a different item. First we have a sanity check and
      * return having donge nothing if our [Int] field [draggedId] is minus 1. Otherwise we initialize
      * our [Float] variable `val currContentOffset` to our [contentOffset] property (the [Rect.top]
-     * of our [listBounds] field, which is the [Rect] that defines the full bounds of the ConstraintLayout
-     * based list of [Item]).
+     * of our [listBounds] field, which is the [Rect] that defines the full bounds of the
+     * ConstraintLayout displaying our list of [Item]). If the [Rect.topLeft] field of the [Rect] in
+     * the [Map] of [Int] to [Rect] field [boundsById] whose ID key is [draggedId] we use that
+     * [Offset] as the `targetOffset` parameter of a lambda which uses our [CoroutineScope] field
+     * [scope] to launch a coroutine which first calls the [Animatable.animateTo] method of our
+     * [placeholderOffset] field to animate the place holder to `targetOffset` plus an [Offset]
+     * whose x coordinate is 0f, and whose y coordinate is `currContentOffset`. Once the animation
+     * is done the lambda sets the value of [MutableStateFlow] of [Offset] field [draggedOffsetFlow]
+     * to [Offset.Unspecified], and then calls the [Animatable.snapTo] method of [placeholderOffset]
+     * to set its current value to [Offset.Zero] without any animation.
      */
     private fun onEndDrag() {
         if (draggedId != -1) {
@@ -378,7 +386,32 @@ class LayoutDragHandler(
     }
 
     /**
-     * Whether the given [offset] is within the given distance percent from the center.
+     * Determines whether or not the [Offset] parameter [offset] is within the [Float] parameter
+     * [percentFromCenter] distance from the center of its receiver [Rect] (returns `true` if it
+     * is, and `false` if it is not). The implementation consists of a series of `if` statements:
+     *
+     *  * if the [Offset.x] of [offset] is less than the [Rect.left] of our receiver, or greater
+     *  than its [Rect.right] we return `false`
+     *  * if the [Offset.y] of [offset] is less than the [Rect.top] of our receiver, or greater
+     *  than its [Rect.bottom] we return `false`
+     *  * We initialize our [Float] variable `val horDistance` to the [Rect.width] of our receiver
+     *  time 0.5f time our [Float] parameter [percentFromCenter], and our [Offset] variable
+     *  `val center` to the [Rect.center] of our receiver.
+     *  * if the [Offset.x] of [offset] is less than the [Offset.x] of `center` minus `horDistance`
+     *  or greater than [Offset.x] of `center` plus `horDistance` we return `false`
+     *  * We initialize our [Float] variable `val verDistance` to the [Rect.height] of our receiver
+     *  times 0.5f times our [Float] parameter [percentFromCenter].
+     *  * If the [Offset.y] of [offset] is less the [Offset.y] of `center` minus `verDistance` or
+     *  greater than the [Offset.y] of `center` plus `verDistance` we return `false`
+     *
+     * If none of the `if` statements were `true` we return `true`.
+     *
+     * @param offset the [Offset] we wish to check to see if its center is contained in our receiver
+     * [Rect] and is close (within [percentFromCenter] of the size of the [Rect]) to the center of
+     * the [Rect].
+     * @param percentFromCenter the fraction of the size of the receiver [Rect] which we wish to
+     * consider to be "close" to the center of the [Rect]. Defaults to 0.5f, but we are called with
+     * the [CONTAINS_FROM_CENTER_PERCENT] constant which is defined to be 0.75f
      */
     private fun Rect.containsCloseToCenter(
         offset: Offset,
@@ -392,13 +425,13 @@ class LayoutDragHandler(
             return false
         }
 
-        val horDistance = width * 0.5f * percentFromCenter
-        val center = this.center
+        val horDistance: Float = width * 0.5f * percentFromCenter
+        val center: Offset = this.center
         if (offset.x < (center.x - horDistance) || offset.x > (center.x + horDistance)) {
             return false
         }
 
-        val verDistance = height * 0.5f * percentFromCenter
+        val verDistance: Float = height * 0.5f * percentFromCenter
         if (offset.y < (center.y - verDistance) || offset.y > (center.y + verDistance)) {
             return false
         }
@@ -406,17 +439,32 @@ class LayoutDragHandler(
     }
 
     /**
-     * Scroll into the given [bounds] in case they are located outside the viewport.
+     * Scroll into the given [bounds] in case they are located outside the viewport. Note that
+     * nothing may happen if the given [bounds] are outside the bounds of the original content
+     * held by the viewport. We start by initializing our [Rect] variable `val visibleBounds`
+     * to the [Rect] returned by our [viewportBounds] method (the [Rect] surrounding the area
+     * of the layout that is currently visible on the screen). Then is the [Rect.top] of our
+     * [Rect] parameter [bounds] minus the [Rect.top] of `visibleBounds` is less then 0f we use
+     * the [Channel.send] method of [Channel] of [Float] field [scrollChannel] to send the
+     * value of the [Rect.top] of [bounds] minus the [Rect.top] of `visibleBounds` to the coroutine
+     * which is receiving from [scrollChannel] and sending the value to the [ScrollState.scrollBy]
+     * method of our [scrollState] field to have it scroll the [Column] we are in by the value we
+     * send it. Otherwise if the [Rect.bottom] of [bounds] minus the [Rect.bottom] of `visibleBounds`
+     * is greater the 0f we use the [Channel.send] method of [Channel] of [Float] field [scrollChannel]
+     * to send the value of the [Rect.bottom] of [bounds] minus the [Rect.bottom] of `visibleBounds`
+     * to the coroutine which is receiving from [scrollChannel] and sending the value to the
+     * [ScrollState.scrollBy] method of our [scrollState] field to have it scroll the [Column] we
+     * are in by the value we send it.
      *
-     * Note that nothing may happen if the given [bounds] are outside the bounds of the original
-     * content held by the viewport.
+     * @param bounds the [Rect] bounding the [Item] which we want to scroll into the area of the
+     * layout that is currently visible on the screen if need be.
      */
     private suspend fun scrollIntoIfNeeded(bounds: Rect) {
-        val visibleBounds = viewportBounds()
+        val visibleBounds: Rect = viewportBounds()
         if (bounds.top - visibleBounds.top < 0f) {
-            scrollChannel.send(bounds.top - visibleBounds.top)
+            scrollChannel.send(element = bounds.top - visibleBounds.top)
         } else if (bounds.bottom - visibleBounds.bottom > 0f) {
-            scrollChannel.send(bounds.bottom - visibleBounds.bottom)
+            scrollChannel.send(element = bounds.bottom - visibleBounds.bottom)
         }
     }
 }

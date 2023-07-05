@@ -59,7 +59,15 @@ import androidx.constraintlayout.compose.HorizontalAlign
 import androidx.constraintlayout.compose.Wrap
 import androidx.constraintlayout.compose.layoutId
 
+/**
+ * The number of [Item] objects we create for our [AnimatedConstraintLayout].
+ */
 private const val ITEM_COUNT = 40
+
+/**
+ * The initial unexpanded height and width of an [Item] in [dp]. When expanded its width increase to
+ * twice this value.
+ */
 private const val BASE_ITEM_SIZE = 80
 private const val INITIAL_COLUMN_COUNT = 4
 
