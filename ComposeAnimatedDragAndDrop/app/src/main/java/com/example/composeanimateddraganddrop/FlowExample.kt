@@ -69,8 +69,17 @@ private const val ITEM_COUNT = 40
  * twice this value.
  */
 private const val BASE_ITEM_SIZE = 80
+
+/**
+ * The initial value for the number of columns used as the `maxElement` argument of the call to
+ * `createFlow` that creates the [ConstrainedLayoutReference] used in the [ConstraintSet]. It is
+ * the maximum number of elements in a row.
+ */
 private const val INITIAL_COLUMN_COUNT = 4
 
+/**
+ * This is Composable which handles our UI. It is used by [MainActivity] in its call to `setContent`.
+ */
 @Preview
 @Composable
 internal fun FlowDragAndDropExample() {
@@ -90,7 +99,7 @@ internal fun FlowDragAndDropExample() {
 
     val constraintSet = ConstraintSet {
         // Create the references for ConstraintLayout
-        val itemRefs = List(itemCount) { createRefFor("item$it") }
+        val itemRefs = List(itemCount) { createRefFor(id = "item$it") }
 
         // Provide the flow with the references in the order that reflects the current layout
         // Since the list is observable, changes on it will cause the ConstraintSet to be recreated
