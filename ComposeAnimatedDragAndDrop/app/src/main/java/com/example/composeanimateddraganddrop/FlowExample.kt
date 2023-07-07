@@ -33,6 +33,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -83,27 +84,53 @@ private const val INITIAL_COLUMN_COUNT = 4
 @Preview
 @Composable
 internal fun FlowDragAndDropExample() {
+    /**
+     * The number of [Item] Composable widgets we create for the demo.
+     */
     val itemCount: Int = ITEM_COUNT
+
+    /**
+     * The number of columns per row from 1 to 4, it is used as the `maxElement` argument of the
+     * [ConstrainedLayoutReference] flow that is used in the [ConstraintSet] the is used as the
+     * `constraintSet` argument of our call of [AnimatedConstraintLayout]. Its value is incremented
+     * round robin by the [Button] labeled "Columns" in our UI (which also displays the latest value.
+     */
     var columnCount: Int by remember { mutableIntStateOf(INITIAL_COLUMN_COUNT) }
+
+    /**
+     * Our [List] of [ItemState] for each of the [Item] that we display. An [ItemState] contains two
+     * [MutableState] wrapped [Boolean]'s: [ItemState.isHorizontallyExpanded] and
+     * [ItemState.isVerticallyExpanded] which define whether the [Item] they are for is horizontally
+     * and/or vertically expanded. Only [ItemState.isHorizontallyExpanded] is used by us, and is
+     * toggled when an [Item] is clicked. The [Item] toggles between a width of [BASE_ITEM_SIZE] and
+     * two times [BASE_ITEM_SIZE] (80.dp and 160.dp).
+     */
     val itemModel: List<ItemState> = remember {
         List(ITEM_COUNT) { ItemState() }
     }
 
     /**
-     * Observable mutable list, holds the desired item order for the Flow layout.
-     *
-     * Note that as this List is modified, recompositions are triggered.
+     * Observable mutable list, holds the desired item order for the Flow layout. Note that as this
+     * List is modified, recompositions are triggered.
      */
     val itemOrderByIndex: SnapshotStateList<Int> =
         remember { mutableStateListOf(elements = List(itemCount) { it }.toTypedArray()) }
 
+    /**
+     * This is the [ConstraintSet] that is fed to our [AnimatedConstraintLayout] as its `constraintSet`
+     * argument.
+     */
     val constraintSet = ConstraintSet {
-        // Create the references for ConstraintLayout
+        /**
+         * Create the references for ConstraintLayout
+         */
         val itemRefs = List(itemCount) { createRefFor(id = "item$it") }
 
-        // Provide the flow with the references in the order that reflects the current layout
-        // Since the list is observable, changes on it will cause the ConstraintSet to be recreated
-        // on recomposition. Triggering the layout animation in AnimatedConstraintLayout
+        /**
+         * Provide the flow with the references in the order that reflects the current layout
+         * Since the list is observable, changes on it will cause the [ConstraintSet] to be recreated
+         * on recomposition. Triggering the layout animation in [AnimatedConstraintLayout]
+         */
         val flow: ConstrainedLayoutReference = createFlow(
             elements = itemOrderByIndex.map { itemRefs[it] }.toTypedArray(),
             flowVertically = false,
@@ -120,9 +147,11 @@ internal fun FlowDragAndDropExample() {
         }
 
         itemRefs.forEachIndexed { index: Int, itemRef: ConstrainedLayoutReference ->
-            // Define the items dimensions, note that since `isHorizontallyExpanded` is an
-            // observable State, changes to it will cause the ConstraintSet to be recreated and so
-            // the change wil be animated by AnimatedConstraintLayout
+            /**
+             * Define the items dimensions, note that since `isHorizontallyExpanded` is an
+             * observable State, changes to it will cause the ConstraintSet to be recreated and so
+             * the change wil be animated by AnimatedConstraintLayout
+             */
             val widthDp: Int = if (itemModel[index].isHorizontallyExpanded) {
                 BASE_ITEM_SIZE * 2
             } else {
@@ -280,7 +309,7 @@ internal fun FlowDragAndDropExample() {
 }
 
 /**
- * TODO: Add kdoc
+ * The current expanded or un-expanded state of an [Item] in the horizonal and vertical directions.
  */
 class ItemState {
     /**
