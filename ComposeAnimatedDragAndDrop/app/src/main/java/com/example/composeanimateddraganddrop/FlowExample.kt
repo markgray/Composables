@@ -53,6 +53,7 @@ import androidx.compose.ui.node.Ref
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.FlowStyle
@@ -124,12 +125,28 @@ internal fun FlowDragAndDropExample() {
         /**
          * Create the references for ConstraintLayout
          */
-        val itemRefs = List(itemCount) { createRefFor(id = "item$it") }
+        val itemRefs: List<ConstrainedLayoutReference> = List(itemCount) { createRefFor(id = "item$it") }
 
         /**
          * Provide the flow with the references in the order that reflects the current layout
          * Since the list is observable, changes on it will cause the [ConstraintSet] to be recreated
-         * on recomposition. Triggering the layout animation in [AnimatedConstraintLayout]
+         * on recomposition, triggering the layout animation in [AnimatedConstraintLayout]
+         *
+         *  + `elements` a `vararg` of [ConstraintLayout] items, in our case our variable `itemRefs`
+         *  [List] of [ConstrainedLayoutReference] converted to an [Array].
+         *  + `flowVertically` when set to `true` arranges the Composables from top to bottom, when
+         *  `false` like here they are arranged from left to right.
+         *  + `maxElement` defines the maximum elements on a row, we use the `columnCount` chosen by
+         *  the user using the "Columns" [Button].
+         *  + `horizontalStyle` sets the style of the horizontal chain ([FlowStyle.Spread],
+         *  [FlowStyle.Packed], or [FlowStyle.SpreadInside]) we use [FlowStyle.Spread] which spreads
+         *  them to occupy the width of their row.
+         *  + `horizontalFlowBias` sets the way elements are aligned vertically, Center is default,
+         *  we use 0.5f
+         *  + `horizontalAlign` set the way elements are aligned horizontally, we use
+         *  [HorizontalAlign.Center]
+         *  + wrapMode sets the way reach maxElements is handled [Wrap.None] (default) -- no wrap
+         *  behavior, [Wrap.Chain] - create additional chains which is what we use.
          */
         val flow: ConstrainedLayoutReference = createFlow(
             elements = itemOrderByIndex.map { itemRefs[it] }.toTypedArray(),
@@ -140,6 +157,14 @@ internal fun FlowDragAndDropExample() {
             horizontalAlign = HorizontalAlign.Center,
             wrapMode = Wrap.Chain
         )
+        /**
+         * Here we specify the constraints associated to the layout identified with ref. In the
+         * `constrainBlock` lambda we constrain the `width` to be [Dimension.fillToConstraints]
+         * (A Dimension that spreads to match constraints), we link the `top` of our `flow` to the
+         * `parent.top`, and `centerHorizontallyTo` our `parent` to add start and end links towards
+         * the corresponding anchors of `parent``. This will center horizontally the current layout
+         * inside or around (depending on size) `parent`.
+         */
         constrain(ref = flow) {
             width = Dimension.fillToConstraints
             top.linkTo(parent.top)
