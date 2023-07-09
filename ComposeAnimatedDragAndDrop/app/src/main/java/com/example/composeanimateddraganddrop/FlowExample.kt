@@ -55,11 +55,13 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.MotionLayoutScope
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.FlowStyle
 import androidx.constraintlayout.compose.HorizontalAlign
 import androidx.constraintlayout.compose.Wrap
 import androidx.constraintlayout.compose.layoutId
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * The number of [Item] objects we create for our [AnimatedConstraintLayout].
@@ -189,12 +191,48 @@ internal fun FlowDragAndDropExample() {
         }
     }
 
+    /**
+     * This is used as the `state` argument of the `Modifier.verticalScroll` that is used as part of
+     * the `modifier` argument of the [Column] that holds our UI. It is passed as the `scrollState`
+     * argument of the [LayoutDragHandler] variable `dragHandler` in order to allow it to scroll the
+     * [Column] if it needs to.
+     */
     val scrollState: ScrollState = rememberScrollState()
+
+    /**
+     * Full bounds of the ConstraintLayout-based list
+     */
     val listBounds: Ref<Rect> = remember { Ref<Rect>().apply { value = Rect.Zero } }
+
+    /**
+     * Clipped (window) bounds of the ConstraintLayout-based list
+     */
     val windowBounds: Ref<Rect> = remember { Ref<Rect>().apply { value = Rect.Zero } }
-    val scope = rememberCoroutineScope()
+
+    /**
+     * [CoroutineScope] that is passed as the `scope` argument of our [LayoutDragHandler], it uses
+     * it to launch jobs in response to callback events such as clicks or other user interaction
+     * where the response to that event needs to unfold over time and be cancelled if the composable
+     * managing that process leaves the composition.
+     */
+    val scope: CoroutineScope = rememberCoroutineScope()
+
+    /**
+     * This contains the [Rect] defining the position and size of each [Item] indexed by their ID.
+     * It is used as the `boundsById` argument of the [LayoutDragHandler], and it is updated whenever
+     * an [Item] moves by the [MotionLayoutScope] `Modifier.onStartEndBoundsChanged` applied to the
+     * [Box] containing it to the `endBounds` of the animated movement of the [Box].
+     */
     val boundsById: MutableMap<Int, Rect> = remember { mutableMapOf() }
-    val onMove: (Int, Int) -> Unit = { from, to ->
+
+    /**
+     * This is used as the `onMove` argument of our [LayoutDragHandler] and it is triggered whenever
+     * the dragged [Item] is over a new "target" [Item]. It removes the [Item] at its `from` parameter
+     * (the old index of the dragged [Item]) and adds it in the `to` parameter position of the [List]
+     * of [Int] variable `itemOrderByIndex` thereby swapping them when the [ConstraintLayout] based
+     * list is recomposed to reflect the change.
+     */
+    val onMove: (Int, Int) -> Unit = { from: Int, to: Int ->
         // TODO: Implement a way that moves items directionally (moving up pushes items down) instead of in a Flow
         itemOrderByIndex.add(to, itemOrderByIndex.removeAt(from))
     }
