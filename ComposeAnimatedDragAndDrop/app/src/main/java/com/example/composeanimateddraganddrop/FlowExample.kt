@@ -236,6 +236,32 @@ internal fun FlowDragAndDropExample() {
         // TODO: Implement a way that moves items directionally (moving up pushes items down) instead of in a Flow
         itemOrderByIndex.add(to, itemOrderByIndex.removeAt(from))
     }
+
+    /**
+     * Our [LayoutDragHandler]. It is used as the `dragHandler` argument of the [Modifier.dragAndDrop]
+     * that is appended to the `modifier` of our [AnimatedConstraintLayout] and enables DragAndDrop
+     * functionality on the receiving Composable, with its data and callbacks used to do the magic
+     * required. It is also used as the `dragHandler` argument of the [DraggablePlaceholder]. The
+     * parameters of its constructor are:
+     *  + `boundsById` our [MutableMap] of [Int] to [Rect] variable `boundsById` which contains the
+     *  [Rect] defining the position and size of each [Item] indexed by their ID.
+     *  + `orderedIds` [SnapshotStateList] of [Int] variable `itemOrderByIndex` which holds the
+     *  desired item order for the Flow layout.
+     *  + `listBounds` our [Ref] or a [Rect] variable `listBounds` which contains the full bounds of
+     *  the ConstraintLayout-based list
+     *  + `windowBounds` our [Ref] or a [Rect] variable `windowBounds` which contains the clipped
+     *  (window) bounds of the ConstraintLayout-based list
+     *  + `scrollState` our [ScrollState] variable `scrollState` which is used as the `state`
+     *  argument of the `Modifier.verticalScroll` modifier used for the [Column] holding our UI and
+     *  which allows the [LayoutDragHandler] to observe and control the scrolling of the [Column] as
+     *  needed.
+     *  + `scope` our [CoroutineScope] variable `scope` which [LayoutDragHandler] can use to launch
+     *  any background work it may need to do.
+     *  + `onMove` our lambda variable `onMove(from: Int, to: Int)` which removes the [Item] at index `
+     *  `from` from the [List] of [Int] `itemOrderByIndex` and inserts it in position `to` of the
+     *  [List], and it is called by [LayoutDragHandler] when it determines that the dragged [Item]
+     *  has moved over another [Item] in the layout.
+     */
     val dragHandler: LayoutDragHandler = remember {
         LayoutDragHandler(
             boundsById = boundsById,
@@ -318,7 +344,7 @@ internal fun FlowDragAndDropExample() {
                                     .findRootCoordinates()
                                     .localBoundingBoxOf(it, true)
                         }
-                        .dragAndDrop(dragHandler)
+                        .dragAndDrop(dragHandler = dragHandler)
                 ) {
                     for (i in 0 until itemCount) {
                         val name = "item$i"
