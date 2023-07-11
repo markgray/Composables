@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.node.Ref
@@ -274,11 +275,16 @@ internal fun FlowDragAndDropExample() {
         )
     }
 
-    // Common Container for the placeholder and the actual layout
+    /**
+     * Common Container for the placeholder and the actual layout
+     */
     Box(modifier = Modifier.fillMaxWidth()) {
-        // Composables that represent the actual content of each Item, since the content may be
-        // handed-off to the DraggablePlaceholder we need to define it before-hand, that way it may
-        // be emitted in the ConstraintLayout node or the DraggablePlaceholder node as it's needed
+        /**
+         * Composables that represent the actual content of each Item, since the content may be
+         * handed-off to the [DraggablePlaceholder] we need to define it before-hand, that way it
+         * may be emitted in the [ConstraintLayout] node or the [DraggablePlaceholder] node as it's
+         * needed
+         */
         val movableItems = remember {
             List(itemCount) { it }.map { id: Int ->
                 movableContentOf {
@@ -289,6 +295,10 @@ internal fun FlowDragAndDropExample() {
                 }
             }
         }
+        /**
+         * This is the [Column] that contains both the contols and the [AnimatedConstraintLayout]
+         * that holds and animates all our [Item] Composables.
+         */
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -346,15 +356,30 @@ internal fun FlowDragAndDropExample() {
                         }
                         .dragAndDrop(dragHandler = dragHandler)
                 ) {
+                    /**
+                     * We loop over all of the [Item] Composables in our `movableItems` list assigning
+                     * layout ID's to each [Box] that will hold them as well as configuring the
+                     * modifier of the [Box] to update the `boundsById` [Rect] for the [Item], and
+                     * to toggle the [ItemState.isHorizontallyExpanded] of the [Item] when the [Box]
+                     * is clicked. If the [Item] is not the [LayoutDragHandler.draggedId] dragged
+                     * [Item], the composable from `movableItems[ i ]` is composed into the layout,
+                     * and if it is the dragged [Item] a [Box] is composed to display a border so
+                     * that it's clear where the Item will end up when the drag interaction finishes
+                     */
                     for (i in 0 until itemCount) {
+                        /**
+                         * The unique Id string assigned to the Composable as its layout ID.
+                         */
                         val name = "item$i"
                         Box(
                             modifier = Modifier
                                 .layoutId(layoutId = name)
                                 .onStartEndBoundsChanged(layoutId = name) { _, endBounds: Rect ->
-                                    // We need bounds that will always represent the static state of
-                                    // the layout, we use the End bounds since
-                                    // AnimatedConstraintLayout always animates towards the End.
+                                    /**
+                                     * We need bounds that will always represent the static state of
+                                     * the layout, we use the End bounds since
+                                     * [AnimatedConstraintLayout] always animates towards the End.
+                                     */
                                     boundsById[i] = endBounds
                                 }
                                 .clickable {
@@ -366,8 +391,10 @@ internal fun FlowDragAndDropExample() {
                                 // Show content when not dragging
                                 movableItems[i]()
                             } else {
-                                // Leave a border so that it's clear where the Item will end up when
-                                // the drag interaction finishes
+                                /**
+                                 * Leave a border so that it's clear where the Item will end up when
+                                 * the drag interaction finishes
+                                 */
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -383,8 +410,10 @@ internal fun FlowDragAndDropExample() {
                 }
             }
         }
-        // Placeholder should be sibling of ConstraintLayout, if it's a child, even if it's on
-        // a fixed position, the animated relayout will cause instability with the drag interaction
+        /**
+         * Placeholder should be sibling of [ConstraintLayout], if it's a child, even if it's on a
+         * fixed position, the animated re-layout will cause instability with the drag interaction
+         */
         DraggablePlaceholder(
             modifier = Modifier,
             dragHandler = dragHandler
@@ -402,18 +431,26 @@ internal fun FlowDragAndDropExample() {
  */
 class ItemState {
     /**
-     * TODO: Add kdoc
+     * If `true` the width of the [Item] whose [ItemState] this is for is [BASE_ITEM_SIZE] times 2,
+     * and if `false` it is just [BASE_ITEM_SIZE]
      */
     var isHorizontallyExpanded: Boolean by mutableStateOf(false)
 
     /**
-     * TODO: Add kdoc
+     * Unused, but available state for future jollies.
      */
     var isVerticallyExpanded: Boolean by mutableStateOf(false)
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable draws a [Box] whose background is a random [Color] which holds a [Text] which
+ * displays its [String] parameter [text].
+ *
+ * @param text the text string to display in our [Text]
+ * @param modifier a [Modifier] that our caller can use to modify our appearance and/or behavior.
+ * Our only caller [FlowDragAndDropExample] passes us a [Modifier.fillMaxSize] which causes us to
+ * fill our incoming height and width constraints. We then chain a [Modifier.background] to it as
+ * the `modifier` argument of our root [Box] Composable to set its [Color] and [Shape].
  */
 @Composable
 fun Item(
@@ -422,7 +459,7 @@ fun Item(
 ) {
     val color = remember { Color.hsv(IntRange(0, 360).random().toFloat(), 0.5f, 0.8f) }
     Box(
-        modifier = modifier.background(color, CardDefaults.shape),
+        modifier = modifier.background(color = color, shape = CardDefaults.shape),
         contentAlignment = Alignment.Center
     ) {
         Text(text = text)
