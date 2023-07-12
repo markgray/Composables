@@ -20,17 +20,28 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.composeanimateddraganddrop.ui.theme.ComposeAnimatedDragAndDropTheme
 
 /**
- * TODO: Add kdoc
+ * This is the main activity of the demo, but it immediately hands everything over to the Composable
+ * [FlowDragAndDropExample] so there is not much to say here.
  */
 class MainActivity : ComponentActivity() {
     /**
-     * TODO: Add kdoc
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we call [setContent] to have it Compose the composable which consists of our
+     * [ComposeAnimatedDragAndDropTheme] custom [MaterialTheme] wrapping a [Surface] whose
+     * `modifier` argument is a [Modifier.fillMaxSize] that causes it to fill its entire
+     * incoming constraints and whose `color` argument is the [ColorScheme.background] color of
+     * the [MaterialTheme.colorScheme] which sets the background color of the [Surface] to the
+     * default `Color(0xFFFFFBFE)` since [ComposeAnimatedDragAndDropTheme] does not override it.
+     * The `content` of the [Surface] is our [FlowDragAndDropExample] composable.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use it.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
