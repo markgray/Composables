@@ -29,9 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.DebugFlags
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
-import androidx.constraintlayout.compose.MotionLayoutDebugFlags
 import androidx.constraintlayout.compose.MotionScene
 import androidx.demo.motiondemos.ui.theme.MotionDemosTheme
 import java.util.*
@@ -149,7 +149,7 @@ public fun CycleScale() {
                   }
                 }
             }"""),
-            debug = EnumSet.of(MotionLayoutDebugFlags.SHOW_ALL),
+            debugFlags = DebugFlags.None,
             progress = progress) {
             Button(modifier = Modifier
                 .layoutId("run"),
