@@ -13,6 +13,11 @@
         android:theme="@style/Theme.MotionDemos"
         tools:targetApi="31">
         <activity
+            android:name=".MainActivityStart"
+            android:exported="true"
+            android:label="@string/title_activity_main_start"
+            android:theme="@style/Theme.MotionDemos" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MotionDemos">
