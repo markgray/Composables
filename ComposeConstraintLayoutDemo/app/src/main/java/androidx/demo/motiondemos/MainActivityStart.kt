@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -158,7 +159,7 @@ fun CycleScale() {
                 onClick = { /*TODO*/ },
                 shape = RoundedCornerShape(40)
             ) {
-                androidx.compose.material.Text(text = "Start\nEngine")
+                Text(text = "Start\nEngine")
 
             }
             Box(modifier = Modifier
@@ -176,7 +177,7 @@ fun CycleScale() {
         }
 
         Button(onClick = { animateToEnd = !animateToEnd }) {
-            androidx.compose.material.Text(text = "Run")
+            Text(text = "Run")
         }
     }
 }
