@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,7 +32,7 @@ import androidx.constraintlayout.compose.MotionScene
 import androidx.demo.motiondemos.ui.theme.MotionDemosTheme
 
 /**
- * TODO: Add kdoc
+ * To run this demo you need to use "Edit Configurations -> Launch -> Specified Activity.
  */
 class MainActivityStart : ComponentActivity() {
     /**
@@ -41,9 +43,9 @@ class MainActivityStart : ComponentActivity() {
         setContent {
             MotionDemosTheme {
                 // A surface container using the 'background' color from the theme
-                androidx.compose.material.Surface(
+                Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = androidx.compose.material.MaterialTheme.colors.background
+                    color = MaterialTheme.colors.background
                 ) {
                     CycleScale( )
                 }
