@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,11 +30,16 @@ import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionLayoutDebugFlags
 import androidx.constraintlayout.compose.MotionScene
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.demo.composedemos.ui.theme.ComposeDemosTheme
 import java.util.*
 
+/**
+ * TODO: Add kdoc
+ */
 class MainActivity : ComponentActivity() {
+    /**
+     * TODO: Add kdoc
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -45,24 +49,30 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Login("Android")
+                    Login()
                 }
             }
         }
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     ComposeDemosTheme {
-        Login("Android")
+        Login()
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @OptIn(ExperimentalMotionApi::class)
 @Composable
-public fun  Login(name: String) {
+fun  Login() {
     var animateToEnd by remember { mutableStateOf(false) }
 
     val progress by animateFloatAsState(
