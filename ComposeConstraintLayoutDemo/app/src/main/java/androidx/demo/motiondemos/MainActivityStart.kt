@@ -16,6 +16,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.Colors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.DebugFlags
 import androidx.constraintlayout.compose.MotionLayout
@@ -37,7 +39,17 @@ import androidx.demo.motiondemos.ui.theme.MotionDemosTheme
  */
 class MainActivityStart : ComponentActivity() {
     /**
-     * TODO: Add kdoc
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we call [setContent] to have it Compose the Composable we pass it as its `content`
+     * argument into our activity as our root view. That Composable is wrapped in our
+     * [MotionDemosTheme] custom [MaterialTheme] and consists of a [Surface] whose `modifier`
+     * argument is a [Modifier.fillMaxSize] to have it occupy its entire incoming [Constraints],
+     * and its `color` argument is the [Colors.background] color of [MaterialTheme.colors] which
+     * sets the background color of the [Surface] to the default [Color.White] since
+     * [MotionDemosTheme] does not override it. The `content` of the [Surface] is our [CycleScale]
+     * [Composable].
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +68,7 @@ class MainActivityStart : ComponentActivity() {
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable consists of a [MotionLayout] whose [MotionScene] is defined by a JSON string.
  */
 @Preview(group = "motion8")
 @Composable

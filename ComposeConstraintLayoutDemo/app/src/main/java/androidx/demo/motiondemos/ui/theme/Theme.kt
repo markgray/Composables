@@ -27,6 +27,9 @@ private val LightColorPalette = lightColors(
     */
 )
 
+/**
+ * Our custom [MaterialTheme].
+ */
 @Composable
 fun MotionDemosTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {

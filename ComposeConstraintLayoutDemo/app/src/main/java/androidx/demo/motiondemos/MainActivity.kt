@@ -279,7 +279,9 @@ fun ProductScreen() {
 }
 
 /**
- *
+ * A Composable that displays a fixed [Icon] and two [Text] widgets displaying its [String] parameter
+ * [feature] and its [String] parmeter [sub] using its [String] parameter [id] as the layout ID that
+ * [ConstraintLayout] should use to size and position our contents.
  */
 @Composable
 fun CallOut(id: String, feature: String, sub: String) {
