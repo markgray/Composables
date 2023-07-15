@@ -113,9 +113,10 @@ fun Graph3D(modifier: Modifier) {
                     graph.drag(change, dragAmount)
                 }
             )
-        }) {
-        time.longValue
-        scale(2.0f, pivot = Offset(0f, 0f)) {
+        }
+    ) {
+        time.longValue // Cute: reads cause recomposition when `time` changes value in LaunchedEffect
+        scale(scale = 2.0f, pivot = Offset(0f, 0f)) {
             drawImage(graph.bitmap)
         }
     }
