@@ -18,6 +18,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.withFrameNanos
@@ -25,11 +26,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
+import kotlin.coroutines.CoroutineContext
 
 /**
  * This demo draws an interactive 3D animated graph to a [Canvas] using the [Graph] class to
@@ -71,9 +78,11 @@ class MainActivity : ComponentActivity() {
  * (where "$name" is our [String] parameter [name]). The `modifier` argument of the [Column] is a
  * [Modifier.background] that sets its background color to [Color.LightGray], to which is chained
  * a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraints. The `modifier`
- * argument of the [Graph3D] is a [Modifier.fillMaxWidth] to have it occupy its entired incoming
- * width constrain, followed by an [Modifier.aspectRatio] that sets its aspect ratio to 1.0f, and to
+ * argument of the [Graph3D] is a [Modifier.fillMaxWidth] to have it occupy its entire incoming
+ * width constrain, followed by a [Modifier.aspectRatio] that sets its aspect ratio to 1.0f, and to
  * this is chained a [Modifier.background] that sets its background color to [Color.White].
+ *
+ * @param name a [String] for our two [Text] Composables to display.
  */
 @Composable
 fun Greeting(name: String) {
@@ -92,15 +101,45 @@ fun Greeting(name: String) {
     }
 }
 
-
 /**
  * This Composable handles all the compose plumbing required to display the [ImageBitmap]'s that the
- * [Graph] class generates for each frame (believe it or not).
+ * [Graph] class generates for each frame (believe it or not). We initialize and remember our
+ * [Graph] variable `val graph` to a new instance, and initialize and remember our [MutableLongState]
+ * variable `val time` to a new instance whose initial `value` is the value returned by the
+ * [System.nanoTime] method (current value of the running Java Virtual Machine's high-resolution
+ * time source, in nanoseconds). We then call [LaunchedEffect] to have it launch its `block` argument
+ * into our composition's [CoroutineContext]. In this `block` we loop while its [Job] is active using
+ * [withFrameNanos] to suspend until a new frame is requested, whereupon is invokes its lambda which
+ * sets the [MutableLongState.longValue] of `time` to the new value returned by [System.nanoTime]
+ * and then calling the [Graph.getImageForTime] method of `graph` with that value to have it generate
+ * and return a new [ImageBitmap] for that time. Note that setting the [MutableLongState.longValue]
+ * of `time` to a new value triggers recomposition of any Composable reading `time` as the `onDraw`
+ * block of our [Canvas] does. Our root Composable is this [Canvas] whose `modifier` argument is our
+ * [Modifier] parameter [modifier] to which we chain a [Modifier.onPlaced] which calls the
+ * [Graph.setSize] method of `graph` to set its `width` to the [IntSize.width] of the incoming
+ * [LayoutCoordinates.size] and to set its `height` to the [IntSize.height] of the incoming
+ * [LayoutCoordinates.size]. And to this is chained a [Modifier.pointerInput] whose `block` is a
+ * [detectDragGestures] whose `onDragStart` argument is a lambda that calls the [Graph.dragStart]
+ * method of `graph` with its [Offset] parameter (the last known pointer position relative to the
+ * containing element), whose `onDragEnd` argument is a lambda that calls the [Graph.dragStopped]
+ * method of `graph`, whose `onDragCancel` argument is a lambda that calls the [Graph.dragStopped]
+ * method of `graph`, and whose `onDrag` argument is a lambda that calls the [Graph.drag] method of
+ * `graph` with its [PointerInputChange] parameter (unused) and its [Offset] parameter. In the
+ * [DrawScope] `onDraw` lambda of the [Canvas] we access the [MutableLongState.longValue] property
+ * of `time` to "register" us for recomposition when its value changes, then using [scale] to
+ * `scale` the coordinate space by 2.0f with a `pivot` at [Offset] of (0f, 0f) we invoke the
+ * Composable [DrawScope.drawImage] to have it draw the [ImageBitmap] returned by the [Graph.bitmap]
+ * property of `graph`.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our only caller calls us with a [Modifier.fillMaxWidth] to have us occupy our entire
+ * incoming width constraint, chained to a [Modifier.aspectRatio] that sets our aspect ratio to 1.0f,
+ * and to this is chained a [Modifier.background] that sets our background color to [Color.White].
  */
 @Composable
-fun Graph3D(modifier: Modifier) {
-    val graph = remember { Graph() }
-    val time = remember { mutableLongStateOf(System.nanoTime()) }
+fun Graph3D(modifier: Modifier) {ImageBitmap
+    val graph: Graph = remember { Graph() }
+    val time: MutableLongState = remember { mutableLongStateOf(value = System.nanoTime()) }
 
     LaunchedEffect(Unit) {
         while (isActive) {
@@ -112,13 +151,13 @@ fun Graph3D(modifier: Modifier) {
     }
 
     Canvas(modifier = modifier
-        .onPlaced {
-            graph.setSize(it.size.width, it.size.width)
+        .onPlaced { coordinates: LayoutCoordinates ->
+            graph.setSize(width = coordinates.size.width, height = coordinates.size.width)
         }
         .pointerInput(Unit) {
             detectDragGestures(
-                onDragStart = {
-                    graph.dragStart(it)
+                onDragStart = { offset: Offset ->
+                    graph.dragStart(down = offset)
                 },
                 onDragEnd = {
                     graph.dragStopped()
@@ -126,14 +165,14 @@ fun Graph3D(modifier: Modifier) {
                 onDragCancel = {
                     graph.dragStopped()
                 },
-                onDrag = { change, dragAmount ->
-                    graph.drag(change, dragAmount)
+                onDrag = { change: PointerInputChange, dragAmount: Offset ->
+                    graph.drag(change = change, drag = dragAmount)
                 }
             )
         }
     ) {
         time.longValue // Cute: reads cause recomposition when `time` changes value in LaunchedEffect
-        scale(scale = 2.0f, pivot = Offset(0f, 0f)) {
+        scale(scale = 2.0f, pivot = Offset(x = 0f, y = 0f)) {
             drawImage(image = graph.bitmap)
         }
     }
