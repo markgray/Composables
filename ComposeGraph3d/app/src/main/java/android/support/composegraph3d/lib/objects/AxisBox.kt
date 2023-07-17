@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE", "unused", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+
 package android.support.composegraph3d.lib.objects
 
 import android.support.composegraph3d.lib.Object3D
@@ -28,7 +30,13 @@ import android.support.composegraph3d.lib.VectorUtil.triangleNormal
  * Draws box along the axis
  */
 class AxisBox : Object3D() {
-    var color = -0xefefdf
+    /**
+     * TODO: Add kdoc
+     */
+    var color: Int = -0xefefdf
+    /**
+     * TODO: Add kdoc
+     */
     fun setRange(minX: Float, maxX: Float, minY: Float, maxY: Float, minZ: Float, maxZ: Float) {
         mMinX = minX
         mMaxX = maxX
@@ -39,6 +47,9 @@ class AxisBox : Object3D() {
         buildBox()
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun buildBox() {
         vert = FloatArray(8 * 3) // cube 8 corners
         tVert = FloatArray(vert.size)
@@ -62,14 +73,17 @@ class AxisBox : Object3D() {
         }
     }
 
-    fun render_old(s: Scene3D?, zbuff: FloatArray?, img: IntArray?, w: Int, h: Int) {
+    /**
+     * TODO: Add kdoc
+     */
+    fun renderOld(s: Scene3D?, zbuff: FloatArray?, img: IntArray?, w: Int, h: Int) {
         var i = 0
         while (i < index.size) {
             val p1 = index[i]
             val p2 = index[i + 1]
             val p3 = index[i + 2]
             val height = (vert[p1 + 2] + vert[p3 + 2] + vert[p2 + 2]) / 3
-            val `val` = (255 * Math.abs(height)).toInt()
+            val value = (255 * Math.abs(height)).toInt()
             drawline(
                 zbuff!!, img!!, color, w, h,
                 tVert[p1], tVert[p1 + 1], tVert[p1 + 2] - 0.01f,
@@ -79,7 +93,10 @@ class AxisBox : Object3D() {
         }
     }
 
-    override fun render(s: Scene3D, zbuff: FloatArray, img: IntArray, w: Int, h: Int) {
+    /**
+     * TODO: Add kdoc
+     */
+    override fun render(s: Scene3D, zbuff: FloatArray, img: IntArray, width: Int, height: Int) {
        // raster_color(s, zbuff, img, w, h)
         var i = 0
         while (i < index.size) {
@@ -93,12 +110,12 @@ class AxisBox : Object3D() {
             )
             if (front) {
                 drawline(
-                    zbuff, img, color, w, h,
+                    zbuff, img, color, width, height,
                     tVert[p1], tVert[p1 + 1], tVert[p1 + 2] - 0.01f,
                     tVert[p2], tVert[p2 + 1], tVert[p2 + 2] - 0.01f
                 )
                 drawline(
-                    zbuff, img, color, w, h,
+                    zbuff, img, color, width, height,
                     tVert[p1], tVert[p1 + 1], tVert[p1 + 2] - 0.01f,
                     tVert[p3], tVert[p3 + 1], tVert[p3 + 2] - 0.01f
                 )
@@ -106,23 +123,23 @@ class AxisBox : Object3D() {
                 continue
             }
             drawline(
-                zbuff, img, color, w, h,
+                zbuff, img, color, width, height,
                 tVert[p1], tVert[p1 + 1], tVert[p1 + 2] - 0.01f,
                 tVert[p2], tVert[p2 + 1], tVert[p2 + 2] - 0.01f
             )
             drawTicks(
-                zbuff, img, color, w, h,
+                zbuff, img, color, width, height,
                 tVert[p1], tVert[p1 + 1], tVert[p1 + 2] - 0.01f,
                 tVert[p2], tVert[p2 + 1], tVert[p2 + 2] - 0.01f,
                 tVert[p3] - tVert[p1], tVert[p3 + 1] - tVert[p1 + 1], tVert[p3 + 2] - tVert[p1 + 2]
             )
             drawline(
-                zbuff, img, color, w, h,
+                zbuff, img, color, width, height,
                 tVert[p1], tVert[p1 + 1], tVert[p1 + 2] - 0.01f,
                 tVert[p3], tVert[p3 + 1], tVert[p3 + 2] - 0.01f
             )
             drawTicks(
-                zbuff, img, color, w, h,
+                zbuff, img, color, width, height,
                 tVert[p1], tVert[p1 + 1], tVert[p1 + 2] - 0.01f,
                 tVert[p3], tVert[p3 + 1], tVert[p3 + 2] - 0.01f,
                 tVert[p2] - tVert[p1], tVert[p2 + 1] - tVert[p1 + 1], tVert[p2 + 2] - tVert[p1 + 2]
@@ -131,12 +148,18 @@ class AxisBox : Object3D() {
         }
     }
 
-    var screen = floatArrayOf(0f, 0f, -1f)
+    /**
+     * TODO: Add kdoc
+     */
+    var screen: FloatArray = floatArrayOf(0f, 0f, -1f)
 
     init {
         type = 1
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     override fun raster_color(s: Scene3D, zbuff: FloatArray, img: IntArray, w: Int, h: Int) {
         var i = 0
         while (i < index.size) {
@@ -171,6 +194,9 @@ class AxisBox : Object3D() {
     }
 
     companion object {
+        /**
+         * TODO: Add kdoc
+         */
         fun drawTicks(
             zbuff: FloatArray?, img: IntArray?, color: Int, w: Int, h: Int,
             p1x: Float, p1y: Float, p1z: Float,
