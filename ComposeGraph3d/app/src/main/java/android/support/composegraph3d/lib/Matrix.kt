@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused", "ReplaceNotNullAssertionWithElvisReturn", "KotlinConstantConditions", "JoinDeclarationAndAssignment", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
+
 package android.support.composegraph3d.lib
 
 import java.text.DecimalFormat
@@ -22,7 +24,14 @@ import java.util.*
  * Matrix math class.  (For the purposes of this application it is more efficient as has no JNI)
  */
 open class Matrix {
+    /**
+     * TODO: Add kdoc
+     */
     var m: DoubleArray
+
+    /**
+     * TODO: Add kdoc
+     */
     fun makeRotation() {
         run {
             val v = doubleArrayOf(m[0], m[4], m[8])
@@ -47,6 +56,9 @@ open class Matrix {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     open fun print() {
         val df = DecimalFormat("      ##0.000")
         for (i in 0..3) {
@@ -63,16 +75,29 @@ open class Matrix {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     constructor() {
         m = DoubleArray(4 * 4)
         setToUnit()
     }
 
-    constructor(matrix: Matrix) : this(Arrays.copyOf(matrix.m, matrix.m.size)) {}
+    /**
+     * TODO: Add kdoc
+     */
+    constructor(matrix: Matrix) : this(Arrays.copyOf(matrix.m, matrix.m.size))
+
+    /**
+     * TODO: Add kdoc
+     */
     protected constructor(m: DoubleArray) {
         this.m = m
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun setToUnit() {
         for (i in 1 until m.size) {
             m[i] = 0.0
@@ -83,6 +108,9 @@ open class Matrix {
         m[15] = 1.0
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun mult4(src: FloatArray, dest: FloatArray) {
         for (i in 0..3) {
             val col = i * 4
@@ -94,6 +122,9 @@ open class Matrix {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun mult3(src: FloatArray, dest: FloatArray) {
         for (i in 0..2) {
             val col = i * 4
@@ -105,6 +136,9 @@ open class Matrix {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun mult3v(src: FloatArray, dest: FloatArray) {
         for (i in 0..2) {
             val col = i * 4
@@ -116,6 +150,9 @@ open class Matrix {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun mult3v(src: FloatArray, off: Int, dest: FloatArray) {
         for (i in 0..2) {
             val col = i * 4
@@ -127,6 +164,9 @@ open class Matrix {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun mult4(src: DoubleArray, dest: DoubleArray) {
         for (i in 0..3) {
             val col = i * 4
@@ -138,6 +178,9 @@ open class Matrix {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun mult3(src: DoubleArray, dest: DoubleArray) {
         for (i in 0..2) {
             val col = i * 4
@@ -149,6 +192,9 @@ open class Matrix {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun mult3v(src: DoubleArray?, dest: DoubleArray) {
         for (i in 0..2) {
             val col = i * 4
@@ -160,12 +206,18 @@ open class Matrix {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun vecmult(src: DoubleArray?): DoubleArray {
         val ret = DoubleArray(3)
         mult3v(src, ret)
         return ret
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun mult3(src: FloatArray, off1: Int, dest: FloatArray, off2: Int) {
         var col = 0 * 4
         var sum = m[col + 3]
@@ -190,6 +242,9 @@ open class Matrix {
         dest[2 + off2] = v2
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun invers(ret: Matrix): Matrix? {
         val inv = ret.m
         inv[0] =
@@ -252,6 +307,9 @@ open class Matrix {
         return ret
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun mult(b: Matrix?): Matrix {
         return Matrix(
             multiply(
@@ -260,15 +318,24 @@ open class Matrix {
         )
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun premult(b: Matrix): Matrix {
         return Matrix(multiply(b.m, m))
     }
 
     companion object {
+        /**
+         * TODO: Add kdoc
+         */
         private fun trim(s: String): String {
             return s.substring(s.length - 7)
         }
 
+        /**
+         * TODO: Add kdoc
+         */
         private fun multiply(a: DoubleArray, b: DoubleArray): DoubleArray {
             val resultant = DoubleArray(16)
             for (i in 0..3) {
@@ -281,6 +348,9 @@ open class Matrix {
             return resultant
         }
 
+        /**
+         * TODO: Add kdoc
+         */
         @JvmStatic
         fun main(args: Array<String>) {
             val m = Matrix()

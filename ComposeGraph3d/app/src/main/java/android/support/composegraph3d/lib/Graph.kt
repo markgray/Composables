@@ -16,30 +16,37 @@ class Graph {
      * TODO: Add kdoc
      */
     var w: Int = 512
+
     /**
      * TODO: Add kdoc
      */
     var h: Int = 512
+
     /**
      * TODO: Add kdoc
      */
     val scale: Int = 2
+
     /**
      * TODO: Add kdoc
      */
     var downX: Float = 0.0f
+
     /**
      * TODO: Add kdoc
      */
     var downY: Float = 0.0f
+
     /**
      * TODO: Add kdoc
      */
     var graphFunctions: FunctionSetup = FunctionSetup(w, h)
+
     /**
      * TODO: Add kdoc
      */
     var bitmap: ImageBitmap = ImageBitmap(w, h, ImageBitmapConfig.Argb8888)
+
     /**
      * TODO: Add kdoc
      */

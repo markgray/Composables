@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("ReplaceJavaStaticMethodWithKotlinAnalog", "KotlinConstantConditions", "MemberVisibilityCanBePrivate")
+
 package android.support.composegraph3d.lib.objects
 
 import android.support.composegraph3d.lib.Object3D
@@ -22,7 +24,13 @@ import android.support.composegraph3d.lib.Object3D
  */
 class Surface3D(private val mFunction: Function) : Object3D() {
     private val mZoomZ = 1f
-    var mSize = 100
+    /**
+     * TODO: Add kdoc
+     */
+    var mSize: Int = 100
+    /**
+     * TODO: Add kdoc
+     */
     fun setRange(minX: Float, maxX: Float, minY: Float, maxY: Float, minZ: Float, maxZ: Float) {
         mMinX = minX
         mMaxX = maxX
@@ -33,15 +41,27 @@ class Surface3D(private val mFunction: Function) : Object3D() {
         computeSurface(java.lang.Float.isNaN(mMinZ))
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun setArraySize(size: Int) {
         mSize = size
         computeSurface(false)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     interface Function {
+        /**
+         * TODO: Add kdoc
+         */
         fun eval(x: Float, y: Float): Float
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun computeSurface(resetZ: Boolean) {
         val n = (mSize + 1) * (mSize + 1)
         makeVert(n)
@@ -49,18 +69,21 @@ class Surface3D(private val mFunction: Function) : Object3D() {
         calcSurface(resetZ)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun calcSurface(resetZ: Boolean) {
-        val min_x = mMinX
-        val max_x = mMaxX
-        val min_y = mMinY
-        val max_y = mMaxY
-        var min_z = Float.MAX_VALUE
-        var max_z = -Float.MAX_VALUE
+        val minX = mMinX
+        val maxX = mMaxX
+        val minY = mMinY
+        val maxY = mMaxY
+        var minZ = Float.MAX_VALUE
+        var maxZ = -Float.MAX_VALUE
         var count = 0
         for (iy in 0..mSize) {
-            val y = min_y + iy * (max_y - min_y) / mSize
+            val y = minY + iy * (maxY - minY) / mSize
             for (ix in 0..mSize) {
-                val x = min_x + ix * (max_x - min_x) / mSize
+                val x = minX + ix * (maxX - minX) / mSize
                 val delta = 0.001f
                 var dx = (mFunction.eval(x + delta, y) - mFunction.eval(x - delta, y)) / (2 * delta)
                 var dy = (mFunction.eval(x, y + delta) - mFunction.eval(x, y - delta)) / (2 * delta)
@@ -87,12 +110,12 @@ class Surface3D(private val mFunction: Function) : Object3D() {
                 if (java.lang.Float.isInfinite(z)) {
                     continue
                 }
-                min_z = Math.min(z, min_z)
-                max_z = Math.max(z, max_z)
+                minZ = Math.min(z, minZ)
+                maxZ = Math.max(z, maxZ)
             }
             if (resetZ) {
-                mMinZ = min_z
-                mMaxZ = max_z
+                mMinZ = minZ
+                mMaxZ = maxZ
             }
         }
         // normalize range in z

@@ -160,7 +160,7 @@ class AxisBox : Object3D() {
     /**
      * TODO: Add kdoc
      */
-    override fun raster_color(s: Scene3D, zbuff: FloatArray, img: IntArray, w: Int, h: Int) {
+    override fun rasterColor(s: Scene3D, zbuff: FloatArray, img: IntArray, w: Int, h: Int) {
         var i = 0
         while (i < index.size) {
             val p1 = index[i]

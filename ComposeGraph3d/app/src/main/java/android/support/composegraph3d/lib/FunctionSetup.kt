@@ -1,3 +1,5 @@
+@file:Suppress("unused", "UNUSED_PARAMETER", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+
 package android.support.composegraph3d.lib
 
 import android.support.composegraph3d.lib.objects.AxisBox
@@ -6,26 +8,106 @@ import android.support.composegraph3d.lib.objects.Surface3D.Function
 import java.util.*
 import kotlin.math.*
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param mWidth width
+ * @param mHeight height
+ */
 class FunctionSetup(var mWidth: Int, var mHeight: Int) {
+    /**
+     * TODO: Add kdoc
+     */
     var mScene3D: Scene3D
-    private var mImageBuff: IntArray
-    var mGraphType = 2
-    private var mLastTouchX0 = Float.NaN
-    private var mLastTouchY0 = 0f
-    private var mLastTrackBallX = 0f
-    private var mLastTrackBallY = 0f
-    var mDownScreenWidth = 0.0
-    var mSurface: Surface3D? = null
-    var mAxisBox: AxisBox? = null
-    var range = 20f
-    var minZ = -10f
-    var maxZ = 10f
-    var mZoomFactor = 1f
-    var animated = false
-    var zBuff: FloatArray = FloatArray(mWidth * mHeight)
-    var nanoTime: Long = 0
-    var time = 0f
 
+    /**
+     * TODO: Add kdoc
+     */
+    private var mImageBuff: IntArray
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mGraphType: Int = 2
+
+    /**
+     * TODO: Add kdoc
+     */
+    private var mLastTouchX0 = Float.NaN
+
+    /**
+     * TODO: Add kdoc
+     */
+    private var mLastTouchY0 = 0f
+
+    /**
+     * TODO: Add kdoc
+     */
+    private var mLastTrackBallX = 0f
+
+    /**
+     * TODO: Add kdoc
+     */
+    private var mLastTrackBallY = 0f
+
+    /**
+     *TODO: Add kdoc
+     */
+    var mDownScreenWidth: Double = 0.0
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mSurface: Surface3D? = null
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mAxisBox: AxisBox? = null
+
+    /**
+     *TODO: Add kdoc
+     */
+    var range: Float = 20f
+
+    /**
+     * TODO: Add kdoc
+     */
+    var minZ: Float = -10f
+
+    /**
+     * TODO: Add kdoc
+     */
+    var maxZ: Float = 10f
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mZoomFactor: Float = 1f
+
+    /**
+     * 
+     */
+    var animated: Boolean = false
+
+    /**
+     * TODO: Add kdoc
+     */
+    var zBuff: FloatArray = FloatArray(mWidth * mHeight)
+
+    /**
+     * TODO: Add kdoc
+     */
+    var nanoTime: Long = 0
+
+    /**
+     * TODO: Add kdoc
+     */
+    var time: Float = 0f
+
+    /**
+     * TODO: Add kdoc
+     */
     fun buildSurface() {
         mSurface = Surface3D(mFunction = object : Function {
             override fun eval(x: Float, y: Float): Float {
@@ -52,6 +134,9 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         mScene3D.setScreenDim(mWidth, mHeight, mImageBuff, 0x00AAAAAA)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun buildAnimatedSurface() {
         mSurface = Surface3D(object : Function {
             override fun eval(x: Float, y: Float): Float {
@@ -69,6 +154,9 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         mSurface!!.setRange(-range, range, -range, range, minZ, maxZ)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun tick(now: Long) {
         time += (now - nanoTime) * 1E-9f
         nanoTime = now
@@ -76,6 +164,9 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         mScene3D.update()
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun onKeyTyped(c: Long) {
         println(c)
         //        switch ((char) c) {
@@ -84,6 +175,9 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
 //        }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun onMouseDown(x: Float, y: Float) {
         mDownScreenWidth = mScene3D.screenWidth
         mLastTouchX0 = x
@@ -93,6 +187,9 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         mLastTrackBallY = mLastTouchY0
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun onMouseDrag(x: Float, y: Float) {
         if (java.lang.Float.isNaN(mLastTouchX0)) {
             return
@@ -106,11 +203,17 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         mLastTrackBallY = y
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun onMouseUP() {
         mLastTouchX0 = Float.NaN
         mLastTouchY0 = Float.NaN
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun onMouseWheel(rotation: Float, ctlDown: Boolean) {
         if (ctlDown) {
             mZoomFactor *= 1.01.pow(rotation.toDouble()).toFloat()
@@ -126,6 +229,9 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun getImageBuff(time: Long): IntArray {
         tick(time)
         if (mScene3D.notSetUp()) {
@@ -135,6 +241,9 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         return mImageBuff
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun render(type: Int) {
         Arrays.fill(mImageBuff, -0x777778)
         mScene3D.render(2)
@@ -145,6 +254,9 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         //  raster_phong(mSurface,mScene3D,zBuff,mImageBuff,mWidth,mHeight);
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun setSize(width: Int, height: Int) {
         if (mWidth == width && mHeight == height) {
             return
@@ -156,5 +268,5 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         buildSurface()
         mScene3D.setUpMatrix(mWidth, mHeight)
         mScene3D.setScreenDim(mWidth, mHeight, mImageBuff, 0x00AAAAAA)
-    } ///////////////////////////////////////
+    }
 }
