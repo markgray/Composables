@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused", "UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
+
 package android.support.composegraph3d.lib
 
 import java.text.DecimalFormat
@@ -22,12 +24,39 @@ import java.util.*
  * This calculates the matrix that transforms triangles from world space to screen space.
  */
 class ViewMatrix : Matrix() {
+    /**
+     * TODO: Add kdoc
+     */
     var lookPoint: DoubleArray? = null
+
+    /**
+     * TODO: Add kdoc
+     */
     var eyePoint: DoubleArray? = null
+
+    /**
+     * TODO: Add kdoc
+     */
     var upVector: DoubleArray? = null
-    var screenWidth = 0.0
+
+    /**
+     * TODO: Add kdoc
+     */
+    var screenWidth: Double = 0.0
+
+    /**
+     * TODO: Add kdoc
+     */
     var mScreenDim: IntArray? = null
-    var mTmp1 = DoubleArray(3)
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mTmp1: DoubleArray = DoubleArray(3)
+
+    /**
+     * TODO: Add kdoc
+     */
     override fun print() {
         println("mLookPoint  :" + toStr(lookPoint))
         println("mEyePoint   :" + toStr(eyePoint))
@@ -36,11 +65,21 @@ class ViewMatrix : Matrix() {
         println("mScreenDim  :[" + mScreenDim!![0] + "," + mScreenDim!![1] + "]")
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun setScreenDim(x: Int, y: Int) {
         mScreenDim = intArrayOf(x, y)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun makeUnit() {}
+
+    /**
+     * TODO: Add kdoc
+     */
     fun fixUpPoint() {
         val zv = doubleArrayOf(
             eyePoint!![0] - lookPoint!![0],
@@ -55,6 +94,9 @@ class ViewMatrix : Matrix() {
         VectorUtil.mult(upVector, -1.0, upVector)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun calcMatrix() {
         if (mScreenDim == null) {
             return
@@ -90,6 +132,9 @@ class ViewMatrix : Matrix() {
         this.m = m
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     private fun calcLook(tri: Object3D, voxelDim: FloatArray, w: Int, h: Int) {
         var minx = Float.MAX_VALUE
         var miny = Float.MAX_VALUE
@@ -119,6 +164,9 @@ class ViewMatrix : Matrix() {
         ) * 2).toDouble()
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     private fun calcLook(triW: Object3D, w: Int, h: Int) {
         var minx = Float.MAX_VALUE
         var miny = Float.MAX_VALUE
@@ -144,6 +192,9 @@ class ViewMatrix : Matrix() {
         screenWidth = Math.max(maxx - minx, Math.max(maxy - miny, maxz - minz)).toDouble()
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun look(dir: Char, tri: Object3D, voxelDim: FloatArray?, w: Int, h: Int) {
         calcLook(tri, w, h)
         var dx = dir.code shr 4 and 0xF
@@ -177,6 +228,9 @@ class ViewMatrix : Matrix() {
         calcMatrix()
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun lookAt(tri: Object3D, voxelDim: FloatArray, w: Int, h: Int) {
         calcLook(tri, voxelDim, w, h)
         eyePoint = doubleArrayOf(
@@ -197,34 +251,84 @@ class ViewMatrix : Matrix() {
         calcMatrix()
     }
 
-    var mStartx = 0f
-    var mStarty = 0f
-    var mPanStartX = Float.NaN
-    var mPanStartY = Float.NaN
+    /**
+     * TODO: Add kdoc
+     */
+    var mStartx: Float = 0f
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mStarty: Float = 0f
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mPanStartX: Float = Float.NaN
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mPanStartY: Float = Float.NaN
+
+    /**
+     * TODO: Add kdoc
+     */
     var mStartMatrix: Matrix? = null
-    var mStartV = DoubleArray(3)
-    var mMoveToV = DoubleArray(3)
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mStartV: DoubleArray = DoubleArray(3)
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mMoveToV: DoubleArray = DoubleArray(3)
+
+    /**
+     * TODO: Add kdoc
+     */
     lateinit var mStartEyePoint: DoubleArray
+
+    /**
+     * TODO: Add kdoc
+     */
     lateinit var mStartUpVector: DoubleArray
-    var mQ = Quaternion(0.0, 0.0, 0.0, 0.0)
+
+    /**
+     * TODO: Add kdoc
+     */
+    var mQ: Quaternion = Quaternion(0.0, 0.0, 0.0, 0.0)
+
+    /**
+     * TODO: Add kdoc
+     */
     fun trackBallUP(x: Float, y: Float) {}
+
+    /**
+     * TODO: Add kdoc
+     */
     fun trackBallDown(x: Float, y: Float) {
         mStartx = x
         mStarty = y
         ballToVec(x, y, mStartV)
-        mStartEyePoint = Arrays.copyOf(eyePoint, m.size)
-        mStartUpVector = Arrays.copyOf(upVector, m.size)
+        mStartEyePoint = Arrays.copyOf(eyePoint!!, m.size)
+        mStartUpVector = Arrays.copyOf(upVector!!, m.size)
         mStartMatrix = Matrix(this)
         mStartMatrix!!.makeRotation()
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun trackBallMove(x: Float, y: Float) {
         if (mStartx == x && mStarty == y) {
             return
         }
         ballToVec(x, y, mMoveToV)
-        val angle: Double = Quaternion.Companion.calcAngle(mStartV, mMoveToV)
-        var axis: DoubleArray? = Quaternion.Companion.calcAxis(mStartV, mMoveToV)
+        val angle: Double = Quaternion.calcAngle(mStartV, mMoveToV)
+        var axis: DoubleArray? = Quaternion.calcAxis(mStartV, mMoveToV)
         axis = mStartMatrix!!.vecmult(axis)
         mQ[angle] = axis
         VectorUtil.sub(lookPoint, mStartEyePoint, eyePoint)
@@ -234,11 +338,17 @@ class ViewMatrix : Matrix() {
         calcMatrix()
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun panDown(x: Float, y: Float) {
         mPanStartX = x
         mPanStartY = y
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun panMove(x: Float, y: Float) {
         val scale = screenWidth / mScreenDim!![0]
         if (java.lang.Float.isNaN(mPanStartX)) {
@@ -259,11 +369,17 @@ class ViewMatrix : Matrix() {
         calcMatrix()
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun panUP() {
         mPanStartX = Float.NaN
         mPanStartY = Float.NaN
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun ballToVec(x: Float, y: Float, v: DoubleArray) {
         val ballRadius = Math.min(mScreenDim!![0], mScreenDim!![1]) * .4f
         val cx = mScreenDim!![0] / 2.0
@@ -273,8 +389,8 @@ class ViewMatrix : Matrix() {
         var scale = dx * dx + dy * dy
         if (scale > 1) {
             scale = Math.sqrt(scale)
-            dx = dx / scale
-            dy = dy / scale
+            dx /= scale
+            dy /= scale
         }
         val dz = Math.sqrt(Math.abs(1 - (dx * dx + dy * dy)))
         v[0] = dx
@@ -284,17 +400,47 @@ class ViewMatrix : Matrix() {
     }
 
     companion object {
-        const val UP_AT = 0x001.toChar()
-        const val DOWN_AT = 0x002.toChar()
-        const val RIGHT_AT = 0x010.toChar()
-        const val LEFT_AT = 0x020.toChar()
-        const val FORWARD_AT = 0x100.toChar()
-        const val BEHIND_AT = 0x200.toChar()
+        /**
+         * TODO: Add kdoc
+         */
+        const val UP_AT: Char = 0x001.toChar()
+
+        /**
+         * TODO: Add kdoc
+         */
+        const val DOWN_AT: Char = 0x002.toChar()
+
+        /**
+         * TODO: Add kdoc
+         */
+        const val RIGHT_AT: Char = 0x010.toChar()
+
+        /**
+         * TODO: Add kdoc
+         */
+        const val LEFT_AT: Char = 0x020.toChar()
+
+        /**
+         * TODO: Add kdoc
+         */
+        const val FORWARD_AT: Char = 0x100.toChar()
+
+        /**
+         * TODO: Add kdoc
+         */
+        const val BEHIND_AT: Char = 0x200.toChar()
+
+        /**
+         * TODO: Add kdoc
+         */
         private fun toStr(d: Double): String {
             val s = "       " + df.format(d)
             return s.substring(s.length - 8)
         }
 
+        /**
+         * TODO: Add kdoc
+         */
         private fun toStr(d: DoubleArray?): String {
             var s = "["
             for (i in d!!.indices) {
@@ -303,11 +449,21 @@ class ViewMatrix : Matrix() {
             return "$s]"
         }
 
+        /**
+         * TODO: Add kdoc
+         */
         private val df = DecimalFormat("##0.000")
+
+        /**
+         * TODO: Add kdoc
+         */
         fun calcRight(a: DoubleArray, b: DoubleArray?, out: DoubleArray?) {
             VectorUtil.cross(a, b, out)
         }
 
+        /**
+         * TODO: Add kdoc
+         */
         @JvmStatic
         fun main(args: Array<String>) {
             val up = doubleArrayOf(0.0, 0.0, 1.0)

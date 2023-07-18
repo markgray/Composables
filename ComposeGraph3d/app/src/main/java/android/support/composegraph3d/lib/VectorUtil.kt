@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+
 package android.support.composegraph3d.lib
 
 import java.text.DecimalFormat
@@ -21,30 +23,48 @@ import java.text.DecimalFormat
  * A few utilities for vector calculations.
  */
 object VectorUtil {
+    /**
+     * TODO: Add kdoc
+     */
     fun sub(a: DoubleArray?, b: DoubleArray?, out: DoubleArray?) {
         out!![0] = a!![0] - b!![0]
         out[1] = a[1] - b[1]
         out[2] = a[2] - b[2]
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun mult(a: DoubleArray?, b: Double, out: DoubleArray?) {
         out!![0] = a!![0] * b
         out[1] = a[1] * b
         out[2] = a[2] * b
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun dot(a: DoubleArray, b: DoubleArray): Double {
         return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun norm(a: DoubleArray?): Double {
         return Math.sqrt(a!![0] * a[0] + a[1] * a[1] + a[2] * a[2])
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun norm(a: FloatArray?): Double {
         return Math.sqrt((a!![0] * a[0] + a[1] * a[1] + a[2] * a[2]).toDouble())
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun cross(a: DoubleArray, b: DoubleArray?, out: DoubleArray?) {
         val out0 = a[1] * b!![2] - b[1] * a[2]
         val out1 = a[2] * b[0] - b[2] * a[0]
@@ -54,6 +74,9 @@ object VectorUtil {
         out[2] = out2
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun normalize(a: DoubleArray?) {
         val norm = norm(a)
         a!![0] /= norm
@@ -61,6 +84,9 @@ object VectorUtil {
         a!![2] /= norm
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun normalize(a: FloatArray) {
         val norm = norm(a).toFloat()
         a[0] /= norm
@@ -68,6 +94,9 @@ object VectorUtil {
         a[2] /= norm
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun add(
         a: DoubleArray, b: DoubleArray,
         out: DoubleArray
@@ -77,6 +106,9 @@ object VectorUtil {
         out[2] = a[2] + b[2]
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun madd(
         a: DoubleArray?, x: Double, b: DoubleArray?,
         out: DoubleArray?
@@ -86,6 +118,9 @@ object VectorUtil {
         out[2] = x * a[2] + b[2]
     }
 
+    /**
+     *
+     */
     @JvmStatic
     fun triangleNormal(vert: FloatArray, p1: Int, p2: Int, p3: Int, norm: FloatArray?) {
         val x1 = vert[p2] - vert[p1]
@@ -101,14 +136,23 @@ object VectorUtil {
         norm!![2] /= n
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun dot(a: FloatArray?, b: FloatArray?): Float {
         return a!![0] * b!![0] + a[1] * b[1] + a[2] * b[2]
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun dot(a: FloatArray, offset: Int, b: FloatArray?): Float {
         return a[offset] * b!![0] + a[1 + offset] * b[1] + a[2 + offset] * b[2]
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun cross(a0: Float, a1: Float, a2: Float, b0: Float, b1: Float, b2: Float, out: FloatArray?) {
         val out0 = a1 * b2 - b1 * a2
         val out1 = a2 * b0 - b2 * a0
@@ -118,10 +162,16 @@ object VectorUtil {
         out[2] = out2
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     private fun trim(s: String): String {
         return s.substring(s.length - 7)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun vecToString(light: FloatArray): String {
         val df = DecimalFormat("        ##0.000")
         var str = "["
