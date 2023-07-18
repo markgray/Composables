@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+
 package android.support.composegraph3d.lib
 
 /**
@@ -21,7 +23,14 @@ package android.support.composegraph3d.lib
  * see https://en.wikipedia.org/wiki/Quaternion
  */
 class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
+    /**
+     * TODO: Add kdoc
+     */
     private val x = DoubleArray(4) // w,x,y,z,
+
+    /**
+     * TODO: Add kdoc
+     */
     operator fun set(w: Double, x: Double, y: Double, z: Double) {
         this.x[0] = w
         this.x[1] = x
@@ -29,6 +38,9 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
         this.x[3] = z
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     operator fun set(v1: DoubleArray, v2: DoubleArray) {
         val vec1 = normal(v1)
         val vec2 = normal(v2)
@@ -37,6 +49,9 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
         set(angle, axis)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     operator fun set(angle: Double, axis: DoubleArray?) {
         x[0] = Math.cos(angle / 2)
         val sin = Math.sin(angle / 2)
@@ -52,15 +67,24 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
         x[3] = x3
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun conjugate(): Quaternion {
         return Quaternion(x[0], -x[1], -x[2], -x[3])
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     operator fun plus(b: Quaternion): Quaternion {
         val a = this
         return Quaternion(a.x[0] + b.x[0], a.x[1] + b.x[1], a.x[2] + b.x[2], a.x[3] + b.x[3])
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     operator fun times(b: Quaternion): Quaternion {
         val a = this
         val y0 = a.x[0] * b.x[0] - a.x[1] * b.x[1] - a.x[2] * b.x[2] - a.x[3] * b.x[3]
@@ -70,16 +94,25 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
         return Quaternion(y0, y1, y2, y3)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun inverse(): Quaternion {
         val d = x[0] * x[0] + x[1] * x[1] + x[2] * x[2] + x[3] * x[3]
         return Quaternion(x[0] / d, -x[1] / d, -x[2] / d, -x[3] / d)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun divides(b: Quaternion): Quaternion {
         val a = this
         return a.inverse().times(b)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun rotateVec(v: DoubleArray?): DoubleArray {
         val v0 = v!![0]
         val v1 = v[1]
@@ -91,6 +124,9 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
         return doubleArrayOf(n0, n1, n2)
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun matrix() {
         val xx = x[1] * x[1]
         val xy = x[1] * x[2]
@@ -121,6 +157,9 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
     }
 
     companion object {
+        /**
+         * TODO: Add kdoc
+         */
         private fun cross(a: DoubleArray, b: DoubleArray): DoubleArray {
             val out0 = a[1] * b[2] - b[1] * a[2]
             val out1 = a[2] * b[0] - b[2] * a[0]
@@ -128,21 +167,33 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
             return doubleArrayOf(out0, out1, out2)
         }
 
+        /**
+         * TODO: Add kdoc
+         */
         private fun dot(a: DoubleArray, b: DoubleArray): Double {
             return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
         }
 
+        /**
+         * TODO: Add kdoc
+         */
         private fun normal(a: DoubleArray): DoubleArray {
             val norm = Math.sqrt(dot(a, a))
             return doubleArrayOf(a[0] / norm, a[1] / norm, a[2] / norm)
         }
 
+        /**
+         * TODO: Add kdoc
+         */
         fun calcAngle(v1: DoubleArray, v2: DoubleArray): Double {
             val vec1 = normal(v1)
             val vec2 = normal(v2)
             return Math.acos(dot(vec1, vec2))
         }
 
+        /**
+         * TODO: Add kdoc
+         */
         fun calcAxis(v1: DoubleArray, v2: DoubleArray): DoubleArray {
             val vec1 = normal(v1)
             val vec2 = normal(v2)
