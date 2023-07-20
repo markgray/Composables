@@ -21,8 +21,14 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 
+/**
+ * TODO: Add kdoc
+ */
 val LocalHeightSizeClass: ProvidableCompositionLocal<WindowHeightSizeClass> =
     compositionLocalOf { WindowHeightSizeClass.Compact }
 
+/**
+ * TODO: Add kdoc
+ */
 val LocalWidthSizeClass: ProvidableCompositionLocal<WindowWidthSizeClass> =
     compositionLocalOf { WindowWidthSizeClass.Compact }

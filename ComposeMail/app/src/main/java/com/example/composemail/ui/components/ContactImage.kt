@@ -26,6 +26,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun ContactImage(modifier: Modifier, uri: Uri, onClick: () -> Unit) {
     Image(

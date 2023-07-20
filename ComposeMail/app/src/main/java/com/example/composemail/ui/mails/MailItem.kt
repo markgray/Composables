@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+@file:Suppress("UNUSED_VARIABLE")
+
 package com.example.composemail.ui.mails
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -46,7 +49,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextOverflow
@@ -100,19 +102,36 @@ fun MailItem(
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 const val ANIMATION_DURATION: Int = 400
 
 /**
  * An enum that represents the different layout states of the Composable.
  *
  * Each corresponds to a ConstraintSet in the MotionScene.
+ *
+ * @param tag [String] to be used as the `name` of the `constraintSet`
  */
 enum class MotionMailState(val tag: String) {
+    /**
+     * TODO: Add kdoc
+     */
     Loading("empty"),
+    /**
+     * TODO: Add kdoc
+     */
     Normal("normal"),
+    /**
+     * TODO: Add kdoc
+     */
     Selected("flipped")
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Suppress("EXPERIMENTAL_API_USAGE")
 @Composable
 fun MotionLayoutMail(
@@ -127,7 +146,7 @@ fun MotionLayoutMail(
             MotionMailState.Selected -> Selection.backgroundColor
             else -> MaterialTheme.colors.background
         },
-        animationSpec = tween<Color>(ANIMATION_DURATION)
+        animationSpec = tween(ANIMATION_DURATION)
     )
     val initialStart = remember { targetState }
     val initialEnd = remember {
@@ -158,6 +177,7 @@ fun MotionLayoutMail(
                     start.linkTo(parent.start)
 
                     rotationY = 180f
+                    @SuppressLint("Range")
                     alpha = 0.0f
                 }
                 constrain(contentRef) {
@@ -177,14 +197,16 @@ fun MotionLayoutMail(
             val selectedCSet = constraintSet(MotionMailState.Selected.tag, normalCSet) {
                 constrain(pictureRef) {
                     rotationY = -180f
+                    @SuppressLint("Range")
                     alpha = 0.0f
                 }
                 constrain(checkRef) {
                     rotationY = 0f
+                    @SuppressLint("Range")
                     alpha = 1f
                 }
             }
-            val loadingCSet = constraintSet(MotionMailState.Loading.tag) {
+            val loadingCSet = constraintSet(name = MotionMailState.Loading.tag) {
                 constrain(pictureRef) {
                     width = 60.dp.asDimension
                     height = 60.dp.asDimension
@@ -198,6 +220,7 @@ fun MotionLayoutMail(
                     start.linkTo(parent.end, 8.dp)
 
                     rotationY = 180f
+                    @SuppressLint("Range")
                     alpha = 0.0f
                 }
                 constrain(contentRef) {
@@ -326,7 +349,7 @@ fun MotionLayoutMail(
             )
             .padding(8.dp),
         constraintSetName = targetState.tag,
-        animationSpec = tween<Float>(ANIMATION_DURATION),
+        animationSpec = tween(ANIMATION_DURATION),
         motionScene = motionScene
     ) {
         ContactImage(
@@ -367,6 +390,9 @@ fun MotionLayoutMail(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun MailContent(
     modifier: Modifier = Modifier,

@@ -24,6 +24,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import com.example.composemail.R
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun ProfileButton(modifier: Modifier = Modifier) {
     Image(

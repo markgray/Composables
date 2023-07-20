@@ -53,6 +53,9 @@ import com.example.composemail.ui.components.ProfileButton
 import com.example.composemail.ui.components.SearchBar
 import com.example.composemail.ui.theme.Selection
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun TopToolbar(
     modifier: Modifier = Modifier,

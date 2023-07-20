@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("LiftReturnOrAssignment")
+
 package com.example.composemail.ui.home
 
 import androidx.compose.animation.core.tween
@@ -219,6 +221,9 @@ private val homeMotionScene = MotionScene {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun ComposeMailHome(modifier: Modifier) {
     val mailModel: ComposeMailModel = viewModel()

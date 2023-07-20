@@ -19,13 +19,25 @@ package com.example.composemail.ui.compositionlocal
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 
+/**
+ * TODO: Add kdoc
+ */
 val LocalFoldableInfo: ProvidableCompositionLocal<FoldableInfo> =
     compositionLocalOf { FoldableInfo.Default }
 
+/**
+ * TODO: Add kdoc
+ */
 data class FoldableInfo(
+    /**
+     * TODO: Add kdoc
+     */
     val isHalfOpen: Boolean
 ) {
     companion object {
-        val Default = FoldableInfo(isHalfOpen = false)
+        /**
+         * TODO: Add kdoc
+         */
+        val Default: FoldableInfo = FoldableInfo(isHalfOpen = false)
     }
 }

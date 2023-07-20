@@ -34,6 +34,9 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier
