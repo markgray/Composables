@@ -19,15 +19,36 @@ package com.example.composemail.model.data
 import android.net.Uri
 import java.time.Instant
 
+/**
+ * TODO: Add kdoc
+ */
 data class MailInfoPeek(
+    /**
+     * TODO: Add kdoc
+     */
     val id: Int,
+    /**
+     * TODO: Add kdoc
+     */
     val from: Contact,
+    /**
+     * TODO: Add kdoc
+     */
     val timestamp: Instant,
+    /**
+     * TODO: Add kdoc
+     */
     val subject: String,
+    /**
+     * TODO: Add kdoc
+     */
     val shortContent: String
 ) {
     companion object {
-        val Default = MailInfoPeek(
+        /**
+         * TODO: Add kdoc
+         */
+        val Default: MailInfoPeek = MailInfoPeek(
             id = -1,
             from = Contact.Default,
             timestamp = Instant.now(),
@@ -37,14 +58,41 @@ data class MailInfoPeek(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 data class MailInfoFull(
+    /**
+     * TODO: Add kdoc
+     */
     val id: Int,
+    /**
+     * TODO: Add kdoc
+     */
     val from: Contact,
+    /**
+     * TODO: Add kdoc
+     */
     val to: List<Contact>,
+    /**
+     * TODO: Add kdoc
+     */
     val timestamp: Instant,
+    /**
+     * TODO: Add kdoc
+     */
     val subject: String,
+    /**
+     * TODO: Add kdoc
+     */
     val content: String,
+    /**
+     * TODO: Add kdoc
+     */
     val previousMailId: Int?,
+    /**
+     * TODO: Add kdoc
+     */
     val attachments: List<Attachment>
 ) {
     // IDs are guaranteed to be unique, no need to use everything else for equals/hash
@@ -64,7 +112,10 @@ data class MailInfoFull(
     }
 
     companion object {
-        val Default = MailInfoFull(
+        /**
+         * TODO: Add kdoc
+         */
+        val Default: MailInfoFull = MailInfoFull(
             id = -1,
             from = Contact.Default,
             to = listOf(Contact.Me),
@@ -82,30 +133,66 @@ data class MailInfoFull(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 data class Attachment(
+    /**
+     * TODO: Add kdoc
+     */
     val fileName: String,
+    /**
+     * TODO: Add kdoc
+     */
     val uri: Uri
 ) {
+    /**
+     * TODO: Add kdoc
+     */
     val nameWithoutExtension: String = fileName.substringBefore(".")
 
+    /**
+     * TODO: Add kdoc
+     */
     val extension: String = fileName.substringAfter(".")
 }
 
+/**
+ * TODO: Add kdoc
+ */
 data class Contact(
+    /**
+     * TODO: Add kdoc
+     */
     val name: String,
+    /**
+     * TODO: Add kdoc
+     */
     val profilePic: Uri,
+    /**
+     * TODO: Add kdoc
+     */
     val email: String,
+    /**
+     * TODO: Add kdoc
+     */
     val phone: String
 ) {
     companion object {
-        val Default = Contact(
+        /**
+         * TODO: Add kdoc
+         */
+        val Default: Contact = Contact(
             name = "John Doe",
             profilePic = Uri.parse("android.resource://com.example.composemail/drawable/avatar_1"),
             email = "johndoe@example.com",
             phone = "123 456 789"
         )
 
-        val Me = Contact(
+        /**
+         * TODO: Add kdoc
+         */
+        val Me: Contact = Contact(
             name = "Me",
             profilePic = Uri.parse("android.resource://com.example.composemail/drawable/ic_no_profile_pic"),
             email = "me@example.com",

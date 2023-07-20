@@ -32,19 +32,34 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * TODO: Add kdoc
+ */
 class ComposeMailModel(application: Application) : AndroidViewModel(application) {
     private val mailRepo: MailRepository =
         OfflineRepository(getApplication<Application>().resources)
 
     private var _openedMail: MutableState<MailInfoFull?> = mutableStateOf(null)
 
+    /**
+     * TODO: Add kdoc
+     */
     val openedMail: MailInfoFull?
         get() = _openedMail.value
 
+    /**
+     * TODO: Add kdoc
+     */
     val conversations: Flow<PagingData<MailInfoPeek>> = createMailPager(mailRepo).flow
 
+    /**
+     * TODO: Add kdoc
+     */
     fun isMailOpen(): Boolean = _openedMail.value != null
 
+    /**
+     * TODO: Add kdoc
+     */
     fun openMail(id: Int) {
         viewModelScope.launch {
             var openedMailInfo: MailInfoFull?
@@ -55,6 +70,9 @@ class ComposeMailModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun closeMail() {
         _openedMail.value = null
     }

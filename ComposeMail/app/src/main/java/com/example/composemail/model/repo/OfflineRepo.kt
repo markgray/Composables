@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("KotlinConstantConditions")
+
 package com.example.composemail.model.repo
 
 import android.content.ContentResolver
@@ -67,6 +69,9 @@ private val fileExtensions = listOf(
  */
 private val loremIpsumWords = LoremIpsum(100).values.first().filter { it != '\n' }.split(" ")
 
+/**
+ * TODO: Add kdoc
+ */
 class OfflineRepository(
     private val resources: Resources
 ) : MailRepository {

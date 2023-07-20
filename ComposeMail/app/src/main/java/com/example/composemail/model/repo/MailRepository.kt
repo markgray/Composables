@@ -19,15 +19,36 @@ package com.example.composemail.model.repo
 import com.example.composemail.model.data.MailInfoFull
 import com.example.composemail.model.data.MailInfoPeek
 
+/**
+ * TODO: Add kdoc
+ */
 interface MailRepository {
+    /**
+     * TODO: Add kdoc
+     */
     suspend fun connect()
 
+    /**
+     * TODO: Add kdoc
+     */
     suspend fun getNextSetOfConversations(amount: Int): MailConversationsResponse
 
+    /**
+     * TODO: Add kdoc
+     */
     suspend fun getFullMail(id: Int): MailInfoFull?
 }
 
+/**
+ * TODO: Add kdoc
+ */
 data class MailConversationsResponse(
+    /**
+     * TODO: Add kdoc
+     */
     val conversations: List<MailInfoPeek>,
+    /**
+     * TODO: Add kdoc
+     */
     val page: Int
 )

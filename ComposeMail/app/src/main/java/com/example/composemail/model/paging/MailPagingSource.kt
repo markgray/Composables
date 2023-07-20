@@ -23,6 +23,9 @@ import com.example.composemail.model.repo.MailRepository
 
 private const val PROVIDE_INITIAL_PLACEHOLDER = false
 
+/**
+ * TODO: Add kdoc
+ */
 class MailPagingSource(private val mailRepo: MailRepository) : PagingSource<Int, MailInfoPeek>() {
     override fun getRefreshKey(state: PagingState<Int, MailInfoPeek>): Int? {
         TODO("Not yet implemented")

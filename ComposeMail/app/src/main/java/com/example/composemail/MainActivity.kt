@@ -47,8 +47,14 @@ import com.example.composemail.ui.theme.ComposeMailTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * TODO: Add kdoc
+ */
 @ExperimentalMaterial3WindowSizeClassApi
 class MainActivity : ComponentActivity() {
+    /**
+     * TODO: Add kdoc
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

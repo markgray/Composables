@@ -25,6 +25,9 @@ private const val INITIAL_LOAD_SIZE = 30
 private const val PAGE_SIZE = 15
 private const val REFRESH_THRESHOLD = 5
 
+/**
+ * TODO: Add kdoc
+ */
 fun createMailPager(mailRepository: MailRepository): Pager<Int, MailInfoPeek> =
     Pager(
         config = PagingConfig(
