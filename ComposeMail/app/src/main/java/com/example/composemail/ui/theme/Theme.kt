@@ -57,10 +57,19 @@ private val DarkColorPalette = darkColors(
     onSecondary = Color.White
 )
 
+/**
+ * TODO: Add kdoc
+ */
 object Selection {
+    /**
+     * TODO: Add kdoc
+     */
     val backgroundColor: Color = Color(0xFFADB7C5)
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun ComposeMailTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
@@ -184,6 +193,9 @@ private fun TextPreview() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(name = "Button-Light", group = "button")
 @Preview(
     name = "Button-Night", group = "button",

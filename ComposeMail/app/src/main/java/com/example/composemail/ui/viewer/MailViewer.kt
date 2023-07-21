@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn")
+
 package com.example.composemail.ui.viewer
 
 import androidx.compose.foundation.Image
@@ -54,6 +56,12 @@ import com.example.composemail.model.data.MailInfoFull
 import com.example.composemail.ui.components.ContactImage
 import com.example.composemail.ui.utils.toHourMinutes
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param modifier TODO: Add kdoc
+ * @param mailInfoFull TODO: Add kdoc
+ */
 @Composable
 fun MailViewer(
     modifier: Modifier,

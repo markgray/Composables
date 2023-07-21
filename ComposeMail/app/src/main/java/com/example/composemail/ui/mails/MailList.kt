@@ -36,6 +36,14 @@ import kotlinx.coroutines.flow.Flow
 
 private const val TRANSITION_DURATION_MS = 600
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param modifier TODO: Add kdoc
+ * @param listState TODO: Add kdoc
+ * @param observableConversations TODO: Add kdoc
+ * @param onMailOpen TODO: Add kdoc
+ */
 @Composable
 fun MailList(
     modifier: Modifier = Modifier,

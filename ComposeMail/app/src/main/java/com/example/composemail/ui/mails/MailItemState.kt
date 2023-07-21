@@ -18,11 +18,25 @@ package com.example.composemail.ui.mails
 
 import androidx.compose.runtime.mutableStateOf
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param id TODO: Add kdoc
+ * @param onSelected TODO: Add kdoc
+ */
 class MailItemState(val id: Int, private val onSelected: (id: Int, isSelected: Boolean) -> Unit) {
     private val _isSelected = mutableStateOf(false)
-    val isSelected
+    /**
+     * TODO: Add kdoc
+     */
+    val isSelected: Boolean
         get() = _isSelected.value
 
+    /**
+     * TODO: Add kdoc
+     *
+     * @param isSelected TODO: Add kdoc
+     */
     fun setSelected(isSelected: Boolean) {
         onSelected(id, isSelected)
         _isSelected.value = isSelected

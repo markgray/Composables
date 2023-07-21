@@ -45,6 +45,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param modifier TODO: Add kdoc
+ * @param onCloseMail TODO: Add kdoc
+ */
 @Composable
 fun MailToolbar(
     modifier: Modifier,

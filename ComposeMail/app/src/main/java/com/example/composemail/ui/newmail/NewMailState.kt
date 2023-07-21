@@ -20,6 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param key TODO: Add kdoc
+ * @param initialLayoutState TODO: Add kdoc
+ */
 @Suppress("NOTHING_TO_INLINE")
 @Composable
 inline fun rememberNewMailState(
@@ -27,28 +33,57 @@ inline fun rememberNewMailState(
     initialLayoutState: NewMailLayoutState
 ): NewMailState = remember(key) { NewMailState(initialLayoutState) }
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param initialLayoutState TODO: Add kdoc
+ */
 class NewMailState(initialLayoutState: NewMailLayoutState) {
     private var _currentState = mutableStateOf(initialLayoutState)
 
+    /**
+     * TODO: Add kdoc
+     */
     val currentState: NewMailLayoutState
         get() = _currentState.value
 
+    /**
+     * TODO: Add kdoc
+     */
     fun setToFull() {
         _currentState.value = NewMailLayoutState.Full
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun setToMini() {
         _currentState.value = NewMailLayoutState.Mini
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun setToFab() {
         _currentState.value = NewMailLayoutState.Fab
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 enum class NewMailLayoutState {
+    /**
+     * TODO: Add kdoc
+     */
     Full,
+    /**
+     * TODO: Add kdoc
+     */
     Mini,
+    /**
+     * TODO: Add kdoc
+     */
     Fab
     // MiniExpanded
 }

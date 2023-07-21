@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UNUSED_VARIABLE", "unused")
+
 package com.example.composemail.ui.newmail
 
 import androidx.compose.animation.core.tween
@@ -58,6 +60,9 @@ import androidx.constraintlayout.compose.MotionLayoutScope
 import androidx.constraintlayout.compose.MotionScene
 import com.example.composemail.ui.components.OneLineText
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview
 @Composable
 fun NewMotionMessagePreview() {
@@ -335,6 +340,12 @@ internal fun MotionLayoutScope.MotionMessageContent(
 //            )
 }
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param modifier TODO: Add kdoc
+ * @param state TODO: Add kdoc
+ */
 @Composable
 fun NewMailButton(
     modifier: Modifier = Modifier,

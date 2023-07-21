@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.example.composemail.ui.mails
 
 import androidx.compose.runtime.mutableStateOf
 
+/**
+ * TODO: Add kdoc
+ */
 class MailListState {
     private val conversationStatesById = mutableMapOf<Int, MailItemState>()
 
@@ -25,12 +30,21 @@ class MailListState {
 
     private val _selectedCount = mutableStateOf(0)
 
+    /**
+     * TODO: Add kdoc
+     */
     val selectedIDs: Collection<Int>
         get() = selectedTracker.toList()
 
-    val selectedCount
+    /**
+     * TODO: Add kdoc
+     */
+    val selectedCount: Int
         get() = _selectedCount.value
 
+    /**
+     * TODO: Add kdoc
+     */
     fun unselectAll() {
         conversationStatesById.values.forEach { it.setSelected(false) }
     }
