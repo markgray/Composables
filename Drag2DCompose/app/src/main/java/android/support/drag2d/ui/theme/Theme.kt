@@ -31,12 +31,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+/**
+ * This is used as the [MaterialTheme.colorScheme] when the device is in dark theme.
+ */
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
 
+/**
+ * This is used as the [MaterialTheme.colorScheme] when the device is in light theme (the default).
+ */
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
@@ -53,6 +59,16 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+/**
+ * This is the custom [MaterialTheme] used to wrap our UI.
+ *
+ * @param darkTheme if `true` the system is in dark theme so [DarkColorScheme] will be used as the
+ * [MaterialTheme.colorScheme], otherwise [LightColorScheme] will be used.
+ * @param dynamicColor if `true` (and Dynamic color is available) [dynamicDarkColorScheme] will be
+ * used as the [MaterialTheme.colorScheme] if [darkTheme] is `true` and if [darkTheme] is `false`
+ * [dynamicLightColorScheme] will be used as the [MaterialTheme.colorScheme].
+ * @param content the Composable we will be supplying default [MaterialTheme] values to.
+ */
 @Composable
 fun Drag2DComposeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

@@ -16,12 +16,37 @@
 
 package android.support.drag2d.ui.theme
 
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+/**
+ * Used as the [ColorScheme.primary] color of the [darkColorScheme] used by [Drag2DComposeTheme]
+ */
+val Purple80: Color = Color(0xFFD0BCFF)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+/**
+ * Used as the [ColorScheme.secondary] color of the [darkColorScheme] used by [Drag2DComposeTheme]
+ */
+val PurpleGrey80: Color = Color(0xFFCCC2DC)
+
+/**
+ * Used as the [ColorScheme.tertiary] color of the [darkColorScheme] used by [Drag2DComposeTheme]
+ */
+val Pink80: Color = Color(0xFFEFB8C8)
+
+/**
+ * Used as the [ColorScheme.primary] color of the [lightColorScheme] used by [Drag2DComposeTheme]
+ */
+val Purple40: Color = Color(0xFF6650a4)
+
+/**
+ * Used as the [ColorScheme.secondary] color of the [lightColorScheme] used by [Drag2DComposeTheme]
+ */
+val PurpleGrey40: Color = Color(0xFF625b71)
+
+/**
+ * Used as the [ColorScheme.tertiary] color of the [lightColorScheme] used by [Drag2DComposeTheme]
+ */
+val Pink40: Color = Color(0xFF7D5260)

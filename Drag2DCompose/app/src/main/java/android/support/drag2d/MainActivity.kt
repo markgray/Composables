@@ -21,11 +21,27 @@ import android.support.drag2d.ui.theme.Drag2DComposeTheme
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
+/**
+ * This is the main activity of the demo.
+ */
 class MainActivity : ComponentActivity() {
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we call the [setContent] method to have it compose into our activity the Composable that
+     * consists of our [Drag2DComposeTheme] custom [MaterialTheme] wrapping a [Surface] whose
+     * `modifier` argument is a [Modifier.fillMaxSize] (causes it to occupy its entire incoming size
+     * constraints), and whose `color` argument sets its background [Color] to the
+     * [ColorScheme.background] color of the [MaterialTheme.colorScheme]
+     * Color(red = 28, green = 27, blue = 31) for dark theme (a shade of black) and
+     * Color(red = 255, green = 251, blue = 254) for light theme (a shade of white).
+     * The `content` of the [Surface] is our [Material2DMotionPreview] Composable.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

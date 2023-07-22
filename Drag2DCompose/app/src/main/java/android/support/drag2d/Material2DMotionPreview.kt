@@ -38,6 +38,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -57,11 +58,14 @@ import androidx.compose.ui.unit.round
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+/**
+ * TODO: Add kdoc.
+ */
 @Preview
 @Composable
 fun Material2DMotionPreview() {
-    val duration = remember { mutableStateOf(1200f) }
-    val maxVelocity = remember { mutableStateOf(2000f) }
+    val duration: MutableState<Float> = remember { mutableStateOf(1200f) }
+    val maxVelocity: MutableState<Float> = remember { mutableStateOf(2000f) }
     val maxAcceleration = remember { mutableStateOf(2000f) }
     val currentEasing = remember { mutableStateOf("EaseOutBack") }
     val nameToEasing: Map<String, MaterialVelocity.Easing> = remember {
