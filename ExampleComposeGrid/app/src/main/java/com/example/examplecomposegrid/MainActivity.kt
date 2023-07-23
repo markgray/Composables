@@ -10,6 +10,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.constraintlayout.ColumnDslDemo
+import com.example.constraintlayout.ColumnWeightsDslDemo
+import com.example.constraintlayout.RowDslDemo
+import com.example.constraintlayout.RowWeightsDslDemo
 import com.example.examplecomposegrid.ui.theme.ExampleComposeGridTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    ColumnWeightsJsonDemo()
                 }
             }
         }
