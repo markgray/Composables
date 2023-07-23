@@ -1,5 +1,9 @@
 ## Grid for Compose Examples
 
+*Warning* this demo is thread bare when it comes to running the different examples at the moment.
+If you want to see a particular Composable on a device you have to modify the call to `setContent`
+in `MainActivity` to execute that Composable.
+
 This project contain the example usages of the Grid Helper in Compose. 
 A more detailed introduction to the Helper can be found on the [medium article](https://medium.com/@jswong65/android-jetpack-compose-constraintlayout-grid-helper-c7b35cc8c09a) (for Compose)
  and the [wiki page](https://github.com/androidx/constraintlayout/wiki/Grid-Helper) (for View system).
