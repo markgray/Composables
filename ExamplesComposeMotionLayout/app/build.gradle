@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    //noinspection GradleDependency TODO: Newer versions break compilation: keep an eye on this
     implementation 'androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha07'
     implementation 'com.google.accompanist:accompanist-pager:0.30.1'
     debugImplementation "androidx.compose.ui:ui-tooling:1.4.3"
