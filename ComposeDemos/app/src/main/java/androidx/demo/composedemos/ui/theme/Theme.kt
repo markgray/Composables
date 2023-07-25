@@ -28,7 +28,11 @@ private val LightColorPalette = lightColors(
 )
 
 /**
- * TODO: Add kdoc
+ * Our custom [MaterialTheme].
+ *
+ * @param darkTheme if `true` we use our [DarkColorPalette] as our [MaterialTheme.colors], otherwise
+ * we use our [LightColorPalette].
+ * @param content the Composable which will use the [MaterialTheme] values we supply.
  */
 @Composable
 fun ComposeDemosTheme(
