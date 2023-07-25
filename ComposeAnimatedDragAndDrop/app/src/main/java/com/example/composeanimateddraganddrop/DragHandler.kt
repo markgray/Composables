@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("EmptyMethod", "SameParameterValue")
+
 package com.example.composeanimateddraganddrop
 
 import android.util.Log
