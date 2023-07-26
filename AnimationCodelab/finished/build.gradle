@@ -20,7 +20,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
     defaultConfig {
         applicationId 'com.example.android.codelab.animation'
         minSdkVersion 21
@@ -51,14 +51,4 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling-preview:1.4.3"
     implementation 'androidx.activity:activity-compose:1.7.2'
     debugImplementation "androidx.compose.ui:ui-tooling:1.4.3"
-}
-
-// Compiler flag to use experimental Compose APIs
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs += [
-                "-opt-in=kotlin.RequiresOptIn"
-        ]
-    }
 }
