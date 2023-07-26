@@ -21,7 +21,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.android.tools.build:gradle:8.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20"
         classpath "com.google.dagger:hilt-android-gradle-plugin:2.44.2"
     }
@@ -50,14 +50,6 @@ subprojects {
         }
     }
 
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-        kotlinOptions {
-            jvmTarget = "17"
-
-            // Use experimental APIs
-            freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
-        }
-    }
     // androidx.test and hilt are forcing JUnit, 4.12. This forces them to use 4.13
     configurations.configureEach {
         resolutionStrategy {
