@@ -77,7 +77,9 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.10.1'
 
+    //noinspection KtxExtensionAvailable,GradleDependency TODO: Newer version breaks compilation
     implementation "androidx.paging:paging-common:3.1.1"
+    //noinspection GradleDependency TODO: Newer version breaks compilation
     implementation "androidx.paging:paging-common-ktx:3.1.1"
 
     implementation "androidx.compose.material3:material3-window-size-class:1.1.1"
@@ -114,17 +116,3 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:1.4.0-alpha05"
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        // For Kotlin 1.6.0+
-        freeCompilerArgs += "-opt-in=androidx.constraintlayout.compose.ExperimentalMotionApi"
-        freeCompilerArgs += "-opt-in=androidx.compose.material.ExperimentalMaterialApi"
-        freeCompilerArgs += "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi"
-        freeCompilerArgs += "-opt-in=androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi"
-        freeCompilerArgs += "-opt-in=androidx.compose.animation.ExperimentalAnimationApi"
-
-        // For older than Kotlin 1.6.0
-//        freeCompilerArgs += "-Xopt-in=androidx.constraintlayout.compose.ExperimentalMotionApi"
-//        freeCompilerArgs += "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi"
-    }
-}

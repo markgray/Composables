@@ -17,6 +17,7 @@
 package com.example.composemail.ui.mails
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -44,6 +45,7 @@ private const val TRANSITION_DURATION_MS = 600
  * @param observableConversations TODO: Add kdoc
  * @param onMailOpen TODO: Add kdoc
  */
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MailList(
     modifier: Modifier = Modifier,

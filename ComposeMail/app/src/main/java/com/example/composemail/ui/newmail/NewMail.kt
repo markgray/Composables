@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
@@ -55,6 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionLayoutScope
 import androidx.constraintlayout.compose.MotionScene
@@ -86,6 +88,7 @@ fun NewMotionMessagePreview() {
     }
 }
 
+@OptIn(ExperimentalMotionApi::class)
 @Composable
 private fun messageMotionScene(initialState: NewMailLayoutState): MotionScene {
     val startStateName = remember { initialState.name }
@@ -263,6 +266,7 @@ private fun messageMotionScene(initialState: NewMailLayoutState): MotionScene {
     )
 }
 
+@OptIn(ExperimentalMotionApi::class)
 @Composable
 internal fun MotionLayoutScope.MotionMessageContent(
     state: NewMailState
@@ -346,6 +350,7 @@ internal fun MotionLayoutScope.MotionMessageContent(
  * @param modifier TODO: Add kdoc
  * @param state TODO: Add kdoc
  */
+@OptIn(ExperimentalMotionApi::class)
 @Composable
 fun NewMailButton(
     modifier: Modifier = Modifier,
@@ -362,6 +367,7 @@ fun NewMailButton(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun ColorableIconButton(
     modifier: Modifier,

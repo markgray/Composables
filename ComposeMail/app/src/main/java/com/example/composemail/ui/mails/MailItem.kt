@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 import com.example.composemail.model.data.MailInfoPeek
@@ -132,6 +133,7 @@ enum class MotionMailState(val tag: String) {
 /**
  * TODO: Add kdoc
  */
+@OptIn(ExperimentalMotionApi::class)
 @Suppress("EXPERIMENTAL_API_USAGE")
 @Composable
 fun MotionLayoutMail(
@@ -146,7 +148,7 @@ fun MotionLayoutMail(
             MotionMailState.Selected -> Selection.backgroundColor
             else -> MaterialTheme.colors.background
         },
-        animationSpec = tween(ANIMATION_DURATION)
+        animationSpec = tween(ANIMATION_DURATION), label = ""
     )
     val initialStart = remember { targetState }
     val initialEnd = remember {

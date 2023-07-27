@@ -32,6 +32,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -54,6 +55,7 @@ private enum class HomeState(val tag: String) {
     MailOpenHalf("mailOpenHalf")
 }
 
+@OptIn(ExperimentalMotionApi::class)
 private val homeMotionScene = MotionScene {
     val (listRef, toolbarRef, viewerRef, newMailButtonRef, mailToolbarRef) = createRefsFor(
         "list",
@@ -224,6 +226,7 @@ private val homeMotionScene = MotionScene {
 /**
  * TODO: Add kdoc
  */
+@OptIn(ExperimentalMotionApi::class)
 @Composable
 fun ComposeMailHome(modifier: Modifier) {
     val mailModel: ComposeMailModel = viewModel()
