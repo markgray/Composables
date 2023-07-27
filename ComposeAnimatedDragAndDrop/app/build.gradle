@@ -55,6 +55,7 @@ dependencies {
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.material:material-icons-core:1.4.3'
     implementation 'androidx.compose.material:material-icons-extended:1.4.3'
+    //noinspection GradleDependency TODO: Newer version is compiled against SDK 34 Keep an eye on this
     implementation 'androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha10'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
