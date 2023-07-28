@@ -19,7 +19,7 @@ buildscript {
     ext {
         // App dependencies
         composeCompilerVersion = '1.4.6'
-        gradleVersion = '8.0.2'
+        gradleVersion = '8.1.0'
         kotlinVersion = '1.8.20'
         ktlintVersion = '0.45.2'
     }
