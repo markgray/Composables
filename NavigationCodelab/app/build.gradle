@@ -20,7 +20,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.compose.rally"
@@ -105,16 +105,4 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.4.3"
     debugImplementation "androidx.compose.ui:ui-test-manifest:1.4.3"
     androidTestImplementation "androidx.navigation:navigation-testing:2.6.0"
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        // Treat all Kotlin warnings as errors
-        allWarningsAsErrors = true
-
-        freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
-
-        // Set JVM target to 17
-        jvmTarget = "17"
-    }
 }
