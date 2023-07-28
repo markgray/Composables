@@ -20,7 +20,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.codelab.layouts"
@@ -62,16 +62,4 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        // Treat all Kotlin warnings as errors (disabled by default)
-        allWarningsAsErrors = project.hasProperty("warningsAsErrors") ? project.warningsAsErrors : false
-
-        freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
-
-        // Set JVM target to 1.8
-        jvmTarget = "17"
-    }
 }
