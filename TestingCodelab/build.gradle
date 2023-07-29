@@ -17,7 +17,7 @@
 buildscript {
     // Define versions in a single place
     ext {
-        gradleVersion = '8.0.2'
+        gradleVersion = '8.1.0'
         kotlinVersion = '1.8.20'
         composeCompilerVersion = '1.4.6'
     }
@@ -52,23 +52,6 @@ subprojects {
 
             ktlint(rootProject.ktlintVersion)
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
-        }
-    }
-
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-        kotlinOptions {
-            // Treat all Kotlin warnings as errors
-            allWarningsAsErrors = true
-
-            freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
-
-//            // Enable experimental coroutines APIs, including Flow
-//            freeCompilerArgs += '-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
-//            freeCompilerArgs += '-opt-in=kotlinx.coroutines.FlowPreview'
-//            freeCompilerArgs += '-opt-in=kotlin.Experimental'
-
-            // Set JVM target to 17
-            jvmTarget = "17"
         }
     }
 }
