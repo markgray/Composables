@@ -32,6 +32,7 @@ android {
 
 dependencies {
     implementation project(':engine')
+    //noinspection GradleDependency TODO: Newer version requires SDK 34
     implementation 'androidx.compose.animation:animation-core:1.4.3'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
