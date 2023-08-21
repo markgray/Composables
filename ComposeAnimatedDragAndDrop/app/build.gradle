@@ -53,7 +53,9 @@ dependencies {
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
+    //noinspection GradleDependency TODO: Newer version requires SDK 34
     implementation 'androidx.compose.material:material-icons-core:1.4.3'
+    //noinspection GradleDependency TODO: Newer version requires SDK 34
     implementation 'androidx.compose.material:material-icons-extended:1.4.3'
     //noinspection GradleDependency TODO: Newer version is compiled against SDK 34 Keep an eye on this
     implementation 'androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha10'
