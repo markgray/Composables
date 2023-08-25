@@ -20,11 +20,12 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId 'com.example.android.codelab.animation'
         minSdkVersion 21
-        targetSdkVersion 33
+        //noinspection EditedTargetSdkVersion
+        targetSdkVersion 34
         versionCode 1
         versionName '1.0'
     }
@@ -46,13 +47,9 @@ android {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.10.1'
-    //noinspection GradleDependency TODO: Newer version requires SDK 34
-    implementation "androidx.compose.ui:ui:1.4.3"
-    //noinspection GradleDependency TODO: Newer version requires SDK 34
-    implementation "androidx.compose.material:material:1.4.3"
-    //noinspection GradleDependency TODO: Newer version requires SDK 34
-    implementation "androidx.compose.ui:ui-tooling-preview:1.4.3"
+    implementation "androidx.compose.ui:ui:1.5.0"
+    implementation "androidx.compose.material:material:1.5.0"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.5.0"
     implementation 'androidx.activity:activity-compose:1.7.2'
-    //noinspection GradleDependency TODO: Newer version requires SDK 34
-    debugImplementation "androidx.compose.ui:ui-tooling:1.4.3"
+    debugImplementation "androidx.compose.ui:ui-tooling:1.5.0"
 }
