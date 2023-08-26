@@ -5,11 +5,12 @@ plugins {
 
 android {
     namespace 'android.support.drag2d.compose'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 24
-        targetSdk 33
+        //noinspection EditedTargetSdkVersion
+        targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -32,8 +33,7 @@ android {
 
 dependencies {
     implementation project(':engine')
-    //noinspection GradleDependency TODO: Newer version requires SDK 34
-    implementation 'androidx.compose.animation:animation-core:1.4.3'
+    implementation 'androidx.compose.animation:animation-core:1.5.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
