@@ -20,12 +20,13 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.compose.rally"
         minSdkVersion 21
-        targetSdkVersion 33
+        //noinspection EditedTargetSdkVersion
+        targetSdkVersion 34
         versionCode 1
         versionName '1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -94,16 +95,16 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.6.1"
 
     // Compose
-    implementation "androidx.compose.runtime:runtime:1.4.3"
-    implementation "androidx.compose.ui:ui:1.4.3"
-    implementation "androidx.compose.foundation:foundation:1.4.3"
-    implementation "androidx.compose.foundation:foundation-layout:1.4.3"
-    implementation "androidx.compose.material:material:1.4.3"
-    implementation "androidx.compose.runtime:runtime-livedata:1.4.3"
-    implementation "androidx.compose.ui:ui-tooling-preview:1.4.3"
-    implementation "androidx.compose.material:material-icons-extended:1.4.3"
+    implementation "androidx.compose.runtime:runtime:1.5.0"
+    implementation "androidx.compose.ui:ui:1.5.0"
+    implementation "androidx.compose.foundation:foundation:1.5.0"
+    implementation "androidx.compose.foundation:foundation-layout:1.5.0"
+    implementation "androidx.compose.material:material:1.5.0"
+    implementation "androidx.compose.runtime:runtime-livedata:1.5.0"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.5.0"
+    implementation "androidx.compose.material:material-icons-extended:1.5.0"
     implementation "androidx.activity:activity-compose:1.7.2"
-    debugImplementation "androidx.compose.ui:ui-tooling:1.4.3"
+    debugImplementation "androidx.compose.ui:ui-tooling:1.5.0"
 
     // Testing dependencies
     androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
@@ -111,7 +112,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
 
     // Compose testing dependencies
-    androidTestImplementation "androidx.compose.ui:ui-test:1.4.3"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.4.3"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:1.4.3"
+    androidTestImplementation "androidx.compose.ui:ui-test:1.5.0"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.5.0"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:1.5.0"
 }
