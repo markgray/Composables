@@ -100,6 +100,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -378,7 +379,7 @@ fun Home() {
     /**
      * The background color. The value is changed by the current tab.
      */
-    val backgroundColor: Color by animateColorAsState(if (tabPage == TabPage.Home) Purple100 else Green300)
+    val backgroundColor: Color by animateColorAsState(if (tabPage == TabPage.Home) Purple100 else Green300, label = "")
 
     /**
      * The coroutine scope for event handlers calling suspend functions.
@@ -603,8 +604,8 @@ private fun EditMessage(shown: Boolean) {
  */
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {
-    var previousIndex: Int by remember(this) { mutableStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset: Int by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
+    var previousIndex: Int by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset: Int by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
         derivedStateOf {
             if (previousIndex != firstVisibleItemIndex) {
@@ -1029,7 +1030,7 @@ private fun WeatherRow(
 private fun LoadingRow() {
     // TODO 5: Animate this value between 0f and 1f, then back to 0f repeatedly. DONE
     // Creates an `InfiniteTransition` that runs infinite child animation values.
-    val infiniteTransition: InfiniteTransition = rememberInfiniteTransition()
+    val infiniteTransition: InfiniteTransition = rememberInfiniteTransition(label = "")
     val alpha: Float by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
@@ -1046,7 +1047,7 @@ private fun LoadingRow() {
             // When the value finishes animating from 0f to 1f, it repeats by reversing the
             // animation direction.
             repeatMode = RepeatMode.Reverse
-        )
+        ), label = ""
     )
     Row(
         modifier = Modifier
