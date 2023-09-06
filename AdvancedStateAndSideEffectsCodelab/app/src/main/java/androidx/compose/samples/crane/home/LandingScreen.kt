@@ -34,6 +34,7 @@ import kotlinx.coroutines.delay
 /**
  * How long will [LandingScreen] be displayed before calling its `onTimeout` lambda parameter.
  */
+@Suppress("ConstPropertyName")
 private const val SplashWaitTime: Long = 2000
 
 /**

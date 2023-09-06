@@ -44,7 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -409,7 +409,7 @@ private fun MapViewContainer(
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraPosition))
     }
 
-    var zoom: Float by rememberSaveable(map) { mutableStateOf(InitialZoom) }
+    var zoom: Float by rememberSaveable(map) { mutableFloatStateOf(InitialZoom) }
     ZoomControls(zoom = zoom) {
         zoom = it.coerceIn(MinZoom, MaxZoom)
     }
@@ -493,6 +493,7 @@ private fun ZoomButton(text: String, onClick: () -> Unit) {
  * The initial value of "zoom" that is applied to the [GoogleMap] contained in the [MapView] of the
  * [MapViewContainer] Composable.
  */
+@Suppress("ConstPropertyName")
 private const val InitialZoom = 5f
 
 /**

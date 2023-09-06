@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("PrivatePropertyName")
+
 package androidx.compose.samples.crane.ui
 
 import androidx.compose.foundation.lazy.LazyColumn

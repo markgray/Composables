@@ -31,7 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.Saver
@@ -94,7 +94,7 @@ class PeopleUserInputState {
      * by our [addPerson] method. Since it delegates to a [MutableState] any Composable reading it
      * will be recomposed when it changes value.
      */
-    var people: Int by mutableStateOf(1)
+    var people: Int by mutableIntStateOf(1)
         private set
 
     /**
