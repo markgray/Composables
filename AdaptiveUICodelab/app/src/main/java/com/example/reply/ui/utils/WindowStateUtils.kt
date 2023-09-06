@@ -45,7 +45,7 @@ sealed interface DevicePosture {
      * emits for the device we are running on (ie. it a normal device without a fold or the ability
      * to be separated).
      */
-    object NormalPosture : DevicePosture
+    data object NormalPosture : DevicePosture
 
     /**
      * To be this type of [DevicePosture] the [FoldingFeature] that is found in the [WindowLayoutInfo]
