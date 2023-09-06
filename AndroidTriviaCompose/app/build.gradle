@@ -9,7 +9,6 @@ android {
     defaultConfig {
         applicationId "com.example.androidtriviacompose"
         minSdk 21
-        //noinspection EditedTargetSdkVersion
         targetSdk 34
         versionCode 1
         versionName "1.0"

@@ -16,8 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.androidtriviacompose.MainScaffold
 import com.example.androidtriviacompose.R
 import com.example.androidtriviacompose.Routes
@@ -32,14 +30,11 @@ import com.example.androidtriviacompose.Routes
  *
  * @param modifier a [Modifier] instance that our caller could use to modify our Composables (but
  * they don't do so).
- * @param navController a [NavHostController] we could use to navigate to other screens (but don't
- * use).
  */
 @Preview(showBackground = true)
 @Composable
 fun AboutScreen(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController()
+    modifier: Modifier = Modifier
 ) {
     AboutScreenContent(modifier)
 }

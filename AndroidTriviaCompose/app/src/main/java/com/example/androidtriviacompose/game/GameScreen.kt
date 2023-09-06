@@ -13,6 +13,7 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -116,7 +117,7 @@ fun GameScreenContent(
      * Which [RadioButton] of [QuestionContent] is currently selected, -1 indicates none selected.
      */
     var selectedId by remember {
-        mutableStateOf(-1)
+        mutableIntStateOf(-1)
     }
     Column(
         modifier = modifier.padding(8.dp).verticalScroll(rememberScrollState()),

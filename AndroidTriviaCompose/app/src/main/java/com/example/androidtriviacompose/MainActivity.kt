@@ -80,32 +80,32 @@ sealed class Routes(val route: String) {
     /**
      * Used to navigate to the [AboutScreen] composable.
      */
-    object About : Routes("about")
+    data object About : Routes("about")
 
     /**
      * Used to navigate to the [GameScreen] composable.
      */
-    object Game : Routes("game")
+    data object Game : Routes("game")
 
     /**
      * Used to navigate to the [GameOverScreen] composable.
      */
-    object GameOver : Routes("gameover")
+    data object GameOver : Routes("gameover")
 
     /**
      * Used to navigate to the [GameWonScreen] composable.
      */
-    object GameWon : Routes("gamewon")
+    data object GameWon : Routes("gamewon")
 
     /**
      * Used to navigate to the [RulesScreen] composable.
      */
-    object Rules : Routes("rules")
+    data object Rules : Routes("rules")
 
     /**
      * Used to navigate to the [TitleScreen] composable.
      */
-    object Title : Routes("title")
+    data object Title : Routes("title")
 }
 
 /**
@@ -133,7 +133,7 @@ fun NavGraph(
     ) {
         // TODO: Refactor use of navController to use of "Actions" lambda.
         composable(Routes.About.route) {
-            AboutScreen(navController = navController)
+            AboutScreen()
         }
         composable(Routes.Game.route) {
             GameScreen(navController = navController)
@@ -145,7 +145,7 @@ fun NavGraph(
             GameWonScreen(navController = navController)
         }
         composable(Routes.Rules.route) {
-            RulesScreen(navController = navController)
+            RulesScreen()
         }
         composable(Routes.Title.route) {
             TitleScreen(navController = navController)
