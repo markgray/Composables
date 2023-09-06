@@ -24,7 +24,6 @@ android {
     defaultConfig {
         applicationId 'com.example.jetnews'
         minSdkVersion 21
-        //noinspection EditedTargetSdkVersion
         targetSdkVersion 34
         versionCode 1
         versionName '1.0'
