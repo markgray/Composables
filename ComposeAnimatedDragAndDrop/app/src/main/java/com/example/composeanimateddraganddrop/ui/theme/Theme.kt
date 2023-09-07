@@ -37,6 +37,7 @@ import androidx.core.view.WindowCompat
  * [MaterialTheme] when the system is considered to be in 'dark theme' (ie. it is NOT considered
  * to be in 'light theme').
  */
+@Suppress("PrivatePropertyName")
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
@@ -48,6 +49,7 @@ private val DarkColorScheme = darkColorScheme(
  * [MaterialTheme] when the system is NOT considered to be in 'dark theme' (ie. it is considered
  * to be in 'light theme').
  */
+@Suppress("PrivatePropertyName")
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,

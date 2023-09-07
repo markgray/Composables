@@ -162,6 +162,7 @@ class LayoutDragHandler(
      * The ID of the dragged [Item], it is set by our [onStartDrag] method.
      */
     var draggedId: Int by mutableIntStateOf(-1)
+        @Suppress("EmptyMethod")
         private set
 
     /**
@@ -416,6 +417,7 @@ class LayoutDragHandler(
      * the [CONTAINS_FROM_CENTER_PERCENT] constant which is defined to be 0.75f
      */
     private fun Rect.containsCloseToCenter(
+        @Suppress("SameParameterValue")
         offset: Offset,
         @FloatRange(0.0, 1.0)
         percentFromCenter: Float = 0.5f
