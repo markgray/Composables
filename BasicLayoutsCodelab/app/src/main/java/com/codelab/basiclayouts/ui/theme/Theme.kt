@@ -23,6 +23,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+@Suppress("PrivatePropertyName")
 private val LightColorPalette = lightColors(
     primary = gray900,
     secondary = rust600,
@@ -34,6 +35,7 @@ private val LightColorPalette = lightColors(
     onSurface = gray900.copy(alpha = 0.8f)
 )
 
+@Suppress("PrivatePropertyName")
 private val DarkColorPalette = darkColors(
     primary = Color.White,
     secondary = rust300,
