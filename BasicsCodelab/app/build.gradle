@@ -25,7 +25,6 @@ android {
     defaultConfig {
         applicationId "com.codelab.basics"
         minSdkVersion 21
-        //noinspection EditedTargetSdkVersion
         targetSdkVersion 34
         versionCode 1
         versionName "1.0"
