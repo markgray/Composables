@@ -77,7 +77,7 @@ fun  Login() {
 
     val progress by animateFloatAsState(
         targetValue = if (animateToEnd) 1f else 0f,
-        animationSpec = tween(6000)
+        animationSpec = tween(6000), label = ""
     )
     Column {
         MotionLayout(
