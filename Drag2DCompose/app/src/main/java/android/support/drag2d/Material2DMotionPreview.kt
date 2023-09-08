@@ -39,6 +39,8 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -64,9 +66,9 @@ import kotlin.math.roundToInt
 @Preview
 @Composable
 fun Material2DMotionPreview() {
-    val duration: MutableState<Float> = remember { mutableStateOf(1200f) }
-    val maxVelocity: MutableState<Float> = remember { mutableStateOf(2000f) }
-    val maxAcceleration = remember { mutableStateOf(2000f) }
+    val duration: MutableState<Float> = remember { mutableFloatStateOf(1200f) }
+    val maxVelocity: MutableState<Float> = remember { mutableFloatStateOf(2000f) }
+    val maxAcceleration = remember { mutableFloatStateOf( 2000f) }
     val currentEasing = remember { mutableStateOf("EaseOutBack") }
     val nameToEasing: Map<String, MaterialVelocity.Easing> = remember {
         mapOf(
@@ -88,7 +90,7 @@ fun Material2DMotionPreview() {
         Modifier
             .fillMaxWidth()
     ) {
-        val touchUpIndex = remember { mutableStateOf(Integer.MAX_VALUE) }
+        val touchUpIndex = remember { mutableIntStateOf(Integer.MAX_VALUE) }
         val accumulator = remember { arrayListOf<Offset>() }
         val offset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
         val referenceOffset = remember { mutableStateOf(Offset.Zero) }
@@ -109,7 +111,7 @@ fun Material2DMotionPreview() {
                     }
                     for (i in 0 until accumulator.size) {
                         drawLine(
-                            color = if (i > touchUpIndex.value) Color.Red else Color.Blue,
+                            color = if (i > touchUpIndex.intValue) Color.Red else Color.Blue,
                             start = (accumulator.getOrNull(i - 1)
                                 ?: Offset.Zero) + referenceOffset.value,
                             end = accumulator[i] + referenceOffset.value,
@@ -140,12 +142,12 @@ fun Material2DMotionPreview() {
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = {
-                                touchUpIndex.value = Integer.MAX_VALUE
+                                touchUpIndex.intValue = Integer.MAX_VALUE
                                 accumulator.clear()
                             },
                             onDragEnd = {
                                 scope.launch {
-                                    touchUpIndex.value = accumulator.size - 1
+                                    touchUpIndex.intValue = accumulator.size - 1
                                     val initialVelocity = velocityTracker.calculateVelocity()
 
                                     offset.animateTo(
@@ -153,7 +155,7 @@ fun Material2DMotionPreview() {
                                         animationSpec = materialVelocity2D(
                                             duration.value.roundToInt(),
                                             maxVelocity.value,
-                                            maxAcceleration.value,
+                                            maxAcceleration.floatValue,
                                             nameToEasing[currentEasing.value]
                                                 ?: nameToEasing.values.first()
                                         ),
@@ -206,11 +208,11 @@ fun Material2DMotionPreview() {
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "MaxAcceleration: ${maxAcceleration.value.roundToInt()}")
+            Text(text = "MaxAcceleration: ${maxAcceleration.floatValue.roundToInt()}")
             Spacer(Modifier.width(8.dp))
             Slider(
-                value = maxAcceleration.value,
-                onValueChange = { maxAcceleration.value = it },
+                value = maxAcceleration.floatValue,
+                onValueChange = { maxAcceleration.floatValue = it },
                 valueRange = remember { 100f..4000f },
                 steps = remember { ((4000f - 100f) / 100f).roundToInt() - 1 },
                 modifier = Modifier.weight(1f, true)
