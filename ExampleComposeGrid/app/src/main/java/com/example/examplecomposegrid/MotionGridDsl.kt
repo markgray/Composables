@@ -39,10 +39,13 @@ import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 
 
+/**
+ * TODO: Add kdoc
+ */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "grid1")
 @Composable
-public fun MotionGridDslDemo() {
+fun MotionGridDslDemo() {
     val numArray = arrayOf("1", "2", "3", "4", "5", "6")
     var animateToEnd by remember { mutableStateOf(false) }
     val progress = remember { Animatable(0f) }
@@ -63,7 +66,7 @@ public fun MotionGridDslDemo() {
                 // specify the starting layout
                 from = constraintSet { // this: ConstraintSetScope
                     val grid = createGrid(
-                        elements = *elem,
+                        elements = elem,
                         rows = 2,
                         columns = 3,
                     )
@@ -75,7 +78,7 @@ public fun MotionGridDslDemo() {
                 // specify the ending layout
                 to = constraintSet { // this: ConstraintSetScope
                     val grid = createGrid(
-                        elements = *elem,
+                        elements = elem,
                         rows = 3,
                         columns = 2,
                     )
@@ -111,10 +114,13 @@ public fun MotionGridDslDemo() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "grid2")
 @Composable
-public fun MotionDslDemo2() {
+fun MotionDslDemo2() {
     val numArray = arrayOf("1", "2", "3", "4", "5", "6", "7")
     var animateToEnd by remember { mutableStateOf(false) }
     val progress = remember { Animatable(0f) }

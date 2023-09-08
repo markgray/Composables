@@ -38,10 +38,13 @@ import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 
 
+/**
+ * TODO: Add kdoc
+ */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "grid1")
 @Composable
-public fun MotionGridDemo() {
+fun MotionGridDemo() {
     var animateToEnd by remember { mutableStateOf(false) }
 
     val progress = remember { Animatable(0f) }
@@ -121,10 +124,13 @@ public fun MotionGridDemo() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "grid2")
 @Composable
-public fun MotionGridDemo2() {
+fun MotionGridDemo2() {
     var animateToEnd by remember { mutableStateOf(false) }
 
     val progress = remember { Animatable(0f) }

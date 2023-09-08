@@ -33,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.*
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "keypad")
 @Composable
 fun GridJsonKeypad() {
@@ -122,6 +125,10 @@ fun GridJsonKeypad() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
+@Suppress("JsonDuplicatePropertyKeys")
 @Preview(group = "calculator")
 @Composable
 fun GridJsonMediumCalculator() {
@@ -236,7 +243,7 @@ fun GridJsonMediumCalculator() {
             "mult", "4", "5", "6", "sub", "1", "2", "3", "plus", "dot", "equal")
         val symbolMap = mapOf("clear" to "C", "neg" to "+/-", "percent" to "%", "div" to "/",
             "mult" to "*", "sub" to "-", "plus" to "+", "dot" to ".", "equal" to "=")
-        var text = ""
+        var text: String
         for (num in numArray) {
             Button(
                 modifier = Modifier.layoutId(String.format("btn_%s", num)),
@@ -255,6 +262,9 @@ fun GridJsonMediumCalculator() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "row")
 @Composable
 fun GridJsonRow() {
@@ -283,6 +293,9 @@ fun GridJsonRow() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "column")
 @Composable
 fun GridJsonColumn() {
@@ -311,6 +324,9 @@ fun GridJsonColumn() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "nested")
 @Composable
 fun GridJsonNested() {
@@ -354,6 +370,9 @@ fun GridJsonNested() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "cinr")
 @Composable
 fun GridJsonColumnInRow() {

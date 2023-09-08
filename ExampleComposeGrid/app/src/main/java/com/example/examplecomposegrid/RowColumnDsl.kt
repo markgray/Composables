@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.constraintlayout
+package com.example.examplecomposegrid
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
@@ -30,9 +30,12 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "row")
 @Composable
-public fun RowDslDemo() {
+fun RowDslDemo() {
     ConstraintLayout(
         ConstraintSet {
             val a = createRefFor("1")
@@ -84,9 +87,12 @@ public fun RowDslDemo() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "row")
 @Composable
-public fun RowWeightsDslDemo() {
+fun RowWeightsDslDemo() {
     ConstraintLayout(
         ConstraintSet {
             val a = createRefFor("1")
@@ -140,9 +146,12 @@ public fun RowWeightsDslDemo() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "column")
 @Composable
-public fun ColumnDslDemo() {
+fun ColumnDslDemo() {
     ConstraintLayout(
         ConstraintSet {
             val a = createRefFor("1")
@@ -193,9 +202,12 @@ public fun ColumnDslDemo() {
         }
     }
 }
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "column")
 @Composable
-public fun ColumnWeightsDslDemo() {
+fun ColumnWeightsDslDemo() {
     ConstraintLayout(
         ConstraintSet {
             val a = createRefFor("1")

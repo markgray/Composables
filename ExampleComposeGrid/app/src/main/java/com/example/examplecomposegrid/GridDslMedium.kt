@@ -20,7 +20,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -31,11 +30,16 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.*
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "keypad")
 @Composable
-public fun GridDslKeypad() {
+fun GridDslKeypad() {
     ConstraintLayout(
         ConstraintSet {
             val btn1 = createRefFor("btn1")
@@ -137,9 +141,12 @@ public fun GridDslKeypad() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "calculator")
 @Composable
-public fun GridDslMediumCalculator() {
+fun GridDslMediumCalculator() {
     val numArray = arrayOf("0", "clear", "neg", "percent", "div", "7", "8", "9",
         "mult", "4", "5", "6", "sub", "1", "2", "3", "plus", "dot", "equal")
     ConstraintLayout(
@@ -150,7 +157,7 @@ public fun GridDslMediumCalculator() {
                 elem[i + 1] = createRefFor(String.format("btn_%s", numArray[i]))
             }
             val g1 = createGrid(
-                elements = *elem,
+                elements = elem,
                 rows = 7,
                 columns = 4,
                 verticalGap = 10.dp,
@@ -177,7 +184,7 @@ public fun GridDslMediumCalculator() {
     ) {
         val symbolMap = mapOf("clear" to "C", "neg" to "+/-", "percent" to "%", "div" to "/",
             "mult" to "*", "sub" to "-", "plus" to "+", "dot" to ".", "equal" to "=")
-        var text = ""
+        var text: String
         for (num in numArray) {
             Button(
                 modifier = Modifier.layoutId(String.format("btn_%s", num)),
@@ -196,9 +203,12 @@ public fun GridDslMediumCalculator() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "row")
 @Composable
-public fun GridDslMediumRow() {
+fun GridDslMediumRow() {
     val numArray = arrayOf("0", "1", "2", "3", "4")
     ConstraintLayout(
         ConstraintSet {
@@ -207,7 +217,7 @@ public fun GridDslMediumRow() {
                 elem[i] = createRefFor(String.format("btn_%s", numArray[i]))
             }
             val g1 = createRow(
-                elements = *elem,
+                elements = elem,
                 horizontalGap = 10.dp,
             )
 
@@ -233,9 +243,12 @@ public fun GridDslMediumRow() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "column")
 @Composable
-public fun GridDslMediumColumn() {
+fun GridDslMediumColumn() {
     val numArray = arrayOf("0", "1", "2", "3", "4")
     ConstraintLayout(
         ConstraintSet {
@@ -244,7 +257,7 @@ public fun GridDslMediumColumn() {
                 elem[i] = createRefFor(String.format("btn_%s", numArray[i]))
             }
             val g1 = createColumn(
-                elements = *elem,
+                elements = elem,
                 verticalGap = 10.dp,
             )
 
@@ -270,9 +283,12 @@ public fun GridDslMediumColumn() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "nested")
 @Composable
-public fun GridDslMediumNested() {
+fun GridDslMediumNested() {
     ConstraintLayout(
         ConstraintSet {
             val btn1 = createRefFor("btn1")
@@ -323,9 +339,12 @@ public fun GridDslMediumNested() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "cinr")
 @Composable
-public fun GridDslColumnInRow() {
+fun GridDslColumnInRow() {
     ConstraintLayout(
         ConstraintSet {
             val btn0 = createRefFor("btn0")
