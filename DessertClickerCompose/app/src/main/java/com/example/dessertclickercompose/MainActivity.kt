@@ -17,7 +17,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -134,13 +134,13 @@ fun ConstraintLayoutContent(modifier: Modifier = Modifier) {
         val amountSoldText: ConstrainedLayoutReference = createRef()
 
         var dessertId: Int by remember {
-            mutableStateOf(bakery.currentDessert.imageId)
+            mutableIntStateOf(bakery.currentDessert.imageId)
         }
         var dessertsSold: Int by remember {
-            mutableStateOf(bakery.dessertsSold)
+            mutableIntStateOf(bakery.dessertsSold)
         }
         var revenue: Int by remember {
-            mutableStateOf(bakery.revenue)
+            mutableIntStateOf(bakery.revenue)
         }
 
         Image(
