@@ -110,7 +110,7 @@ fun MessageCard(msg: Message) {
         var isExpanded by remember { mutableStateOf(false) }
         // surfaceColor will be updated gradually from one color to the other
         val surfaceColor: Color by animateColorAsState(
-            if (isExpanded) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+            if (isExpanded) MaterialTheme.colors.primary else MaterialTheme.colors.surface, label = "",
         )
 
         // We toggle the isExpanded variable when we click on this Column
