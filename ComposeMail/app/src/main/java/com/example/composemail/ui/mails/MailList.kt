@@ -17,11 +17,10 @@
 package com.example.composemail.ui.mails
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,7 +44,6 @@ private const val TRANSITION_DURATION_MS = 600
  * @param observableConversations TODO: Add kdoc
  * @param onMailOpen TODO: Add kdoc
  */
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MailList(
     modifier: Modifier = Modifier,
@@ -67,11 +65,11 @@ fun MailList(
             slideInVertically(
                 animationSpec = tween(TRANSITION_DURATION_MS),
                 initialOffsetY = { it }
-            ) with slideOutVertically(
+            ) togetherWith  slideOutVertically(
                 animationSpec = tween(TRANSITION_DURATION_MS),
                 targetOffsetY = { -it }
             )
-        }
+        }, label = ""
     ) { isListEmpty ->
         if (isListEmpty) {
             // MailItem with null info will act as a loading indicator
