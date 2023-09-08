@@ -18,6 +18,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Wrap
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "flow1")
 @Composable
 fun FlowPad() {
@@ -54,6 +57,4 @@ fun FlowPad() {
                 }
             }
         }
-
-
 }

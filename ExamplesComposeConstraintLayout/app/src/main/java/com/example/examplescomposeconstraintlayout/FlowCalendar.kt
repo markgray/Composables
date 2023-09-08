@@ -1,5 +1,6 @@
 package com.example.examplescomposeconstraintlayout
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +29,7 @@ import java.util.*
 @Preview(group = "scroll")
 @Composable
 fun CalendarList() {
-    LazyColumn() {
+    LazyColumn {
         items(1000) {
             Box(
                 modifier = Modifier
@@ -41,6 +42,9 @@ fun CalendarList() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "scroll")
 @Composable
 fun DynamicCalendar(montOffset: Int = 0) {
@@ -61,10 +65,11 @@ fun DynamicCalendar(montOffset: Int = 0) {
         }
     }
     cal.timeInMillis = t
+    @SuppressLint("SimpleDateFormat")
     val fd = SimpleDateFormat("LLLL yyyy")
 
     cal.add(Calendar.MONTH, montOffset)
-    val calDate = fd.format(cal.time);
+    val calDate = fd.format(cal.time)
     val refId = days.mapIndexed { index: Int, s: String -> "id" + index + "_$s" }.toTypedArray()
 
     Column(
