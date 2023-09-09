@@ -178,7 +178,7 @@ fun RallyTab(
     }
     val tabTintColor: Color by animateColorAsState(
         targetValue = if (selected) color else color.copy(alpha = InactiveTabOpacity),
-        animationSpec = animSpec
+        animationSpec = animSpec, label = ""
     )
     Row(
         modifier = Modifier
@@ -209,27 +209,32 @@ fun RallyTab(
 /**
  * The height of the [RallyTab]
  */
+@Suppress("PrivatePropertyName")
 private val TabHeight = 56.dp
 
 /**
  * The alpha value used when the [RallyTab] is not in the selected state. Used by our animated [Color]
  * variable `val tabTintColor` as the `targetValue` for a non-selected [RallyTab] color or tint.
  */
+@Suppress("ConstPropertyName")
 private const val InactiveTabOpacity = 0.60f
 
 /**
  * The duration used for our `durationMillis` variable when our [RallyTab] is selected, which is then
  * used by the [TweenSpec] of [Color] `animSpec` for its `durationMillis` value.
  */
+@Suppress("ConstPropertyName")
 private const val TabFadeInAnimationDuration = 150
 
 /**
  * The delay used by the [TweenSpec] of [Color] `animSpec` for its `delayMillis` value.
  */
+@Suppress("ConstPropertyName")
 private const val TabFadeInAnimationDelay = 100
 
 /**
  * The duration used for our `durationMillis` variable when our [RallyTab] is NOT selected, which is
  * then used by the [TweenSpec] of [Color] `animSpec` for its `durationMillis` value.
  */
+@Suppress("ConstPropertyName")
 private const val TabFadeOutAnimationDuration = 100
