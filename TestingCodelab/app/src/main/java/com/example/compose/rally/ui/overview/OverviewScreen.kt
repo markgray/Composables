@@ -156,7 +156,7 @@ fun AlertCard() {
         )
     }
 
-    val infiniteElevationAnimation: InfiniteTransition = rememberInfiniteTransition()
+    val infiniteElevationAnimation: InfiniteTransition = rememberInfiniteTransition(label = "")
     val animatedElevation: Dp by infiniteElevationAnimation.animateValue(
         initialValue = 1.dp,
         targetValue = 8.dp,
@@ -164,7 +164,7 @@ fun AlertCard() {
         animationSpec = infiniteRepeatable(
             animation = tween(500),
             repeatMode = RepeatMode.Reverse
-        )
+        ), label = ""
     )
     Card(elevation = animatedElevation) {
 

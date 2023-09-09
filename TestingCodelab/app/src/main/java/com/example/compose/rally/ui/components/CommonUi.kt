@@ -314,6 +314,7 @@ fun formatAmount(amount: Float): String {
  * displaying. The pattern produces a [String] with no comma or decimal point separation, and with
  * leading 0's omitted.
  */
+@Suppress("PrivatePropertyName")
 private val AccountDecimalFormat = DecimalFormat("####")
 
 /**
@@ -321,6 +322,7 @@ private val AccountDecimalFormat = DecimalFormat("####")
  * The resulting [String] has comma's separating the whole part into 3 digit groups, and a decimal
  * point separating the whole part from the fractional part (leading and trailing 0's are omitted).
  */
+@Suppress("PrivatePropertyName")
 private val AmountDecimalFormat = DecimalFormat("#,###.##")
 
 /**

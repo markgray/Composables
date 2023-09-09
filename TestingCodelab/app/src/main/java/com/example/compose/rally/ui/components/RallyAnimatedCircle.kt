@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 /**
  * The number of degrees that are left blank between the arcs drawn.
  */
+@Suppress("ConstPropertyName")
 private const val DividerLengthInDegrees = 1.8f
 
 /**
