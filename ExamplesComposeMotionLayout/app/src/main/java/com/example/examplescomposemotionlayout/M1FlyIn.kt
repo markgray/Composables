@@ -20,17 +20,19 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.*
 import kotlin.math.abs
 
-// A simple fly in effect
+/**
+ * A simple fly in effect
+ */
 @SuppressLint("Range")
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "motion101")
 @Composable
 fun M1FlyIn() {
     val imgId = "image"
-    val id = arrayOf<String>("w1", "w2", "w3", "w4", "w5", "w6")
+    val id = arrayOf("w1", "w2", "w3", "w4", "w5", "w6")
     val emojis = "😀 🙂 🤨 😐 😒 😬".split(' ')
 
-    var scene = MotionScene() {
+    val scene = MotionScene {
         val refs = id.map { createRefFor(it) }.toTypedArray()
         val imgRef = createRefFor("image")
         val start1 = constraintSet {
@@ -116,7 +118,7 @@ fun M1FlyIn() {
     }
     val painter = painterResource(id = R.drawable.pepper)
 
-    var animateToEnd by remember { mutableStateOf(true) }
+    val animateToEnd by remember { mutableStateOf(true) }
     val progress = remember { Animatable(0f) }
     LaunchedEffect(animateToEnd) {
         progress.animateTo(

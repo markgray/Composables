@@ -14,6 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 
+/**
+ * TODO: Add kdoc
+ */
 class MainActivity : ComponentActivity() {
     private val composeKey = "USE_COMPOSE"
 
@@ -34,6 +37,9 @@ class MainActivity : ComponentActivity() {
         get("MultiState") { M3MultiState() },
     )
 
+    /**
+     * TODO: Add kdoc
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val extra = intent.extras
@@ -65,15 +71,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun launch(to_run: ComposeFunc) {
-        Log.v("MAIN", " launch $to_run")
+    private fun launch(toRun: ComposeFunc) {
+        Log.v("MAIN", " launch $toRun")
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra(composeKey, to_run.toString())
+        intent.putExtra(composeKey, toRun.toString())
         startActivity(intent)
 
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun ComposableMenu(map: List<ComposeFunc>, act: (act: ComposeFunc) -> Unit) {
     Column(
@@ -103,6 +112,9 @@ fun ComposableMenu(map: List<ComposeFunc>, act: (act: ComposeFunc) -> Unit) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 fun get(name: String, cRun: @Composable () -> Unit): ComposeFunc {
     return object : ComposeFunc {
         @Composable
@@ -116,7 +128,13 @@ fun get(name: String, cRun: @Composable () -> Unit): ComposeFunc {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 interface ComposeFunc {
+    /**
+     * TODO: Add kdoc
+     */
     @Composable
     fun Run()
     override fun toString(): String

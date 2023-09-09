@@ -1,43 +1,36 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.examplescomposemotionlayout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
- 
-import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
- 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
- 
 import androidx.compose.ui.unit.sp
- 
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
-import kotlin.math.abs
-import kotlin.math.absoluteValue
 import kotlin.random.Random
 
 
 /**
  * A demo of using MotionLayout in a com.google.accompanist.pager.HorizontalPager
  */
-
-@OptIn(ExperimentalPagerApi::class)
 @Preview(group = "scroll", device = "spec:shape=Normal,width=480,height=800,unit=dp,dpi=440")
 @Composable
 fun MotionPager() {
+    @Suppress("UNUSED_VARIABLE")
     val rand = Random
     val count = 100
     val graphs = mutableListOf<Color>()
@@ -54,6 +47,9 @@ fun MotionPager() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "scroll", device = "spec:shape=Normal,width=480,height=800,unit=dp,dpi=440")
 @Composable
@@ -61,19 +57,18 @@ fun DynamicPages(
     colorValue: Color = Color.Green,
     max: Int = 100,
     pagerProgress: Float = 1f,
-            pageNumber:Int  = 1
- 
+    pageNumber: Int = 1
 ) {
     val boxId = "box"
-    var scene = MotionScene() {
+    val scene = MotionScene {
         val box = createRefFor(boxId)
         val start1 = constraintSet {
             constrain(box) {
- 
+
                 width = Dimension.percent(.5f)
                 height = Dimension.percent(.5f)
                 rotationZ = 360f
- 
+
                 centerTo(parent)
             }
         }

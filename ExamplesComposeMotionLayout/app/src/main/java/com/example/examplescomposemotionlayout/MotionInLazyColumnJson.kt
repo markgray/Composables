@@ -82,7 +82,7 @@ fun MotionInLazyColumn() {
       """
     val model = remember { BooleanArray(100) }
 
-    LazyColumn() {
+    LazyColumn {
         items(100) {
             // Text(text = "item $it", modifier = Modifier.padding(4.dp))
             Box(modifier = Modifier.padding(3.dp)) {
@@ -113,7 +113,7 @@ fun MotionInLazyColumn() {
                             .layoutId("icon")
                             .clickable {
                                 animateToEnd = !animateToEnd
-                                model[it] = animateToEnd;
+                                model[it] = animateToEnd
                             },
                         painter = painterResource(R.drawable.menu),
                         contentDescription = null

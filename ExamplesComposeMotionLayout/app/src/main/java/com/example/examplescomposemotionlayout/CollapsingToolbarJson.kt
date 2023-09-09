@@ -30,7 +30,7 @@ import androidx.constraintlayout.compose.MotionScene
 fun ToolBarExample() {
     val scroll = rememberScrollState(0)
 
-    var scene = """
+    val scene = """
       {
         ConstraintSets: {
           start: {
@@ -98,7 +98,7 @@ fun ToolBarExample() {
         }
     }
 
-    val progress = java.lang.Float.min(scroll.value / (3f * (250 - 50)), 1f);
+    val progress = java.lang.Float.min(scroll.value / (3f * (250 - 50)), 1f)
 
     MotionLayout(
         modifier = Modifier.fillMaxSize(),
@@ -114,7 +114,7 @@ fun ToolBarExample() {
         Box(
             modifier = Modifier
                 .layoutId("image")
-                .background(motionProperties("image").value.color("cover"))
+                .background(customProperties("image").color("cover"))
         ) {
         }
         Image(

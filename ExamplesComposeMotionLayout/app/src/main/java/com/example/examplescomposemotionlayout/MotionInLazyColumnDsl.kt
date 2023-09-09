@@ -85,7 +85,7 @@ fun MotionInLazyColumnDsl() {
 
                 val progress by animateFloatAsState(
                     targetValue = if (animateToEnd) 1f else 0f,
-                    animationSpec = tween(700)
+                    animationSpec = tween(700), label = ""
                 )
 
                 MotionLayout(

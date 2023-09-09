@@ -1,22 +1,26 @@
+@file:Suppress("LocalVariableName", "JoinDeclarationAndAssignment", "ReplaceJavaStaticMethodWithKotlinAnalog")
+
 package com.example.examplescomposemotionlayout
 
 
+import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 
 
+/**
+ * TODO: Add kdoc
+ */
+@Suppress("unused")
 @Composable
 fun MotionImage(
     panX: Float = 0.0f,
@@ -28,6 +32,7 @@ fun MotionImage(
     saturation: Float = 1f,
     warmth: Float = 1f,
     @DrawableRes id: Int,
+    @SuppressLint("ModifierParameter")
     modifier: Modifier = Modifier
         .fillMaxSize()
 ) {
@@ -46,6 +51,9 @@ fun MotionImage(
 }
 
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun MotionImage(
     panX: Float = 0.0f,
@@ -57,24 +65,25 @@ fun MotionImage(
     saturation: Float = 1f,
     warmth: Float = 1f,
     painter: Painter,
+    @SuppressLint("ModifierParameter")
     modifier: Modifier = Modifier.fillMaxSize()
 ) {
 
     Canvas(modifier = modifier) {
         clipRect {
-            var iw: Float = size.width
-            var ih: Float = size.height
-            var sw: Float = painter.intrinsicSize.width
-            var sh: Float = painter.intrinsicSize.height
+            val iw: Float = size.width
+            val ih: Float = size.height
+            val sw: Float = painter.intrinsicSize.width
+            val sh: Float = painter.intrinsicSize.height
 
-            var scale: Float = (if (iw * sh < ih * sw) sw / iw else sh / ih)
-            var sx = zoom * sw / iw / scale
-            var sy = zoom * sh / ih / scale
-            var tx: Float = (sw - sx * iw) * panX
-            var ty: Float = (sh - sy * ih) * panY
+            val scale: Float = (if (iw * sh < ih * sw) sw / iw else sh / ih)
+            val sx = zoom * sw / iw / scale
+            val sy = zoom * sh / ih / scale
+            val tx: Float = (sw - sx * iw) * panX
+            val ty: Float = (sh - sy * ih) * panY
             println("pan = $tx,$ty")
             val cf = ColorMatrix()
-            updateMatrix(cf, brightness = brightness, saturation = saturation, contrast = contrast, warmth = warmth);
+            updateMatrix(cf, brightness = brightness, saturation = saturation, contrast = contrast, warmth = warmth)
             with(painter) {
                 withTransform({
                     rotate(rotate)
@@ -123,13 +132,13 @@ private fun saturation(mMatrix: FloatArray, saturationStrength: Float) {
 }
 
 private fun warmth(matrix: FloatArray, warmth: Float) {
-    var warmth = warmth
+    var warmthVar = warmth
     val baseTemperature = 5000f
-    if (warmth <= 0) warmth = .01f
+    if (warmthVar <= 0) warmthVar = .01f
     var tmpColor_r: Float
     var tmpColor_g: Float
     var tmpColor_b: Float
-    var kelvin = baseTemperature / warmth
+    var kelvin = baseTemperature / warmthVar
     run {
         // simulate a black body radiation
         val centiKelvin = kelvin / 100
@@ -253,6 +262,9 @@ private fun brightness(matrix: FloatArray, brightness: Float) {
     matrix[19] = 0f
 }
 
+/**
+ * TODO: Add kdoc
+ */
 fun updateMatrix(
     out: ColorMatrix,
     brightness: Float = 1f,
@@ -261,12 +273,12 @@ fun updateMatrix(
     warmth: Float = 1f
 ) {
     var used = false
-    var tmp = ColorMatrix()
+    val tmp = ColorMatrix()
     out.reset()
     if (saturation != 1.0f) {
         saturation(tmp.values, saturation)
         tmp.values.copyInto(out.values)
-        used = true;
+        used = true
     }
     if (contrast != 1.0f) {
         if (!used) {
@@ -275,7 +287,7 @@ fun updateMatrix(
             tmp.setToScale(contrast, contrast, contrast, 1f)
             out.timesAssign(tmp)
         }
-        used = true;
+        used = true
     }
     if (warmth != 1.0f) {
         if (!used) {
@@ -284,7 +296,7 @@ fun updateMatrix(
             warmth(tmp.values, warmth)
             out.timesAssign(tmp)
         }
-        used = true;
+        used = true
     }
     if (brightness != 1.0f) {
 
@@ -295,7 +307,8 @@ fun updateMatrix(
             brightness(tmp.values, brightness)
             out.timesAssign(tmp)
         }
-        used = true;
+        @Suppress("UNUSED_VALUE")
+        used = true
     }
 
 }

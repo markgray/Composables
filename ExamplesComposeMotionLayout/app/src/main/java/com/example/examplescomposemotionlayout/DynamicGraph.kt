@@ -55,10 +55,13 @@ fun ManyGraphs() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "scroll", device = "spec:shape=Normal,width=480,height=800,unit=dp,dpi=440")
 @Composable
-fun DynamicGraph(values: List<Float> = listOf<Float>(12f, 32f, 21f, 32f, 2f), max: Int = 100) {
+fun DynamicGraph(values: List<Float> = listOf(12f, 32f, 21f, 32f, 2f), max: Int = 100) {
     val scale = values.map { (it * 0.8f) / max }
     val count = values.size
     val widthPercent = 1 / (count * 2f)

@@ -19,7 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.*
 
-// A simple fly in effect
+/**
+ * A simple fly in effect
+ */
 @SuppressLint("Range")
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "motion101")
@@ -29,7 +31,7 @@ fun M2DragReveal() {
     val titleId = "title"
     val wordsId = "words"
 
-    var scene = MotionScene() {
+    val scene = MotionScene {
         val imageRef = createRefFor(imageId)
         val titleRef = createRefFor(titleId)
         val wordsRef = createRefFor(wordsId)

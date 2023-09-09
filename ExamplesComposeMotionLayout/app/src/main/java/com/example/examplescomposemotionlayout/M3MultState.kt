@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.*
 
-// A simple fly in effect
+/**
+ * A simple fly in effect
+ */
 @SuppressLint("Range")
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "motion101")
@@ -26,7 +28,7 @@ fun M3MultiState() {
     val titleId = "title"
 
 
-    var scene = MotionScene() {
+    val scene = MotionScene {
         val titleRef = createRefFor(titleId)
         val a = constraintSet {
             constrain(titleRef) {
@@ -73,14 +75,16 @@ fun M3MultiState() {
             }
         }
     }
+    @Suppress("UNUSED_VARIABLE")
     val painter = painterResource(id = R.drawable.pepper)
 
     var transitionName by remember {
         mutableStateOf("right")
     }
-    var animateToEnd by remember { mutableStateOf(true) }
+    val animateToEnd by remember { mutableStateOf(true) }
     val progress = remember { Animatable(0f) }
     LaunchedEffect(animateToEnd) {
+        @Suppress("UNUSED_VARIABLE", "UNUSED_VARIABLE")
         val result = progress.animateTo(
             if (animateToEnd) 1f else 0f,
             animationSpec = tween(3000)

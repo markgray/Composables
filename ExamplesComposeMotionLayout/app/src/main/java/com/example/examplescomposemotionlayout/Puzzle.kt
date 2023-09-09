@@ -17,6 +17,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.*
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview(group = "scroll", device = "spec:shape=Normal,width=480,height=800,unit=dp,dpi=440")
 @Composable
 fun Puzzle() {
@@ -169,7 +172,7 @@ fun MPuzzle() {
 
     val progress by animateFloatAsState(
         targetValue = if (animateToEnd) 1f else 0f,
-        animationSpec = tween(800)
+        animationSpec = tween(800), label = ""
     )
 
     MotionLayout(

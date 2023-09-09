@@ -26,7 +26,7 @@ import androidx.constraintlayout.compose.MotionScene
 @Preview(group = "scroll")
 @Composable
 fun ReactionSelector() {
-    var selected by remember { mutableStateOf(3) }
+    var selected by remember { mutableIntStateOf(3) }
     val transitionName = remember { mutableStateOf("transition1") }
     val emojis = remember { "😀 🙂 🤨 😐 😒 😬".split(' ') }
     val emojiNames = remember {

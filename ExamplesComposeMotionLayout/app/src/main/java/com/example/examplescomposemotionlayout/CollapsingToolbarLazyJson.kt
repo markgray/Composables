@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -36,9 +36,10 @@ import androidx.constraintlayout.compose.MotionScene
 @Preview(group = "scroll", device = "spec:shape=Normal,width=480,height=800,unit=dp,dpi=440")
 @Composable
 fun ToolBarLazyExample() {
+    @Suppress("UNUSED_VARIABLE")
     val scroll = rememberScrollState(0)
 
-    var scene = """
+    val scene = """
       {
         ConstraintSets: {
           start: {
@@ -93,31 +94,31 @@ fun ToolBarLazyExample() {
 
     val maxPx = with(LocalDensity.current) { 250.dp.roundToPx().toFloat() }
     val minPx = with(LocalDensity.current) { 50.dp.roundToPx().toFloat() }
-    val toolbarHeight = remember { mutableStateOf(maxPx) }
+    val toolbarHeight = remember { mutableFloatStateOf(maxPx) }
 
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val height = toolbarHeight.value;
+                val height = toolbarHeight.floatValue
 
                 if (height + available.y > maxPx) {
-                    toolbarHeight.value = maxPx
+                    toolbarHeight.floatValue = maxPx
                     return Offset(0f, maxPx - height)
                 }
 
                 if (height + available.y < minPx) {
-                    toolbarHeight.value = minPx
+                    toolbarHeight.floatValue = minPx
                     return Offset(0f, minPx - height)
                 }
 
-                toolbarHeight.value += available.y
+                toolbarHeight.floatValue += available.y
                 return Offset(0f, available.y)
             }
 
         }
     }
 
-    val progress = 1 - (toolbarHeight.value - minPx) / (maxPx - minPx);
+    val progress = 1 - (toolbarHeight.floatValue - minPx) / (maxPx - minPx)
 
     Column {
         MotionLayout(
@@ -134,7 +135,7 @@ fun ToolBarLazyExample() {
             Box(
                 modifier = Modifier
                     .layoutId("image")
-                    .background(motionProperties("image").value.color("cover"))
+                    .background(customProperties("image").color("cover"))
             ) {
             }
             Image(
@@ -153,7 +154,7 @@ fun ToolBarLazyExample() {
             Modifier
                 .fillMaxWidth()
                 .nestedScroll(nestedScrollConnection)) {
-            LazyColumn() {
+            LazyColumn {
                 items(100) {
                     Text(text = "item $it", modifier = Modifier.padding(4.dp))
                 }
