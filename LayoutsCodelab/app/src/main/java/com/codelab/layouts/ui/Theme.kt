@@ -22,12 +22,14 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
+@Suppress("PrivatePropertyName")
 private val DarkColorPalette = darkColors(
     primary = purple200,
     primaryVariant = purple700,
     secondary = teal200
 )
 
+@Suppress("PrivatePropertyName")
 private val LightColorPalette = lightColors(
     primary = purple500,
     primaryVariant = purple700,
