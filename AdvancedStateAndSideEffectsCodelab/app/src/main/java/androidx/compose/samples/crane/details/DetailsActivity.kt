@@ -493,7 +493,7 @@ private fun ZoomButton(text: String, onClick: () -> Unit) {
  * The initial value of "zoom" that is applied to the [GoogleMap] contained in the [MapView] of the
  * [MapViewContainer] Composable.
  */
-@Suppress("ConstPropertyName")
+@Suppress("ConstPropertyName") // It is a Compose constant of sorts
 private const val InitialZoom = 5f
 
 /**
