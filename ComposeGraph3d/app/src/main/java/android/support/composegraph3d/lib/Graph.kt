@@ -90,7 +90,7 @@ class Graph {
     /**
      * TODO: Add kdoc
      */
-    @Suppress("UNUSED_PARAMETER")
+    @Suppress("UNUSED_PARAMETER") // Suggested change would make method less reusable
     fun drag(change: PointerInputChange, drag: Offset) {
         downX += drag.x/scale
         downY += drag.y/scale
