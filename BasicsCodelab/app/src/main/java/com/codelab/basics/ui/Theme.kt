@@ -23,7 +23,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-@Suppress("PrivatePropertyName")
+@Suppress("PrivatePropertyName") // It is a Compose constant of sorts
 private val DarkColorPalette = darkColors(
     surface = Blue,
     onSurface = Navy,
@@ -31,7 +31,7 @@ private val DarkColorPalette = darkColors(
     onPrimary = Chartreuse
 )
 
-@Suppress("PrivatePropertyName")
+@Suppress("PrivatePropertyName") // It is a Compose constant of sorts
 private val LightColorPalette = lightColors(
     surface = Blue,
     onSurface = Color.White,
