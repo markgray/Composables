@@ -18,7 +18,7 @@
 
 package com.example.composemail.ui.mails
 
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 
 /**
  * TODO: Add kdoc
@@ -28,7 +28,7 @@ class MailListState {
 
     private val selectedTracker = mutableSetOf<Int>()
 
-    private val _selectedCount = mutableStateOf(0)
+    private val _selectedCount = mutableIntStateOf(0)
 
     /**
      * TODO: Add kdoc
@@ -40,7 +40,7 @@ class MailListState {
      * TODO: Add kdoc
      */
     val selectedCount: Int
-        get() = _selectedCount.value
+        get() = _selectedCount.intValue
 
     /**
      * TODO: Add kdoc
@@ -64,7 +64,7 @@ class MailListState {
                 } else {
                     selectedTracker.remove(id)
                 }
-                _selectedCount.value = selectedTracker.size
+                _selectedCount.intValue = selectedTracker.size
             }
         }
     }
