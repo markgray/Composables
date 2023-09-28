@@ -128,7 +128,7 @@ fun GridJsonKeypad() {
 /**
  * TODO: Add kdoc
  */
-@Suppress("JsonDuplicatePropertyKeys")
+@Suppress("JsonDuplicatePropertyKeys") // TODO: figure this warning out
 @Preview(group = "calculator")
 @Composable
 fun GridJsonMediumCalculator() {
