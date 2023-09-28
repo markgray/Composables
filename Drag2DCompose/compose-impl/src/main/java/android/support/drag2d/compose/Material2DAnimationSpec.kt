@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("PrivatePropertyName")
+
 package android.support.drag2d.compose
 
 import android.support.drag2d.lib.MaterialEasing
@@ -40,6 +42,9 @@ private val defaultEasing: MaterialVelocity.Easing by lazy(LazyThreadSafetyMode.
     MaterialEasing.EASE_OUT_BACK
 }
 
+/**
+ * TODO: Add kdoc
+ */
 fun <T> materialVelocity2D(
     durationMs: Int = AnimationConstants.DefaultDurationMillis,
     maxVelocity: Float = DEFAULT_MAX_VELOCITY,
@@ -57,6 +62,10 @@ fun <T> materialVelocity2D(
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
+@Suppress("unused")
 fun <T> materialVelocity2D(
     durationMs: Int,
     maxVelocityA: Float,

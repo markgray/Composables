@@ -15,6 +15,7 @@
  */
 package android.support.drag2d.lib;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class MaterialEasing implements MaterialVelocity.Easing {
 
     private static final float[] STANDARD_COEFFICIENTS = {0.4f, 0.0f, 0.2f, 1f};
