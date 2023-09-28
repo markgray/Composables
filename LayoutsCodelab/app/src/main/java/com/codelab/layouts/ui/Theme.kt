@@ -22,14 +22,14 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
-@Suppress("PrivatePropertyName")
+@Suppress("PrivatePropertyName") // It is a Compose constants of sorts
 private val DarkColorPalette = darkColors(
     primary = purple200,
     primaryVariant = purple700,
     secondary = teal200
 )
 
-@Suppress("PrivatePropertyName")
+@Suppress("PrivatePropertyName") // It is a Compose constants of sorts
 private val LightColorPalette = lightColors(
     primary = purple500,
     primaryVariant = purple700,
