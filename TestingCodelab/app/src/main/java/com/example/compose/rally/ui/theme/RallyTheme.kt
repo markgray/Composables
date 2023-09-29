@@ -31,12 +31,13 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.compose.rally.R
 
-@Suppress("PrivatePropertyName")
+@Suppress("PrivatePropertyName") // It is a constant of sorts
 private val EczarFontFamily = FontFamily(
     Font(R.font.eczar_regular),
     Font(R.font.eczar_semibold, FontWeight.SemiBold)
 )
-@Suppress("PrivatePropertyName")
+
+@Suppress("PrivatePropertyName") // It is a constant of sorts
 private val RobotoCondensed = FontFamily(
     Font(R.font.robotocondensed_regular),
     Font(R.font.robotocondensed_light, FontWeight.Light),
