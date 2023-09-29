@@ -32,7 +32,7 @@ import com.codelab.theming.ui.start.theme.JetnewsTypography
  * `caption`, and `overline` [TextStyle]'s of our [JetnewsTypography] custom [Typography].
  * https://fonts.google.com/specimen/Montserrat
  */
-@Suppress("PrivatePropertyName")
+@Suppress("PrivatePropertyName") // It is a constant of sorts
 private val Montserrat: FontFamily = FontFamily(
     Font(R.font.montserrat_regular),
     Font(R.font.montserrat_medium, FontWeight.W500),
@@ -43,7 +43,7 @@ private val Montserrat: FontFamily = FontFamily(
  * This [FontFamily] is used by the `body1` [TextStyle] of our [JetnewsTypography] custom [Typography].
  * https://fonts.google.com/specimen/Domine
  */
-@Suppress("PrivatePropertyName")
+@Suppress("PrivatePropertyName") // It is a constant of sorts
 private val Domine: FontFamily = FontFamily(
     Font(R.font.domine_regular),
     Font(R.font.domine_bold, FontWeight.Bold)
