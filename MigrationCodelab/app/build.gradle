@@ -67,8 +67,8 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.core:core-ktx:1.12.0"
     implementation "androidx.fragment:fragment-ktx:1.6.1"
-    implementation "androidx.navigation:navigation-fragment-ktx:2.7.1"
-    implementation "androidx.navigation:navigation-ui-ktx:2.7.1"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.3'
     implementation "androidx.recyclerview:recyclerview:1.3.1"
     implementation "androidx.room:room-runtime:2.5.2"
     implementation "androidx.room:room-ktx:2.5.2"
@@ -76,22 +76,22 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.8.1"
     implementation "com.github.bumptech.glide:glide:4.14.2"
     implementation "com.google.android.material:material:1.9.0"
-    implementation "com.google.code.gson:gson:2.10"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
 
     // Compose
-    implementation "androidx.compose.runtime:runtime:1.5.0"
-    implementation "androidx.compose.ui:ui:1.5.0"
-    implementation "androidx.compose.foundation:foundation:1.5.0"
-    implementation "androidx.compose.foundation:foundation-layout:1.5.0"
-    implementation "androidx.compose.material:material:1.5.0"
-    implementation "androidx.compose.runtime:runtime-livedata:1.5.0"
+    implementation 'androidx.compose.runtime:runtime:1.5.1'
+    implementation 'androidx.compose.ui:ui:1.5.1'
+    implementation 'androidx.compose.foundation:foundation:1.5.1'
+    implementation 'androidx.compose.foundation:foundation-layout:1.5.1'
+    implementation 'androidx.compose.material:material:1.5.1'
+    implementation 'androidx.compose.runtime:runtime-livedata:1.5.1'
     implementation 'com.google.android.material:material:1.9.0'
-    implementation "androidx.compose.ui:ui-tooling-preview:1.5.0"
-    debugImplementation "androidx.compose.ui:ui-tooling:1.5.0"
+    implementation 'androidx.compose.ui:ui-tooling-preview:1.5.1'
+    debugImplementation 'androidx.compose.ui:ui-tooling:1.5.1'
 
     implementation "com.google.accompanist:accompanist-themeadapter-material:0.28.0"
 
@@ -103,7 +103,7 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:1.1.5"
     androidTestImplementation "androidx.test.uiautomator:uiautomator:2.2.0"
     androidTestImplementation "androidx.work:work-testing:2.8.1"
-    androidTestImplementation "com.google.truth:truth:1.1.3"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.5.0"
+    androidTestImplementation 'com.google.truth:truth:1.1.5'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.5.1'
     testImplementation "junit:junit:4.13.2"
 }
