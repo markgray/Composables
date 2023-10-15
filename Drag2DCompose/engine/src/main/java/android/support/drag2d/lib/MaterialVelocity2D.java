@@ -40,22 +40,17 @@ public class MaterialVelocity2D extends MaterialVelocity {
             currentVelocity = 0.0001f * dir;
         }
         switch (stages) {
-            case 1:
-                fixeRampDown(currentPos, destination, currentVelocity, duration);
-                break;
-            case 2:
-                fixeRampUpRampDown(currentPos,
-                        destination,
-                        currentVelocity,
-                        duration,
-                        t1);
-                break;
-            case 3:
-                fixe3Ramp(currentPos, destination, currentVelocity,
-                        duration,
-                        slower.mStage[0].getEndTime(),
-                        slower.mStage[1].getEndTime());
-                break;
+            //noinspection DataFlowIssue
+            case 1 -> fixeRampDown(currentPos, destination, currentVelocity, duration);
+            case 2 -> fixeRampUpRampDown(currentPos,
+                    destination,
+                    currentVelocity,
+                    duration,
+                    t1);
+            case 3 -> fixe3Ramp(currentPos, destination, currentVelocity,
+                    duration,
+                    slower.mStage[0].getEndTime(),
+                    slower.mStage[1].getEndTime());
         }
 
         slower.configureEasingAdapter();

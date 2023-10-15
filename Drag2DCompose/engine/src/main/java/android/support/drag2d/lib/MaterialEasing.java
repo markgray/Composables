@@ -15,7 +15,7 @@
  */
 package android.support.drag2d.lib;
 
-@SuppressWarnings("FieldCanBeLocal")
+@SuppressWarnings({"FieldCanBeLocal", "MethodDoesntCallSuperMethod"})
 public class MaterialEasing implements MaterialVelocity.Easing {
 
     private static final float[] STANDARD_COEFFICIENTS = {0.4f, 0.0f, 0.2f, 1f};
@@ -49,11 +49,12 @@ public class MaterialEasing implements MaterialVelocity.Easing {
     public static final MaterialVelocity.Easing EASE_OUT_ELASTIC = new EaseOutElastic();
 
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     static class EaseOutElastic implements MaterialVelocity.Easing {
 
-        double c4 = (2 * Math.PI) / 3;
-        double TWENTY_PI = 20 * Math.PI;
-        double log8 = Math.log(8);
+        final double c4 = (2 * Math.PI) / 3;
+        final double TWENTY_PI = 20 * Math.PI;
+        final double log8 = Math.log(8);
 
         @Override
         public double get(double t) {
@@ -84,13 +85,12 @@ public class MaterialEasing implements MaterialVelocity.Easing {
         }
     }
 
-    ;
     public static final MaterialVelocity.Easing EASE_OUT_BOUNCE = new EaseOutBounce();
 
 
     static class EaseOutBounce implements MaterialVelocity.Easing {
-        double n1 = 7.5625;
-        double d1 = 2.75;
+        final double n1 = 7.5625;
+        final double d1 = 2.75;
 
         @Override
         public double get(double t) {
@@ -135,11 +135,9 @@ public class MaterialEasing implements MaterialVelocity.Easing {
         }
     }
 
-    ;
 
-
-    private static double sError = 0.001;
-    private static double sDError = 0.0001;
+    private static final double sError = 0.001;
+    private static final double sDError = 0.0001;
     private String mConfigString;
     double mX1, mY1, mX2, mY2;
 

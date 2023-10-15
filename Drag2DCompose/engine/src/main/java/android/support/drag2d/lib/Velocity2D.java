@@ -17,9 +17,10 @@ package android.support.drag2d.lib;
 
 import java.util.Arrays;
 
+@SuppressWarnings("JavadocDeclaration")
 public class Velocity2D {
-    MaterialVelocity2D mvX = new MaterialVelocity2D();
-    MaterialVelocity2D mvY = new MaterialVelocity2D();
+    final MaterialVelocity2D mvX = new MaterialVelocity2D();
+    final MaterialVelocity2D mvY = new MaterialVelocity2D();
 
     public void configure(float posX,
                           float posY,

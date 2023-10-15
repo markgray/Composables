@@ -19,7 +19,7 @@ public class MaterialVelocity {
     float mStartPos, mStartVel;
     float mEndPos;
     float mDuration;
-    Stage[] mStage = new Stage[]{new Stage(1), new Stage(2), new Stage(3)};
+    final Stage[] mStage = new Stage[]{new Stage(1), new Stage(2), new Stage(3)};
     int mNumberOfStages;
     Easing mEasing;
     double mEasingAdapterDistance;
@@ -53,7 +53,7 @@ public class MaterialVelocity {
         float mEndTime;
         float mDeltaV;
         float mDeltaT;
-        int n;
+        final int n;
 
         public float getEndTime() {
             return mEndTime;
