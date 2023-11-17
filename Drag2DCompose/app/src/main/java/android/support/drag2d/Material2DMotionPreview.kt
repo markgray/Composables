@@ -182,7 +182,7 @@ fun Material2DMotionPreview() {
                     .background(color, CardDefaults.shape),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Hello")
+                Text(text = "Drag Me")
             }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
