@@ -36,25 +36,7 @@ import androidx.compose.material.icons.filled.MenuOpen
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Videocam
-import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -246,21 +228,22 @@ fun ReplyApp(
  * @param replyHomeUIState the [ReplyHomeUIState] which our children Composables will use to access the
  * fake [Email] objects they display.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReplyNavigationWrapperUI(
     navigationType: ReplyNavigationType,
     contentType: ReplyContentType,
     replyHomeUIState: ReplyHomeUIState
 ) {
-    val drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope: CoroutineScope = rememberCoroutineScope()
-    val selectedDestination: String = ReplyDestinations.INBOX
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    val selectedDestination = ReplyDestinations.INBOX
 
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
         PermanentNavigationDrawer(
             drawerContent = {
-                NavigationDrawerContent(selectedDestination = selectedDestination)
+                PermanentDrawerSheet {
+                    NavigationDrawerContent(selectedDestination)
+                }
             }
         ) {
             ReplyAppContent(
@@ -273,15 +256,17 @@ private fun ReplyNavigationWrapperUI(
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
-                NavigationDrawerContent(
-                    selectedDestination = selectedDestination,
-                    onDrawerClicked = {
-                        scope.launch {
-                            drawerState.close()
+                ModalDrawerSheet {
+                    NavigationDrawerContent(
+                        selectedDestination,
+                        onDrawerClicked = {
+                            scope.launch {
+                                drawerState.close()
+                            }
                         }
-                    }
-                )
-            }
+                    )
+                }
+            },
         ) {
             ReplyAppContent(
                 navigationType = navigationType,
@@ -541,7 +526,6 @@ fun ReplyBottomNavigationBar() {
  * and a lambda which launches a coroutine which closes the [ModalNavigationDrawer] is passed when we
  * are used in the [ModalNavigationDrawer] of [ReplyNavigationWrapperUI].
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationDrawerContent(
     selectedDestination: String,

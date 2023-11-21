@@ -35,7 +35,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -187,7 +186,6 @@ fun ReplyListAndDetailContent(
  * behavior. Our two calling sites pass a [Modifier.padding] that adds 16.dp to the `horizontal`
  * (left and right edges) and 4.dp to the `vertical` (top and bottom edges) padding.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyEmailListItem(
     email: Email,
@@ -273,7 +271,6 @@ fun ReplyEmailListItem(
  * behavior. Our [ReplyListAndDetailContent] caller passes a [Modifier.padding] that adds 16.dp to
  * the `horizontal` (left and right edges) and 4.dp to the `vertical` (top and bottom edges) padding.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyEmailThreadItem(
     email: Email,
