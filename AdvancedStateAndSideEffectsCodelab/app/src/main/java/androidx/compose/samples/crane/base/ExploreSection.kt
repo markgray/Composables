@@ -23,8 +23,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -242,7 +244,11 @@ private fun ExploreList(
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState()
 ) {
-    LazyColumn(modifier = modifier, state = listState) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+        state = listState
+    ) {
         items(items = exploreList) { exploreItem: ExploreModel ->
             Column(modifier = Modifier.fillParentMaxWidth()) {
                 ExploreItem(
