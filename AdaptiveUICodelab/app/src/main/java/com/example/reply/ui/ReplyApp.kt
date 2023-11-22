@@ -179,24 +179,25 @@ fun ReplyApp(
  *  - [ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER]
  *
  * We call the Composable [PermanentNavigationDrawer] with its `drawerContent` argument a
- * [NavigationDrawerContent] Composable whose `selectedDestination` is our [String] variable
- * `selectedDestination`. The `content` of the [PermanentNavigationDrawer] is a [ReplyAppContent]
- * Composable whose `navigationType` argument is our [navigationType] parameter, whose `contentType`
- * argument is our [contentType] parameter, and whose `replyHomeUIState` argument is our
- * [replyHomeUIState] parameter.
+ * [PermanentDrawerSheet] wrapped [NavigationDrawerContent] Composable whose `selectedDestination`
+ * is our [String] variable `selectedDestination`. The `content` of the [PermanentNavigationDrawer]
+ * is a [ReplyAppContent] Composable whose `navigationType` argument is our [navigationType]
+ * parameter, whose `contentType` argument is our [contentType] parameter, and whose
+ * `replyHomeUIState` argument is our [replyHomeUIState] parameter.
  *
  *  - [ReplyNavigationType.BOTTOM_NAVIGATION] or [ReplyNavigationType.NAVIGATION_RAIL]
  *
  * We call the Composable [ModalNavigationDrawer] with its `drawerState` argument our [DrawerState]
- * variable `drawerState`, and with its `drawerContent` argument a [NavigationDrawerContent] Composable
- * whose `selectedDestination` is our [String] variable `selectedDestination`, and whose `onDrawerClicked`
- * argument is a lambda which calls the [CoroutineScope.launch] method of our `scope` variable to launch
- * a new coroutine which calls the [DrawerState.close] method of our `drawerState` variable. The `content`
- * of the [ModalNavigationDrawer] is a [ReplyAppContent] Composable whose `navigationType` argument is
- * our [navigationType] parameter, whose `contentType` argument is our [contentType] parameter, whose
- * `replyHomeUIState` argument is our [replyHomeUIState] parameter, and whose `onDrawerClicked` argument
- * is a lambda which calls the [CoroutineScope.launch] method of our `scope` variable to launch a new
- * coroutine which calls the [DrawerState.open] method of our `drawerState` variable.
+ * variable `drawerState`, and with its `drawerContent` argument a [ModalDrawerSheet] wrapped
+ * [NavigationDrawerContent] Composable whose `selectedDestination` is our [String] variable
+ * `selectedDestination`, and whose `onDrawerClicked` argument is a lambda which calls the
+ * [CoroutineScope.launch] method of our `scope` variable to launch a new coroutine which calls the
+ * [DrawerState.close] method of our `drawerState` variable. The `content` of the [ModalNavigationDrawer]
+ * is a [ReplyAppContent] Composable whose `navigationType` argument is our [navigationType] parameter,
+ * whose `contentType` argument is our [contentType] parameter, whose `replyHomeUIState` argument is
+ * our [replyHomeUIState] parameter, and whose `onDrawerClicked` argument is a lambda which calls
+ * the [CoroutineScope.launch] method of our `scope` variable to launch a new coroutine which calls
+ * the [DrawerState.open] method of our `drawerState` variable.
  *
  * @param navigationType the [ReplyNavigationType] that will be used for navigation (someday), one of:
  *  - [ReplyNavigationType.BOTTOM_NAVIGATION] chosen if the [WindowWidthSizeClass] of the device is
