@@ -32,7 +32,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
@@ -145,7 +145,7 @@ class DetailsActivity : ComponentActivity() {
      * root view of our activity. That lambda uses our [CraneTheme] custom [MaterialTheme] to wrap
      * a [Surface] whose `content` is a [DetailsScreen] whose `onErrorLoading` argument is a lambda
      * which calls [finish] to close this activity, and whose `modifier` argument uses
-     * [Modifier.statusBarsPadding] to add padding to accommodate the status bars insets, and
+     * [Modifier.systemBarsPadding] to add padding to accommodate the system bars insets, and
      * [Modifier.navigationBarsPadding] to add padding to accommodate the navigation bars insets.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
@@ -160,9 +160,7 @@ class DetailsActivity : ComponentActivity() {
                 Surface {
                     DetailsScreen(
                         onErrorLoading = { finish() },
-                        modifier = Modifier
-                            .statusBarsPadding()
-                            .navigationBarsPadding()
+                        modifier = Modifier.systemBarsPadding()
                     )
                 }
             }
@@ -220,7 +218,7 @@ data class DetailsUiState(
  * [setContent] method called in the [ComponentActivity.onCreate] override of [DetailsActivity])
  * passes us a lambda which calls [ComponentActivity.finish] to close the activity.
  * @param modifier a [Modifier] instance which our caller can use to modify our appearance and/or
- * behavior. Our caller uses a [Modifier.statusBarsPadding] (Adds padding to accommodate the status
+ * behavior. Our caller uses a [Modifier.systemBarsPadding] (Adds padding to accommodate the system
  * bars insets) to which it adds a [Modifier.navigationBarsPadding] (adds padding to accommodate the
  * navigation bars insets).
  * @param viewModel the [DetailsViewModel] we should use. Our caller does not pass any, so we use
@@ -296,7 +294,7 @@ fun DetailsScreen(
  * @param exploreModel the [ExploreModel] whose information we are supposed to display.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our [DetailsScreen] caller adds a [Modifier.fillMaxSize] to its own `modifier` parameter,
- * which is the [Modifier.statusBarsPadding] chained to a [Modifier.navigationBarsPadding] that is
+ * which is the [Modifier.systemBarsPadding] chained to a [Modifier.navigationBarsPadding] that is
  * passed to [DetailsScreen] when it is called by the [ComponentActivity.setContent] method in the
  * [DetailsActivity.onCreate] override of [ComponentActivity.onCreate] in [DetailsActivity].
  */
