@@ -16,62 +16,243 @@
 
 package com.codelab.basiclayouts.ui.theme
 
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 
 /**
- * This is the [Color] used for the `onBackground` color of the `DarkColorPalette` and the `background`
- * color of the `LightColorPalette` that our [MySootheTheme] custom [MaterialTheme] uses for the
- * `colors` parameter of [MaterialTheme] (a gray-brown color)
+ * [Color] used for the [ColorScheme.primary] Color of [lightColorScheme]
  */
-val taupe100: Color = Color(0xFFF0EAE2)
+val md_theme_light_primary: Color = Color(0xFF6B5C4D)
 
 /**
- * This is the [Color] used for the `onBackground` color of the `LightColorPalette` that our
- * [MySootheTheme] custom [MaterialTheme] uses for the `colors` parameter of [MaterialTheme]
- * (a dark gray-brown color)
+ * [Color] used for the [ColorScheme.onPrimary] Color of our [lightColorScheme]
  */
-val taupe800: Color = Color(0xFF655454)
+val md_theme_light_onPrimary: Color = Color(0xFFFFFFFF)
 
 /**
- * This is the [Color] used for the `secondary` color of the `DarkColorPalette` that our
- * [MySootheTheme] custom [MaterialTheme] uses for the `colors` parameter of [MaterialTheme]
+ * [Color] used for the [ColorScheme.primaryContainer] Color of our [lightColorScheme]
  */
-val rust300: Color = Color(0xFFE1AFAF)
+val md_theme_light_primaryContainer: Color = Color(0xFFF4DFCD)
 
 /**
- * This is the [Color] used for the `secondary` color of the `LightColorPalette` that our
- * [MySootheTheme] custom [MaterialTheme] uses for the `colors` parameter of [MaterialTheme]
+ * [Color] used for the [ColorScheme.onPrimaryContainer] Color of our [lightColorScheme]
  */
-val rust600: Color = Color(0xFF886363)
+val md_theme_light_onPrimaryContainer: Color = Color(0xFF241A0E)
 
 /**
- * This is the [Color] used for the `background`, `onPrimary` and `onSecondary` colors of the
- * `DarkColorPalette` and the `primary` color of the `LightColorPalette` that our [MySootheTheme]
- * custom [MaterialTheme] uses for the `colors` parameter of [MaterialTheme]. It is also used with
- * an `alpha` of 0.8f for the color [gray800], and the `onSurface` color of the `LightColorPalette`
+ * [Color] used for the [ColorScheme.secondary] Color of our [lightColorScheme]
  */
-val gray900: Color = Color(0xFF333333)
+val md_theme_light_secondary: Color = Color(0xFF635D59)
 
 /**
- * This is a variant of the [Color.White] whose `alpha` is changed to 0.15f - it is unused.
+ * [Color] used for the [ColorScheme.onSecondary] Color of our [lightColorScheme]
  */
-@Suppress("unused") // Suggested change would make class less reusable
-val white150: Color = Color.White.copy(alpha = 0.15f)
+val md_theme_light_onSecondary: Color = Color(0xFFFFFFFF)
 
 /**
- * This is a variant of the [Color.White] whose `alpha` is changed to 0.8f - it is unused.
+ * [Color] used for the [ColorScheme.secondaryContainer] Color of our [lightColorScheme]
  */
-@Suppress("unused") // Suggested change would make class less reusable
-val white800: Color = Color.White.copy(alpha = 0.8f)
+val md_theme_light_secondaryContainer: Color = Color(0xFFEAE1DB)
 
 /**
- * This is a variant of the [Color.White] whose `alpha` is changed to 0.85f - it is unused.
+ * [Color] used for the [ColorScheme.onSecondaryContainer] Color of our [lightColorScheme]
  */
-@Suppress("unused") // Suggested change would make class less reusable
-val white850: Color = Color.White.copy(alpha = 0.85f)
+val md_theme_light_onSecondaryContainer: Color = Color(0xFF1F1B17)
 
 /**
- * This is a variant of the [gray900] color whose `alpha` is changed to 0.8f - it is unused.
+ * [Color] used for the [ColorScheme.tertiary] Color of our [lightColorScheme]
  */
-val gray800: Color = gray900.copy(alpha = 0.8f)
+val md_theme_light_tertiary: Color = Color(0xFF5E5F58)
+
+/**
+ * [Color] used for the [ColorScheme.onTertiary] Color of our [lightColorScheme]
+ */
+val md_theme_light_onTertiary: Color = Color(0xFFFFFFFF)
+
+/**
+ * [Color] used for the [ColorScheme.tertiaryContainer] Color of our [lightColorScheme]
+ */
+val md_theme_light_tertiaryContainer: Color = Color(0xFFE3E3DA)
+
+/**
+ * [Color] used for the [ColorScheme.onTertiaryContainer] Color of our [lightColorScheme]
+ */
+val md_theme_light_onTertiaryContainer: Color = Color(0xFF1B1C17)
+
+/**
+ * [Color] used for the [ColorScheme.error] Color of our [lightColorScheme]
+ */
+val md_theme_light_error: Color = Color(0xFFBA1A1A)
+
+/**
+ * [Color] used for the [ColorScheme.errorContainer] Color of our [lightColorScheme]
+ */
+val md_theme_light_errorContainer: Color = Color(0xFFFFDAD6)
+
+/**
+ * [Color] used for the [ColorScheme.onError] Color of our [lightColorScheme]
+ */
+val md_theme_light_onError: Color = Color(0xFFFFFFFF)
+
+/**
+ * [Color] used for the [ColorScheme.onErrorContainer] Color of our [lightColorScheme]
+ */
+val md_theme_light_onErrorContainer: Color = Color(0xFF410002)
+
+/**
+ * [Color] used for the [ColorScheme.background] Color of our [lightColorScheme]
+ */
+val md_theme_light_background: Color = Color(0xFFF5F0EE)
+
+/**
+ * [Color] used for the [ColorScheme.onBackground] Color of our [lightColorScheme]
+ */
+val md_theme_light_onBackground: Color = Color(0xFF1D1B1A)
+
+/**
+ * [Color] used for the [ColorScheme.surface] Color of our [lightColorScheme]
+ */
+val md_theme_light_surface: Color = Color(0xFFFFFBFF)
+
+/**
+ * [Color] used for the [ColorScheme.onSurface] Color of our [lightColorScheme]
+ */
+val md_theme_light_onSurface: Color = Color(0xFF1D1B1A)
+
+/**
+ * [Color] used for the [ColorScheme.surfaceVariant] Color of our [lightColorScheme]
+ */
+val md_theme_light_surfaceVariant: Color = Color(0xFFE7E1DE)
+
+/**
+ * [Color] used for the [ColorScheme.onSurfaceVariant] Color of our [lightColorScheme]
+ */
+val md_theme_light_onSurfaceVariant: Color = Color(0xFF494644)
+
+/**
+ * [Color] used for the [ColorScheme.outline] Color of our [lightColorScheme]
+ */
+val md_theme_light_outline: Color = Color(0xFF7A7674)
+
+/**
+ * [Color] used for the [ColorScheme.inverseOnSurface] Color of our [lightColorScheme]
+ */
+@Suppress("unused")
+val md_theme_light_inverseOnSurface: Color = Color(0xFFF5F0EE)
+
+/**
+ * [Color] used for the [ColorScheme.primary] Color of our [darkColorScheme]
+ */
+val md_theme_dark_primary: Color = Color(0xFFD7C3B1)
+
+/**
+ * [Color] used for the [ColorScheme.onPrimary] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onPrimary: Color = Color(0xFF3A2E22)
+
+/**
+ * [Color] used for the [ColorScheme.primaryContainer] Color of our [darkColorScheme]
+ */
+val md_theme_dark_primaryContainer: Color = Color(0xFF524437)
+
+/**
+ * [Color] used for the [ColorScheme.onPrimaryContainer] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onPrimaryContainer: Color = Color(0xFFF4DFCD)
+
+/**
+ * [Color] used for the [ColorScheme.secondary] Color of our [darkColorScheme]
+ */
+val md_theme_dark_secondary: Color = Color(0xFFCDC5BF)
+
+/**
+ * [Color] used for the [ColorScheme.onSecondary] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onSecondary: Color = Color(0xFF34302C)
+
+/**
+ * [Color] used for the [ColorScheme.secondaryContainer] Color of our [darkColorScheme]
+ */
+val md_theme_dark_secondaryContainer: Color = Color(0xFF4B4642)
+
+/**
+ * [Color] used for the [ColorScheme.onSecondaryContainer] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onSecondaryContainer: Color = Color(0xFFEAE1DB)
+
+/**
+ * [Color] used for the [ColorScheme.tertiary] Color of our [darkColorScheme]
+ */
+val md_theme_dark_tertiary: Color = Color(0xFFC7C7BE)
+
+/**
+ * [Color] used for the [ColorScheme.onTertiary] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onTertiary: Color = Color(0xFF30312B)
+
+/**
+ * [Color] used for the [ColorScheme.tertiaryContainer] Color of our [darkColorScheme]
+ */
+val md_theme_dark_tertiaryContainer: Color = Color(0xFF464741)
+
+/**
+ * [Color] used for the [ColorScheme.onTertiaryContainer] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onTertiaryContainer: Color = Color(0xFFE3E3DA)
+
+/**
+ * [Color] used for the [ColorScheme.error] Color of our [darkColorScheme]
+ */
+val md_theme_dark_error: Color = Color(0xFFFFB4AB)
+
+/**
+ * [Color] used for the [ColorScheme.errorContainer] Color of our [darkColorScheme]
+ */
+val md_theme_dark_errorContainer: Color = Color(0xFF93000A)
+
+/**
+ * [Color] used for the [ColorScheme.onError] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onError: Color = Color(0xFF690005)
+
+/**
+ * [Color] used for the [ColorScheme.onErrorContainer] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onErrorContainer: Color = Color(0xFFFFB4AB)
+
+/**
+ * [Color] used for the [ColorScheme.background] Color of our [darkColorScheme]
+ */
+val md_theme_dark_background: Color = Color(0xFF32302F)
+
+/**
+ * [Color] used for the [ColorScheme.onBackground] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onBackground: Color = Color(0xFFE6E1E0)
+
+/**
+ * [Color] used for the [ColorScheme.surface] Color of our [darkColorScheme]
+ */
+val md_theme_dark_surface: Color = Color(0xFF1D1B1A)
+
+/**
+ * [Color] used for the [ColorScheme.onSurface] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onSurface: Color = Color(0xFFE6E1E0)
+
+/**
+ * [Color] used for the [ColorScheme.surfaceVariant] Color of our [darkColorScheme]
+ */
+val md_theme_dark_surfaceVariant: Color = Color(0xFF494644)
+
+/**
+ * [Color] used for the [ColorScheme.onSurfaceVariant] Color of our [darkColorScheme]
+ */
+val md_theme_dark_onSurfaceVariant: Color = Color(0xFFE6E1E0)
+
+/**
+ * [Color] used for the [ColorScheme.outline] Color of our [darkColorScheme]
+ */
+val md_theme_dark_outline: Color = Color(0xFF94908D)

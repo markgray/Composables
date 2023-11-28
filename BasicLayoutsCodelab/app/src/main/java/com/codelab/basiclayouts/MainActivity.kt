@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Suggested changes would make class less reusable
+@file:Suppress("Destructure")
 
 package com.codelab.basiclayouts
 
@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -46,26 +47,33 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldColors
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -77,9 +85,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codelab.basiclayouts.ui.theme.MySootheTheme
-import com.codelab.basiclayouts.ui.theme.gray900
-import com.codelab.basiclayouts.ui.theme.taupe100
-import java.util.Locale
 
 /**
  * This is the main activity of the solution of the "Basic Layouts in Compose Codelab"
@@ -88,14 +93,20 @@ import java.util.Locale
 class MainActivity : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call [setContent] to have it Compose the composable [MySootheApp] into our activity.
-     * The content will become the root view of the activity.
+     * then we call [setContent] to have it Compose the composable `content` lambda wherein we
+     * initialize our [WindowSizeClass] variable `val windowSizeClass` to the [WindowSizeClass]
+     * calculated for our activity by the [calculateWindowSizeClass] method, then call our
+     * [MySootheApp] Composable with `windowSizeClass` as its `windowSizeClass` argument.
      *
-     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { MySootheApp() }
+        setContent {
+            val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(activity = this)
+            MySootheApp(windowSize = windowSizeClass)
+        }
     }
 }
 
@@ -114,12 +125,12 @@ class MainActivity : ComponentActivity() {
  *  - `colors` - [TextFieldColors] that will be used to resolve color of the text, content (including
  *  label, placeholder, leading and trailing icons, indicator line) and background for the [TextField]
  *  in different states. We use the defaults produced by [TextFieldDefaults.textFieldColors] except
- *  for the `backgroundColor` which we replace with the `surface` color of [MaterialTheme.colors]
- *  ([Color.White] with an alpha of 0.85 for the `LightColorPalette`, and [Color.White] with an alpha
- *  of 0.15 for the `DarkColorPalette`)
+ *  for the `unfocusedContainerColor` and `focusedContainerColor` colors both of which we replace
+ *  with the [ColorScheme.surface] color of our [MaterialTheme] (Color(0xFFFFFBFF) (White) for our
+ *  `lightColorScheme`, and Color(0xFF1D1B1A) (Black) for our `darkColorScheme`.
  *  - `placeholder` - placeholder to be displayed when the text field is in focus and the input text
  *  is empty, we use the string with resource ID [R.string.placeholder_search] ("Search").
- *  - `modifier` - the [Modifier] for the [TextField], we use our parameter [modifier] as a starter
+ *  - - `modifier` - the [Modifier] for the [TextField], we use our parameter [modifier] as a starter
  *  and chain a [Modifier.fillMaxWidth] (have the content fill its incoming measurement constraints,
  *  followed by a [Modifier.heightIn] specifying 56.dp as the minimum height of the [TextField].
  *
@@ -141,8 +152,9 @@ fun SearchBar(
                 contentDescription = null
             )
         },
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = MaterialTheme.colors.surface
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = MaterialTheme.colorScheme.surface
         ),
         placeholder = {
             Text(stringResource(id = R.string.placeholder_search))
@@ -164,14 +176,14 @@ fun SearchBar(
  * dimensions (width and height) of the source will be equal to or larger than the corresponding
  * dimension of the destination, and uses [Modifier.size] to size the [Image] to be 88.dp and a
  * [Modifier.clip] of [CircleShape] to clip the [Image] to be a circle shape. The [Text] uses a
- * `style` argument of the `h3` font of [MaterialTheme.typography]. The `h3` font in our custom
- * [Typography] uses [FontWeight.Bold] as the `fontWeight`, 14.sp as the `fontSize`, a `letterSpacing`
- * of 0.sp and the default `defaultFontFamily` of `fontFamilyLato`, so the [Font] is loaded from the
- * resource ID [R.font.lato_bold] (which is the file "font/lato_bold.ttf"). The `modifier` argument
- * of the [Text] is [Modifier.paddingFromBaseline] with the padding from the top of the layout to
- * the baseline of the first line of text in the content given by `top` = 24.dp, and the distance
- * from the baseline of the last line of text in the content to the bottom of the layout given by
- * `bottom` = 8.dp.
+ * `style` argument of the `bodyMedium` font of [MaterialTheme.typography]. The `bodyMedium` font in
+ * our custom [Typography] uses 14.sp as the `fontSize`, 20.sp as the `lineHeight`. (0.25).sp as the
+ * `letterSpacing` and the `fontFamily` is the regular `fontFamilyLato`, so the [Font] is loaded
+ * from the resource ID [R.font.lato_regular] (which is the file "font/lato_regular.ttf"). The
+ * `modifier` argument of the [Text] is [Modifier.paddingFromBaseline] with the padding from the top
+ * of the layout to the baseline of the first line of text in the content given by `top` = 24.dp,
+ * and the distance from the baseline of the last line of text in the content to the bottom of the
+ * layout given by `bottom` = 8.dp.
  *
  * @param drawable the resource ID of a [Drawable] to use for our [Image]
  * @param text the resource ID of a [String] to use as the text of our [Text]
@@ -191,46 +203,48 @@ fun AlignYourBodyElement(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(drawable),
+            painter = painterResource(id = drawable),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(88.dp)
-                .clip(CircleShape)
+                .size(size = 88.dp)
+                .clip(shape = CircleShape)
         )
         Text(
-            text = stringResource(text),
-            style = MaterialTheme.typography.h3,
-            modifier = Modifier.paddingFromBaseline(
-                top = 24.dp, bottom = 8.dp
-            )
+            text = stringResource(id = text),
+            modifier = Modifier.paddingFromBaseline(top = 24.dp, bottom = 8.dp),
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
 
 /**
  * Step: Favorite collection card - Material Surface. Our root Composable is a [Surface] which uses
- * our [Modifier] parameter [modifier] as its `modifier` argument, and the `small` [RoundedCornerShape]
- * of [MaterialTheme.shapes] (in our case a [RoundedCornerShape] with 4.dp corners). The contents of
- * the [Surface] is a [Row] with a [Modifier.width] `modifier` of 192.dp, and whose `verticalAlignment`
- * is [Alignment.CenterVertically] (its children are vertically centered in it). The [Row] holds an
+ * our [Modifier] parameter [modifier] as its `modifier` argument, and the `medium`
+ * [RoundedCornerShape] of [MaterialTheme.shapes] (in our case a [RoundedCornerShape] with 16.dp
+ * corners). Its `color` argument is the [ColorScheme.surfaceVariant] color of its [MaterialTheme]
+ * (which in our case this is Color(0xFFE7E1DE) (a very light Gray) for `lightColorScheme` and
+ * Color(0xFF494644) (a very dark Gray) for `darkColorScheme`. The contents of the [Surface] is a
+ * [Row] with a [Modifier.width] `modifier` of 255.dp, and whose `verticalAlignment` is
+ * [Alignment.CenterVertically] (its children are vertically centered in it). The [Row] holds an
  * [Image] that displays the [Drawable] whose resource ID is our [drawable] parameter, with its size
- * set to 56.dp by the [Modifier.size] used as its `modifier` argument and whose `contentScale`
+ * set to 80.dp by the [Modifier.size] used as its `modifier` argument and whose `contentScale`
  * argument setting the aspect ratio scaling to be [ContentScale.Crop] (scales the source uniformly,
  * maintaining the source's aspect ratio, so that both width and height dimensions of the source will
  * be equal to or larger than the corresponding dimension of the destination). This [Image] is then
  * followed by a [Text] Composable that displays the string whose resource ID is our [text] parameter,
- * using the `h3` [TextStyle] of [MaterialTheme.typography] (in our case the [FontFamily] whose
- * [FontWeight.Bold] is provided by the [Font] with ID [R.font.lato_bold] (the file lato_bold.ttf)
- * whose `fontSize` is 14.sp, and whose `letterSpacing` is 0.sp), and as its `modifier` argument it
- * uses a [Modifier.padding] whose `horizontal` padding is 16.dp
+ * using the `titleMedium` [TextStyle] of [MaterialTheme.typography] (in our case the [FontFamily]
+ * whose [FontWeight.Bold] is provided by the [Font] with ID [R.font.lato_bold] (the file
+ * lato_bold.ttf) whose `fontSize` is 16.sp, and whose `letterSpacing` is (0.15).sp, and whose
+ * `lineHeight` is 24.sp), and as its `modifier` argument it uses a [Modifier.padding] whose
+ * `horizontal` padding is 16.dp
  *
  * @param drawable the resource ID of the [Drawable] that we are supposed to display in our [Image]
- * @param text the resource ID of the [String] that we are supposed to use as the text or our [Text]
+ * @param text the resource ID of the [String] that we are supposed to use as the text of our [Text]
  * @param modifier a [Modifier] that our caller can use to modify our behavior and appearance. We
  * use it as the `modifier` argument of our root [Surface] Composable. The [FavoriteCollectionCardPreview]
  * preview uses a [Modifier.padding] of 8.dp, and [FavoriteCollectionsGrid] uses a [Modifier.height]
- * of 56.dp to have the preferred height of our content to be exactly 56.dp
+ * of 80.dp to have the preferred height of our content to be exactly 80.dp
  */
 @Composable
 fun FavoriteCollectionCard(
@@ -239,23 +253,24 @@ fun FavoriteCollectionCard(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.width(192.dp)
+            modifier = Modifier.width(width = 255.dp)
         ) {
             Image(
-                painter = painterResource(drawable),
+                painter = painterResource(id = drawable),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.size(56.dp)
+                modifier = Modifier.size(size = 80.dp)
             )
             Text(
-                text = stringResource(text),
-                style = MaterialTheme.typography.h3,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                text = stringResource(id = text),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
     }
@@ -279,12 +294,12 @@ fun AlignYourBodyRow(
     modifier: Modifier = Modifier
 ) {
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
         modifier = modifier
     ) {
-        items(alignYourBodyData) { (drawable, text): DrawableStringPair ->
-            AlignYourBodyElement(drawable = drawable, text = text)
+        items(alignYourBodyData) { item: DrawableStringPair ->
+            AlignYourBodyElement(drawable = item.drawable, text = item.text)
         }
     }
 }
@@ -293,12 +308,12 @@ fun AlignYourBodyRow(
  * Step: Favorite collections grid - LazyGrid. Our root Composable is a [LazyHorizontalGrid] that
  * uses a [GridCells.Fixed] of 2 for its `rows` argument to specify that it is a grid with 2 rows,
  * uses a [PaddingValues] of 16.dp `horizontal` for its `contentPadding` to put 16.dp padding at the
- * ends of its content, uses [Arrangement.spacedBy] of 8.dp for both its `horizontalArrangement` and
- * its `verticalArrangement` to put 8.dp between its children cells, and adds a [Modifier.height]
- * of 120.dp to our [Modifier] parameter [modifier] to set its height to be 120.dp. The `content` of
+ * ends of its content, uses [Arrangement.spacedBy] of 16.dp for both its `horizontalArrangement` and
+ * its `verticalArrangement` to put 16.dp between its children cells, and adds a [Modifier.height]
+ * of 168.dp to our [Modifier] parameter [modifier] to set its height to be 168.dp. The `content` of
  * the [LazyHorizontalGrid] are [items] of [FavoriteCollectionCard] that are created to display the
  * [List] of [DrawableStringPair] `drawable` and `text` resource IDs in our [favoriteCollectionsData]
- * field with a [Modifier.height] of 56.dp setting the height of each cell to be 56.dp
+ * field with a [Modifier.height] of 80.dp setting the height of each cell to be 80.dp
  *
  * @param modifier a [Modifier] that our caller can specify to modify our behavior or appearance. In
  * our case none of our callers specify one so the empty, default, or starter [Modifier] that
@@ -309,17 +324,17 @@ fun FavoriteCollectionsGrid(
     modifier: Modifier = Modifier
 ) {
     LazyHorizontalGrid(
-        rows = GridCells.Fixed(2),
+        rows = GridCells.Fixed(count = 2),
         contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier.height(120.dp)
+        horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(space = 16.dp),
+        modifier = modifier.height(height = 168.dp)
     ) {
-        items(favoriteCollectionsData) { (drawable, text): DrawableStringPair ->
+        items(favoriteCollectionsData) { item: DrawableStringPair ->
             FavoriteCollectionCard(
-                drawable = drawable,
-                text = text,
-                modifier = Modifier.height(56.dp)
+                drawable = item.drawable,
+                text = item.text,
+                modifier = Modifier.height(height = 80.dp)
             )
         }
     }
@@ -327,16 +342,17 @@ fun FavoriteCollectionsGrid(
 
 /**
  * Step: Home section - Slot APIs. This Composable holds a [Text] that displays a title string whose
- * resource ID is our [title] and a Composable [content] in a [Column]. [HomeScreen] uses it for the
- * [AlignYourBodyRow] and [FavoriteCollectionsGrid] Composables. Our root Composable is a [Column]
- * that we pass our [Modifier] parameter [modifier] to as its ``modifier` argument. The `content` of
- * the [Column] is a [Text] displaying an uppercase version of the string with resource ID [title]
- * using the `h2` [TextStyle] of our custom [MaterialTheme.typography] which is a `fontFamilyKulim`
- * [FontFamily] that uses the [Font] with resource ID [R.font.lato_regular] (the lato_regular.ttf
- * font file), with a `fontSize` of 15.sp and `letterSpacing` of (1.15).sp, and its `modifier`
- * argument is a [Modifier.paddingFromBaseline] whose `top` padding is 40.dp, and whose `bottom`
- * padding is 8.dp, and a [Modifier.padding] whose `horizontal` argument is 16.dp adds 16.dp to each
- * end of the [Text]. Below this title [Text] in our [Column] is our [content] Composable.
+ * resource ID is our [title] parameter and our Composable [content] parameter in a [Column].
+ * [HomeScreen] uses it for the [AlignYourBodyRow] and [FavoriteCollectionsGrid] Composables. Our
+ * root Composable is a [Column] that we pass our [Modifier] parameter [modifier] to as its
+ * `modifier` argument. The `content` of the [Column] is a [Text] displaying the string with
+ * resource ID [title], using the `titleMedium` [TextStyle] of [MaterialTheme.typography] (in our
+ * case the [FontFamily] whose [FontWeight.Bold] is provided by the [Font] with ID [R.font.lato_bold]
+ * (the file lato_bold.ttf) whose `fontSize` is 16.sp, and whose `letterSpacing` is (0.15).sp, and
+ * whose `lineHeight` is 24.sp), and its `modifier` argument is a [Modifier.padding] whose
+ * `horizontal` argument is 16.dp (adds 16.dp to each end of the [Text]), to which is chained a
+ * [Modifier.paddingFromBaseline] whose `top` padding is 40.dp, and whose `bottom` padding is 16.dp.
+ * Below this title [Text] in our [Column] is our [content] parameter Composable.
  *
  * @param title the resource ID of the title string that should be displayed in our [Text].
  * @param modifier a [Modifier] that can be used by our caller to modify our appearance and behavior,
@@ -352,11 +368,11 @@ fun HomeSection(
 ) {
     Column(modifier) {
         Text(
-            text = stringResource(title).uppercase(Locale.getDefault()),
-            style = MaterialTheme.typography.h2,
+            text = stringResource(id = title),
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
-                .paddingFromBaseline(top = 40.dp, bottom = 8.dp)
                 .padding(horizontal = 16.dp)
+                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
         )
         content()
     }
@@ -376,11 +392,13 @@ fun HomeSection(
  *  - a [Spacer] with its `modifier` argument a [Modifier.height] of 16.dp
  *
  * @param modifier a [Modifier] that can be used by our caller to modify our appearance and behavior,
- * the [MySootheApp] Composable passes us a [Modifier.padding] that uses the [PaddingValues] that
- * [Scaffold] passes to its `content` Composable lambda as the `padding` to use along each edge of
- * our content's left, top, right and bottom. We in turn use [modifier] for our [Column], chaining
+ * the [MySootheAppPortrait] Composable passes us a [Modifier.padding] that uses the [PaddingValues]
+ * that [Scaffold] passes to its `content` Composable lambda as the `padding` to use along each edge
+ * of our content's left, top, right and bottom. We in turn use [modifier] for our [Column], chaining
  * a [Modifier.verticalScroll] with a [rememberScrollState] as its `state` argument onto it to make
- * the [Column] scrollable.
+ * the [Column] scrollable. [MySootheAppLandscape] and [ScreenContentPreview] pass us no [Modifier]
+ * so a default, or starter [Modifier] that contains no elements is used instead.
+ *
  */
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
@@ -402,10 +420,10 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 /**
  * Step: Bottom navigation - Material. We use this as the `bottomBar` argument (the bottom bar of
  * the screen) of the [Scaffold] in the [MySootheApp] Composable. Our root Composable is a
- * [BottomNavigation] whose `backgroundColor` is the `background` [Color] of [MaterialTheme.colors]
- * ([taupe100] for the `LightColorPalette` and [gray900] for the `DarkColorPalette`), and whose
- * `modifier` argument is our [Modifier] parameter [modifier]. Its children Composables are two
- * [BottomNavigationItem]:
+ * [NavigationBar] whose `containerColor` argument is the [ColorScheme.surfaceVariant] color of
+ * [MaterialTheme.colorScheme] which is Color(0xFFE7E1DE) (Light gray) for [lightColorScheme] and
+ * Color(0xFF494644) (Very dark gray) for [darkColorScheme], and whose modifier` argument is our
+ * [Modifier] parameter [modifier]. Its children Composables are two [NavigationBarItem]:
  *  - First one uses as the `label` the string with resource ID [R.string.bottom_navigation_home]
  *  ("HOME"), and its [Icon] argument `icon` is the [ImageVector] drawn by [Icons.Filled.Spa]
  *  ([Icons.Default] is an alias for [Icons.Filled])
@@ -413,22 +431,22 @@ fun HomeScreen(modifier: Modifier = Modifier) {
  *  ("PROFILE"), and its [Icon] argument `icon` is the [ImageVector] drawn by
  *  [Icons.Filled.AccountCircle] ([Icons.Default] is an alias for [Icons.Filled])
  *
- * The `selected` argument of the "HOME" [BottomNavigationItem] is hard coded to be `true`, and the
- * `selected` argument of the "PROFILE" [BottomNavigationItem] is hard coded to be `false`, and the
+ * The `selected` argument of the "HOME" [NavigationBarItem] is hard coded to be `true`, and the
+ * `selected` argument of the "PROFILE" [NavigationBarItem] is hard coded to be `false`, and the
  * `onClick` argument of both is an empty lambda.
  *
  * @param modifier a [Modifier] that can be used by our caller to modify our appearance and behavior,
  * the preview [BottomNavigationPreview] uses a [Modifier.padding] whose `top` is 24.dp, and the
- * [Scaffold] in the [MySootheApp] Composable does not specify a value so the empty, default, or
- * starter [Modifier] that contains no elements is used instead.
+ * [Scaffold] in the [MySootheAppPortrait] Composable does not specify a value so the empty, default,
+ * or starter [Modifier] that contains no elements is used instead.
  */
 @Composable
 private fun SootheBottomNavigation(modifier: Modifier = Modifier) {
-    BottomNavigation(
-        backgroundColor = MaterialTheme.colors.background,
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier
     ) {
-        BottomNavigationItem(
+        NavigationBarItem(
             icon = {
                 Icon(
                     imageVector = Icons.Default.Spa,
@@ -436,12 +454,12 @@ private fun SootheBottomNavigation(modifier: Modifier = Modifier) {
                 )
             },
             label = {
-                Text(stringResource(R.string.bottom_navigation_home))
+                Text(text = stringResource(id = R.string.bottom_navigation_home))
             },
             selected = true,
             onClick = {}
         )
-        BottomNavigationItem(
+        NavigationBarItem(
             icon = {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
@@ -449,7 +467,7 @@ private fun SootheBottomNavigation(modifier: Modifier = Modifier) {
                 )
             },
             label = {
-                Text(stringResource(R.string.bottom_navigation_profile))
+                Text(text = stringResource(id = R.string.bottom_navigation_profile))
             },
             selected = false,
             onClick = {}
@@ -458,21 +476,135 @@ private fun SootheBottomNavigation(modifier: Modifier = Modifier) {
 }
 
 /**
- * Step: MySoothe App - Scaffold. This is the Composable that we use as the root view of our activity.
- * Wrapped in our [MySootheTheme] custom [MaterialTheme] is a [Scaffold] whose `bottomBar` argument
- * (the bottom bar of the screen) is our [SootheBottomNavigation] Composable (it contains a
- * [BottomNavigation] with two [BottomNavigationItem] children, "HOME" and "PROFILE"). Our `content`
- * is a [HomeScreen] Composable whose `modifier` argument is a [Modifier.padding] with its
- * `paddingValues` argument the [PaddingValues] that are necessary to properly offset top and bottom
- * bars.
+ * Step: Navigation Rail - Material. We use this in the [MySootheAppLandscape] Composable (which is
+ * used by [MySootheApp] when the [WindowSizeClass] of the device is [WindowWidthSizeClass.Expanded]).
+ * Our root Composable content is a [NavigationRail] containing a [Column] whose `modifier` argument
+ * is our [modifier] parameter with a [Modifier.fillMaxHeight] chained to it (its content will fill
+ * the entire incoming height constraints), whose `verticalArrangement` is [Arrangement.Center]
+ * (place children such that they are as close as possible to the middle of the main axis), and whose
+ * `horizontalAlignment` argument is [Alignment.CenterHorizontally] (centers children horizontally).
+ * The [Column] contains two [NavigationRailItem] Composables with a [Spacer] between them that is
+ * 8.dp high.
+ *  - The first [NavigationRail] uses as its `icon` argument an [Icon] which draws
+ *  [Icons.Filled.AccountCircle] ([Icons.Default] is an alias for [Icons.Filled]), and for its
+ *  `label` argument it uses a [Text] displaying the string with resource ID
+ *  [R.string.bottom_navigation_home] ("HOME").
+ *  - The second [NavigationRail] uses as its `icon` argument an [Icon] which draws
+ *  [Icons.Filled.AccountCircle] ([Icons.Default] is an alias for [Icons.Filled]), and for its
+ *  `label` argument it uses a [Text] displaying the string with resource ID
+ *  [R.string.bottom_navigation_profile] ("PROFILE").
+ *
+ * The `selected` argument of the "HOME" [NavigationRailItem] is hard coded to be `true`, and the
+ * `selected` argument of the "PROFILE" [NavigationRailItem] is hard coded to be `false`, and the
+ * `onClick` argument of both is an empty lambda.
+ *
+ * @param modifier a [Modifier] that can be used by our caller to modify our appearance and behavior,
+ * neither of our callers ([MySootheAppLandscape] and [NavigationRailPreview]) pass us one so the
+ * empty, default, or starter [Modifier] that contains no elements is used instead.
  */
 @Composable
-fun MySootheApp() {
+private fun SootheNavigationRail(modifier: Modifier = Modifier) {
+    NavigationRail(
+        modifier = modifier.padding(start = 8.dp, end = 8.dp),
+        containerColor = MaterialTheme.colorScheme.background,
+    ) {
+        Column(
+            modifier = modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            NavigationRailItem(
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Spa,
+                        contentDescription = null
+                    )
+                },
+                label = {
+                    Text(text = stringResource(id = R.string.bottom_navigation_home))
+                },
+                selected = true,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(height = 8.dp))
+            NavigationRailItem(
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = null
+                    )
+                },
+                label = {
+                    Text(text = stringResource(id = R.string.bottom_navigation_profile))
+                },
+                selected = false,
+                onClick = {}
+            )
+        }
+    }
+}
+
+/**
+ * Step: MySoothe App - Scaffold. This is the Composable that we use as the root view of our activity.
+ * We `when` branch on the value of the [WindowSizeClass.widthSizeClass] field of our [WindowSizeClass]
+ * parameter [windowSize]:
+ *  - [WindowWidthSizeClass.Compact] (Represents the majority of phones in portrait) we compose our
+ *  [MySootheAppPortrait] Composable into our app.
+ *  - [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large
+ *  unfolded inner displays in landscape) we compose our [MySootheAppLandscape] Composable into
+ *  our app.
+ */
+@Composable
+fun MySootheApp(windowSize: WindowSizeClass) {
+    when (windowSize.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> {
+            MySootheAppPortrait()
+        }
+
+        WindowWidthSizeClass.Expanded -> {
+            MySootheAppLandscape()
+        }
+    }
+}
+
+/**
+ * This is the Composable that is used when the [WindowSizeClass.widthSizeClass] of the device is
+ * [WindowWidthSizeClass.Compact] (Represents the majority of phones in portrait). Wrapped in our
+ * [MySootheTheme] custom [MaterialTheme] is a [Scaffold] whose `bottomBar` argument (the bottom bar
+ * of the screen) is our [SootheBottomNavigation] Composable (it contains a [NavigationBar] with two
+ * [NavigationBarItem] children "HOME" and "PROFILE"). Our `content` is a [HomeScreen] Composable
+ * whose `modifier` argument is a [Modifier.padding] with its `paddingValues` argument the
+ * [PaddingValues] that are necessary to properly offset top and bottom bars which [Scaffold] passes
+ * to its `content` lambd.
+ */
+@Composable
+fun MySootheAppPortrait() {
     MySootheTheme {
         Scaffold(
             bottomBar = { SootheBottomNavigation() }
         ) { padding: PaddingValues ->
             HomeScreen(modifier = Modifier.padding(paddingValues = padding))
+        }
+    }
+}
+
+/**
+ * This is the Composable that is used when the [WindowSizeClass.widthSizeClass] of the device is
+ * [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large
+ * unfolded inner displays in landscape). Wrapped in our  [MySootheTheme] custom [MaterialTheme] is
+ * a [Surface] whose `color` argument (The background color) is the [ColorScheme.background] color
+ * of our [MaterialTheme] (Color(0xFFF5F0EE) "White" for our [lightColorScheme] and Color(0xFF32302F)
+ * "Black" for our [darkColorScheme]). The `content` of the [Surface] is a [Row] whose children our
+ * our [SootheNavigationRail] Composable, and our [HomeScreen] Composable.
+ */
+@Composable
+fun MySootheAppLandscape() {
+    MySootheTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            Row {
+                SootheNavigationRail()
+                HomeScreen()
+            }
         }
     }
 }
@@ -500,7 +632,7 @@ private val alignYourBodyData: List<DrawableStringPair> = listOf(
  * the element, and the [DrawableStringPair.text] of each element in the [List] is the resource ID
  * of a [String] to display in the [FavoriteCollectionCard] created from the element.
  */
-private val favoriteCollectionsData: List<DrawableStringPair> = listOf(
+private val favoriteCollectionsData = listOf(
     R.drawable.fc1_short_mantras to R.string.fc1_short_mantras,
     R.drawable.fc2_nature_meditations to R.string.fc2_nature_meditations,
     R.drawable.fc3_stress_and_anxiety to R.string.fc3_stress_and_anxiety,
@@ -524,7 +656,7 @@ private data class DrawableStringPair(
 /**
  * The Preview for our [SearchBar] Composable.
  */
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
 fun SearchBarPreview() {
     MySootheTheme { SearchBar(Modifier.padding(8.dp)) }
@@ -533,7 +665,7 @@ fun SearchBarPreview() {
 /**
  * The Preview for our [AlignYourBodyElement] Composable.
  */
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
 fun AlignYourBodyElementPreview() {
     MySootheTheme {
@@ -548,7 +680,7 @@ fun AlignYourBodyElementPreview() {
 /**
  * The Preview for our [FavoriteCollectionCard] Composable.
  */
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
 fun FavoriteCollectionCardPreview() {
     MySootheTheme {
@@ -563,25 +695,25 @@ fun FavoriteCollectionCardPreview() {
 /**
  * The Preview for our [FavoriteCollectionsGrid] Composable.
  */
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
 fun FavoriteCollectionsGridPreview() {
     MySootheTheme { FavoriteCollectionsGrid() }
 }
 
 /**
- * The Preview for our [AlignYourBodyRow] Composable.
+ *
  */
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
 fun AlignYourBodyRowPreview() {
     MySootheTheme { AlignYourBodyRow() }
 }
 
 /**
- * The Preview for our [HomeSection] Composable with an [AlignYourBodyRow] in its slot.
+ * The Preview for our [AlignYourBodyRow] Composable.
  */
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
 fun HomeSectionPreview() {
     MySootheTheme {
@@ -592,9 +724,9 @@ fun HomeSectionPreview() {
 }
 
 /**
- * The Preview for our [HomeScreen] Composable.
+ * The Preview for our [HomeScreen] Composable
  */
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE, heightDp = 180)
 @Composable
 fun ScreenContentPreview() {
     MySootheTheme { HomeScreen() }
@@ -603,17 +735,35 @@ fun ScreenContentPreview() {
 /**
  * The Preview for our [SootheBottomNavigation] Composable.
  */
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
 fun BottomNavigationPreview() {
     MySootheTheme { SootheBottomNavigation(Modifier.padding(top = 24.dp)) }
 }
 
 /**
- * The Preview for our [MySootheApp] Composable.
+ * The Preview for our [SootheNavigationRail] Composable.
+ */
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
+@Composable
+fun NavigationRailPreview() {
+    MySootheTheme { SootheNavigationRail() }
+}
+
+/**
+ * The Preview for our [MySootheAppPortrait] Composable.
  */
 @Preview(widthDp = 360, heightDp = 640)
 @Composable
-fun MySoothePreview() {
-    MySootheApp()
+fun MySoothePortraitPreview() {
+    MySootheAppPortrait()
+}
+
+/**
+ * The Preview for our [MySootheAppLandscape] Composable.
+ */
+@Preview(widthDp = 640, heightDp = 360)
+@Composable
+fun MySootheLandscapePreview() {
+    MySootheAppLandscape()
 }
