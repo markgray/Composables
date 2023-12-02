@@ -30,7 +30,7 @@ import com.example.jetnews.R
  * is used by the `h4`, `h5`, `h6`, `subtitle1`, `subtitle2`, `body2`, `button`, `caption`, and
  * `overline` [TextStyle]'s
  */
-@Suppress("PrivatePropertyName") // It is a Compose constant of sorts
+// It is a Compose constant of sorts
 private val Montserrat = FontFamily(
     Font(R.font.montserrat_regular),
     Font(R.font.montserrat_medium, FontWeight.W500),
@@ -40,7 +40,7 @@ private val Montserrat = FontFamily(
 /**
  * This [FontFamily] is used by the `body1` [TextStyle]
  */
-@Suppress("PrivatePropertyName") // It is a Compose constant of sorts
+// It is a Compose constant of sorts
 private val Domine = FontFamily(
     Font(R.font.domine_regular),
     Font(R.font.domine_bold, FontWeight.Bold)
