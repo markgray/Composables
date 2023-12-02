@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("PrivatePropertyName") // They are Compose constants of sorts
+// They are Compose constants of sorts
 
 package androidx.compose.samples.crane.ui
 

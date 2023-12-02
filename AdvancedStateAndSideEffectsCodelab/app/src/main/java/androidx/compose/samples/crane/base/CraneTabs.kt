@@ -178,7 +178,7 @@ fun CraneTabs(
 
             Tab(
                 selected = selected,
-                onClick = { onTabSelected(CraneScreen.values()[index]) }
+                onClick = { onTabSelected(CraneScreen.entries[index]) }
             ) {
                 @Suppress("ReplaceNotNullAssertionWithElvisReturn") // Returning would only hide error
                 Text(
