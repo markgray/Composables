@@ -1,4 +1,4 @@
-@file:Suppress("PrivatePropertyName") // They are Compose constants of sorts
+// They are Compose constants of sorts
 
 package com.example.androidtriviacompose.ui.theme
 
