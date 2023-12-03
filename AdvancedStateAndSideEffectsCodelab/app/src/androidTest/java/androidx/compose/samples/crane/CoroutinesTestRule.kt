@@ -25,7 +25,7 @@ import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CoroutinesTestRule constructor(
+class CoroutinesTestRule(
     val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
 ) : TestWatcher() {
 

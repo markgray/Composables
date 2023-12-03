@@ -34,7 +34,7 @@ import androidx.core.view.WindowCompat
 /**
  * This is used as the [MaterialTheme.colorScheme] when the device is in dark theme.
  */
-@Suppress("PrivatePropertyName") // It is a Compose constant of sorts
+// It is a Compose constant of sorts
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
@@ -44,7 +44,7 @@ private val DarkColorScheme = darkColorScheme(
 /**
  * This is used as the [MaterialTheme.colorScheme] when the device is in light theme (the default).
  */
-@Suppress("PrivatePropertyName") // It is a Compose constant of sorts
+// It is a Compose constant of sorts
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,

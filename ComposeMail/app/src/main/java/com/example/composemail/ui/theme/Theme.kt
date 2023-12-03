@@ -43,7 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composemail.ui.home.TopToolbar
 
-@Suppress("PrivatePropertyName") // It is a Compose constant of sorts
+// It is a Compose constant of sorts
 private val LightColorPalette = lightColors(
     primary = Color(0xFF6200EE),
     primaryVariant = Color(0xFF3700B3),
@@ -51,7 +51,7 @@ private val LightColorPalette = lightColors(
     onSecondary = Color.White
 )
 
-@Suppress("PrivatePropertyName") // It is a Compose constant of sorts
+// It is a Compose constant of sorts
 private val DarkColorPalette = darkColors(
     primary = Color(0xFFBB86FC),
     primaryVariant = Color(0xFF3700B3),
