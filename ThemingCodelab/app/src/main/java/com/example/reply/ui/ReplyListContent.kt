@@ -43,7 +43,6 @@ import com.example.reply.ui.components.ReplyEmailListItem
 import com.example.reply.ui.components.ReplyEmailThreadItem
 import com.example.reply.ui.components.ReplySearchBar
 
-
 @Composable
 fun ReplyInboxScreen(
     replyHomeUIState: ReplyHomeUIState,
@@ -65,12 +64,11 @@ fun ReplyInboxScreen(
 
         LargeFloatingActionButton(
             onClick = { /*Click Implementation*/ },
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-
         ) {
             Icon(
                 imageVector = Icons.Default.Edit,

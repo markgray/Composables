@@ -49,10 +49,7 @@ fun ReplyEmailThreadItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(
-                MaterialTheme.colorScheme.background,
-                MaterialTheme.shapes.medium
-                )
+            .background(MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium)
             .padding(20.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -79,6 +76,7 @@ fun ReplyEmailThreadItem(
                 onClick = { /*Click Implementation*/ },
                 modifier = Modifier
                     .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surface)
             ) {
                 Icon(
                     imageVector = if (email.isStarred) Icons.Default.Star else Icons.Default.StarBorder,
@@ -97,6 +95,7 @@ fun ReplyEmailThreadItem(
         Text(
             text = email.body,
             style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Row(
             modifier = Modifier

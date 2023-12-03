@@ -60,8 +60,7 @@ fun ReplyEmailListItem(
                 MaterialTheme.colorScheme.secondaryContainer
             else MaterialTheme.colorScheme.surfaceVariant
         )
-    )
-    {
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -92,7 +91,6 @@ fun ReplyEmailListItem(
                     onClick = { /*Click Implementation*/ },
                     modifier = Modifier
                         .clip(CircleShape)
-
                 ) {
                     Icon(
                         imageVector = Icons.Default.StarBorder,
@@ -108,10 +106,10 @@ fun ReplyEmailListItem(
             )
             Text(
                 text = email.body,
+                style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

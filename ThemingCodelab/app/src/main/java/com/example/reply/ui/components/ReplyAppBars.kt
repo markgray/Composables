@@ -52,13 +52,14 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
             .background(
                 MaterialTheme.colorScheme.background,
                 CircleShape
-                ),
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = Icons.Default.Search,
             contentDescription = stringResource(id = R.string.search),
             modifier = Modifier.padding(start = 16.dp),
+            tint = MaterialTheme.colorScheme.outline
         )
         Text(
             text = stringResource(id = R.string.search_replies),
@@ -66,6 +67,7 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
                 .weight(1f)
                 .padding(16.dp),
             style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.outline
         )
         ReplyProfileImage(
             drawableResource = R.drawable.avatar_6,
