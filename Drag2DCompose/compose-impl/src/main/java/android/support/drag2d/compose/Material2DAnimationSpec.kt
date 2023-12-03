@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("PrivatePropertyName")
-
 package android.support.drag2d.compose
 
 import android.support.drag2d.lib.MaterialEasing
