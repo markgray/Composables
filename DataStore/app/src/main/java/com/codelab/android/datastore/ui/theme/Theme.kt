@@ -37,7 +37,7 @@ import androidx.compose.ui.graphics.Color
  *  - `onSurface` = [Color.White], Color used for text and icons displayed on top of the surface color.
  *  - `onError` = [Color.Black], Color used for text and icons displayed on top of the error color.
  */
-@Suppress("PrivatePropertyName") // It is a Compose constant of sorts
+// It is a Compose constant of sorts
 private val DarkColorPalette = darkColors(
     primary = Purple200,
     primaryVariant = Purple700,
@@ -72,7 +72,7 @@ private val DarkColorPalette = darkColors(
  *  - `onSurface` = [Color.Black], Color used for text and icons displayed on top of the surface color.
  *  - `onError` = [Color.White], Color used for text and icons displayed on top of the error color.
  */
-@Suppress("PrivatePropertyName") // It is a Compose constant of sorts
+// It is a Compose constant of sorts
 private val LightColorPalette = lightColors(
     primary = Purple500,
     primaryVariant = Purple700,
