@@ -83,7 +83,7 @@ class RallyActivity : ComponentActivity() {
 @Composable
 fun RallyApp() {
     RallyTheme {
-        val allScreens: List<RallyScreen> = RallyScreen.values().toList()
+        val allScreens: List<RallyScreen> = RallyScreen.entries
         var currentScreen: RallyScreen by rememberSaveable { mutableStateOf(RallyScreen.Overview) }
         Scaffold(
             topBar = {
