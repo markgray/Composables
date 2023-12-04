@@ -150,13 +150,13 @@ fun selectSleepQualityStringId(sleepNight: SleepNight?): Int {
 /**
  * Number of milliseconds in one minute
  */
-@Suppress("PrivatePropertyName") // It is a constant of sorts
+// It is a constant of sorts
 private val ONE_MINUTE_MILLIS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES)
 
 /**
  * Number of milliseconds in one hour
  */
-@Suppress("PrivatePropertyName") // It is a constant of sorts
+// It is a constant of sorts
 private val ONE_HOUR_MILLIS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
 
 /**
