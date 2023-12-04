@@ -24,7 +24,11 @@ import com.example.reply.R
  */
 object LocalAccountsDataProvider {
 
-    private val allUserAccounts = listOf(
+    /**
+     * All of the accounts owned by the current user. Use [getDefaultUserAccount] to fetch the current
+     * user's default [Account].
+     */
+    private val allUserAccounts: MutableList<Account> = mutableListOf(
         Account(
             id = 1L,
             uid = 0L,
@@ -55,7 +59,11 @@ object LocalAccountsDataProvider {
         )
     )
 
-    private val allUserContactAccounts = listOf(
+    /**
+     * All [Account]s of the current user's contacts. Use [getContactAccountByUid] to fetch a contact
+     * [Account] by the [Account.id] of the contact.
+     */
+    private val allUserContactAccounts: List<Account> = listOf(
         Account(
             id = 4L,
             uid = 1L,
@@ -151,17 +159,19 @@ object LocalAccountsDataProvider {
     /**
      * Get the current user's default account.
      */
-    fun getDefaultUserAccount() = allUserAccounts.first()
+    fun getDefaultUserAccount(): Account = allUserAccounts.first()
 
     /**
-     * Whether or not the given [Account.id] uid is an account owned by the current user.
+     * Whether or not the given [Account.uid] uid is an account owned by the current user.
      */
+    @Suppress("unused")
     fun isUserAccount(uid: Long): Boolean = allUserAccounts.any { it.uid == uid }
 
     /**
      * Get the contact of the current user with the given [accountId].
      */
     fun getContactAccountByUid(accountId: Long): Account {
-        return allUserContactAccounts.first { it.id == accountId }
+        return allUserContactAccounts.firstOrNull { it.id == accountId }
+            ?: allUserContactAccounts.first()
     }
 }

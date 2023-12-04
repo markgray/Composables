@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.reply.data
 
 import com.example.reply.R
+import com.example.reply.data.Email
+import com.example.reply.data.EmailAttachment
+import com.example.reply.data.MailboxType
 
 /**
  * A static data store of [Email]s.
@@ -24,6 +29,9 @@ import com.example.reply.R
 
 object LocalEmailsDataProvider {
 
+    /**
+     * A [List] of [Email] instances which belong together as the `threads` of an [Email]
+     */
     private val threads = listOf(
         Email(
             id = 8L,
@@ -115,6 +123,9 @@ object LocalEmailsDataProvider {
         ),
     )
 
+    /**
+     * The [List] of all of the [Email] instances in our database.
+     */
     val allEmails = listOf(
         Email(
             id = 0L,
@@ -288,14 +299,20 @@ object LocalEmailsDataProvider {
 
     /**
      * Get an [Email] with the given [id].
+     *
+     * @param id the [Email.id] of the [Email] to return
+     * @return the [Email] whose [Email.id] is our parameter [id]
      */
     fun get(id: Long): Email? {
         return allEmails.firstOrNull { it.id == id }
     }
 
     /**
-     * Create a new, blank [Email].
+     * Create a new, blank [Email]
+     *
+     * @return .a new, blank [Email]
      */
+    @Suppress("MemberVisibilityCanBePrivate") // I like to use kdoc [] references
     fun create(): Email {
         return Email(
             System.nanoTime(), // Unique ID generation.
@@ -308,7 +325,10 @@ object LocalEmailsDataProvider {
 
     /**
      * Create a new [Email] that is a reply to the email with the given [replyToId].
+     *
+     * @param replyToId the [Email.id] of the [Email] we are to reply to
      */
+    @Suppress("unused")
     fun createReplyTo(replyToId: Long): Email {
         val replyTo = get(replyToId) ?: return create()
         return Email(
@@ -325,8 +345,9 @@ object LocalEmailsDataProvider {
     }
 
     /**
-     * Get a list of [EmailFolder]s by which [Email]s can be categorized.
+     * Get a list of by which [Email]s can be categorized.
      */
+    @Suppress("unused")
     fun getAllFolders() = listOf(
         "Receipts",
         "Pine Elementary",
