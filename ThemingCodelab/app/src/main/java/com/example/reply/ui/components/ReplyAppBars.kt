@@ -22,11 +22,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -35,6 +37,8 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,15 +47,26 @@ import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
 
+/**
+ * This Composable is the top `item` in the [LazyColumn] displayed by the `ReplyEmailList` Composable.
+ * Its root widget is a [Row] whose modifier chains a [Modifier.fillMaxWidth] to its [Modifier]
+ * parameter `modifier` (to have its content fill the `Constraints.maxWidth` of the incoming
+ * measurement constraints), followed by [Modifier.padding] that adds 16.dp to all of its sides, and
+ * ending with a [Modifier.background] whose `color` argment is the [ColorScheme.background] of our
+ * custom [MaterialTheme.colorScheme] Color(0xFFFFFBFF) (a shade of white) for its [lightColorScheme]
+ * and Color(0xFF1F1B16) (a shade of black) for its [darkColorScheme]. Its `shape` argument is a
+ * [CircleShape] (Circular Shape with all the corners sized as the 50 percent of the shape size).
+ *
+ */
 @Composable
 fun ReplySearchBar(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(all = 16.dp)
             .background(
-                MaterialTheme.colorScheme.background,
-                CircleShape
+                color = MaterialTheme.colorScheme.background,
+                shape = CircleShape
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -79,6 +94,9 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailDetailAppBar(
