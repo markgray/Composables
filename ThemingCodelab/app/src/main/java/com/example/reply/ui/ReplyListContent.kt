@@ -105,12 +105,15 @@ fun ReplyEmailListContent(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ReplyEmailList(
     emails: List<Email>,
     emailLazyListState: LazyListState,
-    selectedEmail: Email? = null,
     modifier: Modifier = Modifier,
+    selectedEmail: Email? = null,
     navigateToDetail: (Long) -> Unit
 ) {
     LazyColumn(modifier = modifier, state = emailLazyListState) {

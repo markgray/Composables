@@ -46,17 +46,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
+import com.example.reply.ui.ReplyEmailList
 
 /**
- * This Composable is the top `item` in the [LazyColumn] displayed by the `ReplyEmailList` Composable.
+ * This Composable is the top `item` in the [LazyColumn] displayed by the [ReplyEmailList] Composable.
  * Its root widget is a [Row] whose modifier chains a [Modifier.fillMaxWidth] to its [Modifier]
- * parameter `modifier` (to have its content fill the `Constraints.maxWidth` of the incoming
- * measurement constraints), followed by [Modifier.padding] that adds 16.dp to all of its sides, and
+ * parameter [modifier] (to have its content fill the entire width of the incoming measurement
+ * constraints), followed by [Modifier.padding] that adds 16.dp to all of its sides, and
  * ending with a [Modifier.background] whose `color` argment is the [ColorScheme.background] of our
- * custom [MaterialTheme.colorScheme] Color(0xFFFFFBFF) (a shade of white) for its [lightColorScheme]
+ * custom [MaterialTheme.colorScheme], Color(0xFFFFFBFF) (a shade of white) for its [lightColorScheme]
  * and Color(0xFF1F1B16) (a shade of black) for its [darkColorScheme]. Its `shape` argument is a
  * [CircleShape] (Circular Shape with all the corners sized as the 50 percent of the shape size).
- *
  */
 @Composable
 fun ReplySearchBar(modifier: Modifier = Modifier) {
