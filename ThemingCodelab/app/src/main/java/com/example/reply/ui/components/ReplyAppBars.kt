@@ -19,6 +19,7 @@ package com.example.reply.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,12 +38,17 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
@@ -57,6 +63,31 @@ import com.example.reply.ui.ReplyEmailList
  * custom [MaterialTheme.colorScheme], Color(0xFFFFFBFF) (a shade of white) for its [lightColorScheme]
  * and Color(0xFF1F1B16) (a shade of black) for its [darkColorScheme]. Its `shape` argument is a
  * [CircleShape] (Circular Shape with all the corners sized as the 50 percent of the shape size).
+ * The `verticalAlignment` argument of the [Row] is [Alignment.CenterVertically] which centers its
+ * children vertically. The `content` of the [Row] is an [Icon] displaying the [ImageVector] drawn
+ * by [Icons.Filled.Search] (`Icons.Default.Search` is an alias for [Icons.Filled.Search]) which is
+ * a stylized magnifying glass, the `contentDescription` argument is the [stringResource] with ID
+ * [R.string.search] ("Search"), whose `modifier` argument is a [Modifier.padding] that adds 16.dp
+ * to its `start`, and its `tint` is the [ColorScheme.outline] of our custom [MaterialTheme.colorScheme],
+ * Color(0xFF817567) for the [lightColorScheme] (light Gray) and Color(0xFF9C8F80) for the [darkColorScheme]
+ * (also a light Gray). This is followed by a [Text] whose `text` argument is the [stringResource]
+ * with ID [R.string.search_replies] ("Search replies"), whose `modifier` argument is a [RowScope]
+ * `Modifier.weight` whose `weight` is 1f (the [Text] will take up all available space remaining
+ * after its siblings are measured and placed), chained to this is a [Modifier.padding] that adds
+ * 16.dp to all sides of the [Text]. The `style` argument of the text uses as its [TextStyle] the
+ * [Typography.bodyMedium] of our custom [MaterialTheme.typography] which has a `fontWeight` of
+ * [FontWeight.Medium], a `fontSize` of 14.sp, a `lineHeight` of 20.sp, and a `letterSpacing` of
+ * 0.25.sp. The [Color] to apply to the text is the [ColorScheme.outline] of our custom
+ * [MaterialTheme.colorScheme], Color(0xFF817567) for the [lightColorScheme] (light Gray) and
+ * Color(0xFF9C8F80) for the [darkColorScheme] (also a light Gray). At the end of the [Row] is
+ * a [ReplyProfileImage] Composable, whose `drawableResource` is the jpg whose ID is
+ * [R.drawable.avatar_6], whose `description` is the [stringResource] with ID [R.string.profile]
+ * ("Profile"), and whose `modifier` argument is a [Modifier.padding] that adds 12.dp to all sides
+ * with a [Modifier.size] which sets its `size` to 32.dp.
+ *
+ * @param modifier a [Modifier] instance which our caller can use to modify our behavior or appearance.
+ * The [LazyColumn] in [ReplyEmailList] passes us a [Modifier.fillMaxWidth] which causes us to take
+ * up all of the incoming width constraint.
  */
 @Composable
 fun ReplySearchBar(modifier: Modifier = Modifier) {
@@ -79,8 +110,8 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(id = R.string.search_replies),
             modifier = Modifier
-                .weight(1f)
-                .padding(16.dp),
+                .weight(weight = 1f)
+                .padding(all = 16.dp),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.outline
         )
@@ -88,14 +119,14 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
             drawableResource = R.drawable.avatar_6,
             description = stringResource(id = R.string.profile),
             modifier = Modifier
-                .padding(12.dp)
-                .size(32.dp)
+                .padding(all = 12.dp)
+                .size(size = 32.dp)
         )
     }
 }
 
 /**
- *
+ * This Composable is the top `item` in the [LazyColumn] displayed by the [ReplyEmailDetail] Composable
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
