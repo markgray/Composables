@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
 import com.example.reply.ui.ReplyEmailList
+import com.example.reply.ui.ReplyEmailDetail
 
 /**
  * This Composable is the top `item` in the [LazyColumn] displayed by the [ReplyEmailList] Composable.
