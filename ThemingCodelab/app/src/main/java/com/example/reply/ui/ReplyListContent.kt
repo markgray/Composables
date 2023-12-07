@@ -143,7 +143,7 @@ fun ReplyEmailDetail(
             .padding(top = 16.dp)
     ) {
         item {
-            EmailDetailAppBar(email, isFullScreen) {
+            EmailDetailAppBar(email = email, isFullScreen = isFullScreen) {
                 onBackPressed()
             }
         }

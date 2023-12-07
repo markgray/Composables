@@ -127,7 +127,13 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
 }
 
 /**
- * This Composable is the top `item` in the [LazyColumn] displayed by the [ReplyEmailDetail] Composable
+ * This Composable is the top `item` in the [LazyColumn] displayed by the [ReplyEmailDetail] Composable.
+ * Its root Composable is a [TopAppBar] whose `modifier` argument is our [Modifier] parameter [modifier],
+ * whose `title` argument is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth] which
+ * causes it to occupy the entire incoming width constraint, its `horizontalAlignment` (horizontal
+ * alignment of the layout's children) is [Alignment.CenterHorizontally] if our [Boolean] parameter
+ * [isFullScreen] is `true` (it always is), or [Alignment.Start] if it is `false` (never in our case).
+ * The `content` of the [Column] are two [Text] widgets, the fi
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -142,8 +148,11 @@ fun EmailDetailAppBar(
         title = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = if (isFullScreen) Alignment.CenterHorizontally
-                else Alignment.Start
+                horizontalAlignment = if (isFullScreen) {
+                    Alignment.CenterHorizontally
+                } else {
+                    Alignment.Start
+                }
             ) {
                 Text(
                     text = email.subject,
