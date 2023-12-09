@@ -52,8 +52,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
+import com.example.reply.ui.MainActivity
 import com.example.reply.ui.ReplyEmailList
 import com.example.reply.ui.ReplyEmailDetail
+import com.example.reply.ui.ReplyHomeViewModel
 
 /**
  * This Composable is the top `item` in the [LazyColumn] displayed by the [ReplyEmailList] Composable.
@@ -133,7 +135,40 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
  * causes it to occupy the entire incoming width constraint, its `horizontalAlignment` (horizontal
  * alignment of the layout's children) is [Alignment.CenterHorizontally] if our [Boolean] parameter
  * [isFullScreen] is `true` (it always is), or [Alignment.Start] if it is `false` (never in our case).
- * The `content` of the [Column] are two [Text] widgets, the fi
+ * The `content` of the [Column] are two [Text] widgets, the first displays the [Email.subject] field
+ * of our [Email] parameter [email], using as its `style` [TextStyle] argument the
+ * [Typography.titleMedium] of our custom [MaterialTheme.typography], and the `color` of the text
+ * uses the [ColorScheme.onSurfaceVariant] color of our [MaterialTheme.colorScheme] (Color(0xFF4F4539)
+ * for our [lightColorScheme] (a shade of black) and Color(0xFFD3C4B4) for our [darkColorScheme] (a
+ * shade of orange). The second [Text] uses a [Modifier.padding] of 4.dp for its `top` and displays
+ * the `text` formed by concatenating [List.size] or the [Email.threads] list of our [Email] parameter
+ * [email] to the [String] whose resource ID is [R.string.messages] ("Messages"). Its `style`
+ * [TextStyle] argument is the [Typography.labelMedium] of our custom [MaterialTheme.typography],
+ * and the `color` of the text uses the [ColorScheme.outline] color of our [MaterialTheme.colorScheme]
+ * (Color(0xFF817567) for our [lightColorScheme] (a shade of Gray) and Color(0xFF9C8F80) for our
+ * [darkColorScheme] (a slightly different shade of Gray). The `navigationIcon` argument of the
+ * [TopAppBar] (the navigation icon displayed at the start of the top app bar) is if our [Boolean]
+ * parameter [isFullScreen] is `true` (it always is) a [FilledIconButton] whose `onClick` argument
+ * is our [onBackPressed] lambda parameter, whose `modifier` argument is a [Modifier.padding] that
+ * added 8.dp to `all` sides, and whose `colors` argument uses the [IconButtonDefaults.filledIconButtonColors]
+ * with the `containerColor` set to [ColorScheme.surface], and `contentColor` set to [ColorScheme.onSurface].
+ * The `content` Composable of the [FilledIconButton] is an [Icon] displaying the `imageVector` drawn
+ * by [Icons.Filled.ArrowBack] (`Icons.Default` is an alias for [Icons.Filled]) using a [Modifier.size]
+ * that sets its `size` to 14.dp. The `actions` of the [TopAppBar] (actions displayed at the end of
+ * the top app bar) consist of a single [IconButton] whose `onClick` is a do nothing lambda, and whose
+ * `content` is an [Icon] displaying the `imageVector` drawn by [Icons.Filled.MoreVert] using the `tint`
+ * of [ColorScheme.onSurfaceVariant].
+ *
+ * @param email the [Email] we are to use for the info we display
+ * @param isFullScreen if `true` we display a [FilledIconButton] at the beginning of our [TopAppBar]
+ * (it is always `true`)
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance or behavior
+ * (our callers do not pass us one, so the empty, default, or starter [Modifier] that contains no
+ * elements is used instead).
+ * @param onBackPressed a lambda which we will call if the `navigationIcon` at the beginning of our
+ * [TopAppBar] is clicked. Our caller [ReplyEmailDetail] passes us its `onBackPressed` lambda parameter
+ * which eventually resolves to a call of the [ReplyHomeViewModel.closeDetailScreen] method way back
+ * in [MainActivity].
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -171,7 +206,7 @@ fun EmailDetailAppBar(
             if (isFullScreen) {
                 FilledIconButton(
                     onClick = onBackPressed,
-                    modifier = Modifier.padding(8.dp),
+                    modifier = Modifier.padding(all = 8.dp),
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.surface,
                         contentColor = MaterialTheme.colorScheme.onSurface
@@ -180,7 +215,7 @@ fun EmailDetailAppBar(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = stringResource(id = R.string.back_button),
-                        modifier = Modifier.size(14.dp)
+                        modifier = Modifier.size(size = 14.dp)
                     )
                 }
             }

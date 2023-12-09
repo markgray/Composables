@@ -27,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,11 +42,14 @@ import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
 
+/**
+ * This Composable
+ */
 @Composable
 fun ReplyEmailListItem(
     email: Email,
-    isSelected: Boolean = false,
     modifier: Modifier = Modifier,
+    isSelected: Boolean = false,
     navigateToDetail: (Long) -> Unit
 ) {
     Card(
@@ -56,9 +58,11 @@ fun ReplyEmailListItem(
             .semantics { selected = isSelected }
             .clickable { navigateToDetail(email.id) },
         colors = CardDefaults.cardColors(
-            containerColor = if (email.isImportant)
+            containerColor = if (email.isImportant) {
                 MaterialTheme.colorScheme.secondaryContainer
-            else MaterialTheme.colorScheme.surfaceVariant
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            }
         )
     ) {
         Column(
