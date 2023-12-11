@@ -35,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -48,7 +49,9 @@ import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
 import com.example.reply.data.Account
+import com.example.reply.ui.MainActivity
 import com.example.reply.ui.ReplyEmailList
+import com.example.reply.ui.ReplyHomeViewModel
 
 /**
  * This Composable is used to display each [Email] in the [List] of [Email] passed to the [ReplyEmailList]
@@ -74,10 +77,38 @@ import com.example.reply.ui.ReplyEmailList
  *  in the [Account.avatar] of the [Email.sender] field of [email], and whose `description` is the
  *  [Account.fullName] property of the [Email.sender] field of [email]. Next in the [Row] is a [Column]
  *  whose [RowScope] `Modifier.weight` of 1f causes it to take up all remaining space after its siblings
- *  are measured and placed to which is chained a [Modifier.padding] that adds 12.dp to the  horizontal
+ *  are measured and placed to which is chained a [Modifier.padding] that adds 12.dp to the horizontal
  *  dp space along the left and right edges of the content, and 4.dp to the vertical dp space along the
  *  top and bottom edge. The `verticalArrangement` argument is [Arrangement.Center] to center its children.
- *  The `content`
+ *  The `content` of the [Column] is two [Text] widgets, the first displaying the [Account.firstName]
+ *  of the [Email.sender] of [email] using as its `style` the [Typography.labelMedium] of our custom
+ *  [MaterialTheme.typography], and the second [Text] displaying the [Email.createdAt] field of [email]
+ *  using the `style` [Typography.labelMedium] of our custom [MaterialTheme.typography], and as its
+ *  `color` the [ColorScheme.onSurfaceVariant] color of our [MaterialTheme]. Next in the [Row] is an
+ *  [IconButton] whose `modifier` is a [Modifier.clip] that clips its content to a [CircleShape] with
+ *  the content an [Icon] displaying the `imageVector` [Icons.Filled.StarBorder] (`Icons.Default` is
+ *  an alias for [Icons.Filled]).
+ *
+ *  - The first [Text] in the outer [Column] displays the [Email.subject] field of [email], using the
+ *  `style` [Typography.titleLarge] of our custom [MaterialTheme.typography], with its `modifier`
+ *  a [Modifier.padding] that adds 12.dp to its `top`, and 8.dp to its `bottom`.
+ *
+ *  - The second [Text] in the outer [Column] displays the [Email.body] field of [email], using the
+ *  `style` [Typography.bodyMedium] of our custom [MaterialTheme.typography], with its `maxLines`
+ *  set to 2 (maximum number of lines for the text to span, wrapping if necessary), its `overflow`
+ *  is [TextOverflow.Ellipsis] (how visual overflow should be handled: uses an ellipsis to indicate
+ *  that the text has overflowed), and its `color` is the [ColorScheme.onSurfaceVariant] color of
+ *  our [MaterialTheme].
+ *
+ * @param email the [Email] whose information we are to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not use one so the empty, default, or starter [Modifier] that contains
+ * no elements is used.
+ * @param isSelected a [Boolean] flag indicating that our [Email.id] is the same as the selected
+ * [Email]. Our caller does not have a selected [Email] so this is always `false`.
+ * @param navigateToDetail a lambda we should call with the [Email.id] of [Email] when our [Card] is
+ * clicked. This eventually resolves to to a call of the [ReplyHomeViewModel.setSelectedEmail] method
+ * way back in [MainActivity].
  */
 @Composable
 fun ReplyEmailListItem(
@@ -127,8 +158,7 @@ fun ReplyEmailListItem(
                 }
                 IconButton(
                     onClick = { /*Click Implementation*/ },
-                    modifier = Modifier
-                        .clip(CircleShape)
+                    modifier = Modifier.clip(shape = CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.Default.StarBorder,
