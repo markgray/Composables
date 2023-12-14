@@ -75,7 +75,7 @@ fun ReplyAppContent(
                 modifier = Modifier.weight(1f)
             )
         } else {
-            EmptyComingSoon(modifier = Modifier.weight(1f))
+            EmptyComingSoon(modifier = Modifier.weight(weight = 1f))
         }
 
         NavigationBar(modifier = Modifier.fillMaxWidth()) {
