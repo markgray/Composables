@@ -23,30 +23,58 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.Surface
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.reply.data.LocalEmailsDataProvider
 import com.example.reply.ui.theme.AppTheme
+import kotlinx.coroutines.flow.StateFlow
 
 /**
- *
+ * This is the main activity of our app and it exists to host our [ReplyHomeViewModel] in order to
+ * transmit [ReplyHomeUIState] state from it to down to the [ReplyApp] Composable and to propagate
+ * the `closeDetailScreen` and `navigateToDetail` events up to the [ReplyHomeViewModel].
  */
 class MainActivity : ComponentActivity() {
 
+    /**
+     * The [ReplyHomeViewModel] view model used by our app.
+     */
     private val viewModel: ReplyHomeViewModel by viewModels()
 
     /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we initialize [ReplyHomeUIState] variable `val uiState` by collecting values from the
+     * [StateFlow] of [ReplyHomeUIState] that is emitted by the [ReplyHomeViewModel.uiState] property
+     * and representing its latest value via [State] in a lifecycle-aware manner. Finally we call
+     * [setContent] to Compose the composable which consists of a [AppTheme] wrapped [Surface] whose
+     * `tonalElevation` argument is 5.dp (When color is ColorScheme.surface, a higher elevation will
+     * result in a darker color in light theme and lighter color in dark theme). The `content` of the
+     * [Surface] is our [ReplyApp] Composable, with its `replyHomeUIState` argument our
+     * [ReplyHomeUIState] variable `uiState`, whose `closeDetailScreen` argument is a lambda that
+     * calls the [ReplyHomeViewModel.closeDetailScreen] method of our [ReplyHomeViewModel] field
+     * [viewModel], and whose `navigateToDetail` argument is a lambda which calls the
+     * [ReplyHomeViewModel.setSelectedEmail] method of our [ReplyHomeViewModel] field [viewModel]
+     * with the [Long] `emailId` passed to the lambda used for the `emailId` argument.
      *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use it.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
 
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            /**
+             * Collects values from the [StateFlow] of [ReplyHomeUIState] that is emitted by the
+             * [ReplyHomeViewModel.uiState] property and represents its latest value via [State] in
+             * a lifecycle-aware manner.
+             */
+            val uiState: ReplyHomeUIState by viewModel.uiState.collectAsStateWithLifecycle()
 
             AppTheme {
                 Surface(tonalElevation = 5.dp) {
@@ -55,8 +83,8 @@ class MainActivity : ComponentActivity() {
                         closeDetailScreen = {
                             viewModel.closeDetailScreen()
                         },
-                        navigateToDetail = { emailId ->
-                            viewModel.setSelectedEmail(emailId)
+                        navigateToDetail = { emailId: Long ->
+                            viewModel.setSelectedEmail(emailId = emailId)
                         }
                     )
                 }
@@ -66,7 +94,9 @@ class MainActivity : ComponentActivity() {
 }
 
 /**
- *
+ * The Previews of our [AppTheme] wrapped [ReplyApp], "DefaultPreviewDark" uses [UI_MODE_NIGHT_YES]
+ * as its `uiMode` so that our [darkColorScheme] is used and "DefaultPreviewLight" uses
+ * [UI_MODE_NIGHT_NO] as its `uiMode` so that our [lightColorScheme] is used.
  */
 @Preview(
     uiMode = UI_MODE_NIGHT_YES,

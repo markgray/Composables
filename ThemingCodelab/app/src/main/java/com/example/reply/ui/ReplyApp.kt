@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("Destructure")
+
 package com.example.reply.ui
 
 import androidx.compose.foundation.layout.Column
@@ -37,6 +39,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 
+/**
+ * This is the root composable of our app. It appears to exist solely to wrap [ReplyAppContent] in
+ * a [Surface] whose `tonalElevation` argument of 5.dp causes its background color to be a darker
+ * color in light theme and lighter color in dark theme in order to suggest elevation.
+ *
+ * @param replyHomeUIState the current [ReplyHomeUIState]
+ */
 @Composable
 fun ReplyApp(
     replyHomeUIState: ReplyHomeUIState,
@@ -52,6 +61,9 @@ fun ReplyApp(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ReplyAppContent(
     modifier: Modifier = Modifier,
@@ -96,21 +108,57 @@ fun ReplyAppContent(
 }
 
 
+/**
+ *
+ */
 object ReplyRoute {
-    const val INBOX = "Inbox"
-    const val ARTICLES = "Articles"
-    const val DM = "DirectMessages"
-    const val GROUPS = "Groups"
+    /**
+     *
+     */
+    const val INBOX: String = "Inbox"
+
+    /**
+     *
+     */
+    const val ARTICLES: String = "Articles"
+
+    /**
+     *
+     */
+    const val DM: String = "DirectMessages"
+
+    /**
+     *
+     */
+    const val GROUPS: String = "Groups"
 }
 
+/**
+ *
+ */
 data class ReplyTopLevelDestination(
+    /**
+     *
+     */
     val route: String,
+    /**
+     *
+     */
     val selectedIcon: ImageVector,
+    /**
+     *
+     */
     val unselectedIcon: ImageVector,
+    /**
+     *
+     */
     val iconTextId: Int
 )
 
-val TOP_LEVEL_DESTINATIONS = listOf(
+/**
+ *
+ */
+val TOP_LEVEL_DESTINATIONS: List<ReplyTopLevelDestination> = listOf(
     ReplyTopLevelDestination(
         route = ReplyRoute.INBOX,
         selectedIcon = Icons.Default.Inbox,
