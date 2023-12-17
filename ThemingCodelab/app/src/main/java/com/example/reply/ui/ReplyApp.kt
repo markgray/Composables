@@ -84,7 +84,15 @@ fun ReplyApp(
 }
 
 /**
- *
+ * This is the main screen of the app. We start by initializing and remembering our [MutableState]
+ * of [String] variable `val selectedDestination` with an initial value of [ReplyRoute.INBOX]. Our
+ * root Composable is a [Column] whose `modifier` argument chains a [Modifier.fillMaxSize] to our
+ * [Modifier] parameter [modifier] to have the [Column] occupy the entire incoming size constraints
+ * The `content` of the [Column] is an if/else which displays the [ReplyInboxScreen] Composable if
+ * the [MutableState.value] of our [MutableState] of [String] variable `selectedDestination` is equal
+ * to [ReplyRoute.INBOX], otherwise it displays the [EmptyComingSoon] Composable. At the bottom of
+ * the screen is a [NavigationBar] holding a [NavigationBarItem] for each of the [ReplyTopLevelDestination]
+ * in [List] of [ReplyTopLevelDestination] field [TOP_LEVEL_DESTINATIONS].
  */
 @Composable
 fun ReplyAppContent(
@@ -94,6 +102,13 @@ fun ReplyAppContent(
     navigateToDetail: (Long) -> Unit,
 ) {
 
+    /**
+     * This variable chooses between the [ReplyTopLevelDestination]'s that are available in
+     * [TOP_LEVEL_DESTINATIONS]. The only one that is actually implemented is [ReplyRoute.INBOX],
+     * which composes the [ReplyInboxScreen] into the display, the others just compose the
+     * [EmptyComingSoon] space holder composable. It is set by the `onClick` lambda of the
+     * [NavigationBarItem]'s in the [NavigationBar] at the bottom of the screen.
+     */
     val selectedDestination: MutableState<String> = remember { mutableStateOf(ReplyRoute.INBOX) }
 
     Column(
@@ -112,7 +127,7 @@ fun ReplyAppContent(
         }
 
         NavigationBar(modifier = Modifier.fillMaxWidth()) {
-            TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
+            TOP_LEVEL_DESTINATIONS.forEach { replyDestination: ReplyTopLevelDestination ->
                 NavigationBarItem(
                     selected = selectedDestination.value == replyDestination.route,
                     onClick = { selectedDestination.value = replyDestination.route },
