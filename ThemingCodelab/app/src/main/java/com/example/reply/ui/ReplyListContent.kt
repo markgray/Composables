@@ -124,7 +124,7 @@ fun ReplyEmailList(
             ReplyEmailListItem(
                 email = email,
                 isSelected = email.id == selectedEmail?.id
-            ) { emailId ->
+            ) { emailId: Long ->
                 navigateToDetail(emailId)
             }
         }

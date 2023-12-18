@@ -18,6 +18,7 @@
 
 package com.example.reply.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,11 +41,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import com.example.reply.R
 import com.example.reply.data.Email
 import com.example.reply.ui.components.ReplyEmailListItem
 import com.example.reply.ui.components.ReplyEmailThreadItem
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * This is the root composable of our app. It appears to exist solely to wrap [ReplyAppContent] in
@@ -93,6 +96,29 @@ fun ReplyApp(
  * to [ReplyRoute.INBOX], otherwise it displays the [EmptyComingSoon] Composable. At the bottom of
  * the screen is a [NavigationBar] holding a [NavigationBarItem] for each of the [ReplyTopLevelDestination]
  * in [List] of [ReplyTopLevelDestination] field [TOP_LEVEL_DESTINATIONS].
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance, and/or
+ * behavior. Our [ReplyApp] caller does not pass us one, so the empty, default, or starter [Modifier]
+ * that contains no elements is used instead.
+ * @param replyHomeUIState the most current value of [ReplyHomeUIState]. [ReplyApp] passes us the
+ * value passed it in the `onCreate` override of [MainActivity], and [MainActivity] collects as state
+ * the [StateFlow] of [ReplyHomeUIState] property [ReplyHomeViewModel.uiState] to keep this up to
+ * date as the [ReplyHomeViewModel] modifies it in reponse to events reported to it.
+ * @param closeDetailScreen this lambda is passed as the `closeDetailScreen` argument of our
+ * [ReplyInboxScreen] which passes it as the `closeDetailScreen` argument of its [ReplyEmailListContent],
+ * which uses it as the [BackHandler] lambda, and as the `onBackPressed` argument passed to its
+ * [ReplyEmailDetail] Composable. [ReplyApp] passes us the `closeDetailScreen` passed it in the
+ * `onCreate` override of [MainActivity] which is a lambda that calls the [ReplyHomeViewModel.closeDetailScreen]
+ * method of the [ReplyHomeViewModel] which sets the [ReplyHomeUIState.isDetailOnlyOpen] property of
+ * the current [ReplyHomeUIState] to `false` and sets the [ReplyHomeUIState.selectedEmail] to the first
+ * [Email] in the [List] of [Email] property [ReplyHomeUIState.emails].
+ * @param navigateToDetail a lambda which will be called with the [Email.id] of the [Email] displayed
+ * by the [ReplyEmailListItem] Composable. It traces back up to the `onCreate` override of [MainActivity]
+ * which uses a lambda which calls the [ReplyHomeViewModel.setSelectedEmail] method of the [ViewModel]
+ * with the [Email.id] passed it, and that method sets the [ReplyHomeUIState.selectedEmail] of the
+ * current [ReplyHomeUIState] to the [Email] in the [List] of [Email] property [ReplyHomeUIState.emails]
+ * that has the same [Email.id], and sets the [ReplyHomeUIState.isDetailOnlyOpen] property to `true`.
+ *
  */
 @Composable
 fun ReplyAppContent(
@@ -120,7 +146,7 @@ fun ReplyAppContent(
                 replyHomeUIState = replyHomeUIState,
                 closeDetailScreen = closeDetailScreen,
                 navigateToDetail = navigateToDetail,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(weight = 1f)
             )
         } else {
             EmptyComingSoon(modifier = Modifier.weight(weight = 1f))
@@ -145,7 +171,8 @@ fun ReplyAppContent(
 
 
 /**
- *
+ * These are the different destinations of the app. The only one that has a "meaningful" screen is
+ * [ReplyRoute.INBOX], all the others just compose the [EmptyComingSoon] skeleton destination.
  */
 object ReplyRoute {
     /**
