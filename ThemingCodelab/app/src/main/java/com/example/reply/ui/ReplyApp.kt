@@ -176,50 +176,56 @@ fun ReplyAppContent(
  */
 object ReplyRoute {
     /**
-     *
+     * Composes the [ReplyInboxScreen] Composable into the UI.
      */
     const val INBOX: String = "Inbox"
 
     /**
-     *
+     * Composables the [EmptyComingSoon] skeleton destination into the UI
      */
     const val ARTICLES: String = "Articles"
 
     /**
-     *
+     * Composables the [EmptyComingSoon] skeleton destination into the UI
      */
     const val DM: String = "DirectMessages"
 
     /**
-     *
+     * Composables the [EmptyComingSoon] skeleton destination into the UI
      */
     const val GROUPS: String = "Groups"
 }
 
 /**
- *
+ * This class holds values that the [NavigationBar] uses to feed to its [NavigationBarItem] for each
+ * of the [ReplyRoute]'s that the [NavigationBarItem]'s represent.
  */
 data class ReplyTopLevelDestination(
     /**
-     *
+     * The [ReplyRoute] of this [ReplyTopLevelDestination]. It is used by the [NavigationBarItem] to
+     * determine if it is the `selected` [NavigationBarItem] by comparing it to the `value` of the
+     * [MutableState] of [String] variable `selectedDestination` of [ReplyAppContent], and its
+     * `onClick` lambda sets `selectedDestination` to it when the [NavigationBarItem] is clicked.
      */
     val route: String,
     /**
-     *
+     * This is the resource ID of an [ImageVector] for the [NavigationBarItem] to display in the
+     * [Icon] used as its `icon` argument.
      */
     val selectedIcon: ImageVector,
     /**
-     *
+     * This is the same resource ID as our [selectedIcon] property, and is unused at present.
      */
     val unselectedIcon: ImageVector,
     /**
-     *
+     * This is the resource ID of a [String] that will be used as the `contentDescription`
      */
     val iconTextId: Int
 )
 
 /**
- *
+ * This is a list of all of the [ReplyTopLevelDestination] used to populate the [NavigationBarItem]'s
+ * displayed in the [NavigationBar].
  */
 val TOP_LEVEL_DESTINATIONS: List<ReplyTopLevelDestination> = listOf(
     ReplyTopLevelDestination(

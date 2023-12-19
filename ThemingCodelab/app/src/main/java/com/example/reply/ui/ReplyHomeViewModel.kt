@@ -17,18 +17,24 @@
 package com.example.reply.ui
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.reply.data.Email
 import com.example.reply.data.LocalEmailsDataProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.launch
 
+/**
+ * This is the [ViewModel] used by the app to hold state and receive events.
+ */
 class ReplyHomeViewModel : ViewModel() {
 
-    // UI state exposed to the UI
+    /**
+     *
+     */
     private val _uiState = MutableStateFlow(ReplyHomeUIState(loading = true))
+
+    /**
+     * UI state exposed to the UI
+     */
     val uiState: StateFlow<ReplyHomeUIState> = _uiState
 
     init {
@@ -43,6 +49,9 @@ class ReplyHomeViewModel : ViewModel() {
         )
     }
 
+    /**
+     *
+     */
     fun setSelectedEmail(emailId: Long) {
         /**
          * We only set isDetailOnlyOpen to true when it's only single pane layout
@@ -54,7 +63,11 @@ class ReplyHomeViewModel : ViewModel() {
         )
     }
 
+    /**
+     *
+     */
     fun closeDetailScreen() {
+        @Suppress("RedundantValueArgument")
         _uiState.value = _uiState
             .value.copy(
                 isDetailOnlyOpen = false,
@@ -63,10 +76,28 @@ class ReplyHomeViewModel : ViewModel() {
     }
 }
 
+/**
+ *
+ */
 data class ReplyHomeUIState(
+    /**
+     *
+     */
     val emails: List<Email> = emptyList(),
+    /**
+     *
+     */
     val selectedEmail: Email? = null,
+    /**
+     *
+     */
     val isDetailOnlyOpen: Boolean = false,
+    /**
+     *
+     */
     val loading: Boolean = false,
+    /**
+     *
+     */
     val error: String? = null
 )
