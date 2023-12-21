@@ -16,10 +16,13 @@
 
 package com.example.reply.ui
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.material3.Card
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import com.example.reply.data.Email
 import com.example.reply.data.LocalEmailsDataProvider
+import com.example.reply.ui.components.ReplyEmailListItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -87,7 +90,12 @@ class ReplyHomeViewModel : ViewModel() {
     }
 
     /**
-     *
+     * Called to close the detail screen, a lambda which calls it is used as the `closeDetailScreen`
+     * argument of the [ReplyApp] Composable in the `onCreate` override of [MainActivity]. If ends
+     * up being called in lambdas that [ReplyEmailListContent] passes as the `onBack` argument to
+     * [BackHandler] and as the `onBackPressed` argument of [ReplyEmailDetail]. It sets the current
+     * value of [ReplyHomeUIState.isDetailOnlyOpen] to `false`, and [ReplyHomeUIState.selectedEmail]
+     * to the first [Email] in the [List] of [Email] field [ReplyHomeUIState.emails].
      */
     fun closeDetailScreen() {
         @Suppress("RedundantValueArgument")
@@ -100,19 +108,30 @@ class ReplyHomeViewModel : ViewModel() {
 }
 
 /**
- *
+ * This is the state holder that is used to communicate the current state of the app to the UI.
  */
 data class ReplyHomeUIState(
     /**
-     *
+     * This is the [List] of [Email] displayed by the app in the [ReplyEmailList] Composable. It is
+     * set to the dummy data provided by the [LocalEmailsDataProvider.allEmails] property in the
+     * [ReplyHomeViewModel.initEmailList] method which is called by the `init` block of
+     * [ReplyHomeViewModel].
      */
     val emails: List<Email> = emptyList(),
     /**
-     *
+     * This is the selected [Email] that should be displayed by the [ReplyEmailDetail] Composable if
+     * it is not `null`. It is set to the [Email] whose [Email.id] property is passed as the `emailId`
+     * parameter of [ReplyHomeViewModel.setSelectedEmail], and a lambda that calls it is used as the
+     * `navigateToDetail` argument of [ReplyApp], which ends up being called by a lambda that the
+     * [ReplyEmailListItem] Composable uses as the `onClick` argument of the `Modifier.clickable`
+     * that is applies to the [Card] it displays the [Email] it holds in.
      */
     val selectedEmail: Email? = null,
     /**
-     *
+     * This flag is used by the [ReplyEmailListContent] Composable to decide whether to have the
+     * [ReplyEmailDetail] Composable display the [Email] property [ReplyHomeUIState.selectedEmail],
+     * (if `true`), or to have the [ReplyEmailList] Composable display the [List] of [Email] property
+     * [ReplyHomeUIState.emails] (if `false`).
      */
     val isDetailOnlyOpen: Boolean = false,
     /**
