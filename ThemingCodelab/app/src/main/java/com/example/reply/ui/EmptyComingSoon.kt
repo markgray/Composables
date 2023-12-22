@@ -69,8 +69,8 @@ import com.example.reply.ui.theme.md_theme_light_primary
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our [ReplyAppContent] caller passes us a [ColumnScope] `Modifier.weight` of 1f which
- * causes us to occupy all the remaining space in the incoming vertical constaint after our sidlings.
- * have been measured an placed.
+ * causes us to occupy all the remaining space in the incoming vertical constaint after our siblings
+ * have been measured and placed.
  */
 @Composable
 fun EmptyComingSoon(

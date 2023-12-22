@@ -135,11 +135,12 @@ data class ReplyHomeUIState(
      */
     val isDetailOnlyOpen: Boolean = false,
     /**
-     *
+     * Unused, but set to `true` when the [MutableStateFlow] of [ReplyHomeUIState] field `_uiState`
+     * is created for what that is worth.
      */
     val loading: Boolean = false,
     /**
-     *
+     * Unused, always `null`.
      */
     val error: String? = null
 )
