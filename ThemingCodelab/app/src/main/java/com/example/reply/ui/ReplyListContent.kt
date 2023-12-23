@@ -18,6 +18,7 @@ package com.example.reply.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +40,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
@@ -55,7 +58,21 @@ import kotlinx.coroutines.flow.StateFlow
  * remembering our [LazyListState] variable `val emailLazyListState` (which we pass down to our
  * [ReplyEmailListContent] Composable as its `emailLazyListState` argument). Our root Composable is
  * a [Box] whose `modifier` argument is our [Modifier] parameter [modifier] with a [Modifier.fillMaxSize]
- * chained to it so that it will occupy our entire incoming size constraints.
+ * chained to it so that it will occupy our entire incoming size constraints. The `content` of the [Box]
+ * is a [ReplyEmailListContent] Composable whose `replyHomeUIState` argument is our [ReplyHomeUIState]
+ * parameter [replyHomeUIState], whose `emailLazyListState` argument is our [LazyListState] variable
+ * `emailLazyListState`, whose `modifier` argument is a [Modifier.fillMaxSize] to have it take up the
+ * entire incoming size constraints, whose `closeDetailScreen` argument is our lambda parameter
+ * [closeDetailScreen], and  whose `navigateToDetail` argument is our lambda parameter [navigateToDetail].
+ * It share the [Box] with a [LargeFloatingActionButton] whose `onClick` argument is a do-nothing lambda,
+ * whose `containerColor` is the [ColorScheme.tertiaryContainer] color of our [MaterialTheme], whose
+ * `contentColor` argument is the [ColorScheme.onTertiaryContainer] color of our [MaterialTheme], and
+ * whose `modifier` argument is a [BoxScope] `Modifier.align` with an `alignment` argument of
+ * [Alignment.BottomEnd] to align the [LargeFloatingActionButton] at the bottom end of the [Box], to
+ * which is chained a  [Modifier.padding] that adds 16.dp to all its sides. The `content` of the
+ * [LargeFloatingActionButton] is an [Icon] displaying as its `imageVector` argument the [ImageVector]
+ * [Icons.Filled.Edit], its `contentDescription` argument is the [String] with resource ID [R.string.edit]
+ * ("Edit"), and its `modifier` argument is a [Modifier.size] that sets its size to 28.dp.
  *
  * @param replyHomeUIState the current [ReplyHomeUIState]. It is passed down the hierarchy from
  * the `onCreate` override of [MainActivity] where it is collected as [State] in a lifecycle-aware
@@ -114,13 +131,13 @@ fun ReplyInboxScreen(
             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
             contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
+                .align(alignment = Alignment.BottomEnd)
+                .padding(all = 16.dp),
         ) {
             Icon(
                 imageVector = Icons.Default.Edit,
                 contentDescription = stringResource(id = R.string.edit),
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(size = 28.dp)
             )
         }
 
@@ -128,7 +145,44 @@ fun ReplyInboxScreen(
 }
 
 /**
+ * This is the actual main screen of the app. An if statement decides whether to display the
+ * [ReplyHomeUIState.selectedEmail] in a [ReplyEmailDetail] if the [ReplyHomeUIState.selectedEmail]
+ * property of its [ReplyHomeUIState] parameter [replyHomeUIState] is not `null` and its
+ * [ReplyHomeUIState.isDetailOnlyOpen] property is `true`, otherwise it displays the [List] of [Email]
+ * in the [ReplyHomeUIState.emails] property of [replyHomeUIState] using a [ReplyEmailList] Composable.
+ * When [ReplyHomeUIState.selectedEmail] is not `null` and [ReplyHomeUIState.isDetailOnlyOpen] property
+ * is `true` it composes a [BackHandler] whose `onBack` argument is a lambda which calls our [closeDetailScreen]
+ * lambda parameter, and a [ReplyEmailDetail] whose `email` argument is the [ReplyHomeUIState.selectedEmail]
+ * property of our [ReplyHomeUIState] parameter [replyHomeUIState], and whose `onBackPressed` argument
+ * is a lambda that calls our [closeDetailScreen] lambda parameter. The `else` of the `if` composes a
+ * [ReplyEmailList] whose `emails` argument is the [List] of [Email] in the [ReplyHomeUIState.emails]
+ * property of our [ReplyHomeUIState] parameter [replyHomeUIState], whose `emailLazyListState` argument
+ * is our [LazyListState] parameter [emailLazyListState], whose `modifier` argument is our [modifier]
+ * parameter, and whose `navigateToDetail` argument is our [navigateToDetail] lambda parameter.
  *
+ * @param replyHomeUIState the current [ReplyHomeUIState] maintained by the [ReplyHomeViewModel] of the
+ * app. [MainActivity] collects as state the [StateFlow] of [ReplyHomeUIState] property
+ * [ReplyHomeViewModel.uiState] to keep this up to date as the [ReplyHomeViewModel] modifies it in
+ * reponse to events reported to it.
+ * @param emailLazyListState a [LazyListState] passed down from [ReplyInboxScreen] which could be used
+ * to monitor and control the [LazyColumn] in [ReplyEmailList] but is not used except by the [LazyColumn].
+ * @param modifier a [Modifier] instance that our caller can use to modifiy our appearance and/or
+ * behavior. Our caller [ReplyInboxScreen] passes us a [Modifier.fillMaxSize] to have use use the entire
+ * incoming size constraints.
+ * @param closeDetailScreen a lambda to call to close the [ReplyEmailDetail]. It is passed down the
+ * hierarchy from the `onCreate` override of [MainActivity] where it is a call to the
+ * [ReplyHomeViewModel.closeDetailScreen] method, which sets the current value of
+ * [ReplyHomeUIState.isDetailOnlyOpen] to `false`, and [ReplyHomeUIState.selectedEmail] to the first
+ * [Email] in the [List] of [Email] field [ReplyHomeUIState.emails].
+ * @param navigateToDetail this lambda should be called to have the [ReplyEmailList] Composable be
+ * replaced by a [ReplyEmailDetail] display the [Email] whose [Long] property [Email.id] is the argument
+ * passed the lambda. It is passed down the hierarchy from the `onCreate` override of [MainActivity]
+ * where it is a call to the [ReplyHomeViewModel.setSelectedEmail] method with the `emailId` of the
+ * [Email] displayed by the [ReplyEmailListItem]. The method sets the current value of
+ * [ReplyHomeUIState.isDetailOnlyOpen] to `true`, and [ReplyHomeUIState.selectedEmail] to the [Email]
+ * it finds in the [List] of [Email] in [ReplyHomeUIState.emails] with the same `emailId` as the [Long]
+ * passed the lambda (thereby replacing the [ReplyEmailList] Composable of [ReplyEmailListContent]
+ * with the [ReplyEmailDetail] Composable).
  */
 @Composable
 fun ReplyEmailListContent(
