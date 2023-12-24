@@ -210,7 +210,20 @@ fun ReplyEmailListContent(
 }
 
 /**
+ * This Composable displays its [List] of [Email] parameter in a [LazyColumn] with each [Email]
+ * rendered in a [ReplyEmailListItem]. The `modifier` argument of the [LazyColumn] is our [Modifier]
+ * parmeter [modifier], and the `state` argument if our [LazyListState] parameter [emailLazyListState].
+ * The first `item` in the [LazyColumn] is a [ReplySearchBar] whose `modifier` argument is a
+ * [Modifier.fillMaxWidth] to have it occupy the entire incoming width constraint. There follows an
+ * `items` whose whose `items` argument is our [List] of [Email] parameter [emails] and whose `key`
+ * argument is the [Email.id] of each [Email] (used as factory of stable and unique keys representing
+ * the items). And the Composable used to display each [Email] (its `itemContent` argument) is a
+ * [ReplyEmailListItem] whose `email` argument is the [Email] that it is passed it by the `items`,
+ * whose `isSelected` argument is `true` iff the [Email.id] of the `email` is the same as the
+ * [Email.id] of our [Email] parameter [selectedEmail], and its `navigateToDetail` argument is a
+ * lambda that calls our lambda parameter [navigateToDetail] with the [Email.id] passed it.
  *
+ * @param emails the [List] of [Email] that we are supposed to display in our [LazyColumn].
  */
 @Composable
 fun ReplyEmailList(
@@ -224,7 +237,7 @@ fun ReplyEmailList(
         item {
             ReplySearchBar(modifier = Modifier.fillMaxWidth())
         }
-        items(items = emails, key = { it.id }) { email ->
+        items(items = emails, key = { it.id }) { email: Email ->
             ReplyEmailListItem(
                 email = email,
                 isSelected = email.id == selectedEmail?.id
