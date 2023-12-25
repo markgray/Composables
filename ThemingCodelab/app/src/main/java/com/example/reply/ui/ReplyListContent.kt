@@ -19,6 +19,7 @@ package com.example.reply.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +36,8 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -224,6 +227,24 @@ fun ReplyEmailListContent(
  * lambda that calls our lambda parameter [navigateToDetail] with the [Email.id] passed it.
  *
  * @param emails the [List] of [Email] that we are supposed to display in our [LazyColumn].
+ * @param emailLazyListState the [LazyListState] that we use as the `state` argument of our
+ * [LazyColumn] which our caller could use to monitor and/or control the [LazyColumn], but our
+ * caller does not use the one it passes us for anything.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [ReplyEmailListContent] passes us the [Modifier] that it is passed as its
+ * `modifier` argument by [ReplyInboxScreen], which is a [Modifier.fillMaxSize] which causes any
+ * Composable that uses it to occupy the entire incoming size constraints.
+ * @param selectedEmail the currently "selected" [Email] instance. Its [Email.id] is compared to
+ * the [Email.id] of the particular [Email] that each [ReplyEmailListItem] is rendering to generate
+ * its [Boolean] argument `isSelected`. [ReplyEmailListContent] passes us the
+ * [ReplyHomeUIState.selectedEmail] property of the current [ReplyHomeUIState] that it is passed
+ * as its `replyHomeUIState` argument.
+ * @param navigateToDetail a lambda that we pass to each [ReplyEmailListItem] that it can call
+ * with the [Email.id] of the [Email] it holds in order for it to become the currently "selected"
+ * [Email] instance. [ReplyEmailListContent] passes us the `navigateToDetail` argument that it is
+ * passed as its `navigateToDetail` argument by [ReplyInboxScreen]. It is passed down the hierarchy
+ * from the `onCreate` override of [MainActivity] where it is a call to the
+ * [ReplyHomeViewModel.setSelectedEmail] method with the [Email.id] passed the lambda as its argument.
  */
 @Composable
 fun ReplyEmailList(
@@ -249,7 +270,33 @@ fun ReplyEmailList(
 }
 
 /**
+ * This Composable is composed into the UI by [ReplyEmailListContent] when [ReplyHomeUIState.selectedEmail]
+ * propery of its [ReplyHomeUIState] parameter `replyHomeUIState` is not `null` and its
+ * [ReplyHomeUIState.isDetailOnlyOpen] property is `true`. Its root Composable is a [LazyColumn] whose
+ * `modifier` argument chains a [Modifier.fillMaxSize] to our [Modifier] parameter [modifier] to have
+ * the [LazyColumn] occupy its entire incoming size constraints, followed by a [Modifier.padding] that
+ * sets the `top` padding to 16.dp. The content of the [LazyColumn] is an `item` holding an
+ * [EmailDetailAppBar] whose `email` argument is our [Email] parameter [email], which it uses to supply
+ * the text for two [Text] Composables in its [TopAppBar] that display the [Email.subject] and the
+ * [List.size] of the [Email.threads] list of the `email`. This is followed by a `items` displaying
+ * all of the [Email] in the [List] of [Email] property [Email.threads] of our [Email] parameter [email]
+ * in a [ReplyEmailThreadItem] Composable.
  *
+ * @param email the [Email] that we are to display the details of. [ReplyEmailListContent] passes us
+ * the [ReplyHomeUIState.selectedEmail] of the current [ReplyHomeUIState].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass one so the empty, default, or starter [Modifier] that contains
+ * no elements is used.
+ * @param isFullScreen we pass this as the `isFullScreen` argument of our [EmailDetailAppBar], our
+ * caller does not pass a value so `true` is always used. [EmailDetailAppBar] uses in that case
+ * a [Alignment.CenterHorizontally] as the `horizontalAlignment` argument of the [Column] in its
+ * [TopAppBar] `title` argument.
+ * @param onBackPressed the lambda that we pass as the `onBackPressed` argument of our
+ * [EmailDetailAppBar]. [ReplyEmailListContent] passes us its `closeDetailScreen` lambda parameter,
+ * which is is passed down the hierarchy from the `onCreate` override of [MainActivity] where it is
+ * a call to the [ReplyHomeViewModel.closeDetailScreen] method, which sets the current value of
+ * [ReplyHomeUIState.isDetailOnlyOpen] to `false`, and [ReplyHomeUIState.selectedEmail] to the first
+ * [Email] in the [List] of [Email] field [ReplyHomeUIState.emails].
  */
 @Composable
 fun ReplyEmailDetail(

@@ -141,7 +141,7 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
  * uses the [ColorScheme.onSurfaceVariant] color of our [MaterialTheme.colorScheme] (Color(0xFF4F4539)
  * for our [lightColorScheme] (a shade of black) and Color(0xFFD3C4B4) for our [darkColorScheme] (a
  * shade of orange). The second [Text] uses a [Modifier.padding] of 4.dp for its `top` and displays
- * the `text` formed by concatenating [List.size] or the [Email.threads] list of our [Email] parameter
+ * the `text` formed by concatenating [List.size] of the [Email.threads] list of our [Email] parameter
  * [email] to the [String] whose resource ID is [R.string.messages] ("Messages"). Its `style`
  * [TextStyle] argument is the [Typography.labelMedium] of our custom [MaterialTheme.typography],
  * and the `color` of the text uses the [ColorScheme.outline] color of our [MaterialTheme.colorScheme]
