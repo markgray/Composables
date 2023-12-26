@@ -14,10 +14,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -34,15 +35,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aboutmecompose.ui.theme.AboutMeComposeTheme
-import com.example.aboutmecompose.ui.theme.Shapes
-import com.example.aboutmecompose.ui.theme.Typography
 
 /**
  * This is a Compose implementation of the Solution code for the Adding user Interactivity codelab:
  * `Android Kotlin Fundamentals 02.2: Add user interactivity.`It demonstrates:
  *  * Getting user input with an [OutlinedTextField].
  *  * Click handler for a [Button] to retrieve text from an [OutlinedTextField] and set it in a [Text].
- *  * Setting a click handler on a [Text].
+ *  * Setting a click handler on a [Text].Shapes
  *  * Changing the visibility status of a Composable.
  */
 class MainActivity : ComponentActivity() {
