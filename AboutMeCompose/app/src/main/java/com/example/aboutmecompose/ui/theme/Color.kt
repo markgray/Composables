@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package com.example.aboutmecompose.ui.theme
 
 import androidx.compose.material3.ColorScheme
@@ -138,9 +136,10 @@ val md_theme_light_inverseSurface: Color = Color(0xFF34302A)
 val md_theme_light_inversePrimary: Color = Color(0xFFFFB951)
 
 /**
- * Could be used as the `ColorScheme.shadow` of our [lightColorScheme] it only it existed.
+ * Could be used as the `ColorScheme.shadow` of our `lightColorScheme` it only it existed.
+ *
+ * val md_theme_light_shadow: Color = Color(0xFF000000)
  */
-val md_theme_light_shadow: Color = Color(0xFF000000)
 
 /**
  * Used as the [ColorScheme.surfaceTint] of our [lightColorScheme].
@@ -288,9 +287,10 @@ val md_theme_dark_inverseSurface: Color = Color(0xFFEAE1D9)
 val md_theme_dark_inversePrimary: Color = Color(0xFF825500)
 
 /**
- * Could be used as the `ColorScheme.shadow` of our [darkColorScheme] it only it existed.
+ * Could be used as the `ColorScheme.shadow` of our `darkColorScheme` it only it existed.
+ *
+ * val md_theme_dark_shadow: Color = Color(0xFF000000)
  */
-val md_theme_dark_shadow: Color = Color(0xFF000000)
 
 /**
  * Used as the [ColorScheme.surfaceTint] of our [darkColorScheme].
@@ -309,6 +309,6 @@ val md_theme_dark_scrim: Color = Color(0xFF000000)
 
 
 /**
- * Used as the seed of our current [ColorScheme] (maybe?).
+ * Used as the seed of our current `ColorScheme` (maybe?).
+ * val seed: Color = Color(0xFF825500)
  */
-val seed: Color = Color(0xFF825500)
