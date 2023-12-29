@@ -127,6 +127,8 @@ private val DarkColorScheme = darkColorScheme(
  * used, either [dynamicLightColorScheme] if the device is newer than [Build.VERSION_CODES.S], or
  * else our custom [lightColorScheme] field [LightColorScheme] is used if it is older. Our callers do not
  * pass a value so the result of calling [isSystemInDarkTheme] is used instead.
+ * @param dynamicColor Use a dynamic color scheme if the device is newer than [Build.VERSION_CODES.S]
+ * if this is `true`, otherwise use one of our static [ColorScheme]'s.
  * @param content the Composable hierarchy that we are wrapping in order to supply default values.
  *
  */
