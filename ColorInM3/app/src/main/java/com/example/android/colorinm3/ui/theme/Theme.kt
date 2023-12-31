@@ -99,23 +99,24 @@ private val DarkColorScheme = darkColorScheme(
 
 /**
  * This is the custom [MaterialTheme] used to wrap our UI and supply Material 3 default values to
- * the widgets it wraps for [ColorScheme], [Typography], and [Shapes]. We start by initializing our
- * [Context] variable `val context` to the [Context] returned by `LocalContext.current`. Then we
- * initialize [ColorScheme] variable `val colors` to [dynamicDarkColorScheme] the device is newer
- * than [Build.VERSION_CODES.S] and [darkTheme] is `true` or to [dynamicLightColorScheme] if it
- * is `false`. When the device is older than [Build.VERSION_CODES.S] our custom [darkColorScheme]
- * field [DarkColorScheme] is used if [darkTheme] is `true` or else our custom [lightColorScheme]
- * field [LightColorScheme] is used. We initialized our [View] variable `val view` to the current Compose
- * [View] then if the [View.isInEditMode] method of `view` returns `true` (a [View] is usually in
- * edit mode when displayed within a developer tool) we lauch a [SideEffect] that schedules its
- * `effect` lambda to run when the current composition completes successfully and applies changes.
- * The lambda initializes its [Window] variable `val window` to the current [Window] for the activity,
- * then it calls the [Window.setStatusBarColor] method (kotlin `statusBarColor` property) to set the
- * the color of the status bar to the [ColorScheme.primary] color of `colors` (after converting it
- * to to an ARGB color [Int]), and use the [WindowCompat.getInsetsController] to fetch the single
- * [WindowInsetsControllerCompat] of the window this `view` is attached to call its
- * [WindowInsetsControllerCompat.setAppearanceLightStatusBars] method (kotlin
- * `isAppearanceLightStatusBars` property) to the value of [darkTheme].
+ * the widgets it wraps for [ColorScheme], [Typography], and [Shapes] (we do not specify a custom
+ * [Shapes] so the default shapes are used). We start by initializing our [Context] variable
+ * `val context` to the [Context] returned by `LocalContext.current`. If [dynamicColor] is `true`
+ * and the device is newer than [Build.VERSION_CODES.S] we initialize [ColorScheme] variable
+ * `val colors` to [dynamicDarkColorScheme] if [darkTheme] is `true` or to [dynamicLightColorScheme]
+ * if it is `false`. When [dynamicColor] is `false` or the device is older than [Build.VERSION_CODES.S]
+ * our custom [darkColorScheme] field [DarkColorScheme] is used if [darkTheme] is `true` or else our
+ * custom [lightColorScheme] field [LightColorScheme] is used. We initialize our [View] variable
+ * `val view` to the current Compose [View] then if the [View.isInEditMode] method of `view` returns
+ * `false` (a [View] is usually in edit mode when displayed within a developer tool) we lauch a
+ * [SideEffect] that schedules its `effect` lambda to run when the current composition completes
+ * successfully and applies changes. The lambda initializes its [Window] variable `val window` to
+ * the current [Window] for the activity, then it calls the [Window.setStatusBarColor] method (kotlin
+ * `statusBarColor` property) to set the the color of the status bar to the [ColorScheme.primary]
+ * color of `colors` (after converting it to to an [Int] ARGB color), and use the
+ * [WindowCompat.getInsetsController] to fetch the single [WindowInsetsControllerCompat] of the
+ * window this `view` is attached to to call its [WindowInsetsControllerCompat.setAppearanceLightStatusBars]
+ * method (kotlin `isAppearanceLightStatusBars` property) with value of [darkTheme].
  *
  * Finally we call the [MaterialTheme] Composable with its [MaterialTheme.colorScheme] argument our
  * [ColorScheme] `colors` variable, its [MaterialTheme.typography] argument our custom [Typography]
@@ -125,8 +126,7 @@ private val DarkColorScheme = darkColorScheme(
  * the device is newer than [Build.VERSION_CODES.S], or else our custom [darkColorScheme] field
  * [DarkColorScheme] is used if it is older, and if [darkTheme] is `false` a light [ColorScheme] is
  * used, either [dynamicLightColorScheme] if the device is newer than [Build.VERSION_CODES.S], or
- * else our custom [lightColorScheme] field [LightColorScheme] is used if it is older. Our callers do not
- * pass a value so the result of calling [isSystemInDarkTheme] is used instead.
+ * else our custom [lightColorScheme] field [LightColorScheme] is used if it is older.
  * @param dynamicColor Use a dynamic color scheme if the device is newer than [Build.VERSION_CODES.S]
  * if this is `true`, otherwise use one of our static [ColorScheme]'s.
  * @param content the Composable hierarchy that we are wrapping in order to supply default values.
