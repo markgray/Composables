@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -125,7 +127,8 @@ fun Greeting(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(space = 6.dp)
     ) {
         Spacer(modifier = Modifier.height(height = 6.dp))
@@ -157,6 +160,132 @@ fun Greeting(
                 text = "secondary",
                 modifier = modifier,
                 color = MaterialTheme.colorScheme.onSecondary
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "secondaryContainer",
+                modifier = modifier,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "tertiary",
+                modifier = modifier,
+                color = MaterialTheme.colorScheme.onTertiary
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.tertiaryContainer,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "tertiaryContainer",
+                modifier = modifier,
+                color = MaterialTheme.colorScheme.onTertiaryContainer
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "error",
+                modifier = modifier,
+                color = MaterialTheme.colorScheme.onError
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.errorContainer,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "errorContainer",
+                modifier = modifier,
+                color = MaterialTheme.colorScheme.onErrorContainer
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.background,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "background",
+                modifier = modifier,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "surface",
+                modifier = modifier,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "surfaceVariant",
+                modifier = modifier,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.inverseSurface,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "inverseSurface",
+                modifier = modifier,
+                color = MaterialTheme.colorScheme.inverseOnSurface
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.inversePrimary,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "inversePrimary",
+                modifier = modifier
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceTint,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "surfaceTint",
+                modifier = modifier
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.outlineVariant,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "outlineVariant",
+                modifier = modifier
+            )
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.scrim,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "scrim",
+                modifier = modifier
             )
         }
     }
