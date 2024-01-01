@@ -20,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -29,6 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.android.colorinm3.ui.theme.ColorInM3Theme
+import com.example.android.colorinm3.ui.theme.DarkColorScheme
+import com.example.android.colorinm3.ui.theme.LightColorScheme
 
 /**
  * This app displays colors used for all of the [ColorScheme]'s used by Material3. [Button]'s in
@@ -84,7 +88,37 @@ class MainActivity : ComponentActivity() {
 }
 
 /**
+ * This is the main screen Composable of our app. It consists of a [Scaffold] whose `bottomBar`
+ * argument is an [AppBottombar] whose `modifier` argument is our [modifier] parameter, whose
+ * `dynamicColor` argument is our [dynamicColor] parameter, whose `darkTheme` argument is our
+ * [darkTheme] parameter, whose `toggleDynamic` is a lambda that calls our [toggleDynamic]
+ * parameter, and whose `toggleDarkTheme` argument is our [toggleDarkTheme] parameter. The content
+ * of the [Scaffold] is our [Greeting] Composable whose `modifier` argument chains a [Modifier.padding]
+ * to our [Modifier] parameter [modifier] that adds the [PaddingValues] that the [Scaffold] passes
+ * the `content` lambda to the [Greeting] Composable.
  *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
+ * contains no elements is used instead.
+ * @param dynamicColor a [Boolean] which if `true` indicates that our [ColorInM3Theme] custom
+ * [MaterialTheme] is using currently using a dynamic [ColorScheme] (either [dynamicDarkColorScheme]
+ * if [darkTheme] is `true` or [dynamicLightColorScheme] if [darkTheme] is `false`). If [dynamicColor]
+ * is `false` one of the static [ColorScheme] is used (either [DarkColorScheme] if [darkTheme] is
+ * `true` or [LightColorScheme] if [darkTheme] is `false`).
+ * @param darkTheme a [Boolean] which if `true` indicates that our [ColorInM3Theme] custom
+ * [MaterialTheme] is using currently using a dark [ColorScheme] (either [dynamicDarkColorScheme]
+ * if [dynamicColor] is `true`, or [DarkColorScheme] if [dynamicColor] is `false`). If [darkTheme]
+ * is `false` one of the light [ColorScheme] is used (either [dynamicLightColorScheme] if [dynamicColor]
+ * is `true` or [LightColorScheme] if [dynamicColor] is `false`).
+ * @param toggleDynamic a lambda that our caller passes us which when called will toggle the value
+ * of our [Boolean] parameter [dynamicColor] thereby causing [ColorInM3Theme] to be recomposed as
+ * well as all of the `content` that is wrapped in [ColorInM3Theme]. We pass it on to the [AppBottombar]
+ * of our [Scaffold] where it is called in the `onClick` lambda of the "Static/Dynamic" [Button].
+ * @param toggleDarkTheme a lambda that our caller passes us which when called will toggle the value
+ * f our [Boolean] parameter [darkTheme] thereby causing [ColorInM3Theme] to be recomposed as well
+ * as all of the `content` that is wrapped in [ColorInM3Theme]. We pass it on to the [AppBottombar]
+ * of our [Scaffold] where it is called in the `onClick` lambda of the "Light Theme/Dark Theme"
+ * [Button].
  */
 @Composable
 fun MyApp(

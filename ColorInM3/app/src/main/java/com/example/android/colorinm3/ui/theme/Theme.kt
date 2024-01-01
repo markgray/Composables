@@ -27,7 +27,7 @@ import androidx.core.view.WindowCompat
  * [ColorInM3Theme] is called with its `darkTheme` parmeter `false` or if no value for
  * `darkTheme` is passed then [isSystemInDarkTheme] returns `false`.
  */
-private val LightColorScheme = lightColorScheme(
+val LightColorScheme: ColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
     primaryContainer = md_theme_light_primaryContainer,
@@ -64,7 +64,7 @@ private val LightColorScheme = lightColorScheme(
  * [ColorInM3Theme] is called with its `darkTheme` parmeter `true` or if no value for
  * `darkTheme` is passed then [isSystemInDarkTheme] returns `true`.
  */
-private val DarkColorScheme = darkColorScheme(
+val DarkColorScheme: ColorScheme = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
     primaryContainer = md_theme_dark_primaryContainer,
