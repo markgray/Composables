@@ -26,17 +26,29 @@ import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.R
 
-val provider = GoogleFont.Provider(
+/**
+ *
+ */
+val provider: GoogleFont.Provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
     providerPackage = "com.google.android.gms",
     certificates = R.array.com_google_android_gms_fonts_certs
 )
 
-val MontserratFont = GoogleFont(name = "Montserrat")
+/**
+ *
+ */
+val MontserratFont: GoogleFont = GoogleFont(name = "Montserrat")
 
-val KarlaFont = GoogleFont(name = "Karla")
+/**
+ *
+ */
+val KarlaFont: GoogleFont = GoogleFont(name = "Karla")
 
-val MontserratFontFamily = FontFamily(
+/**
+ *
+ */
+val MontserratFontFamily: FontFamily = FontFamily(
     Font(googleFont = MontserratFont, fontProvider = provider),
     Font(resId = R.font.montserrat_regular),
     Font(googleFont = MontserratFont, fontProvider = provider, weight = FontWeight.Light),
@@ -47,14 +59,20 @@ val MontserratFontFamily = FontFamily(
     Font(resId = R.font.montserrat_semibold, weight = FontWeight.SemiBold),
 )
 
-val KarlaFontFamily = FontFamily(
+/**
+ *
+ */
+val KarlaFontFamily: FontFamily = FontFamily(
     Font(googleFont = KarlaFont, fontProvider = provider),
     Font(resId = R.font.karla_regular),
     Font(googleFont = KarlaFont, fontProvider = provider, weight = FontWeight.Bold),
     Font(resId = R.font.karla_bold, weight = FontWeight.Bold),
 )
 
-val JetchatTypography = Typography(
+/**
+ *
+ */
+val JetchatTypography: Typography = Typography(
     displayLarge = TextStyle(
         fontFamily = MontserratFontFamily,
         fontWeight = FontWeight.Light,

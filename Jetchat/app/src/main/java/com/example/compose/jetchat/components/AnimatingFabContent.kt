@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.compose.jetchat.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -43,7 +45,7 @@ fun AnimatingFabContent(
     extended: Boolean = true
 ) {
     val currentState = if (extended) ExpandableFabStates.Extended else ExpandableFabStates.Collapsed
-    val transition = updateTransition(currentState, "fab_transition")
+    val transition = updateTransition(targetState = currentState, label = "fab_transition")
 
     val textOpacity by transition.animateFloat(
         transitionSpec = {
@@ -93,10 +95,10 @@ fun AnimatingFabContent(
     // Deferring reads using lambdas instead of Floats here can improve performance,
     // preventing recompositions.
     IconAndTextRow(
-        icon,
-        text,
-        { textOpacity },
-        { fabWidthFactor },
+        icon = icon,
+        text = text,
+        opacityProgress = { textOpacity },
+        widthProgress = { fabWidthFactor },
         modifier = modifier
     )
 }

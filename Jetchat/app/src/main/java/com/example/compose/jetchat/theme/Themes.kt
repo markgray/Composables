@@ -86,6 +86,9 @@ private val JetchatLightColorScheme = lightColorScheme(
     outline = BlueGrey50
 )
 
+/**
+ *
+ */
 @SuppressLint("NewApi")
 @Composable
 fun JetchatTheme(
