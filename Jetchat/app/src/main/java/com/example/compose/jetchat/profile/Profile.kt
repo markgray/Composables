@@ -37,7 +37,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -51,7 +50,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -72,7 +70,9 @@ import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+/**
+ *
+ */
 @Composable
 fun ProfileScreen(
     userData: ProfileScreenState,
@@ -83,7 +83,7 @@ fun ProfileScreen(
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
 
-    val scrollState = rememberScrollState()
+    val scrollState: ScrollState = rememberScrollState()
 
     BoxWithConstraints(
         modifier = Modifier
@@ -207,6 +207,9 @@ private fun ProfileHeader(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
@@ -230,11 +233,17 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ProfileError() {
     Text(stringResource(R.string.profile_error))
 }
 
+/**
+ *
+ */
 @Composable
 fun ProfileFab(
     extended: Boolean,
@@ -274,6 +283,9 @@ fun ProfileFab(
     }
 }
 
+/**
+ *
+ */
 @Preview(widthDp = 640, heightDp = 360)
 @Composable
 fun ConvPreviewLandscapeMeDefault() {
@@ -282,6 +294,9 @@ fun ConvPreviewLandscapeMeDefault() {
     }
 }
 
+/**
+ *
+ */
 @Preview(widthDp = 360, heightDp = 480)
 @Composable
 fun ConvPreviewPortraitMeDefault() {
@@ -290,6 +305,9 @@ fun ConvPreviewPortraitMeDefault() {
     }
 }
 
+/**
+ *
+ */
 @Preview(widthDp = 360, heightDp = 480)
 @Composable
 fun ConvPreviewPortraitOtherDefault() {
@@ -298,6 +316,9 @@ fun ConvPreviewPortraitOtherDefault() {
     }
 }
 
+/**
+ *
+ */
 @Preview
 @Composable
 fun ProfileFabPreview() {

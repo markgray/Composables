@@ -23,19 +23,49 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Create
+import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.util.lerp
+import com.example.compose.jetchat.R
+import com.example.compose.jetchat.profile.ProfileFab
+import com.example.compose.jetchat.profile.ProfileScreen
 import kotlin.math.roundToInt
 
 /**
  * A layout that shows an icon and a text element used as the content for a FAB that extends with
  * an animation.
+ *
+ * @param icon we use this as the `icon` argument of our [IconAndTextRow]. Our caller [ProfileFab]
+ * calls us with an [Icon] whose `imageVector` is either [Icons.Outlined.Create] if the "user is me"
+ * or [Icons.Outlined.Chat] if it is not.
+ * @param text we use this as the `text` argument of our [IconAndTextRow]. Our caller [ProfileFab]
+ * calls us with a [Text] that displays the [String] with resource ID [R.string.edit_profile]
+ * ("Edit Profile") if the "user is me" or the [String] with resource ID [R.string.message]
+ * ("Message") if it is not.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [ProfileFab] does not pass one so is the empty, default, or starter
+ * [Modifier] that contains no elements is used instead.
+ * @param extended a [Boolean] flag that indicates whether our [ExpandableFabStates] `currentState`
+ * is [ExpandableFabStates.Extended] (`true`) or [ExpandableFabStates.Collapsed] (`false`). We use
+ * this to animate the `fabWidthFactor` that we pass in a lambda as the `widthProgress` argument of
+ * our [IconAndTextRow]. It uses it to linearly interpret between the `initialWidth`, and the
+ * `expandedWidth` to determine the `width` it uses when using [layout] to place the [Icon] and
+ * [Text] it renders. Our caller [ProfileFab] passes us its `extended` parameter, which its caller
+ * [ProfileScreen] passes it, which is a [derivedStateOf] the [ScrollState] it uses to make its
+ * [Column] `scrollable`, with a [ScrollState.value] of 0 as `true`.
  */
 @Composable
 fun AnimatingFabContent(
