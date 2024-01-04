@@ -54,6 +54,9 @@ import com.example.compose.jetchat.R
 import kotlin.math.abs
 import kotlinx.coroutines.launch
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordButton(
@@ -125,6 +128,7 @@ fun RecordButton(
     }
 }
 
+@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 private fun Modifier.voiceRecordingGesture(
     horizontalSwipeProgress: () -> Float,
     onSwipeProgressChanged: (Float) -> Unit,
