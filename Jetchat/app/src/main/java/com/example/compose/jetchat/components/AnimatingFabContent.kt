@@ -20,6 +20,7 @@ package com.example.compose.jetchat.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
@@ -46,7 +47,33 @@ import kotlin.math.roundToInt
 
 /**
  * A layout that shows an icon and a text element used as the content for a FAB that extends with
- * an animation.
+ * an animation. We start by initializing our [ExpandableFabStates] variable `val currentState` to
+ * [ExpandableFabStates.Extended] if our [Boolean] parameter [extended] is `true` or to
+ * [ExpandableFabStates.Collapsed] if it is `false`. We initialize our [Transition] of
+ * [ExpandableFabStates] variable `val transition` by using the [updateTransition] method to set up
+ * a [Transition], with `currentState` the `targetState` that it uses to be updated. When
+ * `currentState` changes, [Transition] will run all of its child animations towards their target
+ * values specified for the new `targetState`. We initialize our [Float] variable `val textOpacity`
+ * by using the [Transition.animateFloat] method of `transition` to Create a Float animation as a
+ * part of `transition` (This means the states of this animation will be managed by the [Transition]).
+ * Its `transitionSpec` argument is a lambda that uses different [tween] instances depending on
+ * whether the `targetState` of `transition` is [ExpandableFabStates.Collapsed] with different
+ * `delayMillis` but the same `durationMillis`. The `targetValueByState` lambda argument of the
+ * [Transition.animateFloat] uses 0f as its value for the `targetState` [ExpandableFabStates.Collapsed]
+ * and 1f as its value for the `targetState` [ExpandableFabStates.Extended].
+ *
+ * We initialize our [Float] variable `val fabWidthFactor` by using the [Transition.animateFloat]
+ * method of `transition` to Create a Float animation as a part of `transition`. Its `transitionSpec`
+ * argument is a lambda that uses identical [tween] instances whether the `targetState` of `transition`
+ * is [ExpandableFabStates.Collapsed] or [ExpandableFabStates.Extended]. The `targetValueByState`
+ * lambda argument of the [Transition.animateFloat] uses 0f as its value for the `targetState`
+ * [ExpandableFabStates.Collapsed] and 1f as its value for the `targetState` [ExpandableFabStates.Extended].
+ *
+ * Finally our root Composable is an [IconAndTextRow] whose `icon` argument is our [icon] parameter,
+ * whose `text` argument is our [text] parameter, whose `opacityProgress` argument is a lambda whose
+ * value is our [Transition] animated variable `textOpacity`, whose `widthProgress` argument is a
+ * lambda whose value is our [Transition] animated variable `fabWidthFactor`, and whose `modifier`
+ * argument is our [modifier] parameter.
  *
  * @param icon we use this as the `icon` argument of our [IconAndTextRow]. Our caller [ProfileFab]
  * calls us with an [Icon] whose `imageVector` is either [Icons.Outlined.Create] if the "user is me"
@@ -65,7 +92,7 @@ import kotlin.math.roundToInt
  * `expandedWidth` to determine the `width` it uses when using [layout] to place the [Icon] and
  * [Text] it renders. Our caller [ProfileFab] passes us its `extended` parameter, which its caller
  * [ProfileScreen] passes it, which is a [derivedStateOf] the [ScrollState] it uses to make its
- * [Column] `scrollable`, with a [ScrollState.value] of 0 as `true`.
+ * [Column] able to `verticalScroll`, with a [ScrollState.value] of 0 as `true`.
  */
 @Composable
 fun AnimatingFabContent(
@@ -75,9 +102,12 @@ fun AnimatingFabContent(
     extended: Boolean = true
 ) {
     val currentState = if (extended) ExpandableFabStates.Extended else ExpandableFabStates.Collapsed
-    val transition = updateTransition(targetState = currentState, label = "fab_transition")
+    val transition: Transition<ExpandableFabStates> = updateTransition(
+        targetState = currentState,
+        label = "fab_transition"
+    )
 
-    val textOpacity by transition.animateFloat(
+    val textOpacity: Float by transition.animateFloat(
         transitionSpec = {
             if (targetState == ExpandableFabStates.Collapsed) {
                 tween(
@@ -93,14 +123,14 @@ fun AnimatingFabContent(
             }
         },
         label = "fab_text_opacity"
-    ) { state ->
+    ) { state: ExpandableFabStates ->
         if (state == ExpandableFabStates.Collapsed) {
             0f
         } else {
             1f
         }
     }
-    val fabWidthFactor by transition.animateFloat(
+    val fabWidthFactor: Float by transition.animateFloat(
         transitionSpec = {
             if (targetState == ExpandableFabStates.Collapsed) {
                 tween(
@@ -133,6 +163,10 @@ fun AnimatingFabContent(
     )
 }
 
+/**
+ * This is the animated Composable content that [AnimatingFabContent] animates for [ProfileFab] to
+ * supply to [ProfileScreen] (the buck stops here).
+ */
 @Composable
 private fun IconAndTextRow(
     icon: @Composable () -> Unit,
