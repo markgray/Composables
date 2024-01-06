@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +40,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.util.lerp
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.profile.ProfileFab
@@ -165,7 +170,37 @@ fun AnimatingFabContent(
 
 /**
  * This is the animated Composable content that [AnimatingFabContent] animates for [ProfileFab] to
- * supply to [ProfileScreen] (the buck stops here).
+ * supply to [ProfileScreen] (the buck stops here). Our root Composable is a [Layout] which it used
+ * to measure and position one [layout] child. Its `modifier` argument is our [Modifier] parameter
+ * [modifier], and its `content` argument (chidren to be composed) are our Composable lambda parameter
+ * [icon], and a [Box] whose `modifier` argument is a [Modifier.graphicsLayer] that uses the [Float]
+ * value returned by our [opacityProgress] lambda parameter to animate the `alpha` of its `content`
+ * which is our [text] Composable lambda. In the [MeasureScope] block we use the 0'th entry in the
+ * `measurables` [List] of [Measurable]'s passed the block to call its [Measurable.measure] method
+ * with the `constraints` [Constraints] passed the block to initialize our [Placeable] variable
+ * `val iconPlaceable` (the 0'th child of the `content` argument of the [Layout]), and the 1'th
+ * entry in the `measurables` [List] of [Measurable]'s passed the block to call its [Measurable.measure]
+ * method with the `constraints` [Constraints] passed the block to initialize our [Placeable] variable
+ * `val textPlaceable` (the 1'th child of the `content` argument of the [Layout]).
+ *
+ * @param icon a Composable lambda that displays the [Icon] that [ProfileFab] wants to be displayed
+ * in its [FloatingActionButton].
+ * @param text a Composable lambda that displays a [Text] that [ProfileFab] wants to be displayed in
+ * its [FloatingActionButton].
+ * @param opacityProgress a lambda that produces an animated [Float] value that we should use as the
+ * `alpha` value for the [Modifier.graphicsLayer] that we use as the `modifier` of the [Box] holding
+ * our [text] Composable lambda parameter. [AnimatingFabContent] uses a [Transition] of the current
+ * [ExpandableFabStates] to animate this between 0f for [ExpandableFabStates.Collapsed] and 1f for
+ * [ExpandableFabStates.Extended]. The value is passed using a lambda to prevent recompositions.
+ * @param widthProgress a lambda that produces an animated [Float] value that we should use when
+ * calculating the `width` argument we use in the call to [layout] which places our [Icon] and
+ * [Text]. [AnimatingFabContent] uses a [Transition] of the current [ExpandableFabStates] to animate
+ * this between 0f for [ExpandableFabStates.Collapsed] and 1f for [ExpandableFabStates.Extended].
+ * The value is passed using a lambda to prevent recompositions.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [AnimatingFabContent] calls us with its `modifier` parameter, but since its
+ * caller [ProfileFab] does not pass it one the empty, default, or starter [Modifier] that contains
+ * no elements is used instead.
  */
 @Composable
 private fun IconAndTextRow(
@@ -179,37 +214,39 @@ private fun IconAndTextRow(
         modifier = modifier,
         content = {
             icon()
-            Box(modifier = Modifier.graphicsLayer { alpha = opacityProgress() }) {
+            Box(
+                modifier = Modifier.graphicsLayer { alpha = opacityProgress() }
+            ) {
                 text()
             }
         }
-    ) { measurables, constraints ->
+    ) { measurables: List<Measurable>, constraints: Constraints ->
 
-        val iconPlaceable = measurables[0].measure(constraints)
-        val textPlaceable = measurables[1].measure(constraints)
+        val iconPlaceable: Placeable = measurables[0].measure(constraints = constraints)
+        val textPlaceable: Placeable = measurables[1].measure(constraints = constraints)
 
-        val height = constraints.maxHeight
+        val height: Int = constraints.maxHeight
 
         // FAB has an aspect ratio of 1 so the initial width is the height
-        val initialWidth = height.toFloat()
+        val initialWidth: Float = height.toFloat()
 
         // Use it to get the padding
-        val iconPadding = (initialWidth - iconPlaceable.width) / 2f
+        val iconPadding: Float = (initialWidth - iconPlaceable.width) / 2f
 
         // The full width will be : padding + icon + padding + text + padding
-        val expandedWidth = iconPlaceable.width + textPlaceable.width + iconPadding * 3
+        val expandedWidth: Float = iconPlaceable.width + textPlaceable.width + iconPadding * 3
 
         // Apply the animation factor to go from initialWidth to fullWidth
-        val width = lerp(initialWidth, expandedWidth, widthProgress())
+        val width: Float = lerp(initialWidth, expandedWidth, widthProgress())
 
-        layout(width.roundToInt(), height) {
+        layout(width = width.roundToInt(), height = height) {
             iconPlaceable.place(
-                iconPadding.roundToInt(),
-                constraints.maxHeight / 2 - iconPlaceable.height / 2
+                x = iconPadding.roundToInt(),
+                y = constraints.maxHeight / 2 - iconPlaceable.height / 2
             )
             textPlaceable.place(
-                (iconPlaceable.width + iconPadding * 2).roundToInt(),
-                constraints.maxHeight / 2 - textPlaceable.height / 2
+                x = (iconPlaceable.width + iconPadding * 2).roundToInt(),
+                y = constraints.maxHeight / 2 - textPlaceable.height / 2
             )
         }
     }
