@@ -175,13 +175,32 @@ fun AnimatingFabContent(
  * [modifier], and its `content` argument (chidren to be composed) are our Composable lambda parameter
  * [icon], and a [Box] whose `modifier` argument is a [Modifier.graphicsLayer] that uses the [Float]
  * value returned by our [opacityProgress] lambda parameter to animate the `alpha` of its `content`
- * which is our [text] Composable lambda. In the [MeasureScope] block we use the 0'th entry in the
- * `measurables` [List] of [Measurable]'s passed the block to call its [Measurable.measure] method
- * with the `constraints` [Constraints] passed the block to initialize our [Placeable] variable
- * `val iconPlaceable` (the 0'th child of the `content` argument of the [Layout]), and the 1'th
- * entry in the `measurables` [List] of [Measurable]'s passed the block to call its [Measurable.measure]
- * method with the `constraints` [Constraints] passed the block to initialize our [Placeable] variable
- * `val textPlaceable` (the 1'th child of the `content` argument of the [Layout]).
+ * which is our [text] Composable lambda. In the [MeasureScope] block we use the entry at index 0 in
+ * the `measurables` [List] of [Measurable]'s passed the block to call its [Measurable.measure]
+ * method with the `constraints` [Constraints] passed the block to initialize our [Placeable]
+ * variable `val iconPlaceable` (the first child of the `content` argument of the [Layout]), and we
+ * use the entry at index 1 in the `measurables` [List] of [Measurable]'s passed the block to call
+ * its [Measurable.measure] method with the `constraints` [Constraints] passed the block to initialize
+ * our [Placeable] variable `val textPlaceable` (the second child of the `content` argument of the
+ * [Layout]). We initialize our [Int] variable `val height` to the [Constraints.maxHeight] property
+ * of the `constraints` passed the block, and our [Float] variable `val initialWidth` to the [Float]
+ * version of `height`. We initialize our [Float] variable `val iconPadding` to one half the quantity
+ * `initialWidth` minus the [Placeable.width] property of `iconPlaceable`. We initialize our [Float]
+ * variable `val expandedWidth` to the [Placeable.width] property of of `iconPlaceable` plus the
+ * [Placeable.width] property of `textPlaceable` plus 3 times `iconPadding` (this is the full width
+ * when the [IconAndTextRow] is expanded). We initialize our [Float] variable `val width` using the
+ * [lerp] method to linearly interpret between `initialWidth` and `expandedWidth` with the fraction
+ * the value returned by our lambda parameter [widthProgress] between them.
+ *
+ * Finally we call [layout] with its `width` argument our `width` variable rounded to [Int], and its
+ * `height` argument our `height` variable, and in its `placementBlock` we call the `place` method
+ * of `iconPlaceable` to place it at `x` argument `iconPlaceable` rounded to [Int] and at `y`
+ * argument one half the [Constraints.maxHeight] property of `constraints` plus one half the
+ * [Placeable.height] property of `iconPlaceable`, then we call the `place` method of `textPlaceable`
+ * to place it at `x` argument the [Placeable.width] property of `iconPlaceable` plus 2 times
+ * `iconPadding` with the quantity rounded to [Int] and at `y` argument one half the
+ * [Constraints.maxHeight] property of `constraints` plus one half the [Placeable.height] property
+ * of `textPlaceable`.
  *
  * @param icon a Composable lambda that displays the [Icon] that [ProfileFab] wants to be displayed
  * in its [FloatingActionButton].
@@ -237,7 +256,7 @@ private fun IconAndTextRow(
         val expandedWidth: Float = iconPlaceable.width + textPlaceable.width + iconPadding * 3
 
         // Apply the animation factor to go from initialWidth to fullWidth
-        val width: Float = lerp(initialWidth, expandedWidth, widthProgress())
+        val width: Float = lerp(start = initialWidth, stop = expandedWidth, fraction = widthProgress())
 
         layout(width = width.roundToInt(), height = height) {
             iconPlaceable.place(
@@ -252,6 +271,13 @@ private fun IconAndTextRow(
     }
 }
 
+/**
+ * enum which specifies whether the [IconAndTextRow] is Collapsed, oe Extended
+ */
 private enum class ExpandableFabStates { Collapsed, Extended }
 
+/**
+ * The duration in milliseconds of the `transitionSpec` used when animating the [Transition] between
+ * the two [ExpandableFabStates].
+ */
 private const val transitionDuration = 200

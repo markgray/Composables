@@ -40,6 +40,9 @@ import androidx.compose.ui.unit.Dp
  * baselines.
  */
 data class BaselineHeightModifier(
+    /**
+     *
+     */
     val heightFromBaseline: Dp
 ) : LayoutModifier {
 
@@ -60,5 +63,8 @@ data class BaselineHeightModifier(
     }
 }
 
+/**
+ *
+ */
 fun Modifier.baselineHeight(heightFromBaseline: Dp): Modifier =
     this.then(BaselineHeightModifier(heightFromBaseline))
