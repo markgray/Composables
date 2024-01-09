@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -33,7 +34,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.conversation.ChannelNameBar
+import com.example.compose.jetchat.conversation.ConversationContent
+import com.example.compose.jetchat.profile.ProfileFragment
 
+/**
+ * This is essentially an adapter for the [CenterAlignedTopAppBar] that it contains that provides
+ * JetChat specific default values to it, and defines an API for its use that makes it easy to use.
+ * It is used in the [ChannelNameBar] Composable which is used as the `topBar` of the [Scaffold] in
+ * the [ConversationContent] Composable, and in [ProfileFragment] as its [R.id.toolbar_compose_view]
+ * "toolbar".
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JetchatAppBar(
@@ -60,6 +71,9 @@ fun JetchatAppBar(
     )
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
@@ -69,6 +83,9 @@ fun JetchatAppBarPreview() {
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
