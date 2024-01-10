@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.compose.jetchat.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.conversation.ChannelNameBar
@@ -40,10 +42,30 @@ import com.example.compose.jetchat.profile.ProfileFragment
 
 /**
  * This is essentially an adapter for the [CenterAlignedTopAppBar] that it contains that provides
- * JetChat specific default values to it, and defines an API for its use that makes it easy to use.
- * It is used in the [ChannelNameBar] Composable which is used as the `topBar` of the [Scaffold] in
- * the [ConversationContent] Composable, and in [ProfileFragment] as its [R.id.toolbar_compose_view]
- * "toolbar".
+ * JetChat specific default values to it, and defines an API for it that makes it easy to use. It is
+ * used in the [ChannelNameBar] Composable which is used as the `topBar` of the [Scaffold] in the
+ * [ConversationContent] Composable, and in [ProfileFragment] in a [ComposeView] as its "tool bar".
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [ChannelNameBar] passes us its `modifier` parameter which is the empty, default, or
+ * starter [Modifier] that contains no elements, and [ProfileFragment] passes us a
+ * [Modifier.wrapContentSize] which causes us to ignore the minimum incoming constraints taking as
+ * much space as needed, and centering in the maximum incoming constraints if they are larger. We
+ * use it as the `modifier` argument of our [CenterAlignedTopAppBar].
+ * @param scrollBehavior a [TopAppBarScrollBehavior] which holds various offset values that will be
+ * applied by this top app bar to set up its height and colors. A scroll behavior is designed to
+ * work in conjunction with a scrolled content to change the top app bar appearance as the content
+ * scrolls. [ChannelNameBar] passes us the [TopAppBarDefaults.pinnedScrollBehavior] that its
+ * [ConversationContent] caller passes it, and [ProfileFragment] passes us none so `null` is used.
+ * We use it as the `scrollBehavior` argument of our [CenterAlignedTopAppBar]..
+ * @param onNavIconPressed a lambda which we use as the `onClick` argument of the [Modifier.clickable]
+ * of the [JetchatIcon] that we use as the `navigationIcon` argument of our [CenterAlignedTopAppBar].
+ * [ChannelNameBar] passes us a lambda passed down the hierarchy which ends up calling the
+ * [MainViewModel.openDrawer] method (which changes a state which causes the drawer to open when
+ * called), and [ProfileFragment] directly passes us the [MainViewModel.openDrawer] method in a
+ * lambda.
+ * @param title we use this Composable lambda as the `title` argument of our [CenterAlignedTopAppBar].
+ * and it uses it as the title to be displayed in the top app bar.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
