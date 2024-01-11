@@ -17,12 +17,14 @@
 package com.example.compose.jetchat.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -45,6 +47,12 @@ import com.example.compose.jetchat.profile.ProfileFragment
  * JetChat specific default values to it, and defines an API for it that makes it easy to use. It is
  * used in the [ChannelNameBar] Composable which is used as the `topBar` of the [Scaffold] in the
  * [ConversationContent] Composable, and in [ProfileFragment] in a [ComposeView] as its "tool bar".
+ * We pass [CenterAlignedTopAppBar] our parameters unchanged, but use a [JetchatIcon] for its
+ * `navigationIcon` argument, with its `contentDescription` the [String] with resource ID
+ * [R.string.navigation_drawer_open] ("Open navigation drawer"), and its `modifier` argument a
+ * [Modifier.size] that sets its size to 64.dp, with a [Modifier.clickable] whose `onClick` argument
+ * is our lambda parameter [onNavIconPressed] followed by a [Modifier.padding] that adds 16.dp to
+ * all sides of the [JetchatIcon].
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. [ChannelNameBar] passes us its `modifier` parameter which is the empty, default, or
@@ -64,8 +72,11 @@ import com.example.compose.jetchat.profile.ProfileFragment
  * [MainViewModel.openDrawer] method (which changes a state which causes the drawer to open when
  * called), and [ProfileFragment] directly passes us the [MainViewModel.openDrawer] method in a
  * lambda.
- * @param title we use this Composable lambda as the `title` argument of our [CenterAlignedTopAppBar].
+ * @param title we use this Composable lambda as the `title` argument of our [CenterAlignedTopAppBar]
  * and it uses it as the title to be displayed in the top app bar.
+ * @param actions we use this Composable lambda as the `actions` argument of our [CenterAlignedTopAppBar]
+ * and it uses it as the actions displayed at the end of the top app bar. These should typically be
+ * [Icon]'s. The default layout here is a [Row], so icons inside will be placed horizontally.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,9 +96,9 @@ fun JetchatAppBar(
             JetchatIcon(
                 contentDescription = stringResource(id = R.string.navigation_drawer_open),
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(size = 64.dp)
                     .clickable(onClick = onNavIconPressed)
-                    .padding(16.dp)
+                    .padding(all = 16.dp)
             )
         }
     )
