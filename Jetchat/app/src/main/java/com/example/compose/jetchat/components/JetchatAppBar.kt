@@ -105,25 +105,27 @@ fun JetchatAppBar(
 }
 
 /**
- *
+ * This is a Preview of our [JetchatAppBar] in lightTheme, displaying a [Text] whose `text` argument
+ * is the [String] "Preview!"
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun JetchatAppBarPreview() {
     JetchatTheme {
-        JetchatAppBar(title = { Text("Preview!") })
+        JetchatAppBar(title = { Text(text = "Preview!") })
     }
 }
 
 /**
- *
+ * This is a Preview of our [JetchatAppBar] in `isDarkTheme`, displaying a [Text] whose `text` argument
+ * is the [String] "Preview!"
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun JetchatAppBarPreviewDark() {
     JetchatTheme(isDarkTheme = true) {
-        JetchatAppBar(title = { Text("Preview!") })
+        JetchatAppBar(title = { Text(text = "Preview!") })
     }
 }

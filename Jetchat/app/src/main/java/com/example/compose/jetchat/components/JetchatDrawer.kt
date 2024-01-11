@@ -37,6 +37,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,6 +55,10 @@ import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
+/**
+ * This is used by [JetchatDrawer] as the `content` of the [ModalDrawerSheet] that is used as the
+ * the Content inside of the [ModalNavigationDrawer] modal navigation drawer (wheels within wheels!)
+ */
 @Composable
 fun JetchatDrawerContent(
     onProfileClicked: (String) -> Unit,
@@ -181,6 +187,9 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun DividerItem(modifier: Modifier = Modifier) {
     Divider(
@@ -189,6 +198,9 @@ fun DividerItem(modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ *
+ */
 @Composable
 @Preview
 fun DrawerPreview() {
@@ -200,6 +212,9 @@ fun DrawerPreview() {
         }
     }
 }
+/**
+ *
+ */
 @Composable
 @Preview
 fun DrawerPreviewDark() {
