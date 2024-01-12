@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat.components
 
+import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,34 +51,50 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.compose.jetchat.NavActivity
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.profile.ProfileFragment
+import com.example.compose.jetchat.profile.ProfileScreenState
 import com.example.compose.jetchat.theme.JetchatTheme
 
 /**
  * This is used by [JetchatDrawer] as the `content` of the [ModalDrawerSheet] that is used as the
  * the Content inside of the [ModalNavigationDrawer] modal navigation drawer (wheels within wheels!)
+ *
+ * @param onProfileClicked lambda to be called with the [ProfileScreenState.userId] of the profile
+ * depicted when a [ProfileItem] is clicked. In the `onCreate` override of [NavActivity] this is a
+ * lambda which creates a [Bundle] of the [String]'s "userId" to the [String] the lambda is called
+ * with then calls the [NavController.navigate] method with the resource ID [R.id.nav_profile]
+ * (the [ProfileFragment] destination in the navigation xml file) and the [Bundle] created (this
+ * displays the information about [ProfileScreenState] of the [ProfileItem] clicked either [meProfile]
+ * or [colleagueProfile]).
+ * @param onChatClicked lambda to be called with the name of the chat when a [ChatItem] is clicked.
+ * In the `onCreate` override of [NavActivity] this is a lambda which pop's the BackStack back to
+ * [R.id.nav_home] (the "#composers" main screen) and closes the drawer (ie. does nothing).
  */
 @Composable
 fun JetchatDrawerContent(
     onProfileClicked: (String) -> Unit,
-    onChatClicked: (String) ->
-    Unit
+    onChatClicked: (String) -> Unit
 ) {
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+        Spacer(Modifier.windowInsetsTopHeight(insets = WindowInsets.statusBars))
         DrawerHeader()
         DividerItem()
-        DrawerItemHeader("Chats")
-        ChatItem("composers", true) { onChatClicked("composers") }
-        ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
+        DrawerItemHeader(text = "Chats")
+        ChatItem(text = "composers", selected = true) { onChatClicked("composers") }
+        ChatItem(text = "droidcon-nyc", selected = false) { onChatClicked("droidcon-nyc") }
         DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
-        DrawerItemHeader("Recent Profiles")
-        ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
-        ProfileItem("Taylor Brooks", colleagueProfile.photo) {
+        DrawerItemHeader(text = "Recent Profiles")
+        ProfileItem(text = "Ali Conors (you)", profilePic = meProfile.photo) {
+            onProfileClicked(meProfile.userId)
+        }
+        ProfileItem(text = "Taylor Brooks", profilePic = colleagueProfile.photo) {
             onProfileClicked(colleagueProfile.userId)
         }
     }
@@ -85,10 +102,10 @@ fun JetchatDrawerContent(
 
 @Composable
 private fun DrawerHeader() {
-    Row(modifier = Modifier.padding(16.dp), verticalAlignment = CenterVertically) {
+    Row(modifier = Modifier.padding(all = 16.dp), verticalAlignment = CenterVertically) {
         JetchatIcon(
             contentDescription = null,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(size = 24.dp)
         )
         Image(
             painter = painterResource(id = R.drawable.jetchat_logo),
@@ -106,7 +123,7 @@ private fun DrawerItemHeader(text: String) {
         contentAlignment = CenterStart
     ) {
         Text(
-            text,
+            text = text,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -116,17 +133,17 @@ private fun DrawerItemHeader(text: String) {
 @Composable
 private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit) {
     val background = if (selected) {
-        Modifier.background(MaterialTheme.colorScheme.primaryContainer)
+        Modifier.background(color = MaterialTheme.colorScheme.primaryContainer)
     } else {
         Modifier
     }
     Row(
         modifier = Modifier
-            .height(56.dp)
+            .height(height = 56.dp)
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .clip(CircleShape)
-            .then(background)
+            .clip(shape = CircleShape)
+            .then(other = background)
             .clickable(onClick = onChatClicked),
         verticalAlignment = CenterVertically
     ) {
@@ -142,7 +159,7 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             contentDescription = null
         )
         Text(
-            text,
+            text = text,
             style = MaterialTheme.typography.bodyMedium,
             color = if (selected) {
                 MaterialTheme.colorScheme.primary
@@ -158,20 +175,20 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
 private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileClicked: () -> Unit) {
     Row(
         modifier = Modifier
-            .height(56.dp)
+            .height(height = 56.dp)
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .clip(CircleShape)
+            .clip(shape = CircleShape)
             .clickable(onClick = onProfileClicked),
         verticalAlignment = CenterVertically
     ) {
         val paddingSizeModifier = Modifier
             .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
-            .size(24.dp)
+            .size(size = 24.dp)
         if (profilePic != null) {
             Image(
                 painter = painterResource(id = profilePic),
-                modifier = paddingSizeModifier.then(Modifier.clip(CircleShape)),
+                modifier = paddingSizeModifier.then(Modifier.clip(shape = CircleShape)),
                 contentScale = ContentScale.Crop,
                 contentDescription = null
             )
@@ -179,7 +196,7 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
             Spacer(modifier = paddingSizeModifier)
         }
         Text(
-            text,
+            text = text,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(start = 12.dp)
