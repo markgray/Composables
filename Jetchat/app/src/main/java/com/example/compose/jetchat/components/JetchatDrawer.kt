@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -63,6 +64,28 @@ import com.example.compose.jetchat.theme.JetchatTheme
 /**
  * This is used by [JetchatDrawer] as the `content` of the [ModalDrawerSheet] that is used as the
  * the Content inside of the [ModalNavigationDrawer] modal navigation drawer (wheels within wheels!)
+ * Our root Composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxSize] to have
+ * it occupy its entire incoming size constraints, with a [Modifier.background] that sets its
+ * background color to the [ColorScheme.background] color of our [MaterialTheme.colorScheme]. The
+ * content of the [Column] is a [Spacer] whose `modifier` argument is a [Modifier.windowInsetsTopHeight]
+ * which sets the height to that of the insets at the top of the screen with its `insets` argument
+ * [WindowInsets.Companion.statusBars] (this pushes the drawer content below the status bar). This
+ * is followed by a [DrawerHeader] which displays in a [Row] the  [JetchatIcon] and an [Image] that
+ * draws the `jetchat` logo in resource ID [R.drawable.jetchat_logo]. After this is a [DividerItem]
+ * Composable which draws a [Divider] whose `color` is a copy of the [ColorScheme.onSurface] with
+ * its alpha set to 0.12f. This is followed by a [DrawerItemHeader] which displays the [Text] "Chats",
+ * and this is followed by a [ChatItem] displaying the [Text] "composers" and a [ChatItem] displaying
+ * the [Text] "droidcon-nyc". The `onChatClicked` lambda argumet of both [ChatItem]'s is a lambda
+ * that calls our [onChatClicked] parameter with the text that they are displaying. This is followed
+ * another [DividerItem] whose `modifier` argument is a [Modifier.padding] that sets the padding
+ * on each end of the [DividerItem] to 28.dp. This is followed by a [DrawerItemHeader] which displays
+ * the [Text] "Recent Profiles". This is followed by a [ProfileItem] displaying the `text`
+ * "Ali Conors (you)", the `profilePic` [ProfileScreenState.photo] resource ID of [meProfile], with
+ * its `onProfileClicked` argument a lambda which calls our [onProfileClicked] parameter with the
+ * [ProfileScreenState.userId] of [meProfile]. This is followed by a [ProfileItem] displaying the
+ * `text` "Taylor Brooks", the `profilePic` [ProfileScreenState.photo] resource ID of
+ * [colleagueProfile] with its `onProfileClicked` argument a lambda which calls our [onProfileClicked]
+ * parameter with the [ProfileScreenState.userId] of [colleagueProfile].
  *
  * @param onProfileClicked lambda to be called with the [ProfileScreenState.userId] of the profile
  * depicted when a [ProfileItem] is clicked. In the `onCreate` override of [NavActivity] this is a
@@ -83,7 +106,7 @@ fun JetchatDrawerContent(
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Spacer(Modifier.windowInsetsTopHeight(insets = WindowInsets.statusBars))
+        Spacer(modifier = Modifier.windowInsetsTopHeight(insets = WindowInsets.statusBars))
         DrawerHeader()
         DividerItem()
         DrawerItemHeader(text = "Chats")
@@ -100,6 +123,9 @@ fun JetchatDrawerContent(
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun DrawerHeader() {
     Row(modifier = Modifier.padding(all = 16.dp), verticalAlignment = CenterVertically) {
