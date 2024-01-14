@@ -43,6 +43,9 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -50,6 +53,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -59,7 +64,10 @@ import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.profile.ProfileFragment
 import com.example.compose.jetchat.profile.ProfileScreenState
+import com.example.compose.jetchat.theme.BlueGrey30
+import com.example.compose.jetchat.theme.BlueGrey80
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.theme.KarlaFontFamily
 
 /**
  * This is used by [JetchatDrawer] as the `content` of the [ModalDrawerSheet] that is used as the
@@ -124,7 +132,14 @@ fun JetchatDrawerContent(
 }
 
 /**
- *
+ * This is the header of the [JetchatDrawerContent] Composable. Its root composable is a [Row] whose
+ * `modifier` argument is a [Modifier.padding] that adds 16.dp to all sides, and its `verticalAlignment`
+ * is a [CenterVertically] that centers its children vertically. It `content` consists of our
+ * [JetchatIcon] Composable with its `modifier` argument a [Modifier.size] that sets its size to
+ * 24.dp, and this is followed by an [Image] displaying the drawable with resource ID
+ * [R.drawable.jetchat_logo] (which is a `vector` drawing of the word "jetchat" in a highly stylized
+ * font), its `modifier` argument is a [Modifier.padding] that adds 16.dp to the `start` of the
+ * [Image].
  */
 @Composable
 private fun DrawerHeader() {
@@ -140,6 +155,22 @@ private fun DrawerHeader() {
         )
     }
 }
+
+/**
+ * This is used as the header of both the "Chats" and the "Recent Profiles" sections of the
+ * [Column] in [JetchatDrawerContent]. Its root Composable is a [Box] whose `modifier` argument is
+ * a [Modifier.heightIn] which sets its minimum height to 52.dp, to which is chained a
+ * [Modifier.padding] which adds 28.dp padding to both ends of the [Box], its `contentAlignment`
+ * is a [CenterStart] which places its child centered at the start of the [Box]. Its `content`
+ * consists of a [Text] displaying our [text] parameter, using the `style` [Typography.bodySmall]
+ * of our [MaterialTheme.typography] (which is a [TextStyle] using the `fontFamily` [KarlaFontFamily]
+ * with a `fontWeight` of [FontWeight.Bold], a `fontSize` of 12.sp, a `lineHeight` os 16.sp, and a
+ * `letterSpacing` of 0.4.sp). Its text `color` argument is the [ColorScheme.onSurfaceVariant] color
+ * of our [MaterialTheme.colorScheme] (which is [BlueGrey80] for our [darkColorScheme] and [BlueGrey30]
+ * for our [lightColorScheme].
+ *
+ * @param text the [String] to display in our [Text], either "Chats" or "Recent Profiles" in our case.
+ */
 @Composable
 private fun DrawerItemHeader(text: String) {
     Box(
@@ -156,6 +187,10 @@ private fun DrawerItemHeader(text: String) {
     }
 }
 
+/**
+ * This is used for both of the items in the "Chats" section of the [Column] in [JetchatDrawerContent].
+ *
+ */
 @Composable
 private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit) {
     val background = if (selected) {
