@@ -51,6 +51,7 @@ import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -189,11 +190,38 @@ private fun DrawerItemHeader(text: String) {
 
 /**
  * This is used for both of the items in the "Chats" section of the [Column] in [JetchatDrawerContent].
+ * We start by initializing [Modifier] variable `val background` to a [Modifier.background] whose
+ * `color` is the [ColorScheme.primaryContainer] color of our [MaterialTheme.colorScheme] if our
+ * [Boolean] parameter [selected] is `true` or to the empty, default, or starter [Modifier] that
+ * contains no elements if it is `false`. Our root Composable is a [Row] whose `modifier` argument
+ * is a [Modifier.height] that sets its `height` to 56.dp, with a [Modifier.fillMaxWidth] chained to
+ * that which causes it to occupy its entire incoming `width` constraint, and a [Modifier.padding]
+ * that adds 12.dp padding to both ends, and a [Modifier.clip] that clips its `shape` to a
+ * [CircleShape], and a [Modifier.then] that concatenates `background` to the [Modifier] to set its
+ * background color, and at the end of the chain is a [Modifier.clickable] whose `onClick` argument
+ * causes our [onChatClicked] lambda parameter to be called when the [Row] is clicked. The
+ * `verticalAlignment` argument of the [Row] is a [CenterVertically] that causes it to center its
+ * children vertically. In the `content` of the [Row] we initialize [Color] variable `val iconTint`
+ * to the [ColorScheme.primary] color of our [MaterialTheme.colorScheme] if [Boolean] parameter
+ * [selected] is `true` or to the [ColorScheme.onSurfaceVariant] color of our [MaterialTheme.colorScheme]
+ * if it is `false`. The first Composable child of the [Row] is an [Icon] which renders the drawable
+ * with resource ID [R.drawable.ic_jetchat], with its `tint` argument our [Color] variable `iconTint`,
+ * and with its `modifier` argument a [Modifier.padding] that adds: `start` = 16.dp, `top` = 16.dp,
+ * and `bottom` = 16.dp padding to the [Icon]. The second child of the [Row]is a [Text] which displays
+ * our [String] parameter [text], using the `style` [Typography.bodyMedium] as its [TextStyle], and
+ * as its `color` the [ColorScheme.primary] color of our [MaterialTheme.colorScheme] if [Boolean]
+ * parameter [selected] is `true` or the [ColorScheme.onSurface] color of our [MaterialTheme.colorScheme]
+ * if it is `false`. It `modifier` argument is a [Modifier.padding] that adds 12.dp padding to the
+ * start of the [Text].
  *
+ * @param text the `text` to be displayed in our [Text] ("composers" and "droidcon-nyc" in our case).
+ * @param selected if `true` the user has selected this [ChatItem] and our widgets should be colored
+ * to reflect this, and to reflect that we have not been selected if it is `false`.
+ * @param onChatClicked a lambda that should be called when our [Row] is clicked.
  */
 @Composable
 private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit) {
-    val background = if (selected) {
+    val background: Modifier = if (selected) {
         Modifier.background(color = MaterialTheme.colorScheme.primaryContainer)
     } else {
         Modifier
@@ -208,7 +236,7 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             .clickable(onClick = onChatClicked),
         verticalAlignment = CenterVertically
     ) {
-        val iconTint = if (selected) {
+        val iconTint: Color = if (selected) {
             MaterialTheme.colorScheme.primary
         } else {
             MaterialTheme.colorScheme.onSurfaceVariant
@@ -232,6 +260,31 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
     }
 }
 
+/**
+ * This is used for both of the [ProfileScreenState] items rendered in the "Recent Profiles" section
+ * of the [Column] in [JetchatDrawerContent]. Our root Composable is a [Row] whose `modifier` argument
+ * is a [Modifier.height] that sets its `height` to 56.dp, with a [Modifier.fillMaxWidth] chained to
+ * that which causes it to occupy its entire incoming `width` constraint, and a [Modifier.padding]
+ * that adds 12.dp padding to both ends, and a [Modifier.clip] that clips its `shape` to a
+ * [CircleShape], and at the end of the chain is a [Modifier.clickable] whose `onClick` argument
+ * causes our [onProfileClicked] lambda parameter to be called when the [Row] is clicked. The
+ * `verticalAlignment` argument of the [Row] is a [CenterVertically] that causes it to center its
+ * children vertically. In the `content` of the [Row] we initialize our [Modifier] variable
+ * `val paddingSizeModifier` to a [Modifier.padding] that sets thpadding to: `start` = 16.dp,
+ * `top` = 16.dp, and `bottom` = 16.dp, to which is chained a [Modifier.size] that sets the size to
+ * 24.dp. If our [Int] parameter [profilePic] is not `null` we compose an [Image] which displays the
+ * drawable with resource ID [profilePic], with its `modifier` argument a [Modifier.clip] that clips
+ * its `shape` to a [CircleShape], chained using the [Modifier.then] of our [Modifier] variable
+ * `paddingSizeModifier`. Its `contentScale` argument is [ContentScale.Crop] that causes it to Scale
+ * the source uniformly (maintaining the source's aspect ratio) so that both dimensions (width and
+ * height) of the source will be equal to or larger than the corresponding dimension of the
+ * destination. If [profilePic] is `null` we compose a [Spacer] whose `modifier` argument is our
+ * [Modifier] variable `paddingSizeModifier`. The end composable in the [Row] is a [Text] that
+ * displays our [String] parameter [text] using the `style` [Typography.bodyMedium] of our
+ * [MaterialTheme.typography] as its [TextStyle], using for the text color the [ColorScheme.onSurface]
+ * color of our [MaterialTheme.colorScheme], and its `modifier` argument is a [Modifier.padding] that
+ * add 12.dp padding to the start of the [Text].
+ */
 @Composable
 private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileClicked: () -> Unit) {
     Row(
