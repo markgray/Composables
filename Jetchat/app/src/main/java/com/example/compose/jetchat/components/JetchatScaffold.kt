@@ -18,14 +18,33 @@ package com.example.compose.jetchat.components
 
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue.Closed
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.viewinterop.AndroidViewBinding
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.NavActivity
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * This is used as the navigation drawer of the app in the call to `setContentView` in the `onCreate`
+ * override of [NavActivity]. If consists of a [JetchatTheme] custom [MaterialTheme] wrapped
+ * [ModalNavigationDrawer] whose `drawerState` argument is our [DrawerState] parameter [drawerState],
+ * and whose `drawerContent` argument is a [ModalDrawerSheet] holding our [JetchatDrawerContent] which
+ * uses our [onProfileClicked] lambda parameter as its `onProfileClicked` argument and our
+ * [onChatClicked] parameter as its `onChatClicked` argument. The `content` argument of the
+ * [ModalNavigationDrawer] is our [content] parameter. [NavActivity] calls us with an
+ * [AndroidViewBinding] which holds the `View` inflated from the file layout/content_main.xml
+ *
+ * @param drawerState the [DrawerState] we should use for our [ModalNavigationDrawer].
+ * @param onProfileClicked a lambda which should be called when a [ProfileItem] is clicked in our
+ * [JetchatDrawerContent].
+ * @param onChatClicked a lambda which should be called when a [ChatItem] is clicked in our
+ * [JetchatDrawerContent].
+ * @param content the `content` to be used by our [ModalNavigationDrawer], in our case it is an
+ * [AndroidViewBinding].
+ */
 @Composable
 fun JetchatDrawer(
     drawerState: DrawerState = rememberDrawerState(initialValue = Closed),

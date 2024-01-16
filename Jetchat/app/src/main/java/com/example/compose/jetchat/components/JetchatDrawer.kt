@@ -319,7 +319,14 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
 }
 
 /**
+ * This is used as a divider between widgets in the [Column] of [JetchatDrawerContent]. It just
+ * consists of a [Divider] whose `color` is a copy of the [ColorScheme.onSurface] color of our
+ * [MaterialTheme.colorScheme] with its `alpha` modified to be 0.12f.
  *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. One of our calls uses a [Modifier.padding] that adds 28.dp padding to both ends of our
+ * divider line, and the other call uses no `modifier` argument so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
  */
 @Composable
 fun DividerItem(modifier: Modifier = Modifier) {
@@ -330,7 +337,7 @@ fun DividerItem(modifier: Modifier = Modifier) {
 }
 
 /**
- *
+ * Preview of our [JetchatDrawerContent] in light theme.
  */
 @Composable
 @Preview
@@ -344,7 +351,7 @@ fun DrawerPreview() {
     }
 }
 /**
- *
+ * Preview of our [JetchatDrawerContent] in dark theme.
  */
 @Composable
 @Preview
