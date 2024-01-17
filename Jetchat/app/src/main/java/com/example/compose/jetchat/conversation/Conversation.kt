@@ -18,11 +18,13 @@
 
 package com.example.compose.jetchat.conversation
 
+import android.view.View
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -58,6 +60,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -72,6 +75,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
@@ -85,10 +89,13 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Entry point for a conversation screen.
+ * Entry point for a conversation screen, it is used in a call to [ComposeView.setContent] in the
+ * `onCreateView` override of [ConversationFragment] to create the [View] that `onCreateView` returns
+ * to its caller.
  *
  * @param uiState [ConversationUiState] that contains messages to display
  * @param navigateToProfile User action when navigation to a profile is requested
@@ -103,13 +110,13 @@ fun ConversationContent(
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { }
 ) {
-    val authorMe = stringResource(R.string.author_me)
-    val timeNow = stringResource(id = R.string.now)
+    val authorMe: String = stringResource(R.string.author_me)
+    val timeNow: String = stringResource(id = R.string.now)
 
-    val scrollState = rememberLazyListState()
-    val topBarState = rememberTopAppBarState()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
-    val scope = rememberCoroutineScope()
+    val scrollState: LazyListState = rememberLazyListState()
+    val topBarState: TopAppBarState = rememberTopAppBarState()
+    val scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
+    val scope: CoroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -123,26 +130,26 @@ fun ConversationContent(
         // Exclude ime and navigation bar padding so this can be added by the UserInput composable
         contentWindowInsets = ScaffoldDefaults
             .contentWindowInsets
-            .exclude(WindowInsets.navigationBars)
-            .exclude(WindowInsets.ime),
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-    ) { paddingValues ->
-        Column(Modifier.fillMaxSize().padding(paddingValues)) {
+            .exclude(insets = WindowInsets.navigationBars)
+            .exclude(insets = WindowInsets.ime),
+        modifier = modifier.nestedScroll(connection = scrollBehavior.nestedScrollConnection)
+    ) { paddingValues: PaddingValues ->
+        Column(Modifier.fillMaxSize().padding(paddingValues = paddingValues)) {
             Messages(
                 messages = uiState.messages,
                 navigateToProfile = navigateToProfile,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(weight = 1f),
                 scrollState = scrollState
             )
             UserInput(
-                onMessageSent = { content ->
+                onMessageSent = { content: String ->
                     uiState.addMessage(
-                        Message(authorMe, content, timeNow)
+                        Message(author = authorMe, content = content, timestamp = timeNow)
                     )
                 },
                 resetScroll = {
                     scope.launch {
-                        scrollState.scrollToItem(0)
+                        scrollState.scrollToItem(index = 0)
                     }
                 },
                 // let this element handle the padding so that the elevation is shown behind the
@@ -153,6 +160,9 @@ fun ConversationContent(
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChannelNameBar(
@@ -210,8 +220,14 @@ fun ChannelNameBar(
     )
 }
 
+/**
+ *
+ */
 const val ConversationTestTag = "ConversationTestTag"
 
+/**
+ *
+ */
 @Composable
 fun Messages(
     messages: List<Message>,
@@ -287,6 +303,9 @@ fun Messages(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun Message(
     onAuthorClick: (String) -> Unit,
@@ -335,6 +354,9 @@ fun Message(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun AuthorAndTextMessage(
     msg: Message,
@@ -382,6 +404,9 @@ private fun AuthorNameTimestamp(msg: Message) {
 
 private val ChatBubbleShape = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
 
+/**
+ *
+ */
 @Composable
 fun DayHeader(dayString: String) {
     Row(
@@ -410,6 +435,9 @@ private fun RowScope.DayHeaderLine() {
     )
 }
 
+/**
+ *
+ */
 @Composable
 fun ChatItemBubble(
     message: Message,
@@ -452,6 +480,9 @@ fun ChatItemBubble(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ClickableMessage(
     message: Message,
@@ -484,6 +515,9 @@ fun ClickableMessage(
     )
 }
 
+/**
+ *
+ */
 @Preview
 @Composable
 fun ConversationPreview() {
@@ -495,6 +529,9 @@ fun ConversationPreview() {
     }
 }
 
+/**
+ *
+ */
 @Preview
 @Composable
 fun ChannelBarPrev() {
@@ -503,6 +540,9 @@ fun ChannelBarPrev() {
     }
 }
 
+/**
+ *
+ */
 @Preview
 @Composable
 fun DayHeaderPrev() {

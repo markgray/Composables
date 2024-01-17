@@ -32,10 +32,16 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 
+/**
+ *
+ */
 class ConversationFragment : Fragment() {
 
     private val activityViewModel: MainViewModel by activityViewModels()
 
+    /**
+     *
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

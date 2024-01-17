@@ -19,7 +19,6 @@ package com.example.compose.jetchat.conversation
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -77,6 +76,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -100,7 +100,6 @@ import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -110,31 +109,68 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
+import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.delay
+import androidx.compose.ui.text.TextRange as TextRange1
 
+/**
+ *
+ */
 enum class InputSelector {
+    /**
+     *
+     */
     NONE,
+    /**
+     *
+     */
     MAP,
+    /**
+     *
+     */
     DM,
+    /**
+     *
+     */
     EMOJI,
+    /**
+     *
+     */
     PHONE,
+    /**
+     *
+     */
     PICTURE
 }
 
+/**
+ *
+ */
 enum class EmojiStickerSelector {
+    /**
+     *
+     */
     EMOJI,
+    /**
+     *
+     */
     STICKER
 }
 
+/**
+ *
+ */
 @Preview
 @Composable
 fun UserInputPreview() {
     UserInput(onMessageSent = {})
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserInput(
@@ -198,11 +234,11 @@ fun UserInput(
 
 private fun TextFieldValue.addText(newString: String): TextFieldValue {
     val newText = this.text.replaceRange(
-        this.selection.start,
-        this.selection.end,
-        newString
+        startIndex = this.selection.start,
+        endIndex = this.selection.end,
+        replacement = newString
     )
-    val newSelection = TextRange(
+    val newSelection = TextRange1(
         start = newText.length,
         end = newText.length
     )
@@ -241,6 +277,9 @@ private fun SelectorExpanded(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun FunctionalityNotAvailablePanel() {
     AnimatedVisibility(
@@ -390,10 +429,15 @@ private fun NotAvailablePopup(onDismissed: () -> Unit) {
     FunctionalityNotAvailablePopup(onDismissed)
 }
 
-val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
-var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
+/**
+ *
+ */
+val KeyboardShownKey: SemanticsPropertyKey<Boolean> = SemanticsPropertyKey<Boolean>(name = "KeyboardShownKey")
+/**
+ *
+ */
+var SemanticsPropertyReceiver.keyboardShownProperty: Boolean by KeyboardShownKey
 
-@OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
@@ -404,8 +448,8 @@ private fun UserInputText(
     onTextFieldFocused: (Boolean) -> Unit,
     focusState: Boolean
 ) {
-    val swipeOffset = remember { mutableStateOf(0f) }
-    var isRecordingMessage by remember { mutableStateOf(false) }
+    val swipeOffset = remember { mutableFloatStateOf(value = 0f) }
+    var isRecordingMessage by remember { mutableStateOf(value = false) }
     val a11ylabel = stringResource(id = R.string.textfield_desc)
     Row(
         modifier = Modifier
@@ -422,15 +466,15 @@ private fun UserInputText(
         ) { recording ->
             Box(Modifier.fillMaxSize()) {
                 if (recording) {
-                    RecordingIndicator { swipeOffset.value }
+                    RecordingIndicator { swipeOffset.floatValue }
                 } else {
                     UserInputTextField(
-                        textFieldValue,
-                        onTextChanged,
-                        onTextFieldFocused,
-                        keyboardType,
-                        focusState,
-                        Modifier.semantics {
+                        textFieldValue = textFieldValue,
+                        onTextChanged = onTextChanged,
+                        onTextFieldFocused = onTextFieldFocused,
+                        keyboardType = keyboardType,
+                        focusState = focusState,
+                        modifier = Modifier.semantics {
                             contentDescription = a11ylabel
                             keyboardShownProperty = keyboardShown
                         }
@@ -440,8 +484,8 @@ private fun UserInputText(
         }
         RecordButton(
             recording = isRecordingMessage,
-            swipeOffset = { swipeOffset.value },
-            onSwipeOffsetChange = { offset -> swipeOffset.value = offset },
+            swipeOffset = { swipeOffset.floatValue },
+            onSwipeOffsetChange = { offset -> swipeOffset.floatValue = offset },
             onStartRecording = {
                 val consumed = !isRecordingMessage
                 isRecordingMessage = true
@@ -567,6 +611,9 @@ private fun RecordingIndicator(swipeOffset: () -> Float) {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun EmojiSelector(
     onTextAdded: (String) -> Unit,
@@ -609,6 +656,9 @@ fun EmojiSelector(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ExtendedSelectorInnerButton(
     text: String,
@@ -638,6 +688,9 @@ fun ExtendedSelectorInnerButton(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun EmojiTable(
     onTextAdded: (String) -> Unit,
