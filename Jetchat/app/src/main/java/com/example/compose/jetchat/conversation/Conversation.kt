@@ -50,10 +50,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Surface
@@ -63,6 +65,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,6 +75,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
@@ -85,22 +89,58 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
+import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
+import com.example.compose.jetchat.components.JetchatDrawer
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 /**
  * Entry point for a conversation screen, it is used in a call to [ComposeView.setContent] in the
  * `onCreateView` override of [ConversationFragment] to create the [View] that `onCreateView` returns
- * to its caller.
+ * to its caller. We start by initializing our [String] variable `val authorMe` to the string with
+ * resource ID [R.string.author_me] ("me") and our [String] variable `val timeNow` to the string with
+ * resource ID [R.string.now] ("8:30 PM"). We initialize and remember our [LazyListState] variable
+ * `val scrollState`, initialize and remember our [TopAppBarState] variable `val topBarState`,
+ * initialize and remember our [TopAppBarScrollBehavior] variable `val scrollBehavio` to a pinned
+ * [TopAppBarScrollBehavior] that tracks nested-scroll callbacks and updates its
+ * [TopAppBarState.contentOffset] accordingly using `topBarState` as its `state` argument, and
+ * initialize and remember our [CoroutineScope] variable `val scope`.
+ *
+ * Our root Composable is a [Scaffold] whose `topBar` argument is a [ChannelNameBar] whose
+ * `channelName` argument is the [String] field [ConversationUiState.channelName] of our
+ * [uiState] parameter, whose `channelMembers` argument is the [Int] field
+ * [ConversationUiState.channelMembers] of our [uiState] parameter, whose `onNavIconPressed`
+ * argument is our [onNavIconPressed] lambda parameter, and whose `scrollBehavior` argument is our
+ * [TopAppBarScrollBehavior] variable `scrollBehavior`. The `contentWindowInsets` argument of the
+ * [Scaffold] starts with the [ScaffoldDefaults] containing various default values for the [Scaffold]
+ * component, then adds the [WindowInsets] supplied by `contentWindowInsets` (Default insets to be
+ * used and consumed by the scaffold content slot), then uses the [WindowInsets.exclude] on the result
+ * to exclude the `navigationBars` and `ime` [WindowInsets]. Its `modifier` argument chains to our
+ * [Modifier] parameter `modifier` a [Modifier.nestedScroll] whose `connection` argument is the
+ * [TopAppBarScrollBehavior.nestedScrollConnection] of our `scrollBehavior` variable (its a
+ * [NestedScrollConnection] that should be attached to a [Modifier.nestedScroll] in order to keep
+ * track of the scroll events).
+ *
+ * The `content` of the [Scaffold] is a [Column] whose `modifier` argument is a [Modifier.fillMaxSize]
+ * that causes the [Column] to occupy its entire incoming size constraints, to which is chained a
+ * [Modifier.padding] which adds the [PaddingValues] that the [Scaffold] passes to the `content`
+ * lambda to its padding. The `content` of the [Column] is a [Messages] Composable and a [UserInput]
+ * Composable.
  *
  * @param uiState [ConversationUiState] that contains messages to display
  * @param navigateToProfile User action when navigation to a profile is requested
  * @param modifier [Modifier] to apply to this layout node
- * @param onNavIconPressed Sends an event up when the user clicks on the menu
+ * @param onNavIconPressed Sends an event up when the user clicks on the menu. Our caller passes us
+ * a lambda which calls the [MainViewModel.openDrawer] method of our view model (which sets the
+ * [MutableStateFlow] of [Boolean] private variable which is read using the public read-only
+ * property [MainViewModel.drawerShouldBeOpened] to `true`, which will causes a [LaunchedEffect]
+ * to be composed which calls the [DrawerState.open] method of the [DrawerState] used by
+ * [JetchatDrawer] which opens the [ModalNavigationDrawer].
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,12 +150,12 @@ fun ConversationContent(
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { }
 ) {
-    val authorMe: String = stringResource(R.string.author_me)
+    val authorMe: String = stringResource(id = R.string.author_me)
     val timeNow: String = stringResource(id = R.string.now)
 
     val scrollState: LazyListState = rememberLazyListState()
     val topBarState: TopAppBarState = rememberTopAppBarState()
-    val scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
+    val scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(state = topBarState)
     val scope: CoroutineScope = rememberCoroutineScope()
 
     Scaffold(
@@ -134,7 +174,10 @@ fun ConversationContent(
             .exclude(insets = WindowInsets.ime),
         modifier = modifier.nestedScroll(connection = scrollBehavior.nestedScrollConnection)
     ) { paddingValues: PaddingValues ->
-        Column(Modifier.fillMaxSize().padding(paddingValues = paddingValues)) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .padding(paddingValues = paddingValues)
+        ) {
             Messages(
                 messages = uiState.messages,
                 navigateToProfile = navigateToProfile,

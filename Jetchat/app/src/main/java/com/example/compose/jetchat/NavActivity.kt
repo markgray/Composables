@@ -22,8 +22,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue.Closed
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,7 +44,9 @@ import kotlinx.coroutines.launch
 class NavActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    /**
+     *
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -53,8 +55,8 @@ class NavActivity : AppCompatActivity() {
             ComposeView(this).apply {
                 consumeWindowInsets = false
                 setContent {
-                    val drawerState = rememberDrawerState(initialValue = Closed)
-                    val drawerOpen by viewModel.drawerShouldBeOpened
+                    val drawerState: DrawerState = rememberDrawerState(initialValue = Closed)
+                    val drawerOpen: Boolean by viewModel.drawerShouldBeOpened
                         .collectAsStateWithLifecycle()
 
                     if (drawerOpen) {
@@ -102,6 +104,9 @@ class NavActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     *
+     */
     override fun onSupportNavigateUp(): Boolean {
         return findNavController().navigateUp() || super.onSupportNavigateUp()
     }
