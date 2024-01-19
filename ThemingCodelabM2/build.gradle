@@ -16,8 +16,8 @@
 
 buildscript {
     ext {
-        composeCompiler_version = '1.5.7'
-        kotlin_version = '1.9.21'
+        composeCompiler_version = '1.5.8'
+        kotlin_version = '1.9.22'
         ktlint_version = '0.45.2'
     }
     repositories {
