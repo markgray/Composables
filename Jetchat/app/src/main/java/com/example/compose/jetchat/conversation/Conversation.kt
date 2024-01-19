@@ -132,6 +132,24 @@ import kotlinx.coroutines.launch
  * lambda to its padding. The `content` of the [Column] is a [Messages] Composable and a [UserInput]
  * Composable.
  *
+ * The [Messages] Composable uses the [List] of [Message] from the [ConversationUiState.messages] of
+ * our [ConversationUiState] parameter [uiState] as its `messages` argument, its `navigateToProfile`
+ * argument is our [navigateToProfile] parameter, its `modifier` argument is a `ColumnScope`
+ * `Modifier.weight` whose `weight` argument is 1f causing it to use the entire incoming vertical
+ * constraint after its non-weighted siblings are messured and placed, and its `scrollState` argument
+ * is our [LazyListState] variable `scrollState`.
+ *
+ * The [UserInput] Composable uses a lambda as its `onMessageSent` argument which calls the
+ * [ConversationUiState.addMessage] method of our [ConversationUiState] parameter [uiState] with a
+ * new instance of [Message] to add it to the beginning of the [MutableList] of [Message] which is
+ * read using the [ConversationUiState.messages] property of our [ConversationUiState] parameter
+ * [uiState], its `resetScroll` argument is a lambda which uses the [CoroutineScope.launch] method
+ * of our [CoroutineScope] variable `scope` to launch a new coroutine lambda without blocking the
+ * current thread  which calls the [LazyListState.scrollToItem] method of our [LazyListState] variable
+ * `scrollState` to scroll the [LazyColumn] in [Messages] to `index` 0, and its `modifier` argument
+ * is a [Modifier.navigationBarsPadding] to add padding to accommodate the navigation bars insets,
+ * with a [Modifier.imePadding] chained to it to add padding to accommodate the ime insets.
+ *
  * @param uiState [ConversationUiState] that contains messages to display
  * @param navigateToProfile User action when navigation to a profile is requested
  * @param modifier [Modifier] to apply to this layout node
@@ -215,7 +233,7 @@ fun ChannelNameBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onNavIconPressed: () -> Unit = { }
 ) {
-    var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
+    var functionalityNotAvailablePopupShown by remember { mutableStateOf(value = false) }
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
@@ -266,7 +284,7 @@ fun ChannelNameBar(
 /**
  *
  */
-const val ConversationTestTag = "ConversationTestTag"
+const val ConversationTestTag: String = "ConversationTestTag"
 
 /**
  *
