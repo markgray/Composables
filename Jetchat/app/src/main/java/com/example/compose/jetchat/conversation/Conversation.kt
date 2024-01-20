@@ -49,6 +49,8 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,12 +62,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
+import androidx.compose.material3.Typography
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,6 +91,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
@@ -222,7 +228,35 @@ fun ConversationContent(
 }
 
 /**
+ * This is the `topBar` used by the [Scaffold] in [ConversationContent]. We start by initializing and
+ * remebering our [MutableState] wrapped [Boolean] variable `var functionalityNotAvailablePopupShown`
+ * to `false`. Next if `functionalityNotAvailablePopupShown` is `true` we compose our Composable
+ * [FunctionalityNotAvailablePopup] with its `onDismiss` argument a lambda which sets
+ * `functionalityNotAvailablePopupShown` to `false` again ([FunctionalityNotAvailablePopup] is an
+ * [AlertDialog] that displays the [Text] "Functionality not available" and calls its `onDismiss`
+ * lambda argument when its "CLOSE" [TextButton] is clicked). Our root Composable is a [JetchatAppBar]
+ * whose `modifier` argument is our [Modifier] parameter [modifier], whose `scrollBehavior` argument
+ * is our [TopAppBarScrollBehavior] parameter [scrollBehavior], qnd whose `onNavIconPressed` argument
+ * is our lambda parameter [onNavIconPressed]. The `title` argument of the [JetchatAppBar] is a
+ * [Column] whose `horizontalAlignment` argument is [Alignment.CenterHorizontally] causing it to
+ * center its children horizontally, and the `content` of the [Column] is a [Text] displaying our
+ * [String] parameter [channelName], using as its [TextStyle] the [Typography.titleMedium] of our
+ * [JetchatTheme] custom [MaterialTheme.typography], and this is followed by another [Text] displaying
+ * the formatted [String] value of our [Int] parameter [channelMembers], using as its [TextStyle] the
+ * [Typography.bodySmall] of our [JetchatTheme] custom [MaterialTheme.typography], with the `color`
+ * of the text the [ColorScheme.onSurfaceVariant] of our [JetchatTheme] custom [MaterialTheme.colorScheme].
+ * The `actions` of the [JetchatAppBar] are two [Icon]'s in a [Row]:
+ *  - an [Icon] displaying the `imageVector` [Icons.Outlined.Search] (a stylized magnifying glass),
+ *  whose `tint` is the [ColorScheme.onSurfaceVariant] of our [JetchatTheme] custom
+ *  [MaterialTheme.colorScheme], and whose `modifier` argument is a [Modifier.clickable] whose lambda
+ *  `onClick` argument sets `functionalityNotAvailablePopupShown` to `true` (causing the
+ *  [FunctionalityNotAvailablePopup] to "pop-up".
  *
+ *  - an [Icon] displaying the `imageVector` [Icons.Outlined.Info] (an "i" with a circle around it),
+ *  whose `tint` is the [ColorScheme.onSurfaceVariant] of our [JetchatTheme] custom
+ *  [MaterialTheme.colorScheme], and whose `modifier` argument is a [Modifier.clickable] whose lambda
+ *  `onClick` argument sets `functionalityNotAvailablePopupShown` to `true` (causing the
+ *  [FunctionalityNotAvailablePopup] to "pop-up".
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -233,7 +267,7 @@ fun ChannelNameBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onNavIconPressed: () -> Unit = { }
 ) {
-    var functionalityNotAvailablePopupShown by remember { mutableStateOf(value = false) }
+    var functionalityNotAvailablePopupShown: Boolean by remember { mutableStateOf(value = false) }
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
