@@ -316,12 +316,28 @@ fun ChannelNameBar(
 }
 
 /**
- *
+ * This is used as the `tag` argument of the [Modifier.testTag] used in the [LazyColumn] in the
+ * [Messages] Composable. An `androidTest` can then use `composeTestRule.onNodeWithTag` to refer to
+ * this `node` as is done in the `ConversationTest.kt` test file.
  */
 const val ConversationTestTag: String = "ConversationTestTag"
 
 /**
- *
+ * This Composable is used by [ConversationContent] to display the [List] of [Message] in the
+ * [ConversationUiState.messages] field of the [ConversationUiState] parameter that it is called
+ * with. We start by initializing and remembering our [CoroutineScope] variable `val scope` with a
+ * new instance. Then our root Composable is a [Box] whose `modifier` argument is our [Modifier]
+ * parameter [modifier]. In its `content` lambda it initializes its [String] variable `val authorMe`
+ * to the [String] with resource ID [R.string.author_me] ("me"), its root Composable is a [LazyColumn]
+ * whose `reverseLayout` argument is `true` (reverse the direction of scrolling and layout. When true,
+ * items are laid out in the reverse order and [LazyListState.firstVisibleItemIndex] == 0 means that
+ * column is scrolled to the bottom). The `state` argument of the [LazyColumn] is our [LazyListState]
+ * parameter [scrollState], and its `modifier` argument is a [Modifier.testTag] using our [String]
+ * field [ConversationTestTag] as its `tag` argument (allows an `androidTest` to use
+ * `composeTestRule.onNodeWithTag` to refer to this node), with a [Modifier.fillMaxSize] chained to
+ * that to have the [LazyColumn] occupy its entire incoming size constraints. The `content` lambda
+ * of the [LazyColumn] uses a `for` to loop over all of the [indices] of our [List] of [Message]
+ * parameter [messages]
  */
 @Composable
 fun Messages(
@@ -330,15 +346,15 @@ fun Messages(
     scrollState: LazyListState,
     modifier: Modifier = Modifier
 ) {
-    val scope = rememberCoroutineScope()
+    val scope: CoroutineScope = rememberCoroutineScope()
     Box(modifier = modifier) {
 
-        val authorMe = stringResource(id = R.string.author_me)
+        val authorMe: String = stringResource(id = R.string.author_me)
         LazyColumn(
             reverseLayout = true,
             state = scrollState,
             modifier = Modifier
-                .testTag(ConversationTestTag)
+                .testTag(tag = ConversationTestTag)
                 .fillMaxSize()
         ) {
             for (index in messages.indices) {
