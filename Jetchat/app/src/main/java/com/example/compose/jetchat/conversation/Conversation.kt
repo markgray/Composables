@@ -336,8 +336,56 @@ const val ConversationTestTag: String = "ConversationTestTag"
  * field [ConversationTestTag] as its `tag` argument (allows an `androidTest` to use
  * `composeTestRule.onNodeWithTag` to refer to this node), with a [Modifier.fillMaxSize] chained to
  * that to have the [LazyColumn] occupy its entire incoming size constraints. The `content` lambda
- * of the [LazyColumn] uses a `for` to loop over all of the [indices] of our [List] of [Message]
- * parameter [messages]
+ * of the [LazyColumn] uses a `for` [Int] `var index` to loop over all of the [indices] of our [List]
+ * of [Message] parameter [messages], and uses `index` to access each [Message] in order to initialize
+ * its variables:
+ *  - `val prevAuthor` to the [String] which is in field [Message.author] of the [Message] which is
+ *  in position `index` minus 1 or `null` if there is no such [Message] (which occurs for an `index`
+ *  of 0).
+ *  - `val nextAuthor` to the [String] which is in field [Message.author] of the [Message] which is
+ *  in position `index` plus 1 or `null` if there is no such [Message] (which occurs for an `index`
+ *  for the last [Message] in [messages]).
+ *  - `val content` to the [Message] which is in position `index`.
+ *  - `val isFirstMessageByAuthor` to `true` iff `prevAuthor` is equal to the [Message.author] field
+ *  of `content`.
+ *  - `val isLastMessageByAuthor` to `true` iff `nextAuthor` is equal to the [Message.author] field
+ *  of `content`.
+ *
+ * Then we use an `if`/`else` statement to compose into the UI an `item` for the [LazyColumn] either
+ * a [DayHeader] displaying the `dayString` "20 Aug" if `index` is equal to 1 less than the [List.size]
+ * of [messages], or else if `index` is equal to 2 it composes an `item` for the [LazyColumn] which
+ * holds a [DayHeader] displaying the `dayString` "Today".
+ *
+ * Having taken care of these two dividers we add an `item` to the [LazyColumn] displaying a new
+ * instance of [Message] whose `onAuthorClick` argument is a lambda which calls our [navigateToProfile]
+ * lambda parameter with the `name` [String] passed to `onAuthorClick`, whose `msg` argument is our
+ * [Message] variable `content`, whose `isUserMe` argument is `true` if the [Message.author] of
+ * `content` is equal to `authorMe`, whose `isFirstMessageByAuthor` argument is our `isFirstMessageByAuthor`
+ * variable and whose `isLastMessageByAuthor` argument is our `isLastMessageByAuthor` variable.
+ *
+ * Below the [LazyColumn] we initialize our [Float] variable `val jumpThreshold` to the pixel value
+ * of our constant [JumpToBottomThreshold] (which is 56.dp). Then we initialize and remember our
+ * [derivedStateOf] wrapped [Boolean] variable `val jumpToBottomButtonEnabled` to `true` if the
+ * [LazyListState.firstVisibleItemIndex] of [scrollState] is not equal to 0 (the first visible item
+ * is not the first one) or the [LazyListState.firstVisibleItemIndex] of [scrollState] is greater than
+ * our `jumpThreshold` variable (the offset is greater than the threshold).
+ *
+ * Then we compose into our UI a [JumpToBottom] Composable whose `enabled` argument is our
+ * `jumpToBottomButtonEnabled` variable, whose `onClicked` argument is a lambda which uses the
+ * [CoroutineScope.launch] method of `scope` to launch a coroutine which calls the
+ * [LazyListState.animateScrollToItem] of [scrollState] to scroll to `index` 0 (the bottom of the
+ * [LazyColumn]), and whose `modifier` argument is a `BoxScope` `Modifier.align` whose `alignment`
+ * argument is [Alignment.BottomCenter] to align it at the bottom center of the [Box].
+ *
+ * @param messages the [List] of [Message] we are to display. Our caller [ConversationContent] passes
+ * us the [ConversationUiState.messages] field of the current [ConversationUiState].
+ * @param navigateToProfile a lambda which will navigate to the `author` profile of the [String]
+ * passed the lambda.
+ * @param scrollState a [LazyListState] that we should use as the `state` argument of our [LazyColumn].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [ConversationContent] calls us with a `ColumnScope` `Modifier.weight` whose
+ * `weight` argument is 1f causing us to use our entire incoming vertical constraint after our
+ * non-weighted siblings are messured and placed.
  */
 @Composable
 fun Messages(
@@ -358,26 +406,26 @@ fun Messages(
                 .fillMaxSize()
         ) {
             for (index in messages.indices) {
-                val prevAuthor = messages.getOrNull(index - 1)?.author
-                val nextAuthor = messages.getOrNull(index + 1)?.author
-                val content = messages[index]
-                val isFirstMessageByAuthor = prevAuthor != content.author
-                val isLastMessageByAuthor = nextAuthor != content.author
+                val prevAuthor: String? = messages.getOrNull(index = index - 1)?.author
+                val nextAuthor: String? = messages.getOrNull(index = index + 1)?.author
+                val content: Message = messages[index]
+                val isFirstMessageByAuthor: Boolean = prevAuthor != content.author
+                val isLastMessageByAuthor: Boolean = nextAuthor != content.author
 
                 // Hardcode day dividers for simplicity
                 if (index == messages.size - 1) {
                     item {
-                        DayHeader("20 Aug")
+                        DayHeader(dayString = "20 Aug")
                     }
                 } else if (index == 2) {
                     item {
-                        DayHeader("Today")
+                        DayHeader(dayString = "Today")
                     }
                 }
 
                 item {
                     Message(
-                        onAuthorClick = { name -> navigateToProfile(name) },
+                        onAuthorClick = { name: String -> navigateToProfile(name) },
                         msg = content,
                         isUserMe = content.author == authorMe,
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
@@ -388,13 +436,13 @@ fun Messages(
         }
         // Jump to bottom button shows up when user scrolls past a threshold.
         // Convert to pixels:
-        val jumpThreshold = with(LocalDensity.current) {
+        val jumpThreshold: Float = with(LocalDensity.current) {
             JumpToBottomThreshold.toPx()
         }
 
         // Show the button if the first visible item is not the first one or if the offset is
         // greater than the threshold.
-        val jumpToBottomButtonEnabled by remember {
+        val jumpToBottomButtonEnabled: Boolean by remember {
             derivedStateOf {
                 scrollState.firstVisibleItemIndex != 0 ||
                     scrollState.firstVisibleItemScrollOffset > jumpThreshold
@@ -406,10 +454,10 @@ fun Messages(
             enabled = jumpToBottomButtonEnabled,
             onClicked = {
                 scope.launch {
-                    scrollState.animateScrollToItem(0)
+                    scrollState.animateScrollToItem(index = 0)
                 }
             },
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(alignment = Alignment.BottomCenter)
         )
     }
 }
