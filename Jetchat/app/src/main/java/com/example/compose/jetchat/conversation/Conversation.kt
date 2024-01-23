@@ -80,6 +80,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -463,7 +464,53 @@ fun Messages(
 }
 
 /**
+ * This Composable is used to display a [Message] instance in an `item` used in the [LazyColumn] in
+ * the Composable [Messages]. We start by initializing our [Color] variable `val borderColor`
+ * depending on whether our [Boolean] parameter [isUserMe] is `true` or not. If `true` we initialize
+ * it to the [ColorScheme.primary] color of our [JetchatTheme] custom [MaterialTheme.colorScheme],
+ * if `false` we initialize it to the [ColorScheme.tertiary] color. Then we initialize our [Modifier]
+ * variable `val spaceBetweenAuthors` depending on whether our [Boolean] parameter [isLastMessageByAuthor]
+ * is `true` or not. If `true` we initialize we initialize it to a [Modifier.padding] that will add
+ * 8.dp to the `top` of any Composable it is applied to, if `false` we initialize it a the empty,
+ * default, or starter [Modifier] that contains no elements. Our root Composable is a [Row] whose
+ * `modifier` argument is our [Modifier] variable `spaceBetweenAuthors`. If our [Boolean] parameter
+ * [isLastMessageByAuthor] is `true` we compose an [Image] which will display the avatar for the
+ * author whose resource ID is found in the [Message.authorImage] property of our [Message] parameter
+ * [msg], the `modifier` argument of the [Image] is a [Modifier.clickable] whose `onClick` argument
+ * is a lambda which calls our [onAuthorClick] lambda parameter with the [Message.author] property of
+ * our [Message] parameter [msg], to which is chained a [Modifier.padding] that adds 16.dp to both
+ * ends of the [Image], followed by a chain to a [Modifier.size] that sets its `size` to 42.dp,
+ * followed by a chain to a [Modifier.border] whose `width` is 1.5dp whose `color` is our [Color]
+ * variable `borderColor` and whose `shape` is a [CircleShape]. Chained after that is another
+ * [Modifier.border] whose `width` is 3.dp whose `color` is the [ColorScheme.surface] color of our
+ * [JetchatTheme] custom [MaterialTheme.colorScheme], and whose `shape` is a [CircleShape]. This is
+ * followed by a [Modifier.clip] whose `shape` is a [CircleShape], and at the end is a [RowScope.align]
+ * modifier whose `alignment` argument is a [Alignment.Top] which aligns the [Image] to the top of
+ * the [Row]. The `contentScale` argument is a [ContentScale.Crop] which scales the source uniformly
+ * maintaining the source's aspect ratio) so that both dimensions (width and height) of the source
+ * will be equal to or larger than the corresponding dimension of the destination.
  *
+ * On the other hand if our [Boolean] parameter [isLastMessageByAuthor] is `false` we just compose a
+ * [Spacer] whose `modifier` argument is a [Modifier.width] which sets its width to 74.dp to occupy
+ * the area occupied by the [Image] when [isLastMessageByAuthor] is `true`.
+ *
+ * At the end of the [Row] is an [AuthorAndTextMessage] Composable whose `msg` argument is our
+ * [Message] parameter [msg], whose `isUserMe` argument is our [Boolean] parameter [isUserMe], whose
+ * `isLastMessageByAuthor` argument is our [isLastMessageByAuthor] parameter, whose `authorClicked`
+ * argument is our [onAuthorClick] lambda parameter, and whose `modifier` argument is a
+ * [Modifier.padding] that adds 16.dp to the `end` of the [AuthorAndTextMessage], to which is chained
+ * a [RowScope.weight] whose `weight` argument is 1f causing the [AuthorAndTextMessage] to take up all
+ * the remaining incoming space constraints after its non-weighted siblings are measured and placed.
+ *
+ * @param onAuthorClick a lambda to be called with the [Message.author] property of our [Message]
+ * parameter [msg] when the [Image] displaying the [Message.authorImage] in our [Row] is clicked.
+ * @param msg the [Message] we are supposed to display.
+ * @param isUserMe if `true` then the [Message.author] field of our [Message] parameter [msg] is
+ * equal to the [String] with resource ID [R.string.author_me] ("me").
+ * @param isFirstMessageByAuthor if `true` the previous author is equal to the [Message.author] field
+ * of our [Message] parameter [msg].
+ * @param isLastMessageByAuthor if `true` the next author is equal to the [Message.author] field of
+ * our [Message] parameter [msg].
  */
 @Composable
 fun Message(
@@ -473,13 +520,13 @@ fun Message(
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean
 ) {
-    val borderColor = if (isUserMe) {
+    val borderColor: Color = if (isUserMe) {
         MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.tertiary
     }
 
-    val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
+    val spaceBetweenAuthors: Modifier = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
     Row(modifier = spaceBetweenAuthors) {
         if (isLastMessageByAuthor) {
             // Avatar
@@ -487,18 +534,18 @@ fun Message(
                 modifier = Modifier
                     .clickable(onClick = { onAuthorClick(msg.author) })
                     .padding(horizontal = 16.dp)
-                    .size(42.dp)
-                    .border(1.5.dp, borderColor, CircleShape)
-                    .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
-                    .clip(CircleShape)
-                    .align(Alignment.Top),
+                    .size(size = 42.dp)
+                    .border(width = 1.5.dp, color = borderColor, shape = CircleShape)
+                    .border(width = 3.dp, color = MaterialTheme.colorScheme.surface, shape = CircleShape)
+                    .clip(shape = CircleShape)
+                    .align(alignment = Alignment.Top),
                 painter = painterResource(id = msg.authorImage),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
         } else {
             // Space under avatar
-            Spacer(modifier = Modifier.width(74.dp))
+            Spacer(modifier = Modifier.width(width = 74.dp))
         }
         AuthorAndTextMessage(
             msg = msg,
@@ -508,7 +555,7 @@ fun Message(
             authorClicked = onAuthorClick,
             modifier = Modifier
                 .padding(end = 16.dp)
-                .weight(1f)
+                .weight(weight = 1f)
         )
     }
 }
