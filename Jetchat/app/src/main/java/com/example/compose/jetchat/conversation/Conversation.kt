@@ -88,10 +88,12 @@ import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -561,7 +563,12 @@ fun Message(
 }
 
 /**
- *
+ * This Composable displays its [Message] parameter, as well as an [AuthorNameTimestamp] it its
+ * [Boolean] parameter [isLastMessageByAuthor] is `true`. It is used by the [Message] Composable.
+ * The actual rendering of the [Text] in its [Message.content] property and possible [Image] whose
+ * resource ID might be in its nullable [Message.image] property is delegated to the [ChatItemBubble]
+ * Composable. Our root Composable is a [Column] whose `modifier` argument is our [Modifier] parameter
+ * [modifier].
  */
 @Composable
 fun AuthorAndTextMessage(
@@ -574,19 +581,26 @@ fun AuthorAndTextMessage(
 ) {
     Column(modifier = modifier) {
         if (isLastMessageByAuthor) {
-            AuthorNameTimestamp(msg)
+            AuthorNameTimestamp(msg = msg)
         }
-        ChatItemBubble(msg, isUserMe, authorClicked = authorClicked)
+        ChatItemBubble(message = msg, isUserMe = isUserMe, authorClicked = authorClicked)
         if (isFirstMessageByAuthor) {
             // Last bubble before next author
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(height = 8.dp))
         } else {
             // Between bubbles
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(height = 4.dp))
         }
     }
 }
 
+/**
+ * Displays the [Message.author], and [Message.timestamp] properties of its [Message] parameter [msg]
+ * in [Text] Composables.
+ *
+ * @param msg the [Message] containing the [Message.author], and [Message.timestamp] properties we
+ * are to display.
+ */
 @Composable
 private fun AuthorNameTimestamp(msg: Message) {
     // Combine author and timestamp for a11y.
@@ -595,14 +609,14 @@ private fun AuthorNameTimestamp(msg: Message) {
             text = msg.author,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
-                .alignBy(LastBaseline)
-                .paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
+                .alignBy(alignmentLine = LastBaseline)
+                .paddingFrom(alignmentLine = LastBaseline, after = 8.dp) // Space to 1st bubble
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(width = 8.dp))
         Text(
             text = msg.timestamp,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.alignBy(LastBaseline),
+            modifier = Modifier.alignBy(alignmentLine = LastBaseline),
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
@@ -618,7 +632,7 @@ fun DayHeader(dayString: String) {
     Row(
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 16.dp)
-            .height(16.dp)
+            .height(height = 16.dp)
     ) {
         DayHeaderLine()
         Text(
@@ -651,7 +665,7 @@ fun ChatItemBubble(
     authorClicked: (String) -> Unit
 ) {
 
-    val backgroundBubbleColor = if (isUserMe) {
+    val backgroundBubbleColor: Color = if (isUserMe) {
         MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.surfaceVariant
@@ -669,16 +683,16 @@ fun ChatItemBubble(
             )
         }
 
-        message.image?.let {
-            Spacer(modifier = Modifier.height(4.dp))
+        message.image?.let { imageResourceID: Int ->
+            Spacer(modifier = Modifier.height(height = 4.dp))
             Surface(
                 color = backgroundBubbleColor,
                 shape = ChatBubbleShape
             ) {
                 Image(
-                    painter = painterResource(it),
+                    painter = painterResource(id = imageResourceID),
                     contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(160.dp),
+                    modifier = Modifier.size(size = 160.dp),
                     contentDescription = stringResource(id = R.string.attached_image)
                 )
             }
@@ -695,9 +709,9 @@ fun ClickableMessage(
     isUserMe: Boolean,
     authorClicked: (String) -> Unit
 ) {
-    val uriHandler = LocalUriHandler.current
+    val uriHandler: UriHandler = LocalUriHandler.current
 
-    val styledMessage = messageFormatter(
+    val styledMessage: AnnotatedString = messageFormatter(
         text = message.content,
         primary = isUserMe
     )
@@ -712,7 +726,7 @@ fun ClickableMessage(
                 .firstOrNull()
                 ?.let { annotation ->
                     when (annotation.tag) {
-                        SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
+                        SymbolAnnotationType.LINK.name -> uriHandler.openUri(uri = annotation.item)
                         SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)
                         else -> Unit
                     }
