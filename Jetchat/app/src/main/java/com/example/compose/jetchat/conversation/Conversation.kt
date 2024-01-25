@@ -104,6 +104,9 @@ import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.JetchatDrawer
 import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
+import com.example.compose.jetchat.profile.ProfileFragment
+import com.example.compose.jetchat.profile.ProfileScreen
+import com.example.compose.jetchat.profile.ProfileScreenState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -568,7 +571,44 @@ fun Message(
  * The actual rendering of the [Text] in its [Message.content] property and possible [Image] whose
  * resource ID might be in its nullable [Message.image] property is delegated to the [ChatItemBubble]
  * Composable. Our root Composable is a [Column] whose `modifier` argument is our [Modifier] parameter
- * [modifier].
+ * [modifier]. In the `content` of the [Column] we check if our [Boolean] parameter [isLastMessageByAuthor]
+ * is `true` and if so we compose an [AuthorNameTimestamp] Composable whose `msg` argument is our
+ * [Message] parameter [msg] (this displays the [Message.author], and [Message.timestamp] properties
+ * of its [Message] parameter [msg] in [Text] Composables, and we only want to display this if the
+ * [Message] before ours in the thread is not written by the author of this [Message]). The next
+ * Composable in the [Column] is a [ChatItemBubble] whose `message` argument is our [Message] paramter
+ * [msg] (the [Message] it will display), whose `isUserMe` argument is our [Boolean] parameter [isUserMe]
+ * (if `true` the background [Color] used will be different), and whose `authorClicked` argument is
+ * our lambda parameter [authorClicked] (it will be called with the name of the author of the [Message]
+ * when the [ClickableMessage] in the [ChatItemBubble] is clicked). Then we use the value of our
+ * [Boolean] parameter [isFirstMessageByAuthor] to decide how bit a [Spacer] to use at the end of our
+ * [AuthorAndTextMessage], if `true` we use a [Spacer] whose height is 8.dp (Last bubble before next
+ * author), and if `false` we use a [Spacer] whose height is 4.dp (space between bubbles written by
+ * the same author).
+ *
+ * @param msg the [Message] we are to display.
+ * @param isUserMe if `true` the [Message.author] is equal to the [String] with resource ID
+ * [R.string.author_me] ("me"), and this effects the [Color] used to display the [Message].
+ * @param isFirstMessageByAuthor if `true` the author of the [Message] before ours in the [List] of
+ * [Message] is different from our [Message.author], and we will want to display a bigger [Spacer]
+ * between these two [AuthorAndTextMessage]. NOTE: the `reverseLayout` argument of the [LazyColumn]
+ * we are displayed in is `true` so items are laid out in reverse order so the next [Message] to be
+ * displayed is actually the one before us in the [List].
+ * @param isLastMessageByAuthor if `true` the author of the [Message] after ours in the [List] of
+ * [Message] is different from our [Message.author], and we will want to display an [AuthorNameTimestamp].
+ * NOTE: the `reverseLayout` argument of the [LazyColumn] we are displayed in is `true` so items are
+ * laid out in the reverse order so the [Message] that was displayed before us is actually the one
+ * after us in the [List].
+ * @param authorClicked a lambda that should be called with the author name when a reference to an
+ * author is clicked. The `onCreateView` override of [ConversationFragment] passes down through the
+ * hierarchy a lambda which navigates to the destination [R.id.nav_profile] with the [String] passed
+ * the lambda as its `args` which navigates to the [ProfileFragment], where the the author's
+ * [ProfileScreenState] is displayed by a [ProfileScreen].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [Message] passes us a [Modifier.padding] which adds 16.dp to the end of our
+ * [AuthorAndTextMessage], to which it chains a [RowScope.weight] whose `weight` argument is 1f
+ * causing us to take up all the [Row]'s incoming space constraint after our unweighted siblings are
+ * measured and placed.
  */
 @Composable
 fun AuthorAndTextMessage(
@@ -724,7 +764,7 @@ fun ClickableMessage(
             styledMessage
                 .getStringAnnotations(start = it, end = it)
                 .firstOrNull()
-                ?.let { annotation ->
+                ?.let { annotation: AnnotatedString.Range<String> ->
                     when (annotation.tag) {
                         SymbolAnnotationType.LINK.name -> uriHandler.openUri(uri = annotation.item)
                         SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)

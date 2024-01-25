@@ -53,7 +53,7 @@ class ConversationFragment : Fragment() {
             JetchatTheme {
                 ConversationContent(
                     uiState = exampleUiState,
-                    navigateToProfile = { user ->
+                    navigateToProfile = { user: String ->
                         // Click callback
                         val bundle = bundleOf("userId" to user)
                         findNavController().navigate(
