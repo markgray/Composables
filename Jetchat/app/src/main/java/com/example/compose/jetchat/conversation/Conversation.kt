@@ -636,7 +636,24 @@ fun AuthorAndTextMessage(
 
 /**
  * Displays the [Message.author], and [Message.timestamp] properties of its [Message] parameter [msg]
- * in [Text] Composables.
+ * in [Text] Composables. Our root Composable is a [Row] whose `modifier` argument is a
+ * [Modifier.semantics] whose `mergeDescendants` argument is `true` causing the [Row] and its
+ * descendants to be treated as one logical entity for accessibility purposes. The `content` of the
+ * row is:
+ *  - A [Text] displaying as its `text` the [String] property [Message.author] of our [Message]
+ *  parameter [msg], using as its [TextStyle] the `style` [Typography.titleMedium] of our
+ *  [JetchatTheme] custom [MaterialTheme.typography], and its `modifier` argument is a
+ *  [RowScope.alignBy] whose `alignmentLine` argument is [LastBaseline] causing it to be aligned by
+ *  the baseline of its last line, to which is chained a [Modifier.paddingFrom] whose `alignmentLine`
+ *  argument is [LastBaseline] which causes its `after` argument to add 8.dp spacing to the `bottom`
+ *  of the [Text] to Space to the 1st bubble
+ *  - A [Spacer] whose `modifier` argument is a [Modifier.width] which specifies 8.dp as its `width`.
+ *  - A [Text] displaying as its `text` the [String] property [Message.timestamp] of our [Message]
+ *  parameter [msg], using as its [TextStyle] the `style` [Typography.bodySmall] of our [JetchatTheme]
+ *  custom [MaterialTheme.typography], and its `modifier` argument is a [RowScope.alignBy] whose
+ *  `alignmentLine` argument is [LastBaseline] causing it to be aligned by the baseline of its last
+ *  line, and its `color` the [Color] specified for the [ColorScheme.onSurfaceVariant] of our
+ *  [JetchatTheme] custom [MaterialTheme.colorScheme].
  *
  * @param msg the [Message] containing the [Message.author], and [Message.timestamp] properties we
  * are to display.
@@ -662,10 +679,29 @@ private fun AuthorNameTimestamp(msg: Message) {
     }
 }
 
-private val ChatBubbleShape = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
+/**
+ * The [RoundedCornerShape] we use for the `shape` argument of the two [Surface] used in the
+ * [ChatItemBubble] Composable, its `topStart` corner is a small radous of 4.dp and all the other
+ * corners have a large 20.dp radius.
+ */
+private val ChatBubbleShape = RoundedCornerShape(
+    topStart = 4.dp,
+    topEnd = 20.dp,
+    bottomEnd = 20.dp,
+    bottomStart = 20.dp
+)
 
 /**
- *
+ * This is used in `item`'s of the [Messages] Composable in between [Message] Composables of its
+ * [LazyColumn] to display a header for the date that the following [Message]'s occurred on, they
+ * are used as Hardcoded day dividers for simplicity before the last [Message] (dayString = "20 Aug")
+ * and the [Message] at `index` 2 (dayString = "Today"). Our root Composable is a [Row] whose
+ * `modifier` argument is a [Modifier.padding] whose `vertical` argument adds 8.dp to the `top` and
+ * bottom of the [Row] and whose `horizontal` argument adds 16.dp padding to both ends of the [Row],
+ * and to this is chained a [Modifier.height] that sets its height to 16.dp. The `content` of the
+ * [Row] is a [DayHeaderLine] (which is a [Alignment.CenterVertically] light [Divider]), followed by
+ * [Text] displaying as its `text` our [String] parameter [dayString], whose `modifier` argument is
+ * a [Modifier.padding]
  */
 @Composable
 fun DayHeader(dayString: String) {
@@ -689,8 +725,8 @@ fun DayHeader(dayString: String) {
 private fun RowScope.DayHeaderLine() {
     Divider(
         modifier = Modifier
-            .weight(1f)
-            .align(Alignment.CenterVertically),
+            .weight(weight = 1f)
+            .align(alignment = Alignment.CenterVertically),
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
     )
 }
