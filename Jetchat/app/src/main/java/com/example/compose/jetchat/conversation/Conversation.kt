@@ -701,7 +701,12 @@ private val ChatBubbleShape = RoundedCornerShape(
  * and to this is chained a [Modifier.height] that sets its height to 16.dp. The `content` of the
  * [Row] is a [DayHeaderLine] (which is a [Alignment.CenterVertically] light [Divider]), followed by
  * [Text] displaying as its `text` our [String] parameter [dayString], whose `modifier` argument is
- * a [Modifier.padding]
+ * a [Modifier.padding] which adds 16.dp horizontal padding to each end, its `style` argument is
+ * the [Typography.labelSmall] of our [JetchatTheme] custom [MaterialTheme.typography], with the
+ * `color` of the `text` the [ColorScheme.onSurfaceVariant] of our [JetchatTheme] custom
+ * [MaterialTheme.colorScheme]. And at the end of the [Row] is another [DayHeaderLine] Composable.
+ *
+ * @param dayString the date we are supposed to display in our [Text].
  */
 @Composable
 fun DayHeader(dayString: String) {
@@ -721,6 +726,17 @@ fun DayHeader(dayString: String) {
     }
 }
 
+/**
+ * This Composable is used by [DayHeader] to draw a light [Divider] line at the begining and end of
+ * the [Text]. It is defined as an extension function of [RowScope] so that we can access
+ * [RowScope.weight] in the `modifier` argument of our [Divider], which we use to request a `weight`
+ * of 1f causing the two [DayHeaderLine] used by [DayHeader] to split all remaining space after the
+ * unweighted [Text] in the middle is measured and placed, and to this [Modifier] is chained a
+ * [RowScope.align] whose `alignment` argument of [Alignment.CenterVertically] causes the [Divider]
+ * to centered at the middle of the [Row]. The `color` of the [Divider] line is a copy of the
+ * [ColorScheme.onSurface] of our [JetchatTheme] custom [MaterialTheme.colorScheme] with the `alpha`
+ * set to 0.12f.
+ */
 @Composable
 private fun RowScope.DayHeaderLine() {
     Divider(
@@ -732,7 +748,34 @@ private fun RowScope.DayHeaderLine() {
 }
 
 /**
+ * This Composable is used by [AuthorAndTextMessage] to display our [Message] parameter [message] in
+ * a [ClickableMessage] as well as a possible [Image] if the [Message.image] property of [message]
+ * is not `null`. We start by initializing our [Color] variable `val backgroundBubbleColor` to the
+ * [ColorScheme.primary] color of our [JetchatTheme] custom [MaterialTheme.colorScheme] is our
+ * [Boolean] parameter [isUserMe] is `true` or to the [ColorScheme.surfaceVariant] color if it is
+ * `false`. Then our root Composable is a [Column] whose top child is a [Surface] whose `color`
+ * argument is our [Color] variable `backgroundBubbleColor` and whose `shape` argument is our
+ * [RoundedCornerShape] field [ChatBubbleShape]. The `content` of the [Surface] is a [ClickableMessage]
+ * whose `message` argument is our [Message] parameter [message], whose `isUserMe` argument is our
+ * [Boolean] parameter [isUserMe], and whose `authorClicked` argument is our lambda parameter
+ * [authorClicked]. Then if the [Message.image] property of [message] is not `null` we compose the
+ * following:
+ *  - a [Spacer] whose modifier argument is a [Modifier.height] which sets the `height` of the
+ *  [Spacer] to 4.dp
+ *  - a [Surface] whose `color` arguemt is our [Color] variable `backgroundBubbleColor` and whose
+ *  `shape` argument is our [RoundedCornerShape] field [ChatBubbleShape]. The `content` of this
+ *  [Surface] is an [Image] displaying the drawable with the [Int] resource ID of the [Message.image]
+ *  property, whose `contentScale` argument is [ContentScale.Fit] causing it to Scale the source
+ *  uniformly (maintaining the source's aspect ratio) so that both dimensions (width and height) of
+ *  the source will be equal to or less than the corresponding dimension of the destination, whose
+ *  `modifier` is a [Modifier.size] setting its size to 160.dp, and whose `contentDescription` is
+ *  the [String] with resource ID [R.string.attached_image] ("Attached image").
  *
+ * @param message the [Message] we are to display.
+ * @param isUserMe if `true` the [Message.author] of [message] is equal to the [String] with resource
+ * ID [R.string.author_me] ("me").
+ * @param authorClicked a lambda which can be called to navigate to the `author` profile of the
+ * [String] passed it.
  */
 @Composable
 fun ChatItemBubble(
