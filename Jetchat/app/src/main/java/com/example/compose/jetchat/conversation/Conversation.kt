@@ -820,7 +820,37 @@ fun ChatItemBubble(
 }
 
 /**
+ * This Composable creates an [AnnotatedString] from the [String] field [Message.content] of our
+ * [Message] parameter [message] which contains "tags" which allows the `onClick` lambda of our
+ * [ClickableText] root Composable to respond appropriately when the user clicks somewhere on the
+ * [Message]. We start by initializing our [UriHandler] variable `val uriHandler` to the `current`
+ * CompositionLocal to provide functionality related to an URL, e.g. open URI. Then we initialize
+ * our [AnnotatedString] variable `val styledMessage` by having our method [messageFormatter] parse
+ * the `text` it finds in the [Message.content] property of [message], tagging ranges which contain
+ * substrings that should produce an action when clicked and coloring the text appropriately when
+ * our [Boolean] parameter [isUserMe] is `true`. Then our sole Composable is a [ClickableText] whose
+ * `text` is our [AnnotatedString] variable `styledMessage`, whose `style` is a copy of the
+ * [Typography.bodyLarge] of our [JetchatTheme] custom [MaterialTheme.typography] with its `color`
+ * property set to the `current` [LocalContentColor], whose `modifier` argument is a [Modifier.padding]
+ * which adds 16.dp to `all` of its sides, and the `onClick` lambda argument that is called with the
+ * clicked character's `offset` uses the [AnnotatedString.getStringAnnotations] method of
+ * `styledMessage` to retrieve the [List] of [AnnotatedString.Range] of [String] of the character at
+ * the `offset` into the [AnnotatedString], then it uses the [firstOrNull] filter to retrieve the
+ * first [AnnotatedString.Range] of [String] in the [List] (or `null`) and if that is not `null` it
+ * uses the [let] extension function to feed a `when` switch with that `annotation` to switch on the
+ * [AnnotatedString.Range.tag]:
+ *  - [SymbolAnnotationType.LINK.name] it calls the [UriHandler.openUri] method of our `uriHandler`
+ *  variable with its `uri` argument the [AnnotatedString.Range.item] property of the `annotation`
+ *  - [SymbolAnnotationType.PERSON.name] it calls our [authorClicked] lambda parameter with the
+ *  [AnnotatedString.Range.item] property of the `annotation`.
+ *  - `else` [Unit]
  *
+ * @param message the [Message] that we are to have parsed into an [AnnotatedString] which we can
+ * feed to our [ClickableText] Composable.
+ * @param isUserMe if `true` the [Message.author] of [message] is equal to the [String] with resource
+ * ID [R.string.author_me] ("me"), and our text should be colored appropriately.
+ * @param authorClicked lambda which can be called to navigate to the author profile of the [String]
+ * passed it.
  */
 @Composable
 fun ClickableMessage(
@@ -838,10 +868,10 @@ fun ClickableMessage(
     ClickableText(
         text = styledMessage,
         style = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
-        modifier = Modifier.padding(16.dp),
-        onClick = {
+        modifier = Modifier.padding(all = 16.dp),
+        onClick = { offset: Int ->
             styledMessage
-                .getStringAnnotations(start = it, end = it)
+                .getStringAnnotations(start = offset, end = offset)
                 .firstOrNull()
                 ?.let { annotation: AnnotatedString.Range<String> ->
                     when (annotation.tag) {
@@ -855,7 +885,7 @@ fun ClickableMessage(
 }
 
 /**
- *
+ * Preview of our [ConversationContent] Composable.
  */
 @Preview
 @Composable
@@ -869,7 +899,7 @@ fun ConversationPreview() {
 }
 
 /**
- *
+ * Preview of our [ChannelNameBar] Composable.
  */
 @Preview
 @Composable
@@ -880,7 +910,7 @@ fun ChannelBarPrev() {
 }
 
 /**
- *
+ * Preview of our [DayHeader] Composable.
  */
 @Preview
 @Composable
@@ -888,4 +918,7 @@ fun DayHeaderPrev() {
     DayHeader("Aug 6")
 }
 
+/**
+ * When the user scrolls past this threshold the Jump to bottom button shows up
+ */
 private val JumpToBottomThreshold = 56.dp

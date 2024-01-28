@@ -30,17 +30,35 @@ import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 
-// Regex containing the syntax tokens
-val symbolPattern by lazy {
-    Regex("""(https?://[^\s\t\n]+)|(`[^`]+`)|(@\w+)|(\*[\w]+\*)|(_[\w]+_)|(~[\w]+~)""")
+/**
+ * Regex containing the syntax tokens
+ */
+val symbolPattern: Regex by lazy {
+    @Suppress("RegExpSimplifiable")
+    Regex(pattern = """(https?://[^\s\t\n]+)|(`[^`]+`)|(@\w+)|(\*[\w]+\*)|(_[\w]+_)|(~[\w]+~)""")
 }
 
-// Accepted annotations for the ClickableTextWrapper
+/**
+ * Accepted annotations for the ClickableTextWrapper
+ */
 enum class SymbolAnnotationType {
-    PERSON, LINK
+    /**
+     *
+     */
+    PERSON,
+
+    /**
+     *
+     */
+    LINK
 }
+/**
+ *
+ */
 typealias StringAnnotation = AnnotatedString.Range<String>
-// Pair returning styled content and annotation for ClickableText when matching syntax token
+/**
+ * Pair returning styled content and annotation for ClickableText when matching syntax token
+ */
 typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
 
 /**
@@ -60,21 +78,21 @@ fun messageFormatter(
     text: String,
     primary: Boolean
 ): AnnotatedString {
-    val tokens = symbolPattern.findAll(text)
+    val tokens: Sequence<MatchResult> = symbolPattern.findAll(input = text)
 
     return buildAnnotatedString {
 
         var cursorPosition = 0
 
-        val codeSnippetBackground =
+        val codeSnippetBackground: Color =
             if (primary) {
                 MaterialTheme.colorScheme.secondary
             } else {
                 MaterialTheme.colorScheme.surface
             }
 
-        for (token in tokens) {
-            append(text.slice(cursorPosition until token.range.first))
+        for (token: MatchResult in tokens) {
+            append(text.slice(indices = cursorPosition until token.range.first))
 
             val (annotatedString, stringAnnotation) = getSymbolAnnotation(
                 matchResult = token,
@@ -82,7 +100,7 @@ fun messageFormatter(
                 primary = primary,
                 codeSnippetBackground = codeSnippetBackground
             )
-            append(annotatedString)
+            append(text = annotatedString)
 
             if (stringAnnotation != null) {
                 val (item, start, end, tag) = stringAnnotation
@@ -93,9 +111,9 @@ fun messageFormatter(
         }
 
         if (!tokens.none()) {
-            append(text.slice(cursorPosition..text.lastIndex))
+            append(text.slice(indices = cursorPosition..text.lastIndex))
         } else {
-            append(text)
+            append(text = text)
         }
     }
 }
@@ -128,6 +146,7 @@ private fun getSymbolAnnotation(
                 tag = SymbolAnnotationType.PERSON.name
             )
         )
+
         '*' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('*'),
@@ -135,6 +154,7 @@ private fun getSymbolAnnotation(
             ),
             null
         )
+
         '_' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('_'),
@@ -142,6 +162,7 @@ private fun getSymbolAnnotation(
             ),
             null
         )
+
         '~' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('~'),
@@ -149,6 +170,7 @@ private fun getSymbolAnnotation(
             ),
             null
         )
+
         '`' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('`'),
@@ -161,6 +183,7 @@ private fun getSymbolAnnotation(
             ),
             null
         )
+
         'h' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value,
@@ -175,6 +198,7 @@ private fun getSymbolAnnotation(
                 tag = SymbolAnnotationType.LINK.name
             )
         )
+
         else -> SymbolAnnotation(AnnotatedString(matchResult.value), null)
     }
 }

@@ -33,20 +33,34 @@ import com.example.compose.jetchat.data.exampleUiState
 import com.example.compose.jetchat.theme.JetchatTheme
 
 /**
- *
+ * This is the `app:startDestination` of our navigation graph, its ID is [R.id.nav_home].
  */
 class ConversationFragment : Fragment() {
 
+    /**
+     * The [MainViewModel] used by our activity.
+     */
     private val activityViewModel: MainViewModel by activityViewModels()
 
     /**
+     * Called to have the fragment instantiate its user interface view. This will be called between
+     * [onCreate] and [onViewCreated]. It is recommended to only inflate the layout in this method
+     * and move logic that operates on the returned [View] to [onViewCreated].
      *
+     * @param inflater – The [LayoutInflater] object that can be used to inflate any views in the
+     * fragment.
+     * @param container – If non-`null`, this is the parent view that the fragment's UI will be
+     * attached to. The fragment should not add the view itself, but this can be used to generate
+     * the LayoutParams of the view.
+     * @param savedInstanceState – If non-`null`, this fragment is being re-constructed from a
+     * previous saved state as given here.
+     * @return the [View] for the fragment's UI, or `null`.
      */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = ComposeView(inflater.context).apply {
+    ): View = ComposeView(context = inflater.context).apply {
         layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
         setContent {
@@ -55,10 +69,10 @@ class ConversationFragment : Fragment() {
                     uiState = exampleUiState,
                     navigateToProfile = { user: String ->
                         // Click callback
-                        val bundle = bundleOf("userId" to user)
+                        val bundle: Bundle = bundleOf("userId" to user)
                         findNavController().navigate(
-                            R.id.nav_profile,
-                            bundle
+                            resId = R.id.nav_profile,
+                            args = bundle
                         )
                     },
                     onNavIconPressed = {
