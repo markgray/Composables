@@ -50,7 +50,7 @@ fun JumpToBottom(
 ) {
     // Show Jump to Bottom button
     val transition = updateTransition(
-        if (enabled) Visibility.VISIBLE else Visibility.GONE,
+        targetState = if (enabled) Visibility.VISIBLE else Visibility.GONE,
         label = "JumpToBottom visibility animation"
     )
     val bottomOffset by transition.animateDp(label = "JumpToBottom offset animation") {
@@ -65,7 +65,7 @@ fun JumpToBottom(
             icon = {
                 Icon(
                     imageVector = Icons.Filled.ArrowDownward,
-                    modifier = Modifier.height(18.dp),
+                    modifier = Modifier.height(height = 18.dp),
                     contentDescription = null
                 )
             },
@@ -77,11 +77,14 @@ fun JumpToBottom(
             contentColor = MaterialTheme.colorScheme.primary,
             modifier = modifier
                 .offset(x = 0.dp, y = -bottomOffset)
-                .height(36.dp)
+                .height(height = 36.dp)
         )
     }
 }
 
+/**
+ * Preview of our [JumpToBottom] custom [ExtendedFloatingActionButton]
+ */
 @Preview
 @Composable
 fun JumpToBottomPreview() {
