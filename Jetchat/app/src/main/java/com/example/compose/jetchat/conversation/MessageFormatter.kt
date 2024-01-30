@@ -16,10 +16,12 @@
 
 package com.example.compose.jetchat.conversation
 
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -43,19 +45,23 @@ val symbolPattern: Regex by lazy {
  */
 enum class SymbolAnnotationType {
     /**
-     *
+     * This [SymbolAnnotationType] is added when the token matched is '@', and causes the [ClickableText]
+     * to call its `authorClicked` lambda argument with the [AnnotatedString.Range.item]
      */
     PERSON,
 
     /**
-     *
+     * This [SymbolAnnotationType] is added when the token matched is 'h', and causes the [ClickableText]
+     * to call [UriHandler.openUri] method of its [UriHandler] with the [AnnotatedString.Range.item].
      */
     LINK
 }
+
 /**
  *
  */
 typealias StringAnnotation = AnnotatedString.Range<String>
+
 /**
  * Pair returning styled content and annotation for ClickableText when matching syntax token
  */
@@ -71,6 +77,7 @@ typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
  * | `MyClass.myMethod` -> inline code styling
  *
  * @param text contains message to be parsed
+ * @param primary
  * @return AnnotatedString with annotations used inside the ClickableText wrapper
  */
 @Composable
