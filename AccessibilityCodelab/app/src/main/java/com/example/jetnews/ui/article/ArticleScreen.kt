@@ -28,7 +28,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -90,7 +90,7 @@ fun ArticleScreen(
  * `title` argument is a [Text] displaying the [Publication.name] of the [Post.publication] field
  * of our [post] parameter, and whose `navigationIcon` argument is an [IconButton] whose `onClick`
  * is our [onBack] parameter and whose `content` is an [Icon] whose `imageVector` is the drawable
- * [Icons.Filled.ArrowBack], and whose `contentDescription` is the [String] with resource ID
+ * [Icons.AutoMirrored.Filled.ArrowBack], and whose `contentDescription` is the [String] with resource ID
  * [R.string.cd_navigate_up] ("Navigate up"). The `content` of the [Scaffold] is a [PostContent]
  * Composable whose `post` argument is our [post] parameter, and whose `modifier` argument is a
  * [Modifier.padding] of the [PaddingValues] passed the `content` in `innerPadding` with a
@@ -123,7 +123,7 @@ fun ArticleScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(
                                 R.string.cd_navigate_up
                             )

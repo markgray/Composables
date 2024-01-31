@@ -38,8 +38,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ListAlt
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,7 +80,7 @@ import com.example.jetnews.ui.theme.Red700
  *  `label` argument is the [String] "Home", whose `isSelected` argument is `true` if our [String]
  *  parameter [currentRoute] is equal to [MainDestinations.HOME_ROUTE], and whose `action` argument
  *  is a lambda which calls our [navigateToHome] parameter then calls our [closeDrawer] parameter.
- *  - A [DrawerButton] whose `icon` argument is [Icons.Filled.ListAlt] (a stylized "list"), whose
+ *  - A [DrawerButton] whose `icon` argument is [Icons.AutoMirrored.Filled.ListAlt] (a stylized "list"), whose
  *  `label` argument is the [String] "Interests", whose `isSelected` argument is `true` if our
  *  [String] parameter [currentRoute] is equal to [MainDestinations.INTERESTS_ROUTE], and whose
  *  `action` argument is a lambda which calls our [navigateToInterests] parameter then calls our
@@ -109,7 +109,7 @@ fun AppDrawer(
         )
 
         DrawerButton(
-            icon = Icons.Filled.ListAlt,
+            icon = Icons.AutoMirrored.Filled.ListAlt,
             label = "Interests",
             isSelected = currentRoute == MainDestinations.INTERESTS_ROUTE,
             action = {
