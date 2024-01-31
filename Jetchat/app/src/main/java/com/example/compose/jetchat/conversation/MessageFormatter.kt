@@ -41,7 +41,7 @@ val symbolPattern: Regex by lazy {
 }
 
 /**
- * Accepted annotations for the ClickableTextWrapper
+ * Accepted annotations for the [ClickableText] Wrapper
  */
 enum class SymbolAnnotationType {
     /**
@@ -58,7 +58,7 @@ enum class SymbolAnnotationType {
 }
 
 /**
- *
+ * Save some keystrokes.
  */
 typealias StringAnnotation = AnnotatedString.Range<String>
 
@@ -69,16 +69,58 @@ typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
 
 /**
  * Format a message following Markdown-lite syntax
- * | @username -> bold, primary color and clickable element
- * | http(s)://... -> clickable link, opening it into the browser
- * | *bold* -> bold
- * | _italic_ -> italic
- * | ~strikethrough~ -> strikethrough
- * | `MyClass.myMethod` -> inline code styling
+ *  - @username -> bold, primary color and clickable element
+ *  - http(s)://... -> clickable link, opening it into the browser
+ *  - *bold* -> bold
+ *  - _italic_ -> italic
+ *  - ~strikethrough~ -> strikethrough
+ *  - `MyClass.myMethod` -> inline code styling
+ *
+ * We initialize our [Sequence] of [MatchResult] variable `val tokens` to the result of calling the
+ * [Regex.findAll] method of our [Regex] field [symbolPattern] with our [String] parameter [text]
+ * (returns a sequence of all occurrences of the regular expression within the input string). Then
+ * we return the [AnnotatedString] created by the [buildAnnotatedString] method when we use the
+ * [AnnotatedString.Builder] passed our lambda block in which:
+ *  - We initialize our [Int] variable `var cursorPosition` to 0.
+ *  - If our [Boolean] parameter [primary] is `true` we initialize our [Color] variable
+ *  `val codeSnippetBackground` to the [ColorScheme.secondary] color of our custom
+ *  [MaterialTheme.colorScheme], and if it is `false` we initialize it to the [ColorScheme.surface]
+ *
+ * Then we loop over all of the [MatchResult] variable `var token` in our [Sequence] of [MatchResult]
+ * variable `tokens`:
+ *  - We call the [AnnotatedString.Builder.append] method to append the `text` returned by the
+ *  [String.slice] method of our [String] parameter [text] between `cursorPosition` and the `first`
+ *  element in the [MatchResult.range] of `token`.
+ *  - We initialize our [AnnotatedString] variable `val annotatedString` and [AnnotatedString.Range]
+ *  of [String] variable `val stringAnnotation` by using a destructuring declaration on the [Pair]
+ *  that is returned by our method [getSymbolAnnotation] when it is called with `token` for its
+ *  `matchResult` argument, [MaterialTheme.colorScheme] as its `colorScheme` argument, our [Boolean]
+ *  parameter [primary] as its `primary`, and our [Color] variable `codeSnippetBackground` for its
+ *  `codeSnippetBackground` argument.
+ *  - We call the [AnnotatedString.Builder.append] method to append our [AnnotatedString] variable
+ *  `annotatedString`.
+ *  - If our [AnnotatedString.Range] of [String] variable `stringAnnotation` is not `null` we use a
+ *  destructuring declaration on it to initialize our [String] variable `val item` to the [String]
+ *  `item` property of `stringAnnotation`, [Int] variable `val start` to its `start` property,
+ *  [Int] variable `val end` to its `end` property, and [String] variable `val tag` to its `tag`
+ *  property. We then call the [AnnotatedString.Builder.addStringAnnotation] method to set `tag` as
+ *  the tag for an anotation for the range `start` to `end`, with `item` as the `annotation`.
+ *  - Then we set `cursorPosition` to the `last` element in the [MatchResult.range] of `token`, and
+ *  loop around for the next [MatchResult].
+ *
+ * Having dealt with all the [MatchResult] we check it the [Sequence.none] method of `tokens` is
+ * `false` and if so we call the [AnnotatedString.Builder.append] method to append the `text`
+ * returned by the [String.slice] method of our [String] parameter [text] between `cursorPosition`
+ * and the [String.lastIndex] of [text]. If it is `true` we just call the [AnnotatedString.Builder.append]
+ * method to append our [String] parameter [text].
  *
  * @param text contains message to be parsed
- * @param primary
- * @return AnnotatedString with annotations used inside the ClickableText wrapper
+ * @param primary used to select between two different color combinations. If `true` the user who
+ * posted the [text] is "me" and the background will be the [ColorScheme.secondary] color of our
+ * custom [MaterialTheme.colorScheme] and the text will be the [ColorScheme.inversePrimary] and if
+ * `false` the background will be the [ColorScheme.surface] color and the text will be the
+ * [ColorScheme.primary].
+ * @return [AnnotatedString] with annotations used inside the ClickableText wrapper
  */
 @Composable
 fun messageFormatter(
@@ -99,7 +141,7 @@ fun messageFormatter(
             }
 
         for (token: MatchResult in tokens) {
-            append(text.slice(indices = cursorPosition until token.range.first))
+            append(text = text.slice(indices = cursorPosition until token.range.first))
 
             val (annotatedString, stringAnnotation) = getSymbolAnnotation(
                 matchResult = token,
@@ -110,7 +152,7 @@ fun messageFormatter(
             append(text = annotatedString)
 
             if (stringAnnotation != null) {
-                val (item, start, end, tag) = stringAnnotation
+                val (item: String, start: Int, end: Int, tag: String) = stringAnnotation
                 addStringAnnotation(tag = tag, start = start, end = end, annotation = item)
             }
 
@@ -126,10 +168,16 @@ fun messageFormatter(
 }
 
 /**
- * Map regex matches found in a message with supported syntax symbols
+ * Map regex matches found in a message with supported syntax symbols.
  *
  * @param matchResult is a regex result matching our syntax symbols
- * @return pair of AnnotatedString with annotation (optional) used inside the ClickableText wrapper
+ * @param colorScheme this is just our custom [MaterialTheme.colorScheme].
+ * @param primary if `true` the user is "me" and we should use [ColorScheme.inversePrimary] for our
+ * text, and if `false` we should use [ColorScheme.primary].
+ * @param codeSnippetBackground the `background` color we should use for "code" text included between
+ * backtick characters.
+ * @return pair of [AnnotatedString] with optional [StringAnnotation] annotation (typealias to
+ * [AnnotatedString.Range] of [String]) used inside the [ClickableText] wrapper
  */
 private fun getSymbolAnnotation(
     matchResult: MatchResult,
