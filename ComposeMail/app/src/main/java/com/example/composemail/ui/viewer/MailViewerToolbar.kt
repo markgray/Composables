@@ -30,10 +30,10 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Forward
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Forward
-import androidx.compose.material.icons.filled.Reply
+import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -70,12 +70,12 @@ fun MailToolbar(
         ) {
             VectorButton(
                 modifier = Modifier,
-                imageVector = Icons.Default.Reply,
+                imageVector = Icons.AutoMirrored.Filled.Reply,
                 onClick = {}
             )
             VectorButton(
                 modifier = Modifier,
-                imageVector = Icons.Default.Forward,
+                imageVector = Icons.AutoMirrored.Filled.Forward,
                 onClick = {}
             )
             VectorButton(

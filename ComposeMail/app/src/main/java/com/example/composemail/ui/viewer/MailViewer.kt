@@ -37,7 +37,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.InsertDriveFile
+import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -175,7 +175,7 @@ private fun AttachmentsView(
 
                 else -> {
                     isKnownFileType = false
-                    imageVector = Icons.Default.InsertDriveFile
+                    imageVector = Icons.AutoMirrored.Filled.InsertDriveFile
                 }
             }
             Row(
