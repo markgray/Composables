@@ -168,7 +168,46 @@ fun messageFormatter(
 }
 
 /**
- * Map regex matches found in a message with supported syntax symbols.
+ * Map regex matches found in a message with supported syntax symbols. We return the value returned
+ * by a `when` expression which branches based on the [String.first] character of the [MatchResult.value]
+ * of our [MatchResult] parameter [matchResult]:
+ *  - "@" We return a [SymbolAnnotation] constructed from an [AnnotatedString] whose `text` argument
+ *  is the [MatchResult.value] of [matchResult], and whose `spanStyle` argument is a [SpanStyle] whose
+ *  `color` argument is the [ColorScheme.inversePrimary] of our [ColorScheme] parmaeter [colorScheme]
+ *  if our [Boolean] parameter [primary] is `true` and [ColorScheme.primary] is it is `false`, and
+ *  whose `fontWeight` argument is [FontWeight.Bold]. The [StringAnnotation] of the [SymbolAnnotation]
+ *  is constructed with its `item` argument the substring of the [MatchResult.value] from `startIndex`
+ *  of 1 to its end, whose `start` is the [IntRange.first] of the [MatchResult.range], whose `end` is
+ *  the [IntRange.last] of the [MatchResult.range], and whose `tag` is [SymbolAnnotationType.PERSON.name]
+ *  - ``"*"`` We return a [SymbolAnnotation] constructed from an [AnnotatedString] whose `text` argument
+ *  is the result of using the [String.trim] method of the [MatchResult.value] to remove the "*" at
+ *  either end of the [String], and whose `spanStyle` argument is a [SpanStyle] whose `fontWeight`
+ *  argument is [FontWeight.Bold]. The [StringAnnotation] of the [SymbolAnnotation] is `null`.
+ *  - ``"_"`` We return a [SymbolAnnotation] constructed from an [AnnotatedString] whose `text` argument
+ *  is the result of using the [String.trim] method of the [MatchResult.value] to remove the "_" at
+ *  either end of the [String], and whose `spanStyle` argument is a [SpanStyle] whose `fontStyle`
+ *  argument is [FontStyle.Italic]. The [StringAnnotation] of the [SymbolAnnotation] is `null`.
+ *  - "~" We return a [SymbolAnnotation] constructed from an [AnnotatedString] whose `text` argument
+ *  is the result of using the [String.trim] method of the [MatchResult.value] to remove the "~" at
+ *  either end of the [String], and whose `spanStyle` argument is a [SpanStyle] whose `textDecoration`
+ *  argument is [TextDecoration.LineThrough]. The [StringAnnotation] of the [SymbolAnnotation] is `null`.
+ *  - ``"`"`` We return a [SymbolAnnotation] constructed from an [AnnotatedString] whose `text` argument
+ *  is the result of using the [String.trim] method of the [MatchResult.value] to remove the ``"`"`` at
+ *  either end of the [String], and whose `spanStyle` argument is a [SpanStyle] whose `fontFamily`
+ *  argument is [FontFamily.Monospace], whose `fontSize` argument is 12.sp, whose `background` argument
+ *  is our [Color] parameter [codeSnippetBackground], and whose `baselineShift` argument is a
+ *  [BaselineShift] whose `multiplier` argument is 0.2f. The [StringAnnotation] of the [SymbolAnnotation]
+ *  is `null`.
+ *  - "h" We return a [SymbolAnnotation] constructed from an [AnnotatedString] whose `text` argument
+ *  is the [MatchResult.value] of [matchResult], and whose `spanStyle` argument is a [SpanStyle] whose
+ *  `color` argument is the [ColorScheme.inversePrimary] of our [ColorScheme] parmaeter [colorScheme]
+ *  if our [Boolean] parameter [primary] is `true` and [ColorScheme.primary] is it is `false`. The
+ *  [StringAnnotation] of the [SymbolAnnotation] is constructed with its `item` argument the
+ *  [MatchResult.value], whose `start` is the [IntRange.first] of the [MatchResult.range], whose
+ *  `end` is the [IntRange.last] of the [MatchResult.range], and whose `tag` is
+ *  [SymbolAnnotationType.LINK.name].
+ *  - `else` We return a [SymbolAnnotation] constructed from an [AnnotatedString] whose `text` argument
+ *  is the [MatchResult.value], with `null` for the [StringAnnotation] of the [SymbolAnnotation].
  *
  * @param matchResult is a regex result matching our syntax symbols
  * @param colorScheme this is just our custom [MaterialTheme.colorScheme].
@@ -195,7 +234,7 @@ private fun getSymbolAnnotation(
                 )
             ),
             StringAnnotation(
-                item = matchResult.value.substring(1),
+                item = matchResult.value.substring(startIndex = 1),
                 start = matchResult.range.first,
                 end = matchResult.range.last,
                 tag = SymbolAnnotationType.PERSON.name
@@ -233,7 +272,7 @@ private fun getSymbolAnnotation(
                     fontFamily = FontFamily.Monospace,
                     fontSize = 12.sp,
                     background = codeSnippetBackground,
-                    baselineShift = BaselineShift(0.2f)
+                    baselineShift = BaselineShift(multiplier = 0.2f)
                 )
             ),
             null
@@ -254,6 +293,6 @@ private fun getSymbolAnnotation(
             )
         )
 
-        else -> SymbolAnnotation(AnnotatedString(matchResult.value), null)
+        else -> SymbolAnnotation(AnnotatedString(text = matchResult.value), null)
     }
 }

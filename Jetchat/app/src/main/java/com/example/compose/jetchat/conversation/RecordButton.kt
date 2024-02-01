@@ -18,6 +18,7 @@ package com.example.compose.jetchat.conversation
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -30,6 +31,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
@@ -41,21 +43,37 @@ import androidx.compose.material3.RichTooltipState
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
+import kotlinx.coroutines.CoroutineScope
 import kotlin.math.abs
 import kotlinx.coroutines.launch
 
 /**
+ * This is used as the microphone button at the end of the [UserInputText] Composable. When long
+ * clicked it "pretends" to be recording.
  *
+ * @param recording if `true` we are currently "recording", and our UI should reflect that fact.
+ * @param swipeOffset used to keep track of how far the user has horizontally dragged the mic.
+ * @param onSwipeOffsetChange called to update the value of [swipeOffset].
+ * @param onStartRecording called by [detectDragGesturesAfterLongPress] when the user long presses
+ * the microphone.
+ * @param onFinishRecording called by [detectDragGesturesAfterLongPress] after all pointers are up.
+ * @param onCancelRecording called by [detectDragGesturesAfterLongPress] if another gesture has
+ * consumed pointer input.
+ * @param modifier a [Modifier] instance that our user can use to modify our appearance and/or
+ * behavior. Our caller [UserInputText] passes us a [Modifier.fillMaxHeight] causing us to occupy
+ * our entire incoming vertical constraint.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,22 +86,27 @@ fun RecordButton(
     onCancelRecording: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val transition = updateTransition(targetState = recording, label = "record")
-    val scale = transition.animateFloat(
-        transitionSpec = { spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessLow) },
+    val transition: Transition<Boolean> = updateTransition(targetState = recording, label = "record")
+    val scale: State<Float> = transition.animateFloat(
+        transitionSpec = {
+            spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessLow
+            )
+        },
         label = "record-scale",
         targetValueByState = { rec -> if (rec) 2f else 1f }
     )
-    val containerAlpha = transition.animateFloat(
-        transitionSpec = { tween(2000) },
+    val containerAlpha: State<Float> = transition.animateFloat(
+        transitionSpec = { tween(durationMillis = 2000) },
         label = "record-scale",
         targetValueByState = { rec -> if (rec) 1f else 0f }
     )
-    val iconColor = transition.animateColor(
-        transitionSpec = { tween(200) },
+    val iconColor: State<Color> = transition.animateColor(
+        transitionSpec = { tween(durationMillis = 200) },
         label = "record-scale",
         targetValueByState = { rec ->
-            if (rec) contentColorFor(LocalContentColor.current)
+            if (rec) contentColorFor(backgroundColor = LocalContentColor.current)
             else LocalContentColor.current
         }
     )
@@ -91,29 +114,29 @@ fun RecordButton(
     Box {
         // Background during recording
         Box(
-            Modifier
+            modifier = Modifier
                 .matchParentSize()
-                .aspectRatio(1f)
+                .aspectRatio(ratio = 1f)
                 .graphicsLayer {
                     alpha = containerAlpha.value
                     scaleX = scale.value; scaleY = scale.value
                 }
-                .clip(CircleShape)
-                .background(LocalContentColor.current)
+                .clip(shape = CircleShape)
+                .background(color = LocalContentColor.current)
         )
-        val scope = rememberCoroutineScope()
-        val tooltipState = remember { RichTooltipState() }
+        val scope: CoroutineScope = rememberCoroutineScope()
+        val tooltipState: RichTooltipState = remember { RichTooltipState() }
         RichTooltipBox(
-            text = { Text(stringResource(R.string.touch_and_hold_to_record)) },
+            text = { Text(text = stringResource(id = R.string.touch_and_hold_to_record)) },
             tooltipState = tooltipState
         ) {
             Icon(
-                Icons.Default.Mic,
-                contentDescription = stringResource(R.string.record_message),
+                imageVector = Icons.Default.Mic,
+                contentDescription = stringResource(id = R.string.record_message),
                 tint = iconColor.value,
                 modifier = modifier
                     .sizeIn(minWidth = 56.dp, minHeight = 6.dp)
-                    .padding(18.dp)
+                    .padding(all = 18.dp)
                     .clickable { }
                     .voiceRecordingGesture(
                         horizontalSwipeProgress = swipeOffset,
@@ -139,12 +162,12 @@ private fun Modifier.voiceRecordingGesture(
     swipeToCancelThreshold: Dp = 200.dp,
     verticalThreshold: Dp = 80.dp,
 ): Modifier = this
-    .pointerInput(Unit) { detectTapGestures { onClick() } }
-    .pointerInput(Unit) {
+    .pointerInput(key1 = Unit) { detectTapGestures { onClick() } }
+    .pointerInput(key1 = Unit) {
         var offsetY = 0f
         var dragging = false
-        val swipeToCancelThresholdPx = swipeToCancelThreshold.toPx()
-        val verticalThresholdPx = verticalThreshold.toPx()
+        val swipeToCancelThresholdPx: Float = swipeToCancelThreshold.toPx()
+        val verticalThresholdPx: Float = verticalThreshold.toPx()
 
         detectDragGesturesAfterLongPress(
             onDragStart = {
