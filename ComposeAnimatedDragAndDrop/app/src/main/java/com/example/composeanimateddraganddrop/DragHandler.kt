@@ -18,6 +18,7 @@
 
 package com.example.composeanimateddraganddrop
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.Animatable
@@ -69,6 +70,7 @@ private const val CONTAINS_FROM_CENTER_PERCENT = 0.75f
  *
  * @param dragHandler the [LayoutDragHandler] to be used for DragAndDrop functionality.
  */
+@SuppressLint("ModifierFactoryUnreferencedReceiver") // TODO: Recode this to use Modifier receiver
 fun Modifier.dragAndDrop(dragHandler: LayoutDragHandler): Modifier =
     with(dragHandler) {
         pointerInput(Unit) {
