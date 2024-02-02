@@ -39,7 +39,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -63,15 +63,15 @@ import androidx.navigation.NavHostController
 import com.example.compose.rally.Accounts
 import com.example.compose.rally.Bills
 import com.example.compose.rally.Overview
-import com.example.compose.rally.RallyApp
 import com.example.compose.rally.R
+import com.example.compose.rally.RallyApp
 import com.example.compose.rally.RallyDestination
+import com.example.compose.rally.RallyNavHost
 import com.example.compose.rally.data.Account
-import com.example.compose.rally.data.UserData
 import com.example.compose.rally.data.Bill
+import com.example.compose.rally.data.UserData
 import com.example.compose.rally.navigateSingleTopTo
 import com.example.compose.rally.navigateToSingleAccount
-import com.example.compose.rally.RallyNavHost
 import com.example.compose.rally.ui.accounts.SingleAccountScreen
 import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
@@ -250,7 +250,7 @@ fun AlertHeader(onClickSeeAll: () -> Unit) {
  * argument a [RowScope] `Modifier.align` whose `alignment` argument aligns it to [Alignment.Top]
  * (the top of the [Row]), and to this [Modifier] is chained a [Modifier.clearAndSetSemantics] which
  * clears the semantics of all its descendant nodes and sets the semantics to a do-nothing lambda.
- * The `content` of the [IconButton] is an [Icon] displaying the `imageVector` [Icons.Filled.Sort]
+ * The `content` of the [IconButton] is an [Icon] displaying the `imageVector` [Icons.AutoMirrored.Filled.Sort]
  * (three horozontal lines, each line slightly shorter than the one above it), with a `null`
  * `contentDescription` argument.
  *
@@ -280,7 +280,7 @@ private fun AlertItem(message: String) {
                 .align(Alignment.Top)
                 .clearAndSetSemantics {}
         ) {
-            Icon(Icons.Filled.Sort, contentDescription = null)
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = null)
         }
     }
 }
