@@ -47,7 +47,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -79,8 +79,8 @@ import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
 import com.example.compose.rally.ui.components.RallyAlertDialog
 import com.example.compose.rally.ui.components.RallyDivider
-import com.example.compose.rally.ui.components.formatAmount
 import com.example.compose.rally.ui.components.RallyTopAppBar
+import com.example.compose.rally.ui.components.formatAmount
 import com.example.compose.rally.ui.theme.RallyTheme
 import java.util.Locale
 
@@ -261,7 +261,7 @@ fun AlertHeader(onClickSeeAll: () -> Unit) {
  * argument a [RowScope] `Modifier.align` whose `alignment` argument aligns it to [Alignment.Top]
  * (the top of the [Row]), and to this [Modifier] is chained a [Modifier.clearAndSetSemantics] which
  * clears the semantics of all its descendant nodes and sets the semantics to a do-nothing lambda.
- * The `content` of the [IconButton] is an [Icon] displaying the `imageVector` [Icons.Filled.Sort]
+ * The `content` of the [IconButton] is an [Icon] displaying the `imageVector` [Icons.AutoMirrored.Filled.Sort]
  * (three horozontal lines, each line slightly shorter than the one above it), with a `null`
  * `contentDescription` argument.
  *
@@ -291,7 +291,7 @@ private fun AlertItem(message: String) {
                 .align(alignment = Alignment.Top)
                 .clearAndSetSemantics {}
         ) {
-            Icon(imageVector = Icons.Filled.Sort, contentDescription = null)
+            Icon(imageVector = Icons.AutoMirrored.Filled.Sort, contentDescription = null)
         }
     }
 }
