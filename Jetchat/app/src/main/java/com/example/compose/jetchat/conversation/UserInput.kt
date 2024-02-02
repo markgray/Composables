@@ -74,6 +74,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -448,7 +449,7 @@ private fun UserInputText(
     onTextFieldFocused: (Boolean) -> Unit,
     focusState: Boolean
 ) {
-    val swipeOffset = remember { mutableFloatStateOf(value = 0f) }
+    val swipeOffset: MutableFloatState = remember { mutableFloatStateOf(value = 0f) }
     var isRecordingMessage by remember { mutableStateOf(value = false) }
     val a11ylabel = stringResource(id = R.string.textfield_desc)
     Row(
