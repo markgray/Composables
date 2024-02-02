@@ -26,7 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ColorScheme
@@ -53,8 +53,8 @@ import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
 import com.example.reply.ui.MainActivity
-import com.example.reply.ui.ReplyEmailList
 import com.example.reply.ui.ReplyEmailDetail
+import com.example.reply.ui.ReplyEmailList
 import com.example.reply.ui.ReplyHomeViewModel
 
 /**
@@ -153,7 +153,7 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
  * added 8.dp to `all` sides, and whose `colors` argument uses the [IconButtonDefaults.filledIconButtonColors]
  * with the `containerColor` set to [ColorScheme.surface], and `contentColor` set to [ColorScheme.onSurface].
  * The `content` Composable of the [FilledIconButton] is an [Icon] displaying the `imageVector` drawn
- * by [Icons.Filled.ArrowBack] (`Icons.Default` is an alias for [Icons.Filled]) using a [Modifier.size]
+ * by [Icons.AutoMirrored.Filled.ArrowBack] using a [Modifier.size]
  * that sets its `size` to 14.dp. The `actions` of the [TopAppBar] (actions displayed at the end of
  * the top app bar) consist of a single [IconButton] whose `onClick` is a do nothing lambda, and whose
  * `content` is an [Icon] displaying the `imageVector` drawn by [Icons.Filled.MoreVert] using the `tint`
@@ -213,7 +213,7 @@ fun EmailDetailAppBar(
                     )
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(id = R.string.back_button),
                         modifier = Modifier.size(size = 14.dp)
                     )
