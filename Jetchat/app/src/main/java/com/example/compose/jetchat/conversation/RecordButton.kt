@@ -51,9 +51,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -125,15 +128,35 @@ import kotlinx.coroutines.launch
  *  Our caller [UserInputText] passes us a lambda for this which updates the [MutableFloatState]
  *  variable which keeps track of the current `swipeOffset` and which our [swipeOffset] lambda
  *  parameter reads.
+ *  - `onClick` we pass a lambda which calls the [CoroutineScope.launch] method of our [CoroutineScope]
+ *  variable `scope` to launch a coroutine which calls the [RichTooltipState.show] method of our
+ *  [RichTooltipState] variable `tooltipState` to show the tooltip associated with [RichTooltipBox].
+ *  - `onStartRecording` we pass the [onStartRecording] lambda parameter of [RecordButton]. Our caller
+ *  [UserInputText] passes us a lambda which sets its [Boolean] variable `val consumed` to the inverse
+ *  of the current value of its [State] wrapped [Boolean] variable `isRecordingMessage`, sets
+ *  `isRecordingMessage` to `true` and returns `consumed` to the caller of the lambda.
+ *  - `onFinishRecording` we pass the [onFinishRecording] lambda parameter of [RecordButton]. Our
+ *  caller [UserInputText] passes us a lambda which sets its [State] wrapped [Boolean] variable
+ *  `isRecordingMessage` to `false`
+ *  - `onCancelRecording` we pass the [onCancelRecording] lambda parameter of [RecordButton]. Our
+ *  caller [UserInputText] passes us a lambda which sets its [State] wrapped [Boolean] variable
+ *  `isRecordingMessage` to `false`.
  *
- * @param recording if `true` we are currently "recording", and our UI should reflect that fact.
+ * @param recording if `true` we are currently "recording", and our UI should reflect that fact. Our
+ * caller passes us the current value of its [State] wrapped [Boolean] variable `isRecordingMessage`.
  * @param swipeOffset used to keep track of how far the user has horizontally dragged the mic.
  * @param onSwipeOffsetChange called to update the value of [swipeOffset].
  * @param onStartRecording called by [detectDragGesturesAfterLongPress] when the user long presses
- * the microphone.
+ * the microphone. Our caller [UserInputText] passes us a lambda which sets its [Boolean] variable
+ * `val consumed` to the inverse of the current value of its [State] wrapped [Boolean] variable
+ * `isRecordingMessage`, sets `isRecordingMessage` to `true` and returns `consumed` to the caller of
+ * the lambda
  * @param onFinishRecording called by [detectDragGesturesAfterLongPress] after all pointers are up.
+ * Our caller [UserInputText] passes us a lambda which sets its [State] wrapped [Boolean] variable
+ * `isRecordingMessage` to `false`
  * @param onCancelRecording called by [detectDragGesturesAfterLongPress] if another gesture has
- * consumed pointer input.
+ * consumed pointer input. Our caller [UserInputText] passes us a lambda which sets its [State]
+ * wrapped [Boolean] variable `isRecordingMessage` to `false`
  * @param modifier a [Modifier] instance that our user can use to modify our appearance and/or
  * behavior. Our caller [UserInputText] passes us a [Modifier.fillMaxHeight] causing us to occupy
  * our entire incoming vertical constraint.
@@ -214,6 +237,62 @@ fun RecordButton(
     }
 }
 
+/**
+ * This custom [Modifier] is used to process pointer input within the region of its modified element,
+ * interpreting them and then calling the lambda parameter which is appropriate for the type of
+ * gesture it detects. We start by chaining a [Modifier.pointerInput] to our [Modifier] receiver whose
+ * [PointerInputScope] lambda block calls the [detectTapGestures] method with its `onTap` lambda
+ * argument our [onClick] lambda parameter when it detects a tap gesture. We then chain to that
+ * [Modifier] another [Modifier.pointerInput] whose [PointerInputScope] lambda block initializes some
+ * variables:
+ *  - `var offsetY` [Float] is initialized to 0. Used to keep track of how much the pointer has been
+ *  dragged in the Y direction, it is updated by the `onDrag` lambda argument of the
+ *  [detectDragGesturesAfterLongPress] method.
+ *  - `var dragging` [Boolean] is initialized to `false`. Used to keep track of whether the pointer
+ *  is being dragged. It is set to `true` by the `onDragStart` lambda argument of the
+ *  [detectDragGesturesAfterLongPress], and set to `false` by its `onDragCancel`, `onDragEnd`, and
+ *  `onDrag` lambda arguments.
+ *  - `val swipeToCancelThresholdPx` [Float] Number of pixels in the X direction that indicates that
+ *  the user has decided to cancel the dragging.
+ *  - `val verticalThresholdPx` [Float] Number of pixels in the Y direction that indicates that the
+ *  user has decided to cancel the dragging.
+ *
+ * Then the [PointerInputScope] block calls the [detectDragGesturesAfterLongPress] method with its:
+ *  - `onDragStart` argument a lambda that calls our [onSwipeProgressChanged] lambda parameter with
+ *  0f, sets `offsetY` to 0f, sets `dragging` to `true`, and then calls our [onStartRecording] lambda
+ *  parameter.
+ *  - `onDragCancel` argument a lambda that calls our [onCancelRecording] lambda parameter, and sets
+ *  `dragging` to `false`.
+ *  - `onDragEnd` argument a lambda that calls our [onFinishRecording] lambda parameter if `dragging`
+ *  is currently `true`, and then sets `dragging` to `false`.
+ *  - `onDrag` argument a lambda which is called with a [PointerInputChange] parameter `change` and
+ *  an [Offset] parameter `dragAmount`. In the lambda, if `dragging` is `false` we do nothing, and
+ *  if it is `true` we call our [onSwipeProgressChanged] lambda parameter with the value returned by
+ *  our [horizontalSwipeProgress] lambda parameter plus the [Offset.x] of the [Offset] passed our
+ *  lambda. We then add [Offset.x] of the [Offset] passed the lambda to our [Float] variable `offsetY`.
+ *  We initialize our [Float] variable `val offsetX` to the value returned by our [horizontalSwipeProgress]
+ *  lambda parameter. Then if `offsetX` is less than 0, and the absolute value of `offsetX` is greater
+ *  than or equal to `swipeToCancelThresholdPx` and the absolute value of `offsetY` is less than or
+ *  equal to `verticalThresholdPx` we call our [onCancelRecording] lambda parameter and set `dragging`
+ *  to `false`.
+ *
+ * @param horizontalSwipeProgress a lambda which returns the current accumulated horizontal swipe
+ * progress.
+ * @param onSwipeProgressChanged a lambda we should call to update the current accumulated horizontal
+ * swipe progress.
+ * @param onClick A lambda for us to call when the [detectTapGestures] method of our first
+ * [Modifier.pointerInput] detects a `tap`. Our caller passes us a lambda which calls the
+ * [CoroutineScope.launch] method of its [CoroutineScope] variable `scope` to launch a coroutine
+ * which calls the [RichTooltipState.show] method of its [RichTooltipState] variable `tooltipState`
+ * to show the tooltip associated with its [RichTooltipBox]).
+ * @param onStartRecording a lambda we should call when we detect that the user wants to start recording.
+ * @param onFinishRecording a lambda we should call when we detect that the user wants to stop recording.
+ * @param onCancelRecording a lambda we should call when we detect that the user wants to cancel recording.
+ * @param swipeToCancelThreshold how far in the X direction the user needs to drag us to indicate that
+ * he wishes to cancel the recording.
+ * @param verticalThreshold how far in the Y direction the user needs to drag us to indicate that he
+ * does not want to cancel the recording.
+ */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 private fun Modifier.voiceRecordingGesture(
     horizontalSwipeProgress: () -> Float,
@@ -225,7 +304,7 @@ private fun Modifier.voiceRecordingGesture(
     swipeToCancelThreshold: Dp = 200.dp,
     verticalThreshold: Dp = 80.dp,
 ): Modifier = this
-    .pointerInput(key1 = Unit) { detectTapGestures { onClick() } }
+    .pointerInput(key1 = Unit) { detectTapGestures(onTap = { onClick() }) }
     .pointerInput(key1 = Unit) {
         var offsetY = 0f
         var dragging = false
@@ -249,11 +328,11 @@ private fun Modifier.voiceRecordingGesture(
                 }
                 dragging = false
             },
-            onDrag = { change, dragAmount ->
+            onDrag = { change: PointerInputChange, dragAmount: Offset ->
                 if (dragging) {
                     onSwipeProgressChanged(horizontalSwipeProgress() + dragAmount.x)
                     offsetY += dragAmount.y
-                    val offsetX = horizontalSwipeProgress()
+                    val offsetX: Float = horizontalSwipeProgress()
                     if (
                         offsetX < 0 &&
                         abs(offsetX) >= swipeToCancelThresholdPx &&

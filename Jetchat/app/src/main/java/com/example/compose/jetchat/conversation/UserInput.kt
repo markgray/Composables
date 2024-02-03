@@ -450,7 +450,7 @@ private fun UserInputText(
     focusState: Boolean
 ) {
     val swipeOffset: MutableFloatState = remember { mutableFloatStateOf(value = 0f) }
-    var isRecordingMessage by remember { mutableStateOf(value = false) }
+    var isRecordingMessage: Boolean by remember { mutableStateOf(value = false) }
     val a11ylabel = stringResource(id = R.string.textfield_desc)
     Row(
         modifier = Modifier
@@ -488,7 +488,7 @@ private fun UserInputText(
             swipeOffset = { swipeOffset.floatValue },
             onSwipeOffsetChange = { offset -> swipeOffset.floatValue = offset },
             onStartRecording = {
-                val consumed = !isRecordingMessage
+                val consumed: Boolean = !isRecordingMessage
                 isRecordingMessage = true
                 consumed
             },
