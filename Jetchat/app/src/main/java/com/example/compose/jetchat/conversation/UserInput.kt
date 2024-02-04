@@ -61,6 +61,7 @@ import androidx.compose.material.icons.outlined.Duo
 import androidx.compose.material.icons.outlined.InsertPhoto
 import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -117,51 +118,77 @@ import kotlin.time.Duration.Companion.seconds
 import androidx.compose.ui.text.TextRange as TextRange1
 
 /**
- *
+ * These are the types of input selectors that the user may use to add special content to the message
+ * that he posts. Each of them has an [InputSelectorButton] located in the [UserInputSelector]
+ * Composable, but only the [EMOJI] has an implementation so far and when its [InputSelectorButton]
+ * is clicked the [SelectorExpanded] Composable will compose a [EmojiSelector] into the UI.
  */
 enum class InputSelector {
     /**
-     *
+     * No input selector has been chosen.
      */
     NONE,
+
     /**
-     *
+     * The "Location selector" input selector, when its [InputSelectorButton] is clicked the
+     * [FunctionalityNotAvailablePanel] will be composed into the UI displaying a [Text] with the
+     * `text` "Functionality currently not available"., and a [Text] with the `text` "Grab a beverage
+     * and check back later!"
      */
     MAP,
+
     /**
-     *
+     * The "Direct Message" input selector, when its [InputSelectorButton] is clicked the
+     * [NotAvailablePopup] method will pop up the [FunctionalityNotAvailablePopup] which is an
+     * [AlertDialog] displaying the `text` "Functionality not available".
      */
     DM,
+
     /**
-     *
+     * The "Show Emoji selector" input selector, when its [InputSelectorButton] is clicked the
+     * [EmojiSelector] Composable will be composed into the UI allowing the user to select one of
+     * the emoji in the [EmojiTable] Composable to insert into their text message (the [List] of
+     * [String] that contains the emojis is our field [emojis]).
      */
     EMOJI,
+
     /**
-     *
+     * The "Start videochat" input selector, when its [InputSelectorButton] is clicked the
+     * [FunctionalityNotAvailablePanel] will be composed into the UI displaying a [Text] with the
+     * `text` "Functionality currently not available"., and a [Text] with the `text` "Grab a beverage
+     * and check back later!"
      */
     PHONE,
+
     /**
-     *
+     * The "Attach Photo" input selector, when its [InputSelectorButton] is clicked the
+     * [FunctionalityNotAvailablePanel] will be composed into the UI displaying a [Text] with the
+     * `text` "Functionality currently not available"., and a [Text] with the `text` "Grab a beverage
+     * and check back later!"
      */
     PICTURE
 }
 
 /**
- *
+ * These are the two types of [ExtendedSelectorInnerButton] that are rendered at the top of our
+ * [EmojiSelector]. Only the [EMOJI] is actually implemented.
  */
 enum class EmojiStickerSelector {
     /**
-     *
+     * The "Emojis" [ExtendedSelectorInnerButton]
      */
     EMOJI,
+
     /**
-     *
+     * The "Stickers" [ExtendedSelectorInnerButton]. When clicked the [NotAvailablePopup] method
+     * will pop up the [FunctionalityNotAvailablePopup] which is an [AlertDialog] displaying the
+     * `text` "Functionality not available".
      */
     STICKER
 }
 
 /**
- *
+ * Preview of our [UserInput] Composable.
  */
 @Preview
 @Composable
@@ -170,7 +197,11 @@ fun UserInputPreview() {
 }
 
 /**
- *
+ * This Composable implements the custom "keyboard" at the bottom of the [ConversationContent]
+ * Composable. It consists of a [Column] holding a [UserInputText] (which holds a [UserInputTextField]
+ * that has a [BasicTextField] to enter text in and a [RecordButton] to simulate recording), followed
+ * by a [UserInputSelector] that allows the user to select special content to add to the message and
+ * a "Send" [Button] that "sends" the message.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -434,6 +465,7 @@ private fun NotAvailablePopup(onDismissed: () -> Unit) {
  *
  */
 val KeyboardShownKey: SemanticsPropertyKey<Boolean> = SemanticsPropertyKey<Boolean>(name = "KeyboardShownKey")
+
 /**
  *
  */
@@ -724,7 +756,7 @@ fun EmojiTable(
 
 private const val EMOJI_COLUMNS = 10
 
-private val emojis = listOf(
+private val emojis: List<String> = listOf(
     "\ud83d\ude00", // Grinning Face
     "\ud83d\ude01", // Grinning Face With Smiling Eyes
     "\ud83d\ude02", // Face With Tears of Joy
