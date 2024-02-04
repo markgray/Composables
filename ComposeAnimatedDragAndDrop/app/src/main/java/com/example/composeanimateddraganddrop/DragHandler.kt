@@ -438,6 +438,7 @@ class LayoutDragHandler(
         }
 
         val verDistance: Float = height * 0.5f * percentFromCenter
+        @Suppress("RedundantIf", "RedundantSuppression") // Strange warning - it is NOT redundant
         if (offset.y < (center.y - verDistance) || offset.y > (center.y + verDistance)) {
             return false
         }
