@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat.conversation
 
+import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -49,6 +50,7 @@ import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -64,6 +66,7 @@ import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -76,6 +79,7 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -88,6 +92,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
@@ -102,6 +107,7 @@ import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -201,7 +207,66 @@ fun UserInputPreview() {
  * Composable. It consists of a [Column] holding a [UserInputText] (which holds a [UserInputTextField]
  * that has a [BasicTextField] to enter text in and a [RecordButton] to simulate recording), followed
  * by a [UserInputSelector] that allows the user to select special content to add to the message and
- * a "Send" [Button] that "sends" the message.
+ * a "Send" [Button] that "sends" the message. We start by initializing and [rememberSaveable]'ing
+ * our [MutableState] wrapped [InputSelector] variable `var currentInputSelector` to [InputSelector.NONE].
+ * Then we initialize our lambda variable `val dismissKeyboard` to a lambda which sets `currentInputSelector`
+ * to [InputSelector.NONE]. Then if `currentInputSelector` is not equal to [InputSelector.NONE] we
+ * call [BackHandler] with its `onBack` argument `dismissKeyboard` to add it to the
+ * [OnBackPressedDispatcher] thereby intercepting back navigation if there's an [InputSelector]
+ * visible and having `dismissKeyboard` close the [InputSelector]. Next we initialize and
+ * [rememberSaveable] our [MutableState] wrapped [TextFieldValue] variable `var textState` to a new
+ * instance using [TextFieldValue.Saver] as its `stateSaver`. And finally we initialize and [remember]
+ * our [MutableState] wrapped [Boolean] variable `var textFieldFocusState` to `false` (this will be
+ * used to decide if the keyboard should be shown).
+ *
+ * Our root Composable is a [Surface] whose `tonalElevation` argument is 2.dp (the higher elevation
+ * will result in a darker background color in light theme and lighter background color in dark theme),
+ * and its `contentColor` is the [ColorScheme.secondary] color of our [MaterialTheme.colorScheme]
+ * (the preferred content color provided by the [Surface] to its children). The `content` of the
+ * [Surface] is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier], and the
+ * `content` of the [Column] is:
+ *  - a [UserInputText] whose `textFieldValue` argument is our [TextFieldValue] variable `textState`
+ *  (this is used as the `value` argument of a [BasicTextField] further down the hierarchy where it
+ *  is the [TextFieldValue] to be shown in the [BasicTextField]), the `onTextChanged` of the
+ *  [UserInputText] is a lambda which sets `textState` to the [TextFieldValue] passed the lambda, the
+ *  `keyboardShown` argument is `true` only when `currentInputSelector` is [InputSelector.NONE] and
+ *  `textFieldFocusState` is `true` (this only shows the keyboard if there's no input selector and
+ *  the text field has focus), its `onTextFieldFocused` argument is a lambda which if the [Boolean]
+ *  passed it is `true` sets `currentInputSelector` to [InputSelector.NONE] and calls our lambda
+ *  parameter [resetScroll] (closes extended selector if text field receives focus) and `true` or
+ *  `false` it sets `textFieldFocusState` to the [Boolean] passed the lambda, and finally the
+ *  `focusState` argument of the [UserInputText] is our [MutableState] wrapped [Boolean] variable
+ *  `textFieldFocusState` (the [BoxScope.UserInputTextField] extension function further down the
+ *  hierarchy will display a [Text] displaying a hint "Message #composers" when this is `false` and
+ *  the [TextFieldValue] we pass [UserInputText] is empty).
+ *  - a [UserInputSelector] whose `onSelectorChange` argument is a lambda which sets our [MutableState]
+ *  wrapped [InputSelector] variable `currentInputSelector` to the [InputSelector] passed the lambda,
+ *  whose `sendMessageEnabled` argument is `true` if the [TextFieldValue.text] property of our variable
+ *  `textState` is not empty and contains some non-whitespace characters, whose `onMessageSent` argument
+ *  is a lambda which calls our [onMessageSent] lambda parameter with the [TextFieldValue.text] property
+ *  of our [TextFieldValue] variable `textState`, sets `textState` to a new empty instance of [TextFieldValue],
+ *  then it calls our lambda parameter [resetScroll] and our lambda variable `dismissKeyboard` to dismiss
+ *  the keyboard. Finally the `currentInputSelector` argument is our [InputSelector] variable
+ *  `currentInputSelector`,
+ *  - a [SelectorExpanded] whose `onCloseRequested` argument is our lambda variable `dismissKeyboard`,
+ *  whose `onTextAdded` argument is a lambda which sets our [MutableState] wrapped [TextFieldValue]
+ *  variable `textState` to the result of calling its [TextFieldValue.addText] extension function with
+ *  the [String] passed the lambda (thereby replacing the [TextFieldValue.selection] of `textState`
+ *  with the [String]), and finally the `currentSelector` argument is our [MutableState] wrapped
+ *  [InputSelector] variable `currentInputSelector`
+ *
+ * @param onMessageSent a lambda that should called when the user decides to "send" the message they
+ * have typed. Our caller [ConversationContent] passes us a lambda which calls the
+ * [ConversationUiState.addMessage] method of the [ConversationUiState] it has been passed with a
+ * new [Message] constructed from the [String] that is passed the [onMessageSent] lambda.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller passes us a [Modifier] which is tailored with `navigationBarsPadding` and
+ * `imePadding` to allow us to handle the padding so that the elevation is shown behind the navigation
+ * bar (whatever that means).
+ * @param resetScroll a lambda we can call to "reset" the scroll of the [Messages] Composable that is
+ * above us in the [ConversationContent]. [ConversationContent] calls us with a lambda which launches
+ * a coroutine which calls the [LazyListState.scrollToItem] method of the [LazyListState] variable it
+ * uses as the `scrollState` argument of its [Messages] Composable.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -210,20 +275,20 @@ fun UserInput(
     modifier: Modifier = Modifier,
     resetScroll: () -> Unit = {},
 ) {
-    var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
-    val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
+    var currentInputSelector: InputSelector by rememberSaveable { mutableStateOf(value = InputSelector.NONE) }
+    val dismissKeyboard: () -> Unit = { currentInputSelector = InputSelector.NONE }
 
     // Intercept back navigation if there's a InputSelector visible
     if (currentInputSelector != InputSelector.NONE) {
         BackHandler(onBack = dismissKeyboard)
     }
 
-    var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+    var textState: TextFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(value = TextFieldValue())
     }
 
     // Used to decide if the keyboard should be shown
-    var textFieldFocusState by remember { mutableStateOf(false) }
+    var textFieldFocusState: Boolean by remember { mutableStateOf(value = false) }
 
     Surface(tonalElevation = 2.dp, contentColor = MaterialTheme.colorScheme.secondary) {
         Column(modifier = modifier) {
@@ -233,7 +298,7 @@ fun UserInput(
                 // Only show the keyboard if there's no input selector and text field has focus
                 keyboardShown = currentInputSelector == InputSelector.NONE && textFieldFocusState,
                 // Close extended selector if text field receives focus
-                onTextFieldFocused = { focused ->
+                onTextFieldFocused = { focused: Boolean ->
                     if (focused) {
                         currentInputSelector = InputSelector.NONE
                         resetScroll()
@@ -264,13 +329,20 @@ fun UserInput(
     }
 }
 
+/**
+ * Extension function of a [TextFieldValue] which replaces the [String] that currently occupies
+ * the [TextRange] of the current [TextFieldValue.selection] of its receiver with our [String]
+ * parameter [newString]. Note that if the [TextRange.start] is equal to the [TextRange.end] the
+ * [String] is just inserted (or added to the end).
+ *
+ */
 private fun TextFieldValue.addText(newString: String): TextFieldValue {
-    val newText = this.text.replaceRange(
+    val newText: String = this.text.replaceRange(
         startIndex = this.selection.start,
         endIndex = this.selection.end,
         replacement = newString
     )
-    val newSelection = TextRange1(
+    val newSelection: TextRange = TextRange1(
         start = newText.length,
         end = newText.length
     )
@@ -545,14 +617,14 @@ private fun BoxScope.UserInputTextField(
     focusState: Boolean,
     modifier: Modifier = Modifier
 ) {
-    var lastFocusState by remember { mutableStateOf(false) }
+    var lastFocusState: Boolean by remember { mutableStateOf(value = false) }
     BasicTextField(
         value = textFieldValue,
         onValueChange = { onTextChanged(it) },
         modifier = modifier
             .padding(start = 32.dp)
-            .align(Alignment.CenterStart)
-            .onFocusChanged { state ->
+            .align(alignment = Alignment.CenterStart)
+            .onFocusChanged { state: FocusState ->
                 if (lastFocusState != state.isFocused) {
                     onTextFieldFocused(state.isFocused)
                 }
@@ -567,12 +639,11 @@ private fun BoxScope.UserInputTextField(
         textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current)
     )
 
-    val disableContentColor =
-        MaterialTheme.colorScheme.onSurfaceVariant
+    val disableContentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
     if (textFieldValue.text.isEmpty() && !focusState) {
         Text(
             modifier = Modifier
-                .align(Alignment.CenterStart)
+                .align(alignment = Alignment.CenterStart)
                 .padding(start = 32.dp),
             text = stringResource(R.string.textfield_hint),
             style = MaterialTheme.typography.bodyLarge.copy(color = disableContentColor)
