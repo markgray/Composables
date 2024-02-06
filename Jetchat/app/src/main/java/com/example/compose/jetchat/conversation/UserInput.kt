@@ -333,8 +333,26 @@ fun UserInput(
  * Extension function of a [TextFieldValue] which replaces the [String] that currently occupies
  * the [TextRange] of the current [TextFieldValue.selection] of its receiver with our [String]
  * parameter [newString]. Note that if the [TextRange.start] is equal to the [TextRange.end] the
- * [String] is just inserted (or added to the end).
+ * [String] is just inserted (or added to the end). We start by initializing our [String] variable
+ * `val newText` to the result of calling the [String.replaceRange] method of our receiver's
+ * [TextFieldValue.text] field with the `startIndex` argument the [TextRange.start] of its
+ * [TextFieldValue.selection] field, with the `endIndex` argument the [TextRange.end] of its
+ * [TextFieldValue.text] field, and the `replacement` argument our [String] parameter [newString].
+ * Then we initialize our [TextRange] variable `val newSelection` to the immutable text range class
+ * returned by [TextRange1] with the `start` argument the [String.length] of `newText`, and the `end`
+ * argument the [String.length] of `newText` (an empty selection at the end of `newText`). Finally
+ * we return the result of calling the [TextFieldValue.copy] of our receiver with the `text` argument
+ * our [String] variable `newText`, and the `selection` argument our [TextRange] variable `newSelection`
+ * (this leaves the `composition` the same as our receiver which is important since that field is owned
+ * by the IME).
  *
+ * @param newString the [String] to use to replace the substring occupying the current [TextRange]
+ * of the [TextFieldValue.selection] of our receiver. NOTE that if the [TextRange.start] of the
+ * [TextFieldValue.selection] is equal to its [TextRange.end] the [String] is just inserted at that
+ * location.
+ * @return a [TextFieldValue] which is a copy of our receiver with our [String] parameter [newString]
+ * replacing the substring occupying the current [TextRange] of its [TextFieldValue.selection], with
+ * its [TextFieldValue.selection] set to the end of the [TextFieldValue.text].
  */
 private fun TextFieldValue.addText(newString: String): TextFieldValue {
     val newText: String = this.text.replaceRange(
@@ -350,6 +368,40 @@ private fun TextFieldValue.addText(newString: String): TextFieldValue {
     return this.copy(text = newText, selection = newSelection)
 }
 
+/**
+ * This Composable renders different Composables depending on the value of its [InputSelector]
+ * parameter [currentSelector] with [InputSelector.NONE] just returning without rendering anything.
+ * If [currentSelector] is not [InputSelector.NONE] we initialize our [FocusRequester] variable
+ * `val focusRequester` to a new instance, and use [SideEffect] to schedule its `effect` lambda to
+ * run after every recomposition, and in that lambda if [currentSelector] is equal to [InputSelector.EMOJI]
+ * it calls the [FocusRequester.requestFocus] method of our [FocusRequester] variable `focusRequester`.
+ * Then our root Composable is a [Surface] whose `tonalElevation` argument is 8.dp, and its `content`
+ * consists of a `when` which switches depending on the value of our [InputSelector] parameter
+ * [currentSelector]:
+ *  - [InputSelector.EMOJI] ("Emoji selector") we render an [EmojiSelector] with its `onTextAdded`
+ *  argument our [onTextAdded] lambda parameter, and its `focusRequester` argument our [FocusRequester]
+ *  variable `focusRequester` ([EmojiSelector] allows the user to select emoji to be inserted into the
+ *  "message" they are writing).
+ *  - [InputSelector.DM] ("Direct Message") we call [NotAvailablePopup] with its `onDismissed`
+ *  argument our [onCloseRequested] lambda parameter and this pops up the [FunctionalityNotAvailablePopup]
+ *  which is an [AlertDialog] displaying the `text` "Functionality not available".
+ *  - [InputSelector.PICTURE] ("Attach Photo") we render a [FunctionalityNotAvailablePanel] which displays
+ *  a [Text] with the `text` "Functionality currently not available"., and a [Text] with the `text`
+ *  "Grab a beverage and check back later!"
+ *  - [InputSelector.MAP] ("Location selector") we render a [FunctionalityNotAvailablePanel] which
+ *  displays a [Text] with the `text` "Functionality currently not available"., and a [Text] with
+ *  the `text` "Grab a beverage and check back later!"
+ *  - [InputSelector.PHONE] ("Start videochat") we render a [FunctionalityNotAvailablePanel] which
+ *  displays a [Text] with the text "Functionality currently not available"., and a [Text] with the
+ *  text "Grab a beverage and check back later!"
+ *  - `else` we throw [NotImplementedError].
+ *
+ * @param currentSelector the [InputSelector] that the user has selected to be displayed by clicking
+ * its [InputSelectorButton] in the [UserInputSelector] Composable rendered in [UserInput].
+ * @param onCloseRequested a lambda which sets [currentSelector] to [InputSelector.NONE].
+ * @param onTextAdded a lambda we can call with a [String] to be inserted into the message that the
+ * user is typing.
+ */
 @Composable
 private fun SelectorExpanded(
     currentSelector: InputSelector,
@@ -369,8 +421,8 @@ private fun SelectorExpanded(
 
     Surface(tonalElevation = 8.dp) {
         when (currentSelector) {
-            InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusRequester)
-            InputSelector.DM -> NotAvailablePopup(onCloseRequested)
+            InputSelector.EMOJI -> EmojiSelector(onTextAdded = onTextAdded, focusRequester = focusRequester)
+            InputSelector.DM -> NotAvailablePopup(onDismissed = onCloseRequested)
             InputSelector.PICTURE -> FunctionalityNotAvailablePanel()
             InputSelector.MAP -> FunctionalityNotAvailablePanel()
             InputSelector.PHONE -> FunctionalityNotAvailablePanel()
