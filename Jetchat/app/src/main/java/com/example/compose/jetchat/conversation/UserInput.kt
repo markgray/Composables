@@ -20,6 +20,8 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -65,6 +67,7 @@ import androidx.compose.material.icons.outlined.Mood
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
@@ -75,6 +78,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.Typography
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -108,6 +112,7 @@ import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -434,18 +439,48 @@ private fun SelectorExpanded(
 }
 
 /**
+ * This Composable is composed into the UI when the user tries to select an [InputSelector] which
+ * does not have a real implementation. It is called by the [SelectorExpanded] Composable for the
+ * [InputSelector]'s [InputSelector.PICTURE], [InputSelector.MAP], and [InputSelector.PHONE]. The
+ * root Composable is an [AnimatedVisibility] which animates the appearance and disappearance of its
+ * `content`, as its [MutableTransitionState] wrapped [Boolean] argument `visibleState`'s `targetState`
+ * changes. The `visibleState` argument we pass to [AnimatedVisibility] is a remembered
+ * [MutableTransitionState] whose initial value is `false` but which uses the [apply] extension
+ * function to set its `targetState` to `true` thereby starting the animation. The `enter`
+ * [EnterTransition] we pass it is an [expandHorizontally] (expands the clip bounds of the appearing
+ * content horizontally, from the width returned from initialWidth to the full width) plus a [fadeIn]
+ * (fades in the content of the transition, from the specified starting alpha to 1f). The `exit`
+ * [ExitTransition] is a [shrinkHorizontally] (animates from full width to 0, shrinking towards the
+ * end of the content) plus a [fadeOut] (the content will be faded out to fully transparent).
  *
+ * The `content` of the [AnimatedVisibility] is a [Column] whose `modifier` argument is a
+ * [Modifier.height] that sets its `height` to 320.dp, with a [Modifier.fillMaxWidth] chained to
+ * that causes it to occupy its entire incoming horizontal size constraint. It `verticalArrangement`
+ * argument is [Arrangement.Center] (places children such that they are as close as possible to the
+ * middle of the main axis) and its `horizontalAlignment` argument is a [Alignment.CenterHorizontally]
+ * (centers its children horizontally).
+ *
+ * The `content` of the [Column] is two [Text] Composables, the first [Text] displays the `text`
+ * whose resource ID is [R.string.not_available] ("Functionality currently not available") with its
+ * `style` [TextStyle] argument the [Typography.titleMedium] of our custom [MaterialTheme.typography].
+ * The second [Text] displays the `text` whose resource ID is [R.string.not_available_subtitle]
+ * ("Grab a beverage and check back later!"), whose `modifier` argument is a [Modifier.paddingFrom]
+ * whose `alignmentLine` is [FirstBaseline] (alignment line relative to which the padding is defined
+ * is the AlignmentLine defined by the baseline of a first line), and whose `before` is 32.dp (the
+ * distance between the container's top edge and the horizontal alignment line). The `style`
+ * [TextStyle] argument is the [Typography.bodyMedium] of our custom [MaterialTheme.typography], and
+ * the `color` of the `text` is the [ColorScheme.onSurfaceVariant] of our [MaterialTheme.colorScheme].
  */
 @Composable
 fun FunctionalityNotAvailablePanel() {
     AnimatedVisibility(
-        visibleState = remember { MutableTransitionState(false).apply { targetState = true } },
+        visibleState = remember { MutableTransitionState(initialState = false).apply { targetState = true } },
         enter = expandHorizontally() + fadeIn(),
         exit = shrinkHorizontally() + fadeOut()
     ) {
         Column(
             modifier = Modifier
-                .height(320.dp)
+                .height(height = 320.dp)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -456,7 +491,7 @@ fun FunctionalityNotAvailablePanel() {
             )
             Text(
                 text = stringResource(id = R.string.not_available_subtitle),
-                modifier = Modifier.paddingFrom(FirstBaseline, before = 32.dp),
+                modifier = Modifier.paddingFrom(alignmentLine = FirstBaseline, before = 32.dp),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -464,6 +499,20 @@ fun FunctionalityNotAvailablePanel() {
     }
 }
 
+/**
+ * This Composable holds in its root [Row] Composable five [InputSelectorButton]'s which allow the
+ * user to select which [InputSelector] the [SelectorExpanded] should be rendering, as well as a
+ * "Send" [Button]. The `modifier` argument of the [Row] is a [Modifier.height] that sets its
+ * `height` to 72.dp chained to our [Modifier] parameter [modifier], with a [Modifier.wrapContentHeight]
+ * chained to that (allows the content of the [Row] to measure at its desired height without regard
+ * for the incoming measurement minimum height constraint), with a [Modifier.padding] that set the
+ * `start` padding to 16.dp, the `end` padding to 16.dp and the `bottom` padding to 16.dp. The
+ * `verticalAlignment` argument of the [Row] is a [Alignment.CenterVertically] which centers its
+ * children vertically. The `content` of the [Row] is:
+ *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
+ *  [currentInputSelector] is [InputSelector.EMOJI], whose `description` is the [String] with resource
+ *  ID [R.string.emoji_selector_bt_desc] ("Show Emoji selector").
+ */
 @Composable
 private fun UserInputSelector(
     onSelectorChange: (InputSelector) -> Unit,
@@ -474,7 +523,7 @@ private fun UserInputSelector(
 ) {
     Row(
         modifier = modifier
-            .height(72.dp)
+            .height(height = 72.dp)
             .wrapContentHeight()
             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -518,23 +567,23 @@ private fun UserInputSelector(
         } else {
             null
         }
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(weight = 1f))
 
-        val disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+        val disabledContentColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
 
-        val buttonColors = ButtonDefaults.buttonColors(
+        val buttonColors: ButtonColors = ButtonDefaults.buttonColors(
             disabledContainerColor = Color.Transparent,
             disabledContentColor = disabledContentColor
         )
 
         // Send button
         Button(
-            modifier = Modifier.height(36.dp),
+            modifier = Modifier.height(height = 36.dp),
             enabled = sendMessageEnabled,
             onClick = onMessageSent,
             colors = buttonColors,
             border = border,
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(all = 0.dp)
         ) {
             Text(
                 stringResource(id = R.string.send),
