@@ -42,6 +42,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -511,7 +512,60 @@ fun FunctionalityNotAvailablePanel() {
  * children vertically. The `content` of the [Row] is:
  *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
  *  [currentInputSelector] is [InputSelector.EMOJI], whose `description` is the [String] with resource
- *  ID [R.string.emoji_selector_bt_desc] ("Show Emoji selector").
+ *  ID [R.string.emoji_selector_bt_desc] ("Show Emoji selector"), whose `icon` argument is the
+ *  [ImageVector] drawn by [Icons.Outlined.Mood] (a smiley face), and whose `onClick` argument is a
+ *  lambda that calls our [onSelectorChange] lambda parameter with [InputSelector.EMOJI].
+ *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
+ *  [currentInputSelector] is [InputSelector.DM], whose `description` is the [String] with resource
+ *  ID [R.string.dm_desc] ("Direct Message"),  whose `icon` argument is the [ImageVector] drawn by
+ *  [Icons.Outlined.AlternateEmail] (an "@" character), and whose `onClick` argument is a lambda that
+ *  calls our [onSelectorChange] lambda parameter with [InputSelector.DM].
+ *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
+ *  [currentInputSelector] is [InputSelector.PICTURE], whose `description` is the [String] with
+ *  resource ID [R.string.attach_photo_desc] ("Attach Photo"),  whose `icon` argument is the
+ *  [ImageVector] drawn by [Icons.Outlined.InsertPhoto] (a stylized picture of a mountain range),
+ *  and whose `onClick` argument is a lambda that calls our [onSelectorChange] lambda parameter with
+ *  [InputSelector.PICTURE].
+ *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
+ *  [currentInputSelector] is [InputSelector.MAP], whose `description` is the [String] with resource
+ *  ID [R.string.map_selector_desc] ("Location selector"),  whose `icon` argument is the [ImageVector]
+ *  drawn by [Icons.Outlined.Place] (a location marker symbol), and whose `onClick` argument is a
+ *  lambda that calls our [onSelectorChange] lambda parameter with [InputSelector.MAP].
+ *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
+ *  [currentInputSelector] is [InputSelector.PHONE], whose `description` is the [String] with resource
+ *  ID [R.string.videochat_desc] ("Start videochat"),  whose `icon` argument is the [ImageVector]
+ *  drawn by [Icons.Outlined.Duo] (a stylized movie camera), and whose `onClick` argument is a
+ *  lambda that calls our [onSelectorChange] lambda parameter with [InputSelector.PHONE].
+ *  - a [Spacer] whose whose `modifier` argument is a [RowScope.weight] whose `weight` argument of
+ *  1f causes it to take up all available space after its unweighted siblings have been measured and
+ *  placed (thus shoving the [Button] that follows it in the [Row] to the end of the [Row]).
+ *
+ * Next if our [Boolean] parameter [sendMessageEnabled] is `true` we initialize our [BorderStroke]
+ * variable `val border` to a [BorderStroke] whose `width` is 1.dp, and whose `color` is a `copy` of
+ * the [ColorScheme.onSurface] of our [MaterialTheme.colorScheme] with its `alpha` set to 0.3f, and
+ * if [sendMessageEnabled] is `false` we initialize `border` to `null`. We initialize our [Color]
+ * variable `val disabledContentColor` to a `copy` of the [ColorScheme.onSurface] of our
+ * [MaterialTheme.colorScheme] with its `alpha` set to 0.3f, and we initialize our [ButtonColors]
+ * variable `val buttonColors` to a [ButtonColors] that represents the default container and content
+ * colors used in a [Button] but with the `disabledContainerColor` argument set to [Color.Transparent],
+ * and the `disabledContentColor` argument set to `disabledContentColor`.
+ *
+ * Then at the very end of the [Row] we compose a [Button] whose `modifier` argument is a [Modifier.height]
+ * that sets its `height` to 36.dp, with its `enabled` argument our [Boolean] parameter [sendMessageEnabled],
+ * whose `onClick` argument is our lambda parameter [onMessageSent], whose `colors` argument is our
+ * [ButtonColors] variable `buttonColors`, whose `border` argument is our [BorderStroke] variable
+ * `border`, and whose `contentPadding` argument is a [PaddingValues] that adds 0.dp to all sides.
+ * The `content` of the [Button] is a [Text] whose `text` is the string with resource ID [R.string.send]
+ * ("Send").
+ *
+ * @param onSelectorChange a lambda which the [InputSelectorButton]'s can call with the [InputSelector]
+ * that they are responsible for to have the UI react to the user selecting a different [InputSelector].
+ * @param sendMessageEnabled if `true` our "Send" [Button] is enabled.
+ * @param onMessageSent called when the user clicks the "Send" [Button].
+ * @param currentInputSelector the current selected [InputSelector].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [UserInput] passes us none so the empty, default, or starter [Modifier]
+ * that contains no elements is used instead.
  */
 @Composable
 private fun UserInputSelector(
@@ -558,8 +612,9 @@ private fun UserInputSelector(
             selected = currentInputSelector == InputSelector.PHONE,
             description = stringResource(id = R.string.videochat_desc)
         )
+        Spacer(modifier = Modifier.weight(weight = 1f))
 
-        val border = if (!sendMessageEnabled) {
+        val border: BorderStroke? = if (!sendMessageEnabled) {
             BorderStroke(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
@@ -567,7 +622,6 @@ private fun UserInputSelector(
         } else {
             null
         }
-        Spacer(modifier = Modifier.weight(weight = 1f))
 
         val disabledContentColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
 
@@ -586,13 +640,16 @@ private fun UserInputSelector(
             contentPadding = PaddingValues(all = 0.dp)
         ) {
             Text(
-                stringResource(id = R.string.send),
+                text = stringResource(id = R.string.send),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun InputSelectorButton(
     onClick: () -> Unit,
