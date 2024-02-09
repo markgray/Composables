@@ -648,7 +648,35 @@ private fun UserInputSelector(
 }
 
 /**
+ * This Composable is used by [UserInputSelector] to display [IconButton]'s that allow the user to
+ * select one of the five [InputSelector] types that the app provides. We start by initializing our
+ * [Modifier] variable `val backgroundModifier` to a [Modifier.background] if our [Boolean] parameter
+ * [selected] is `true` or to an empty [Modifier] if it is `false`. The `color` argument of the
+ * [Modifier.background] is the `current` [LocalContentColor], and the `shape` argument is a
+ * [RoundedCornerShape] whose `size` is 14.dp.
  *
+ * Then our root Composable is an [IconButton] whose `onClick` argument is our [onClick] lambda
+ * parameter, and whose `modifier` argument uses the [Modifier.then] method of our [Modifier]
+ * parameter [modifier] to chain our [Modifier] variable `backgroundModifier` to it. Inside the
+ * `content` of the [IconButton] we initialize our [Color] variable `val tint` to the [Color]
+ * returned by the [contentColorFor] method for the `backgroundColor` argument the `current`
+ * [LocalContentColor] if our [Boolean] parameter [selected] is `true` or to the `current`
+ * [LocalContentColor] if it is `false`. Then we compose an [Icon] Composable whose `imageVector`
+ * argument is our [ImageVector] parameter [icon], whose `tint` argument is our [Color] variable
+ * `tint`, whose `modifier` argument is a [Modifier.padding] that sets the padding on all its sides
+ * to 8.dp, with a [Modifier.size] chained to that that sets its `size` to 56.dp, and the
+ * `contentDescription` argument is our [String] parameter [description].
+ *
+ * @param onClick a lambda that our [IconButton] should call when the user clicks it. Each of the 5
+ * uses of us by [UserInputSelector] pass us a lambda which calls its `onSelectorChange` lambda
+ * parameter with the [InputSelector] we are supposed to select when the user clicks us.
+ * @param icon the [ImageVector] that the [Icon] of our [IconButton] should display.
+ * @param description the [String] to use as the `contentDescription` of the [Icon] of our [IconButton].
+ * @param selected if `true` our [InputSelectorButton] is the currently selected one, and we need to
+ * change the [Color]'s we use to draw our content to relect this fact.
+ * @param modifier a [Modifier] instance that our caller can use to modify our apearance and/or
+ * behavior. Our caller [UserInputSelector] does not pass us any, so the empty, default, or starter
+ * [Modifier] that contains no elements is used instead.
  */
 @Composable
 private fun InputSelectorButton(
@@ -658,49 +686,64 @@ private fun InputSelectorButton(
     selected: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val backgroundModifier = if (selected) {
+    val backgroundModifier: Modifier = if (selected) {
         Modifier.background(
             color = LocalContentColor.current,
-            shape = RoundedCornerShape(14.dp)
+            shape = RoundedCornerShape(size = 14.dp)
         )
     } else {
         Modifier
     }
     IconButton(
         onClick = onClick,
-        modifier = modifier.then(backgroundModifier)
+        modifier = modifier.then(other = backgroundModifier)
     ) {
-        val tint = if (selected) {
+        val tint: Color = if (selected) {
             contentColorFor(backgroundColor = LocalContentColor.current)
         } else {
             LocalContentColor.current
         }
         Icon(
-            icon,
+            imageVector = icon,
             tint = tint,
             modifier = Modifier
-                .padding(8.dp)
-                .size(56.dp),
+                .padding(all = 8.dp)
+                .size(size = 56.dp),
             contentDescription = description
         )
     }
 }
 
+/**
+ * This is just a convenience(?) function for calling our [FunctionalityNotAvailablePopup] Composable
+ * (which composes an [AlertDialog] into the UI).
+ *
+ * @param onDismissed the lambda we should pass to [FunctionalityNotAvailablePopup] as its `onDismiss`
+ * argument.
+ */
 @Composable
 private fun NotAvailablePopup(onDismissed: () -> Unit) {
-    FunctionalityNotAvailablePopup(onDismissed)
+    FunctionalityNotAvailablePopup(onDismiss = onDismissed)
 }
 
 /**
- *
+ * [SemanticsPropertyKey] is the infrastructure for setting key/value pairs inside semantics blocks
+ * in a type-safe way. Each key has one particular statically defined value type T. The `name` of
+ * this property is "KeyboardShownKey", and that is the key used to access its [Boolean] value by
+ * the [SemanticsPropertyReceiver.keyboardShownProperty]
  */
-val KeyboardShownKey: SemanticsPropertyKey<Boolean> = SemanticsPropertyKey<Boolean>(name = "KeyboardShownKey")
+val KeyboardShownKey: SemanticsPropertyKey<Boolean> = SemanticsPropertyKey(name = "KeyboardShownKey")
 
 /**
- *
+ * This is used as the key in the [Modifier.semantics] of the `modifier` argument used in the
+ * [UserInputTextField] Composable that is used by the [UserInputText] Composable. Its value is
+ * set to the [Boolean] parameter `keyboardShown` of the [UserInputText].
  */
 var SemanticsPropertyReceiver.keyboardShownProperty: Boolean by KeyboardShownKey
 
+/**
+ * This Composable
+ */
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
