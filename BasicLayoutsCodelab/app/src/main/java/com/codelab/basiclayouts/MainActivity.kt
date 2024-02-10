@@ -702,7 +702,7 @@ fun FavoriteCollectionsGridPreview() {
 }
 
 /**
- *
+ * The Preview for our [AlignYourBodyRow] Composable.
  */
 @Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
@@ -711,7 +711,7 @@ fun AlignYourBodyRowPreview() {
 }
 
 /**
- * The Preview for our [AlignYourBodyRow] Composable.
+ * The Preview for our [HomeSection] Composable holding a [AlignYourBodyRow] Composable.
  */
 @Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
