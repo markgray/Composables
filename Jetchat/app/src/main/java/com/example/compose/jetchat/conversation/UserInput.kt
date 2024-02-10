@@ -742,7 +742,60 @@ val KeyboardShownKey: SemanticsPropertyKey<Boolean> = SemanticsPropertyKey(name 
 var SemanticsPropertyReceiver.keyboardShownProperty: Boolean by KeyboardShownKey
 
 /**
- * This Composable
+ * This Composable is used as a [Row] in the [Column] used by [UserInput]. Below it in the [Column]
+ * is a [UserInputSelector], and a [SelectorExpanded]. The [Row] root Composable has a `modifier`
+ * argument of [Modifier.fillMaxWidth] which causes it to occupy its entire incoming width constraint,
+ * to which is chained a [Modifier.height] that sets its height to 64.dp, and its `horizontalArrangement`
+ * argument is an [Arrangement.End] (places children horizontally such that they are as close as
+ * possible to the end of the main axis). The `content` of the [Row] is an [AnimatedContent] that
+ * automatically animates its content when its `targetState` argument changes value. Its `targetState`
+ * argument is our [MutableState] wrapped [Boolean] variable `isRecordingMessage`, and its `modifier`
+ * argument is a [RowScope.weight] with a `weight` of 1f which causes it to occupy the entire incoming
+ * width constraint after its unweighted siblings have been measures and placed, with a
+ * [Modifier.fillMaxHeight] chained to that to have its occupy the entire incoming `height` constraint.
+ * The `content` lambda of the [AnimatedContent] is passed the current [Boolean] value of `isRecordingMessage`
+ * in `recording`, and the `content` is a [Box] which holds a [RecordingIndicator] if `recording` is
+ * `true` (its `swipeOffset` lambda argument is the [MutableFloatState.floatValue] of our variable
+ * `swipeOffset`), and if `recording` is `false` the [Box] holds a [UserInputTextField] whose `textFieldValue`
+ * argument is our [TextFieldValue] parameter [textFieldValue], whose `onTextChanged` argument is our
+ * [onTextChanged] lambda parameter, whose `onTextFieldFocused` argument is our [onTextFieldFocused]
+ * lambda parameter, whose `keyboardType` argument is our [KeyboardType] parameter [keyboardType],
+ * whose `focusState` argument is our [Boolean] parameter [focusState], and whose `modifier` argument
+ * is a [Modifier.semantics] which adds semantics key/value pairs to the layout node, (for use in
+ * testing, and accessibility) with the [SemanticsPropertyReceiver.contentDescription] key to our
+ * [String] variable `a11ylabel`, and the [keyboardShownProperty] key to our [Boolean] parameter
+ * [keyboardShown]. Then at the very end of the [Row] is a [RecordButton] whose `recording` argument
+ * is our [MutableState] wrapped [Boolean] variable `isRecordingMessage`, whose `swipeOffset` argument
+ * is a lambda that returns the [MutableFloatState.floatValue] property of our [MutableFloatState]
+ * variable `swipeOffset`, whose `onSwipeOffsetChange` argument is a lambda which sets the
+ * [MutableFloatState.floatValue] property of `swipeOffset` to the [Float] `offset` passed the lambda,
+ * whose `onStartRecording` argument is a lambda which sets its [Boolean] variable `val consumed` to
+ * the inverse of our [MutableState] wrapped [Boolean] variable `isRecordingMessage`, sets
+ * `isRecordingMessage` to `true` and returns `comsumed`, its `onFinishRecording` argument is a lambda
+ * which sets our [MutableState] wrapped [Boolean] variable `isRecordingMessage` to `false`, its
+ * `onCancelRecording` argument is a lambda which sets our [MutableState] wrapped [Boolean] variable
+ * `isRecordingMessage` to `false`, and its `modifier` argument is a [Modifier.fillMaxHeight] that
+ * causes it to occupy its entire incoming `height` constraint.
+ *
+ * @param keyboardType this is used as the `keyboardType` argument of the [KeyboardOptions] used by
+ * the [BasicTextField] in [UserInputTextField]. Our caller [UserInput] does not pass one so our
+ * default [KeyboardType.Text] is used (keyboard type used to request an IME that shows a regular
+ * keyboard).
+ * @param onTextChanged a lambda that can be called with the current [TextFieldValue] to update the
+ * [MutableState] of [TextFieldValue] that our caller keeps track of in the variable that it uses to
+ * supply our [textFieldValue] parameter.
+ * @param textFieldValue the current [TextFieldValue] that the user has entered.
+ * @param keyboardShown if `true` the IME keyboard is currently being shown. Our caller [UserInput]
+ * passes us `true` if the current [InputSelector] is [InputSelector.NONE] and [focusState] is
+ * `true`.
+ * @param onTextFieldFocused a lambda we can call to set the [MutableState] wrapped [Boolean] variable
+ * that our caller uses to update our [Boolean] parameter [focusState] to `true` or `false`. It is
+ * passed down the hierarchy to where it is eventually used in a [Modifier.onFocusChanged] of a
+ * [BasicTextField] as the [Modifier]'s `onFocusChanged` lambda argument where it is called with
+ * the value of the [FocusState.isFocused] passed the lambda.
+ * @param focusState the current value of the [MutableState] wrapped [Boolean] variable that our
+ * caller saves the focus state of the keyboard in, it is updated using our [onTextFieldFocused]
+ * lambda parameter by a [Modifier.onFocusChanged] of a [BasicTextField] further down the hierarchy.
  */
 @ExperimentalFoundationApi
 @Composable
@@ -756,20 +809,20 @@ private fun UserInputText(
 ) {
     val swipeOffset: MutableFloatState = remember { mutableFloatStateOf(value = 0f) }
     var isRecordingMessage: Boolean by remember { mutableStateOf(value = false) }
-    val a11ylabel = stringResource(id = R.string.textfield_desc)
+    val a11ylabel: String = stringResource(id = R.string.textfield_desc)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp),
+            .height(height = 64.dp),
         horizontalArrangement = Arrangement.End
     ) {
         AnimatedContent(
             targetState = isRecordingMessage,
             label = "text-field",
             modifier = Modifier
-                .weight(1f)
+                .weight(weight = 1f)
                 .fillMaxHeight()
-        ) { recording ->
+        ) { recording: Boolean ->
             Box(Modifier.fillMaxSize()) {
                 if (recording) {
                     RecordingIndicator { swipeOffset.floatValue }
@@ -791,7 +844,7 @@ private fun UserInputText(
         RecordButton(
             recording = isRecordingMessage,
             swipeOffset = { swipeOffset.floatValue },
-            onSwipeOffsetChange = { offset -> swipeOffset.floatValue = offset },
+            onSwipeOffsetChange = { offset: Float -> swipeOffset.floatValue = offset },
             onStartRecording = {
                 val consumed: Boolean = !isRecordingMessage
                 isRecordingMessage = true
@@ -809,6 +862,10 @@ private fun UserInputText(
     }
 }
 
+/**
+ * This Composable is used in a [Box] it timeshares with a [RecordingIndicator] in the [UserInputText]
+ * Composable.
+ */
 @Composable
 private fun BoxScope.UserInputTextField(
     textFieldValue: TextFieldValue,
