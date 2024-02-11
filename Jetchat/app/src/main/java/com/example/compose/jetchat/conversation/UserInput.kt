@@ -22,6 +22,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.InfiniteTransition
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -86,6 +87,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -864,7 +866,52 @@ private fun UserInputText(
 
 /**
  * This Composable is used in a [Box] it timeshares with a [RecordingIndicator] in the [UserInputText]
- * Composable.
+ * Composable when the [Boolean] parameter `recording` passed to the lambda holding the [Box] is
+ * `false`. That value is animated by an [AnimatedContent] whose `content` is that lambda. We start
+ * by initializing and remembering our [MutableState] of [Boolean] variable `var lastFocusState` to
+ * `false`. Then we compose a [BasicTextField] into the UI whose `value` argument is our [TextFieldValue]
+ * parameter [textFieldValue], whose `onValueChange` argument is a lambda that calls our lambda parameter
+ * [onTextChanged] with the [TextFieldValue] passed the lambda, whose `modifier` argument starts with
+ * our [Modifier] parameter [modifier] then chains a [Modifier.padding] that adds 32.dp to the `start`
+ * of the [BasicTextField], followed by a [BoxScope.align] whose `alignment` is a [Alignment.CenterStart]
+ * to align the [BasicTextField] to the start center of the [Box], and the end of the [Modifier] chain
+ * is a [Modifier.onFocusChanged] whose `onFocusChanged` argument is a lambda it calls with a [FocusState]
+ * argument `state` and the lambda checks whether the [FocusState.isFocused] property of `state` is
+ * not equal to our [MutableState] wrapped [Boolean] variable `lastFocusState` and if they are not
+ * equal it calls our lambda parameter [onTextFieldFocused] with the new [FocusState.isFocused], in
+ * any case it then sets `lastFocusState` to the [FocusState.isFocused] property of `state`. The
+ * `keyboardOptions` argument of the [BasicTextField] is a [KeyboardOptions] whose `keyboardType` is
+ * our [KeyboardType] parameter [keyboardType], and whose `imeAction` argument is [ImeAction.Send]
+ * (Represents that the user wants to send the text in the input, i.e. an SMS). The `maxLines` argument
+ * is 1 (maximum number of visible lines), the `cursorBrush` argument is a [SolidColor] whose `value`
+ * is the current [LocalContentColor], and finally the `textStyle` argument is a copy of the current
+ * [LocalTextStyle] with the `color` of the text the currnet [LocalContentColor].
+ *
+ * Next we initialize our [Color] variable `val disableContentColor` to the [ColorScheme.onSurfaceVariant]
+ * of our [MaterialTheme.colorScheme], then if the [TextFieldValue.text] of our [TextFieldValue] parameter
+ * [textFieldValue] is empty and our [Boolean] parameter [focusState] is `false` we compose a [Text]
+ * whose `modifier` argument is a [BoxScope.align] whose `alignment` is a [Alignment.CenterStart] to
+ * align the [Text] to the start center of the [Box], with a [Modifier.padding] that adds 32.dp to
+ * the `start` of the [Text], the `text` argument of the [Text] is the [String] with resource ID
+ * [R.string.textfield_hint] ("Message #composers"), and the `style` [TextStyle] argument is a copy
+ * of the [Typography.bodyLarge] of our [MaterialTheme.typography] with the `color` set to our [Color]
+ * variable `disableContentColor`.
+ *
+ * @param textFieldValue the current [TextFieldValue] that the user has typed into us.
+ * @param onTextChanged a lambda we can call with a new [TextFieldValue] to have our caller update
+ * the [MutableState] wrapped [TextFieldValue] it uses to supply us our [TextFieldValue] parameter
+ * [textFieldValue].
+ * @param onTextFieldFocused a lambda that the lambda of a [Modifier.onFocusChanged] can call when
+ * the [FocusState] of its composable changes.
+ * @param keyboardType the [KeyboardType] that our [BasicTextField] should use for its IME. Our caller
+ * passes us a [KeyboardType.Text] which is a keyboard type used to request an IME that shows a
+ * regular keyboard.
+ * @param focusState a [MutableState] wrapped [Boolean] variable maintained by our caller which is
+ * updated by calling our [onTextFieldFocused] lambda parameter with the new value. If `true` our
+ * [BasicTextField] has focus, and the IME will allow the user to type into it.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller calls us with a [Modifier.semantics] which adds semantics key/value pairs to
+ * our layout node, for the keys `contentDescription` and `keyboardShownProperty`.
  */
 @Composable
 private fun BoxScope.UserInputTextField(
@@ -893,7 +940,7 @@ private fun BoxScope.UserInputTextField(
             imeAction = ImeAction.Send
         ),
         maxLines = 1,
-        cursorBrush = SolidColor(LocalContentColor.current),
+        cursorBrush = SolidColor(value = LocalContentColor.current),
         textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current)
     )
 
@@ -909,47 +956,50 @@ private fun BoxScope.UserInputTextField(
     }
 }
 
+/**
+ * This Composable is shown while the user "holds down" the [RecordButton].
+ */
 @Composable
 private fun RecordingIndicator(swipeOffset: () -> Float) {
-    var duration by remember { mutableStateOf(Duration.ZERO) }
-    LaunchedEffect(Unit) {
+    var duration: Duration by remember { mutableStateOf(value = Duration.ZERO) }
+    LaunchedEffect(key1 = Unit) {
         while (true) {
-            delay(1000)
+            delay(timeMillis = 1000)
             duration += 1.seconds
         }
     }
     Row(
-        Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+        val infiniteTransition: InfiniteTransition = rememberInfiniteTransition(label = "pulse")
 
-        val animatedPulse = infiniteTransition.animateFloat(
+        val animatedPulse: State<Float> = infiniteTransition.animateFloat(
             initialValue = 1f,
             targetValue = 0.2f,
             animationSpec = infiniteRepeatable(
-                tween(2000),
+                animation = tween(durationMillis = 2000),
                 repeatMode = RepeatMode.Reverse
             ),
             label = "pulse",
         )
         Box(
             Modifier
-                .size(56.dp)
-                .padding(24.dp)
+                .size(size = 56.dp)
+                .padding(all = 24.dp)
                 .graphicsLayer {
                     scaleX = animatedPulse.value; scaleY = animatedPulse.value
                 }
-                .clip(CircleShape)
-                .background(Color.Red)
+                .clip(shape = CircleShape)
+                .background(color = Color.Red)
         )
         Text(
-            duration.toComponents { minutes, seconds, _ ->
-                val min = minutes.toString().padStart(2, '0')
-                val sec = seconds.toString().padStart(2, '0')
+            text = duration.toComponents { minutes: Long, seconds: Int, _ ->
+                val min: String = minutes.toString().padStart(length = 2, padChar = '0')
+                val sec: String = seconds.toString().padStart(length = 2, padChar = '0')
                 "$min:$sec"
             },
-            Modifier.alignByBaseline()
+            modifier = Modifier.alignByBaseline()
         )
         Box(
             Modifier
@@ -957,10 +1007,10 @@ private fun RecordingIndicator(swipeOffset: () -> Float) {
                 .alignByBaseline()
                 .clipToBounds()
         ) {
-            val swipeThreshold = with(LocalDensity.current) { 200.dp.toPx() }
+            val swipeThreshold: Float = with(LocalDensity.current) { 200.dp.toPx() }
             Text(
                 modifier = Modifier
-                    .align(Alignment.Center)
+                    .align(alignment = Alignment.Center)
                     .graphicsLayer {
                         translationX = swipeOffset() / 2
                         alpha = 1 - (swipeOffset().absoluteValue / swipeThreshold)
