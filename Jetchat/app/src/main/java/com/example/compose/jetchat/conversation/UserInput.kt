@@ -22,6 +22,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.InfiniteRepeatableSpec
 import androidx.compose.animation.core.InfiniteTransition
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.RepeatMode
@@ -126,6 +127,7 @@ import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import kotlinx.coroutines.delay
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -957,7 +959,51 @@ private fun BoxScope.UserInputTextField(
 }
 
 /**
- * This Composable is shown while the user "holds down" the [RecordButton].
+ * This Composable is shown while the user "holds down" the [RecordButton]. We start by initializing
+ * and remembering our [MutableState] wrapped [Duration] variable `var duration` to [Duration.ZERO]
+ * (duration equal to exactly 0 seconds). Then we use [LaunchedEffect] to launch a lambda into the
+ * composition's [CoroutineContext] which loops until the [LaunchedEffect] leaves the composition
+ * delaying for 1000 milliseconds, then adding 1.seconds to [Duration] variable `duration` each time
+ * round its infinite `while` loop. Our root Composable is a [Row] whose `modifier` argument is a
+ * [Modifier.fillMaxSize] that causes it to occupy its entire incoming size constrains, and whose
+ * `verticalAlignment` argument is [Alignment.CenterVertically] causing it to align its children
+ * with its center. Inside the `content` of the [Row] we initialize and remember our [InfiniteTransition]
+ * variable `val infiniteTransition` to a new instance, then we use the [InfiniteTransition.animateFloat]
+ * method of `infiniteTransition` to initialize our [State] wrapped [Float] variable with its
+ * `initialValue` 1f, its `targetValue` 0.2f, its `animationSpec` the [InfiniteRepeatableSpec] created
+ * by [infiniteRepeatable] whose `animation` is a [tween] of `durationMillis` 2000 milliseconds, and
+ * a `repeatMode` of the [RepeatMode.Reverse]. The children of the [Row] are:
+ *  - a [Box] whose `modifier` argument is a [Modifier.size] that sets its size to 56.dp, with a
+ *  [Modifier.padding] that set the padding on all sides to be 24.dp chained to that, followed by
+ *  a [Modifier.graphicsLayer] whose `block` lambda argument sets both the `scaleX` and `scaleY`
+ *  properties to the current `value` of the animated [Float] variable `animatedPulse` causing the
+ *  [Box] to `pulse` (smoothly shrinking and growing between 1f and 0.2f its size every 2 seconds),
+ *  and this is followed by a [Modifier.clip] that clips the `shape` of the [Box] to a [CircleShape],
+ *  and the last in the chain is a [Modifier.background] that sets the background color of the [Box]
+ *  to [Color.Red] (the result of all this is a "pulsing" red circle that pulses every 2 seconds as
+ *  long as the [RecordButton] is held down).
+ *  - a [Text] whose `text` is a [String] created by using the [Duration.toComponents] method of
+ *  `duration` to split the duration into `minutes`, and `seconds`, and then using them to construct
+ *  a "$min:$sec" [String], and the `modifier` argument of the [Text] is a [RowScope.alignByBaseline]
+ *  (positions the element vertically such that its first baseline aligns with sibling elements).
+ *  - a [Box] whose `modifier` argument is a [Modifier.fillMaxSize] that causes it to occupy its
+ *  entire incoming size constraints, with a [RowScope.alignByBaseline] chained to that that aligns
+ *  its first baseline with its sibling, with a [Modifier.clipToBounds] at the end of the chain which
+ *  clips its contents to its bounds. In the `content` of the [Box] we initialize our [Float] variable
+ *  `val swipeThreshold` to 200.dp converted to pixels using the current [LocalDensity], then we
+ *  compose a [Text] whose `text` is the [String] with resource ID [R.string.swipe_to_cancel_recording]
+ *  ("&#x25C0; Swipe to cancel"), whose `modifier` argument is a [BoxScope.align] whose `alignment`
+ *  is [Alignment.Center], with a [Modifier.graphicsLayer] whose `block` lambda argument sets the
+ *  `translationX` of the layer to one half of the [Float] value returned by our [swipeOffset] lambda
+ *  parameter, and sets the `alpha` property to one minus the `absoluteValue` of the [Float] value
+ *  returned by our [swipeOffset] lambda parameter divided by `swipeThreshold` (this causes us to
+ *  move and fade out as the user swipes us away as reported to us by our [swipeOffset] lambda parameter),
+ *  the `textAlign` argument of the [Text] is [TextAlign.Center] which aligns the text in the center
+ *  of the container, and the `style` [TextStyle] is the [Typography.bodyLarge] of our custom
+ *  [MaterialTheme.typography].
+ *
+ * @param swipeOffset a lambda which returns a [Float] value which represents how far the user has
+ * dragged our Composable horizontally after long pressing the [RecordButton].
  */
 @Composable
 private fun RecordingIndicator(swipeOffset: () -> Float) {
@@ -984,7 +1030,7 @@ private fun RecordingIndicator(swipeOffset: () -> Float) {
             label = "pulse",
         )
         Box(
-            Modifier
+            modifier = Modifier
                 .size(size = 56.dp)
                 .padding(all = 24.dp)
                 .graphicsLayer {
@@ -1002,7 +1048,7 @@ private fun RecordingIndicator(swipeOffset: () -> Float) {
             modifier = Modifier.alignByBaseline()
         )
         Box(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .alignByBaseline()
                 .clipToBounds()
@@ -1024,7 +1070,8 @@ private fun RecordingIndicator(swipeOffset: () -> Float) {
 }
 
 /**
- *
+ * This Composable is composed into the UI by [SelectorExpanded] when the user has selected the
+ * [InputSelectorButton] for the [InputSelector.EMOJI] in the [UserInputSelector] Composable.
  */
 @Composable
 fun EmojiSelector(
