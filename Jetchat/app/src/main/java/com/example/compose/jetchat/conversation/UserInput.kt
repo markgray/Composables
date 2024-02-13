@@ -36,6 +36,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -1071,19 +1072,57 @@ private fun RecordingIndicator(swipeOffset: () -> Float) {
 
 /**
  * This Composable is composed into the UI by [SelectorExpanded] when the user has selected the
- * [InputSelectorButton] for the [InputSelector.EMOJI] in the [UserInputSelector] Composable.
+ * [InputSelectorButton] for the [InputSelector.EMOJI] in the [UserInputSelector] Composable. We
+ * start by initializing and remembering our [MutableState] wrapped [EmojiStickerSelector] variable
+ * `var selected` to [EmojiStickerSelector.EMOJI], then we initialize our [String] variable
+ * `val a11yLabel` to the [String] with resource ID [R.string.emoji_selector_desc] ("Emoji selector").
+ *
+ * Our root Composable is a [Column] whose `modifier` argument is a [Modifier.focusRequester] whose
+ * `focusRequester` argument is our [FocusRequester] parameter [focusRequester] (requests focus when
+ * the Emoji selector is displayed), with a [Modifier.focusTarget] chained to that to make the
+ * component focusable, with a [Modifier.semantics] whose `contentDescription` argument is `a11yLabel`
+ * at the end of the chain. The `content` of the [Column] is:
+ *  - a [Row] whose `modifier` argument is a [Modifier.fillMaxWidth] to have it occupy the entire
+ *  incoming `width` constraint, with a [Modifier.padding] chained to that that adds 8.dp padding
+ *  to each end of the [Row]. The `content` of the [Row] is two [ExtendedSelectorInnerButton]
+ *  Composables, with both having a [RowScope.weight] with a `weight` of 1f as their `modifier`
+ *  argument which makes them share the width of the [Row] equally. The first has as its `text`
+ *  argument the [String] with resource ID [R.string.emojis_label] ("Emojis"), with its `onClick`
+ *  argument a lambda which sets our [MutableState] wrapped [EmojiStickerSelector] varible `selected`
+ *  to [EmojiStickerSelector.EMOJI] and its `selected` argument is `true`. The second has as its
+ *  `text` argument the [String] with resource ID [R.string.stickers_label] ("Stickers"), with its
+ *  `onClick` argument a lambda which sets our [MutableState] wrapped [EmojiStickerSelector] varible
+ *  `selected` to [EmojiStickerSelector.STICKER] and its `selected` argument is `false`.
+ *  - a [Row] whose `modifier` argument is a [Modifier.verticalScroll] whose `state` argument is a
+ *  the "remembered" [ScrollState] returned by [rememberScrollState]. The `content` of this [Row]
+ *  is just a [EmojiTable] whose `onTextAdded` argument is our lambda parameter [onTextAdded], and
+ *  whose `modifier` argument is a [Modifier.padding] that adds 8.dp to all of its sides.
+ *
+ * Then almost as an after thought if our [MutableState] wrapped [EmojiStickerSelector] variable
+ * `selected` is [EmojiStickerSelector.STICKER] we call [NotAvailablePopup] with its `onDismissed`
+ * argument a lambda which sets `selected` to [EmojiStickerSelector.EMOJI] when the user clicks
+ * the "CLOSE" button on the [FunctionalityNotAvailablePopup] that [NotAvailablePopup] pops up
+ * ([FunctionalityNotAvailablePopup] is an [AlertDialog] displaying the message "Functionality not
+ * available").
+ *
+ * @param onTextAdded a lambda that [EmojiTable] can call to add a [String] to the text that the
+ * user has typed.
+ * @param focusRequester a [FocusRequester] instance for the [Modifier.focusRequester] to use that
+ * is used as part of the [Modifier] chain used for our [Column] root Composable (The [FocusRequester]
+ * is used in conjunction with [Modifier.focusRequester] to send requests to change focus).
+ *
  */
 @Composable
 fun EmojiSelector(
     onTextAdded: (String) -> Unit,
     focusRequester: FocusRequester
 ) {
-    var selected by remember { mutableStateOf(EmojiStickerSelector.EMOJI) }
+    var selected: EmojiStickerSelector by remember { mutableStateOf(EmojiStickerSelector.EMOJI) }
 
-    val a11yLabel = stringResource(id = R.string.emoji_selector_desc)
+    val a11yLabel: String = stringResource(id = R.string.emoji_selector_desc)
     Column(
         modifier = Modifier
-            .focusRequester(focusRequester) // Requests focus when the Emoji selector is displayed
+            .focusRequester(focusRequester = focusRequester) // Requests focus when the Emoji selector is displayed
             // Make the emoji selector focusable so it can steal focus from TextField
             .focusTarget()
             .semantics { contentDescription = a11yLabel }
@@ -1097,17 +1136,17 @@ fun EmojiSelector(
                 text = stringResource(id = R.string.emojis_label),
                 onClick = { selected = EmojiStickerSelector.EMOJI },
                 selected = true,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(weight = 1f)
             )
             ExtendedSelectorInnerButton(
                 text = stringResource(id = R.string.stickers_label),
                 onClick = { selected = EmojiStickerSelector.STICKER },
                 selected = false,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(weight = 1f)
             )
         }
-        Row(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            EmojiTable(onTextAdded, modifier = Modifier.padding(8.dp))
+        Row(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
+            EmojiTable(onTextAdded = onTextAdded, modifier = Modifier.padding(all = 8.dp))
         }
     }
     if (selected == EmojiStickerSelector.STICKER) {
@@ -1116,7 +1155,39 @@ fun EmojiSelector(
 }
 
 /**
+ * This Composable is used twice as part of the [EmojiSelector] Composable to allow the user to
+ * select between [EmojiStickerSelector.EMOJI] ("Emojis") or [EmojiStickerSelector.STICKER]
+ * ("Stickers"). The [EmojiStickerSelector.EMOJI] choice is the only one that has an implementation
+ * and clicking the [EmojiStickerSelector.STICKER] choice just pops up an [AlertDialog] displaying
+ * the message "Functionality not available". We start by initializing our [ButtonColors] variable
+ * `val colors` to the [ButtonDefaults.buttonColors] default button colors but with the following
+ * substitute arguments:
+ *  - `containerColor` (container color of this Button when enabled) if our [Boolean] parameter
+ *  [selected] is `true` a copy of [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme]
+ *  with the `alpha` set to 0.08f, and if [selected] is `false` [Color.Transparent]
+ *  - `disabledContainerColor` (container color of this Button when not enabled) [Color.Transparent]
+ *  - `contentColor` (content color of this Button when enabled.) [ColorScheme.onSurface] of our
+ *  custom [MaterialTheme.colorScheme]
+ *  - `disabledContentColor` (content color of this Button when not enabled) a copy of
+ *  [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme] with the `alpha` set to 0.74f
  *
+ * Our root Composable is a [TextButton] whose `onClick` argument is our [onClick] lambda parameter,
+ * whose `modifier` argument chains a [Modifier.padding] that adds 8.dp to all its sides to our
+ * [Modifier] parameter [modifier], and then chains a [Modifier.height] to that which sets its
+ * `height` to 36.dp, the `color` argument of the [TextButton] is our [ButtonColors] variable
+ * `colors`, and the `contentPadding` argument is a [PaddingValues] that adds 0.dp padding to all
+ * sides of the spacing values to apply internally between the container and the `content` instead
+ * of whatever the default might have been. The `content` of the [TextButton is a [Text] whose `text`
+ * argument is our [String] parameter [text], and whose [TextStyle] `style` argument is the
+ * [Typography.titleSmall] of our custom [MaterialTheme.typography].
+ *
+ * @param text the `text` to display in the [Text] content of our [TextButton].
+ * @param onClick a lambda to call when our [TextButton] is clicked.
+ * @param selected if `true` we are the selected [ExtendedSelectorInnerButton] of the two and should
+ * color our [TextButton] appropriately.
+ * @param modifier a [Modifier] instance our caller can use to modify our appearance and/or behavior.
+ * Our caller passes both instances of us that it uses a [RowScope.weight] with a `weight` of 1f
+ * which causes the two to share equally the incoming width of the [Row] they are in.
  */
 @Composable
 fun ExtendedSelectorInnerButton(
@@ -1125,9 +1196,12 @@ fun ExtendedSelectorInnerButton(
     selected: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val colors = ButtonDefaults.buttonColors(
-        containerColor = if (selected) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
-        else Color.Transparent,
+    val colors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = if (selected) {
+            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
+        } else {
+            Color.Transparent
+        },
         disabledContainerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onSurface,
         disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.74f)
@@ -1135,10 +1209,10 @@ fun ExtendedSelectorInnerButton(
     TextButton(
         onClick = onClick,
         modifier = modifier
-            .padding(8.dp)
-            .height(36.dp),
+            .padding(all = 8.dp)
+            .height(height = 36.dp),
         colors = colors,
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(all = 0.dp)
     ) {
         Text(
             text = text,
@@ -1148,7 +1222,7 @@ fun ExtendedSelectorInnerButton(
 }
 
 /**
- *
+ * Displays a table of Emoji characters that the user can select from.
  */
 @Composable
 fun EmojiTable(
