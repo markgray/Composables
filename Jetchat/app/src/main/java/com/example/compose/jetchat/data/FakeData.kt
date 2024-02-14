@@ -16,7 +16,9 @@
 
 package com.example.compose.jetchat.data
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.compose.jetchat.R
+import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.conversation.Message
 import com.example.compose.jetchat.data.EMOJIS.EMOJI_CLOUDS
@@ -26,7 +28,11 @@ import com.example.compose.jetchat.data.EMOJIS.EMOJI_PINK_HEART
 import com.example.compose.jetchat.data.EMOJIS.EMOJI_POINTS
 import com.example.compose.jetchat.profile.ProfileScreenState
 
-private val initialMessages = listOf(
+/**
+ * This [List] of [Message] that is used to "seed" the [SnapshotStateList] wrapped [MutableList] of
+ * [Message] dataset of the [ConversationContent] Composable.
+ */
+private val initialMessages: List<Message> = listOf(
     Message(
         author = "me",
         content = "Check it out!",
@@ -66,7 +72,10 @@ private val initialMessages = listOf(
 )
 
 /**
- *
+ * The global singleton [ConversationUiState] which seeds the private [SnapshotStateList] wrapped
+ * [MutableList] of [Message] dataset backing its read-only [List] of [Message] field
+ * [ConversationUiState.messages] with the [List] of [Message] argument [initialMessages]. It dataset
+ * is then updated using its [ConversationUiState.addMessage] method.
  */
 val exampleUiState: ConversationUiState = ConversationUiState(
     initialMessages = initialMessages,
@@ -105,7 +114,7 @@ val meProfile: ProfileScreenState = ProfileScreenState(
 )
 
 /**
- *
+ * Some Emoji constants used in some of the sample [Message]'s.
  */
 object EMOJIS {
     /**

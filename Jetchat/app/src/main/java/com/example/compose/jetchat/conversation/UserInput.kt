@@ -1222,26 +1222,51 @@ fun ExtendedSelectorInnerButton(
 }
 
 /**
- * Displays a table of Emoji characters that the user can select from.
+ * Displays a table of Emoji characters that the user can select from. Our root Composable is a
+ * [Column] whose `modifier` argument adds a [Modifier.fillMaxWidth] to our [Modifier] parameter
+ * [modifier] to have it fill its entire incoming width constraint. The `content` of the [Column]
+ * consists of a 4 `times` [repeat] loop which passes the zero-based index of current iteration in
+ * [Int] variable `var x` as a parameter to its `action` lambda argument, and in the lambda we
+ * compose a [Row] each iteration whose `modifier` argument is a [Modifier.fillMaxWidth] to have the
+ * [Row] fill its entire incoming width constraint, and whose `horizontalArrangement` argument is
+ * [Arrangement.SpaceEvenly] to have it place children such that they are spaced evenly across the
+ * main axis, including free space before the first child and after the last child. The `content`
+ * of each [Row] consists of a [EMOJI_COLUMNS] (10) `times` [repeat] loop which passes the zero-based
+ * index of current iteration in [Int] variable `var y` as a parameter to its `action` lambda argument,
+ * and in the lambda we initialize [String] variable `val emoji` to the [String] in our [List] of
+ * [String] field [emojis] at index `x` times [EMOJI_COLUMNS] plus `y`, and then we compose a [Text]
+ * whose `modifier` argument is a [Modifier.clickable] whose `onClick` argument is a lambda which
+ * calls our lambda parameter [onTextAdded] with the [String] variable `emoji`, and to that [Modifier]
+ * it chains a [Modifier.sizeIn] which constrains its width and height to at 42.dp, and chained to
+ * that is a [Modifier.padding] that adds 8.dp padding to all sides of the [Text]. The `text` argument
+ * is our [String] variable `emoji`, and the `style` [TextStyle] argument is a copy of the `current`
+ * [LocalTextStyle] with 18.sp substituted for its `fontSize` and [TextAlign.Center] substituted for
+ * its `textAlign` (aligns the text in the center of the container).
+ *
+ * @param onTextAdded a lambda we can call to insert the [String] that the user selected from our
+ * [List] of [String] field [emojis] into the [String] that they are typing.
+ * @param modifier a [Modifier] instance that our user can pass to modify our appearance and/or
+ * behavior. Our caller [EmojiSelector] calls us with a [Modifier.padding] that adds 8.dp to all
+ * sides.
  */
 @Composable
 fun EmojiTable(
     onTextAdded: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier.fillMaxWidth()) {
-        repeat(4) { x ->
+    Column(modifier = modifier.fillMaxWidth()) {
+        repeat(times = 4) { x: Int ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                repeat(EMOJI_COLUMNS) { y ->
-                    val emoji = emojis[x * EMOJI_COLUMNS + y]
+                repeat(times = EMOJI_COLUMNS) { y: Int ->
+                    val emoji: String = emojis[x * EMOJI_COLUMNS + y]
                     Text(
                         modifier = Modifier
                             .clickable(onClick = { onTextAdded(emoji) })
                             .sizeIn(minWidth = 42.dp, minHeight = 42.dp)
-                            .padding(8.dp),
+                            .padding(all = 8.dp),
                         text = emoji,
                         style = LocalTextStyle.current.copy(
                             fontSize = 18.sp,
@@ -1254,8 +1279,15 @@ fun EmojiTable(
     }
 }
 
+/**
+ * How many columns will our [List] of [String] field [emojis] occupy when our [EmojiTable] Composable
+ * displays all of them.
+ */
 private const val EMOJI_COLUMNS = 10
 
+/**
+ * The Emoji characters that our users can select using our [EmojiTable] Composable.
+ */
 private val emojis: List<String> = listOf(
     "\ud83d\ude00", // Grinning Face
     "\ud83d\ude01", // Grinning Face With Smiling Eyes

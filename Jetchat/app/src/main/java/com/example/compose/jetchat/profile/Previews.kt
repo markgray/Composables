@@ -22,6 +22,9 @@ import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
+/**
+ * Preview of [meProfile] with width 340
+ */
 @Preview(widthDp = 340, name = "340 width - Me")
 @Composable
 fun ProfilePreview340() {
@@ -30,6 +33,9 @@ fun ProfilePreview340() {
     }
 }
 
+/**
+ * Preview of [meProfile] with width 480
+ */
 @Preview(widthDp = 480, name = "480 width - Me")
 @Composable
 fun ProfilePreview480Me() {
@@ -38,6 +44,9 @@ fun ProfilePreview480Me() {
     }
 }
 
+/**
+ * Preview of [colleagueProfile] with width 480
+ */
 @Preview(widthDp = 480, name = "480 width - Other")
 @Composable
 fun ProfilePreview480Other() {
@@ -45,6 +54,10 @@ fun ProfilePreview480Other() {
         ProfileScreen(colleagueProfile)
     }
 }
+
+/**
+ * Preview of [meProfile] with width 340 and `isDarkTheme` = `true`
+ */
 @Preview(widthDp = 340, name = "340 width - Me - Dark")
 @Composable
 fun ProfilePreview340MeDark() {
@@ -53,6 +66,9 @@ fun ProfilePreview340MeDark() {
     }
 }
 
+/**
+ * Preview of [meProfile] with width 480 and `isDarkTheme` = `true`
+ */
 @Preview(widthDp = 480, name = "480 width - Me - Dark")
 @Composable
 fun ProfilePreview480MeDark() {
@@ -61,6 +77,9 @@ fun ProfilePreview480MeDark() {
     }
 }
 
+/**
+ * Preview of [colleagueProfile] with width 480 and `isDarkTheme` = `true`
+ */
 @Preview(widthDp = 480, name = "480 width - Other - Dark")
 @Composable
 fun ProfilePreview480OtherDark() {
