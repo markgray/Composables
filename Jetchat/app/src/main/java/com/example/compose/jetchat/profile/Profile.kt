@@ -18,6 +18,8 @@ package com.example.compose.jetchat.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,13 +38,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Create
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -53,12 +58,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -71,14 +79,57 @@ import com.example.compose.jetchat.data.meProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
 /**
+ * This Composable is used to display the [ProfileScreenState] for a particular `userId`, either
+ * [meProfile] or [colleagueProfile]. It is used in a [ComposeView] found in the layout file with
+ * resource ID [R.layout.fragment_profile] by [ProfileFragment]. We start by initializing and
+ * remembering our [MutableState] wrapped [Boolean] variable `var functionalityNotAvailablePopupShown`
+ * to `false`. Then is `functionalityNotAvailablePopupShown` has changed to `true` in a later
+ * recomposition we call our [FunctionalityNotAvailablePopup] with its `onDismiss` lambda argument
+ * a lambda that sets `functionalityNotAvailablePopupShown` to `false` (this pops up an [AlertDialog]
+ * displaying the message: "Functionality not available", and the `confirmButton` argument of that
+ * [AlertDialog] is a [TextButton] that calls the lambda we pass [FunctionalityNotAvailablePopup]
+ * when the user clicks it. Next we initialize and remember our [ScrollState] variable
+ * `val scrollState`
  *
+ * Our root Composable is a [BoxWithConstraints] whose `modifier` argument is a [Modifier.fillMaxSize]
+ * that causes it to take up its entire incoming size constraint, with a [Modifier.nestedScroll] whose
+ * `connection` argument is our [NestedScrollConnection] parameter [nestedScrollInteropConnection]
+ * chained to that (modifies the element to make it participate in the nested scrolling hierarchy),
+ * followed by a [Modifier.systemBarsPadding] to add padding to accommodate the system bars insets.
+ * The `content` of the [BoxWithConstraints] holds two Composables:
+ *  - a [Surface] whose `content` is a [Column] whose `modifier` argument is a [Modifier.fillMaxSize]
+ *  that causes it to take up its entire incoming size constraint, with a [Modifier.verticalScroll]
+ *  whose `state` argument is our [ScrollState] variable `scrollState` chained to that to Modify the
+ *  element to allow it to scroll vertically when the height of the content is bigger than max
+ *  constraints allow. The `content` of the [Column] is a [ProfileHeader] whose `scrollState`
+ *  argument is our [ScrollState] variable `scrollState`, whose `data` argument is our [ProfileScreenState]
+ *  parameter [userData], and whose `containerHeight` is the [BoxWithConstraintsScope.maxHeight] property
+ *  of the [BoxWithConstraints] holding us (maximum height in [Dp]). Below this in the [Column] is a
+ *  [UserInfoFields] Composable whose `userData` argument is our [ProfileScreenState] parameter [userData],
+ *  and whose `containerHeight` is also the [BoxWithConstraintsScope.maxHeight] property of the
+ *  [BoxWithConstraints] holding us
+ *  - a [ProfileFab] whose `extended` argument is the `DerivedSnapshotState` wrapped [Boolean] variable
+ *  `val fabExtended` created and remembered by the [derivedStateOf] method for the `calculation` of
+ *  "the [ScrollState.value] of our [ScrollState] variable `scrollState` is equal to 0". Its `userIsMe`
+ *  argument is the result of calling the [ProfileScreenState.isMe] method of our [ProfileScreenState]
+ *  parameter [userData], its `modifier` argument is a [BoxScope.align] whose `alignment` argument
+ *  is [Alignment.BottomEnd] to align the fab to bottom end of the [BoxWithConstraints] and the
+ *  `onFabClicked` argument is a lambda which sets our [MutableState] wrapped [Boolean] variable
+ *  `functionalityNotAvailablePopupShown` to `true`.
+ *
+ * @param userData the [ProfileScreenState] whose information we are supposed to display.
+ * @param nestedScrollInteropConnection the [NestedScrollConnection] that we pass to the
+ * [Modifier.nestedScroll] modifier of our [BoxWithConstraints] to have it participate in the nested
+ * scroll hierarchy and to receive nested scroll events when they are dispatched by its scrolling
+ * child (scrolling child - the element that actually receives scrolling events and dispatches them
+ * via [NestedScrollDispatcher]).
  */
 @Composable
 fun ProfileScreen(
     userData: ProfileScreenState,
     nestedScrollInteropConnection: NestedScrollConnection = rememberNestedScrollInteropConnection()
 ) {
-    var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
+    var functionalityNotAvailablePopupShown: Boolean by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
         FunctionalityNotAvailablePopup { functionalityNotAvailablePopupShown = false }
     }
@@ -88,30 +139,33 @@ fun ProfileScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(nestedScrollInteropConnection)
+            .nestedScroll(connection = nestedScrollInteropConnection)
             .systemBarsPadding()
     ) {
         Surface {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(scrollState),
+                    .verticalScroll(state = scrollState),
             ) {
                 ProfileHeader(
-                    scrollState,
-                    userData,
-                    this@BoxWithConstraints.maxHeight
+                    scrollState = scrollState,
+                    data = userData,
+                    containerHeight = this@BoxWithConstraints.maxHeight
                 )
-                UserInfoFields(userData, this@BoxWithConstraints.maxHeight)
+                UserInfoFields(
+                    userData = userData,
+                    containerHeight = this@BoxWithConstraints.maxHeight
+                )
             }
         }
 
-        val fabExtended by remember { derivedStateOf { scrollState.value == 0 } }
+        val fabExtended: Boolean by remember { derivedStateOf { scrollState.value == 0 } }
         ProfileFab(
             extended = fabExtended,
             userIsMe = userData.isMe(),
             modifier = Modifier
-                .align(Alignment.BottomEnd)
+                .align(alignment = Alignment.BottomEnd)
                 // Offsets the FAB to compensate for CoordinatorLayout collapsing behaviour
                 .offset(y = ((-100).dp)),
             onFabClicked = { functionalityNotAvailablePopupShown = true }
@@ -119,47 +173,56 @@ fun ProfileScreen(
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
     Column {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(height = 8.dp))
 
-        NameAndPosition(userData)
+        NameAndPosition(userData = userData)
 
-        ProfileProperty(stringResource(R.string.display_name), userData.displayName)
+        ProfileProperty(label = stringResource(R.string.display_name), value = userData.displayName)
 
-        ProfileProperty(stringResource(R.string.status), userData.status)
+        ProfileProperty(label = stringResource(R.string.status), value = userData.status)
 
-        ProfileProperty(stringResource(R.string.twitter), userData.twitter, isLink = true)
+        ProfileProperty(label = stringResource(R.string.twitter), value = userData.twitter, isLink = true)
 
         userData.timeZone?.let {
-            ProfileProperty(stringResource(R.string.timezone), userData.timeZone)
+            ProfileProperty(label = stringResource(R.string.timezone), value = userData.timeZone)
         }
 
         // Add a spacer that always shows part (320.dp) of the fields list regardless of the device,
         // in order to always leave some content at the top.
-        Spacer(Modifier.height((containerHeight - 320.dp).coerceAtLeast(0.dp)))
+        Spacer(modifier = Modifier.height(height = (containerHeight - 320.dp).coerceAtLeast(0.dp)))
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun NameAndPosition(
     userData: ProfileScreenState
 ) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Name(
-            userData,
-            modifier = Modifier.baselineHeight(32.dp)
+            userData = userData,
+            modifier = Modifier.baselineHeight(heightFromBaseline = 32.dp)
         )
         Position(
-            userData,
+            userData = userData,
             modifier = Modifier
                 .padding(bottom = 20.dp)
-                .baselineHeight(24.dp)
+                .baselineHeight(heightFromBaseline = 24.dp)
         )
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
     Text(
@@ -169,6 +232,9 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ *
+ */
 @Composable
 private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier) {
     Text(
@@ -179,14 +245,17 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
     )
 }
 
+/**
+ *
+ */
 @Composable
 private fun ProfileHeader(
     scrollState: ScrollState,
     data: ProfileScreenState,
     containerHeight: Dp
 ) {
-    val offset = (scrollState.value / 2)
-    val offsetDp = with(LocalDensity.current) { offset.toDp() }
+    val offset: Int = (scrollState.value / 2)
+    val offsetDp: Dp = with(LocalDensity.current) { offset.toDp() }
 
     data.photo?.let {
         Image(
@@ -199,7 +268,7 @@ private fun ProfileHeader(
                     top = offsetDp,
                     end = 16.dp
                 )
-                .clip(CircleShape),
+                .clip(shape = CircleShape),
             painter = painterResource(id = it),
             contentScale = ContentScale.Crop,
             contentDescription = null
@@ -216,11 +285,11 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         Divider()
         Text(
             text = label,
-            modifier = Modifier.baselineHeight(24.dp),
+            modifier = Modifier.baselineHeight(heightFromBaseline = 24.dp),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        val style = if (isLink) {
+        val style: TextStyle = if (isLink) {
             MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary)
         } else {
             MaterialTheme.typography.bodyLarge
@@ -255,9 +324,9 @@ fun ProfileFab(
         FloatingActionButton(
             onClick = onFabClicked,
             modifier = modifier
-                .padding(16.dp)
+                .padding(all = 16.dp)
                 .navigationBarsPadding()
-                .height(48.dp)
+                .height(height = 48.dp)
                 .widthIn(min = 48.dp),
             containerColor = MaterialTheme.colorScheme.tertiaryContainer
         ) {
