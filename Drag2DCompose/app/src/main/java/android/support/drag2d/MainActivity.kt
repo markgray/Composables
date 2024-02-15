@@ -41,6 +41,8 @@ class MainActivity : ComponentActivity() {
      * Color(red = 28, green = 27, blue = 31) for dark theme (a shade of black) and
      * Color(red = 255, green = 251, blue = 254) for light theme (a shade of white).
      * The `content` of the [Surface] is our [Material2DMotionPreview] Composable.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
