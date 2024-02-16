@@ -21,13 +21,20 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.compose.jetchat.conversation.Message
 import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 
+/**
+ * TODO: Add kdoc
+ */
 class ProfileViewModel : ViewModel() {
 
     private var userId: String = ""
 
+    /**
+     * TODO: Add kdoc
+     */
     fun setUserId(newUserId: String?) {
         if (newUserId != userId) {
             userId = newUserId ?: meProfile.userId
@@ -41,9 +48,30 @@ class ProfileViewModel : ViewModel() {
     }
 
     private val _userData = MutableLiveData<ProfileScreenState>()
+    /**
+     * TODO: Add kdoc
+     */
     val userData: LiveData<ProfileScreenState> = _userData
 }
 
+/**
+ * This data class holds all the information we know about the user whose user ID is the [String]
+ * field [userId].
+ *
+ * @param userId a [String] uniquely identifies the person that this [ProfileScreenState] belongs to
+ * in our case only "me" and "12345" are used so far.
+ * @param photo the resource ID of a png picture of the user that this [ProfileScreenState] belongs to.
+ * @param name the name of the user that this [ProfileScreenState] belongs to.
+ * @param status the status of the user, either "Online" or "Away" in our case.
+ * @param displayName this is used in a [Message] to refer to this [ProfileScreenState] when preceded
+ * by an "@" character. Clicking on the [displayName] in the [Message] will cause the [ProfileFragment]
+ * to be launched to display this [ProfileScreenState].
+ * @param position the job title and company of the user.
+ * @param twitter the user's twitter account.
+ * @param timeZone the timezone that the user is in.
+ * @param commonChannels unused apparently, but is the [String] "2" for [colleagueProfile] and `null`
+ * for [meProfile] for what that is worth.
+ */
 @Immutable
 data class ProfileScreenState(
     val userId: String,
@@ -56,5 +84,9 @@ data class ProfileScreenState(
     val timeZone: String?, // Null if me
     val commonChannels: String? // Null if me
 ) {
-    fun isMe() = userId == meProfile.userId
+    /**
+     * Returns `true` is the [userId] of this [ProfileScreenState] is equal to the
+     * [ProfileScreenState.userId] of [meProfile].
+     */
+    fun isMe(): Boolean = userId == meProfile.userId
 }

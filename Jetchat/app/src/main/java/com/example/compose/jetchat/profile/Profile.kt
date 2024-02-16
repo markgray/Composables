@@ -107,15 +107,19 @@ import com.example.compose.jetchat.theme.JetchatTheme
  *  of the [BoxWithConstraints] holding us (maximum height in [Dp]). Below this in the [Column] is a
  *  [UserInfoFields] Composable whose `userData` argument is our [ProfileScreenState] parameter [userData],
  *  and whose `containerHeight` is also the [BoxWithConstraintsScope.maxHeight] property of the
- *  [BoxWithConstraints] holding us
- *  - a [ProfileFab] whose `extended` argument is the `DerivedSnapshotState` wrapped [Boolean] variable
- *  `val fabExtended` created and remembered by the [derivedStateOf] method for the `calculation` of
- *  "the [ScrollState.value] of our [ScrollState] variable `scrollState` is equal to 0". Its `userIsMe`
+ *  [BoxWithConstraints] holding us.
+ *  - we initialize and remember a `DerivedSnapshotState` wrapped [Boolean] variable `val fabExtended`
+ *  using the [derivedStateOf] method with the `calculation` argument of [derivedStateOf] `true` if
+ *  the [ScrollState.value] of our [ScrollState] variable `scrollState` is equal to 0.
+ *  - a [ProfileFab] is Composed at the bottom of the [BoxWithConstraints] whose `extended` argument
+ *  is the `DerivedSnapshotState` wrapped [Boolean] variable `fabExtended` (which is `true` whenever
+ *  the [ScrollState.value] of our [ScrollState] variable `scrollState` is equal to 0). Its `userIsMe`
  *  argument is the result of calling the [ProfileScreenState.isMe] method of our [ProfileScreenState]
  *  parameter [userData], its `modifier` argument is a [BoxScope.align] whose `alignment` argument
- *  is [Alignment.BottomEnd] to align the fab to bottom end of the [BoxWithConstraints] and the
+ *  is [Alignment.BottomEnd] to align the fab to the bottom end of the [BoxWithConstraints] and the
  *  `onFabClicked` argument is a lambda which sets our [MutableState] wrapped [Boolean] variable
- *  `functionalityNotAvailablePopupShown` to `true`.
+ *  `functionalityNotAvailablePopupShown` to `true` (this will cause [FunctionalityNotAvailablePopup]
+ *  to be called which will pop up an [AlertDialog] displaying the message: "Functionality not available").
  *
  * @param userData the [ProfileScreenState] whose information we are supposed to display.
  * @param nestedScrollInteropConnection the [NestedScrollConnection] that we pass to the
@@ -174,7 +178,11 @@ fun ProfileScreen(
 }
 
 /**
- *
+ * This Composable displays the fields in its [ProfileScreenState] parameter [userData] which provide
+ * information about the user in a [Column]. The `content` of the [Column] consists of:
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to 8.dp
+ *  - a [NameAndPosition] Composable whose `userData` argument is our [ProfileScreenState] parameter
+ *  [userData] (which displays a [Name] Composable and a [Position] Composable in a column).
  */
 @Composable
 private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
