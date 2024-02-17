@@ -19,8 +19,8 @@ package com.example.compose.jetchat.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +39,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -46,6 +47,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
@@ -57,10 +59,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
@@ -183,6 +187,24 @@ fun ProfileScreen(
  *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to 8.dp
  *  - a [NameAndPosition] Composable whose `userData` argument is our [ProfileScreenState] parameter
  *  [userData] (which displays a [Name] Composable and a [Position] Composable in a column).
+ *  - a [ProfileProperty] whose `label` argument is the [String] with resource ID [R.string.display_name]
+ *  ("Display name"), and whose `value` argument is the [ProfileScreenState.displayName] field of our
+ *  [ProfileScreenState] parameter [userData].
+ *  - a [ProfileProperty] whose `label` argument is the [String] with resource ID [R.string.status]
+ *  ("Status"), and whose `value` argument is the [ProfileScreenState.status] field of our
+ *  [ProfileScreenState] parameter [userData].
+ *  - a [ProfileProperty] whose `label` argument is the [String] with resource ID [R.string.twitter]
+ *  ("Twitter"), and whose `value` argument is the [ProfileScreenState.twitter] field of our
+ *  [ProfileScreenState] parameter [userData].
+ *  - if the [ProfileScreenState.timeZone] field of [userData] is not `null`, a [ProfileProperty]
+ *  whose `label` argument is the [String] with resource ID [R.string.timezone] ("Timezone"),
+ *  and whose `value` argument is the [ProfileScreenState.timeZone] field of our [ProfileScreenState]
+ *  parameter [userData].
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to our [Dp]
+ *  parameter [containerHeight] minus 320.bp coerced to be at least 0.dp.
+ *
+ * @param userData the [ProfileScreenState] containing the information we are to disply.
+ * @param containerHeight the maximum height contraint of the [BoxWithConstraints] that contains us.
  */
 @Composable
 private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
@@ -208,7 +230,21 @@ private fun UserInfoFields(userData: ProfileScreenState, containerHeight: Dp) {
 }
 
 /**
+ * This Composable displays the [ProfileScreenState.name] and [ProfileScreenState.position] of its
+ * [ProfileScreenState] parameter [userData]. Its root Composable is a [Column] whose `modifier`
+ * argument is a [Modifier.padding] that adds 16.dp to both sides of the [Column], and the `content`
+ * of the [Column] is:
+ *  - a [Name] Composable whose `userData` argument is our [ProfileScreenState] parameter [userData],
+ *  and whose `modifier` argument is a [Modifier.baselineHeight] whose `heightFromBaseline` argument
+ *  will set the `height` of any [Text] using the [Modifier] to 32.dp measured from its [FirstBaseline]
+ *  - a [Position] Composable whose `userData` argument is our [ProfileScreenState] parameter [userData],
+ *  and whose `modifier` argument is a [Modifier.padding] that adds 20.dp padding to the bottom of any
+ *  Composable using the [Modifier], and chained to that is a [Modifier.baselineHeight] whose
+ *  `heightFromBaseline` argument will set the `height` of any [Text] using the [Modifier] to 24.dp
+ *  measured from its [FirstBaseline]
  *
+ * @param userData the [ProfileScreenState] whose [ProfileScreenState.name] and [ProfileScreenState.position]
+ * fields we are to display (using [Name] and [Position] Composables).
  */
 @Composable
 private fun NameAndPosition(
@@ -229,7 +265,16 @@ private fun NameAndPosition(
 }
 
 /**
+ * Displays the [ProfileScreenState.name] field our our [ProfileScreenState] parameter [userData] in
+ * a [Text]. Our root Composable is a [Text] whose `text` argument is the [ProfileScreenState.name]
+ * field our our [ProfileScreenState] parameter [userData], whose `modifier` argument is our [Modifier]
+ * parameter [modifier], and whose [TextStyle] `style` argument is the [Typography.headlineSmall]
+ * of our custom [MaterialTheme.typography].
  *
+ * @param userData the [ProfileScreenState] whose [ProfileScreenState.name] field we are to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [NameAndPosition] passes us a [Modifier.baselineHeight] whose `heightFromBaseline`
+ * argument will set our `height` of our [Text] to 32.dp measured from its [FirstBaseline]
  */
 @Composable
 private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
@@ -241,7 +286,18 @@ private fun Name(userData: ProfileScreenState, modifier: Modifier = Modifier) {
 }
 
 /**
+ * Displays the [ProfileScreenState.position] field our our [ProfileScreenState] parameter [userData]
+ * in a [Text]. Our root Composable is a [Text] whose `text` argument is the [ProfileScreenState.position]
+ * field our our [ProfileScreenState] parameter [userData], whose `modifier` argument is our [Modifier]
+ * parameter [modifier], whose [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom
+ * [MaterialTheme.typography], and whose [Color] argument `color` is the [ColorScheme.onSurfaceVariant]
+ * of our custom [MaterialTheme.colorScheme].
  *
+ * @param userData the [ProfileScreenState] whose [ProfileScreenState.position] field we are to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [NameAndPosition] passes us a [Modifier.padding] that adds 20.dp padding to
+ * the bottom of our [Text], and chained to that is a [Modifier.baselineHeight] whose `heightFromBaseline`
+ * argument will set the `height` of our [Text] to 24.dp measured from its [FirstBaseline].
  */
 @Composable
 private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier) {
@@ -254,7 +310,8 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
 }
 
 /**
- *
+ * This Composable displays the png whose resource ID is in the [ProfileScreenState.photo] field of
+ * our [ProfileScreenState] parameter [data] (if it is not `null`).
  */
 @Composable
 private fun ProfileHeader(
