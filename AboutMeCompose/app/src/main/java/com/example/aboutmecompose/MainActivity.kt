@@ -79,7 +79,7 @@ fun AboutMeApp() {
     NameNicknameButtonAndFishtail(
         modifier = Modifier
             .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
+            .wrapContentSize(align = Alignment.Center)
     )
 }
 
@@ -132,30 +132,30 @@ fun NameNicknameButtonAndFishtail(modifier: Modifier = Modifier) {
     /**
      * The current string that the user has entered in the "What is your Nickname?" [OutlinedTextField]
      */
-    var nickNameEntry by rememberSaveable {
-        mutableStateOf("")
+    var nickNameEntry: String by rememberSaveable {
+        mutableStateOf(value = "")
     }
 
     /**
      * The current string to be displayed in the nickname [Text] when the user clicks the "Done"
      * [Button].
      */
-    var nickNameSaved by rememberSaveable {
-        mutableStateOf("")
+    var nickNameSaved: String by rememberSaveable {
+        mutableStateOf(value = "")
     }
 
     /**
      * The visisility toggle for the "DONE" [Button].
      */
-    var showDoneButton by rememberSaveable {
-        mutableStateOf(true)
+    var showDoneButton: Boolean by rememberSaveable {
+        mutableStateOf(value = true)
     }
 
     /**
      * The visisility toggle for the "What is your Nickname?" [OutlinedTextField]
      */
-    var showEnterNickNameTextField by rememberSaveable {
-        mutableStateOf(true)
+    var showEnterNickNameTextField: Boolean by rememberSaveable {
+        mutableStateOf(value = true)
     }
 
     Column(
@@ -177,7 +177,7 @@ fun NameNicknameButtonAndFishtail(modifier: Modifier = Modifier) {
                 }
             )
         }
-        HideOrShow(showDoneButton) {
+        HideOrShow(show = showDoneButton) {
             DoneButton(onClick = { nickNameSaved = nickNameEntry })
             if (nickNameSaved != "") {
                 showDoneButton = false
@@ -195,17 +195,17 @@ fun NameNicknameButtonAndFishtail(modifier: Modifier = Modifier) {
         )
         Box(
             modifier = Modifier
-                .height(40.dp)
-                .width(40.dp)
+                .height(height = 40.dp)
+                .width(width = 40.dp)
         ) {
             Image(
-                modifier = Modifier.fillMaxSize(1f),
+                modifier = Modifier.fillMaxSize(fraction = 1f),
                 painter = painterResource(id = android.R.drawable.btn_star_big_on),
                 contentDescription = stringResource(id = R.string.yellow_star)
             )
         }
         Column(
-            modifier = modifier.verticalScroll(rememberScrollState()),
+            modifier = modifier.verticalScroll(state = rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(

@@ -100,11 +100,11 @@ private val DarkColors = darkColorScheme(
  * This is the custom [MaterialTheme] used to wrap our UI and supply Material 3 default values to
  * the widgets it wraps for [ColorScheme], [Typography], and [Shapes]. We start by initializing our
  * [Context] variable `val context` to the [Context] returned by `LocalContext.current`. Then we
- * initialize [ColorScheme] variable `val colors` to [dynamicDarkColorScheme] the device is newer
+ * initialize [ColorScheme] variable `val colors` to [dynamicDarkColorScheme] when the device is newer
  * than [Build.VERSION_CODES.S] and [useDarkTheme] is `true` or to [dynamicLightColorScheme] if it
  * is `false`. When the device is older than [Build.VERSION_CODES.S] our custom [darkColorScheme]
  * field [DarkColors] is used if [useDarkTheme] is `true` or else our custom [lightColorScheme]
- * field [LightColors] is used. We initialized our [View] variable `val view` to the current Compose
+ * field [LightColors] is used. We initialize our [View] variable `val view` to the current Compose
  * [View] then if the [View.isInEditMode] method of `view` returns `true` (a [View] is usually in
  * edit mode when displayed within a developer tool) we lauch a [SideEffect] that schedules its
  * `effect` lambda to run when the current composition completes successfully and applies changes.
