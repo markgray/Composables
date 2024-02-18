@@ -60,6 +60,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -311,7 +312,28 @@ private fun Position(userData: ProfileScreenState, modifier: Modifier = Modifier
 
 /**
  * This Composable displays the png whose resource ID is in the [ProfileScreenState.photo] field of
- * our [ProfileScreenState] parameter [data] (if it is not `null`).
+ * our [ProfileScreenState] parameter [data] (if it is not `null`). We start by initializing our [Int]
+ * variable `val offset` to half the [ScrollState.value] of our [ScrollState] parameter [scrollState].
+ * Then we initialize our [Dp] variable `val offsetDp` to the [Dp] value of `offset` pixels given the
+ * `current` [LocalDensity]. Then if the [ProfileScreenState.photo] field of our [ProfileScreenState]
+ * parameter [data] is not `null` we use the [Int] value of that field when we compose an [Image] into
+ * th UI whose `modifier` argument is a [Modifier.heightIn] whose `max` argument is one half of our
+ * [Dp] parameter [containerHeight] (constrains our content to half of [containerHeight]), with a
+ * [Modifier.fillMaxWidth] chained to that which causes us to occupy our entire incoming width
+ * constraint, with a [Modifier.padding] that adds 16.dp to the `start`, `offsetDp` to the `top`,
+ * and 16.dp to the `end`, with a [Modifier.clip] chained to that that clips the [Image] to the
+ * `shape` [CircleShape]. The `painter` of the [Image] is a [Painter] for the drawable with the
+ * the resource ID contained in the [ProfileScreenState.photo] field of [data], the `contentScale`
+ * argument is [ContentScale.Crop] (scales the source uniformly (maintaining the source's aspect
+ * ratio) so that both dimensions (width and height) of the source will be equal to or larger than
+ * the corresponding dimension of the destination).
+ *
+ * @param scrollState the [ScrollState] of the [Modifier.verticalScroll] used by the [Column] that
+ * contains us.
+ * @param data the [ProfileScreenState] of the user whose [ProfileScreenState.photo] field resource
+ * ID we are supposed to have our [Image].
+ * @param containerHeight the [BoxWithConstraintsScope.maxHeight] (maximum height in [Dp]) of the
+ * [BoxWithConstraintsScope] that holds the [Surface] that holds the [Column] that holds us.
  */
 @Composable
 private fun ProfileHeader(
@@ -322,7 +344,7 @@ private fun ProfileHeader(
     val offset: Int = (scrollState.value / 2)
     val offsetDp: Dp = with(LocalDensity.current) { offset.toDp() }
 
-    data.photo?.let {
+    data.photo?.let { drawable: Int ->
         Image(
             modifier = Modifier
                 .heightIn(max = containerHeight / 2)
@@ -334,7 +356,7 @@ private fun ProfileHeader(
                     end = 16.dp
                 )
                 .clip(shape = CircleShape),
-            painter = painterResource(id = it),
+            painter = painterResource(id = drawable),
             contentScale = ContentScale.Crop,
             contentDescription = null
         )
@@ -342,7 +364,16 @@ private fun ProfileHeader(
 }
 
 /**
- *
+ * This Composable is used to display the two [String] parameters [label] and [value] in separate
+ * [Text] Composables, and if our [Boolean] parameter [isLink] is `true` the [Color] of the `text`
+ * that displays [value] will be the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme].
+ * Our root Composable is a [Column] whose `modifier` argument is a [Modifier.padding] that adds
+ * 16.dp to the `start`, 16.dp to the `end`, and 16.dp to the `bottom`. The `content` of the [Column]
+ * is:
+ *  - a [Divider] with no arguments which causes it to use its defaults: `modifier` = [Modifier],
+ *   `thickness` = 1.0.dp, and `color` = the [ColorScheme.outlineVariant] of our custom
+ *   [MaterialTheme.colorScheme]
+ *   - a [Text]
  */
 @Composable
 fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
@@ -361,7 +392,7 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
         }
         Text(
             text = value,
-            modifier = Modifier.baselineHeight(24.dp),
+            modifier = Modifier.baselineHeight(heightFromBaseline = 24.dp),
             style = style
         )
     }
