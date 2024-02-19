@@ -61,6 +61,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -344,7 +345,7 @@ private fun ProfileHeader(
     val offset: Int = (scrollState.value / 2)
     val offsetDp: Dp = with(LocalDensity.current) { offset.toDp() }
 
-    data.photo?.let { drawable: Int ->
+    data.photo?.let { resourceId: Int ->
         Image(
             modifier = Modifier
                 .heightIn(max = containerHeight / 2)
@@ -356,7 +357,7 @@ private fun ProfileHeader(
                     end = 16.dp
                 )
                 .clip(shape = CircleShape),
-            painter = painterResource(id = drawable),
+            painter = painterResource(id = resourceId),
             contentScale = ContentScale.Crop,
             contentDescription = null
         )
@@ -371,9 +372,26 @@ private fun ProfileHeader(
  * 16.dp to the `start`, 16.dp to the `end`, and 16.dp to the `bottom`. The `content` of the [Column]
  * is:
  *  - a [Divider] with no arguments which causes it to use its defaults: `modifier` = [Modifier],
- *   `thickness` = 1.0.dp, and `color` = the [ColorScheme.outlineVariant] of our custom
- *   [MaterialTheme.colorScheme]
- *   - a [Text]
+ *  `thickness` = 1.0.dp, and `color` = the [ColorScheme.outlineVariant] of our custom
+ *  [MaterialTheme.colorScheme]
+ *  - a [Text] whose `text` argument is our [String] parameter [label], whose `modifier` argument is
+ *  a [Modifier.baselineHeight] that sets the distance between the `top` and the first baseline to
+ *  24.dp, whose [TextStyle] `style` argument is the [Typography.bodySmall] of our custom
+ *  [MaterialTheme.typography], whose [Color] `color` argument is the [ColorScheme.onSurfaceVariant]
+ *  of our custom [MaterialTheme.colorScheme].
+ *  - we initialize our [TextStyle] variable `val style` depending on the value of our [Boolean]
+ *  parameter [isLink]: if [isLink] is `true` to a copy of the [Typography.bodyLarge] of our custom
+ *  [MaterialTheme.typography] with its [Color] `color` property set to the [ColorScheme.primary]
+ *  of our custom [MaterialTheme.colorScheme], and if [isLink] is `false` to the [Typography.bodyLarge]
+ *  of our custom [MaterialTheme.typography] with none of its defaults overridden.
+ *  - a [Text] whose `text` argument is our [String] parameter [value], whose `modifier` argument is
+ *  a [Modifier.baselineHeight] that sets the distance between the `top` and the first baseline to
+ *  24.dp, whose [TextStyle] `style` argument is our [TextStyle] variable `style`.
+ *
+ * @param label the [String] to use as the `text` of the first [Text] in our [Column]
+ * @param value the [String] to use as the `text` of the second [Text] in our [Column]
+ * @param isLink if `true` the [Color] of the text in the second [Text] in our [Column] is set to
+ * the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme].
  */
 @Composable
 fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
@@ -399,15 +417,39 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
 }
 
 /**
- *
+ * [ProfileFragment] composes this into the UI instead of [ProfileScreen] if the [ProfileScreenState]
+ * that it is supposed to display is `null`. We just display a [Text] whose `text` argument is the
+ * [String] with resource ID [R.string.profile_error] ("There was an error loading the profile").
  */
 @Composable
 fun ProfileError() {
-    Text(stringResource(R.string.profile_error))
+    Text(text = stringResource(id = R.string.profile_error))
 }
 
 /**
+ * This is the custom [FloatingActionButton] that is displayed at the [Alignment.BottomEnd] of the
+ * [BoxWithConstraints] used by [ProfileScreen]. Its width is animated based on our [Boolean] parameter
+ * [extended] by the [AnimatingFabContent] in the `content` lambda of our [FloatingActionButton].
+ * [extended] is `true` when the [ScrollState.value] of the [ScrollState] used to scroll the [Column]
+ * used in [ProfileScreen] is 0 (the top of the content of the [Column] is at the top of the [Column])
+ * and [AnimatingFabContent] will animate the width of the FAB it displays between its full width when
+ * [extended] to only as wide as it its height when `false` whenever [extended] changes value.
  *
+ * Within the `block` argument of a [key] whose `keys` is our [Boolean] parameter [userIsMe] (that is
+ * used to prevent the execution of multiple invocations during composition) is a [FloatingActionButton]
+ * whose `onClick` argument is our [onFabClicked] lambda parameter, whose `modifier` argument chains
+ * to our [Modifier] parameter [modifier] a [Modifier.padding] that adds 16.dp to all sides, followed
+ * by a [Modifier.navigationBarsPadding] to add padding to accommodate the navigation bars insets,
+ * followed by a [Modifier.height] that sets its `height` to 48.dp, followed by a [Modifier.widthIn]
+ * that sets its `min` width to 48.dp. Its `containerColor` [Color] argument is the
+ * [ColorScheme.tertiaryContainer] of our custom [MaterialTheme.colorScheme].
+ *
+ * The `content` of the [FloatingActionButton] is an [AnimatingFabContent] whose `icon` argument is
+ * an [Icon] whose `imageVector` is if our [Boolean] parameter [userIsMe] is `true` the [ImageVector]
+ * drawn by [Icons.Outlined.Create] and if it is `false` the [ImageVector] drawn by [Icons.Outlined.Create],
+ * and whose `contentDescription` argument is the [String] with resource ID [R.string.edit_profile]
+ * ("Edit Profile") if [userIsMe] is `true` or the [String] with resource ID [R.string.message]
+ * ("Message") if [userIsMe] is `false`.
  */
 @Composable
 fun ProfileFab(
