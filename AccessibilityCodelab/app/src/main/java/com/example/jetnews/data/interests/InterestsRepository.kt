@@ -62,13 +62,13 @@ class InterestsRepository {
      * argument of `TopicItem` which is used as the `onValueChange` argument of the `Modifier.toggleable`
      * [Modifier] of the root [Row] Composable of `TopicItem` (See the file ui/interests/InterestsScreen.kt).
      */
-    private val selectedTopics = MutableStateFlow(setOf<TopicSelection>())
+    private val selectedTopics: MutableStateFlow<Set<TopicSelection>> = MutableStateFlow(setOf())
 
     /**
      * Used to make suspend functions that read and update state safe to call from any thread. This
      * is used by the [toggleTopicSelection] method to protect its modification of [selectedTopics].
      */
-    private val mutex = Mutex()
+    private val mutex: Mutex = Mutex()
 
     /**
      * Toggle the [TopicSelection] parameter [topic] between selected and unselected. It does this
