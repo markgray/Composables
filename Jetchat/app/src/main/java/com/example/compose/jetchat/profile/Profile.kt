@@ -449,7 +449,25 @@ fun ProfileError() {
  * drawn by [Icons.Outlined.Create] and if it is `false` the [ImageVector] drawn by [Icons.Outlined.Create],
  * and whose `contentDescription` argument is the [String] with resource ID [R.string.edit_profile]
  * ("Edit Profile") if [userIsMe] is `true` or the [String] with resource ID [R.string.message]
- * ("Message") if [userIsMe] is `false`.
+ * ("Message") if [userIsMe] is `false`. The `text` argument of the [AnimatingFabContent] is the
+ * [String] with resource ID [R.string.edit_profile] ("Edit Profile") if [userIsMe] is `true` or the
+ * [String] with resource ID [R.string.message] ("Message") if [userIsMe] is `false`, and the
+ * `extended` argument is our [Boolean] parameter [extended].
+ *
+ * @param extended if `true` our [AnimatingFabContent] will be rendered at its full width (an [Icon]
+ * and [Text]), and if `false` it will just be a 48.dp by 48.dp [Icon].
+ * @param userIsMe if `true` the profile is for "Ali Conors (you)" and the [Text] of the FAB would
+ * display the  [String] with resource ID [R.string.edit_profile] ("Edit Profile") and if `false`
+ * the [Text] of the FAB would display the  [String] with resource ID [R.string.message] ("Message").
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [ProfileScreen] passes us a [BoxScope.align] whose `alignment` argument
+ * is [Alignment.BottomEnd] to have us align our fab to the bottom end of the [BoxWithConstraints]
+ * Composable it uses as its root Composable.
+ * @param onFabClicked a lambda we should call when our [FloatingActionButton] is clicked. Our caller
+ * [ProfileScreen] passes us a lambda which sets its [MutableState] wrapped [Boolean] variable
+ * `functionalityNotAvailablePopupShown` to `true` which causes a call to the Composable
+ * [FunctionalityNotAvailablePopup] which pops up an [AlertDialog] displaying the message:
+ * "Functionality not available"
  */
 @Composable
 fun ProfileFab(
@@ -491,7 +509,7 @@ fun ProfileFab(
 }
 
 /**
- *
+ * This is a Preview of [ProfileScreen] displaying [meProfile] with a `widthDp` of 640 and a `heightDp` of 360
  */
 @Preview(widthDp = 640, heightDp = 360)
 @Composable
@@ -502,7 +520,7 @@ fun ConvPreviewLandscapeMeDefault() {
 }
 
 /**
- *
+ * This is a Preview of [ProfileScreen] displaying [meProfile] with a `widthDp` of 360 and a `heightDp` of 480
  */
 @Preview(widthDp = 360, heightDp = 480)
 @Composable
@@ -513,7 +531,7 @@ fun ConvPreviewPortraitMeDefault() {
 }
 
 /**
- *
+ * This is a Preview of [ProfileScreen] displaying [colleagueProfile] with a `widthDp` of 360 and a `heightDp` of 480
  */
 @Preview(widthDp = 360, heightDp = 480)
 @Composable
@@ -524,7 +542,8 @@ fun ConvPreviewPortraitOtherDefault() {
 }
 
 /**
- *
+ * This is a Preview of [ProfileFab] with its `extended` argument `true` and its `userIsMe` argument
+ * `false`.
  */
 @Preview
 @Composable

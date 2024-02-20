@@ -286,7 +286,7 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
  * add 12.dp padding to the start of the [Text].
  */
 @Composable
-private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileClicked: () -> Unit) {
+fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .height(height = 56.dp)

@@ -35,7 +35,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
@@ -46,23 +45,61 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.MainViewModel
+import com.example.compose.jetchat.NavActivity
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
+import com.example.compose.jetchat.components.JetchatDrawer
+import com.example.compose.jetchat.components.ProfileItem
 import com.example.compose.jetchat.theme.JetchatTheme
 
+/**
+ * This [Fragment] is navigated to when the user clicks one of the [ProfileItem]'s in the list of
+ * "Recent Profiles" in the [JetchatDrawer] used by [NavActivity].
+ */
 class ProfileFragment : Fragment() {
 
+    /**
+     * The [ProfileViewModel] we use.
+     */
     private val viewModel: ProfileViewModel by viewModels()
+
+    /**
+     * The [MainViewModel] used by the whole app.
+     */
     private val activityViewModel: MainViewModel by activityViewModels()
 
+    /**
+     * Called when a fragment is first attached to its context. [onCreate] will be called after this.
+     * First we call our supers implementation of `onAttach`. Then if [getArguments] returns a
+     * non-`null` [Bundle] we call its [Bundle.getString] method to retrieve the [String] stored
+     * under the key "userId" to initialize our [String] variable `val userId`, and call the
+     * [ProfileViewModel.setUserId] method of our [ProfileViewModel] field [viewModel] with `userId`
+     * to have it load the private field backing its public [ProfileScreenState] property
+     * [ProfileViewModel.userData] with the [ProfileScreenState] whose [ProfileScreenState.userId]
+     * field is equal to our `userId` variable.
+     *
+     * @param context the [Context] of the [Fragment], which we do not use.
+     */
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // Consider using safe args plugin
-        val userId = arguments?.getString("userId")
-        viewModel.setUserId(userId)
+        val userId: String? = arguments?.getString("userId")
+        viewModel.setUserId(newUserId = userId)
     }
 
-    @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+    /**
+     * Called to have the fragment instantiate its user interface view. This will be called between
+     * [onCreate] and [onViewCreated]. It is recommended to only inflate the layout in this method
+     * and move logic that operates on the returned View to [onViewCreated].
+     *
+     * @param inflater The [LayoutInflater] object that can be used to inflate any views
+     * @param container If non-`null`, this is the parent view that the fragment's UI will be
+     * attached to. The fragment should not add the view itself, but this can be used to generate
+     * the LayoutParams of the view.
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed from a
+     * previous saved state as given here.
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -111,6 +148,7 @@ class ProfileFragment : Fragment() {
                     if (userData == null) {
                         ProfileError()
                     } else {
+                        @Suppress("ReplaceNotNullAssertionWithElvisReturn") // The if statement catches `null` value.
                         ProfileScreen(
                             userData = userData!!,
                             nestedScrollInteropConnection = nestedScrollInteropConnection
