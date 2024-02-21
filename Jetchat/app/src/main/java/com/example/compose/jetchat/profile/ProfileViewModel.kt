@@ -26,7 +26,8 @@ import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
 
 /**
- * TODO: Add kdoc
+ * This is the [ViewModel] that is used by [ProfileFragment] to hold the [ProfileScreenState] that
+ * it is supposed to be displaying.
  */
 class ProfileViewModel : ViewModel() {
 

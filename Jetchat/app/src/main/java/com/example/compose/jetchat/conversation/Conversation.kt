@@ -235,7 +235,7 @@ fun ConversationContent(
 
 /**
  * This is the `topBar` used by the [Scaffold] in [ConversationContent]. We start by initializing and
- * remebering our [MutableState] wrapped [Boolean] variable `var functionalityNotAvailablePopupShown`
+ * remembering our [MutableState] wrapped [Boolean] variable `var functionalityNotAvailablePopupShown`
  * to `false`. Next if `functionalityNotAvailablePopupShown` is `true` we compose our Composable
  * [FunctionalityNotAvailablePopup] with its `onDismiss` argument a lambda which sets
  * `functionalityNotAvailablePopupShown` to `false` again ([FunctionalityNotAvailablePopup] is an
@@ -901,6 +901,7 @@ fun ConversationPreview() {
 /**
  * Preview of our [ChannelNameBar] Composable.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun ChannelBarPrev() {
