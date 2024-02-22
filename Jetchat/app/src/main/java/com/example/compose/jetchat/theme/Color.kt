@@ -16,125 +16,135 @@
 
 package com.example.compose.jetchat.theme
 
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 /**
- *
+ * Used as the [ColorScheme.onPrimaryContainer] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Blue10: Color = Color(0xFF000F5E)
 
 /**
- *
+ * Used as the [ColorScheme.onPrimary] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Blue20: Color = Color(0xFF001E92)
 
 /**
- *
+ * Used as the [ColorScheme.primaryContainer] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Blue30: Color = Color(0xFF002ECC)
 
 /**
- *
+ * Used as the [ColorScheme.inversePrimary] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and as the [ColorScheme.primary] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Blue40: Color = Color(0xFF1546F6)
 
 /**
- *
+ * Used as the [ColorScheme.primary] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and as the [ColorScheme.inversePrimary] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Blue80: Color = Color(0xFFB8C3FF)
 
 /**
- *
+ * Used as the [ColorScheme.onPrimaryContainer] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and as the [ColorScheme.primaryContainer] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Blue90: Color = Color(0xFFDDE1FF)
 
 /**
- *
+ * Used as the [ColorScheme.onSecondaryContainer] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val DarkBlue10: Color = Color(0xFF00036B)
 
 /**
- *
+ * Used as the [ColorScheme.onSecondary] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme]
  */
 val DarkBlue20: Color = Color(0xFF000BA6)
 
 /**
- *
+ * Used as the [ColorScheme.secondaryContainer] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val DarkBlue30: Color = Color(0xFF1026D3)
 
 /**
- *
+ * Used as the [ColorScheme.secondary] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val DarkBlue40: Color = Color(0xFF3648EA)
 
 /**
- *
+ * Used as the [ColorScheme.secondary] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val DarkBlue80: Color = Color(0xFFBBC2FF)
 
 /**
- *
+ * Used as the [ColorScheme.onSecondaryContainer] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and as the [ColorScheme.secondaryContainer] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val DarkBlue90: Color = Color(0xFFDEE0FF)
 
 /**
- *
+ * Used as the [ColorScheme.onTertiaryContainer] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Yellow10: Color = Color(0xFF261900)
 
 /**
- *
+ * Used as the [ColorScheme.onTertiary] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Yellow20: Color = Color(0xFF402D00)
 
 /**
- *
+ * Used as the [ColorScheme.tertiaryContainer] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Yellow30: Color = Color(0xFF5C4200)
 
 /**
- *
+ * Used as the [ColorScheme.tertiary] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Yellow40: Color = Color(0xFF7A5900)
 
 /**
- *
+ * Used as the [ColorScheme.tertiary] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Yellow80: Color = Color(0xFFFABD1B)
 
 /**
- *
+ * Used as the [ColorScheme.onTertiaryContainer] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and as the [ColorScheme.tertiaryContainer] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Yellow90: Color = Color(0xFFFFDE9C)
 
 /**
- *
+ * Used as the [ColorScheme.onErrorContainer] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Red10: Color = Color(0xFF410001)
 
 /**
- *
+ * Used as the [ColorScheme.onError] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Red20: Color = Color(0xFF680003)
 
 /**
- *
+ * Used as the [ColorScheme.errorContainer] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Red30: Color = Color(0xFF930006)
 
 /**
- *
+ * Used as the [ColorScheme.error] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Red40: Color = Color(0xFFBA1B1B)
 
 /**
- *
+ * Used as the [ColorScheme.error] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Red80: Color = Color(0xFFFFB4A9)
 
 /**
- *
+ * Used as the [ColorScheme.onErrorContainer] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and as the [ColorScheme.errorContainer] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Red90: Color = Color(0xFFFFDAD4)
 

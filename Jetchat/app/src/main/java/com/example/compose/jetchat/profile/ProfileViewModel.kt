@@ -18,6 +18,7 @@ package com.example.compose.jetchat.profile
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.State
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,10 +32,28 @@ import com.example.compose.jetchat.data.meProfile
  */
 class ProfileViewModel : ViewModel() {
 
+    /**
+     * The [ProfileScreenState.userId] of the [ProfileScreenState] that we should supply to
+     * [ProfileFragment] when it observes our [LiveData] wrapped [ProfileScreenState] field
+     * [userData].
+     */
     private var userId: String = ""
 
     /**
-     * TODO: Add kdoc
+     * This method is called to set our [String] field [userId] and to update our [MutableLiveData]
+     * wrapped [ProfileScreenState] field [_userData] to point to the [ProfileScreenState] whose
+     * [ProfileScreenState.userId] is equal to our [userId] field (defaulting to [meProfile] if
+     * our [String] parameter [newUserId] is `null`. We check if our [String] parameter [newUserId]
+     * is not equal to our [String] field [userId] and if they are different we set [userId] to
+     * [newUserId] if [newUserId] is not `null` or to the [ProfileScreenState.userId] property of
+     * [meProfile] if it is. Then we set the [MutableLiveData.setValue] (kotlin `value` property)
+     * of [_userData] to [meProfile] if [userId] is equal to the [ProfileScreenState.userId] of
+     * [meProfile] or [userId] is equal to the [ProfileScreenState.displayName] of [meProfile], else
+     * we set it to [colleagueProfile].
+     *
+     * @param newUserId a [String] that can be used to choose between [meProfile] and [colleagueProfile]
+     * to be the [ProfileScreenState] that our [LiveData] wrapped [ProfileScreenState] field [userData]
+     * supplies to [ProfileFragment] when it observes it as a [State] wrapped [ProfileScreenState]
      */
     fun setUserId(newUserId: String?) {
         if (newUserId != userId) {
@@ -48,9 +67,14 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    private val _userData = MutableLiveData<ProfileScreenState>()
     /**
-     * TODO: Add kdoc
+     * The private [MutableLiveData] wrapped [ProfileScreenState] that the user has chosen to be
+     * displayed by [ProfileFragment].
+     */
+    private val _userData = MutableLiveData<ProfileScreenState>()
+
+    /**
+     * Public read-only access to our [MutableLiveData] wrapped [ProfileScreenState] field [_userData].
      */
     val userData: LiveData<ProfileScreenState> = _userData
 }
