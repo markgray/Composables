@@ -149,56 +149,63 @@ val Red80: Color = Color(0xFFFFB4A9)
 val Red90: Color = Color(0xFFFFDAD4)
 
 /**
- *
+ * Used as the [ColorScheme.background] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * the [ColorScheme.surface] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * the [ColorScheme.onBackground] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and the [ColorScheme.onSurface] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Grey10: Color = Color(0xFF191C1D)
 
 /**
- *
+ * Used as the [ColorScheme.inverseOnSurface] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and the [ColorScheme.inverseSurface] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Grey20: Color = Color(0xFF2D3132)
 
 /**
- *
+ * Used as the [ColorScheme.onSurface] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Grey80: Color = Color(0xFFC4C7C7)
 
 /**
- *
+ * Used as the [ColorScheme.onBackground] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and the [ColorScheme.inverseSurface] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
  */
 val Grey90: Color = Color(0xFFE0E3E3)
 
 /**
- *
+ * Used as the [ColorScheme.inverseOnSurface] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val Grey95: Color = Color(0xFFEFF1F1)
 
 /**
- *
+ * Used as the [ColorScheme.background] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and the [ColorScheme.surface] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme],
  */
 val Grey99: Color = Color(0xFFFBFDFD)
 
 /**
- *
+ * Used as the [ColorScheme.surfaceVariant] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme],
+ * and the [ColorScheme.onSurfaceVariant] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val BlueGrey30: Color = Color(0xFF45464F)
 
 /**
- *
+ * Used as the [ColorScheme.outline] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val BlueGrey50: Color = Color(0xFF767680)
 
 /**
- *
+ * Used as the [ColorScheme.outline] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val BlueGrey60: Color = Color(0xFF90909A)
 
 /**
- *
+ * Used as the [ColorScheme.onSurfaceVariant] of the [darkColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val BlueGrey80: Color = Color(0xFFC6C5D0)
 
 /**
- *
+ * Used as the [ColorScheme.surfaceVariant] of the [lightColorScheme] of our [JetchatTheme] custom [MaterialTheme].
  */
 val BlueGrey90: Color = Color(0xFFE2E1EC)
