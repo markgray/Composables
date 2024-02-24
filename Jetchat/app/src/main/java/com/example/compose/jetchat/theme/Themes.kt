@@ -106,6 +106,45 @@ private val JetchatDarkColorScheme: ColorScheme = darkColorScheme(
 
 /**
  * The [ColorScheme] used when the device is considered to be in "Light Theme". The [Color]'s use are:
+ *
+ *  - `primary` The primary color is the color displayed most frequently across your app’s screens
+ *  and components, we use [Blue40]
+ *  - `onPrimary` Color used for text and icons displayed on top of the primary color, we use [Color.White]
+ *  - `primaryContainer` The preferred tonal color of containers, we use [Blue90].
+ *  - `onPrimaryContainer` The color (and state variants) that should be used for content on top of
+ *  primaryContainer, we use [Blue10].
+ *  - `inversePrimary` Color to be used as a "primary" color in places where the inverse color scheme
+ *  is needed, such as the button on a SnackBar, we use [Blue80].
+ *  - `secondary` The secondary color provides more ways to accent and distinguish your product.
+ *  Secondary colors are best for: Floating action buttons, Selection controls, like checkboxes and
+ *  radio buttons, Highlighting selected text, Links and headlines. We use [DarkBlue40].
+ *  - `onSecondary` Color used for text and icons displayed on top of the secondary color, we use [Color.White].
+ *  - `secondaryContainer` A tonal color to be used in containers, we use [DarkBlue90].
+ *  - `onSecondaryContainer` The color (and state variants) that should be used for content on top of
+ *  secondaryContainer, we use [DarkBlue10].
+ *  - `tertiary` The tertiary color that can be used to balance primary and secondary colors, or bring
+ *  heightened attention to an element such as an input field, we use [Yellow40].
+ *  - `onTertiary` Color used for text and icons displayed on top of the tertiary color, we use [Color.White].
+ *  - `tertiaryContainer` A tonal color to be used in containers, we use [Yellow90].
+ *  - `onTertiaryContainer` The color (and state variants) that should be used for content on top of
+ *  tertiaryContainer, we use [Yellow10].
+ *  - `error` The error color is used to indicate errors in components, such as invalid text in a text
+ *  field, we use [Red40].
+ *  - `onError` Color used for text and icons displayed on top of the error color, we use [Color.White].
+ *  - `errorContainer` The preferred tonal color of error containers, we use [Red90].
+ *  - `onErrorContainer` The color (and state variants) that should be used for content on top of
+ *  errorContainer, we use [Red10].
+ *  - `background` The background color that appears behind scrollable content, we use [Grey99].
+ *  - `onBackground` Color used for text and icons displayed on top of the background color, we use [Grey10].
+ *  - `surface` The surface color that affect surfaces of components, such as cards, sheets, and menus,
+ *  we use [Grey99].
+ *  - `onSurface` Color used for text and icons displayed on top of the surface color, we use [Grey10].
+ *  - `inverseSurface` A color that contrasts sharply with surface. Useful for surfaces that sit on
+ *  top of other surfaces with surface color, we use [Grey20].
+ *  - `surfaceVariant` Another option for a color with similar uses of surface, we use [BlueGrey90].
+ *  - `onSurfaceVariant` The color (and state variants) that can be used for content on top of surfaceVariant.
+ *  - `outline` Subtle color used for boundaries. Outline color role adds contrast for accessibility
+ *  purposes, we use [BlueGrey50].
  */
 private val JetchatLightColorScheme: ColorScheme = lightColorScheme(
     primary = Blue40,
@@ -137,7 +176,13 @@ private val JetchatLightColorScheme: ColorScheme = lightColorScheme(
 )
 
 /**
+ * This is our custom [MaterialTheme].
  *
+ * @param isDarkTheme if `true` we will use one of our "Dark Theme" [ColorScheme]'s as our
+ * [MaterialTheme.colorScheme]
+ * @param isDynamicColor if `true` and [Build.VERSION.SDK_INT] >= [Build.VERSION_CODES.S] we will
+ * use one of the Dynamic [ColorScheme]'s
+ * @param content the Composable lambda to which we will supply our [MaterialTheme] values to.
  */
 @SuppressLint("NewApi")
 @Composable
@@ -146,7 +191,7 @@ fun JetchatTheme(
     isDynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val dynamicColor = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    val dynamicColor: Boolean = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     val myColorScheme: ColorScheme = when {
         dynamicColor && isDarkTheme -> {
             dynamicDarkColorScheme(LocalContext.current)
