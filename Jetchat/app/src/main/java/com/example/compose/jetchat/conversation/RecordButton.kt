@@ -40,9 +40,11 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.RichTooltipBox
-import androidx.compose.material3.RichTooltipState
+import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TooltipState
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableFloatState
@@ -61,6 +63,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupPositionProvider
 import com.example.compose.jetchat.R
 import kotlinx.coroutines.CoroutineScope
 import kotlin.math.abs
@@ -106,12 +109,14 @@ import kotlinx.coroutines.launch
  * [Modifier.background] which sets the background `color` of the content to the `current` value of
  * [LocalContentColor].
  *
- * A [RichTooltipBox] also occupies the outer [Box]. Before calling it we initialize and remember our
- * [CoroutineScope] variable `val scope`, and we initialize and remember our [RichTooltipState] variable
- * `val tooltipState` to a new instance. The `text` argument of the [RichTooltipBox] is a lambda
- * which renders a [Text] whose `text` is the [String] with resource ID [R.string.touch_and_hold_to_record]
- * ("Touch and hold to record"), and its `tooltipState` argument is our [RichTooltipState] variable
- * `tooltipState`. The `content` of the [RichTooltipBox] is an [Icon] whose `imageVector` is the
+ * A [TooltipBox] also occupies the outer [Box]. Before calling it we initialize and remember our
+ * [CoroutineScope] variable `val scope`, and we initialize and remember our [TooltipState] variable
+ * `val tooltipState` to a new instance. The `positionProvider` argument of the [TooltipBox] is
+ * the remembered [PopupPositionProvider] returned by the [TooltipDefaults.rememberRichTooltipPositionProvider]
+ * method, the `tooltip` argument is a lambda that composes a [RichTooltip] whose `text` lambda argument
+ * is a [Text] whose `text` is the [String] with resource ID [R.string.touch_and_hold_to_record]
+ * ("Touch and hold to record"), and its `state` argument is our [TooltipState] variable
+ * `tooltipState`. The `content` of the [TooltipBox] is an [Icon] whose `imageVector` is the
  * [ImageVector] drawn by [Icons.Filled.Mic], whose `contentDescription` argument is the [String]
  * with resource ID [R.string.record_message] ("Record voice message"), whose `tint` is the current
  * value of our animated [State] of [Color] variable `iconColor`, and whose `modifier` argument uses
@@ -129,8 +134,8 @@ import kotlinx.coroutines.launch
  *  variable which keeps track of the current `swipeOffset` and which our [swipeOffset] lambda
  *  parameter reads.
  *  - `onClick` we pass a lambda which calls the [CoroutineScope.launch] method of our [CoroutineScope]
- *  variable `scope` to launch a coroutine which calls the [RichTooltipState.show] method of our
- *  [RichTooltipState] variable `tooltipState` to show the tooltip associated with [RichTooltipBox].
+ *  variable `scope` to launch a coroutine which calls the [TooltipState.show] method of our
+ *  [TooltipState] variable `tooltipState` to show the tooltip associated with [TooltipBox].
  *  - `onStartRecording` we pass the [onStartRecording] lambda parameter of [RecordButton]. Our caller
  *  [UserInputText] passes us a lambda which sets its [Boolean] variable `val consumed` to the inverse
  *  of the current value of its [State] wrapped [Boolean] variable `isRecordingMessage`, sets
@@ -211,10 +216,15 @@ fun RecordButton(
                 .background(color = LocalContentColor.current)
         )
         val scope: CoroutineScope = rememberCoroutineScope()
-        val tooltipState: RichTooltipState = remember { RichTooltipState() }
-        RichTooltipBox(
-            text = { Text(text = stringResource(id = R.string.touch_and_hold_to_record)) },
-            tooltipState = tooltipState
+        val tooltipState = remember { TooltipState() }
+        TooltipBox(
+            positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+            tooltip = {
+                RichTooltip {
+                    Text(stringResource(R.string.touch_and_hold_to_record))
+                }
+            },
+            state = tooltipState
         ) {
             Icon(
                 imageVector = Icons.Default.Mic,
@@ -283,8 +293,8 @@ fun RecordButton(
  * @param onClick A lambda for us to call when the [detectTapGestures] method of our first
  * [Modifier.pointerInput] detects a `tap`. Our caller passes us a lambda which calls the
  * [CoroutineScope.launch] method of its [CoroutineScope] variable `scope` to launch a coroutine
- * which calls the [RichTooltipState.show] method of its [RichTooltipState] variable `tooltipState`
- * to show the tooltip associated with its [RichTooltipBox]).
+ * which calls the [TooltipState.show] method of its [TooltipState] variable `tooltipState`
+ * to show the tooltip associated with its [TooltipBox]).
  * @param onStartRecording a lambda we should call when we detect that the user wants to start recording.
  * @param onFinishRecording a lambda we should call when we detect that the user wants to stop recording.
  * @param onCancelRecording a lambda we should call when we detect that the user wants to cancel recording.
