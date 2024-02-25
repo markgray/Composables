@@ -21,6 +21,7 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -176,7 +177,20 @@ private val JetchatLightColorScheme: ColorScheme = lightColorScheme(
 )
 
 /**
- * This is our custom [MaterialTheme].
+ * This is our custom [MaterialTheme]. We start by initializing our [Boolean] variable `val dynamicColor`
+ * to `true` if our [Boolean] parameter [isDynamicColor] is `true` and [Build.VERSION.SDK_INT] is
+ * greater than or equal to [Build.VERSION_CODES.S]. Then we initialize our [ColorScheme] variable
+ * `val myColorScheme` using a `when` expression:
+ *  - `dynamicColor` is `true` and our [Boolean] parameter [isDarkTheme] is `true`: `myColorScheme`
+ *  is set to the [ColorScheme] returned by [dynamicDarkColorScheme] for the `current` [LocalContext]
+ *  - `dynamicColor` is `true` and our [Boolean] parameter [isDarkTheme] is `false`: `myColorScheme`
+ *  is set to the [ColorScheme] returned by [dynamicLightColorScheme] for the `current` [LocalContext]
+ *  - our [Boolean] parameter [isDarkTheme] is `true`: `myColorScheme` is set to [JetchatDarkColorScheme]
+ *  - `else`: `myColorScheme` is set to [JetchatLightColorScheme]
+ *
+ * Having determined which [ColorScheme] to use we compose [MaterialTheme] into our UI with its
+ * `colorScheme` argument `myColorScheme`, its `typography` argument our [JetchatTypography] custom
+ * [Typography], and its `content` argument our lambda parameter [content].
  *
  * @param isDarkTheme if `true` we will use one of our "Dark Theme" [ColorScheme]'s as our
  * [MaterialTheme.colorScheme]

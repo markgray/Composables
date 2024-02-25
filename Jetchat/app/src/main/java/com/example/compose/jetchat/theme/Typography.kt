@@ -27,7 +27,14 @@ import androidx.compose.ui.unit.sp
 import com.example.compose.jetchat.R
 
 /**
- *
+ * We use this as the Attributes used to create our FontRequests for [GoogleFont] based [Font]'s
+ *  - `providerAuthority`: The authority of the Font Provider to be used for the request.
+ *  - `providerPackage`: The package for the Font Provider to be used for the request. This is used
+ *  to verify the identity of the provider
+ *  - `certificates`: A resource array with the list of sets of hashes for the certificates the
+ *  provider should be signed with. This is used to verify the identity of the provider. Each set
+ *  in the list represents one collection of signature hashes. Refer to your font provider's
+ *  documentation for these values.
  */
 val provider: GoogleFont.Provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
@@ -36,17 +43,34 @@ val provider: GoogleFont.Provider = GoogleFont.Provider(
 )
 
 /**
- *
+ * The "Montserrat" [GoogleFont] that we use for the [FontFamily] we create for [MontserratFontFamily].
+ * For sample see: [Montserrat Sample](https://fonts.google.com/?query=Montserrat).
  */
 val MontserratFont: GoogleFont = GoogleFont(name = "Montserrat")
 
 /**
- *
+ * The "Karla" [GoogleFont] that we use for the [FontFamily] we create for [KarlaFontFamily].
+ * For sample see: [Karla Sample](https://fonts.google.com/?query=Karla).
  */
 val KarlaFont: GoogleFont = GoogleFont(name = "Karla")
 
 /**
- *
+ * This is the [FontFamily] that we create from [MontserratFont]. Note that is uses both downloadable
+ * fonts and local R.font resource folder fonts. Defining the [FontFamily] like this creates a [FontFamily]
+ * containing two chains, one per weight. The loading mechanism will try to resolve the online font
+ * first, and then the font located in our local R.font resource folder. Used for [TextStyle]'s:
+ *  - [Typography.displayLarge] with a `fontWeight` of [FontWeight.Light] and a `fontSize` of 57.sp
+ *  - [Typography.displayMedium] with a `fontWeight` of [FontWeight.Light] and a `fontSize` of 45.sp
+ *  - [Typography.displaySmall] with a `fontWeight` of [FontWeight.Normal] and a `fontSize` of 36.sp
+ *  - [Typography.headlineLarge] with a `fontWeight` of [FontWeight.SemiBold] and a `fontSize` of 32.sp
+ *  - [Typography.headlineMedium] with a `fontWeight` of [FontWeight.SemiBold] and a `fontSize` of 28.sp
+ *  - [Typography.headlineSmall] with a `fontWeight` of [FontWeight.SemiBold] and a `fontSize` of 24.sp
+ *  - [Typography.titleLarge] with a `fontWeight` of [FontWeight.SemiBold] and a `fontSize` of 22.sp
+ *  - [Typography.titleMedium] with a `fontWeight` of [FontWeight.SemiBold] and a `fontSize` of 16.sp
+ *  - [Typography.bodyMedium] with a `fontWeight` of [FontWeight.Medium] and a `fontSize` of 14.sp
+ *  - [Typography.labelLarge] with a `fontWeight` of [FontWeight.SemiBold] and a `fontSize` of 14.sp
+ *  - [Typography.labelMedium] with a `fontWeight` of [FontWeight.SemiBold] and a `fontSize` of 12.sp
+ *  - [Typography.labelSmall] with a `fontWeight` of [FontWeight.SemiBold] and a `fontSize` of 11.sp
  */
 val MontserratFontFamily: FontFamily = FontFamily(
     Font(googleFont = MontserratFont, fontProvider = provider),
@@ -60,7 +84,14 @@ val MontserratFontFamily: FontFamily = FontFamily(
 )
 
 /**
- *
+ * This is the [FontFamily] that we create from [KarlaFont]. Note that is uses both downloadable
+ * fonts and local R.font resource folder fonts. Defining the [FontFamily] like this creates a
+ * [FontFamily] containing two chains, one per weight. The loading mechanism will try to resolve
+ * the online font first, and then the font located in our local R.font resource folder.
+ * Used for [TextStyle]'s:
+ *  - [Typography.titleSmall] with a `fontWeight` of [FontWeight.Bold] and a `fontSize` of 14.sp
+ *  - [Typography.bodyLarge] with a `fontWeight` of [FontWeight.Normal] and a `fontSize` of 16.sp
+ *  - [Typography.bodySmall] with a `fontWeight` of [FontWeight.Bold] and a `fontSize` of 12.sp
  */
 val KarlaFontFamily: FontFamily = FontFamily(
     Font(googleFont = KarlaFont, fontProvider = provider),
@@ -70,7 +101,7 @@ val KarlaFontFamily: FontFamily = FontFamily(
 )
 
 /**
- *
+ * This is our custom [Typography].
  */
 val JetchatTypography: Typography = Typography(
     displayLarge = TextStyle(
