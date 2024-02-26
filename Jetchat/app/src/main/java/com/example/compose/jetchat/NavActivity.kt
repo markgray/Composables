@@ -42,6 +42,9 @@ import kotlinx.coroutines.launch
  * Main activity for the app.
  */
 class NavActivity : AppCompatActivity() {
+    /**
+     * The [MainViewModel] that we use to control the open/close state of our [JetchatDrawer]
+     */
     private val viewModel: MainViewModel by viewModels()
 
     /**

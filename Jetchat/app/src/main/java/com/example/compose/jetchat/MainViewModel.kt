@@ -16,31 +16,53 @@
 
 package com.example.compose.jetchat
 
+import androidx.compose.material3.DrawerState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
+import com.example.compose.jetchat.components.JetchatDrawer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 /**
- * Used to communicate between screens.
+ * The [ViewModel] that is used to communicate between screens.
  */
 class MainViewModel : ViewModel() {
 
-    private val _drawerShouldBeOpened = MutableStateFlow(false)
     /**
-     *
+     * The [MutableStateFlow] wrapped [Boolean] field that causes the [DrawerState.open] method of
+     * the [DrawerState] that is used by the [JetchatDrawer] used by [NavActivity]. It is private
+     * to prevent other classes from modifying it, our method [openDrawer] sets it to `true` and our
+     * method [resetOpenDrawerAction] sets it to `false`. Public read-only access is provided by
+     * our [StateFlow] wrapped [Boolean] field [drawerShouldBeOpened].
+     */
+    private val _drawerShouldBeOpened = MutableStateFlow(value = false)
+
+    /**
+     * Public read-only access to our [MutableStateFlow] wrapped [Boolean] field [_drawerShouldBeOpened].
+     * In the `onCreate` override of [NavActivity] the [StateFlow.collectAsStateWithLifecycle] method
+     * is used to initialize its [State] wrapped [Boolean] variable `val drawerOpen` that causes it
+     * to call a [LaunchedEffect] when it transitions to `true` that calls the [DrawerState.open]
+     * method of the [DrawerState] that is used by the [JetchatDrawer] thereby causing the drawer to
+     * open.
      */
     val drawerShouldBeOpened: StateFlow<Boolean> = _drawerShouldBeOpened.asStateFlow()
 
     /**
-     *
+     * Sets the value of our [MutableStateFlow] wrapped [Boolean] field [_drawerShouldBeOpened] to
+     * `true` which will trigger a [LaunchedEffect] that calls the [DrawerState.open] method of the
+     * [DrawerState] that is used by the [JetchatDrawer] composed into the UI by [NavActivity] thereby
+     * causing the drawer to open.
      */
     fun openDrawer() {
         _drawerShouldBeOpened.value = true
     }
 
     /**
-     *
+     * Sets the value of our [MutableStateFlow] wrapped [Boolean] field [_drawerShouldBeOpened] to
+     * `false`.
      */
     fun resetOpenDrawerAction() {
         _drawerShouldBeOpened.value = false

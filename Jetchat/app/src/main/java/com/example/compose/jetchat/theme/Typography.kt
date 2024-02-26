@@ -101,7 +101,61 @@ val KarlaFontFamily: FontFamily = FontFamily(
 )
 
 /**
- * This is our custom [Typography].
+ * This is our custom [Typography]. The [TextStyle]'s we override are:
+ *
+ *  - [Typography.displayLarge] displayLarge is the largest display text, we use [MontserratFontFamily]
+ *  with a `fontWeight` of [FontWeight.Light] and a `fontSize` of 57.sp
+ *  - [Typography.displayMedium] displayMedium is the second largest display text, we use [MontserratFontFamily]
+ *  with a `fontWeight` of [FontWeight.Light] and a `fontSize` of 45.sp
+ *  - [Typography.displaySmall] displaySmall is the smallest display text, we use [MontserratFontFamily]
+ *  with a `fontWeight` of [FontWeight.Normal] and a `fontSize` of 36.sp
+ *  - [Typography.headlineLarge] headlineLarge is the largest headline, reserved for short, important
+ *  text or numerals. For headlines, you can choose an expressive font, such as a display, handwritten,
+ *  or script style. These unconventional font designs have details and intricacy that help attract
+ *  the eye, we use [MontserratFontFamily] with a `fontWeight` of [FontWeight.SemiBold] and a
+ *  `fontSize` of 32.sp
+ *  - [Typography.headlineMedium] headlineMedium is the second largest headline, reserved for short,
+ *  important text or numerals. For headlines, you can choose an expressive font, such as a display,
+ *  handwritten, or script style. These unconventional font designs have details and intricacy that
+ *  help attract the eye, we use [MontserratFontFamily] with a `fontWeight` of [FontWeight.SemiBold]
+ *  and a `fontSize` of 28.sp
+ *  - [Typography.headlineSmall] headlineSmall is the smallest headline, reserved for short, important
+ *  text or numerals. For headlines, you can choose an expressive font, such as a display, handwritten,
+ *  or script style. These unconventional font designs have details and intricacy that help attract
+ *  the eye. We use [MontserratFontFamily] with a `fontWeight` of [FontWeight.SemiBold] and a `fontSize`
+ *  of 24.sp
+ *  - [Typography.titleLarge] titleLarge is the largest title, and is typically reserved for medium
+ *  emphasis text that is shorter in length. Serif or sans serif typefaces work well for subtitles.
+ *  We use [MontserratFontFamily] with a `fontWeight` of [FontWeight.SemiBold] and a `fontSize` of 22.sp
+ *  - [Typography.titleMedium] titleMedium is the second largest title, and is typically reserved for
+ *  medium-emphasis text that is shorter in length. Serif or sans serif typefaces work well for
+ *  subtitles. We use [MontserratFontFamily] with a `fontWeight` of [FontWeight.SemiBold] and a
+ *  `fontSize` of 16.sp
+ *  - [Typography.titleSmall] titleSmall is the smallest title, and is typically reserved for medium
+ *  emphasis text that is shorter in length. Serif or sans serif typefaces work well for subtitles.
+ *  We use [KarlaFontFamily] with a `fontWeight` of [FontWeight.Bold] and a `fontSize` of 14.sp
+ *  - [Typography.bodyLarge] bodyLarge is the largest body, and is typically used for long-form
+ *  writing as it works well for small text sizes. For longer sections of text, a serif or sans serif
+ *  typeface is recommended. We use [KarlaFontFamily] with a `fontWeight` of [FontWeight.Normal] and
+ *  a `fontSize` of 16.sp
+ *  - [Typography.bodyMedium] bodyMedium is the second largest body, and is typically used for long
+ *  form writing as it works well for small text sizes. For longer sections of text, a serif or sans
+ *  serif typeface is recommended. We use [MontserratFontFamily] with a `fontWeight` of
+ *  [FontWeight.Medium] and a `fontSize` of 14.sp
+ *  - [Typography.bodySmall] bodySmall is the smallest body, and is typically used for long-form
+ *  writing as it works well for small text sizes. For longer sections of text, a serif or sans
+ *  serif typeface is recommended. We use [KarlaFontFamily] with a `fontWeight` of [FontWeight.Bold]
+ *  and a `fontSize` of 12.sp
+ *  - [Typography.labelLarge] labelLarge text is a call to action used in different types of buttons
+ *  (such as text, outlined and contained buttons) and in tabs, dialogs, and cards. Button text is
+ *  typically sans serif, using all caps text. We use [MontserratFontFamily] with a `fontWeight` of
+ *  [FontWeight.SemiBold] and a `fontSize` of 14.sp
+ *  - [Typography.labelMedium] labelMedium is one of the smallest font sizes. It is used sparingly
+ *  to annotate imagery or to introduce a headline. We use [MontserratFontFamily] with a `fontWeight`
+ *  of [FontWeight.SemiBold] and a `fontSize` of 12.sp
+ *  - [Typography.labelSmall] labelSmall is one of the smallest font sizes. It is used sparingly to
+ *  annotate imagery or to introduce a headline. We use [MontserratFontFamily] with a `fontWeight`
+ *  of [FontWeight.SemiBold] and a `fontSize` of 11.sp
  */
 val JetchatTypography: Typography = Typography(
     displayLarge = TextStyle(
