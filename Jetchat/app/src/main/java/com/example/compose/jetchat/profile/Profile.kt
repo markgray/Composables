@@ -36,12 +36,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -371,7 +371,7 @@ private fun ProfileHeader(
  * Our root Composable is a [Column] whose `modifier` argument is a [Modifier.padding] that adds
  * 16.dp to the `start`, 16.dp to the `end`, and 16.dp to the `bottom`. The `content` of the [Column]
  * is:
- *  - a [Divider] with no arguments which causes it to use its defaults: `modifier` = [Modifier],
+ *  - a [HorizontalDivider] with no arguments which causes it to use its defaults: `modifier` = [Modifier],
  *  `thickness` = 1.0.dp, and `color` = the [ColorScheme.outlineVariant] of our custom
  *  [MaterialTheme.colorScheme]
  *  - a [Text] whose `text` argument is our [String] parameter [label], whose `modifier` argument is
@@ -396,7 +396,7 @@ private fun ProfileHeader(
 @Composable
 fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
-        Divider()
+        HorizontalDivider()
         Text(
             text = label,
             modifier = Modifier.baselineHeight(heightFromBaseline = 24.dp),
@@ -489,7 +489,7 @@ fun ProfileFab(
             AnimatingFabContent(
                 icon = {
                     Icon(
-                        imageVector = if (userIsMe) Icons.Outlined.Create else Icons.Outlined.Chat,
+                        imageVector = if (userIsMe) Icons.Outlined.Create else Icons.AutoMirrored.Outlined.Chat,
                         contentDescription = stringResource(
                             if (userIsMe) R.string.edit_profile else R.string.message
                         )

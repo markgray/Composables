@@ -51,9 +51,9 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -103,10 +103,10 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.components.JetchatDrawer
 import com.example.compose.jetchat.data.exampleUiState
-import com.example.compose.jetchat.theme.JetchatTheme
 import com.example.compose.jetchat.profile.ProfileFragment
 import com.example.compose.jetchat.profile.ProfileScreen
 import com.example.compose.jetchat.profile.ProfileScreenState
+import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -699,7 +699,7 @@ private val ChatBubbleShape = RoundedCornerShape(
  * `modifier` argument is a [Modifier.padding] whose `vertical` argument adds 8.dp to the `top` and
  * bottom of the [Row] and whose `horizontal` argument adds 16.dp padding to both ends of the [Row],
  * and to this is chained a [Modifier.height] that sets its height to 16.dp. The `content` of the
- * [Row] is a [DayHeaderLine] (which is a [Alignment.CenterVertically] light [Divider]), followed by
+ * [Row] is a [DayHeaderLine] (which is a [Alignment.CenterVertically] light [HorizontalDivider]), followed by
  * [Text] displaying as its `text` our [String] parameter [dayString], whose `modifier` argument is
  * a [Modifier.padding] which adds 16.dp horizontal padding to each end, its `style` argument is
  * the [Typography.labelSmall] of our [JetchatTheme] custom [MaterialTheme.typography], with the
@@ -727,19 +727,19 @@ fun DayHeader(dayString: String) {
 }
 
 /**
- * This Composable is used by [DayHeader] to draw a light [Divider] line at the begining and end of
+ * This Composable is used by [DayHeader] to draw a light [HorizontalDivider] line at the begining and end of
  * the [Text]. It is defined as an extension function of [RowScope] so that we can access
- * [RowScope.weight] in the `modifier` argument of our [Divider], which we use to request a `weight`
+ * [RowScope.weight] in the `modifier` argument of our [HorizontalDivider], which we use to request a `weight`
  * of 1f causing the two [DayHeaderLine] used by [DayHeader] to split all remaining space after the
  * unweighted [Text] in the middle is measured and placed, and to this [Modifier] is chained a
- * [RowScope.align] whose `alignment` argument of [Alignment.CenterVertically] causes the [Divider]
- * to centered at the middle of the [Row]. The `color` of the [Divider] line is a copy of the
+ * [RowScope.align] whose `alignment` argument of [Alignment.CenterVertically] causes the [HorizontalDivider]
+ * to centered at the middle of the [Row]. The `color` of the [HorizontalDivider] line is a copy of the
  * [ColorScheme.onSurface] of our [JetchatTheme] custom [MaterialTheme.colorScheme] with the `alpha`
  * set to 0.12f.
  */
 @Composable
 private fun RowScope.DayHeaderLine() {
-    Divider(
+    HorizontalDivider(
         modifier = Modifier
             .weight(weight = 1f)
             .align(alignment = Alignment.CenterVertically),

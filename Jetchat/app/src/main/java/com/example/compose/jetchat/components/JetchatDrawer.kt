@@ -36,7 +36,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -81,7 +81,7 @@ import com.example.compose.jetchat.theme.KarlaFontFamily
  * [WindowInsets.Companion.statusBars] (this pushes the drawer content below the status bar). This
  * is followed by a [DrawerHeader] which displays in a [Row] the  [JetchatIcon] and an [Image] that
  * draws the `jetchat` logo in resource ID [R.drawable.jetchat_logo]. After this is a [DividerItem]
- * Composable which draws a [Divider] whose `color` is a copy of the [ColorScheme.onSurface] with
+ * Composable which draws a [HorizontalDivider] whose `color` is a copy of the [ColorScheme.onSurface] with
  * its alpha set to 0.12f. This is followed by a [DrawerItemHeader] which displays the [Text] "Chats",
  * and this is followed by a [ChatItem] displaying the [Text] "composers" and a [ChatItem] displaying
  * the [Text] "droidcon-nyc". The `onChatClicked` lambda argumet of both [ChatItem]'s is a lambda
@@ -320,7 +320,7 @@ fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileClicked: (
 
 /**
  * This is used as a divider between widgets in the [Column] of [JetchatDrawerContent]. It just
- * consists of a [Divider] whose `color` is a copy of the [ColorScheme.onSurface] color of our
+ * consists of a [HorizontalDivider] whose `color` is a copy of the [ColorScheme.onSurface] color of our
  * [MaterialTheme.colorScheme] with its `alpha` modified to be 0.12f.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
@@ -330,7 +330,7 @@ fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileClicked: (
  */
 @Composable
 fun DividerItem(modifier: Modifier = Modifier) {
-    Divider(
+    HorizontalDivider(
         modifier = modifier,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
     )
