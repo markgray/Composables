@@ -21,6 +21,7 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -28,6 +29,7 @@ import androidx.compose.ui.test.performClick
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.test.espresso.Espresso
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -38,7 +40,7 @@ import org.junit.Test
 class NavigationTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<NavActivity>()
+    val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<NavActivity>, NavActivity> = createAndroidComposeRule<NavActivity>()
 
     @Test
     fun app_launches() {

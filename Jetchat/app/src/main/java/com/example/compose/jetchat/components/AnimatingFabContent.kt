@@ -28,8 +28,8 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.outlined.Create
-import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -82,7 +82,7 @@ import kotlin.math.roundToInt
  *
  * @param icon we use this as the `icon` argument of our [IconAndTextRow]. Our caller [ProfileFab]
  * calls us with an [Icon] whose `imageVector` is either [Icons.Outlined.Create] if the "user is me"
- * or [Icons.Outlined.Chat] if it is not.
+ * or [Icons.AutoMirrored.Outlined.Chat] if it is not.
  * @param text we use this as the `text` argument of our [IconAndTextRow]. Our caller [ProfileFab]
  * calls us with a [Text] that displays the [String] with resource ID [R.string.edit_profile]
  * ("Edit Profile") if the "user is me" or the [String] with resource ID [R.string.message]
