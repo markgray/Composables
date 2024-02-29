@@ -16,6 +16,7 @@
 
 package com.example.jetlagged
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.RuntimeShader
 import android.os.Build
@@ -35,6 +36,7 @@ import com.example.jetlagged.ui.theme.YellowVariant
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 
+@SuppressLint("ModifierNodeInspectableProperties") // TODO: override inspectableProperties
 private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgroundNode>() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun create() = YellowBackgroundNode()
@@ -74,6 +76,9 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
     }
 }
 
+/**
+ *
+ */
 fun Modifier.yellowBackground(): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         this.then(YellowBackgroundElement)
@@ -87,8 +92,11 @@ fun Modifier.yellowBackground(): Modifier =
         }
     }
 
+/**
+ *
+ */
 @Language("AGSL")
-val SHADER = """
+val SHADER: String = """
     uniform float2 resolution;
     uniform float time;
     layout(color) uniform half4 color;

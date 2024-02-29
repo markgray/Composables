@@ -124,7 +124,7 @@ private fun JetLaggedTimeGraph(sleepGraphData: SleepGraphData) {
 }
 
 @Composable
-private fun DayLabel(dayOfWeek: DayOfWeek) {
+fun DayLabel(dayOfWeek: DayOfWeek) {
     Text(
         dayOfWeek.getDisplayName(
             TextStyle.SHORT, Locale.getDefault()
@@ -138,7 +138,7 @@ private fun DayLabel(dayOfWeek: DayOfWeek) {
 }
 
 @Composable
-private fun HoursHeader(hours: List<Int>) {
+fun HoursHeader(hours: List<Int>) {
     Row(
         Modifier
             .padding(bottom = 16.dp)

@@ -312,7 +312,7 @@ private fun DetailLegend() {
 }
 
 @Composable
-private fun LegendItem(sleepType: SleepType) {
+fun LegendItem(sleepType: SleepType) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier

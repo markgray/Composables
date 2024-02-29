@@ -23,6 +23,21 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
+/**
+ * The custom [ColorScheme] we use for our [JetLaggedTheme] custom [MaterialTheme]. We only override
+ * the following:
+ *
+ *  - [ColorScheme.primary] The primary color is the color displayed most frequently across your app’s
+ *  screens and components, we use [Yellow].
+ *  - [ColorScheme.secondary] The secondary color provides more ways to accent and distinguish your
+ *  product. Secondary colors are best for: Floating action buttons, Selection controls, like
+ *  checkboxes and radio buttons, Highlighting selected text, Links and headlines, we use [MintGreen].
+ *  - [ColorScheme.tertiary] The tertiary color that can be used to balance primary and secondary
+ *  colors, or bring heightened attention to an element such as an input field, we use [Coral].
+ *  - [ColorScheme.secondaryContainer] A tonal color to be used in containers, we use [Yellow].
+ *  - [ColorScheme.surface] The surface color that affect surfaces of components, such as cards,
+ *  sheets, and menus, we use [White].
+ */
 private val LightColorScheme: ColorScheme = lightColorScheme(
     primary = Yellow,
     secondary = MintGreen,
@@ -30,6 +45,11 @@ private val LightColorScheme: ColorScheme = lightColorScheme(
     secondaryContainer = Yellow,
     surface = White
 )
+
+/**
+ * The custom [Shapes] we use for our [JetLaggedTheme] custom [MaterialTheme]. We only override the
+ * [Shapes.large] of the default [MaterialTheme.shapes].
+ */
 private val shapes: Shapes
     @Composable
     get() = MaterialTheme.shapes.copy(

@@ -82,7 +82,7 @@ fun JetLaggedHeaderTabs(
 private val textModifier = Modifier
     .padding(vertical = 6.dp, horizontal = 4.dp)
 @Composable
-private fun SleepTabText(
+fun SleepTabText(
     sleepTab: SleepTab,
     selected: Boolean,
     index: Int,
