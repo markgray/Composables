@@ -22,9 +22,11 @@ import android.graphics.RuntimeShader
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
+import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
@@ -36,20 +38,50 @@ import com.example.jetlagged.ui.theme.YellowVariant
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
 
+/**
+ * A [Modifier.Element] which manages an instance of a particular [Modifier.Node] implementation.
+ * A given [Modifier.Node] implementation can only be used when a [ModifierNodeElement] which
+ * creates and updates that implementation is applied to a Layout. A [ModifierNodeElement] should
+ * be very lightweight, and do little more than hold the information necessary to create and
+ * maintain an instance of the associated [Modifier.Node] type.
+ *
+ * The [Modifier.Node] type that we create and maintain is [YellowBackgroundNode].
+ */
 @SuppressLint("ModifierNodeInspectableProperties") // TODO: override inspectableProperties
 private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgroundNode>() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    /**
+     * This will be called the first time the modifier is applied to the Layout and it should
+     * construct and return the corresponding [Modifier.Node] instance.
+     */
     override fun create() = YellowBackgroundNode()
+
+    /**
+     * Called when a modifier is applied to a Layout whose inputs have changed from the previous
+     * application. This function will have the current node instance passed in as a parameter, and
+     * it is expected that the node will be brought up to date.
+     *
+     * @param node the current [Modifier.Node] instance.
+     */
     override fun update(node: YellowBackgroundNode) {
     }
 }
 
+/**
+ * This custom [DrawModifierNode] is created and maintained by [YellowBackgroundElement] and used
+ * when [Build.VERSION.SDK_INT] >= [Build.VERSION_CODES.TIRAMISU] as the implementation for our
+ * custom [Modifier.yellowBackground]
+ */
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
 
-    private val shader = RuntimeShader(SHADER)
-    private val shaderBrush = ShaderBrush(shader)
-    private val time = mutableFloatStateOf(0f)
+    /**
+     * This is the [RuntimeShader] created from the text of the AGSL shader program [SHADER]. It runs
+     * the AGSL shader program to create the current [ShaderBrush] field [shaderBrush].
+     */
+    private val shader: RuntimeShader = RuntimeShader(SHADER)
+    private val shaderBrush: ShaderBrush = ShaderBrush(shader)
+    private val time: MutableFloatState = mutableFloatStateOf(0f)
 
     init {
         shader.setColorUniform(
@@ -58,13 +90,36 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
         )
     }
 
+    /**
+     * This is an override of the [DrawModifierNode] `ContentDrawScope.draw` method. The call to
+     * [ContentDrawScope.drawContent] causes child drawing operations to run during the onPaint
+     * lambda. This is a [Modifier.Node] that draws into the space of the layout, and is the
+     * [androidx.compose.ui.Modifier.Node] equivalent of [androidx.compose.ui.draw.DrawModifier].
+     * First we set the uniform value "resolution" corresponding to our [RuntimeShader] field [shader]
+     * to the current value of the [Size.width] and [Size.height] of [ContentDrawScope.size], then we
+     * set its uniform value "time" to the current value of our animated [MutableFloatState] field
+     * [time]. We call the [ContentDrawScope.drawRect] method with its `brush` argument our [ShaderBrush]
+     * field [shaderBrush] to draw a rectangle from the top left the size of the current environment.
+     * Finally we call [ContentDrawScope.drawContent] to have child drawing operations run during the
+     * onPaint.
+     */
     override fun ContentDrawScope.draw() {
         shader.setFloatUniform("resolution", size.width, size.height)
         shader.setFloatUniform("time", time.floatValue)
-        drawRect(shaderBrush)
+        drawRect(brush = shaderBrush)
         drawContent()
     }
 
+    /**
+     * Called when the node is attached to a [androidx.compose.ui.layout.Layout] which is part of
+     * the UI tree. When called, node is guaranteed to be non-`null`. You can call `sideEffect`,
+     * `coroutineScope`, etc. This is not guaranteed to get called at a time where the rest of the
+     * Modifier.Nodes in the hierarchy are "up to date". For instance, at the time of calling
+     * `onAttach` for this node, another node may be in the tree that will be detached by the time
+     * Compose has finished applying changes. As a result, if you need to guarantee that the state
+     * of the tree is "final" for this round of changes, you should use the `sideEffect` API to
+     * schedule the calculation to be done at that time.
+     */
     override fun onAttach() {
         coroutineScope.launch {
             while (true) {
@@ -93,7 +148,8 @@ fun Modifier.yellowBackground(): Modifier =
     }
 
 /**
- *
+ * This is the "AGSL" program used by the [RuntimeShader] variable `shader` in [YellowBackgroundNode].
+ * See [Android Graphics Shading Language](https://developer.android.com/develop/ui/views/graphics/agsl)
  */
 @Language("AGSL")
 val SHADER: String = """
