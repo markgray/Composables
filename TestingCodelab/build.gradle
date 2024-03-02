@@ -17,7 +17,7 @@
 buildscript {
     // Define versions in a single place
     ext {
-        gradleVersion = '8.2.2'
+        gradleVersion = '8.3.0'
         kotlinVersion = '1.9.22'
         composeCompilerVersion = '1.5.10'
     }
@@ -47,7 +47,7 @@ subprojects {
     spotless {
         kotlin {
             target '**/*.kt'
-            targetExclude("$buildDir/**/*.kt")
+            targetExclude("$layout.buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
             ktlint(rootProject.ktlintVersion)
