@@ -18,7 +18,9 @@ package com.example.jetlagged
 
 import java.time.LocalDateTime
 
-// In the real world, you should get this data from a backend.
+/**
+ * In the real world, you should get this data from a backend.
+ */
 val sleepData = SleepGraphData(
     listOf(
         SleepDayData(

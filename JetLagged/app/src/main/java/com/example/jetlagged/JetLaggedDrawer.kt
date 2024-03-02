@@ -17,8 +17,10 @@
 package com.example.jetlagged
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.rememberSplineBasedDecay
+import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -49,39 +51,44 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * This is used as the root Composable of [MainActivity]
+ */
 @Composable
 fun HomeScreenDrawer() {
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
-        var drawerState by remember {
-            mutableStateOf(DrawerState.Closed)
+        var drawerState: DrawerState by remember {
+            mutableStateOf(value = DrawerState.Closed)
         }
-        var screenState by remember {
-            mutableStateOf(Screen.Home)
-        }
-
-        val translationX = remember {
-            Animatable(0f)
+        var screenState: Screen by remember {
+            mutableStateOf(value = Screen.Home)
         }
 
-        val drawerWidth = with(LocalDensity.current) {
+        val translationX: Animatable<Float, AnimationVector1D> = remember {
+            Animatable(initialValue = 0f)
+        }
+
+        val drawerWidth: Float = with(LocalDensity.current) {
             DrawerWidth.toPx()
         }
-        translationX.updateBounds(0f, drawerWidth)
+        translationX.updateBounds(lowerBound = 0f, upperBound = drawerWidth)
 
-        val coroutineScope = rememberCoroutineScope()
+        val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
         fun toggleDrawerState() {
             coroutineScope.launch {
                 if (drawerState == DrawerState.Open) {
-                    translationX.animateTo(0f)
+                    translationX.animateTo(targetValue = 0f)
                 } else {
-                    translationX.animateTo(drawerWidth)
+                    translationX.animateTo(targetValue = drawerWidth)
                 }
                 drawerState = if (drawerState == DrawerState.Open) {
                     DrawerState.Closed
@@ -93,14 +100,14 @@ fun HomeScreenDrawer() {
 
         HomeScreenDrawerContents(
             selectedScreen = screenState,
-            onScreenSelected = { screen ->
+            onScreenSelected = { screen: Screen ->
                 screenState = screen
             }
         )
 
-        val draggableState = rememberDraggableState(onDelta = { dragAmount ->
+        val draggableState: DraggableState = rememberDraggableState(onDelta = { dragAmount: Float ->
             coroutineScope.launch {
-                translationX.snapTo(translationX.value + dragAmount)
+                translationX.snapTo(targetValue = translationX.value + dragAmount)
             }
         })
         val decay = rememberSplineBasedDecay<Float>()
@@ -110,32 +117,33 @@ fun HomeScreenDrawer() {
             modifier = Modifier
                 .graphicsLayer {
                     this.translationX = translationX.value
-                    val scale = lerp(1f, 0.8f, translationX.value / drawerWidth)
+                    val scale: Float = lerp(1f, 0.8f, translationX.value / drawerWidth)
                     this.scaleX = scale
                     this.scaleY = scale
-                    val roundedCorners = lerp(0f, 32.dp.toPx(), translationX.value / drawerWidth)
-                    this.shape = RoundedCornerShape(roundedCorners)
+                    val roundedCorners: Float = lerp(start = 0f, stop = 32.dp.toPx(), fraction = translationX.value / drawerWidth)
+                    this.shape = RoundedCornerShape(size = roundedCorners)
                     this.clip = true
                     this.shadowElevation = 32f
                 }
                 // This example is showing how to use draggable with custom logic on stop to snap to the edges
                 // You can also use `anchoredDraggable()` to set up anchors and not need to worry about more calculations.
                 .draggable(
-                    draggableState, Orientation.Horizontal,
+                    state = draggableState,
+                    orientation = Orientation.Horizontal,
                     onDragStopped = { velocity ->
-                        val targetOffsetX = decay.calculateTargetValue(
+                        val targetOffsetX: Float = decay.calculateTargetValue(
                             translationX.value,
                             velocity
                         )
                         coroutineScope.launch {
-                            val actualTargetX = if (targetOffsetX > drawerWidth * 0.5) {
+                            val actualTargetX: Float = if (targetOffsetX > drawerWidth * 0.5) {
                                 drawerWidth
                             } else {
                                 0f
                             }
                             // checking if the difference between the target and actual is + or -
-                            val targetDifference = (actualTargetX - targetOffsetX)
-                            val canReachTargetWithDecay =
+                            val targetDifference: Float = (actualTargetX - targetOffsetX)
+                            val canReachTargetWithDecay: Boolean =
                                 (
                                     targetOffsetX > actualTargetX && velocity > 0f &&
                                         targetDifference > 0f
@@ -150,7 +158,7 @@ fun HomeScreenDrawer() {
                                     animationSpec = decay
                                 )
                             } else {
-                                translationX.animateTo(actualTargetX, initialVelocity = velocity)
+                                translationX.animateTo(targetValue = actualTargetX, initialVelocity = velocity)
                             }
                             drawerState = if (actualTargetX == drawerWidth) {
                                 DrawerState.Open
@@ -170,7 +178,7 @@ private fun ScreenContents(
     onDrawerClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier) {
+    Box(modifier = modifier) {
         when (selectedScreen) {
             Screen.Home ->
                 JetLaggedScreen(
@@ -213,13 +221,13 @@ private fun HomeScreenDrawerContents(
     Column(
         modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(all = 16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Screen.values().forEach {
+        Screen.entries.forEach {
             NavigationDrawerItem(
                 label = {
-                    Text(it.text)
+                    Text(text = it.text)
                 },
                 icon = {
                     Icon(imageVector = it.icon, contentDescription = it.text)
@@ -235,11 +243,11 @@ private fun HomeScreenDrawerContents(
     }
 }
 
-private val DrawerWidth = 300.dp
+private val DrawerWidth: Dp = 300.dp
 
 private enum class Screen(val text: String, val icon: ImageVector) {
-    Home("Home", Icons.Default.Home),
-    SleepDetails("Sleep", Icons.Default.Bedtime),
-    Leaderboard("Leaderboard", Icons.Default.Leaderboard),
-    Settings("Settings", Icons.Default.Settings),
+    Home(text = "Home", icon = Icons.Default.Home),
+    SleepDetails(text = "Sleep", icon = Icons.Default.Bedtime),
+    Leaderboard(text = "Leaderboard", icon = Icons.Default.Leaderboard),
+    Settings(text = "Settings", icon = Icons.Default.Settings),
 }

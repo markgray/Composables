@@ -16,22 +16,25 @@
 
 package com.example.jetlagged
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.RuntimeShader
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.CacheDrawScope
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.platform.InspectorInfo
 import com.example.jetlagged.ui.theme.White
 import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.theme.YellowVariant
@@ -47,7 +50,6 @@ import org.intellij.lang.annotations.Language
  *
  * The [Modifier.Node] type that we create and maintain is [YellowBackgroundNode].
  */
-@SuppressLint("ModifierNodeInspectableProperties") // TODO: override inspectableProperties
 private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgroundNode>() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     /**
@@ -55,6 +57,16 @@ private data object YellowBackgroundElement : ModifierNodeElement<YellowBackgrou
      * construct and return the corresponding [Modifier.Node] instance.
      */
     override fun create() = YellowBackgroundNode()
+
+    /**
+     * Populates an [InspectorInfo] object with attributes to display in the layout inspector. This
+     * is called by tooling to resolve the properties of this modifier. By convention, implementors
+     * should set the name to the function name of the modifier. We set [InspectorInfo.name] to the
+     * name of the [Modifier] "yellowBackground".
+     */
+    override fun InspectorInfo.inspectableProperties() {
+        name = "yellowBackground"
+    }
 
     /**
      * Called when a modifier is applied to a Layout whose inputs have changed from the previous
@@ -80,8 +92,19 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
      * the AGSL shader program to create the current [ShaderBrush] field [shaderBrush].
      */
     private val shader: RuntimeShader = RuntimeShader(SHADER)
-    private val shaderBrush: ShaderBrush = ShaderBrush(shader)
-    private val time: MutableFloatState = mutableFloatStateOf(0f)
+
+    /**
+     * This [ShaderBrush] uses the animated [RuntimeShader] field [shader] to create an animated
+     * gradient brush that is used as `brush` argument when calling the [ContentDrawScope.drawRect]
+     * method.
+     */
+    private val shaderBrush: ShaderBrush = ShaderBrush(shader = shader)
+
+    /**
+     * The [MutableFloatState] that is used to animate the "time" uniform value of the [SHADER] AGSL
+     * program that the [RuntimeShader] field [shader] is running.
+     */
+    private val time: MutableFloatState = mutableFloatStateOf(value = 0f)
 
     init {
         shader.setColorUniform(
@@ -132,7 +155,13 @@ private class YellowBackgroundNode : DrawModifierNode, Modifier.Node() {
 }
 
 /**
- *
+ * This creates the [Modifier.yellowBackground] that is used to draw a nifty animated "Ocean Wave"
+ * effect for the [Column] holding the [JetLaggedHeader] and the [JetLaggedSleepSummary] that is at
+ * the top of [JetLaggedScreen]. If [Build.VERSION.SDK_INT] >= [Build.VERSION_CODES.TIRAMISU] it
+ * chains [YellowBackgroundElement] to its [Modifier] receiver, otherwise it uses [drawWithCache]
+ * to cache the [Brush.verticalGradient] vertical gradient it creates then uses as the `brush`
+ * argument when it calls [DrawScope.drawRect] within the [CacheDrawScope.onDrawBehind] method to
+ * issue drawing commands to be executed before the layout content is drawn.
  */
 fun Modifier.yellowBackground(): Modifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -140,9 +169,9 @@ fun Modifier.yellowBackground(): Modifier =
     } else {
         drawWithCache {
 
-            val gradientBrush = Brush.verticalGradient(listOf(Yellow, YellowVariant, White))
+            val gradientBrush: Brush = Brush.verticalGradient(colors = listOf(Yellow, YellowVariant, White))
             onDrawBehind {
-                drawRect(gradientBrush)
+                drawRect(brush = gradientBrush)
             }
         }
     }
