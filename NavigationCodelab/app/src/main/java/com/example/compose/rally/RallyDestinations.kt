@@ -95,14 +95,14 @@ object SingleAccount : RallyDestination {
      * This is the key under which the `accountType` is stored in the arguments for navigating to
      * the [SingleAccountScreen] Composable.
      */
-    const val accountTypeArg: String = "account_type"
+    const val ACCOUNT_TYPE_ARG: String = "account_type"
 
     /**
      * This is the `route` for the [NavDestination] of [SingleAccount.routeWithArgs], and specifies
-     * that the key of the argument of the `route` will be stored under the [accountTypeArg] key in
+     * that the key of the argument of the `route` will be stored under the [ACCOUNT_TYPE_ARG] key in
      * the arguments passed in the [NavBackStackEntry.arguments] passed to [SingleAccountScreen].
      */
-    val routeWithArgs: String = "${route}/{${accountTypeArg}}"
+    val routeWithArgs: String = "${route}/{${ACCOUNT_TYPE_ARG}}"
 
     /**
      * The [List] of arguments to associate with destination [SingleAccount.routeWithArgs] that is
@@ -110,7 +110,7 @@ object SingleAccount : RallyDestination {
      * Composable for that route to the [NavGraphBuilder] of the [NavHost] in [RallyNavHost].
      */
     val arguments: List<NamedNavArgument> = listOf(
-        navArgument(accountTypeArg) { type = NavType.StringType }
+        navArgument(ACCOUNT_TYPE_ARG) { type = NavType.StringType }
     )
 
     /**
@@ -119,7 +119,7 @@ object SingleAccount : RallyDestination {
      * the Composable for that route to the [NavGraphBuilder] of the [NavHost] in [RallyNavHost].
      */
     val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "rally://$route/{$accountTypeArg}" }
+        navDeepLink { uriPattern = "rally://$route/{$ACCOUNT_TYPE_ARG}" }
     )
 
 }

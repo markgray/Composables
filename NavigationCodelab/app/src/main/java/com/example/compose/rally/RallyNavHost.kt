@@ -77,7 +77,7 @@ fun RallyNavHost(
             deepLinks = SingleAccount.deepLinks
         ) { navBackStackEntry: NavBackStackEntry ->
             val accountType =
-                navBackStackEntry.arguments?.getString(SingleAccount.accountTypeArg)
+                navBackStackEntry.arguments?.getString(SingleAccount.ACCOUNT_TYPE_ARG)
             SingleAccountScreen(accountType = accountType)
         }
     }
