@@ -41,6 +41,7 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,24 +59,55 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * This is used as the root Composable of [MainActivity]
+ * This is composed into the activity as the root view of [MainActivity]. Our root Composable is a
+ * [Surface] whose `modifier` argument is a [Modifier.fillMaxSize] causing it to occupy the entire
+ * incoming size constraints. Inside the `content` of the [Surface] we initialize and remember our
+ * [MutableState] wrapped [DrawerState] variable `var drawerState` to [DrawerState.Closed], initialize
+ * and remember our [MutableState] wrapped [Screen] variable `var screenState` to [Screen.Home],
  */
 @Composable
 fun HomeScreenDrawer() {
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
+        /**
+         * Controls whether the [HomeScreenDrawerContents] is "Open" or "Closed". It does this by
+         * controlling the `translationX` of the [[Modifier.graphicsLayer]] draw layer holding the
+         * [ScreenContents] Composable which is rendered on top of [HomeScreenDrawerContents] with
+         * the `translationX` animated to 0 to "Close" the drawer, or to [DrawerWidth] to open the
+         * drawer.
+         */
         var drawerState: DrawerState by remember {
             mutableStateOf(value = DrawerState.Closed)
         }
+
+        /**
+         * Controls which of the  "destination" Composables are displayed in the [ScreenContents]
+         * Composable:
+         *  - [Screen.Home] displays the [JetLaggedScreen] Composable.
+         *  - [Screen.SleepDetails] displays an empty [Surface] ("work in progress")
+         *  - [Screen.Leaderboard] displays an empty [Surface] ("work in progress")
+         *  - [Screen.Settings] displays an empty [Surface] ("work in progress")
+         */
         var screenState: Screen by remember {
             mutableStateOf(value = Screen.Home)
         }
 
+        /**
+         * This controls the `translationX` of the [Modifier.graphicsLayer] draw layer holding the
+         * [ScreenContents] Composable and is used to "Open" or "Close" the [HomeScreenDrawerContents]
+         * that is rendered underneath the [ScreenContents] Composable.
+         */
         val translationX: Animatable<Float, AnimationVector1D> = remember {
             Animatable(initialValue = 0f)
         }
 
+        /**
+         * This is the pixel value of the [Dp] constant [DrawerWidth] and is the number of pixels
+         * that the `translationX` of the [Modifier.graphicsLayer] draw layer holding the
+         * [ScreenContents] Composable must be moved in order for the [HomeScreenDrawerContents]
+         * (that is drawn under the [ScreenContents] Composable) to be fully "Open"
+         */
         val drawerWidth: Float = with(LocalDensity.current) {
             DrawerWidth.toPx()
         }
