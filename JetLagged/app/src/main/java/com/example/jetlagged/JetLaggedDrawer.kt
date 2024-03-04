@@ -18,6 +18,7 @@ package com.example.jetlagged
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.gestures.DraggableState
@@ -49,6 +50,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
@@ -113,8 +115,24 @@ fun HomeScreenDrawer() {
         }
         translationX.updateBounds(lowerBound = 0f, upperBound = drawerWidth)
 
+        /**
+         * This is the [CoroutineScope] that is used to launch coroutines that use our [Animatable]
+         * variable `translationX` to animate the [GraphicsLayerScope.translationX] of the
+         * [Modifier.graphicsLayer] that holds our [ScreenContents] Composable, thereby "opening"
+         * and "closing" the drawer since the [HomeScreenDrawerContents] drawer is below the
+         * [ScreenContents].
+         */
         val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
+        /**
+         * Toggles the [DrawerState] of our [MutableState] wrapped [DrawerState] variable `drawerState`
+         * between [DrawerState.Open] and [DrawerState.Closed] and launches a coroutine that uses the
+         * [Animatable] variable `translationX` to animate the [GraphicsLayerScope.translationX] of
+         * the [Modifier.graphicsLayer] that holds our [ScreenContents] Composable to the value that
+         * is appropriate for the new [DrawerState] (0f for transitioning from [DrawerState.Open] to
+         * [DrawerState.Closed] and `drawerWidth` for transitioning from [DrawerState.Closed] to
+         * [DrawerState.Open]
+         */
         fun toggleDrawerState() {
             coroutineScope.launch {
                 if (drawerState == DrawerState.Open) {
@@ -130,6 +148,13 @@ fun HomeScreenDrawer() {
             }
         }
 
+        /**
+         * This is the "Navigation Drawer" of our app. It is drawn under the [ScreenContents] Composable
+         * and controls which [Screen] is displayed by the [ScreenContents] Composable.
+         *  - `selectedScreen` our [Screen] variable `screenState`
+         *  - `onScreenSelected` a lambda which sets our [Screen] variable `screenState` to the
+         *  [Screen] paramter passed it.
+         */
         HomeScreenDrawerContents(
             selectedScreen = screenState,
             onScreenSelected = { screen: Screen ->
@@ -137,19 +162,49 @@ fun HomeScreenDrawer() {
             }
         )
 
+        /**
+         * This [DraggableState] is used as the `state` argument of the [Modifier.draggable] that is
+         * part of the `modifier` argument of our [ScreenContents] Composable. It is the State of the
+         * draggable, and allows for a granular control of how deltas are consumed by the user as
+         * well as allowing one to write custom drag methods using drag suspend function. The `onDelta`
+         * lambda passed to [rememberDraggableState] will be invoked whenever drag happens (by gesture
+         * input or a custom [DraggableState.drag] call) with the delta in pixels. In our lambda we
+         * use our [CoroutineScope] variable `coroutineScope` to launch a coroutine which calls the
+         * [Animatable.snapTo] method of `translationX` to have it set its current value to  its
+         * current value plus the `dragAmount` parameter of the lambda without any animation (thereby
+         * causing the [GraphicsLayerScope.translationX] of the [Modifier.graphicsLayer] that holds
+         * our [ScreenContents] Composable to reflect the current drag position).
+         */
         val draggableState: DraggableState = rememberDraggableState(onDelta = { dragAmount: Float ->
             coroutineScope.launch {
                 translationX.snapTo(targetValue = translationX.value + dragAmount)
             }
         })
-        val decay = rememberSplineBasedDecay<Float>()
+
+        /**
+         * This is used as the `animationSpec` of a call to the [Animatable.animateDecay] method of
+         * the [Animatable] variable `translationX` which is called in the `onDragStopped` lambda
+         * argument of the [Modifier.draggable] when the drag velocity and current value of
+         * `translationX` is enough for it to reach the taget value, and starts a decay animation
+         * (i.e. an animation that slows down from the given `initialVelocity` starting at current
+         * [Animatable.value] until the velocity reaches 0.
+         */
+        val decay: DecayAnimationSpec<Float> = rememberSplineBasedDecay()
+
+        /**
+         * This Composable draws whichever [Screen] is selected by its `selectedScreen` argument
+         * into a [Modifier.graphicsLayer] draw layer. The [GraphicsLayerScope.translationX] of that
+         * [Modifier.graphicsLayer] draw layer is animated by the [Animatable] variable `translationX`
+         * allowing it to be moved to the right to expose the [HomeScreenDrawerContents] that is
+         * rendered underneath it either by dragging or by calling the `toggleDrawerState` method.
+         */
         ScreenContents(
             selectedScreen = screenState,
             onDrawerClicked = ::toggleDrawerState,
             modifier = Modifier
                 .graphicsLayer {
                     this.translationX = translationX.value
-                    val scale: Float = lerp(1f, 0.8f, translationX.value / drawerWidth)
+                    val scale: Float = lerp(start = 1f, stop = 0.8f, fraction = translationX.value / drawerWidth)
                     this.scaleX = scale
                     this.scaleY = scale
                     val roundedCorners: Float = lerp(start = 0f, stop = 32.dp.toPx(), fraction = translationX.value / drawerWidth)
