@@ -22,7 +22,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath 'com.android.tools.build:gradle:8.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -41,7 +41,7 @@ subprojects {
     spotless {
         kotlin {
             target '**/*.kt'
-            targetExclude("$buildDir/**/*.kt")
+            targetExclude("$layout.buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
             ktlint("0.45.2")
