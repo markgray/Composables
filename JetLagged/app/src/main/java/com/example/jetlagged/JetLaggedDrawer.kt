@@ -74,7 +74,7 @@ fun HomeScreenDrawer() {
     ) {
         /**
          * Controls whether the [HomeScreenDrawerContents] is "Open" or "Closed". It does this by
-         * controlling the `translationX` of the [[Modifier.graphicsLayer]] draw layer holding the
+         * controlling the `translationX` of the [Modifier.graphicsLayer] draw layer holding the
          * [ScreenContents] Composable which is rendered on top of [HomeScreenDrawerContents] with
          * the `translationX` animated to 0 to "Close" the drawer, or to [DrawerWidth] to open the
          * drawer.
@@ -197,6 +197,15 @@ fun HomeScreenDrawer() {
          * [Modifier.graphicsLayer] draw layer is animated by the [Animatable] variable `translationX`
          * allowing it to be moved to the right to expose the [HomeScreenDrawerContents] that is
          * rendered underneath it either by dragging or by calling the `toggleDrawerState` method.
+         * The arguments are:
+         *  - `selectedScreen` our [MutableState] wrapped [Screen] variable `screenState`
+         *  - `onDrawerClicked` a reference to our `toggleDrawerState` method which "Toggles"
+         *  `drawerState` between [DrawerState.Open] and [DrawerState.Closed] and animates the
+         *  [Animatable] variable `translationX` appropriately.
+         *  - `modifier` a [Modifier.graphicsLayer] that makes the `content` of [ScreenContents]
+         *  draw into a draw layer whose `translationX` can be animated using the [Animatable]
+         *  variable `translationX`. To this is chained a [Modifier.draggable] that allows the user
+         *  to drag the draw layer of the [Modifier.graphicsLayer].
          */
         ScreenContents(
             selectedScreen = screenState,
@@ -259,6 +268,33 @@ fun HomeScreenDrawer() {
     }
 }
 
+/**
+ * This composable displays whichever [Screen] is specified by its [Screen] parameter [selectedScreen].
+ * The only one which has a real implementation is [Screen.Home] which displays the [JetLaggedScreen]
+ * Composable. Our root Composable is a [Box] whose `modifier` argument is our [Modifier] parameter
+ * [modifier]. In the `content` of the [Box] we `when` branch on the value of our [Screen] parameter
+ * [selectedScreen]:
+ *  - [Screen.Home] we compose a [JetLaggedScreen] Composable with its `modifier` argument just the
+ *  empty, default, or starter [Modifier] that contains no elements, and its `onDrawerClicked` argument
+ *  our [onDrawerClicked] lambda parameter.
+ *  - [Screen.SleepDetails] we compose an empty [Surface] whose `modifier` argument is a
+ *  [Modifier.fillMaxSize] that causes it to take up its entire incoming size constraints.
+ *  - [Screen.Leaderboard] we compose an empty [Surface] whose `modifier` argument is a
+ *  [Modifier.fillMaxSize] that causes it to take up its entire incoming size constraints.
+ *  - [Screen.Settings] we compose an empty [Surface] whose `modifier` argument is a
+ *  [Modifier.fillMaxSize] that causes it to take up its entire incoming size constraints.
+ *
+ * @param selectedScreen the [Screen] whose Composable implementation we are to display.
+ * @param onDrawerClicked a lambda which when called will "toggle" the [HomeScreenDrawerContents]
+ * navigation drawer of [HomeScreenDrawer] by animating the `translationX` of the [Modifier.graphicsLayer]
+ * draw layer into which we draw our content thereby exposing or hiding the [HomeScreenDrawer] which
+ * is rendered underneath us.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [HomeScreenDrawer] passes us a [Modifier.graphicsLayer] that makes us draw
+ * our `content` into a draw layer whose `translationX` can be animated using the [Animatable]
+ * variable `translationX`, with a [Modifier.draggable] that allows the user to drag the draw layer
+ * of the [Modifier.graphicsLayer].
+ */
 @Composable
 private fun ScreenContents(
     selectedScreen: Screen,
@@ -294,11 +330,19 @@ private fun ScreenContents(
     }
 }
 
+/**
+ * This enum is used to control the `translationX` of the [Modifier.graphicsLayer] draw layer into
+ * which [ScreenContents] draws its contents. [DrawerState.Open] animates the `translationX`
+ * to [DrawerWidth] (300.dp), and [DrawerState.Closed] animates the `translationX` to 0.
+ */
 private enum class DrawerState {
     Open,
     Closed
 }
 
+/**
+ * This is the "navigation drawer" which is rendered underneath the [ScreenContents] Composable.
+ */
 @Composable
 private fun HomeScreenDrawerContents(
     selectedScreen: Screen,
