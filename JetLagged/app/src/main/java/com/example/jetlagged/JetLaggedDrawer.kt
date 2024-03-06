@@ -66,6 +66,32 @@ import kotlinx.coroutines.launch
  * incoming size constraints. Inside the `content` of the [Surface] we initialize and remember our
  * [MutableState] wrapped [DrawerState] variable `var drawerState` to [DrawerState.Closed], initialize
  * and remember our [MutableState] wrapped [Screen] variable `var screenState` to [Screen.Home],
+ * initialize and rememeber our [Animatable] variable `val translationX` to an `initialValue` of
+ * 0f, initialize our [Float] variable `val drawerWidth` to the pixel value of our [Dp] constant
+ * [DrawerWidth] for the current [LocalDensity], and call the [Animatable.updateBounds] method of
+ * `translationX` to update its `lowerBound` to 0f, and its `upperBound` to `drawerWidth`. We
+ * initialize and rememeber our [CoroutineScope] variable `val coroutineScope` to a new instance.
+ *
+ * We compose a [HomeScreenDrawerContents] into our UI (our navigation drawer) with its `selectedScreen`
+ * argument our [MutableState] wrapped [Screen] variable `screenState` and its `onScreenSelected`
+ * argument a lambda which sets `screenState` to the [Screen] passed the lambda.
+ *
+ * Next we initialize and remember our [DraggableState] variable `val draggableState` to an instance
+ * whose `onDelta` argument is a lambda that uses our [CoroutineScope] variable `coroutineScope` to
+ * launch a coroutine which calls the [Animatable.snapTo] method of `translationX` to have it snap
+ * to its current value plus the [Float] `dragAmount` passed the lambda (moves the `translationX`
+ * of the [Modifier.graphicsLayer] that holds our [ScreenContents] Composable to reflect the current
+ * drag position).
+ *
+ * We use the [rememberSplineBasedDecay] to initialize and remember our [DecayAnimationSpec] variable
+ * `val decay`.
+ *
+ * Finally we compose a [ScreenContents] into our UI whose `selectedScreen` argument is our [MutableState]
+ * wrapped [Screen] variable `screenState`, whose `onDrawerClicked` argument is a reference to our
+ * `toggleDrawerState` method, and whose `modifier` argument is [Modifier.graphicsLayer] that makes
+ * the `content` of [ScreenContents] draw into a draw layer whose `translationX` can be animated using
+ * the [Animatable] variable `translationX` and to this is chained a [Modifier.draggable] that allows
+ * the user to drag the draw layer of the [Modifier.graphicsLayer]..
  */
 @Composable
 fun HomeScreenDrawer() {
@@ -341,7 +367,30 @@ private enum class DrawerState {
 }
 
 /**
- * This is the "navigation drawer" which is rendered underneath the [ScreenContents] Composable.
+ * This is the "navigation drawer" which is rendered underneath the [ScreenContents] Composable. Its
+ * root Composable is a [Column] whose `modifier` argument chains a [Modifier.fillMaxSize] to our
+ * [Modifier] parameter [modifier] to have the [Column] occupy its entire incoming size constraint,
+ * with a [Modifier.padding] chained to that which adds 16.dp padding to all sides of its `content`.
+ * Its content consists of a [NavigationDrawerItem] for each of the [Screen] enums. The arguments of
+ * the [NavigationDrawerItem]'s are:
+ *  - `label` a lambda which contains a [Text] whose `text` argument is the [Screen.text] of the
+ *  [Screen] that the [NavigationDrawerItem] is intended for.
+ *  - `icon` a lambda which contains an [Icon] whose `imageVector` argument is the [Screen.icon] of
+ *  the [Screen] that the [NavigationDrawerItem] is intended for, and whose `contentDescription`
+ *  argument is its [Screen.text].
+ *  - `colors` is the [NavigationDrawerItemDefaults.colors] with its `unselectedContainerColor`
+ *  overridden with [Color.White].
+ *  - `selected` is `true` if our [Screen] parameter [selectedScreen] is equal to the [Screen] that
+ *  the [NavigationDrawerItem] is intended for
+ *  - `onClick` is a lambda that calls our lambda parameter [onScreenSelected] with the [Screen] that
+ *  the [NavigationDrawerItem] is intended for
+ *
+ * @param selectedScreen the currently selected [Screen] that the [ScreenContents] is displaying.
+ * @param onScreenSelected a lambda we should call with the [Screen] that the [NavigationDrawerItem]
+ * is intended for when that [NavigationDrawerItem] is clicked.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [HomeScreenDrawer] does not pass us one, so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
  */
 @Composable
 private fun HomeScreenDrawerContents(
@@ -350,32 +399,39 @@ private fun HomeScreenDrawerContents(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(all = 16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Screen.entries.forEach {
+        Screen.entries.forEach { screen: Screen ->
             NavigationDrawerItem(
                 label = {
-                    Text(text = it.text)
+                    Text(text = screen.text)
                 },
                 icon = {
-                    Icon(imageVector = it.icon, contentDescription = it.text)
+                    Icon(imageVector = screen.icon, contentDescription = screen.text)
                 },
-                colors =
-                NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.White),
-                selected = selectedScreen == it,
+                colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.White),
+                selected = selectedScreen == screen,
                 onClick = {
-                    onScreenSelected(it)
+                    onScreenSelected(screen)
                 },
             )
         }
     }
 }
 
+/**
+ * The width that the [GraphicsLayerScope.translationX] of the [Modifier.graphicsLayer] that holds
+ * our [ScreenContents] Composable must be moved for the navigation drawer to be "open".
+ */
 private val DrawerWidth: Dp = 300.dp
 
+/**
+ * These are the destinations that can be selected by our [HomeScreenDrawerContents] navigation
+ * drawer to be displayed by our [ScreenContents] Composable.
+ */
 private enum class Screen(val text: String, val icon: ImageVector) {
     Home(text = "Home", icon = Icons.Default.Home),
     SleepDetails(text = "Sleep", icon = Icons.Default.Bedtime),

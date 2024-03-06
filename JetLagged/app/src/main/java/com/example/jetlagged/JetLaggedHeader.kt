@@ -43,27 +43,30 @@ import com.example.jetlagged.ui.theme.HeadingStyle
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.TitleBarStyle
 
+/**
+ *
+ */
 @Preview
 @Composable
 fun JetLaggedHeader(
-    onDrawerClicked: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDrawerClicked: () -> Unit = {}
 ) {
     Box(
-        modifier.height(150.dp)
+        modifier.height(height = 150.dp)
     ) {
         Row(modifier = Modifier.windowInsetsPadding(insets = WindowInsets.systemBars)) {
             IconButton(
                 onClick = onDrawerClicked,
             ) {
                 Icon(
-                    Icons.Default.Menu,
-                    contentDescription = stringResource(R.string.not_implemented)
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = stringResource(id = R.string.not_implemented)
                 )
             }
 
             Text(
-                stringResource(R.string.jetlagged_app_heading),
+                stringResource(id = R.string.jetlagged_app_heading),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
@@ -74,6 +77,9 @@ fun JetLaggedHeader(
     }
 }
 
+/**
+ *
+ */
 @Preview
 @Composable
 fun JetLaggedSleepSummary(modifier: Modifier = Modifier) {
@@ -83,25 +89,25 @@ fun JetLaggedSleepSummary(modifier: Modifier = Modifier) {
     ) {
         Column {
             Text(
-                stringResource(R.string.average_time_in_bed_heading),
+                text = stringResource(id = R.string.average_time_in_bed_heading),
                 style = SmallHeadingStyle
             )
             Text(
-                stringResource(R.string.placeholder_text_ave_time),
+                text = stringResource(id = R.string.placeholder_text_ave_time),
                 style = HeadingStyle
             )
         }
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(width = 16.dp))
         Column {
             Text(
-                stringResource(R.string.average_sleep_time_heading),
+                text = stringResource(id = R.string.average_sleep_time_heading),
                 style = SmallHeadingStyle
             )
             Text(
-                stringResource(R.string.placeholder_text_ave_time_2),
+                text = stringResource(id = R.string.placeholder_text_ave_time_2),
                 style = HeadingStyle,
             )
         }
     }
-    Spacer(modifier = Modifier.height(32.dp))
+    Spacer(modifier = Modifier.height(height = 32.dp))
 }
