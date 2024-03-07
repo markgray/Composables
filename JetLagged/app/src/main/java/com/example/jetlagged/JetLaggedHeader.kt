@@ -35,7 +35,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,7 +48,32 @@ import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.TitleBarStyle
 
 /**
+ * This sits at the top of the [JetLaggedScreen] Composable and holds an [IconButton] which when
+ * clicked calls its [onDrawerClicked] lambda parameter, and a [Text] that displays the [String]
+ * with resource ID [R.string.jetlagged_app_heading] ("JetLagged"). Our root composable is a [Box]
+ * whose `modifier` argument chains a [Modifier.height] to our [Modifier] parameter [modifier] that
+ * sets its height to 150.dp. The `content` of the [Box] is a [Row] whose `modifier` argument is a
+ * [Modifier.windowInsetsPadding] which adds padding so that its content doesn't enter the `insets`
+ * space [WindowInsets.Companion.systemBars] (the space occupied by the `systemBars` at the top of
+ * the device). The `content` of the [Row] is an [IconButton] whose `onClick` argument is our lambda
+ * parameter [onDrawerClicked], and whose `content` is an [Icon] whose `imageVector` argument is the
+ * [ImageVector] drawn by [Icons.Filled.Menu] (three horizontal bars), and whose `contentDescription`
+ * argument is the [String] with resource ID [R.string.not_implemented] ("Not implemented yet"). This
+ * is followed by a [Text] whose `text` argument is the [String] with resource ID
+ * [R.string.jetlagged_app_heading] ("JetLagged"), whose `modifier` argument is a [Modifier.fillMaxWidth]
+ * that causes it to occupy its entire incoming width contraint, with a [Modifier.padding] that adds
+ * 8.dp padding to its `top`. The [TextStyle] for its `style` argument is our [TitleBarStyle] (the
+ * downloadable [GoogleFont] "Lato" with a `fontSize` of 22.sp and a [FontWeight] of 700) and its
+ * `textAlign` argument is [TextAlign.Start] to align the text to the leading edge of the container.
  *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [JetLaggedScreen] passes us a [Modifier.fillMaxWidth] that causes us to
+ * occupy our entire incoming width constraint.
+ * @param onDrawerClicked a lambda we should call when our [IconButton] is clicked. Our caller
+ * [JetLaggedScreen] passes us its own `onDrawerClicked` lambda parameter which is the `onDrawerClicked`
+ * lambda parameter of the [ScreenContents] Composable, which is a reference to the `toggleDrawerState`
+ * method of the [HomeScreenDrawer] Composable that calls [ScreenContents] ("opens" the navigation
+ * drawer).
  */
 @Preview
 @Composable
@@ -53,7 +82,7 @@ fun JetLaggedHeader(
     onDrawerClicked: () -> Unit = {}
 ) {
     Box(
-        modifier.height(height = 150.dp)
+        modifier = modifier.height(height = 150.dp)
     ) {
         Row(modifier = Modifier.windowInsetsPadding(insets = WindowInsets.systemBars)) {
             IconButton(
@@ -66,7 +95,7 @@ fun JetLaggedHeader(
             }
 
             Text(
-                stringResource(id = R.string.jetlagged_app_heading),
+                text = stringResource(id = R.string.jetlagged_app_heading),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
@@ -78,7 +107,15 @@ fun JetLaggedHeader(
 }
 
 /**
+ * Displays the values of the "AVG. TIME IN BED" ("8h2min") and the "AVG. SLEEP TIME" ("7h15min").
+ * This is composed in the same [Column] as the [JetLaggedHeader] Composable with a [Spacer] whose
+ * height is 32.dp between them in the [JetLaggedScreen] Composable. That [Column] uses as its
+ * `modifier` argument a [Modifier.yellowBackground] which draws an animated "Yellow" sea wave
+ * background for the contents of the [Column].
  *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [JetLaggedScreen] passes us a [Modifier.padding] that adds 16.dp to our
+ * `start` and our `end`.
  */
 @Preview
 @Composable
