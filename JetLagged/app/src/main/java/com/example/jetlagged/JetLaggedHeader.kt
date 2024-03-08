@@ -111,7 +111,24 @@ fun JetLaggedHeader(
  * This is composed in the same [Column] as the [JetLaggedHeader] Composable with a [Spacer] whose
  * height is 32.dp between them in the [JetLaggedScreen] Composable. That [Column] uses as its
  * `modifier` argument a [Modifier.yellowBackground] which draws an animated "Yellow" sea wave
- * background for the contents of the [Column].
+ * background for the contents of the [Column]. Our root Composable is a [Row] whose `modifier`
+ * argument chains a [Modifier.fillMaxWidth] to our [Modifier] parameter [modifier] to have it
+ * occupy its entire incoming width constraint, and its `horizontalArrangement` argument is
+ * [Arrangement.SpaceBetween] which causes the [Row] to place its children such that they are spaced
+ * evenly across the main axis, without free space before the first child or after the last child.
+ * The `content` of the [Row] is a [Column] whose `content` is a [Text] whose `text` is the [String]
+ * with resource ID [R.string.average_time_in_bed_heading] ("AVG. TIME IN BED") with a [TextStyle]
+ * `style` argument of [SmallHeadingStyle] (the downloadable [GoogleFont] "Lato" with a `fontSize`
+ * of 16.sp and a [FontWeight] of 600) and below this is another [Text] whose `text` is the [String]
+ * with resource ID [R.string.placeholder_text_ave_time] ("8h2min") with a [TextStyle] `style`
+ * argument of [HeadingStyle] (the downloadable [GoogleFont] "Lato" with a `fontSize`of 24.sp and a
+ * [FontWeight] of 600). Following this [Column] in the [Row] is a [Spacer] whose `modifier` argument
+ * is a [Modifier.width] that sets its width to 16.dp. The [Spacer] is followed by another [Column]
+ * whose `content` is a [Text] whose `text` is the [String] with resource ID [R.string.average_sleep_time_heading]
+ * ("AVG. SLEEP TIME") with a [TextStyle] `style` argument of [SmallHeadingStyle] and below this is
+ * another [Text] whose `text` is the [String] with resource ID [R.string.placeholder_text_ave_time_2]
+ * ("7h15min") with a [TextStyle] `style` argument of [HeadingStyle]. Below the [Row] is a [Spacer]
+ * whose `modifier` argument is a [Modifier.height] that sets the height of the [Spacer] to 32.dp.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [JetLaggedScreen] passes us a [Modifier.padding] that adds 16.dp to our
