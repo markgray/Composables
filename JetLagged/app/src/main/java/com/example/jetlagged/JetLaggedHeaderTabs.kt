@@ -28,6 +28,7 @@ import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -39,41 +40,73 @@ import com.example.jetlagged.ui.theme.Yellow
 
 /**
  * This enum is used as the `text` of the [SleepTabText] entries displayed by the [JetLaggedHeaderTabs]
- * Composable.
+ * Composable. The [title] is the resource ID of the [String] to use as the `text`.
  */
 enum class SleepTab(
     /**
-     *
+     * The resource ID of the [String] to use as the `text`.
      */
     val title: Int) {
     /**
-     *
+     * [SleepTab] whose [title] is the resource ID [R.string.sleep_tab_day_heading] ("Day")
      */
     Day(R.string.sleep_tab_day_heading),
 
     /**
-     *
+     * [SleepTab] whose [title] is the resource ID [R.string.sleep_tab_week_heading] ("Week")
      */
     Week(R.string.sleep_tab_week_heading),
 
     /**
-     *
+     * [SleepTab] whose [title] is the resource ID [R.string.sleep_tab_month_heading] ("Month")
      */
     Month(R.string.sleep_tab_month_heading),
 
     /**
-     *
+     * [SleepTab] whose [title] is the resource ID [R.string.sleep_tab_six_months_heading] ("6M")
      */
     SixMonths(R.string.sleep_tab_six_months_heading),
 
     /**
-     *
+     * [SleepTab] whose [title] is the resource ID [R.string.sleep_tab_one_year_heading] ("1Y")
      */
     OneYear(R.string.sleep_tab_one_year_heading)
 }
 
 /**
+ * This Composable displays a [ScrollableTabRow] which holds a [SleepTabText] for each of the
+ * [SleepTab.entries] of the [SleepTab] enum. The arguments passed our [ScrollableTabRow] are:
+ *  - `modifier` we pass it our [Modifier] parameter [modifier]
+ *  - `edgePadding` we pass it 12.dp (the padding between the starting and ending edge of the
+ *  scrollable tab row, and the tabs inside the row).
+ *  - `selectedTabIndex` we pass it the [SleepTab.ordinal] of our [SleepTab] parameter [selectedTab]
+ *  (the index of the currently selected tab)
+ *  - `containerColor` we pass it [White] (the color used for the background of the tab row)
+ *  - `indicator` we pass it a lambda which composes a [Box] whose `modifier` argument is a
+ *  [tabIndicatorOffset] ([Modifier] that takes up all the available width inside the [ScrollableTabRow],
+ *  and then animates the offset of the indicator it is applied to, depending on its `currentTabPosition`
+ *  argument, which is the [TabPosition] occupying the [SleepTab.ordinal] of our [SleepTab] parameter
+ *  [selectedTab] entry in the [List] of [TabPosition] passed the lambda. To this is chained a
+ *  [Modifier.fillMaxSize] which makes the [Box] occupy its entire incoming size constraints, followed
+ *  by a [Modifier.padding] which adds 2.dp to each end of the [Box], and finally a [Modifier.border]
+ *  whose `border` is a [BorderStroke] with a `width` of 2.dp, and `color` [Yellow], and the `shape`
+ *  of the [Modifier.border] is a [RoundedCornerShape] whose `size` is 10.dp.
+ *  - `divider` (the divider displayed at the bottom of the tab row) we pass it an empty "do nothing"
+ *  lambda.
  *
+ * The `tabs` argument of the [ScrollableTabRow] is a block which uses the [forEachIndexed] extension
+ * function to loop over all of the [SleepTab.entries]
+ *
+ * @param onTabSelected a lambda that the [SleepTabText]'s in our [ScrollableTabRow] should call
+ * with the [SleepTab] that it was constructed to display. Our caller [JetLaggedScreen] passes us
+ * a lambda which sets the [MutableState] wrapped [SleepTab] variable that it passes us as our
+ * [selectedTab] parameter to the [SleepTab] enum passes the lambda.
+ * @param selectedTab this is the current value of the "selected" [SleepTab]. Our caller
+ * [JetLaggedScreen] passes us a [MutableState] wrapped [SleepTab] variable (the one that our
+ * [onTabSelected] lambda parameter sets when it is called).
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [JetLaggedScreen] does not pass us any so the empty, default, or starter
+ * [Modifier] that contains no elements is used instead.
  */
 @Composable
 fun JetLaggedHeaderTabs(
@@ -88,17 +121,20 @@ fun JetLaggedHeaderTabs(
         containerColor = White,
         indicator = { tabPositions: List<TabPosition> ->
             Box(
-                Modifier
-                    .tabIndicatorOffset(tabPositions[selectedTab.ordinal])
+                modifier = Modifier
+                    .tabIndicatorOffset(currentTabPosition = tabPositions[selectedTab.ordinal])
                     .fillMaxSize()
                     .padding(horizontal = 2.dp)
-                    .border(BorderStroke(2.dp, Yellow), RoundedCornerShape(10.dp))
+                    .border(
+                        border = BorderStroke(width = 2.dp, color = Yellow),
+                        shape = RoundedCornerShape(size = 10.dp)
+                    )
             )
         },
         divider = { }
     ) {
-        SleepTab.entries.forEachIndexed { index, sleepTab ->
-            val selected = index == selectedTab.ordinal
+        SleepTab.entries.forEachIndexed { index: Int, sleepTab: SleepTab ->
+            val selected: Boolean = index == selectedTab.ordinal
             SleepTabText(
                 sleepTab = sleepTab,
                 selected = selected,

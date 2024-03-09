@@ -16,6 +16,7 @@
 
 package com.example.jetlagged
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,9 @@ import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale
 
+/**
+ *
+ */
 @Preview(showBackground = true)
 @Preview(device = Devices.FOLDABLE, showBackground = true)
 @Composable
@@ -60,55 +64,56 @@ fun JetLaggedScreen(
 ) {
     Column(
         modifier = modifier
-            .background(Color.White)
+            .background(color = Color.White)
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(state = rememberScrollState())
     ) {
         Column(modifier = Modifier.yellowBackground()) {
             JetLaggedHeader(
                 onDrawerClicked = onDrawerClicked,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(height = 32.dp))
             JetLaggedSleepSummary(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
 
-        var selectedTab by remember { mutableStateOf(SleepTab.Week) }
+        var selectedTab: SleepTab by remember { mutableStateOf(SleepTab.Week) }
         JetLaggedHeaderTabs(
             onTabSelected = { selectedTab = it },
             selectedTab = selectedTab,
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-        val sleepState by remember {
+        Spacer(modifier = Modifier.height(height = 16.dp))
+        val sleepState: SleepGraphData by remember {
             mutableStateOf(sleepData)
         }
-        JetLaggedTimeGraph(sleepState)
+        JetLaggedTimeGraph(sleepGraphData = sleepState)
     }
 }
 
 @Composable
 private fun JetLaggedTimeGraph(sleepGraphData: SleepGraphData) {
-    val scrollState = rememberScrollState()
+    val scrollState: ScrollState = rememberScrollState()
 
-    val hours = (sleepGraphData.earliestStartHour..23) + (0..sleepGraphData.latestEndHour)
+    val hours: List<Int> = (sleepGraphData.earliestStartHour..23) +
+        (0..sleepGraphData.latestEndHour)
 
     TimeGraph(
         modifier = Modifier
-            .horizontalScroll(scrollState)
+            .horizontalScroll(state = scrollState)
             .wrapContentSize(),
         dayItemsCount = sleepGraphData.sleepDayData.size,
         hoursHeader = {
-            HoursHeader(hours)
+            HoursHeader(hours = hours)
         },
         dayLabel = { index ->
-            val data = sleepGraphData.sleepDayData[index]
-            DayLabel(data.startDate.dayOfWeek)
+            val data: SleepDayData = sleepGraphData.sleepDayData[index]
+            DayLabel(dayOfWeek = data.startDate.dayOfWeek)
         },
-        bar = { index ->
-            val data = sleepGraphData.sleepDayData[index]
+        bar = { index: Int ->
+            val data: SleepDayData = sleepGraphData.sleepDayData[index]
             // We have access to Modifier.timeGraphBar() as we are now in TimeGraphScope
             SleepBar(
                 sleepData = data,
@@ -123,24 +128,30 @@ private fun JetLaggedTimeGraph(sleepGraphData: SleepGraphData) {
     )
 }
 
+/**
+ *
+ */
 @Composable
 fun DayLabel(dayOfWeek: DayOfWeek) {
     Text(
-        dayOfWeek.getDisplayName(
+        text = dayOfWeek.getDisplayName(
             TextStyle.SHORT, Locale.getDefault()
         ),
-        Modifier
-            .height(24.dp)
+        modifier = Modifier
+            .height(height = 24.dp)
             .padding(start = 8.dp, end = 24.dp),
         style = SmallHeadingStyle,
         textAlign = TextAlign.Center
     )
 }
 
+/**
+ *
+ */
 @Composable
 fun HoursHeader(hours: List<Int>) {
     Row(
-        Modifier
+        modifier = Modifier
             .padding(bottom = 16.dp)
             .drawBehind {
                 val brush = Brush.linearGradient(listOf(YellowVariant, Yellow))
@@ -155,7 +166,7 @@ fun HoursHeader(hours: List<Int>) {
                 text = "$it",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .width(50.dp)
+                    .width(width = 50.dp)
                     .padding(vertical = 4.dp),
                 style = SmallHeadingStyle
             )
