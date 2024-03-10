@@ -33,7 +33,9 @@ public class Velocity2D {
                           float maxA, MaterialVelocity.Easing easing) {
         double speed = Math.hypot(velocityX, velocityY);
         if (speed > maxV) {
+            //noinspection lossy-conversions
             velocityX *= maxV / speed;
+            //noinspection lossy-conversions
             velocityY *= maxV / speed;
         }
         mvX.config(posX, destinationX, velocityX, duration, maxA, maxV, easing);
