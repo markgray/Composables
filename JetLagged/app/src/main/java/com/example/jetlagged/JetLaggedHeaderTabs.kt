@@ -33,6 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.dp
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.White
@@ -95,7 +98,12 @@ enum class SleepTab(
  *  lambda.
  *
  * The `tabs` argument of the [ScrollableTabRow] is a block which uses the [forEachIndexed] extension
- * function to loop over all of the [SleepTab.entries]
+ * function to loop over all of the [SleepTab.entries], setting its [Boolean] variable `val selected`
+ * to `true` if the current [Int] `index` passed the `action` lambda is equal to the [SleepTab.ordinal]
+ * of our [SleepTab] parameter [selectedTab] then composing a [SleepTabText] whose `sleepTab` argument is
+ * the current [SleepTab] `sleepTab` passed the lambda, whose `selected` is our [Boolean] variable
+ * `selected`, whose `onTabSelected` argument is our [onTabSelected] lambda parameter, and whose
+ * `index` argument is the current [Int] `index` passed the `action` lambda.
  *
  * @param onTabSelected a lambda that the [SleepTabText]'s in our [ScrollableTabRow] should call
  * with the [SleepTab] that it was constructed to display. Our caller [JetLaggedScreen] passes us
@@ -145,11 +153,32 @@ fun JetLaggedHeaderTabs(
     }
 }
 
+/**
+ * [Modifier.padding] used for the [Text] Composable used by the [Tab] of [SleepTabText], it adds
+ * 6.dp to the top and bottom edges and 4.dp to the left and right edges.
+ */
 private val textModifier = Modifier
     .padding(vertical = 6.dp, horizontal = 4.dp)
 
 /**
+ * This Composable is used to display each of the [SleepTab] enum entries in our [ScrollableTabRow]
+ * Composable. Our root Composable is a [Tab] whose `modifier` argument is a [Modifier.padding] that
+ * adds 2.dp to the left and right edges of the content, with a [Modifier.clip] chained to that that
+ * clips it to a [RoundedCornerShape] space whose `size` is 16.dp, its `selected` argument is our
+ * [Boolean] parameter [selected], its `unselectedContentColor` argument is [Color.Black] and, its
+ * `selectedContentColor` argument is [Color.Black], and its `onClick` argument is a lambda which
+ * calls our [onTabSelected] lambda parameter with the [SleepTab] in the [SleepTab.entries] property
+ * at index [index]. The [Tab]'s `content` is a [Text] whose `modifier` parameter is our [Modifier]
+ * field [textModifier], its `text` argument is the [String] whose resource ID is the [SleepTab.title]
+ * of our [SleepTab] parameter [sleepTab], and its [TextStyle] `style` argument is [SmallHeadingStyle]
+ * (downloadable "Lato" [GoogleFont] with a `fontSize` of 16.sp and a [FontWeight] of 600.
  *
+ * @param sleepTab the [SleepTab] that we are to display.
+ * @param selected if `true` our [SleepTabText] is the currently selected [Tab] in the [ScrollableTabRow]
+ * of [JetLaggedHeaderTabs].
+ * @param index the index of our [SleepTab] in the [SleepTab.entries] property.
+ * @param onTabSelected a lambda we should call with the [SleepTab] in the [SleepTab.entries] property
+ * at index [index] when our [Tab] is clicked.
  */
 @Composable
 fun SleepTabText(
@@ -161,7 +190,7 @@ fun SleepTabText(
     Tab(
         modifier = Modifier
             .padding(horizontal = 2.dp)
-            .clip(RoundedCornerShape(16.dp)),
+            .clip(shape = RoundedCornerShape(size = 16.dp)),
         selected = selected,
         unselectedContentColor = Color.Black,
         selectedContentColor = Color.Black,

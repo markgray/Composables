@@ -53,7 +53,8 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 /**
- *
+ * This is used as the screen for the [Screen.Home] selected screen (the only [Screen] with non-empty
+ * content).
  */
 @Preview(showBackground = true)
 @Preview(device = Devices.FOLDABLE, showBackground = true)
