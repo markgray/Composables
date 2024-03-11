@@ -30,8 +30,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,7 +56,38 @@ import java.util.Locale
 
 /**
  * This is used as the screen for the [Screen.Home] selected screen (the only [Screen] with non-empty
- * content).
+ * content). Our root Composable is a [Column] whose `modifier` argument chains a [Modifier.background]
+ * to our [Modifier] parameter [modifier] that sets its background color to [Color.White], with a
+ * [Modifier.fillMaxSize] chained to that which makes it occupy its entire incoming size constraint,
+ * and a [Modifier.verticalScroll] chained to that so that the [Column] can be scrolled vertically.
+ * The `content` of the [Column] is:
+ *  - a [Column] whose `modifier` argument is [Modifier.yellowBackground] (animates its background
+ *  colors), and whose `content` is a [JetLaggedHeader] whose `onDrawerClicked` argument is our
+ *  [onDrawerClicked] lambda parameter and whose `modifier` argument is a [Modifier.fillMaxWidth]
+ *  that causes it to occupy its entire incoming size constraint. This is followed by a [Spacer]
+ *  whose `modifier` argument is a [Modifier.height] of 32.dp, with a [JetLaggedSleepSummary] at
+ *  the bottom of the [Column] is a [JetLaggedSleepSummary] whose `modifier` argument is a
+ *  [Modifier.padding] that adds 16.dp to its `start` and 16.dp to its `end`.
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] of 16.dp
+ *  - We initialize and remember our [MutableState] wrapped [SleepTab] variable `var selectedTab`
+ *  to a [SleepTab.Week]
+ *  - a [JetLaggedHeaderTabs] whose `onTabSelected` argument is a lambda that sets `selectedTab`
+ *  to the [SleepTab] it is called with, and whose `selectedTab` argument is our [MutableState]
+ *  wrapped [SleepTab] variable `selectedTab`
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] of 16.dp
+ *  - We initialize and remember our [MutableState] wrapped [SleepGraphData] variable `var sleepState`
+ *  to [sleepData] (our fake dataset).
+ *  - a [JetLaggedTimeGraph] whose `sleepGraphData` argument is our [MutableState] wrapped
+ *  [SleepGraphData] variable `sleepState`.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [ScreenContents] passes us an empty, default, or starter Modifier that
+ * contains no elements.
+ * @param onDrawerClicked a lambda which can be called when the user wants to open the "navigation
+ * drawer". We pass it to [JetLaggedHeader] as its `onDrawerClicked` argument and it passes it to
+ * the [IconButton] at the beginning of its [Row] as its `onClick` argument. Our caller [ScreenContents]
+ * passes us its own `onDrawerClicked` lambda parameter, which is a reference to the `toggleDrawerState`
+ * method of the [HomeScreenDrawer] that calls it.
  */
 @Preview(showBackground = true)
 @Preview(device = Devices.FOLDABLE, showBackground = true)
@@ -80,7 +113,7 @@ fun JetLaggedScreen(
 
         Spacer(modifier = Modifier.height(height = 16.dp))
 
-        var selectedTab: SleepTab by remember { mutableStateOf(SleepTab.Week) }
+        var selectedTab: SleepTab by remember { mutableStateOf(value = SleepTab.Week) }
         JetLaggedHeaderTabs(
             onTabSelected = { selectedTab = it },
             selectedTab = selectedTab,
@@ -88,12 +121,15 @@ fun JetLaggedScreen(
 
         Spacer(modifier = Modifier.height(height = 16.dp))
         val sleepState: SleepGraphData by remember {
-            mutableStateOf(sleepData)
+            mutableStateOf(value = sleepData)
         }
         JetLaggedTimeGraph(sleepGraphData = sleepState)
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun JetLaggedTimeGraph(sleepGraphData: SleepGraphData) {
     val scrollState: ScrollState = rememberScrollState()
