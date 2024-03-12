@@ -4,12 +4,12 @@
 #####
 [versions]
 accompanist = "0.32.0"
-androidGradlePlugin = "8.2.2"
+androidGradlePlugin = "8.3.0"
 androidx-activity-compose = "1.8.2"
 androidx-appcompat = "1.6.1"
 androidx-benchmark = "1.2.3"
 androidx-benchmark-junit4 = "1.2.3"
-androidx-compose-bom = "2024.02.01"
+androidx-compose-bom = "2024.02.02"
 androidx-constraintlayout = "1.0.1"
 androidx-corektx = "1.13.0-alpha05"
 androidx-glance = "1.0.0"
