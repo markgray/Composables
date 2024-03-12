@@ -51,6 +51,7 @@ import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.theme.YellowVariant
 import java.time.DayOfWeek
+import java.time.LocalDateTime
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -128,7 +129,35 @@ fun JetLaggedScreen(
 }
 
 /**
+ * This Composable displays its [SleepGraphData] parameter [sleepGraphData] in a [TimeGraph]. We
+ * start by initializing and remembering our [ScrollState] variable `val scrollState`, and initializing
+ * our [List] of [Int] variable `val hours` to the [List] of hours inclusive between the
+ * [SleepGraphData.earliestStartHour] of [sleepGraphData] and 23 and the  [List] of hours inclusive
+ * between 0 and the [SleepGraphData.latestEndHour] of [sleepGraphData] (includes all hours that are
+ * covered in the [List] of [SleepDayData] field [SleepGraphData.sleepDayData] of [sleepGraphData]).
+ * Then our root Composable is a [TimeGraph] whose `modifier` argument is a [Modifier.horizontalScroll]
+ * whose `state` argument is our [ScrollState] variable `scrollState` (makes the [TimeGraph] scrollable
+ * in the horizontal direction) with a [Modifier.wrapContentSize] chained to that which allows the
+ * content to measure at its desired size without regard for the incoming measurement minimum width
+ * or minimum height constraints. Its `dayItemsCount` argument is the size of the [List] of [SleepDayData]
+ * field [SleepGraphData.sleepDayData] of [sleepGraphData]. Its `hoursHeader` argument is a lambda
+ * which composes a [HoursHeader] whose `hours` argument is our [List] of [Int] variable `hours`. Its
+ * `dayLabel` argument is a lambda that receives its [Int] argument as `index`, initializes its
+ * [SleepDayData] variable `val data` to the [SleepDayData] at index `index` in the [List] of
+ * [SleepDayData] field [SleepGraphData.sleepDayData] of [sleepGraphData], then composes a
+ * [DayLabel] whose `dayOfWeek` argment is the [LocalDateTime.getDayOfWeek] (kotlin `dayOfWeek`
+ * property) of the [SleepDayData.startDate] property of `data`. Its `bar` argument is a
+ * lambda that receives its [Int] argument as `index`, initializes its [SleepDayData] variable
+ * `val data` to the [SleepDayData] at index `index` in the [List] of [SleepDayData] field
+ * [SleepGraphData.sleepDayData] of [sleepGraphData], then composes a [SleepBar] whose arguments
+ * are:
+ *  - `sleepData` our [SleepDayData] variable `data`
+ *  - `modifier` a [Modifier.padding] that adds 8.dp of padding the the bottom edge, to which is
+ *  chained a [TimeGraphScope.timeGraphBar] whose `start` argument is the [SleepDayData.firstSleepStart]
+ *  property of `data`, whose `start` argument is the [SleepDayData.lastSleepEnd] property of `data`,,
+ *  and whose `hours` argument is our [List] of [Int] variable `hours`.
  *
+ * @param sleepGraphData the [SleepGraphData] fake dataset we are to display in a [TimeGraph].
  */
 @Composable
 private fun JetLaggedTimeGraph(sleepGraphData: SleepGraphData) {
@@ -145,7 +174,7 @@ private fun JetLaggedTimeGraph(sleepGraphData: SleepGraphData) {
         hoursHeader = {
             HoursHeader(hours = hours)
         },
-        dayLabel = { index ->
+        dayLabel = { index: Int ->
             val data: SleepDayData = sleepGraphData.sleepDayData[index]
             DayLabel(dayOfWeek = data.startDate.dayOfWeek)
         },
