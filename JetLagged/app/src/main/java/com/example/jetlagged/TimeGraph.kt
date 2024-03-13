@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.ParentDataModifier
@@ -32,7 +31,9 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalComposeUiApi::class)
+/**
+ *
+ */
 @Composable
 fun TimeGraph(
     hoursHeader: @Composable () -> Unit,
@@ -47,8 +48,8 @@ fun TimeGraph(
         contents = listOf(hoursHeader, dayLabels, bars),
         modifier = modifier.padding(bottom = 32.dp)
     ) {
-            (hoursHeaderMeasurables, dayLabelMeasurables, barMeasureables),
-            constraints,
+        (hoursHeaderMeasurables, dayLabelMeasurables, barMeasureables),
+        constraints,
         ->
         require(hoursHeaderMeasurables.size == 1) {
             "hoursHeader should only emit one composable"
@@ -99,9 +100,15 @@ fun TimeGraph(
     }
 }
 
+/**
+ *
+ */
 @LayoutScopeMarker
 @Immutable
 object TimeGraphScope {
+    /**
+     *
+     */
     @Stable
     fun Modifier.timeGraphBar(
         start: LocalDateTime,
@@ -123,9 +130,18 @@ object TimeGraphScope {
     }
 }
 
+/**
+ *
+ */
 class TimeGraphParentData(
+    /**
+     *
+     */
     val duration: Float,
+    /**
+     *
+     */
     val offset: Float,
 ) : ParentDataModifier {
-    override fun Density.modifyParentData(parentData: Any?) = this@TimeGraphParentData
+    override fun Density.modifyParentData(parentData: Any?): TimeGraphParentData = this@TimeGraphParentData
 }

@@ -43,6 +43,9 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -195,13 +198,31 @@ private fun JetLaggedTimeGraph(sleepGraphData: SleepGraphData) {
 }
 
 /**
+ * Composes a [Text] displaying the [DayOfWeek.getDisplayName] value of its [DayOfWeek] parameter
+ * [dayOfWeek] ("Mon" through "Sun"). The lambda used as the `dayLabel` argument of the [TimeGraph]
+ * used by the [JetLaggedTimeGraph] calls [DayLabel] with the [SleepDayData.startDate] of the
+ * [SleepDayData] whose index is the [Int] passed the lambda in the [SleepGraphData.sleepDayData]
+ * list of our fake dataset. [TimeGraph] calls its `dayLabel` lambda with the indexes of every
+ * entry in [SleepGraphData.sleepDayData], collecting the Composables returned in a list which it
+ * places using [Layout] at the beginning of each row of [SleepDayData] that it displays. Our root
+ * Composable is a [Text] whose `text` argument is the [DayOfWeek.getDisplayName] value of our
+ * [DayOfWeek] parameter [dayOfWeek] when it is called with the [TextStyle.SHORT] as its `style`
+ * argument (short text, typically an abbreviation, day-of-week "Monday" will output "Mon") and
+ * [Locale.getDefault] as its `locale` argument (current value of the default locale). Its `modifier`
+ * argument is [Modifier.height] setting its height to 24.dp, with a [Modifier.padding] chained to
+ * that that sets the padding at the start of the [Text] to 8.dp, and the padding at the end to 24.dp.
+ * Its `style` [TextStyle] argument is [SmallHeadingStyle], which is the "Lato" downloadable
+ * [GoogleFont] with a `fontSize` of 16.dp, and a [FontWeight] of 400. Its `textAlign` argument is
+ * [TextAlign.Center] which aligns the text in the center of the container.
  *
+ * @param dayOfWeek the [DayOfWeek] whose [DayOfWeek.getDisplayName] we are to display in a [Text].
  */
 @Composable
 fun DayLabel(dayOfWeek: DayOfWeek) {
     Text(
         text = dayOfWeek.getDisplayName(
-            TextStyle.SHORT, Locale.getDefault()
+            /* style = */ TextStyle.SHORT,
+            /* locale = */ Locale.getDefault()
         ),
         modifier = Modifier
             .height(height = 24.dp)
