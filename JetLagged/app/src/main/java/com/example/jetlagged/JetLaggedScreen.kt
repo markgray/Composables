@@ -43,6 +43,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.GoogleFont
@@ -233,7 +234,29 @@ fun DayLabel(dayOfWeek: DayOfWeek) {
 }
 
 /**
+ * Composes a [Text] for every [Int] in its [List] of [Int] parameter [hours]. [JetLaggedTimeGraph]
+ * passes a call to [HoursHeader] in the lambda that it uses as the `hoursHeader` argument of its
+ * [TimeGraph] with the [hours] argument a [List] of all of the hours that are used in our dummy
+ * [SleepGraphData] dataset (the hours between [SleepGraphData.earliestStartHour] and
+ * [SleepGraphData.latestEndHour]). [TimeGraph] places the Composable created by its `hoursHeader`
+ * lambda parameter as the first "Header" line in the [Layout] it creates. Our root Comosable is a
+ * [Row] whose `modifier` argument is a [Modifier.padding] that adds 16.dp to the bottom edge, with
+ * a [Modifier.drawBehind] whose `onDraw` [DrawScope] lambda initializes its [Brush] variable
+ * `val brush` to a [Brush.linearGradient] created from the colors [YellowVariant] and [Yellow],
+ * then calls the [DrawScope.drawRoundRect] method to use `brush` as the [Brush] to draw a rounded
+ * rectangle behind the [Row] whose `cornerRadius` is a [CornerRadius] with both the x and y radius
+ * of 10.dp (converted to pixels). In the `content` lambda argument of the [Row] we loop over every
+ * [Int] `hour` in our [List] of [Int] parameter [hours] composing a [Text] whose `text` argument is
+ * the [String] value of the current `hour`, whose `textAlign` argument is [TextAlign.Center] to align
+ * the `text` in the center of the [Text], whose `modifier` argument is a [Modifier.width] that sets
+ * its width to 50.dp with a [Modifier.padding] that adds 4.dp to the top and bottom edges. Its
+ * `style` [TextStyle] argument is [SmallHeadingStyle], which is the "Lato" downloadable [GoogleFont]
+ * with a `fontSize` of 16.dp, and a [FontWeight] of 400.
  *
+ * @param hours a [List] of [Int] whose [String] values we are to display in [Text]'s arranged in a
+ * [Row]. The [List] of [Int] passed us is a [List] of all of the hours that are used in our dummy
+ * [SleepGraphData] dataset (the hours between [SleepGraphData.earliestStartHour] and
+ * [SleepGraphData.latestEndHour]).
  */
 @Composable
 fun HoursHeader(hours: List<Int>) {
@@ -241,16 +264,16 @@ fun HoursHeader(hours: List<Int>) {
         modifier = Modifier
             .padding(bottom = 16.dp)
             .drawBehind {
-                val brush = Brush.linearGradient(listOf(YellowVariant, Yellow))
+                val brush: Brush = Brush.linearGradient(listOf(YellowVariant, Yellow))
                 drawRoundRect(
-                    brush,
-                    cornerRadius = CornerRadius(10.dp.toPx(), 10.dp.toPx()),
+                    brush = brush,
+                    cornerRadius = CornerRadius(x = 10.dp.toPx(), y = 10.dp.toPx()),
                 )
             }
     ) {
-        hours.forEach {
+        hours.forEach { hour: Int ->
             Text(
-                text = "$it",
+                text = "$hour",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .width(width = 50.dp)
