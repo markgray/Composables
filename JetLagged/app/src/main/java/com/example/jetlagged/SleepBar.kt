@@ -17,6 +17,8 @@
 package com.example.jetlagged
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.Transition
@@ -31,6 +33,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +47,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -81,7 +85,47 @@ import androidx.compose.ui.util.lerp
 import com.example.jetlagged.ui.theme.LegendHeadingStyle
 
 /**
+ * Draws a graph of its [SleepDayData] parameter [sleepData] that can be expanded to display the
+ * details of the different "types" of sleep contained in the [SleepDayData].
  *
+ * This Composable is used by [JetLaggedTimeGraph] in the lambda that it uses as the `bar` argument
+ * of its call to [TimeGraph]. That lambda calls us with the [SleepDayData] whose index in the [List]
+ * of [SleepDayData] dataset [SleepGraphData.sleepDayData] is the [Int] that the lambda is called
+ * by [TimeGraph] in a [repeat] loop to supply it with [SleepBar] Composables for all the [SleepDayData].
+ *
+ * We start by initializing and remembering our [MutableState] wrapped [Boolean] variable `var isExpanded`
+ * to `false`. We initialize our [Transition] of [Boolean] variable `val transition` to an instance
+ * whose `targetState` is `isExpanded` and whose `label` is "expanded".
+ *
+ * Our root Composable is a [Column] whose `modifier` argument chains a [Modifier.clickable] to our
+ * [Modifier] parameter [modifier] whose `indication` argument is `null` (indication to be shown when
+ * modified element is pressed, `null` to show no indication), and whose `interactionSource` is a
+ * remembered [MutableInteractionSource] instance (represents a stream of [Interaction]'s present for
+ * this component, allowing listening to [Interaction] changes), and its `onClick` lambda argument is
+ * a lambda that sets [MutableState] wrapped [Boolean] variable `isExpanded` to its inverse.
+ *
+ * The `content` of the [Column] holds a [SleepRoundedBar] whose `sleepData` argument is our [SleepDayData]
+ * parameter [sleepData], and whose `transition` argument is our [Transition] of [Boolean] variable
+ * `transition`. Below this we use the [Transition.AnimatedVisibility] method of `transition` to
+ * animate as the `content` our [DetailLegend] Composable (for each of the [SleepType] enums it displays
+ * a [LegendItem] that displays a [CircleShape] that is the [Color] of the [SleepType.color] and a
+ * [Text] the [String] whose resource ID is the [SleepType.title] of the [SleepType]). The `enter`
+ * [EnterTransition] argument of the [Transition.AnimatedVisibility] is a [fadeIn] plus a
+ * [expandVertically], the `exit` [ExitTransition] argument is a [fadeOut] plus a [shrinkVertically].
+ * The `visible` argument is the current value of the [Boolean] that the [Transition] of [Boolean]
+ * `transition` uses as its `targetState` (our [MutableState] wrapped [Boolean] variable `isExpanded`)
+ * this defines whether the content should be visible.
+ *
+ * @param sleepData the [SleepDayData] that we should display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [JetLaggedTimeGraph] passes us a [Modifier.padding] that adds 8.dp to our
+ * `bottom` edge with a [TimeGraphScope.timeGraphBar] chained to that whose `start` argument is the
+ * [SleepDayData.firstSleepStart] of the [SleepDayData] that the `bar` lambda argument of [TimeGraph]
+ * is calling us for, whose `end` argument is its [SleepDayData.lastSleepEnd], and whose `hours`
+ * argument is the [List] of hours inclusive between the [SleepGraphData.earliestStartHour] of
+ * the [SleepGraphData] dummy dataset and 23 and the [List] of hours inclusive between 0 and its
+ * [SleepGraphData.latestEndHour]. (The [TimeGraphScope.timeGraphBar] appears to be used to offset
+ * the [SleepBar] to align it with the [HoursHeader] at the top of the [JetLaggedTimeGraph]).
  */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
