@@ -169,15 +169,28 @@ fun SleepBar(
 }
 
 /**
+ * This does the rendering of the "SleepBar" for its [SleepDayData] parameter [sleepData] using the
+ * [Modifier.drawWithCache] modifier of its [Spacer] root composable.
  *
+ * @param sleepData the [SleepDayData] whose "SleepBar" we are to render.
+ * @param transition the [Transition] of [Boolean] that is used to animate the "SleepBar" between
+ * "expanded" and "not expanded" states when the user clicks on our "SleepBar"
  */
 @Composable
 private fun SleepRoundedBar(
     sleepData: SleepDayData,
     transition: Transition<Boolean>,
 ) {
+    /**
+     * Used to create a [TextLayoutResult] of the [SleepDayData.sleepScoreEmoji] for [drawSleepBar]
+     * to draw using [drawText]
+     */
     val textMeasurer: TextMeasurer = rememberTextMeasurer()
 
+    /**
+     * The animated height used for the [Modifier.height] of our fancy [Spacer] which does all of
+     * our drawing using [Modifier.drawWithCache]
+     */
     val height: Dp by transition.animateDp(label = "height", transitionSpec = {
         spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
@@ -186,6 +199,10 @@ private fun SleepRoundedBar(
     }) { targetExpanded ->
         if (targetExpanded) 100.dp else 24.dp
     }
+
+    /**
+     * The fraction of the [Transition] of [Boolean] `transition` that has occurred
+     */
     val animationProgress: Float by transition.animateFloat(
         label = "progress",
         transitionSpec = {
@@ -246,7 +263,7 @@ private fun SleepRoundedBar(
                         endY = SleepType.entries.size * barHeightPx
                     )
                 val textResult: TextLayoutResult = textMeasurer.measure(
-                    text = AnnotatedString(sleepData.sleepScoreEmoji)
+                    text = AnnotatedString(text = sleepData.sleepScoreEmoji)
                 )
 
                 onDrawBehind {
@@ -261,7 +278,7 @@ private fun SleepRoundedBar(
                     )
                 }
             }
-            .height(height)
+            .height(height = height)
             .fillMaxWidth()
     )
 }
@@ -290,7 +307,7 @@ private fun DrawScope.drawSleepBar(
     translate(left = -animationProgress * (textResult.size.width + textPadding.toPx())) {
         drawText(
             textLayoutResult = textResult,
-            topLeft = Offset(textPadding.toPx(), cornerRadiusStartPx)
+            topLeft = Offset(x = textPadding.toPx(), y = cornerRadiusStartPx)
         )
     }
 }
