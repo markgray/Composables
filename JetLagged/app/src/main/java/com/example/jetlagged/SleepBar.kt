@@ -76,7 +76,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -170,7 +173,9 @@ fun SleepBar(
 
 /**
  * This does the rendering of the "SleepBar" for its [SleepDayData] parameter [sleepData] using the
- * [Modifier.drawWithCache] modifier of its [Spacer] root composable.
+ * [Modifier.drawWithCache] modifier of its [Spacer] root composable. The [Modifier.drawWithCache]
+ * modifier contains code for the calculation of the parameters that are passed to [drawSleepBar]
+ * in a call to `CacheDrawScope.onDrawBehind` which then does all of the actual drawing.
  *
  * @param sleepData the [SleepDayData] whose "SleepBar" we are to render.
  * @param transition the [Transition] of [Boolean] that is used to animate the "SleepBar" between
@@ -201,7 +206,7 @@ private fun SleepRoundedBar(
     }
 
     /**
-     * The fraction of the [Transition] of [Boolean] `transition` that has occurred
+     * The fraction of the [Transition] of [Boolean] parameter [transition] that has occurred
      */
     val animationProgress: Float by transition.animateFloat(
         label = "progress",
@@ -374,7 +379,8 @@ private fun generateSleepPath(
 }
 
 /**
- *
+ * Draws a legend explaining the color to type mapping of the different [SleepType] ranges displayed
+ * when the [SleepBar] is expanded.
  */
 @Preview
 @Composable
@@ -390,7 +396,17 @@ private fun DetailLegend() {
 }
 
 /**
+ * Draws a [Row] with a [Box] whose `modifier` argument is a [Modifier.size] that sets its size to
+ * 10.dp, with a [Modifier.clip] that clips its `shape` to [CircleShape], and a [Modifier.background]
+ * that sets its [Color] to the [SleepType.color] of our [SleepType] parameter [sleepType]. This is
+ * followed by a [Text] that displays as its `text` the [String] whose resource ID is the
+ * [SleepType.title] of our [SleepType] parameter [sleepType], whose `style` [TextStyle] is our
+ * [LegendHeadingStyle] (the downloadable [GoogleFont] "Lato" with a `fontSize` of 10.sp and a
+ * [FontWeight] of 600), and whose `modifier` argument is a [Modifier.padding] that adds 4.dp padding
+ * to the start of the [Text]. It is used by [DetailLegend] to draw a legend explaining the color to
+ * type mapping of the different [SleepType] ranges displayed when the [SleepBar] is expanded.
  *
+ * @param sleepType the [SleepType] whose [Color] and [SleepType.title] we are to display.
  */
 @Composable
 fun LegendItem(sleepType: SleepType) {
@@ -410,7 +426,7 @@ fun LegendItem(sleepType: SleepType) {
 }
 
 /**
- *
+ * Preview of our SleepBar Composable
  */
 @Preview
 @Composable
@@ -419,17 +435,19 @@ fun SleepBarPreview() {
 }
 
 /**
- *
+ * Converted to pixels and used as the line thickness when drawing [RoundRect]'s
  */
 private val lineThickness = 2.dp
 
 /**
- *
+ * Height of the "bars" representing each of the sleep period segements.
  */
 private val barHeight = 24.dp
 
 /**
- *
+ * Used as the animation duration when animating the [Transition.AnimatedVisibility] of the
+ * [DetailLegend] below the [SleepBar] when the user clicks the [SleepBar] to toggle it between
+ * expanded and not expanded.
  */
 private const val animationDuration = 500
 
