@@ -318,7 +318,22 @@ private fun DrawScope.drawSleepBar(
 }
 
 /**
- * Generate the path for the different sleep periods.
+ * Generates the animated [Path] for the different sleep periods contained in its [SleepDayData]
+ * parameter [sleepData], given the animation progress in [Float] parameter [heightAnimation]
+ * (goes from 0f to 1f). We start by initializing our [Path] variable `val path` to a new instance,
+ * and our [SleepPeriod] variable `var previousPeriod` to `null`. We use the [Path.moveTo] method
+ * of `path` to move it to (0,0). Then [forEach] of the `period` [SleepPeriod]'s in the [List] of
+ * [SleepPeriod] field [SleepDayData.sleepPeriods] of our [SleepDayData] parameter [sleepData] we:
+ *
+ *  - initialize our [Float] variable `val percentageOfTotal` to the value returned by the
+ *  [SleepDayData.fractionOfTotalTime] method of [sleepData] for the `period` [SleepPeriod]
+ *  - initialize our [Float] variable `val periodWidth` to `percentageOfTotal` times our [Float]
+ *  parameter [width] (the `width` dimension of the current drawing environment of the [drawWithCache]
+ *  modifier that calls us).
+ *  - initialize our [Float] variable `val startOffsetPercentage` to the value returned by the
+ *  [SleepDayData.minutesAfterSleepStart] method of [sleepData] for the `period` [SleepPeriod]
+ *  divided by the [SleepDayData.totalTimeInBed] property of [sleepData] converted to [Float]
+ *  minutes.
  */
 private fun generateSleepPath(
     canvasSize: Size,
@@ -334,7 +349,7 @@ private fun generateSleepPath(
 
     path.moveTo(x = 0f, y = 0f)
 
-    sleepData.sleepPeriods.forEach { period ->
+    sleepData.sleepPeriods.forEach { period: SleepPeriod ->
         val percentageOfTotal: Float = sleepData.fractionOfTotalTime(period)
         val periodWidth: Float = percentageOfTotal * width
         val startOffsetPercentage: Float = sleepData.minutesAfterSleepStart(period) /
@@ -452,12 +467,19 @@ private val barHeight = 24.dp
 private const val animationDuration = 500
 
 /**
- *
+ * Padding which is used to offset the `x` coordinate of the [Offset] used for the `topLeft` argument
+ * of the [drawText] call which draws the [TextLayoutResult] holding the [SleepDayData.sleepScoreEmoji]
+ * emoji at the beginning of the [SleepRoundedBar]
  */
 private val textPadding = 4.dp
 
 /**
- *
+ * Holds a [Pair] of [Float] and [Color] for each of the [SleepType.entries] in a [List]. It is
+ * converted to a typed [Array] of [Pair] and used as the `colorStops` argument of a call to
+ * [Brush.verticalGradient] that creates the [Brush] variable `val gradientBrush` which is used as
+ * the `gradientBrush` argument of a call to [drawSleepBar]. The [Float] value of the [Pair] is
+ * the offset that determines where the [Color] value is dispersed throughout the vertical gradient,
+ * the [Color] value is the [SleepType.color] of the [SleepType]
  */
 private val sleepGradientBarColorStops: List<Pair<Float, Color>> = SleepType.entries.map {
     Pair(
@@ -472,7 +494,10 @@ private val sleepGradientBarColorStops: List<Pair<Float, Color>> = SleepType.ent
 }
 
 /**
+ * Used by the [generateSleepPath] method to compute its [Float] variable `val offsetY` which is
+ * used to position the [SleepType] as it is animated between its expanded and unexpanded positions.
  *
+ * @return the relative position of the [SleepType] at its expanded position.
  */
 private fun SleepType.heightSleepType(): Float {
     return when (this) {

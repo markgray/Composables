@@ -39,6 +39,7 @@ data class SleepGraphData(
     val earliestStartHour: Int by lazy {
         sleepDayData.minOf { it.firstSleepStart.hour }
     }
+
     /**
      *
      */
@@ -70,12 +71,14 @@ data class SleepDayData(
     val firstSleepStart: LocalDateTime by lazy {
         sleepPeriods.sortedBy(SleepPeriod::startTime).first().startTime
     }
+
     /**
      *
      */
     val lastSleepEnd: LocalDateTime by lazy {
         sleepPeriods.sortedBy(SleepPeriod::startTime).last().endTime
     }
+
     /**
      *
      */
@@ -147,22 +150,27 @@ enum class SleepType(
     /**
      *
      */
-    val title: Int,/**
- *
- */
-val color: Color) {
+    val title: Int,
+    /**
+     *
+     */
+    val color: Color
+) {
     /**
      *
      */
     Awake(R.string.sleep_type_awake, Yellow_Awake),
+
     /**
      *
      */
     REM(R.string.sleep_type_rem, Yellow_Rem),
+
     /**
      *
      */
     Light(R.string.sleep_type_light, Yellow_Light),
+
     /**
      *
      */
