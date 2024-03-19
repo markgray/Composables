@@ -334,6 +334,49 @@ private fun DrawScope.drawSleepBar(
  *  [SleepDayData.minutesAfterSleepStart] method of [sleepData] for the `period` [SleepPeriod]
  *  divided by the [SleepDayData.totalTimeInBed] property of [sleepData] converted to [Float]
  *  minutes.
+ *  - initialize our [Float] variable `val halfBarHeight` to the [Size.height] of our [Size]
+ *  parameter [canvasSize] (height of the current drawing environment of the [Modifier.drawWithCache]
+ *  that called us) divided by the `size` of [SleepType.entries] divided by 2f.
+ *  - initialize our [Float] variable `val offset` to 0f if `previousPeriod` is `null` or to
+ *  `halfBarHeight` if it is not.
+ *  - initialize our [Float] variable `val offsetY` to the [lerp] Linearly interpolated value between
+ *  `start` of 0f and `stop` of the value returned by [heightSleepType] for the [SleepPeriod.type] of
+ *  [SleepPeriod] `period` times the [Size.height] of [Size] parameter [canvasSize] with `fraction`
+ *  our [Float] parameter [heightAnimation] (the `animationProgress` of the [Transition] between
+ *  expanded and unexpanded) between them.
+ *  - step 1 - draw a line from previous sleep period to current: if `previousPeriod` is not `null`
+ *  we use the [Path.lineTo] method of `path` to draw a line to `x` of `startOffsetPercentage` times
+ *  our [Float] parameter [width] plus our [Float] parameter [lineThicknessPx], and `y` of `offsetY`
+ *  plus `offset`
+ *  - step 2 - add the current sleep period as rectangle to path: we call the [Path.addRect] method
+ *  of `path` with its `rect` argument a [Rect] with its `offset` of the top left corner an [Offset]
+ *  whose `x` is `startOffsetPercentage` times our [Float] parameter [width] plus our [Float] parameter
+ *  [lineThicknessPx], and its `y` is `offsetY`. The `size` argument is the value of the [Size.copy]
+ *  of [Size] parameter [canvasSize] with the `width` overridden by `periodWidth` and the `height`
+ *  overridden by our [Float] parameter [barHeightPx].
+ *  - step 3 - move to the middle of the current sleep period: we call the [Path.moveTo] method of
+ *  `path` to move it to `x` coordinate `startOffsetPercentage` times [Float] parameter [width] plus
+ *  `periodWidth` plus [Float] parameter [lineThicknessPx], and `y` coordinate `offsetY` plus
+ *  `halfBarHeight`.
+ *  - having finished building the [Path] for this [SleepPeriod] `period` we set `previousPeriod`
+ *  to `period` and loop around for the next [SleepPeriod].
+ *
+ * When done with all of the [SleepPeriod]'s in our [SleepDayData] parameter [sleepData] we return
+ * [Path] variable `path` to the caller.
+ *
+ * @param canvasSize the dimensions of the current drawing environment of the [Modifier.drawWithCache]
+ * that is calling us.
+ * @param sleepData the [SleepDayData] whose [List] of [SleepPeriod] field [SleepDayData.sleepPeriods]
+ * we are to generate a [Path] for.
+ * @param width the [Size.width] of the dimensions of the current drawing environment of the
+ * [Modifier.drawWithCache] that is calling us.
+ * @param barHeightPx the pixel value of our [Dp] constant [barHeight].
+ * @param heightAnimation the fraction of the [Transition] of [Boolean] value `isExpanded` between
+ * `true` or `false`.
+ * @param lineThicknessPx the pixel value of the [Dp] constant [lineThickness] divided by 2f.
+ * @return a [Path] that can be used to draw all of the [SleepPeriod]'s in the [List] of [SleepPeriod]
+ * field [SleepDayData.sleepPeriods] of our [SleepDayData] parameter [sleepData] given the current
+ * animation progress passed us in our [Float] parameter [heightAnimation].
  */
 private fun generateSleepPath(
     canvasSize: Size,
