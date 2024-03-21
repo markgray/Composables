@@ -223,7 +223,7 @@ fun SleepBar(
  *
  * @param sleepData the [SleepDayData] whose "SleepBar" we are to render.
  * @param transition the [Transition] of [Boolean] that is used to animate the "SleepBar" between
- * "expanded" and "not expanded" states when the user clicks on our "SleepBar"
+ * "expanded" (`true`) and "not expanded" (`false`) states when the user clicks on our "SleepBar"
  */
 @Composable
 private fun SleepRoundedBar(
@@ -253,7 +253,8 @@ private fun SleepRoundedBar(
     }
 
     /**
-     * The fraction of the [Transition] of [Boolean] parameter [transition] that has occurred
+     * The fraction of the [Transition] of [Boolean] parameter [transition] that has occurred. It is
+     * 1f when [transition] is `true` (expanded) and 0f when [transition] is `false`.
      */
     val animationProgress: Float by transition.animateFloat(
         label = "progress",
@@ -339,6 +340,26 @@ private fun SleepRoundedBar(
  * This is called in the `block` lambda argument we pass to the [CacheDrawScope.onDrawBehind] method
  * in the [Modifier.drawWithCache] applied to the [Spacer] Composable contained in [SleepRoundedBar].
  * It does all the actual drawing of the "sleep bar".
+ *
+ * @param roundedRectPath amimated [Path] used as the [clipPath] when drawing our [Path] parameter
+ * [sleepGraphPath], its height is animated by the [Modifier.height] chained to the [Modifier.drawWithCache]
+ * that calls us and its width is set to the [Modifier.fillMaxWidth] that is chained to that. When
+ * expanded the `height` is 100.dp and when not expanded it is 24.dp.
+ * @param sleepGraphPath the animated [Path] that [generateSleepPath] creates for the [SleepDayData]
+ * with each of the [SleepPeriod] in the [SleepDayData.sleepPeriods] list of [SleepPeriod] offset
+ * by the [SleepType.heightSleepType] of its [SleepPeriod.type] animated by the currrent value of
+ * [animationProgress] (which is 1f when expanded and 0f when unexpanded).
+ * @param gradientBrush a nifty [Brush.verticalGradient] where the `colorStops` argument is the
+ * [Array] of [Pair] of [Float] to [Color] created from the [sleepGradientBarColorStops] list of
+ * [Pair] of [Float] to [Color] where each [Float] value is the offset of the [SleepPeriod.type],
+ * and the [Color] is the [SleepType.color] of the [SleepType]. Using this as the [Brush] when we
+ * when we call [DrawScope.drawPath] automatically draws the [SleepPeriod] with the correct [Color]
+ * when the sleep bar is expanded or unexpanded.
+ * @param roundedCornerStroke the animated [PathEffect.cornerPathEffect] rounded [Stroke] we use to
+ * draw our [Path] parameter [sleepGraphPath], its radius is 2.dp times [animationProgress].
+ *  @param animationProgress the animated [Transition.animateFloat] of our [Boolean] expanded
+ *  (`true`) or unexpanded (`false`) state, it is 1f when the [Transition] is `true` (expanded)
+ *  and 0f when it is `false`.
  */
 private fun DrawScope.drawSleepBar(
     roundedRectPath: Path,
