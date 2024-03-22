@@ -25,23 +25,25 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 /**
- *
+ * The data class used to hold our [SleepDayData].
  */
 data class SleepGraphData(
     /**
-     *
+     * Our dataset of [SleepDayData]
      */
     val sleepDayData: List<SleepDayData>,
 ) {
     /**
-     *
+     * The hour of the earliest [SleepPeriod] in all of our [List] of [SleepDayData] field
+     * [sleepDayData].
      */
     val earliestStartHour: Int by lazy {
         sleepDayData.minOf { it.firstSleepStart.hour }
     }
 
     /**
-     *
+     * The hour of the latest [SleepPeriod] in all of our [List] of [SleepDayData] field
+     * [sleepDayData].
      */
     val latestEndHour: Int by lazy {
         sleepDayData.maxOf { it.lastSleepEnd.hour }
@@ -49,45 +51,46 @@ data class SleepGraphData(
 }
 
 /**
- *
+ * Holds all of the data for one day of sleep.
  */
 data class SleepDayData(
     /**
-     *
+     * The start date of the day of sleep.
      */
     val startDate: LocalDateTime,
     /**
-     *
+     * The [List] of [SleepPeriod] for this day of sleep.
      */
     val sleepPeriods: List<SleepPeriod>,
     /**
-     *
+     * The subjective evaluation of the day of sleep. Used to select the emoji for the [sleepScoreEmoji]
+     * property of this [SleepDayData].
      */
     val sleepScore: Int,
 ) {
     /**
-     *
+     * Returns the earliest [SleepPeriod.startTime] in our [List] of [SleepPeriod] field [sleepPeriods]
      */
     val firstSleepStart: LocalDateTime by lazy {
         sleepPeriods.sortedBy(SleepPeriod::startTime).first().startTime
     }
 
     /**
-     *
+     * Returns the last [SleepPeriod.endTime] in our [List] of [SleepPeriod] field [sleepPeriods]
      */
     val lastSleepEnd: LocalDateTime by lazy {
         sleepPeriods.sortedBy(SleepPeriod::startTime).last().endTime
     }
 
     /**
-     *
+     * The total time spent in bed, it is the [Duration.between] our [firstSleepStart] and [lastSleepEnd]
      */
     val totalTimeInBed: Duration by lazy {
         Duration.between(firstSleepStart, lastSleepEnd)
     }
 
     /**
-     *
+     * The emoji used to express the subjective evaluation of the day of sleep in [Int] field [sleepScore]
      */
     val sleepScoreEmoji: String by lazy {
         when (sleepScore) {

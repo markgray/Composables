@@ -70,6 +70,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
@@ -339,7 +340,17 @@ private fun SleepRoundedBar(
 /**
  * This is called in the `block` lambda argument we pass to the [CacheDrawScope.onDrawBehind] method
  * in the [Modifier.drawWithCache] applied to the [Spacer] Composable contained in [SleepRoundedBar].
- * It does all the actual drawing of the "sleep bar".
+ * It does all the actual drawing of the "sleep bar". We start by using [clipPath] to reduce the clip
+ * region to the intersection of the current clip and our animated [Path] parameter [roundedRectPath],
+ * and in its `block` lambda parameter we call [DrawScope.drawPath] twice to draw our [Path] parameter
+ * [sleepGraphPath] with the `brush` argument our [Brush] parameter [gradientBrush] leaving the `style`
+ * argument the default [DrawStyle] of `Fill`, then again with the `style` argument our animated [Stroke]
+ * parameter [roundedCornerStroke]. Then we call [translate] to animate the `left` coordinate to
+ * minus our [Float] parameter [animationProgress] times the [Size.width] of the [TextLayoutResult.size]
+ * of our [TextLayoutResult] parameter [textResult] plus the pixel value of [textPadding], and in its
+ * `block` lambda we call [DrawScope.drawText] to draw as its `textLayoutResult` argument our
+ * [TextLayoutResult] parameter [textResult] and its `topLeft` argument an [Offset] whose `x` argument
+ * is the pixel value of [textPadding] and is `y` argument our [Float] parameter [cornerRadiusStartPx].
  *
  * @param roundedRectPath amimated [Path] used as the [clipPath] when drawing our [Path] parameter
  * [sleepGraphPath], its height is animated by the [Modifier.height] chained to the [Modifier.drawWithCache]
@@ -360,6 +371,13 @@ private fun SleepRoundedBar(
  *  @param animationProgress the animated [Transition.animateFloat] of our [Boolean] expanded
  *  (`true`) or unexpanded (`false`) state, it is 1f when the [Transition] is `true` (expanded)
  *  and 0f when it is `false`.
+ *  @param textResult the [TextMeasurer.measure] pre-measured emoji of the [SleepDayData.sleepScoreEmoji]
+ *  of the [SleepDayData] we are displaying a sleep bar for. Use of [TextMeasurer] to cache the layout
+ *  of text optimizes the repeated calls when the position of text is animated.
+ *  @param cornerRadiusStartPx the pixel value of 2.dp, it is the [CornerRadius] when the sleep bar
+ *  is expanded. (When collapsed the [CornerRadius] is the pixel value of 10.dp). We use it as the
+ *  `y` coordinate of the [Offset] used for the `topLeft` argument of the [DrawScope.drawText] call
+ *  that draws our [TextLayoutResult] parameter [textResult].
  */
 private fun DrawScope.drawSleepBar(
     roundedRectPath: Path,
@@ -592,7 +610,8 @@ private val textPadding = 4.dp
  * [Brush.verticalGradient] that creates the [Brush] variable `val gradientBrush` which is used as
  * the `gradientBrush` argument of a call to [drawSleepBar]. The [Float] value of the [Pair] is
  * the offset that determines where the [Color] value is dispersed throughout the vertical gradient,
- * the [Color] value is the [SleepType.color] of the [SleepType]
+ * the [Color] value is the [SleepType.color] of the [SleepType], this causes the expanded sleep bar
+ * to have the correct color for the [SleepType].
  */
 private val sleepGradientBarColorStops: List<Pair<Float, Color>> = SleepType.entries.map {
     Pair(
