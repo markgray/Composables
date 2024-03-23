@@ -103,14 +103,25 @@ data class SleepDayData(
     }
 
     /**
+     * Returns the fraction of the [totalTimeInBed] that the [SleepPeriod] parameter [sleepPeriod]
+     * represents.
      *
+     * @param sleepPeriod the [SleepPeriod] whose fraction of [totalTimeInBed] we are to calculate.
+     * @return the fraction of the [totalTimeInBed] that the [SleepPeriod] parameter [sleepPeriod]
+     * represents.
      */
     fun fractionOfTotalTime(sleepPeriod: SleepPeriod): Float {
         return sleepPeriod.duration.toMinutes() / totalTimeInBed.toMinutes().toFloat()
     }
 
     /**
+     * Returns the number of minutes after the beginning of the night's sleep that the [SleepPeriod]
+     * parameter [sleepPeriod] started.
      *
+     * @param sleepPeriod the [SleepPeriod] whose number of minutes after the beginning of the
+     * night's sleep we want.
+     * @return the number of minutes after the beginning of the night's sleep that the [SleepPeriod]
+     * parameter [sleepPeriod] started.
      */
     fun minutesAfterSleepStart(sleepPeriod: SleepPeriod): Long {
         return Duration.between(
@@ -121,25 +132,27 @@ data class SleepDayData(
 }
 
 /**
- *
+ * Holds all the data for a single period of sleep
  */
 data class SleepPeriod(
     /**
-     *
+     * The start time of the [SleepPeriod]
      */
     val startTime: LocalDateTime,
     /**
-     *
+     * The end time of the [SleepPeriod]
      */
     val endTime: LocalDateTime,
     /**
-     *
+     * The type of sleep of the [SleepPeriod], one of [SleepType.Awake], [SleepType.REM],
+     * [SleepType.Light], or [SleepType.Deep]
      */
     val type: SleepType,
 ) {
 
     /**
-     *
+     * Returns the [Duration] between [LocalDateTime] field [startTime] and [LocalDateTime] field
+     * [endTime].
      */
     val duration: Duration by lazy {
         Duration.between(startTime, endTime)
@@ -147,35 +160,35 @@ data class SleepPeriod(
 }
 
 /**
- *
+ * The type of sleep that occurred during the different [SleepPeriod]'s
  */
 enum class SleepType(
     /**
-     *
+     * Resource ID for a [String] describing the [SleepType]
      */
     val title: Int,
     /**
-     *
+     * [Color] to use to draw the sections that this [SleepType] occupies in the sleep bar.
      */
     val color: Color
 ) {
     /**
-     *
+     * The subject was wide awake.
      */
     Awake(R.string.sleep_type_awake, Yellow_Awake),
 
     /**
-     *
+     * The subject was experiencing a REM (rapid eye movement) [SleepPeriod].
      */
     REM(R.string.sleep_type_rem, Yellow_Rem),
 
     /**
-     *
+     * The subject was experiencing "Light" sleep.
      */
     Light(R.string.sleep_type_light, Yellow_Light),
 
     /**
-     *
+     * The subject was experiencing "Deep" sleep.
      */
     Deep(R.string.sleep_type_deep, Yellow_Deep)
 }

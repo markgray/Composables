@@ -18,12 +18,15 @@ package com.example.jetlagged
 
 import androidx.compose.foundation.layout.LayoutScopeMarker
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.ParentDataModifier
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import java.time.LocalDateTime
@@ -32,6 +35,13 @@ import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
 
 /**
+ * This is called by [JetLaggedTimeGraph] to layout the final graph of the [SleepGraphData] using
+ * the Composables it creates using its lambda parameters to provide Composables for the various
+ * components of the graph.
+ *
+ * @param hoursHeader a lambda returning a header bar Composable created by [HoursHeader] which has
+ * a [Text] for each [Int] hour included by the [SleepDayData] that is in [SleepGraphData].
+ * @param dayItemsCount the number of [SleepDayData] that are to have sleep bars drawn for them.
  *
  */
 @Composable
@@ -48,8 +58,8 @@ fun TimeGraph(
         contents = listOf(hoursHeader, dayLabels, bars),
         modifier = modifier.padding(bottom = 32.dp)
     ) {
-        (hoursHeaderMeasurables, dayLabelMeasurables, barMeasureables),
-        constraints,
+        (hoursHeaderMeasurables: List<Measurable>, dayLabelMeasurables: List<Measurable>, barMeasureables: List<Measurable>),
+        constraints: Constraints,
         ->
         require(hoursHeaderMeasurables.size == 1) {
             "hoursHeader should only emit one composable"
