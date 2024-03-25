@@ -72,10 +72,57 @@ import kotlin.math.roundToInt
  *
  * We initialize our [Int] variable `var totalHeight` to the [Placeable.height] of `hoursHeaderPlaceable`.
  *
- * We initialize our [List] of [Placeable] variable
+ * We initialize our [List] of [Placeable] variable `val barPlaceables` using the [List.map] method
+ * of `dayLabelMeasurables` to loop through all of the [Measurable] in [List] of [Measurable] variable
+ * `barMeasureables` and perform the following steps on the [Measurable] variable `measurable` passed
+ * the map's `transform` lambda to create each [Placeable] variable `val barPlaceable` that is added
+ * to the [List]:
+ *  - initialize our [TimeGraphParentData] variable `val barParentData` to the [Measurable.parentData]
+ *  of the [Measurable] passed the lambda.
+ *  - initialize our [Int] variable `val barWidth` to the [TimeGraphParentData.duration] of
+ *  `barParentData` times the [Placeable.width] of `hoursHeaderPlaceable` all rounded to [Int]
+ *  - initialize our [Placeable] variable `val barPlaceable` using the [Measurable.measure] method
+ *  of the [Measurable] passed the lambda with its `constraints` argument a copy of the [Constraints]
+ *  passed the [MeasureScope] block in variable `constraints` with the `minWidth` and the `maxWidth`
+ *  properties both overridden by our `barWidth` variable.
+ *  - add the [Placeable.height] of our [Placeable] variable `barPlaceable` to our `totalHeight`
+ *  variable.
+ *  - return the [Placeable] variable `barPlaceable` to have it added to the [List] of [Placeable]
+ *  being formed by the [List.map] method of [List] of [Measurable] variable `barMeasureables`.
+ *
+ * Next we initialize our [Int] variable `val totalWidth` to the [Placeable.width] of the [List.first]
+ * of [List] of [Placeable] variable `dayLabelPlaceables` plus the [Placeable.width] of [Placeable]
+ * variable `hoursHeaderPlaceable`.
+ *
+ * Finally we call [layout] with its `width` argument our `totalWidth` variable and its `height`
+ * argument our `totalHeight` variable. Then in its [Placeable.PlacementScope] block we:
+ *  - initialize our [Int] variable `val xPosition` to the [Placeable.width] of the [List.first] of
+ *  [List] of [Placeable] variable `dayLabelPlaceables`.
+ *  - initialize our [Int] variable `val yPosition` to the [Placeable.height] of [Placeable] variable
+ *  `hoursHeaderPlaceable`.
+ *  - call the [Placeable.PlacementScope.place] method of [Placeable] variable `hoursHeaderPlaceable`
+ *  to place it at `x` coordinate `xPosition` and `y` coordinate 0.
+ *
+ * Then still in the [Placeable.PlacementScope] block we use the [List.forEachIndexed] method of
+ * [List] of [Placeable] variable `barPlaceables` to loop through all the [Placeable]'s in it
+ * assigning the index to [Int] variable `index` and the [Placeable] to [Placeable] variable
+ * `barPlaceable` performing the following:
+ *  - initialize our [TimeGraphParentData] variable `val barParentData` to the [Placeable.parentData]
+ *  of the [Placeable] passed the `action` lambda of the [List.forEachIndexed]
+ *  - initialize our [Int] variable `val barOffset` to the [TimeGraphParentData.offset] of the
+ *  `barParentData` variable time the [Placeable.width] of [Placeable] variable `hoursHeaderPlaceable`
+ *  all rounded to [Int].
+ *  - call the [Placeable.PlacementScope.place] method of [Placeable] variable `barPlaceable` to
+ *  place it at `x` coordinate `xPosition` plus `barOffset` and `y` coordinate `yPosition`
+ *  - initialize our [Placeable] variable `val dayLabelPlaceable` to the [Placeable] at index `index`
+ *  in our [List] of [Placeable] variable `dayLabelPlaceables`
+ *  - call the [Placeable.PlacementScope.place] method of [Placeable] variable `dayLabelPlaceable` to
+ *  place it at `x` coordinate 0 and `y` coordinate `yPosition`
+ *  - add the [Placeable.height] of [Placeable] variable `barPlaceable` and loop around for the next
+ *  `index` and [Placeable].
  *
  * @param hoursHeader a lambda returning a header bar Composable created by [HoursHeader] which has
- * a [Text] for each [Int] hour included by the [SleepDayData] that is in [SleepGraphData].
+ * a [Text] for each [Int] hour covered by the [SleepDayData] that is in [SleepGraphData].
  * @param dayItemsCount the number of [SleepDayData] that are to have sleep bars drawn for them.
  * @param dayLabel a lambda which produces a [DayLabel] Composable displaying the value returned by
  * [LocalDateTime.getDayOfWeek] (kotlin `dayOfWeek` property) for the [SleepDayData.startDate] of
@@ -127,7 +174,7 @@ fun TimeGraph(
             val barWidth: Int = (barParentData.duration * hoursHeaderPlaceable.width).roundToInt()
 
             val barPlaceable: Placeable = measurable.measure(
-                constraints.copy(
+                constraints = constraints.copy(
                     minWidth = barWidth,
                     maxWidth = barWidth
                 )
@@ -160,13 +207,37 @@ fun TimeGraph(
 }
 
 /**
- *
+ * Defines a scope that allows the use of the [Modifier.timeGraphBar] on a Composable in that scope.
  */
 @LayoutScopeMarker
 @Immutable
 object TimeGraphScope {
     /**
+     * Produces a [TimeGraphParentData] instance from the [SleepDayData] derived values passed it in
+     * its parameters. We start by initializing our [LocalTime] variable `val earliestTime` to the
+     * [LocalTime.of] the `hour` of the [List.first] of [List] of [Int] parameter [hours] and the
+     * `minute` of 0. We initialize our [Float] variable `val durationInHours` to the value of
+     * minutes returned by the [ChronoUnit.MINUTES.between] method for [LocalDateTime] parameters
+     * [start] and [end] divided by 60f. We initialize our [Float] variable
+     * `val durationFromEarliestToStartInHours` to the value of the minutes returned by the
+     * [ChronoUnit.MINUTES.between] method for [LocalDateTime] our [LocalDateTime] variable
+     * `earliestTime` and the [LocalDateTime.toLocalTime] method of [LocalDateTime] parameter
+     * [start] divided by 60f. We initialize our [Float] variable `val offsetInHours` to
+     * `durationFromEarliestToStartInHours` plus 0.5f (we add extra half of an hour as hour label
+     * text is visually centered in its slot). We then concatenate a [TimeGraphParentData] modifier
+     * whose `duration` argument is our [Float] variable `durationInHours` divided by the [List.size]
+     * of our [List] of [Int] parameter [hours] and whose `offset` argument is our [Float] variable
+     * `offsetInHours` divided by the [List.size] of our [List] of [Int] parameter [hours] to our
+     * receiver [Modifier] and return it (the [layout] method called by [TimeGraph] can then retrieve
+     * the [TimeGraphParentData] for the [Measurable] produced for each of the [SleepBar]'s it places
+     * using the [Measurable.parentData] method of the [Measurable]).
      *
+     * @param start the [LocalDateTime] of the [SleepDayData.firstSleepStart] property of the
+     * [SleepDayData] that the [SleepBar] is being composed for.
+     * @param end the [LocalDateTime] of the [SleepDayData.lastSleepEnd] property of the
+     * [SleepDayData] that the [SleepBar] is being composed for.
+     * @param hours the [List] of [Int] hours that is covered by all of the [SleepDayData] in the
+     * dataset.
      */
     @Stable
     fun Modifier.timeGraphBar(
@@ -174,12 +245,12 @@ object TimeGraphScope {
         end: LocalDateTime,
         hours: List<Int>,
     ): Modifier {
-        val earliestTime = LocalTime.of(hours.first(), 0)
-        val durationInHours = ChronoUnit.MINUTES.between(start, end) / 60f
-        val durationFromEarliestToStartInHours =
+        val earliestTime: LocalTime = LocalTime.of(hours.first(), 0)
+        val durationInHours: Float = ChronoUnit.MINUTES.between(start, end) / 60f
+        val durationFromEarliestToStartInHours: Float =
             ChronoUnit.MINUTES.between(earliestTime, start.toLocalTime()) / 60f
         // we add extra half of an hour as hour label text is visually centered in its slot
-        val offsetInHours = durationFromEarliestToStartInHours + 0.5f
+        val offsetInHours: Float = durationFromEarliestToStartInHours + 0.5f
         return then(
             TimeGraphParentData(
                 duration = durationInHours / hours.size,
@@ -190,15 +261,26 @@ object TimeGraphScope {
 }
 
 /**
- *
+ * A [Modifier] that provides data to the parent Layout. This can be read from within the [Layout]
+ * during measurement and positioning, via [Measurable.parentData]. The parent data is commonly used
+ * to inform the parent how the child [Layout] should be measured and positioned.
  */
 class TimeGraphParentData(
     /**
-     *
+     * This is the duration in hours of the [SleepDayData] divided by the [List.size] of the [List]
+     * of [Int] of the hours covered by the dataset that the [SleepBar] was composed for. It is used
+     * to calculate the width of the [Placeable] created from the [Measurable] created from the
+     * [SleepBar] by multiplying it by the [Placeable.width] of the [Placeable] created from the
+     * [Measurable] that was created for the [HoursHeader] displayed at the top of [TimeGraph].
      */
     val duration: Float,
     /**
-     *
+     * This is the [Float] hours offset from the first hour displayed by the [HoursHeader] of the
+     * [SleepDayData.firstSleepStart] of the [SleepDayData] that the [SleepBar] was composed for
+     * divided by the [List.size] of the [List] of [Int] of the hours covered by the dataset. It is
+     * used to calculate the `x` coordinate that is used when the [Placeable.PlacementScope.place]
+     * method of the [Placeable] created from the [Measurable] created from the [SleepBar] is called
+     * to place the Composable.
      */
     val offset: Float,
 ) : ParentDataModifier {
