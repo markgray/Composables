@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.widget.Toast
@@ -52,6 +53,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -202,6 +204,7 @@ fun HomeFeedWithArticleDetailsScreen(
 /**
  * A [Modifier] that tracks all input, and calls [block] every time input is received.
  */
+@SuppressLint("ModifierFactoryUnreferencedReceiver") // TODO: reference Modifier receiver
 private fun Modifier.notifyInput(block: () -> Unit): Modifier =
     composed {
         val blockState = rememberUpdatedState(block)
@@ -387,6 +390,7 @@ private fun LoadingContent(
     if (empty) {
         emptyContent()
     } else {
+        @Suppress("DEPRECATION") // TODO: Switch to Modifier.pullRefresh(). See https://google.github.io/accompanist/swiperefresh/#migration
         SwipeRefresh(
             state = rememberSwipeRefreshState(loading),
             onRefresh = onRefresh,
@@ -575,7 +579,7 @@ private fun PostListHistorySection(
  */
 @Composable
 private fun PostListDivider() {
-    Divider(
+    HorizontalDivider(
         modifier = Modifier.padding(horizontal = 14.dp),
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
     )

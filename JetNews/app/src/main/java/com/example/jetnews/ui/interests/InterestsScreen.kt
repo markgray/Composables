@@ -40,6 +40,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -233,7 +234,7 @@ private fun InterestScreenContent(
     val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
     Column(modifier) {
         InterestsTabRow(selectedTabIndex, updateSection, tabContent, isExpandedScreen)
-        Divider(
+        HorizontalDivider(
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
         )
         Box(modifier = Modifier.weight(1f)) {
@@ -352,7 +353,7 @@ private fun TopicItem(
             Spacer(Modifier.width(16.dp))
             SelectTopicButton(selected = selected)
         }
-        Divider(
+        HorizontalDivider(
             modifier = modifier.padding(start = 72.dp, top = 8.dp, bottom = 8.dp),
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
         )
