@@ -17,6 +17,7 @@
 package com.example.jetlagged
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import org.junit.Before
@@ -26,7 +27,8 @@ import org.junit.Test
 class AppTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val
+        composeTestRule: ComposeContentTestRule = createComposeRule()
 
     @Before
     fun setUp() {
