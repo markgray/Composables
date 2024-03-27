@@ -53,6 +53,9 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun AuthorAndReadTime(
     post: Post,
@@ -72,6 +75,9 @@ fun AuthorAndReadTime(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun PostImage(post: Post, modifier: Modifier = Modifier) {
     Image(
@@ -83,6 +89,9 @@ fun PostImage(post: Post, modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun PostTitle(post: Post) {
     Text(
@@ -93,8 +102,11 @@ fun PostTitle(post: Post) {
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
-fun PostCardSimple(
+fun  PostCardSimple(
     post: Post,
     navigateToArticle: (String) -> Unit,
     isFavorite: Boolean,
@@ -136,6 +148,9 @@ fun PostCardSimple(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
     var openDialog by remember { mutableStateOf(false) }
@@ -200,6 +215,9 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Bookmark Button")
 @Composable
 fun BookmarkButtonPreview() {
@@ -210,6 +228,9 @@ fun BookmarkButtonPreview() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Bookmark Button Bookmarked")
 @Composable
 fun BookmarkButtonBookmarkedPreview() {
@@ -220,6 +241,9 @@ fun BookmarkButtonBookmarkedPreview() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Simple post card")
 @Preview("Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
@@ -231,12 +255,15 @@ fun SimplePostPreview() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Post History card")
 @Composable
 fun HistoryPostPreview() {
     JetnewsTheme {
         Surface {
-            PostCardHistory(post3, {})
+            PostCardHistory(post3) {}
         }
     }
 }

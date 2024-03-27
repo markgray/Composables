@@ -20,10 +20,23 @@ package com.example.jetnews.data
  * A generic class that holds a value or an exception
  */
 sealed class Result<out R> {
+    /**
+     * TODO: Add kdoc
+     *
+     * @param data TODO: Add kdoc
+     */
     data class Success<out T>(val data: T) : Result<T>()
+    /**
+     * TODO: Add kdoc
+     *
+     * @param exception TODO: Add kdoc
+     */
     data class Error(val exception: Exception) : Result<Nothing>()
 }
 
+/**
+ * TODO: Add kdoc
+ */
 fun <T> Result<T>.successOr(fallback: T): T {
     return (this as? Result.Success<T>)?.data ?: fallback
 }

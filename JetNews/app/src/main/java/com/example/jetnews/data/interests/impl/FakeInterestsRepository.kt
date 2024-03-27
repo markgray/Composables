@@ -21,7 +21,6 @@ import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.utils.addOrRemove
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -30,7 +29,6 @@ import kotlinx.coroutines.flow.update
  * Implementation of InterestRepository that returns a hardcoded list of
  * topics, people and publications synchronously.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 class FakeInterestsRepository : InterestsRepository {
 
     private val topics by lazy {

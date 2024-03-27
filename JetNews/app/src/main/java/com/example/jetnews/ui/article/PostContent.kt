@@ -80,6 +80,9 @@ import com.example.jetnews.ui.theme.JetnewsTheme
 
 private val defaultSpacerSize = 16.dp
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun PostContent(
     post: Post,
@@ -96,6 +99,9 @@ fun PostContent(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 fun LazyListScope.postContentItems(post: Post) {
     item {
         PostHeaderImage(post)
@@ -300,6 +306,9 @@ private fun paragraphToAnnotatedString(
     return AnnotatedString(text = paragraph.text, spanStyles = styles)
 }
 
+/**
+ * TODO: Add kdoc
+ */
 fun Markup.toAnnotatedStringItem(
     typography: Typography,
     codeBlockBackground: Color
@@ -343,6 +352,9 @@ fun Markup.toAnnotatedStringItem(
 private val ColorScheme.codeBlockBackground: Color
     get() = onSurface.copy(alpha = .15f)
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Post content")
 @Preview("Post content (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable

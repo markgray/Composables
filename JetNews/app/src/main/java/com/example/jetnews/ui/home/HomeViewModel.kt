@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantValueArgument")
+
 package com.example.jetnews.ui.home
 
 import androidx.lifecycle.ViewModel
@@ -28,6 +30,7 @@ import com.example.jetnews.utils.ErrorMessage
 import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -41,8 +44,17 @@ import kotlinx.coroutines.launch
  */
 sealed interface HomeUiState {
 
+    /**
+     * TODO: Add kdoc
+     */
     val isLoading: Boolean
+    /**
+     * TODO: Add kdoc
+     */
     val errorMessages: List<ErrorMessage>
+    /**
+     * TODO: Add kdoc
+     */
     val searchInput: String
 
     /**
@@ -63,9 +75,21 @@ sealed interface HomeUiState {
      * There is guaranteed to be a [selectedPost], which is one of the posts from [postsFeed].
      */
     data class HasPosts(
+        /**
+         * TODO: Add kdoc
+         */
         val postsFeed: PostsFeed,
+        /**
+         * TODO: Add kdoc
+         */
         val selectedPost: Post,
+        /**
+         * TODO: Add kdoc
+         */
         val isArticleOpen: Boolean,
+        /**
+         * TODO: Add kdoc
+         */
         val favorites: Set<String>,
         override val isLoading: Boolean,
         override val errorMessages: List<ErrorMessage>,
@@ -131,8 +155,10 @@ class HomeViewModel(
         )
     )
 
-    // UI state exposed to the UI
-    val uiState = viewModelState
+    /**
+     * UI state exposed to the UI
+     */
+    val uiState: StateFlow<HomeUiState> = viewModelState
         .map(HomeViewModelState::toUiState)
         .stateIn(
             viewModelScope,
@@ -236,6 +262,9 @@ class HomeViewModel(
      * Factory for HomeViewModel that takes PostsRepository as a dependency
      */
     companion object {
+        /**
+         * TODO: Add kdoc
+         */
         fun provideFactory(
             postsRepository: PostsRepository,
             preSelectedPostId: String? = null

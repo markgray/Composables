@@ -40,6 +40,9 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.CompletePreviews
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
     // TUTORIAL CONTENT STARTS HERE
@@ -100,7 +103,7 @@ fun PostCardTopPreview() {
     }
 }
 
-/*
+/**
  * These previews will only show up on Android Studio Dolphin and later.
  * They showcase a feature called Multipreview Annotations.
  *

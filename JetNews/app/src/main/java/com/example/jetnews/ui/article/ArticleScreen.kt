@@ -239,6 +239,9 @@ fun sharePost(post: Post, context: Context) {
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Article screen")
 @Preview("Article screen (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Preview("Article screen (big font)", fontScale = 1.5f)
@@ -252,6 +255,9 @@ fun PreviewArticleDrawer() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Article screen navrail", device = Devices.PIXEL_C)
 @Preview(
     "Article screen navrail (dark)",

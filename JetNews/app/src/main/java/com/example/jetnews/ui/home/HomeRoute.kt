@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.jetnews.model.Post
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreenType.ArticleDetails
 import com.example.jetnews.ui.home.HomeScreenType.Feed
@@ -100,10 +101,12 @@ fun HomeRoute(
     // show. This allows the associated state to survive beyond that decision, and therefore
     // we get to preserve the scroll throughout any changes to the content.
     val homeListLazyListState = rememberLazyListState()
+
+    @Suppress("Destructure")
     val articleDetailLazyListStates = when (uiState) {
         is HomeUiState.HasPosts -> uiState.postsFeed.allPosts
         is HomeUiState.NoPosts -> emptyList()
-    }.associate { post ->
+    }.associate { post: Post ->
         key(post.id) {
             post.id to rememberLazyListState()
         }
@@ -111,7 +114,7 @@ fun HomeRoute(
 
     val homeScreenType = getHomeScreenType(isExpandedScreen, uiState)
     when (homeScreenType) {
-        HomeScreenType.FeedWithArticleDetails -> {
+        FeedWithArticleDetails -> {
             HomeFeedWithArticleDetailsScreen(
                 uiState = uiState,
                 showTopAppBar = !isExpandedScreen,
@@ -128,7 +131,7 @@ fun HomeRoute(
                 onSearchInputChanged = onSearchInputChanged,
             )
         }
-        HomeScreenType.Feed -> {
+        Feed -> {
             HomeFeedScreen(
                 uiState = uiState,
                 showTopAppBar = !isExpandedScreen,
@@ -142,7 +145,7 @@ fun HomeRoute(
                 onSearchInputChanged = onSearchInputChanged,
             )
         }
-        HomeScreenType.ArticleDetails -> {
+        ArticleDetails -> {
             // Guaranteed by above condition for home screen type
             check(uiState is HomeUiState.HasPosts)
 
@@ -196,13 +199,13 @@ private fun getHomeScreenType(
         when (uiState) {
             is HomeUiState.HasPosts -> {
                 if (uiState.isArticleOpen) {
-                    HomeScreenType.ArticleDetails
+                    ArticleDetails
                 } else {
-                    HomeScreenType.Feed
+                    Feed
                 }
             }
-            is HomeUiState.NoPosts -> HomeScreenType.Feed
+            is HomeUiState.NoPosts -> Feed
         }
     }
-    true -> HomeScreenType.FeedWithArticleDetails
+    true -> FeedWithArticleDetails
 }

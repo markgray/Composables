@@ -57,6 +57,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * TODO: Add kdoc
+ */
 class JetnewsGlanceAppWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Exact
 
@@ -124,6 +127,9 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     @Composable
     fun Header(modifier: GlanceModifier) {
         Row(
@@ -147,6 +153,9 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     @Composable
     fun Body(
         modifier: GlanceModifier,

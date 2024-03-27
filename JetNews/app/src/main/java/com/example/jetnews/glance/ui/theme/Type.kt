@@ -19,7 +19,16 @@ package com.example.jetnews.glance.ui.theme
 import androidx.compose.ui.unit.sp
 import androidx.glance.text.TextStyle
 
+/**
+ * TODO: Add kdoc
+ */
 object JetnewsGlanceTextStyles {
-    val bodyLarge = TextStyle(fontSize = 16.sp)
-    val bodySmall = TextStyle(fontSize = 12.sp)
+    /**
+     * TODO: Add kdoc
+     */
+    val bodyLarge: TextStyle = TextStyle(fontSize = 16.sp)
+    /**
+     * TODO: Add kdoc
+     */
+    val bodySmall: TextStyle = TextStyle(fontSize = 12.sp)
 }

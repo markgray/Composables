@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("Destructure")
+
 package com.example.jetnews.ui.home
 
 import android.annotation.SuppressLint
@@ -51,7 +53,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -76,7 +77,6 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.ColorFilter
@@ -162,7 +162,7 @@ fun HomeFeedWithArticleDetailsScreen(
                 onSearchInputChanged = onSearchInputChanged,
             )
             // Crossfade between different detail posts
-            Crossfade(targetState = hasPostsUiState.selectedPost) { detailPost ->
+            Crossfade(targetState = hasPostsUiState.selectedPost, label = "Crossfade") { detailPost ->
                 // Get the lazy list state for this detail view
                 val detailLazyListState by remember {
                     derivedStateOf {
@@ -588,7 +588,6 @@ private fun PostListDivider() {
 /**
  * Expanded search UI - includes support for enter-to-send on the search field
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 private fun HomeSearch(
     modifier: Modifier = Modifier,
@@ -715,6 +714,9 @@ private fun HomeTopAppBar(
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Home list drawer screen")
 @Preview("Home list drawer screen (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Preview("Home list drawer screen (big font)", fontScale = 1.5f)
@@ -747,6 +749,9 @@ fun PreviewHomeListDrawerScreen() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Home list navrail screen", device = Devices.NEXUS_7_2013)
 @Preview(
     "Home list navrail screen (dark)",
@@ -783,6 +788,9 @@ fun PreviewHomeListNavRailScreen() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Home list detail screen", device = Devices.PIXEL_C)
 @Preview("Home list detail screen (dark)", uiMode = UI_MODE_NIGHT_YES, device = Devices.PIXEL_C)
 @Preview("Home list detail screen (big font)", fontScale = 1.5f, device = Devices.PIXEL_C)
@@ -811,7 +819,7 @@ fun PreviewHomeListDetailScreen() {
             onInteractWithDetail = {},
             openDrawer = {},
             homeListLazyListState = rememberLazyListState(),
-            articleDetailLazyListStates = postsFeed.allPosts.associate { post ->
+            articleDetailLazyListStates = postsFeed.allPosts.associate { post: Post ->
                 key(post.id) {
                     post.id to rememberLazyListState()
                 }

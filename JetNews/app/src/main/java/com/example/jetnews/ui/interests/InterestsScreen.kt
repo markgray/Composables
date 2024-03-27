@@ -38,7 +38,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -78,12 +77,28 @@ import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.theme.JetnewsTheme
-import kotlin.math.max
 import kotlinx.coroutines.runBlocking
+import kotlin.math.max
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param titleResId TODO: Add kdoc
+ */
 enum class Sections(@StringRes val titleResId: Int) {
+    /**
+     *  TODO: Add kdoc
+     */
     Topics(R.string.interests_section_topics),
+
+    /**
+     * TODO: Add kdoc
+     */
     People(R.string.interests_section_people),
+
+    /**
+     * TODO: Add kdoc
+     */
     Publications(R.string.interests_section_publications)
 }
 
@@ -95,7 +110,7 @@ enum class Sections(@StringRes val titleResId: Int) {
  * the current tab.
  *
  * @param section the tab that this content is for
- * @param section content of the tab, a composable that describes the content
+ * @param content content of the tab, a composable that describes the content
  */
 class TabContent(val section: Sections, val content: @Composable () -> Unit)
 
@@ -498,6 +513,9 @@ private fun InterestsAdaptiveContentLayout(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Interests screen", "Interests")
 @Preview("Interests screen (dark)", "Interests", uiMode = UI_MODE_NIGHT_YES)
 @Preview("Interests screen (big font)", "Interests", fontScale = 1.5f)
@@ -520,6 +538,9 @@ fun PreviewInterestsScreenDrawer() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Interests screen navrail", "Interests", device = Devices.PIXEL_C)
 @Preview(
     "Interests screen navrail (dark)", "Interests",
@@ -548,6 +569,9 @@ fun PreviewInterestsScreenNavRail() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Interests screen topics tab", "Topics")
 @Preview("Interests screen topics tab (dark)", "Topics", uiMode = UI_MODE_NIGHT_YES)
 @Composable
@@ -562,6 +586,9 @@ fun PreviewTopicsTab() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Interests screen people tab", "People")
 @Preview("Interests screen people tab (dark)", "People", uiMode = UI_MODE_NIGHT_YES)
 @Composable
@@ -576,6 +603,9 @@ fun PreviewPeopleTab() {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Interests screen publications tab", "Publications")
 @Preview("Interests screen publications tab (dark)", "Publications", uiMode = UI_MODE_NIGHT_YES)
 @Composable

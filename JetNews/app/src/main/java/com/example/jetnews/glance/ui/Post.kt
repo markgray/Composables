@@ -49,8 +49,27 @@ import com.example.jetnews.glance.ui.theme.JetnewsGlanceTextStyles
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.MainActivity
 
-enum class PostLayout { HORIZONTAL_SMALL, HORIZONTAL_LARGE, VERTICAL }
+/**
+ * TODO: Add kdoc
+ */
+enum class PostLayout {
+    /**
+     * TODO: Add kdoc
+     */
+    HORIZONTAL_SMALL,
+    /**
+     * TODO: Add kdoc
+     */
+    HORIZONTAL_LARGE,
+    /**
+     * TODO: Add kdoc
+     */
+    VERTICAL
+}
 
+/**
+ * TODO: Add kdoc
+ */
 fun DpSize.toPostLayout(): PostLayout {
     return when {
         (this.width <= 300.dp) -> PostLayout.VERTICAL
@@ -75,6 +94,9 @@ private fun openPostDetails(context: Context, post: Post): Action {
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun Post(
     post: Post,
@@ -108,6 +130,9 @@ fun Post(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun HorizontalPost(
     post: Post,
@@ -150,6 +175,9 @@ fun HorizontalPost(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun VerticalPost(
     post: Post,
@@ -183,6 +211,9 @@ fun VerticalPost(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun BookmarkButton(id: String, isBookmarked: Boolean, onToggleBookmark: (String) -> Unit) {
     Image(
@@ -199,6 +230,9 @@ fun BookmarkButton(id: String, isBookmarked: Boolean, onToggleBookmark: (String)
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun PostImage(
     imageId: Int,
@@ -213,6 +247,9 @@ fun PostImage(
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun PostDescription(title: String, metadata: String, modifier: GlanceModifier) {
     Column(modifier = modifier) {

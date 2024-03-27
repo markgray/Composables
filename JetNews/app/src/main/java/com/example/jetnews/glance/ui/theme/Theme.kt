@@ -17,17 +17,28 @@
 package com.example.jetnews.glance.ui.theme
 
 import androidx.glance.color.ColorProvider
+import androidx.glance.color.ColorProviders
 import androidx.glance.material3.ColorProviders
+import androidx.glance.unit.ColorProvider
 import com.example.jetnews.ui.theme.DarkColors
 import com.example.jetnews.ui.theme.LightColors
 
+/**
+ * TODO: Add kdoc
+ */
 object JetnewsGlanceColorScheme {
-    val colors = ColorProviders(
+    /**
+     * TODO: Add kdoc
+     */
+    val colors: ColorProviders = ColorProviders(
         light = LightColors,
         dark = DarkColors
     )
 
-    val outlineVariant = ColorProvider(
+    /**
+     * TODO: Add kdoc
+     */
+    val outlineVariant: ColorProvider = ColorProvider(
         day = LightColors.onSurface.copy(alpha = 0.1f),
         night = DarkColors.onSurface.copy(alpha = 0.1f)
     )

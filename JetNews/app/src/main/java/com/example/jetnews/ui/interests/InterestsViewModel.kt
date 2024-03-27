@@ -36,35 +36,65 @@ import kotlinx.coroutines.launch
  * UI state for the Interests screen
  */
 data class InterestsUiState(
+    /**
+     * TODO: Add kdoc
+     */
     val topics: List<InterestSection> = emptyList(),
+    /**
+     * TODO: Add kdoc
+     */
     val people: List<String> = emptyList(),
+    /**
+     * TODO: Add kdoc
+     */
     val publications: List<String> = emptyList(),
+    /**
+     * TODO: Add kdoc
+     */
     val loading: Boolean = false,
 )
 
+/**
+ * TODO: Add kdoc
+ */
 class InterestsViewModel(
     private val interestsRepository: InterestsRepository
 ) : ViewModel() {
 
-    // UI state exposed to the UI
+    /**
+     * TODO: Add kdoc
+     */
     private val _uiState = MutableStateFlow(InterestsUiState(loading = true))
+
+    /**
+     * UI state exposed to the UI
+     */
     val uiState: StateFlow<InterestsUiState> = _uiState.asStateFlow()
 
-    val selectedTopics =
+    /**
+     * TODO: Add kdoc
+     */
+    val selectedTopics: StateFlow<Set<TopicSelection>> =
         interestsRepository.observeTopicsSelected().stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             emptySet()
         )
 
-    val selectedPeople =
+    /**
+     * TODO: Add kdoc
+     */
+    val selectedPeople: StateFlow<Set<String>> =
         interestsRepository.observePeopleSelected().stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             emptySet()
         )
 
-    val selectedPublications =
+    /**
+     * TODO: Add kdoc
+     */
+    val selectedPublications: StateFlow<Set<String>> =
         interestsRepository.observePublicationSelected().stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
@@ -75,18 +105,27 @@ class InterestsViewModel(
         refreshAll()
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun toggleTopicSelection(topic: TopicSelection) {
         viewModelScope.launch {
             interestsRepository.toggleTopicSelection(topic)
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun togglePersonSelected(person: String) {
         viewModelScope.launch {
             interestsRepository.togglePersonSelected(person)
         }
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     fun togglePublicationSelected(publication: String) {
         viewModelScope.launch {
             interestsRepository.togglePublicationSelected(publication)
@@ -111,6 +150,7 @@ class InterestsViewModel(
             val publications = publicationsDeferred.await().successOr(emptyList())
 
             _uiState.update {
+                @Suppress("RedundantValueArgument")
                 it.copy(
                     loading = false,
                     topics = topics,
@@ -125,6 +165,9 @@ class InterestsViewModel(
      * Factory for InterestsViewModel that takes PostsRepository as a dependency
      */
     companion object {
+        /**
+         * TODO: Add kdoc
+         */
         fun provideFactory(
             interestsRepository: InterestsRepository,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {

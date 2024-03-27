@@ -19,6 +19,12 @@ package com.example.jetnews.data.interests
 import com.example.jetnews.data.Result
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param title the title of the [InterestSection]
+ * @param interests the [List] of interests.
+ */
 data class InterestSection(val title: String, val interests: List<String>)
 
 /**
@@ -72,4 +78,10 @@ interface InterestsRepository {
     fun observePublicationSelected(): Flow<Set<String>>
 }
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param section the section
+ * @param topic the topic
+ */
 data class TopicSelection(val section: String, val topic: String)

@@ -26,7 +26,14 @@ import com.example.jetnews.data.posts.impl.FakePostsRepository
  * Dependency Injection container at the application level.
  */
 interface AppContainer {
+    /**
+     * TODO: Add kdoc
+     */
     val postsRepository: PostsRepository
+
+    /**
+     * TODO: Add kdoc
+     */
     val interestsRepository: InterestsRepository
 }
 
@@ -35,6 +42,7 @@ interface AppContainer {
  *
  * Variables are initialized lazily and the same instance is shared across the whole app.
  */
+@Suppress("unused")
 class AppContainerImpl(private val applicationContext: Context) : AppContainer {
 
     override val postsRepository: PostsRepository by lazy {

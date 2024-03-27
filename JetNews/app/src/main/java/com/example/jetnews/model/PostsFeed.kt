@@ -20,9 +20,21 @@ package com.example.jetnews.model
  * A container of [Post]s, partitioned into different categories.
  */
 data class PostsFeed(
+    /**
+     * TODO: Add kdoc
+     */
     val highlightedPost: Post,
+    /**
+     * TODO: Add kdoc
+     */
     val recommendedPosts: List<Post>,
+    /**
+     * TODO: Add kdoc
+     */
     val popularPosts: List<Post>,
+    /**
+     * TODO: Add kdoc
+     */
     val recentPosts: List<Post>,
 ) {
     /**

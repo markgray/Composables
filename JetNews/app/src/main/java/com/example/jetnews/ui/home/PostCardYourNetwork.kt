@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -49,7 +48,9 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.theme.JetnewsTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun PostCardPopular(
     post: Post,
@@ -102,6 +103,9 @@ fun PostCardPopular(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Regular colors")
 @Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
 @Composable
@@ -115,6 +119,9 @@ fun PreviewPostCardPopular(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Regular colors, long text")
 @Composable
 fun PreviewPostCardPopularLongText(

@@ -22,7 +22,6 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -32,7 +31,6 @@ import kotlinx.coroutines.withContext
  * Implementation of PostsRepository that returns a hardcoded list of
  * posts with resources synchronously.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 class BlockingFakePostsRepository : PostsRepository {
 
     // for now, keep the favorites in memory

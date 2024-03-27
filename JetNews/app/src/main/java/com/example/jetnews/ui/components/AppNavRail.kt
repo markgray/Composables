@@ -37,6 +37,9 @@ import com.example.jetnews.R
 import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.theme.JetnewsTheme
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun AppNavRail(
     currentRoute: String,
@@ -74,6 +77,9 @@ fun AppNavRail(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Drawer contents")
 @Preview("Drawer contents (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
