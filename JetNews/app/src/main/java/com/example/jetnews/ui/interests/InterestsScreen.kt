@@ -89,17 +89,17 @@ enum class Sections(@StringRes val titleResId: Int) {
     /**
      *  TODO: Add kdoc
      */
-    Topics(R.string.interests_section_topics),
+    Topics(titleResId = R.string.interests_section_topics),
 
     /**
      * TODO: Add kdoc
      */
-    People(R.string.interests_section_people),
+    People(titleResId = R.string.interests_section_people),
 
     /**
      * TODO: Add kdoc
      */
-    Publications(R.string.interests_section_publications)
+    Publications(titleResId = R.string.interests_section_publications)
 }
 
 /**
@@ -143,7 +143,7 @@ fun InterestsScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.cd_interests),
+                        text = stringResource(id = R.string.cd_interests),
                         style = MaterialTheme.typography.titleLarge
                     )
                 },
@@ -151,9 +151,9 @@ fun InterestsScreen(
                     if (!isExpandedScreen) {
                         IconButton(onClick = openDrawer) {
                             Icon(
-                                painter = painterResource(R.drawable.ic_jetnews_logo),
+                                painter = painterResource(id = R.drawable.ic_jetnews_logo),
                                 contentDescription = stringResource(
-                                    R.string.cd_open_navigation_drawer
+                                    id = R.string.cd_open_navigation_drawer
                                 ),
                                 tint = MaterialTheme.colorScheme.primary
                             )
@@ -172,17 +172,20 @@ fun InterestsScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Search,
-                            contentDescription = stringResource(R.string.cd_search)
+                            contentDescription = stringResource(id = R.string.cd_search)
                         )
                     }
                 }
             )
         }
     ) { innerPadding ->
-        val screenModifier = Modifier.padding(innerPadding)
+        val screenModifier = Modifier.padding(paddingValues = innerPadding)
         InterestScreenContent(
-            currentSection, isExpandedScreen,
-            onTabChange, tabContent, screenModifier
+            currentSection = currentSection,
+            isExpandedScreen = isExpandedScreen,
+            updateSection = onTabChange,
+            tabContent = tabContent,
+            modifier = screenModifier
         )
     }
 }
@@ -198,7 +201,7 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
 
     // Describe the screen sections here since each section needs 2 states and 1 event.
     // Pass them to the stateless InterestsScreen using a tabContent.
-    val topicsSection = TabContent(Sections.Topics) {
+    val topicsSection = TabContent(section = Sections.Topics) {
         val selectedTopics by interestsViewModel.selectedTopics.collectAsStateWithLifecycle()
         TabWithSections(
             sections = uiState.topics,
@@ -207,7 +210,7 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
         )
     }
 
-    val peopleSection = TabContent(Sections.People) {
+    val peopleSection = TabContent(section = Sections.People) {
         val selectedPeople by interestsViewModel.selectedPeople.collectAsStateWithLifecycle()
         TabWithTopics(
             topics = uiState.people,
@@ -216,7 +219,7 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
         )
     }
 
-    val publicationSection = TabContent(Sections.Publications) {
+    val publicationSection = TabContent(section = Sections.Publications) {
         val selectedPublications by interestsViewModel.selectedPublications
             .collectAsStateWithLifecycle()
         TabWithTopics(

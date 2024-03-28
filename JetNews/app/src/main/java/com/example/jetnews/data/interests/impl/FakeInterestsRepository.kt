@@ -31,18 +31,24 @@ import kotlinx.coroutines.flow.update
  */
 class FakeInterestsRepository : InterestsRepository {
 
-    private val topics by lazy {
+    private val topics: List<InterestSection> by lazy {
         listOf(
-            InterestSection("Android", listOf("Jetpack Compose", "Kotlin", "Jetpack")),
             InterestSection(
-                "Programming",
-                listOf("Kotlin", "Declarative UIs", "Java", "Unidirectional Data Flow", "C++")
+                title = "Android",
+                interests = listOf("Jetpack Compose", "Kotlin", "Jetpack")
             ),
-            InterestSection("Technology", listOf("Pixel", "Google"))
+            InterestSection(
+                title = "Programming",
+                interests = listOf("Kotlin", "Declarative UIs", "Java", "Unidirectional Data Flow", "C++")
+            ),
+            InterestSection(
+                title = "Technology",
+                interests = listOf("Pixel", "Google")
+            )
         )
     }
 
-    private val people by lazy {
+    private val people: List<String> by lazy {
         listOf(
             "Kobalt Toral",
             "K'Kola Uvarek",
@@ -56,7 +62,7 @@ class FakeInterestsRepository : InterestsRepository {
         )
     }
 
-    private val publications by lazy {
+    private val publications: List<String> by lazy {
         listOf(
             "Kotlin Vibe",
             "Compose Mix",
@@ -76,32 +82,32 @@ class FakeInterestsRepository : InterestsRepository {
     private val selectedPublications = MutableStateFlow(setOf<String>())
 
     override suspend fun getTopics(): Result<List<InterestSection>> {
-        return Result.Success(topics)
+        return Result.Success(data = topics)
     }
 
     override suspend fun getPeople(): Result<List<String>> {
-        return Result.Success(people)
+        return Result.Success(data = people)
     }
 
     override suspend fun getPublications(): Result<List<String>> {
-        return Result.Success(publications)
+        return Result.Success(data = publications)
     }
 
     override suspend fun toggleTopicSelection(topic: TopicSelection) {
         selectedTopics.update {
-            it.addOrRemove(topic)
+            it.addOrRemove(element = topic)
         }
     }
 
     override suspend fun togglePersonSelected(person: String) {
         selectedPeople.update {
-            it.addOrRemove(person)
+            it.addOrRemove(element = person)
         }
     }
 
     override suspend fun togglePublicationSelected(publication: String) {
         selectedPublications.update {
-            it.addOrRemove(publication)
+            it.addOrRemove(element = publication)
         }
     }
 

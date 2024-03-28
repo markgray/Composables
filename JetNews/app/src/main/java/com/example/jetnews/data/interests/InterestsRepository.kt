@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.Flow
  * TODO: Add kdoc
  *
  * @param title the title of the [InterestSection]
- * @param interests the [List] of interests.
+ * @param interests the [List] of interests in this [InterestSection].
  */
 data class InterestSection(val title: String, val interests: List<String>)
 
