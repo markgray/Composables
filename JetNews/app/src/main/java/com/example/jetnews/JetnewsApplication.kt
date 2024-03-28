@@ -20,16 +20,27 @@ import android.app.Application
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.AppContainerImpl
 
+/**
+ * TODO: Add kdoc
+ */
 class JetnewsApplication : Application() {
     companion object {
-        const val JETNEWS_APP_URI = "https://developer.android.com/jetnews"
+        /**
+         * TODO: Add kdoc
+         */
+        const val JETNEWS_APP_URI: String = "https://developer.android.com/jetnews"
     }
 
-    // AppContainer instance used by the rest of classes to obtain dependencies
+    /**
+     * AppContainer instance used by the rest of classes to obtain dependencies
+     */
     lateinit var container: AppContainer
 
+    /**
+     * TODO: Add kdoc
+     */
     override fun onCreate() {
         super.onCreate()
-        container = AppContainerImpl(this)
+        container = AppContainerImpl(applicationContext = this)
     }
 }

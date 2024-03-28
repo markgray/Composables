@@ -32,6 +32,9 @@ import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import com.example.jetnews.R
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun FavoriteButton(onClick: () -> Unit) {
     IconButton(onClick) {
@@ -42,6 +45,9 @@ fun FavoriteButton(onClick: () -> Unit) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun BookmarkButton(
     isBookmarked: Boolean,
@@ -67,6 +73,9 @@ fun BookmarkButton(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun ShareButton(onClick: () -> Unit) {
     IconButton(onClick) {
@@ -77,6 +86,9 @@ fun ShareButton(onClick: () -> Unit) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun TextSettingsButton(onClick: () -> Unit) {
     IconButton(onClick) {

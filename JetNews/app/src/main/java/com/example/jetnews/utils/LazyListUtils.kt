@@ -19,5 +19,9 @@ package com.example.jetnews.utils
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.derivedStateOf
 
+/**
+ * TODO: Add kdoc
+ */
+@Suppress("unused")
 val LazyListState.isScrolled: Boolean
     get() = derivedStateOf { firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0 }.value

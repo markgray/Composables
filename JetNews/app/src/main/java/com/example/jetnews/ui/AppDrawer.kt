@@ -24,8 +24,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ListAlt
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ListAlt
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -41,7 +39,9 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.ui.theme.JetnewsTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun AppDrawer(
     currentRoute: String,
@@ -71,6 +71,9 @@ fun AppDrawer(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 private fun JetNewsLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
@@ -88,6 +91,9 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Drawer contents")
 @Preview("Drawer contents (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable

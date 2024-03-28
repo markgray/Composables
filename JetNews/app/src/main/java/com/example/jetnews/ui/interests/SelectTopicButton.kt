@@ -34,6 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.ui.theme.JetnewsTheme
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun SelectTopicButton(
     modifier: Modifier = Modifier,
@@ -70,6 +73,9 @@ fun SelectTopicButton(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("Off")
 @Preview("Off (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
@@ -79,6 +85,9 @@ fun SelectTopicButtonPreviewOff() {
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview("On")
 @Preview("On (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
@@ -88,6 +97,9 @@ fun SelectTopicButtonPreviewOn() {
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 private fun SelectTopicButtonPreviewTemplate(
     selected: Boolean

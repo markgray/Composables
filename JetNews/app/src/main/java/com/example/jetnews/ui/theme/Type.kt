@@ -27,13 +27,18 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.sp
 import com.example.jetnews.R
 
+/**
+ * TODO: Add kdoc
+ */
 private val Montserrat = FontFamily(
     Font(R.font.montserrat_regular),
     Font(R.font.montserrat_medium, FontWeight.W500)
 )
 
-@Suppress("DEPRECATION")
-val defaultTextStyle = TextStyle(
+/**
+ * TODO: Add kdoc
+ */
+val defaultTextStyle: TextStyle = TextStyle(
     fontFamily = Montserrat,
     platformStyle = PlatformTextStyle(
         includeFontPadding = false
@@ -44,7 +49,10 @@ val defaultTextStyle = TextStyle(
     )
 )
 
-val JetnewsTypography = Typography(
+/**
+ * TODO: Add kdoc
+ */
+val JetnewsTypography: Typography = Typography(
     displayLarge = defaultTextStyle.copy(
         fontSize = 57.sp, lineHeight = 64.sp, letterSpacing = (-0.25).sp
     ),

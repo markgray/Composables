@@ -31,8 +31,14 @@ import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsRoute
 import com.example.jetnews.ui.interests.InterestsViewModel
 
-const val POST_ID = "postId"
+/**
+ * TODO: Add kdoc
+ */
+const val POST_ID: String = "postId"
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun JetnewsNavGraph(
     appContainer: AppContainer,

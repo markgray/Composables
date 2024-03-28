@@ -23,6 +23,7 @@ import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 
+@Suppress("unused")
 class TestAppContainer(private val context: Context) : AppContainer {
 
     override val postsRepository: PostsRepository by lazy {

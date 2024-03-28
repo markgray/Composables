@@ -18,4 +18,10 @@ package com.example.jetnews.utils
 
 import androidx.annotation.StringRes
 
+/**
+ * TODO: Add kdoc
+ *
+ * @param id TODO: Add kdoc
+ * @param messageId TODO: Add kdoc
+ */
 data class ErrorMessage(val id: Long, @StringRes val messageId: Int)

@@ -18,6 +18,7 @@ package com.example.jetnews.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -26,7 +27,10 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-val LightColors = lightColorScheme(
+/**
+ * TODO: Add kdoc
+ */
+val LightColors: ColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
     primaryContainer = md_theme_light_primaryContainer,
@@ -56,7 +60,10 @@ val LightColors = lightColorScheme(
     surfaceTint = md_theme_light_surfaceTint,
 )
 
-val DarkColors = darkColorScheme(
+/**
+ * TODO: Add kdoc
+ */
+val DarkColors: ColorScheme = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
     primaryContainer = md_theme_dark_primaryContainer,
@@ -86,6 +93,9 @@ val DarkColors = darkColorScheme(
     surfaceTint = md_theme_dark_surfaceTint,
 )
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun JetnewsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

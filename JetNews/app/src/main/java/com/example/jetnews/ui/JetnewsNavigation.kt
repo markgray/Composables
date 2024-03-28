@@ -23,14 +23,24 @@ import androidx.navigation.NavHostController
  * Destinations used in the [JetnewsApp].
  */
 object JetnewsDestinations {
-    const val HOME_ROUTE = "home"
-    const val INTERESTS_ROUTE = "interests"
+    /**
+     * TODO: Add kdoc
+     */
+    const val HOME_ROUTE: String = "home"
+
+    /**
+     * TODO: Add kdoc
+     */
+    const val INTERESTS_ROUTE: String = "interests"
 }
 
 /**
  * Models the navigation actions in the app.
  */
 class JetnewsNavigationActions(navController: NavHostController) {
+    /**
+     * TODO: Add kdoc
+     */
     val navigateToHome: () -> Unit = {
         navController.navigate(JetnewsDestinations.HOME_ROUTE) {
             // Pop up to the start destination of the graph to
@@ -46,6 +56,9 @@ class JetnewsNavigationActions(navController: NavHostController) {
             restoreState = true
         }
     }
+    /**
+     * TODO: Add kdoc
+     */
     val navigateToInterests: () -> Unit = {
         navController.navigate(JetnewsDestinations.INTERESTS_ROUTE) {
             popUpTo(navController.graph.findStartDestination().id) {
