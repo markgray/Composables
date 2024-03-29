@@ -35,32 +35,41 @@ import com.example.jetnews.model.Publication
 /**
  * TODO: Add kdoc
  */
-val pietro: PostAuthor = PostAuthor("Pietro Maggi", "https://medium.com/@pmaggi")
-
-/**
- * TODO: Add kdoc
- */
-val manuel: PostAuthor = PostAuthor("Manuel Vivo", "https://medium.com/@manuelvicnt")
-
-/**
- * TODO: Add kdoc
- */
-val florina: PostAuthor = PostAuthor(
-    "Florina Muntenescu",
-    "https://medium.com/@florina.muntenescu"
+val pietro: PostAuthor = PostAuthor(
+    name = "Pietro Maggi",
+    url = "https://medium.com/@pmaggi"
 )
 
 /**
  * TODO: Add kdoc
  */
-val jose: PostAuthor = PostAuthor("Jose Alcérreca", "https://medium.com/@JoseAlcerreca")
+val manuel: PostAuthor = PostAuthor(
+    name = "Manuel Vivo",
+    url = "https://medium.com/@manuelvicnt"
+)
+
+/**
+ * TODO: Add kdoc
+ */
+val florina: PostAuthor = PostAuthor(
+    name = "Florina Muntenescu",
+    url = "https://medium.com/@florina.muntenescu"
+)
+
+/**
+ * TODO: Add kdoc
+ */
+val jose: PostAuthor = PostAuthor(
+    name = "Jose Alcérreca",
+    url = "https://medium.com/@JoseAlcerreca"
+)
 
 /**
  * TODO: Add kdoc
  */
 val publication: Publication = Publication(
-    "Android Developers",
-    "https://cdn-images-1.medium.com/max/258/1*u7oZc2_5mrkcFaxkXEyfYA@2x.png"
+    name = "Android Developers",
+    logoUrl = "https://cdn-images-1.medium.com/max/258/1*u7oZc2_5mrkcFaxkXEyfYA@2x.png"
 )
 
 /**
@@ -68,42 +77,42 @@ val publication: Publication = Publication(
  */
 val paragraphsPost1: List<Paragraph> = listOf(
     Paragraph(
-        ParagraphType.Text,
-        "Working to make our Android application more modular, I ended up with a sample that included a set of on-demand features grouped inside a folder:"
+        type = ParagraphType.Text,
+        text = "Working to make our Android application more modular, I ended up with a sample that included a set of on-demand features grouped inside a folder:"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Pretty standard setup, all the on-demand modules, inside a “features” folder; clean."
+        type = ParagraphType.Text,
+        text = "Pretty standard setup, all the on-demand modules, inside a “features” folder; clean."
     ),
     Paragraph(
-        ParagraphType.Text,
-        "These modules are included in the settings.gradle file as:"
+        type = ParagraphType.Text,
+        text = "These modules are included in the settings.gradle file as:"
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        "include ':app'\n" +
+        type = ParagraphType.CodeBlock,
+        text = "include ':app'\n" +
             "include ':features:module1'\n" +
             "include ':features:module2'\n" +
             "include ':features:module3'\n" +
             "include ':features:module4'"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "These setup works nicely with a single “minor” issue: an empty module named features in the Android view in Android Studio:"
+        type = ParagraphType.Text,
+        text = "These setup works nicely with a single “minor” issue: an empty module named features in the Android view in Android Studio:"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "I can live with that, but I would much prefer to remove that empty module from my project!"
+        type = ParagraphType.Text,
+        text = "I can live with that, but I would much prefer to remove that empty module from my project!"
     ),
     Paragraph(
-        ParagraphType.Header,
-        "If you cannot remove it, just rename it!"
+        type = ParagraphType.Header,
+        text = "If you cannot remove it, just rename it!"
     ),
 
     Paragraph(
-        ParagraphType.Text,
-        "At I/O I was lucky enough to attend the “Android Studio: Tips and Tricks” talk where Ivan Gravilovic, from Google, shared some amazing tips. One of these was a possible solution for my problem: setting a custom path for my modules.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "At I/O I was lucky enough to attend the “Android Studio: Tips and Tricks” talk where Ivan Gravilovic, from Google, shared some amazing tips. One of these was a possible solution for my problem: setting a custom path for my modules.",
+        markups = listOf(
             Markup(
                 MarkupType.Italic,
                 41,
@@ -113,93 +122,93 @@ val paragraphsPost1: List<Paragraph> = listOf(
     ),
 
     Paragraph(
-        ParagraphType.Text,
-        "In this particular case our settings.gradle becomes:",
-        listOf(Markup(MarkupType.Code, 28, 43))
+        type = ParagraphType.Text,
+        text = "In this particular case our settings.gradle becomes:",
+        markups = listOf(Markup(type = MarkupType.Code, start = 28, end = 43))
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        """
-        include ':app'
-        include ':module1'
-        include ':module1'
-        include ':module1'
-        include ':module1'
-        """.trimIndent()
+        type = ParagraphType.CodeBlock,
+        text = """
+                include ':app'
+                include ':module1'
+                include ':module1'
+                include ':module1'
+                include ':module1'
+                """.trimIndent()
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        """
-        // Set a custom path for the four features modules.
-        // This avoid to have an empty "features" module in  Android Studio.
-        project(":module1").projectDir=new File(rootDir, "features/module1")
-        project(":module2").projectDir=new File(rootDir, "features/module2")
-        project(":module3").projectDir=new File(rootDir, "features/module3")
-        project(":module4").projectDir=new File(rootDir, "features/module4")
-        """.trimIndent()
+        type = ParagraphType.CodeBlock,
+        text = """
+                // Set a custom path for the four features modules.
+                // This avoid to have an empty "features" module in  Android Studio.
+                project(":module1").projectDir=new File(rootDir, "features/module1")
+                project(":module2").projectDir=new File(rootDir, "features/module2")
+                project(":module3").projectDir=new File(rootDir, "features/module3")
+                project(":module4").projectDir=new File(rootDir, "features/module4")
+                """.trimIndent()
     ),
     Paragraph(
-        ParagraphType.Text,
-        "And the layout in Android Studio is now:"
+        type = ParagraphType.Text,
+        text = "And the layout in Android Studio is now:"
     ),
     Paragraph(
-        ParagraphType.Header,
-        "Conclusion"
+        type = ParagraphType.Header,
+        text = "Conclusion"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "As the title says, this is really a small thing, but it helps keep my project in order and it shows how a small Gradle configuration can help keep your project tidy."
+        type = ParagraphType.Text,
+        text = "As the title says, this is really a small thing, but it helps keep my project in order and it shows how a small Gradle configuration can help keep your project tidy."
     ),
     Paragraph(
-        ParagraphType.Quote,
-        "You can find this update in the latest version of the on-demand modules codelab.",
-        listOf(
+        type = ParagraphType.Quote,
+        text = "You can find this update in the latest version of the on-demand modules codelab.",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                54,
-                79,
-                "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html"
+                type = MarkupType.Link,
+                start = 54,
+                end = 79,
+                href = "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Header,
-        "Resources"
+        type = ParagraphType.Header,
+        text = "Resources"
     ),
     Paragraph(
-        ParagraphType.Bullet,
-        "Android Studio: Tips and Tricks (Google I/O’19)",
-        listOf(
+        type = ParagraphType.Bullet,
+        text = "Android Studio: Tips and Tricks (Google I/O’19)",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                0,
-                47,
-                "https://www.youtube.com/watch?v=ihF-PwDfRZ4&list=PLWz5rJ2EKKc9FfSQIRXEWyWpHD6TtwxMM&index=32&t=0s"
+                type = MarkupType.Link,
+                start = 0,
+                end = 47,
+                href = "https://www.youtube.com/watch?v=ihF-PwDfRZ4&list=PLWz5rJ2EKKc9FfSQIRXEWyWpHD6TtwxMM&index=32&t=0s"
             )
         )
     ),
 
     Paragraph(
-        ParagraphType.Bullet,
-        "On Demand module codelab",
-        listOf(
+        type = ParagraphType.Bullet,
+        text = "On Demand module codelab",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                0,
-                24,
-                "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html"
+                type = MarkupType.Link,
+                start = 0,
+                end = 24,
+                href = "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Bullet,
-        "Patchwork Plaid — A modularization story",
-        listOf(
+        type = ParagraphType.Bullet,
+        text = "Patchwork Plaid — A modularization story",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                0,
-                40,
-                "https://medium.com/androiddevelopers/a-patchwork-plaid-monolith-to-modularized-app-60235d9f212e"
+                type = MarkupType.Link,
+                start = 0,
+                end = 40,
+                href = "https://medium.com/androiddevelopers/a-patchwork-plaid-monolith-to-modularized-app-60235d9f212e"
             )
         )
     )
@@ -210,275 +219,275 @@ val paragraphsPost1: List<Paragraph> = listOf(
  */
 val paragraphsPost2: List<Paragraph> = listOf(
     Paragraph(
-        ParagraphType.Text,
-        "Dagger is a popular Dependency Injection framework commonly used in Android. It provides fully static and compile-time dependencies addressing many of the development and performance issues that have reflection-based solutions.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "Dagger is a popular Dependency Injection framework commonly used in Android. It provides fully static and compile-time dependencies addressing many of the development and performance issues that have reflection-based solutions.",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                0,
-                6,
-                "https://dagger.dev/"
+                type = MarkupType.Link,
+                start = 0,
+                end = 6,
+                href = "https://dagger.dev/"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "This month, a new tutorial was released to help you better understand how it works. This article focuses on using Dagger with Kotlin, including best practices to optimize your build time and gotchas you might encounter.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "This month, a new tutorial was released to help you better understand how it works. This article focuses on using Dagger with Kotlin, including best practices to optimize your build time and gotchas you might encounter.",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                14,
-                26,
-                "https://dagger.dev/tutorial/"
+                type = MarkupType.Link,
+                start = 14,
+                end = 26,
+                href = "https://dagger.dev/tutorial/"
             ),
-            Markup(MarkupType.Bold, 114, 132),
-            Markup(MarkupType.Bold, 144, 159),
-            Markup(MarkupType.Bold, 191, 198)
+            Markup(type = MarkupType.Bold, start = 114, end = 132),
+            Markup(type = MarkupType.Bold, start = 144, end = 159),
+            Markup(type = MarkupType.Bold, start = 191, end = 198)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Dagger is implemented using Java’s annotations model and annotations in Kotlin are not always directly parallel with how equivalent Java code would be written. This post will highlight areas where they differ and how you can use Dagger with Kotlin without having a headache."
+        type = ParagraphType.Text,
+        text = "Dagger is implemented using Java’s annotations model and annotations in Kotlin are not always directly parallel with how equivalent Java code would be written. This post will highlight areas where they differ and how you can use Dagger with Kotlin without having a headache."
     ),
     Paragraph(
-        ParagraphType.Text,
-        "This post was inspired by some of the suggestions in this Dagger issue that goes through best practices and pain points of Dagger in Kotlin. Thanks to all of the contributors that commented there!",
-        listOf(
+        type = ParagraphType.Text,
+        text = "This post was inspired by some of the suggestions in this Dagger issue that goes through best practices and pain points of Dagger in Kotlin. Thanks to all of the contributors that commented there!",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                58,
-                70,
-                "https://github.com/google/dagger/issues/900"
+                type = MarkupType.Link,
+                start = 58,
+                end = 70,
+                href = "https://github.com/google/dagger/issues/900"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Header,
-        "kapt build improvements"
+        type = ParagraphType.Header,
+        text = "kapt build improvements"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "To improve your build time, Dagger added support for gradle’s incremental annotation processing in v2.18! This is enabled by default in Dagger v2.24. In case you’re using a lower version, you need to add a few lines of code (as shown below) if you want to benefit from it.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "To improve your build time, Dagger added support for gradle’s incremental annotation processing in v2.18! This is enabled by default in Dagger v2.24. In case you’re using a lower version, you need to add a few lines of code (as shown below) if you want to benefit from it.",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                99,
-                104,
-                "https://github.com/google/dagger/releases/tag/dagger-2.18"
+                type = MarkupType.Link,
+                start = 99,
+                end = 104,
+                href = "https://github.com/google/dagger/releases/tag/dagger-2.18"
             ),
             Markup(
-                MarkupType.Link,
-                143,
-                148,
-                "https://github.com/google/dagger/releases/tag/dagger-2.24"
+                type = MarkupType.Link,
+                start = 143,
+                end = 148,
+                href = "https://github.com/google/dagger/releases/tag/dagger-2.24"
             ),
-            Markup(MarkupType.Bold, 53, 95)
+            Markup(type = MarkupType.Bold, start = 53, end = 95)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Also, you can tell Dagger not to format the generated code. This option was added in Dagger v2.18 and it’s the default behavior (doesn’t generate formatted code) in v2.23. If you’re using a lower version, disable code formatting to improve your build time (see code below).",
-        listOf(
+        type = ParagraphType.Text,
+        text = "Also, you can tell Dagger not to format the generated code. This option was added in Dagger v2.18 and it’s the default behavior (doesn’t generate formatted code) in v2.23. If you’re using a lower version, disable code formatting to improve your build time (see code below).",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                92,
-                97,
-                "https://github.com/google/dagger/releases/tag/dagger-2.18"
+                type = MarkupType.Link,
+                start = 92,
+                end = 97,
+                href = "https://github.com/google/dagger/releases/tag/dagger-2.18"
             ),
             Markup(
-                MarkupType.Link,
-                165,
-                170,
-                "https://github.com/google/dagger/releases/tag/dagger-2.23"
+                type = MarkupType.Link,
+                start = 165,
+                end = 170,
+                href = "https://github.com/google/dagger/releases/tag/dagger-2.23"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Include these compiler arguments in your build.gradle file to make Dagger more performant at build time:",
-        listOf(Markup(MarkupType.Code, 41, 53))
+        type = ParagraphType.Text,
+        text = "Include these compiler arguments in your build.gradle file to make Dagger more performant at build time:",
+        markups = listOf(Markup(MarkupType.Code, 41, 53))
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Alternatively, if you use Kotlin DSL script files, include them like this in the build.gradle.kts file of the modules that use Dagger:",
-        listOf(Markup(MarkupType.Code, 81, 97))
+        type = ParagraphType.Text,
+        text = "Alternatively, if you use Kotlin DSL script files, include them like this in the build.gradle.kts file of the modules that use Dagger:",
+        markups = listOf(Markup(type = MarkupType.Code, start = 81, end = 97))
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Qualifiers for field attributes"
+        type = ParagraphType.Text,
+        text = "Qualifiers for field attributes"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "",
-        listOf(Markup(MarkupType.Link, 0, 0))
+        type = ParagraphType.Text,
+        text = "",
+        markups = listOf(Markup(type = MarkupType.Link, start = 0, end = 0))
     ),
     Paragraph(
-        ParagraphType.Text,
-        "When an annotation is placed on a property in Kotlin, it’s not clear whether Java will see that annotation on the field of the property or the method for that property. Setting the field: prefix on the annotation ensures that the qualifier ends up in the right place (See documentation for more details).",
-        listOf(
-            Markup(MarkupType.Code, 181, 187),
+        type = ParagraphType.Text,
+        text = "When an annotation is placed on a property in Kotlin, it’s not clear whether Java will see that annotation on the field of the property or the method for that property. Setting the field: prefix on the annotation ensures that the qualifier ends up in the right place (See documentation for more details).",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 181, end = 187),
             Markup(
-                MarkupType.Link,
-                268,
-                285,
-                "http://frogermcs.github.io/dependency-injection-with-dagger-2-custom-scopes/"
+                type = MarkupType.Link,
+                start = 268,
+                end = 285,
+                href = "http://frogermcs.github.io/dependency-injection-with-dagger-2-custom-scopes/"
             ),
-            Markup(MarkupType.Italic, 114, 119),
-            Markup(MarkupType.Italic, 143, 149)
+            Markup(type = MarkupType.Italic, start = 114, end = 119),
+            Markup(type = MarkupType.Italic, start = 143, end = 149)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "✅ The way to apply qualifiers on an injected field is:"
+        type = ParagraphType.Text,
+        text = "✅ The way to apply qualifiers on an injected field is:"
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        "@Inject @field:MinimumBalance lateinit var minimumBalance: BigDecimal",
-        listOf(Markup(MarkupType.Bold, 8, 29))
+        type = ParagraphType.CodeBlock,
+        text = "@Inject @field:MinimumBalance lateinit var minimumBalance: BigDecimal",
+        markups = listOf(Markup(type = MarkupType.Bold, start = 8, end = 29))
     ),
     Paragraph(
-        ParagraphType.Text,
-        "❌ As opposed to:"
+        type = ParagraphType.Text,
+        text = "❌ As opposed to:"
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        """
-        @Inject @MinimumBalance lateinit var minimumBalance: BigDecimal 
-        // @MinimumBalance is ignored!
-        """.trimIndent(),
-        listOf(Markup(MarkupType.Bold, 65, 95))
+        type = ParagraphType.CodeBlock,
+        text = """
+                @Inject @MinimumBalance lateinit var minimumBalance: BigDecimal 
+                // @MinimumBalance is ignored!
+                """.trimIndent(),
+        markups = listOf(Markup(type = MarkupType.Bold, start = 65, end = 95))
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Forgetting to add field: could lead to injecting the wrong object if there’s an unqualified instance of that type available in the Dagger graph.",
-        listOf(Markup(MarkupType.Code, 18, 24))
+        type = ParagraphType.Text,
+        text = "Forgetting to add field: could lead to injecting the wrong object if there’s an unqualified instance of that type available in the Dagger graph.",
+        markups = listOf(Markup(type = MarkupType.Code, start = 18, end = 24))
     ),
     Paragraph(
-        ParagraphType.Header,
-        "Static @Provides functions optimization"
+        type = ParagraphType.Header,
+        text = "Static @Provides functions optimization"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Dagger’s generated code will be more performant if @Provides methods are static. To achieve this in Kotlin, use a Kotlin object instead of a class and annotate your methods with @JvmStatic. This is a best practice that you should follow as much as possible.",
-        listOf(
-            Markup(MarkupType.Code, 51, 60),
-            Markup(MarkupType.Code, 73, 79),
-            Markup(MarkupType.Code, 121, 127),
-            Markup(MarkupType.Code, 141, 146),
-            Markup(MarkupType.Code, 178, 188),
-            Markup(MarkupType.Bold, 200, 213),
-            Markup(MarkupType.Italic, 200, 213)
+        type = ParagraphType.Text,
+        text = "Dagger’s generated code will be more performant if @Provides methods are static. To achieve this in Kotlin, use a Kotlin object instead of a class and annotate your methods with @JvmStatic. This is a best practice that you should follow as much as possible.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 51, end = 60),
+            Markup(type = MarkupType.Code, start = 73, end = 79),
+            Markup(type = MarkupType.Code, start = 121, end = 127),
+            Markup(type = MarkupType.Code, start = 141, end = 146),
+            Markup(type = MarkupType.Code, start = 178, end = 188),
+            Markup(type = MarkupType.Bold, start = 200, end = 213),
+            Markup(type = MarkupType.Italic, start = 200, end = 213)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "In case you need an abstract method, you’ll need to add the @JvmStatic method to a companion object and annotate it with @Module too.",
-        listOf(
-            Markup(MarkupType.Code, 60, 70),
-            Markup(MarkupType.Code, 121, 128)
+        type = ParagraphType.Text,
+        text = "In case you need an abstract method, you’ll need to add the @JvmStatic method to a companion object and annotate it with @Module too.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 60, end = 70),
+            Markup(type = MarkupType.Code, start = 121, end = 128)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Alternatively, you can extract the object module out and include it in the abstract one:"
+        type = ParagraphType.Text,
+        text = "Alternatively, you can extract the object module out and include it in the abstract one:"
     ),
     Paragraph(
-        ParagraphType.Header,
-        "Injecting Generics"
+        type = ParagraphType.Header,
+        text = "Injecting Generics"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Kotlin compiles generics with wildcards to make Kotlin APIs work with Java. These are generated when a type appears as a parameter (more info here) or as fields. For example, a Kotlin List<Foo> parameter shows up as List<? super Foo> in Java.",
-        listOf(
-            Markup(MarkupType.Code, 184, 193),
-            Markup(MarkupType.Code, 216, 233),
+        type = ParagraphType.Text,
+        text = "Kotlin compiles generics with wildcards to make Kotlin APIs work with Java. These are generated when a type appears as a parameter (more info here) or as fields. For example, a Kotlin List<Foo> parameter shows up as List<? super Foo> in Java.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 184, end = 193),
+            Markup(type = MarkupType.Code, start = 216, end = 233),
             Markup(
-                MarkupType.Link,
-                132,
-                146,
-                "https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics"
+                type = MarkupType.Link,
+                start = 132,
+                end = 146,
+                href = "https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "This causes problems with Dagger because it expects an exact (aka invariant) type match. Using @JvmSuppressWildcards will ensure that Dagger sees the type without wildcards.",
-        listOf(
-            Markup(MarkupType.Code, 95, 116),
+        type = ParagraphType.Text,
+        text = "This causes problems with Dagger because it expects an exact (aka invariant) type match. Using @JvmSuppressWildcards will ensure that Dagger sees the type without wildcards.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 95, end = 116),
             Markup(
-                MarkupType.Link,
-                66,
-                75,
-                "https://en.wikipedia.org/wiki/Class_invariant"
+                type = MarkupType.Link,
+                start = 66,
+                end = 75,
+                href = "https://en.wikipedia.org/wiki/Class_invariant"
             ),
             Markup(
-                MarkupType.Link,
-                96,
-                116,
-                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-suppress-wildcards/index.html"
+                type = MarkupType.Link,
+                start = 96,
+                end = 116,
+                href = "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-suppress-wildcards/index.html"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "This is a common issue when you inject collections using Dagger’s multibinding feature, for example:",
-        listOf(
+        type = ParagraphType.Text,
+        text = "This is a common issue when you inject collections using Dagger’s multibinding feature, for example:",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                57,
-                86,
-                "https://dagger.dev/multibindings.html"
+                type = MarkupType.Link,
+                start = 57,
+                end = 86,
+                href = "https://dagger.dev/multibindings.html"
             )
         )
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        """
-        class MyVMFactory @Inject constructor(
-          private val vmMap: Map<String, @JvmSuppressWildcards Provider<ViewModel>>
-        ) { 
-            ... 
-        }
-        """.trimIndent(),
-        listOf(Markup(MarkupType.Bold, 72, 93))
+        type = ParagraphType.CodeBlock,
+        text = """
+                class MyVMFactory @Inject constructor(
+                  private val vmMap: Map<String, @JvmSuppressWildcards Provider<ViewModel>>
+                ) { 
+                    ... 
+                }
+                """.trimIndent(),
+        markups = listOf(Markup(type = MarkupType.Bold, start = 72, end = 93))
     ),
     Paragraph(
-        ParagraphType.Header,
-        "Inline method bodies"
+        type = ParagraphType.Header,
+        text = "Inline method bodies"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Dagger determines the types that are configured by @Provides methods by inspecting the return type. Specifying the return type in Kotlin functions is optional and even the IDE sometimes encourages you to refactor your code to have inline method bodies that hide the return type declaration.",
-        listOf(Markup(MarkupType.Code, 51, 60))
+        type = ParagraphType.Text,
+        text = "Dagger determines the types that are configured by @Provides methods by inspecting the return type. Specifying the return type in Kotlin functions is optional and even the IDE sometimes encourages you to refactor your code to have inline method bodies that hide the return type declaration.",
+        markups = listOf(Markup(type = MarkupType.Code, start = 51, end = 60))
     ),
     Paragraph(
-        ParagraphType.Text,
-        "This can lead to bugs if the inferred type is different from the one you meant. Let’s see some examples:"
+        type = ParagraphType.Text,
+        text = "This can lead to bugs if the inferred type is different from the one you meant. Let’s see some examples:"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "If you want to add a specific type to the graph, inlining works as expected. See the different ways to do the same in Kotlin:"
+        type = ParagraphType.Text,
+        text = "If you want to add a specific type to the graph, inlining works as expected. See the different ways to do the same in Kotlin:"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "If you want to provide an implementation of an interface, then you must explicitly specify the return type. Not doing it can lead to problems and bugs:"
+        type = ParagraphType.Text,
+        text = "If you want to provide an implementation of an interface, then you must explicitly specify the return type. Not doing it can lead to problems and bugs:"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Dagger mostly works with Kotlin out of the box. However, you have to watch out for a few things just to make sure you’re doing what you really mean to do: @field: for qualifiers on field attributes, inline method bodies, and @JvmSuppressWildcards when injecting collections.",
-        listOf(
-            Markup(MarkupType.Code, 155, 162),
-            Markup(MarkupType.Code, 225, 246)
+        type = ParagraphType.Text,
+        text = "Dagger mostly works with Kotlin out of the box. However, you have to watch out for a few things just to make sure you’re doing what you really mean to do: @field: for qualifiers on field attributes, inline method bodies, and @JvmSuppressWildcards when injecting collections.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 155, end = 162),
+            Markup(type = MarkupType.Code, start = 225, end = 246)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Dagger optimizations come with no cost, add them and follow best practices to improve your build time: enabling incremental annotation processing, disabling formatting and using static @Provides methods in your Dagger modules.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "Dagger optimizations come with no cost, add them and follow best practices to improve your build time: enabling incremental annotation processing, disabling formatting and using static @Provides methods in your Dagger modules.",
+        markups = listOf(
             Markup(
-                MarkupType.Code,
-                185,
-                194
+                type = MarkupType.Code,
+                start = 185,
+                end = 194
             )
         )
     )
@@ -489,84 +498,84 @@ val paragraphsPost2: List<Paragraph> = listOf(
  */
 val paragraphsPost3: List<Paragraph> = listOf(
     Paragraph(
-        ParagraphType.Text,
-        "Learn how to get started converting Java Programming Language code to Kotlin, making it more idiomatic and avoid common pitfalls, by following our new Refactoring to Kotlin codelab, available in English \uD83C\uDDEC\uD83C\uDDE7, Chinese \uD83C\uDDE8\uD83C\uDDF3 and Brazilian Portuguese \uD83C\uDDE7\uD83C\uDDF7.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "Learn how to get started converting Java Programming Language code to Kotlin, making it more idiomatic and avoid common pitfalls, by following our new Refactoring to Kotlin codelab, available in English \uD83C\uDDEC\uD83C\uDDE7, Chinese \uD83C\uDDE8\uD83C\uDDF3 and Brazilian Portuguese \uD83C\uDDE7\uD83C\uDDF7.",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                151,
-                172,
-                "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0"
+                type = MarkupType.Link,
+                start = 151,
+                end = 172,
+                href = "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0"
             ),
             Markup(
-                MarkupType.Link,
-                209,
-                216,
-                "https://clmirror.storage.googleapis.com/codelabs/java-to-kotlin-zh/index.html#0"
+                type = MarkupType.Link,
+                start = 209,
+                end = 216,
+                href = "https://clmirror.storage.googleapis.com/codelabs/java-to-kotlin-zh/index.html#0"
             ),
             Markup(
-                MarkupType.Link,
-                226,
-                246,
-                "https://codelabs.developers.google.com/codelabs/java-to-kotlin-pt-br/#0"
+                type = MarkupType.Link,
+                start = 226,
+                end = 246,
+                href = "https://codelabs.developers.google.com/codelabs/java-to-kotlin-pt-br/#0"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "When you first get started writing Kotlin code, you tend to follow Java Programming Language idioms. The automatic converter, part of both Android Studio and Intellij IDEA, can do a pretty good job of automatically refactoring your code, but sometimes, it needs a little help. This is where our new Refactoring to Kotlin codelab comes in.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "When you first get started writing Kotlin code, you tend to follow Java Programming Language idioms. The automatic converter, part of both Android Studio and Intellij IDEA, can do a pretty good job of automatically refactoring your code, but sometimes, it needs a little help. This is where our new Refactoring to Kotlin codelab comes in.",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                105,
-                124,
-                "https://www.jetbrains.com/help/idea/converting-a-java-file-to-kotlin-file.html"
+                type = MarkupType.Link,
+                start = 105,
+                end = 124,
+                href = "https://www.jetbrains.com/help/idea/converting-a-java-file-to-kotlin-file.html"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "We’ll take two classes (a User and a Repository) in Java Programming Language and convert them to Kotlin, check out what the automatic converter did and why. Then we go to the next level — make it idiomatic, teaching best practices and useful tips along the way.",
-        listOf(
-            Markup(MarkupType.Code, 26, 30),
-            Markup(MarkupType.Code, 37, 47)
+        type = ParagraphType.Text,
+        text = "We’ll take two classes (a User and a Repository) in Java Programming Language and convert them to Kotlin, check out what the automatic converter did and why. Then we go to the next level — make it idiomatic, teaching best practices and useful tips along the way.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 26, end = 30),
+            Markup(type = MarkupType.Code, start = 37, end = 47)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "The Refactoring to Kotlin codelab starts with basic topics — understand how nullability is declared in Kotlin, what types of equality are defined or how to best handle classes whose role is just to hold data. We then continue with how to handle static fields and functions in Kotlin and how to apply the Singleton pattern, with the help of one handy keyword: object. We’ll see how Kotlin helps us model our classes better, how it differentiates between a property of a class and an action the class can do. Finally, we’ll learn how to execute code only in the context of a specific object with the scope functions.",
-        listOf(
-            Markup(MarkupType.Code, 245, 251),
-            Markup(MarkupType.Code, 359, 365),
+        type = ParagraphType.Text,
+        text = "The Refactoring to Kotlin codelab starts with basic topics — understand how nullability is declared in Kotlin, what types of equality are defined or how to best handle classes whose role is just to hold data. We then continue with how to handle static fields and functions in Kotlin and how to apply the Singleton pattern, with the help of one handy keyword: object. We’ll see how Kotlin helps us model our classes better, how it differentiates between a property of a class and an action the class can do. Finally, we’ll learn how to execute code only in the context of a specific object with the scope functions.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 245, end = 251),
+            Markup(type = MarkupType.Code, start = 359, end = 365),
             Markup(
-                MarkupType.Link,
-                4,
-                25,
-                "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0"
+                type = MarkupType.Link,
+                start = 4,
+                end = 25,
+                href = "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Thanks to Walmyr Carvalho and Nelson Glauber for translating the codelab in Brazilian Portuguese!",
-        listOf(
+        type = ParagraphType.Text,
+        text = "Thanks to Walmyr Carvalho and Nelson Glauber for translating the codelab in Brazilian Portuguese!",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                21,
-                42,
-                "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0"
+                type = MarkupType.Link,
+                start = 21,
+                end = 42,
+                href = "https://codelabs.developers.google.com/codelabs/java-to-kotlin/#0"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "",
-        listOf(
+        type = ParagraphType.Text,
+        text = "",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                76,
-                96,
-                "https://codelabs.developers.google.com/codelabs/java-to-kotlin-pt-br/#0"
+                type = MarkupType.Link,
+                start = 76,
+                end = 96,
+                href = "https://codelabs.developers.google.com/codelabs/java-to-kotlin-pt-br/#0"
             )
         )
     )
@@ -577,33 +586,33 @@ val paragraphsPost3: List<Paragraph> = listOf(
  */
 val paragraphsPost4: List<Paragraph> = listOf(
     Paragraph(
-        ParagraphType.Text,
-        "TL;DR: Expose resource IDs from ViewModels to avoid showing obsolete data."
+        type = ParagraphType.Text,
+        text = "TL;DR: Expose resource IDs from ViewModels to avoid showing obsolete data."
     ),
     Paragraph(
-        ParagraphType.Text,
-        "In a ViewModel, if you’re exposing data coming from resources (strings, drawables, colors…), you have to take into account that ViewModel objects ignore configuration changes such as locale changes. When the user changes their locale, activities are recreated but the ViewModel objects are not.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "In a ViewModel, if you’re exposing data coming from resources (strings, drawables, colors…), you have to take into account that ViewModel objects ignore configuration changes such as locale changes. When the user changes their locale, activities are recreated but the ViewModel objects are not.",
+        markups = listOf(
             Markup(
-                MarkupType.Bold,
-                183,
-                197
+                type = MarkupType.Bold,
+                start = 183,
+                end = 197
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "AndroidViewModel is a subclass of ViewModel that is aware of the Application context. However, having access to a context can be dangerous if you’re not observing or reacting to the lifecycle of that context. The recommended practice is to avoid dealing with objects that have a lifecycle in ViewModels.",
-        listOf(
-            Markup(MarkupType.Code, 0, 16),
-            Markup(MarkupType.Code, 34, 43),
-            Markup(MarkupType.Bold, 209, 303)
+        type = ParagraphType.Text,
+        text = "AndroidViewModel is a subclass of ViewModel that is aware of the Application context. However, having access to a context can be dangerous if you’re not observing or reacting to the lifecycle of that context. The recommended practice is to avoid dealing with objects that have a lifecycle in ViewModels.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 0, end = 16),
+            Markup(type = MarkupType.Code, start = 34, end = 43),
+            Markup(type = MarkupType.Bold, start = 209, end = 303)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Let’s look at an example based on this issue in the tracker: Updating ViewModel on system locale change.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "Let’s look at an example based on this issue in the tracker: Updating ViewModel on system locale change.",
+        markups = listOf(
             Markup(
                 MarkupType.Link,
                 61,

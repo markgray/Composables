@@ -76,9 +76,9 @@ class InterestsViewModel(
      */
     val selectedTopics: StateFlow<Set<TopicSelection>> =
         interestsRepository.observeTopicsSelected().stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            emptySet()
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            initialValue = emptySet()
         )
 
     /**
@@ -86,9 +86,9 @@ class InterestsViewModel(
      */
     val selectedPeople: StateFlow<Set<String>> =
         interestsRepository.observePeopleSelected().stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            emptySet()
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            initialValue = emptySet()
         )
 
     /**
@@ -96,9 +96,9 @@ class InterestsViewModel(
      */
     val selectedPublications: StateFlow<Set<String>> =
         interestsRepository.observePublicationSelected().stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            emptySet()
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            initialValue = emptySet()
         )
 
     init {
@@ -110,7 +110,7 @@ class InterestsViewModel(
      */
     fun toggleTopicSelection(topic: TopicSelection) {
         viewModelScope.launch {
-            interestsRepository.toggleTopicSelection(topic)
+            interestsRepository.toggleTopicSelection(topic = topic)
         }
     }
 
@@ -119,7 +119,7 @@ class InterestsViewModel(
      */
     fun togglePersonSelected(person: String) {
         viewModelScope.launch {
-            interestsRepository.togglePersonSelected(person)
+            interestsRepository.togglePersonSelected(person = person)
         }
     }
 
@@ -128,7 +128,7 @@ class InterestsViewModel(
      */
     fun togglePublicationSelected(publication: String) {
         viewModelScope.launch {
-            interestsRepository.togglePublicationSelected(publication)
+            interestsRepository.togglePublicationSelected(publication = publication)
         }
     }
 

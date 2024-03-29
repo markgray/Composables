@@ -20,7 +20,7 @@ import com.example.jetnews.data.Result
 import kotlinx.coroutines.flow.Flow
 
 /**
- * TODO: Add kdoc
+ * Data class used to hold an interest section with its [List] of interests.
  *
  * @param title the title of the [InterestSection]
  * @param interests the [List] of interests in this [InterestSection].
@@ -79,7 +79,7 @@ interface InterestsRepository {
 }
 
 /**
- * TODO: Add kdoc
+ * Data class
  *
  * @param section the section
  * @param topic the topic
