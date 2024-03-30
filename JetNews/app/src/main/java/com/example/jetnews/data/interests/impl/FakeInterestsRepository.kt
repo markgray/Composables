@@ -77,9 +77,9 @@ class FakeInterestsRepository : InterestsRepository {
     }
 
     // for now, keep the selections in memory
-    private val selectedTopics = MutableStateFlow(setOf<TopicSelection>())
-    private val selectedPeople = MutableStateFlow(setOf<String>())
-    private val selectedPublications = MutableStateFlow(setOf<String>())
+    private val selectedTopics = MutableStateFlow(value = setOf<TopicSelection>())
+    private val selectedPeople = MutableStateFlow(value = setOf<String>())
+    private val selectedPublications = MutableStateFlow(value = setOf<String>())
 
     override suspend fun getTopics(): Result<List<InterestSection>> {
         return Result.Success(data = topics)

@@ -41,8 +41,8 @@ fun Divider(
     Spacer(
         modifier = GlanceModifier
             .fillMaxWidth()
-            .height(thickness)
-            .background(color)
+            .height(height = thickness)
+            .background(colorProvider = color)
     )
 }
 

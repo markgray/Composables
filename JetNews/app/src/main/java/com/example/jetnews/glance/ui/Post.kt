@@ -86,10 +86,10 @@ private fun openPostDetails(context: Context, post: Post): Action {
     // actionStartActivity is the preferred way to start activities.
     return actionStartActivity(
         Intent(
-            Intent.ACTION_VIEW,
-            "$JETNEWS_APP_URI/home?postId=${post.id}".toUri(),
-            context,
-            MainActivity::class.java
+            /* action = */ Intent.ACTION_VIEW,
+            /* uri = */ "$JETNEWS_APP_URI/home?postId=${post.id}".toUri(),
+            /* packageContext = */ context,
+            /* cls = */ MainActivity::class.java
         )
     )
 }
@@ -141,22 +141,22 @@ fun HorizontalPost(
     modifier: GlanceModifier,
     showImageThumbnail: Boolean = true
 ) {
-    val context = LocalContext.current
+    val context: Context = LocalContext.current
     Row(
         verticalAlignment = Alignment.Vertical.CenterVertically,
-        modifier = modifier.clickable(onClick = openPostDetails(context, post))
+        modifier = modifier.clickable(onClick = openPostDetails(context = context, post = post))
     ) {
         if (showImageThumbnail) {
             PostImage(
                 imageId = post.imageThumbId,
                 contentScale = ContentScale.Fit,
-                modifier = GlanceModifier.size(80.dp)
+                modifier = GlanceModifier.size(size = 80.dp)
             )
         } else {
             PostImage(
                 imageId = post.imageId,
                 contentScale = ContentScale.Crop,
-                modifier = GlanceModifier.width(250.dp)
+                modifier = GlanceModifier.width(width = 250.dp)
             )
         }
         PostDescription(
@@ -169,7 +169,7 @@ fun HorizontalPost(
         )
         BookmarkButton(
             id = post.id,
-            isBookmarked = bookmarks.contains(post.id),
+            isBookmarked = bookmarks.contains(element = post.id),
             onToggleBookmark = onToggleBookmark
         )
     }
@@ -185,13 +185,13 @@ fun VerticalPost(
     onToggleBookmark: (String) -> Unit,
     modifier: GlanceModifier,
 ) {
-    val context = LocalContext.current
+    val context: Context = LocalContext.current
     Column(
         verticalAlignment = Alignment.Vertical.CenterVertically,
-        modifier = modifier.clickable(onClick = openPostDetails(context, post))
+        modifier = modifier.clickable(onClick = openPostDetails(context = context, post = post))
     ) {
         PostImage(imageId = post.imageId, modifier = GlanceModifier.fillMaxWidth())
-        Spacer(modifier = GlanceModifier.height(4.dp))
+        Spacer(modifier = GlanceModifier.height(height = 4.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             PostDescription(
                 title = post.title,
@@ -201,10 +201,10 @@ fun VerticalPost(
                 ),
                 modifier = GlanceModifier.defaultWeight()
             )
-            Spacer(modifier = GlanceModifier.width(10.dp))
+            Spacer(modifier = GlanceModifier.width(width = 10.dp))
             BookmarkButton(
                 id = post.id,
-                isBookmarked = bookmarks.contains(post.id),
+                isBookmarked = bookmarks.contains(element = post.id),
                 onToggleBookmark = onToggleBookmark
             )
         }
@@ -224,7 +224,7 @@ fun BookmarkButton(id: String, isBookmarked: Boolean, onToggleBookmark: (String)
                 R.drawable.ic_jetnews_bookmark
             }
         ),
-        colorFilter = ColorFilter.tint(GlanceTheme.colors.primary),
+        colorFilter = ColorFilter.tint(colorProvider = GlanceTheme.colors.primary),
         contentDescription = "${if (isBookmarked) R.string.unbookmark else R.string.bookmark}",
         modifier = GlanceModifier.clickable { onToggleBookmark(id) }
     )
@@ -240,10 +240,10 @@ fun PostImage(
     modifier: GlanceModifier = GlanceModifier
 ) {
     Image(
-        provider = ImageProvider(imageId),
+        provider = ImageProvider(resId = imageId),
         contentScale = contentScale,
         contentDescription = null,
-        modifier = modifier.cornerRadius(5.dp)
+        modifier = modifier.cornerRadius(radius = 5.dp)
     )
 }
 
@@ -259,7 +259,7 @@ fun PostDescription(title: String, metadata: String, modifier: GlanceModifier) {
             style = JetnewsGlanceTextStyles.bodyLarge
                 .copy(color = GlanceTheme.colors.onBackground)
         )
-        Spacer(modifier = GlanceModifier.height(4.dp))
+        Spacer(modifier = GlanceModifier.height(height = 4.dp))
         Text(
             text = metadata,
             style = JetnewsGlanceTextStyles.bodySmall

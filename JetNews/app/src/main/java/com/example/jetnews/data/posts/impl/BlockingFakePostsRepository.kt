@@ -34,24 +34,24 @@ import kotlinx.coroutines.withContext
 class BlockingFakePostsRepository : PostsRepository {
 
     // for now, keep the favorites in memory
-    private val favorites = MutableStateFlow<Set<String>>(setOf())
+    private val favorites = MutableStateFlow<Set<String>>(value = setOf())
 
-    private val postsFeed = MutableStateFlow<PostsFeed?>(null)
+    private val postsFeed = MutableStateFlow<PostsFeed?>(value = null)
 
     override suspend fun getPost(postId: String?): Result<Post> {
-        return withContext(Dispatchers.IO) {
-            val post = posts.allPosts.find { it.id == postId }
+        return withContext(context = Dispatchers.IO) {
+            val post: Post? = posts.allPosts.find { it.id == postId }
             if (post == null) {
-                Result.Error(IllegalArgumentException("Unable to find post"))
+                Result.Error(exception = IllegalArgumentException("Unable to find post"))
             } else {
-                Result.Success(post)
+                Result.Success(data = post)
             }
         }
     }
 
     override suspend fun getPostsFeed(): Result<PostsFeed> {
         postsFeed.update { posts }
-        return Result.Success(posts)
+        return Result.Success(data = posts)
     }
 
     override fun observeFavorites(): Flow<Set<String>> = favorites

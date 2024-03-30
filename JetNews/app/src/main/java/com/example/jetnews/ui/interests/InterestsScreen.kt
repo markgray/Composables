@@ -526,8 +526,8 @@ private fun InterestsAdaptiveContentLayout(
 fun PreviewInterestsScreenDrawer() {
     JetnewsTheme {
         val tabContent = getFakeTabsContent()
-        val (currentSection, updateSection) = rememberSaveable {
-            mutableStateOf(tabContent.first().section)
+        val (currentSection: Sections, updateSection: (Sections) -> Unit) = rememberSaveable {
+            mutableStateOf(value = tabContent.first().section)
         }
 
         InterestsScreen(
@@ -544,21 +544,21 @@ fun PreviewInterestsScreenDrawer() {
 /**
  * TODO: Add kdoc
  */
-@Preview("Interests screen navrail", "Interests", device = Devices.PIXEL_C)
+@Preview(name = "Interests screen navrail", group = "Interests", device = Devices.PIXEL_C)
 @Preview(
-    "Interests screen navrail (dark)", "Interests",
+    name = "Interests screen navrail (dark)", group = "Interests",
     uiMode = UI_MODE_NIGHT_YES, device = Devices.PIXEL_C
 )
 @Preview(
-    "Interests screen navrail (big font)", "Interests",
+    name = "Interests screen navrail (big font)", group = "Interests",
     fontScale = 1.5f, device = Devices.PIXEL_C
 )
 @Composable
-fun PreviewInterestsScreenNavRail() {
+private fun PreviewInterestsScreenNavRail() {
     JetnewsTheme {
-        val tabContent = getFakeTabsContent()
-        val (currentSection, updateSection) = rememberSaveable {
-            mutableStateOf(tabContent.first().section)
+        val tabContent: List<TabContent> = getFakeTabsContent()
+        val (currentSection: Sections, updateSection: (Sections) -> Unit) = rememberSaveable {
+            mutableStateOf(value = tabContent.first().section)
         }
 
         InterestsScreen(
@@ -584,7 +584,7 @@ fun PreviewTopicsTab() {
     }
     JetnewsTheme {
         Surface {
-            TabWithSections(topics, setOf()) { }
+            TabWithSections(sections = topics, selectedTopics = setOf()) { }
         }
     }
 }
@@ -601,7 +601,7 @@ fun PreviewPeopleTab() {
     }
     JetnewsTheme {
         Surface {
-            TabWithTopics(people, setOf()) { }
+            TabWithTopics(topics = people, selectedTopics = setOf()) { }
         }
     }
 }
@@ -618,7 +618,7 @@ fun PreviewPublicationsTab() {
     }
     JetnewsTheme {
         Surface {
-            TabWithTopics(publications, setOf()) { }
+            TabWithTopics(topics = publications, selectedTopics = setOf()) { }
         }
     }
 }
@@ -627,20 +627,20 @@ private fun getFakeTabsContent(): List<TabContent> {
     val interestsRepository = FakeInterestsRepository()
     val topicsSection = TabContent(Sections.Topics) {
         TabWithSections(
-            runBlocking { (interestsRepository.getTopics() as Result.Success).data },
-            emptySet()
+            sections = runBlocking { (interestsRepository.getTopics() as Result.Success).data },
+            selectedTopics = emptySet()
         ) { }
     }
     val peopleSection = TabContent(Sections.People) {
         TabWithTopics(
-            runBlocking { (interestsRepository.getPeople() as Result.Success).data },
-            emptySet()
+            topics = runBlocking { (interestsRepository.getPeople() as Result.Success).data },
+            selectedTopics = emptySet()
         ) { }
     }
     val publicationSection = TabContent(Sections.Publications) {
         TabWithTopics(
-            runBlocking { (interestsRepository.getPublications() as Result.Success).data },
-            emptySet()
+            topics = runBlocking { (interestsRepository.getPublications() as Result.Success).data },
+            selectedTopics = emptySet()
         ) { }
     }
 

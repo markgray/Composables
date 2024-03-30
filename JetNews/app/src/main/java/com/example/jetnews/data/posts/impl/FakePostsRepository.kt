@@ -35,31 +35,31 @@ import kotlinx.coroutines.withContext
 class FakePostsRepository : PostsRepository {
 
     // for now, store these in memory
-    private val favorites = MutableStateFlow<Set<String>>(setOf())
+    private val favorites = MutableStateFlow<Set<String>>(value = setOf())
 
-    private val postsFeed = MutableStateFlow<PostsFeed?>(null)
+    private val postsFeed = MutableStateFlow<PostsFeed?>(value = null)
 
     // Used to make suspend functions that read and update state safe to call from any thread
 
     override suspend fun getPost(postId: String?): Result<Post> {
-        return withContext(Dispatchers.IO) {
-            val post = posts.allPosts.find { it.id == postId }
+        return withContext(context = Dispatchers.IO) {
+            val post: Post? = posts.allPosts.find { it.id == postId }
             if (post == null) {
-                Result.Error(IllegalArgumentException("Post not found"))
+                Result.Error(exception = IllegalArgumentException("Post not found"))
             } else {
-                Result.Success(post)
+                Result.Success(data = post)
             }
         }
     }
 
     override suspend fun getPostsFeed(): Result<PostsFeed> {
-        return withContext(Dispatchers.IO) {
-            delay(800) // pretend we're on a slow network
+        return withContext(context = Dispatchers.IO) {
+            delay(timeMillis = 800) // pretend we're on a slow network
             if (shouldRandomlyFail()) {
-                Result.Error(IllegalStateException())
+                Result.Error(exception = IllegalStateException())
             } else {
                 postsFeed.update { posts }
-                Result.Success(posts)
+                Result.Success(data = posts)
             }
         }
     }

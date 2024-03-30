@@ -79,9 +79,9 @@ interface InterestsRepository {
 }
 
 /**
- * Data class
+ * Data class used to indicate a selected topic with the section it belongs in
  *
- * @param section the section
+ * @param section the section that the topic belongs in.
  * @param topic the topic
  */
 data class TopicSelection(val section: String, val topic: String)

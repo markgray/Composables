@@ -623,54 +623,54 @@ val paragraphsPost4: List<Paragraph> = listOf(
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "The problem is that the string is resolved in the constructor only once. If there’s a locale change, the ViewModel won’t be recreated. This will result in our app showing obsolete data and therefore being only partially localized.",
-        listOf(Markup(MarkupType.Bold, 73, 133))
+        type = ParagraphType.Text,
+        text = "The problem is that the string is resolved in the constructor only once. If there’s a locale change, the ViewModel won’t be recreated. This will result in our app showing obsolete data and therefore being only partially localized.",
+        markups = listOf(Markup(type = MarkupType.Bold, start = 73, end = 133))
     ),
     Paragraph(
-        ParagraphType.Text,
-        "As Sergey points out in the comments to the issue, the recommended approach is to expose the ID of the resource you want to load and do so in the view. As the view (activity, fragment, etc.) is lifecycle-aware it will be recreated after a configuration change so the resource will be reloaded correctly.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "As Sergey points out in the comments to the issue, the recommended approach is to expose the ID of the resource you want to load and do so in the view. As the view (activity, fragment, etc.) is lifecycle-aware it will be recreated after a configuration change so the resource will be reloaded correctly.",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                3,
-                9,
-                "https://twitter.com/ZelenetS"
+                type = MarkupType.Link,
+                start = 3,
+                end = 9,
+                href = "https://twitter.com/ZelenetS"
             ),
             Markup(
-                MarkupType.Link,
-                28,
-                36,
-                "https://issuetracker.google.com/issues/111961971#comment2"
+                type = MarkupType.Link,
+                start = 28,
+                end = 36,
+                href = "https://issuetracker.google.com/issues/111961971#comment2"
             ),
-            Markup(MarkupType.Bold, 82, 150)
+            Markup(type = MarkupType.Bold, start = 82, end = 150)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Even if you don’t plan to localize your app, it makes testing much easier and cleans up your ViewModel objects so there’s no reason not to future-proof."
+        type = ParagraphType.Text,
+        text = "Even if you don’t plan to localize your app, it makes testing much easier and cleans up your ViewModel objects so there’s no reason not to future-proof."
     ),
     Paragraph(
-        ParagraphType.Text,
-        "We fixed this issue in the android-architecture repository in the Java and Kotlin branches and we offloaded resource loading to the Data Binding layout.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "We fixed this issue in the android-architecture repository in the Java and Kotlin branches and we offloaded resource loading to the Data Binding layout.",
+        markups = listOf(
             Markup(
-                MarkupType.Link,
-                66,
-                70,
-                "https://github.com/googlesamples/android-architecture/pull/631"
+                type = MarkupType.Link,
+                start = 66,
+                end = 70,
+                href = "https://github.com/googlesamples/android-architecture/pull/631"
             ),
             Markup(
-                MarkupType.Link,
-                75,
-                81,
-                "https://github.com/googlesamples/android-architecture/pull/635"
+                type = MarkupType.Link,
+                start = 75,
+                end = 81,
+                href = "https://github.com/googlesamples/android-architecture/pull/635"
             ),
             Markup(
-                MarkupType.Link,
-                128,
-                151,
-                "https://github.com/googlesamples/android-architecture/pull/635/files#diff-7eb5d85ec3ea4e05ecddb7dc8ae20aa1R62"
+                type = MarkupType.Link,
+                start = 128,
+                end = 151,
+                href = "https://github.com/googlesamples/android-architecture/pull/635/files#diff-7eb5d85ec3ea4e05ecddb7dc8ae20aa1R62"
             )
         )
     )
@@ -681,298 +681,298 @@ val paragraphsPost4: List<Paragraph> = listOf(
  */
 val paragraphsPost5: List<Paragraph> = listOf(
     Paragraph(
-        ParagraphType.Text,
-        "Working with collections is a common task and the Kotlin Standard Library offers many great utility functions. It also offers two ways of working with collections based on how they’re evaluated: eagerly — with Collections, and lazily — with Sequences. Continue reading to find out what’s the difference between the two, which one you should use and when, and what the performance implications of each are.",
-        listOf(
-            Markup(MarkupType.Code, 210, 220),
-            Markup(MarkupType.Code, 241, 249),
+        type = ParagraphType.Text,
+        text = "Working with collections is a common task and the Kotlin Standard Library offers many great utility functions. It also offers two ways of working with collections based on how they’re evaluated: eagerly — with Collections, and lazily — with Sequences. Continue reading to find out what’s the difference between the two, which one you should use and when, and what the performance implications of each are.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 210, end = 220),
+            Markup(type = MarkupType.Code, start = 241, end = 249),
             Markup(
-                MarkupType.Link,
-                210,
-                221,
-                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/index.html"
+                type = MarkupType.Link,
+                start = 210,
+                end = 221,
+                href = "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/index.html"
             ),
             Markup(
-                MarkupType.Link,
-                241,
-                250,
-                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.sequences/index.html"
+                type = MarkupType.Link,
+                start = 241,
+                end = 250,
+                href = "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.sequences/index.html"
             ),
-            Markup(MarkupType.Bold, 130, 134),
-            Markup(MarkupType.Bold, 195, 202),
-            Markup(MarkupType.Bold, 227, 233),
-            Markup(MarkupType.Italic, 130, 134)
+            Markup(type = MarkupType.Bold, start = 130, end = 134),
+            Markup(type = MarkupType.Bold, start = 195, end = 202),
+            Markup(type = MarkupType.Bold, start = 227, end = 233),
+            Markup(type = MarkupType.Italic, start = 130, end = 134)
         )
     ),
     Paragraph(
-        ParagraphType.Header,
-        "Collections vs sequences"
+        type = ParagraphType.Header,
+        text = "Collections vs sequences"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "The difference between eager and lazy evaluation lies in when each transformation on the collection is performed.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "The difference between eager and lazy evaluation lies in when each transformation on the collection is performed.",
+        markups = listOf(
             Markup(
-                MarkupType.Italic,
-                57,
-                61
+                type = MarkupType.Italic,
+                start = 57,
+                end = 61
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Collections are eagerly evaluated — each operation is performed when it’s called and the result of the operation is stored in a new collection. The transformations on collections are inline functions. For example, looking at how map is implemented, we can see that it’s an inline function, that creates a new ArrayList:",
-        listOf(
-            Markup(MarkupType.Code, 229, 232),
-            Markup(MarkupType.Code, 273, 279),
-            Markup(MarkupType.Code, 309, 318),
+        type = ParagraphType.Text,
+        text = "Collections are eagerly evaluated — each operation is performed when it’s called and the result of the operation is stored in a new collection. The transformations on collections are inline functions. For example, looking at how map is implemented, we can see that it’s an inline function, that creates a new ArrayList:",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 229, end = 232),
+            Markup(type = MarkupType.Code, start = 273, end = 279),
+            Markup(type = MarkupType.Code, start = 309, end = 318),
             Markup(
-                MarkupType.Link,
-                183,
-                199,
-                "https://kotlinlang.org/docs/reference/inline-functions.html"
+                type = MarkupType.Link,
+                start = 183,
+                end = 199,
+                href = "https://kotlinlang.org/docs/reference/inline-functions.html"
             ),
             Markup(
-                MarkupType.Link,
-                229,
-                232,
-                "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Collections.kt#L1312"
+                type = MarkupType.Link,
+                start = 229,
+                end = 232,
+                href = "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Collections.kt#L1312"
             ),
-            Markup(MarkupType.Bold, 0, 12),
-            Markup(MarkupType.Italic, 16, 23)
+            Markup(type = MarkupType.Bold, start = 0, end = 12),
+            Markup(type = MarkupType.Italic, start = 16, end = 23)
         )
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        "public inline fun <T, R> Iterable<T>.map(transform: (T) -> R): List<R> {\n" +
+        type = ParagraphType.CodeBlock,
+        text = "public inline fun <T, R> Iterable<T>.map(transform: (T) -> R): List<R> {\n" +
             "  return mapTo(ArrayList<R>(collectionSizeOrDefault(10)), transform)\n" +
             "}",
-        listOf(
-            Markup(MarkupType.Bold, 7, 13),
-            Markup(MarkupType.Bold, 88, 97)
+        markups = listOf(
+            Markup(type = MarkupType.Bold, start = 7, end = 13),
+            Markup(type = MarkupType.Bold, start = 88, end = 97)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Sequences are lazily evaluated. They have two types of operations: intermediate and terminal. Intermediate operations are not performed on the spot; they’re just stored. Only when a terminal operation is called, the intermediate operations are triggered on each element in a row and finally, the terminal operation is applied. Intermediate operations (like map, distinct, groupBy etc) return another sequence whereas terminal operations (like first, toList, count etc) don’t.",
-        listOf(
-            Markup(MarkupType.Code, 357, 360),
-            Markup(MarkupType.Code, 362, 370),
-            Markup(MarkupType.Code, 372, 379),
-            Markup(MarkupType.Code, 443, 448),
-            Markup(MarkupType.Code, 450, 456),
-            Markup(MarkupType.Code, 458, 463),
-            Markup(MarkupType.Bold, 0, 9),
-            Markup(MarkupType.Bold, 67, 79),
-            Markup(MarkupType.Bold, 84, 92),
-            Markup(MarkupType.Bold, 254, 269),
-            Markup(MarkupType.Italic, 14, 20)
+        type = ParagraphType.Text,
+        text = "Sequences are lazily evaluated. They have two types of operations: intermediate and terminal. Intermediate operations are not performed on the spot; they’re just stored. Only when a terminal operation is called, the intermediate operations are triggered on each element in a row and finally, the terminal operation is applied. Intermediate operations (like map, distinct, groupBy etc) return another sequence whereas terminal operations (like first, toList, count etc) don’t.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 357, end = 360),
+            Markup(type = MarkupType.Code, start = 362, end = 370),
+            Markup(type = MarkupType.Code, start = 372, end = 379),
+            Markup(type = MarkupType.Code, start = 443, end = 448),
+            Markup(type = MarkupType.Code, start = 450, end = 456),
+            Markup(type = MarkupType.Code, start = 458, end = 463),
+            Markup(type = MarkupType.Bold, start = 0, end = 9),
+            Markup(type = MarkupType.Bold, start = 67, end = 79),
+            Markup(type = MarkupType.Bold, start = 84, end = 92),
+            Markup(type = MarkupType.Bold, start = 254, end = 269),
+            Markup(type = MarkupType.Italic, start = 14, end = 20)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Sequences don’t hold a reference to the items of the collection. They’re created based on the iterator of the original collection and keep a reference to all the intermediate operations that need to be performed."
+        type = ParagraphType.Text,
+        text = "Sequences don’t hold a reference to the items of the collection. They’re created based on the iterator of the original collection and keep a reference to all the intermediate operations that need to be performed."
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Unlike transformations on collections, intermediate transformations on sequences are not inline functions — inline functions cannot be stored and sequences need to store them. Looking at how an intermediate operation like map is implemented, we can see that the transform function is kept in a new instance of a Sequence:",
-        listOf(
-            Markup(MarkupType.Code, 222, 225),
-            Markup(MarkupType.Code, 312, 320),
+        type = ParagraphType.Text,
+        text = "Unlike transformations on collections, intermediate transformations on sequences are not inline functions — inline functions cannot be stored and sequences need to store them. Looking at how an intermediate operation like map is implemented, we can see that the transform function is kept in a new instance of a Sequence:",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 222, end = 225),
+            Markup(type = MarkupType.Code, start = 312, end = 320),
             Markup(
-                MarkupType.Link,
-                222,
-                225,
-                "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Sequences.kt#L860"
+                type = MarkupType.Link,
+                start = 222,
+                end = 225,
+                href = "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Sequences.kt#L860"
             )
         )
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        "public fun <T, R> Sequence<T>.map(transform: (T) -> R): Sequence<R>{      \n" +
+        type = ParagraphType.CodeBlock,
+        text = "public fun <T, R> Sequence<T>.map(transform: (T) -> R): Sequence<R>{      \n" +
             "   return TransformingSequence(this, transform)\n" +
             "}",
-        listOf(Markup(MarkupType.Bold, 85, 105))
+        markups = listOf(Markup(type = MarkupType.Bold, start = 85, end = 105))
     ),
     Paragraph(
-        ParagraphType.Text,
-        "A terminal operation, like first, iterates through the elements of the sequence until the predicate condition is matched.",
-        listOf(
-            Markup(MarkupType.Code, 27, 32),
+        type = ParagraphType.Text,
+        text = "A terminal operation, like first, iterates through the elements of the sequence until the predicate condition is matched.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 27, end = 32),
             Markup(
-                MarkupType.Link,
-                27,
-                32,
-                "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Sequences.kt#L117"
+                type = MarkupType.Link,
+                start = 27,
+                end = 32,
+                href = "https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/generated/_Sequences.kt#L117"
             )
         )
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        "public inline fun <T> Sequence<T>.first(predicate: (T) -> Boolean): T {\n" +
+        type = ParagraphType.CodeBlock,
+        text = "public inline fun <T> Sequence<T>.first(predicate: (T) -> Boolean): T {\n" +
             "   for (element in this) if (predicate(element)) return element\n" +
             "   throw NoSuchElementException(“Sequence contains no element matching the predicate.”)\n" +
             "}"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "If we look at how a sequence like TransformingSequence (used in the map above) is implemented, we’ll see that when next is called on the sequence iterator, the transformation stored is also applied.",
-        listOf(
-            Markup(MarkupType.Code, 34, 54),
-            Markup(MarkupType.Code, 68, 71)
+        type = ParagraphType.Text,
+        text = "If we look at how a sequence like TransformingSequence (used in the map above) is implemented, we’ll see that when next is called on the sequence iterator, the transformation stored is also applied.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 34, end = 54),
+            Markup(type = MarkupType.Code, start = 68, end = 71)
         )
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        "internal class TransformingIndexedSequence<T, R> \n" +
+        type = ParagraphType.CodeBlock,
+        text = "internal class TransformingIndexedSequence<T, R> \n" +
             "constructor(private val sequence: Sequence<T>, private val transformer: (Int, T) -> R) : Sequence<R> {",
-        listOf(
+        markups = listOf(
             Markup(
-                MarkupType.Bold,
-                109,
-                120
+                type = MarkupType.Bold,
+                start = 109,
+                end = 120
             )
         )
     ),
     Paragraph(
-        ParagraphType.CodeBlock,
-        "override fun iterator(): Iterator<R> = object : Iterator<R> {\n" +
+        type = ParagraphType.CodeBlock,
+        text = "override fun iterator(): Iterator<R> = object : Iterator<R> {\n" +
             "   …\n" +
             "   override fun next(): R {\n" +
             "     return transformer(checkIndexOverflow(index++), iterator.next())\n" +
             "   }\n" +
             "   …\n" +
             "}",
-        listOf(
-            Markup(MarkupType.Bold, 83, 89),
-            Markup(MarkupType.Bold, 107, 118)
+        markups = listOf(
+            Markup(type = MarkupType.Bold, start = 83, end = 89),
+            Markup(type = MarkupType.Bold, start = 107, end = 118)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Independent on whether you’re using collections or sequences, the Kotlin Standard Library offers quite a wide range of operations for both, like find, filter, groupBy and others. Make sure you check them out, before implementing your own version of these.",
-        listOf(
-            Markup(MarkupType.Code, 145, 149),
-            Markup(MarkupType.Code, 151, 157),
-            Markup(MarkupType.Code, 159, 166),
+        type = ParagraphType.Text,
+        text = "Independent on whether you’re using collections or sequences, the Kotlin Standard Library offers quite a wide range of operations for both, like find, filter, groupBy and others. Make sure you check them out, before implementing your own version of these.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 145, end = 149),
+            Markup(type = MarkupType.Code, start = 151, end = 157),
+            Markup(type = MarkupType.Code, start = 159, end = 166),
             Markup(
-                MarkupType.Link,
-                193,
-                207,
-                "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/#functions"
+                type = MarkupType.Link,
+                start = 193,
+                end = 207,
+                href = "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/#functions"
             )
         )
     ),
     Paragraph(
-        ParagraphType.Header,
-        "Collections and sequences"
+        type = ParagraphType.Header,
+        text = "Collections and sequences"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Let’s say that we have a list of objects of different shapes. We want to make the shapes yellow and then take the first square shape."
+        type = ParagraphType.Text,
+        text = "Let’s say that we have a list of objects of different shapes. We want to make the shapes yellow and then take the first square shape."
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Let’s see how and when each operation is applied for collections and when for sequences"
+        type = ParagraphType.Text,
+        text = "Let’s see how and when each operation is applied for collections and when for sequences"
     ),
     Paragraph(
-        ParagraphType.Subhead,
-        "Collections"
+        type = ParagraphType.Subhead,
+        text = "Collections"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "map is called — a new ArrayList is created. We iterate through all items of the initial collection, transform it by copying the original object and changing the color, then add it to the new list.",
-        listOf(Markup(MarkupType.Code, 0, 3))
+        type = ParagraphType.Text,
+        text = "map is called — a new ArrayList is created. We iterate through all items of the initial collection, transform it by copying the original object and changing the color, then add it to the new list.",
+        markups = listOf(Markup(type = MarkupType.Code, start = 0, end = 3))
     ),
     Paragraph(
-        ParagraphType.Text,
-        "first is called — we iterate through each item until the first square is found",
-        listOf(Markup(MarkupType.Code, 0, 5))
+        type = ParagraphType.Text,
+        text = "first is called — we iterate through each item until the first square is found",
+        markups = listOf(Markup(type = MarkupType.Code, start = 0, end = 5))
     ),
     Paragraph(
-        ParagraphType.Subhead,
-        "Sequences"
+        type = ParagraphType.Subhead,
+        text = "Sequences"
     ),
     Paragraph(
-        ParagraphType.Bullet,
-        "asSequence — a sequence is created based on the Iterator of the original collection",
-        listOf(Markup(MarkupType.Code, 0, 10))
+        type = ParagraphType.Bullet,
+        text = "asSequence — a sequence is created based on the Iterator of the original collection",
+        markups = listOf(Markup(type = MarkupType.Code, start = 0, end = 10))
     ),
     Paragraph(
-        ParagraphType.Bullet,
-        "map is called — the transformation is added to the list of operations needed to be performed by the sequence but the operation is NOT performed",
-        listOf(
-            Markup(MarkupType.Code, 0, 3),
-            Markup(MarkupType.Bold, 130, 133)
+        type = ParagraphType.Bullet,
+        text = "map is called — the transformation is added to the list of operations needed to be performed by the sequence but the operation is NOT performed",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 0, end = 3),
+            Markup(type = MarkupType.Bold, start = 130, end = 133)
         )
     ),
     Paragraph(
-        ParagraphType.Bullet,
-        "first is called — this is a terminal operation, so, all the intermediate operations are triggered, on each element of the collection. We iterate through the initial collection applying map and then first on each of them. Since the condition from first is satisfied by the 2nd element, then we no longer apply the map on the rest of the collection.",
-        listOf(Markup(MarkupType.Code, 0, 5))
+        type = ParagraphType.Bullet,
+        text = "first is called — this is a terminal operation, so, all the intermediate operations are triggered, on each element of the collection. We iterate through the initial collection applying map and then first on each of them. Since the condition from first is satisfied by the 2nd element, then we no longer apply the map on the rest of the collection.",
+        markups = listOf(Markup(type = MarkupType.Code, start = 0, end = 5))
     ),
 
     Paragraph(
-        ParagraphType.Text,
-        "When working with sequences no intermediate collection is created and since items are evaluated one by one, map is only performed on some of the inputs."
+        type = ParagraphType.Text,
+        text = "When working with sequences no intermediate collection is created and since items are evaluated one by one, map is only performed on some of the inputs."
     ),
     Paragraph(
-        ParagraphType.Header,
-        "Performance"
+        type = ParagraphType.Header,
+        text = "Performance"
     ),
     Paragraph(
-        ParagraphType.Subhead,
-        "Order of transformations"
+        type = ParagraphType.Subhead,
+        text = "Order of transformations"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Independent of whether you’re using collections or sequences, the order of transformations matters. In the example above, first doesn’t need to happen after map since it’s not a consequence of the map transformation. If we reverse the order of our business logic and call first on the collection and then transform the result, then we only create one new object — the yellow square. When using sequences — we avoid creating 2 new objects, when using collections, we avoid creating an entire new list.",
-        listOf(
-            Markup(MarkupType.Code, 122, 127),
-            Markup(MarkupType.Code, 157, 160),
-            Markup(MarkupType.Code, 197, 200)
+        type = ParagraphType.Text,
+        text = "Independent of whether you’re using collections or sequences, the order of transformations matters. In the example above, first doesn’t need to happen after map since it’s not a consequence of the map transformation. If we reverse the order of our business logic and call first on the collection and then transform the result, then we only create one new object — the yellow square. When using sequences — we avoid creating 2 new objects, when using collections, we avoid creating an entire new list.",
+        markups = listOf(
+            Markup(type = MarkupType.Code, start = 122, end = 127),
+            Markup(type = MarkupType.Code, start = 157, end = 160),
+            Markup(type = MarkupType.Code, start = 197, end = 200)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Because terminal operations can finish processing early, and intermediate operations are evaluated lazily, sequences can, in some cases, help you avoid doing unnecessary work compared to collections. Make sure you always check the order of the transformations and the dependencies between them!"
+        type = ParagraphType.Text,
+        text = "Because terminal operations can finish processing early, and intermediate operations are evaluated lazily, sequences can, in some cases, help you avoid doing unnecessary work compared to collections. Make sure you always check the order of the transformations and the dependencies between them!"
     ),
     Paragraph(
-        ParagraphType.Subhead,
-        "Inlining and large data sets consequences"
+        type = ParagraphType.Subhead,
+        text = "Inlining and large data sets consequences"
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Collection operations use inline functions, so the bytecode of the operation, together with the bytecode of the lambda passed to it will be inlined. Sequences don’t use inline functions, therefore, new Function objects are created for each operation.",
-        listOf(
+        type = ParagraphType.Text,
+        text = "Collection operations use inline functions, so the bytecode of the operation, together with the bytecode of the lambda passed to it will be inlined. Sequences don’t use inline functions, therefore, new Function objects are created for each operation.",
+        markups = listOf(
             Markup(
-                MarkupType.Code,
-                202,
-                210
+                type = MarkupType.Code,
+                start = 202,
+                end = 210
             )
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "On the other hand, collections create a new list for every transformation while sequences just keep a reference to the transformation function."
+        type = ParagraphType.Text,
+        text = "On the other hand, collections create a new list for every transformation while sequences just keep a reference to the transformation function."
     ),
     Paragraph(
-        ParagraphType.Text,
-        "When working with small collections, with 1–2 operators, these differences don’t have big implications so working with collections should be ok. But, when working with large lists the intermediate collection creation can become expensive; in such cases, use sequences.",
-        listOf(
-            Markup(MarkupType.Bold, 18, 35),
-            Markup(MarkupType.Bold, 119, 130),
-            Markup(MarkupType.Bold, 168, 179),
-            Markup(MarkupType.Bold, 258, 267)
+        type = ParagraphType.Text,
+        text = "When working with small collections, with 1–2 operators, these differences don’t have big implications so working with collections should be ok. But, when working with large lists the intermediate collection creation can become expensive; in such cases, use sequences.",
+        markups = listOf(
+            Markup(type = MarkupType.Bold, start = 18, end = 35),
+            Markup(type = MarkupType.Bold, start = 119, end = 130),
+            Markup(type = MarkupType.Bold, start = 168, end = 179),
+            Markup(type = MarkupType.Bold, start = 258, end = 267)
         )
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Unfortunately, I’m not aware of any benchmarking study done that would help us get a better understanding on how the performance of collections vs sequences is affected with different sizes of collections or operation chains."
+        type = ParagraphType.Text,
+        text = "Unfortunately, I’m not aware of any benchmarking study done that would help us get a better understanding on how the performance of collections vs sequences is affected with different sizes of collections or operation chains."
     ),
     Paragraph(
-        ParagraphType.Text,
-        "Collections eagerly evaluate your data while sequences do so lazily. Depending on the size of your data, pick the one that fits best: collections — for small lists or sequences — for larger ones, and pay attention to the order of the transformations."
+        type = ParagraphType.Text,
+        text = "Collections eagerly evaluate your data while sequences do so lazily. Depending on the size of your data, pick the one that fits best: collections — for small lists or sequences — for larger ones, and pay attention to the order of the transformations."
     )
 )
 

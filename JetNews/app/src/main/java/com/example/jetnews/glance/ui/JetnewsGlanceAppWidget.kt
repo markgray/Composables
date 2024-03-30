@@ -49,9 +49,12 @@ import androidx.glance.layout.size
 import androidx.glance.layout.width
 import com.example.jetnews.JetnewsApplication
 import com.example.jetnews.R
+import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.successOr
 import com.example.jetnews.glance.ui.theme.JetnewsGlanceColorScheme
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostsFeed
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -65,24 +68,24 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val application = context.applicationContext as JetnewsApplication
-        val postsRepository = application.container.postsRepository
+        val postsRepository: PostsRepository = application.container.postsRepository
 
         // Load data needed to render the composable.
         // The widget is configured to refresh periodically using the "android:updatePeriodMillis"
         // configuration, and during each refresh, the data is loaded here.
         // The repository can internally return cached results here if it already has fresh data.
-        val initialPostsFeed = withContext(Dispatchers.IO) {
-            postsRepository.getPostsFeed().successOr(null)
+        val initialPostsFeed: PostsFeed? = withContext(context = Dispatchers.IO) {
+            postsRepository.getPostsFeed().successOr(fallback = null)
         }
-        val initialBookmarks: Set<String> = withContext(Dispatchers.IO) {
+        val initialBookmarks: Set<String> = withContext(context = Dispatchers.IO) {
             postsRepository.observeFavorites().first()
         }
 
         provideContent {
-            val scope = rememberCoroutineScope()
-            val bookmarks by postsRepository.observeFavorites().collectAsState(initialBookmarks)
-            val postsFeed by postsRepository.observePostsFeed().collectAsState(initialPostsFeed)
-            val recommendedTopPosts =
+            val scope: CoroutineScope = rememberCoroutineScope()
+            val bookmarks: Set<String> by postsRepository.observeFavorites().collectAsState(initialBookmarks)
+            val postsFeed: PostsFeed? by postsRepository.observePostsFeed().collectAsState(initialPostsFeed)
+            val recommendedTopPosts: List<Post> =
                 postsFeed?.let { listOf(it.highlightedPost) + it.recommendedPosts } ?: emptyList()
 
             // Provide a custom color scheme if the SDK version doesn't support dynamic colors.
@@ -110,8 +113,8 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
     ) {
         Column(
             modifier = GlanceModifier
-                .background(GlanceTheme.colors.surface)
-                .cornerRadius(24.dp)
+                .background(colorProvider = GlanceTheme.colors.surface)
+                .cornerRadius(radius = 24.dp)
         ) {
             Header(modifier = GlanceModifier.fillMaxWidth())
             // Set key for each size so that the onToggleBookmark lambda is called only once for the
@@ -139,16 +142,16 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
         ) {
             val context = LocalContext.current
             Image(
-                provider = ImageProvider(R.drawable.ic_jetnews_logo),
-                colorFilter = ColorFilter.tint(GlanceTheme.colors.primary),
+                provider = ImageProvider(resId = R.drawable.ic_jetnews_logo),
+                colorFilter = ColorFilter.tint(colorProvider = GlanceTheme.colors.primary),
                 contentDescription = null,
-                modifier = GlanceModifier.size(24.dp)
+                modifier = GlanceModifier.size(size = 24.dp)
             )
-            Spacer(modifier = GlanceModifier.width(8.dp))
+            Spacer(modifier = GlanceModifier.width(width = 8.dp))
             Image(
                 contentDescription = context.getString(R.string.app_name),
-                colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
-                provider = ImageProvider(R.drawable.ic_jetnews_wordmark)
+                colorFilter = ColorFilter.tint(colorProvider = GlanceTheme.colors.onSurfaceVariant),
+                provider = ImageProvider(resId = R.drawable.ic_jetnews_wordmark)
             )
         }
     }
@@ -163,15 +166,15 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
         bookmarks: Set<String>,
         onToggleBookmark: (String) -> Unit,
     ) {
-        val postLayout = LocalSize.current.toPostLayout()
-        LazyColumn(modifier = modifier.background(GlanceTheme.colors.background)) {
-            itemsIndexed(posts) { index, post ->
+        val postLayout: PostLayout = LocalSize.current.toPostLayout()
+        LazyColumn(modifier = modifier.background(colorProvider = GlanceTheme.colors.background)) {
+            itemsIndexed(posts) { index: Int, post: Post ->
                 Column(modifier = GlanceModifier.padding(horizontal = 14.dp)) {
                     Post(
                         post = post,
                         bookmarks = bookmarks,
                         onToggleBookmark = onToggleBookmark,
-                        modifier = GlanceModifier.fillMaxWidth().padding(15.dp),
+                        modifier = GlanceModifier.fillMaxWidth().padding(all = 15.dp),
                         postLayout = postLayout,
                     )
                     if (index < posts.lastIndex) {
