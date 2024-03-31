@@ -145,8 +145,8 @@ fun HomeFeedWithArticleDetailsScreen(
         openDrawer = openDrawer,
         snackbarHostState = snackbarHostState,
         modifier = modifier,
-    ) { hasPostsUiState, contentPadding, contentModifier ->
-        Row(contentModifier) {
+    ) { hasPostsUiState: HomeUiState.HasPosts, contentPadding: PaddingValues, contentModifier: Modifier ->
+        Row(modifier = contentModifier) {
             PostList(
                 postsFeed = hasPostsUiState.postsFeed,
                 favorites = hasPostsUiState.favorites,
@@ -155,18 +155,18 @@ fun HomeFeedWithArticleDetailsScreen(
                 onToggleFavorite = onToggleFavorite,
                 contentPadding = contentPadding,
                 modifier = Modifier
-                    .width(334.dp)
-                    .notifyInput(onInteractWithList),
+                    .width(width = 334.dp)
+                    .notifyInput(block = onInteractWithList),
                 state = homeListLazyListState,
                 searchInput = hasPostsUiState.searchInput,
                 onSearchInputChanged = onSearchInputChanged,
             )
             // Crossfade between different detail posts
-            Crossfade(targetState = hasPostsUiState.selectedPost, label = "Crossfade") { detailPost ->
+            Crossfade(targetState = hasPostsUiState.selectedPost, label = "Crossfade") { detailPost: Post ->
                 // Get the lazy list state for this detail view
-                val detailLazyListState by remember {
+                val detailLazyListState: LazyListState by remember {
                     derivedStateOf {
-                        articleDetailLazyListStates.getValue(detailPost.id)
+                        articleDetailLazyListStates.getValue(key = detailPost.id)
                     }
                 }
 
@@ -183,17 +183,17 @@ fun HomeFeedWithArticleDetailsScreen(
                             }
                     ) {
                         stickyHeader {
-                            val context = LocalContext.current
+                            val context: Context = LocalContext.current
                             PostTopBar(
-                                isFavorite = hasPostsUiState.favorites.contains(detailPost.id),
+                                isFavorite = hasPostsUiState.favorites.contains(element = detailPost.id),
                                 onToggleFavorite = { onToggleFavorite(detailPost.id) },
-                                onSharePost = { sharePost(detailPost, context) },
+                                onSharePost = { sharePost(post = detailPost, context = context) },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.End)
+                                    .wrapContentWidth(align = Alignment.End)
                             )
                         }
-                        postContentItems(detailPost)
+                        postContentItems(post = detailPost)
                     }
                 }
             }

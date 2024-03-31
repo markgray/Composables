@@ -50,38 +50,44 @@ fun AppNavRail(
     NavigationRail(
         header = {
             Icon(
-                painterResource(R.drawable.ic_jetnews_logo),
-                null,
-                Modifier.padding(vertical = 12.dp),
+                painter = painterResource(id = R.drawable.ic_jetnews_logo),
+                contentDescription = null,
+                modifier = Modifier.padding(vertical = 12.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
         },
         modifier = modifier
     ) {
-        Spacer(Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(weight = 1f))
         NavigationRailItem(
             selected = currentRoute == JetnewsDestinations.HOME_ROUTE,
             onClick = navigateToHome,
-            icon = { Icon(Icons.Filled.Home, stringResource(R.string.home_title)) },
-            label = { Text(stringResource(R.string.home_title)) },
+            icon = { Icon(
+                imageVector = Icons.Filled.Home,
+                contentDescription = stringResource(id = R.string.home_title)
+            ) },
+            label = { Text(text = stringResource(id = R.string.home_title)) },
             alwaysShowLabel = false
         )
         NavigationRailItem(
             selected = currentRoute == JetnewsDestinations.INTERESTS_ROUTE,
             onClick = navigateToInterests,
-            icon = { Icon(Icons.AutoMirrored.Filled.ListAlt, stringResource(R.string.interests_title)) },
-            label = { Text(stringResource(R.string.interests_title)) },
+            icon = { Icon(
+                imageVector = Icons.AutoMirrored.Filled.ListAlt,
+                contentDescription = stringResource(id = R.string.interests_title)
+            ) },
+            label = { Text(text = stringResource(id = R.string.interests_title)) },
             alwaysShowLabel = false
         )
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.weight(weight = 1f))
     }
 }
 
 /**
  * TODO: Add kdoc
  */
-@Preview("Drawer contents")
-@Preview("Drawer contents (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Drawer contents")
+@Preview(name = "Drawer contents (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewAppNavRail() {
     JetnewsTheme {

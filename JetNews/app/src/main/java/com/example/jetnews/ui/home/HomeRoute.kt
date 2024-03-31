@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.home
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -49,18 +50,18 @@ fun HomeRoute(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     // UiState of the HomeScreen
-    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: HomeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
     HomeRoute(
         uiState = uiState,
         isExpandedScreen = isExpandedScreen,
-        onToggleFavorite = { homeViewModel.toggleFavourite(it) },
-        onSelectPost = { homeViewModel.selectArticle(it) },
+        onToggleFavorite = { homeViewModel.toggleFavourite(postId = it) },
+        onSelectPost = { homeViewModel.selectArticle(postId = it) },
         onRefreshPosts = { homeViewModel.refreshPosts() },
-        onErrorDismiss = { homeViewModel.errorShown(it) },
+        onErrorDismiss = { homeViewModel.errorShown(errorId = it) },
         onInteractWithFeed = { homeViewModel.interactedWithFeed() },
-        onInteractWithArticleDetails = { homeViewModel.interactedWithArticleDetails(it) },
-        onSearchInputChanged = { homeViewModel.onSearchInputChanged(it) },
+        onInteractWithArticleDetails = { homeViewModel.interactedWithArticleDetails(postId = it) },
+        onSearchInputChanged = { homeViewModel.onSearchInputChanged(searchInput = it) },
         openDrawer = openDrawer,
         snackbarHostState = snackbarHostState,
     )
@@ -103,7 +104,7 @@ fun HomeRoute(
     val homeListLazyListState = rememberLazyListState()
 
     @Suppress("Destructure")
-    val articleDetailLazyListStates = when (uiState) {
+    val articleDetailLazyListStates: Map<String, LazyListState> = when (uiState) {
         is HomeUiState.HasPosts -> uiState.postsFeed.allPosts
         is HomeUiState.NoPosts -> emptyList()
     }.associate { post: Post ->
@@ -112,7 +113,10 @@ fun HomeRoute(
         }
     }
 
-    val homeScreenType = getHomeScreenType(isExpandedScreen, uiState)
+    val homeScreenType: HomeScreenType = getHomeScreenType(
+        isExpandedScreen = isExpandedScreen,
+        uiState = uiState
+    )
     when (homeScreenType) {
         FeedWithArticleDetails -> {
             HomeFeedWithArticleDetailsScreen(
@@ -153,7 +157,7 @@ fun HomeRoute(
                 post = uiState.selectedPost,
                 isExpandedScreen = isExpandedScreen,
                 onBack = onInteractWithFeed,
-                isFavorite = uiState.favorites.contains(uiState.selectedPost.id),
+                isFavorite = uiState.favorites.contains(element = uiState.selectedPost.id),
                 onToggleFavorite = {
                     onToggleFavorite(uiState.selectedPost.id)
                 },

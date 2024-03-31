@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -41,6 +42,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -89,13 +91,13 @@ fun ArticleScreen(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
-    var showUnimplementedActionDialog by rememberSaveable { mutableStateOf(false) }
+    var showUnimplementedActionDialog: Boolean by rememberSaveable { mutableStateOf(false) }
     if (showUnimplementedActionDialog) {
         FunctionalityNotAvailablePopup { showUnimplementedActionDialog = false }
     }
 
-    Row(modifier.fillMaxSize()) {
-        val context = LocalContext.current
+    Row(modifier = modifier.fillMaxSize()) {
+        val context: Context = LocalContext.current
         ArticleScreenContent(
             post = post,
             // Allow opening the Drawer if the screen is not expanded
@@ -104,7 +106,7 @@ fun ArticleScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_navigate_up),
+                            contentDescription = stringResource(id = R.string.cd_navigate_up),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -143,8 +145,9 @@ private fun ArticleScreenContent(
     bottomBarContent: @Composable () -> Unit = { },
     lazyListState: LazyListState = rememberLazyListState()
 ) {
-    val topAppBarState = rememberTopAppBarState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val topAppBarState: TopAppBarState = rememberTopAppBarState()
+    val scrollBehavior: TopAppBarScrollBehavior =
+        TopAppBarDefaults.enterAlwaysScrollBehavior(state = topAppBarState)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -154,12 +157,12 @@ private fun ArticleScreenContent(
             )
         },
         bottomBar = bottomBarContent
-    ) { innerPadding ->
+    ) { innerPadding: PaddingValues ->
         PostContent(
             post = post,
             contentPadding = innerPadding,
             modifier = Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+                .nestedScroll(connection = scrollBehavior.nestedScrollConnection),
             state = lazyListState,
         )
     }
@@ -180,11 +183,11 @@ private fun TopAppBar(
                     painter = painterResource(id = R.drawable.icon_article_background),
                     contentDescription = null,
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .size(36.dp)
+                        .clip(shape = CircleShape)
+                        .size(size = 36.dp)
                 )
                 Text(
-                    text = stringResource(R.string.published_in, title),
+                    text = stringResource(id = R.string.published_in, title),
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -233,8 +236,8 @@ fun sharePost(post: Post, context: Context) {
     }
     context.startActivity(
         Intent.createChooser(
-            intent,
-            context.getString(R.string.article_share_post)
+            /* target = */ intent,
+            /* title = */ context.getString(R.string.article_share_post)
         )
     )
 }
@@ -249,28 +252,38 @@ fun sharePost(post: Post, context: Context) {
 fun PreviewArticleDrawer() {
     JetnewsTheme {
         val post = runBlocking {
-            (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
+            (BlockingFakePostsRepository().getPost(postId = post3.id) as Result.Success).data
         }
-        ArticleScreen(post, false, {}, false, {})
+        ArticleScreen(
+            post = post,
+            isExpandedScreen = false,
+            onBack = {},
+            isFavorite = false,
+            onToggleFavorite = {})
     }
 }
 
 /**
  * TODO: Add kdoc
  */
-@Preview("Article screen navrail", device = Devices.PIXEL_C)
+@Preview(name = "Article screen navrail", device = Devices.PIXEL_C)
 @Preview(
-    "Article screen navrail (dark)",
+    name = "Article screen navrail (dark)",
     uiMode = UI_MODE_NIGHT_YES,
     device = Devices.PIXEL_C
 )
-@Preview("Article screen navrail (big font)", fontScale = 1.5f, device = Devices.PIXEL_C)
+@Preview(name = "Article screen navrail (big font)", fontScale = 1.5f, device = Devices.PIXEL_C)
 @Composable
 fun PreviewArticleNavRail() {
     JetnewsTheme {
         val post = runBlocking {
             (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
-        ArticleScreen(post, true, {}, false, {})
+        ArticleScreen(
+            post = post,
+            isExpandedScreen = true,
+            onBack = {},
+            isFavorite = false,
+            onToggleFavorite = {})
     }
 }
