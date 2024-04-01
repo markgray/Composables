@@ -52,6 +52,7 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
+import com.example.jetnews.ui.home.PostCardHistory as PostCardHistory1
 
 /**
  * TODO: Add kdoc
@@ -81,11 +82,11 @@ fun AuthorAndReadTime(
 @Composable
 fun PostImage(post: Post, modifier: Modifier = Modifier) {
     Image(
-        painter = painterResource(post.imageThumbId),
+        painter = painterResource(id = post.imageThumbId),
         contentDescription = null, // decorative
         modifier = modifier
-            .size(40.dp, 40.dp)
-            .clip(MaterialTheme.shapes.small)
+            .size(width = 40.dp, height = 40.dp)
+            .clip(shape = MaterialTheme.shapes.small)
     )
 }
 
@@ -112,7 +113,7 @@ fun  PostCardSimple(
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit
 ) {
-    val bookmarkAction = stringResource(if (isFavorite) R.string.unbookmark else R.string.bookmark)
+    val bookmarkAction: String = stringResource(if (isFavorite) R.string.unbookmark else R.string.bookmark)
     Row(
         modifier = Modifier
             .clickable(onClick = { navigateToArticle(post.id) })
@@ -128,14 +129,14 @@ fun  PostCardSimple(
                 )
             }
     ) {
-        PostImage(post, Modifier.padding(16.dp))
+        PostImage(post = post, modifier = Modifier.padding(all = 16.dp))
         Column(
             modifier = Modifier
-                .weight(1f)
+                .weight(weight = 1f)
                 .padding(vertical = 10.dp)
         ) {
-            PostTitle(post)
-            AuthorAndReadTime(post)
+            PostTitle(post = post)
+            AuthorAndReadTime(post = post)
         }
         BookmarkButton(
             isBookmarked = isFavorite,
@@ -153,7 +154,7 @@ fun  PostCardSimple(
  */
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
-    var openDialog by remember { mutableStateOf(false) }
+    var openDialog: Boolean by remember { mutableStateOf(false) }
 
     Row(
         Modifier
@@ -161,7 +162,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
     ) {
         PostImage(
             post = post,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(all = 16.dp)
         )
         Column(
             Modifier
@@ -181,13 +182,13 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
         IconButton(onClick = { openDialog = true }) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
-                contentDescription = stringResource(R.string.cd_more_actions)
+                contentDescription = stringResource(id = R.string.cd_more_actions)
             )
         }
     }
     if (openDialog) {
         AlertDialog(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(all = 20.dp),
             onDismissRequest = { openDialog = false },
             title = {
                 Text(
@@ -207,7 +208,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .padding(15.dp)
+                        .padding(all = 15.dp)
                         .clickable { openDialog = false }
                 )
             }
@@ -218,7 +219,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
 /**
  * TODO: Add kdoc
  */
-@Preview("Bookmark Button")
+@Preview(name = "Bookmark Button")
 @Composable
 fun BookmarkButtonPreview() {
     JetnewsTheme {
@@ -231,7 +232,7 @@ fun BookmarkButtonPreview() {
 /**
  * TODO: Add kdoc
  */
-@Preview("Bookmark Button Bookmarked")
+@Preview(name = "Bookmark Button Bookmarked")
 @Composable
 fun BookmarkButtonBookmarkedPreview() {
     JetnewsTheme {
@@ -244,13 +245,17 @@ fun BookmarkButtonBookmarkedPreview() {
 /**
  * TODO: Add kdoc
  */
-@Preview("Simple post card")
-@Preview("Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Simple post card")
+@Preview(name = "Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SimplePostPreview() {
     JetnewsTheme {
         Surface {
-            PostCardSimple(post3, {}, false, {})
+            PostCardSimple(
+                post = post3,
+                navigateToArticle = {},
+                isFavorite = false,
+                onToggleFavorite = {})
         }
     }
 }
@@ -258,12 +263,12 @@ fun SimplePostPreview() {
 /**
  * TODO: Add kdoc
  */
-@Preview("Post History card")
+@Preview(name = "Post History card")
 @Composable
 fun HistoryPostPreview() {
     JetnewsTheme {
         Surface {
-            PostCardHistory(post3) {}
+            PostCardHistory1(post = post3) {}
         }
     }
 }

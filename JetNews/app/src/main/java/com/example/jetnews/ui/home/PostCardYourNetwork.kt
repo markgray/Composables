@@ -61,26 +61,26 @@ fun PostCardPopular(
         onClick = { navigateToArticle(post.id) },
         shape = MaterialTheme.shapes.medium,
         modifier = modifier
-            .width(280.dp)
+            .width(width = 280.dp)
     ) {
         Column {
             Image(
-                painter = painterResource(post.imageId),
+                painter = painterResource(id = post.imageId),
                 contentDescription = null, // decorative
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(100.dp)
+                    .height(height = 100.dp)
                     .fillMaxWidth()
             )
 
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(all = 16.dp)) {
                 Text(
                     text = post.title,
                     style = MaterialTheme.typography.headlineSmall,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(weight = 1f))
                 Text(
                     text = post.metadata.author.name,
                     maxLines = 1,
@@ -106,15 +106,15 @@ fun PostCardPopular(
 /**
  * TODO: Add kdoc
  */
-@Preview("Regular colors")
-@Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Regular colors")
+@Preview(name = "Dark colors", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewPostCardPopular(
     @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
 ) {
     JetnewsTheme {
         Surface {
-            PostCardPopular(post, {})
+            PostCardPopular(post = post, navigateToArticle = {})
         }
     }
 }
@@ -122,7 +122,7 @@ fun PreviewPostCardPopular(
 /**
  * TODO: Add kdoc
  */
-@Preview("Regular colors, long text")
+@Preview(name = "Regular colors, long text")
 @Composable
 fun PreviewPostCardPopularLongText(
     @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
@@ -139,14 +139,14 @@ fun PreviewPostCardPopularLongText(
     JetnewsTheme {
         Surface {
             PostCardPopular(
-                post.copy(
+                post = post.copy(
                     title = "Title$loremIpsum",
                     metadata = post.metadata.copy(
-                        author = PostAuthor("Author: $loremIpsum"),
+                        author = PostAuthor(name = "Author: $loremIpsum"),
                         readTimeMinutes = Int.MAX_VALUE
                     )
                 ),
-                {}
+                navigateToArticle = {}
             )
         }
     }
@@ -171,7 +171,7 @@ fun PreviewPostCardPopularLongText(
  * be the right place to instantiate dummy instances.
  */
 class PostPreviewParameterProvider : PreviewParameterProvider<Post> {
-    override val values = sequenceOf(
+    override val values: Sequence<Post> = sequenceOf(
         post1, post2, post3, post4, post5
     )
 }

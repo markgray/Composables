@@ -48,10 +48,12 @@ sealed interface HomeUiState {
      * TODO: Add kdoc
      */
     val isLoading: Boolean
+
     /**
      * TODO: Add kdoc
      */
     val errorMessages: List<ErrorMessage>
+
     /**
      * TODO: Add kdoc
      */
@@ -147,7 +149,7 @@ class HomeViewModel(
     preSelectedPostId: String?
 ) : ViewModel() {
 
-    private val viewModelState = MutableStateFlow(
+    private val viewModelState: MutableStateFlow<HomeViewModelState> = MutableStateFlow(
         HomeViewModelState(
             isLoading = true,
             selectedPostId = preSelectedPostId,
@@ -159,11 +161,11 @@ class HomeViewModel(
      * UI state exposed to the UI
      */
     val uiState: StateFlow<HomeUiState> = viewModelState
-        .map(HomeViewModelState::toUiState)
+        .map(transform = HomeViewModelState::toUiState)
         .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            viewModelState.value.toUiState()
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = viewModelState.value.toUiState()
         )
 
     init {
@@ -171,7 +173,7 @@ class HomeViewModel(
 
         // Observe for favorite changes in the repo layer
         viewModelScope.launch {
-            postsRepository.observeFavorites().collect { favorites ->
+            postsRepository.observeFavorites().collect { favorites: Set<String> ->
                 viewModelState.update { it.copy(favorites = favorites) }
             }
         }
@@ -185,7 +187,7 @@ class HomeViewModel(
         viewModelState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
-            val result = postsRepository.getPostsFeed()
+            val result: Result<PostsFeed> = postsRepository.getPostsFeed()
             viewModelState.update {
                 when (result) {
                     is Result.Success -> it.copy(postsFeed = result.data, isLoading = false)
@@ -206,7 +208,7 @@ class HomeViewModel(
      */
     fun toggleFavourite(postId: String) {
         viewModelScope.launch {
-            postsRepository.toggleFavorite(postId)
+            postsRepository.toggleFavorite(postId = postId)
         }
     }
 
@@ -215,15 +217,16 @@ class HomeViewModel(
      */
     fun selectArticle(postId: String) {
         // Treat selecting a detail as simply interacting with it
-        interactedWithArticleDetails(postId)
+        interactedWithArticleDetails(postId = postId)
     }
 
     /**
      * Notify that an error was displayed on the screen
      */
     fun errorShown(errorId: Long) {
-        viewModelState.update { currentUiState ->
-            val errorMessages = currentUiState.errorMessages.filterNot { it.id == errorId }
+        viewModelState.update { currentUiState: HomeViewModelState ->
+            val errorMessages: List<ErrorMessage> =
+                currentUiState.errorMessages.filterNot { it.id == errorId }
             currentUiState.copy(errorMessages = errorMessages)
         }
     }
@@ -271,7 +274,10 @@ class HomeViewModel(
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return HomeViewModel(postsRepository, preSelectedPostId) as T
+                return HomeViewModel(
+                    postsRepository = postsRepository,
+                    preSelectedPostId = preSelectedPostId
+                ) as T
             }
         }
     }

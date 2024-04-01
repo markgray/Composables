@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,23 +47,23 @@ import com.example.jetnews.utils.CompletePreviews
 @Composable
 fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
     // TUTORIAL CONTENT STARTS HERE
-    val typography = MaterialTheme.typography
+    val typography: Typography = MaterialTheme.typography
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(all = 16.dp)
     ) {
         val imageModifier = Modifier
             .heightIn(min = 180.dp)
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
         Image(
-            painter = painterResource(post.imageId),
+            painter = painterResource(id = post.imageId),
             contentDescription = null, // decorative
             modifier = imageModifier,
             contentScale = ContentScale.Crop
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(height = 16.dp))
 
         Text(
             text = post.title,
@@ -98,7 +99,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
 fun PostCardTopPreview() {
     JetnewsTheme {
         Surface {
-            PostCardTop(posts.highlightedPost)
+            PostCardTop(post = posts.highlightedPost)
         }
     }
 }
@@ -114,7 +115,7 @@ fun PostCardTopPreview() {
 fun PostCardTopPreviews() {
     JetnewsTheme {
         Surface {
-            PostCardTop(posts.highlightedPost)
+            PostCardTop(post = posts.highlightedPost)
         }
     }
 }
