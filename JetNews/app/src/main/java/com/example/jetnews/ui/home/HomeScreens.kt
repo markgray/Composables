@@ -18,7 +18,6 @@
 
 package com.example.jetnews.ui.home
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.widget.Toast
@@ -204,9 +203,8 @@ fun HomeFeedWithArticleDetailsScreen(
 /**
  * A [Modifier] that tracks all input, and calls [block] every time input is received.
  */
-@SuppressLint("ModifierFactoryUnreferencedReceiver") // TODO: reference Modifier receiver
 private fun Modifier.notifyInput(block: () -> Unit): Modifier =
-    composed {
+    this then composed {
         val blockState = rememberUpdatedState(block)
         pointerInput(Unit) {
             while (currentCoroutineContext().isActive) {
