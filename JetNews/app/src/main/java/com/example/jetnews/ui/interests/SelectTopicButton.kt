@@ -29,7 +29,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.ui.theme.JetnewsTheme
@@ -42,18 +44,18 @@ fun SelectTopicButton(
     modifier: Modifier = Modifier,
     selected: Boolean = false
 ) {
-    val icon = if (selected) Icons.Filled.Done else Icons.Filled.Add
-    val iconColor = if (selected) {
+    val icon: ImageVector = if (selected) Icons.Filled.Done else Icons.Filled.Add
+    val iconColor: Color = if (selected) {
         MaterialTheme.colorScheme.onPrimary
     } else {
         MaterialTheme.colorScheme.primary
     }
-    val borderColor = if (selected) {
+    val borderColor: Color = if (selected) {
         MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
     }
-    val backgroundColor = if (selected) {
+    val backgroundColor: Color = if (selected) {
         MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.onPrimary
@@ -61,13 +63,13 @@ fun SelectTopicButton(
     Surface(
         color = backgroundColor,
         shape = CircleShape,
-        border = BorderStroke(1.dp, borderColor),
-        modifier = modifier.size(36.dp, 36.dp)
+        border = BorderStroke(width = 1.dp, color = borderColor),
+        modifier = modifier.size(width = 36.dp, height = 36.dp)
     ) {
         Image(
             imageVector = icon,
-            colorFilter = ColorFilter.tint(iconColor),
-            modifier = Modifier.padding(8.dp),
+            colorFilter = ColorFilter.tint(color = iconColor),
+            modifier = Modifier.padding(all = 8.dp),
             contentDescription = null // toggleable at higher level
         )
     }
@@ -76,8 +78,8 @@ fun SelectTopicButton(
 /**
  * TODO: Add kdoc
  */
-@Preview("Off")
-@Preview("Off (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Off")
+@Preview(name = "Off (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SelectTopicButtonPreviewOff() {
     SelectTopicButtonPreviewTemplate(
@@ -88,8 +90,8 @@ fun SelectTopicButtonPreviewOff() {
 /**
  * TODO: Add kdoc
  */
-@Preview("On")
-@Preview("On (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "On")
+@Preview(name = "On (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SelectTopicButtonPreviewOn() {
     SelectTopicButtonPreviewTemplate(
@@ -107,7 +109,7 @@ private fun SelectTopicButtonPreviewTemplate(
     JetnewsTheme {
         Surface {
             SelectTopicButton(
-                modifier = Modifier.padding(32.dp),
+                modifier = Modifier.padding(all = 32.dp),
                 selected = selected
             )
         }

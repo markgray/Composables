@@ -37,9 +37,9 @@ fun InterestsRoute(
     openDrawer: () -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
-    val tabContent = rememberTabContent(interestsViewModel)
-    val (currentSection, updateSection) = rememberSaveable {
-        mutableStateOf(tabContent.first().section)
+    val tabContent: List<TabContent> = rememberTabContent(interestsViewModel = interestsViewModel)
+    val (currentSection: Sections, updateSection: (Sections) -> Unit) = rememberSaveable {
+        mutableStateOf(value = tabContent.first().section)
     }
 
     InterestsScreen(

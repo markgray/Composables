@@ -16,12 +16,14 @@
 
 package com.example.jetnews.ui.interests
 
+import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,7 +60,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -66,6 +72,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.constrainWidth
@@ -136,7 +143,7 @@ fun InterestsScreen(
     openDrawer: () -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
-    val context = LocalContext.current
+    val context: Context = LocalContext.current
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -164,9 +171,9 @@ fun InterestsScreen(
                     IconButton(
                         onClick = {
                             Toast.makeText(
-                                context,
-                                "Search is not yet implemented in this configuration",
-                                Toast.LENGTH_LONG
+                                /* context = */ context,
+                                /* text = */ "Search is not yet implemented in this configuration",
+                                /* duration = */ Toast.LENGTH_LONG
                             ).show()
                         }
                     ) {
@@ -178,8 +185,8 @@ fun InterestsScreen(
                 }
             )
         }
-    ) { innerPadding ->
-        val screenModifier = Modifier.padding(paddingValues = innerPadding)
+    ) { innerPadding: PaddingValues ->
+        val screenModifier: Modifier = Modifier.padding(paddingValues = innerPadding)
         InterestScreenContent(
             currentSection = currentSection,
             isExpandedScreen = isExpandedScreen,
@@ -197,12 +204,13 @@ fun InterestsScreen(
 @Composable
 fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent> {
     // UiState of the InterestsScreen
-    val uiState by interestsViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: InterestsUiState by interestsViewModel.uiState.collectAsStateWithLifecycle()
 
     // Describe the screen sections here since each section needs 2 states and 1 event.
     // Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(section = Sections.Topics) {
-        val selectedTopics by interestsViewModel.selectedTopics.collectAsStateWithLifecycle()
+        val selectedTopics: Set<TopicSelection> by interestsViewModel.selectedTopics
+            .collectAsStateWithLifecycle()
         TabWithSections(
             sections = uiState.topics,
             selectedTopics = selectedTopics,
@@ -211,7 +219,8 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
     }
 
     val peopleSection = TabContent(section = Sections.People) {
-        val selectedPeople by interestsViewModel.selectedPeople.collectAsStateWithLifecycle()
+        val selectedPeople: Set<String> by interestsViewModel.selectedPeople
+            .collectAsStateWithLifecycle()
         TabWithTopics(
             topics = uiState.people,
             selectedTopics = selectedPeople,
@@ -220,7 +229,7 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
     }
 
     val publicationSection = TabContent(section = Sections.Publications) {
-        val selectedPublications by interestsViewModel.selectedPublications
+        val selectedPublications: Set<String> by interestsViewModel.selectedPublications
             .collectAsStateWithLifecycle()
         TabWithTopics(
             topics = uiState.publications,
@@ -249,13 +258,18 @@ private fun InterestScreenContent(
     tabContent: List<TabContent>,
     modifier: Modifier = Modifier
 ) {
-    val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
-    Column(modifier) {
-        InterestsTabRow(selectedTabIndex, updateSection, tabContent, isExpandedScreen)
+    val selectedTabIndex: Int = tabContent.indexOfFirst { it.section == currentSection }
+    Column(modifier = modifier) {
+        InterestsTabRow(
+            selectedTabIndex = selectedTabIndex,
+            updateSection = updateSection,
+            tabContent = tabContent,
+            isExpandedScreen = isExpandedScreen
+        )
         HorizontalDivider(
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
         )
-        Box(modifier = Modifier.weight(1f)) {
+        Box(modifier = Modifier.weight(weight = 1f)) {
             // display the current tab content which is a @Composable () -> Unit
             tabContent[selectedTabIndex].content()
         }
@@ -265,9 +279,9 @@ private fun InterestScreenContent(
 /**
  * Modifier for UI containers that show interests items
  */
-private val tabContainerModifier = Modifier
+private val tabContainerModifier: Modifier = Modifier
     .fillMaxWidth()
-    .wrapContentWidth(Alignment.CenterHorizontally)
+    .wrapContentWidth(align = Alignment.CenterHorizontally)
 
 /**
  * Display a simple list of topics
@@ -284,9 +298,9 @@ private fun TabWithTopics(
 ) {
     InterestsAdaptiveContentLayout(
         topPadding = 16.dp,
-        modifier = tabContainerModifier.verticalScroll(rememberScrollState())
+        modifier = tabContainerModifier.verticalScroll(state = rememberScrollState())
     ) {
-        topics.forEach { topic ->
+        topics.forEach { topic: String ->
             TopicItem(
                 itemTitle = topic,
                 selected = selectedTopics.contains(topic),
@@ -309,17 +323,17 @@ private fun TabWithSections(
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    Column(tabContainerModifier.verticalScroll(rememberScrollState())) {
-        sections.forEach { (section, topics) ->
+    Column(modifier = tabContainerModifier.verticalScroll(state = rememberScrollState())) {
+        sections.forEach { (section: String, topics: List<String>) ->
             Text(
                 text = section,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(all = 16.dp)
                     .semantics { heading() },
                 style = MaterialTheme.typography.titleMedium
             )
             InterestsAdaptiveContentLayout {
-                topics.forEach { topic ->
+                topics.forEach { topic: String ->
                     TopicItem(
                         itemTitle = topic,
                         selected = selectedTopics.contains(TopicSelection(section, topic)),
@@ -345,7 +359,7 @@ private fun TopicItem(
     onToggle: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(Modifier.padding(horizontal = 16.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Row(
             modifier = modifier.toggleable(
                 value = selected,
@@ -353,22 +367,22 @@ private fun TopicItem(
             ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val image = painterResource(R.drawable.placeholder_1_1)
+            val image: Painter = painterResource(id = R.drawable.placeholder_1_1)
             Image(
                 painter = image,
                 contentDescription = null, // decorative
                 modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .size(size = 56.dp)
+                    .clip(shape = RoundedCornerShape(size = 4.dp))
             )
             Text(
                 text = itemTitle,
                 modifier = Modifier
-                    .padding(16.dp)
-                    .weight(1f), // Break line if the title is too long
+                    .padding(all = 16.dp)
+                    .weight(weight = 1f), // Break line if the title is too long
                 style = MaterialTheme.typography.titleMedium
             )
-            Spacer(Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(width = 16.dp))
             SelectTopicButton(selected = selected)
         }
         HorizontalDivider(
@@ -394,9 +408,14 @@ private fun InterestsTabRow(
                 selectedTabIndex = selectedTabIndex,
                 contentColor = MaterialTheme.colorScheme.primary
             ) {
-                InterestsTabRowContent(selectedTabIndex, updateSection, tabContent)
+                InterestsTabRowContent(
+                    selectedTabIndex = selectedTabIndex,
+                    updateSection = updateSection,
+                    tabContent = tabContent
+                )
             }
         }
+
         true -> {
             ScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,
@@ -421,8 +440,8 @@ private fun InterestsTabRowContent(
     tabContent: List<TabContent>,
     modifier: Modifier = Modifier
 ) {
-    tabContent.forEachIndexed { index, content ->
-        val colorText = if (selectedTabIndex == index) {
+    tabContent.forEachIndexed { index: Int, content: TabContent ->
+        val colorText: Color = if (selectedTabIndex == index) {
             MaterialTheme.colorScheme.primary
         } else {
             MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
@@ -460,53 +479,56 @@ private fun InterestsAdaptiveContentLayout(
     multipleColumnsBreakPoint: Dp = 600.dp,
     content: @Composable () -> Unit,
 ) {
-    Layout(modifier = modifier, content = content) { measurables, outerConstraints ->
+    Layout(
+        modifier = modifier,
+        content = content
+    ) { measurables: List<Measurable>, outerConstraints: Constraints ->
         // Convert parameters to Px. Safe to do as `Layout` measure block runs in a `Density` scope
-        val multipleColumnsBreakPointPx = multipleColumnsBreakPoint.roundToPx()
-        val topPaddingPx = topPadding.roundToPx()
-        val itemSpacingPx = itemSpacing.roundToPx()
-        val itemMaxWidthPx = itemMaxWidth.roundToPx()
+        val multipleColumnsBreakPointPx: Int = multipleColumnsBreakPoint.roundToPx()
+        val topPaddingPx: Int = topPadding.roundToPx()
+        val itemSpacingPx: Int = itemSpacing.roundToPx()
+        val itemMaxWidthPx: Int = itemMaxWidth.roundToPx()
 
         // Number of columns to display on the screen. This is harcoded to 2 due to
         // the design mocks, but this logic could change in the future.
-        val columns = if (outerConstraints.maxWidth < multipleColumnsBreakPointPx) 1 else 2
+        val columns: Int = if (outerConstraints.maxWidth < multipleColumnsBreakPointPx) 1 else 2
         // Max width for each item taking into account available space, spacing and `itemMaxWidth`
-        val itemWidth = if (columns == 1) {
+        val itemWidth: Int = if (columns == 1) {
             outerConstraints.maxWidth
         } else {
-            val maxWidthWithSpaces = outerConstraints.maxWidth - (columns - 1) * itemSpacingPx
-            (maxWidthWithSpaces / columns).coerceIn(0, itemMaxWidthPx)
+            val maxWidthWithSpaces: Int = outerConstraints.maxWidth - (columns - 1) * itemSpacingPx
+            (maxWidthWithSpaces / columns).coerceIn(minimumValue = 0, maximumValue = itemMaxWidthPx)
         }
-        val itemConstraints = outerConstraints.copy(maxWidth = itemWidth)
+        val itemConstraints: Constraints = outerConstraints.copy(maxWidth = itemWidth)
 
         // Keep track of the height of each row to calculate the layout's final size
         val rowHeights = IntArray(measurables.size / columns + 1)
         // Measure elements with their maximum width and keep track of the height
-        val placeables = measurables.mapIndexed { index, measureable ->
-            val placeable = measureable.measure(itemConstraints)
+        val placeables: List<Placeable> = measurables.mapIndexed { index: Int, measureable: Measurable ->
+            val placeable: Placeable = measureable.measure(itemConstraints)
             // Update the height for each row
-            val row = index.floorDiv(columns)
+            val row: Int = index.floorDiv(other = columns)
             rowHeights[row] = max(rowHeights[row], placeable.height)
             placeable
         }
 
         // Calculate maxHeight of the Interests layout. Heights of the row + top padding
-        val layoutHeight = topPaddingPx + rowHeights.sum()
+        val layoutHeight: Int = topPaddingPx + rowHeights.sum()
         // Calculate maxWidth of the Interests layout
-        val layoutWidth = itemWidth * columns + (itemSpacingPx * (columns - 1))
+        val layoutWidth: Int = itemWidth * columns + (itemSpacingPx * (columns - 1))
 
         // Lay out given the max width and height
         layout(
-            width = outerConstraints.constrainWidth(layoutWidth),
-            height = outerConstraints.constrainHeight(layoutHeight)
+            width = outerConstraints.constrainWidth(width = layoutWidth),
+            height = outerConstraints.constrainHeight(height = layoutHeight)
         ) {
             // Track the y co-ord we have placed children up to
-            var yPosition = topPaddingPx
+            var yPosition: Int = topPaddingPx
             // Split placeables in lists that don't exceed the number of columns
             // and place them taking into account their width and spacing
-            placeables.chunked(columns).forEachIndexed { rowIndex, row ->
+            placeables.chunked(size = columns).forEachIndexed { rowIndex: Int, row: List<Placeable> ->
                 var xPosition = 0
-                row.forEach { placeable ->
+                row.forEach { placeable: Placeable ->
                     placeable.placeRelative(x = xPosition, y = yPosition)
                     xPosition += placeable.width + itemSpacingPx
                 }
@@ -519,13 +541,13 @@ private fun InterestsAdaptiveContentLayout(
 /**
  * TODO: Add kdoc
  */
-@Preview("Interests screen", "Interests")
-@Preview("Interests screen (dark)", "Interests", uiMode = UI_MODE_NIGHT_YES)
-@Preview("Interests screen (big font)", "Interests", fontScale = 1.5f)
+@Preview(name = "Interests screen", group = "Interests")
+@Preview(name = "Interests screen (dark)", group = "Interests", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Interests screen (big font)", group = "Interests", fontScale = 1.5f)
 @Composable
 fun PreviewInterestsScreenDrawer() {
     JetnewsTheme {
-        val tabContent = getFakeTabsContent()
+        val tabContent: List<TabContent> = getFakeTabsContent()
         val (currentSection: Sections, updateSection: (Sections) -> Unit) = rememberSaveable {
             mutableStateOf(value = tabContent.first().section)
         }
@@ -575,11 +597,11 @@ private fun PreviewInterestsScreenNavRail() {
 /**
  * TODO: Add kdoc
  */
-@Preview("Interests screen topics tab", "Topics")
-@Preview("Interests screen topics tab (dark)", "Topics", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Interests screen topics tab", group = "Topics")
+@Preview(name = "Interests screen topics tab (dark)", group = "Topics", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewTopicsTab() {
-    val topics = runBlocking {
+    val topics: List<InterestSection> = runBlocking {
         (FakeInterestsRepository().getTopics() as Result.Success).data
     }
     JetnewsTheme {
@@ -592,11 +614,11 @@ fun PreviewTopicsTab() {
 /**
  * TODO: Add kdoc
  */
-@Preview("Interests screen people tab", "People")
-@Preview("Interests screen people tab (dark)", "People", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Interests screen people tab", group = "People")
+@Preview(name = "Interests screen people tab (dark)", group = "People", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewPeopleTab() {
-    val people = runBlocking {
+    val people: List<String> = runBlocking {
         (FakeInterestsRepository().getPeople() as Result.Success).data
     }
     JetnewsTheme {
@@ -609,11 +631,11 @@ fun PreviewPeopleTab() {
 /**
  * TODO: Add kdoc
  */
-@Preview("Interests screen publications tab", "Publications")
-@Preview("Interests screen publications tab (dark)", "Publications", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Interests screen publications tab", group = "Publications")
+@Preview(name = "Interests screen publications tab (dark)", group = "Publications", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewPublicationsTab() {
-    val publications = runBlocking {
+    val publications: List<String> = runBlocking {
         (FakeInterestsRepository().getPublications() as Result.Success).data
     }
     JetnewsTheme {

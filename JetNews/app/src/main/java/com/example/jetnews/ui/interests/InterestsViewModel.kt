@@ -19,10 +19,12 @@ package com.example.jetnews.ui.interests
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.successOr
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -64,7 +66,7 @@ class InterestsViewModel(
     /**
      * TODO: Add kdoc
      */
-    private val _uiState = MutableStateFlow(InterestsUiState(loading = true))
+    private val _uiState = MutableStateFlow(value = InterestsUiState(loading = true))
 
     /**
      * UI state exposed to the UI
@@ -140,14 +142,17 @@ class InterestsViewModel(
 
         viewModelScope.launch {
             // Trigger repository requests in parallel
-            val topicsDeferred = async { interestsRepository.getTopics() }
-            val peopleDeferred = async { interestsRepository.getPeople() }
-            val publicationsDeferred = async { interestsRepository.getPublications() }
+            val topicsDeferred: Deferred<Result<List<InterestSection>>> =
+                async { interestsRepository.getTopics() }
+            val peopleDeferred: Deferred<Result<List<String>>> =
+                async { interestsRepository.getPeople() }
+            val publicationsDeferred: Deferred<Result<List<String>>> =
+                async { interestsRepository.getPublications() }
 
             // Wait for all requests to finish
-            val topics = topicsDeferred.await().successOr(emptyList())
-            val people = peopleDeferred.await().successOr(emptyList())
-            val publications = publicationsDeferred.await().successOr(emptyList())
+            val topics: List<InterestSection> = topicsDeferred.await().successOr(emptyList())
+            val people: List<String> = peopleDeferred.await().successOr(emptyList())
+            val publications: List<String> = publicationsDeferred.await().successOr(emptyList())
 
             _uiState.update {
                 @Suppress("RedundantValueArgument")
@@ -162,7 +167,7 @@ class InterestsViewModel(
     }
 
     /**
-     * Factory for InterestsViewModel that takes PostsRepository as a dependency
+     * Factory for [InterestsViewModel] that takes [InterestsRepository] as a dependency
      */
     companion object {
         /**
