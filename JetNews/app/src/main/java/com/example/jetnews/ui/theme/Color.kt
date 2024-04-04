@@ -17,6 +17,7 @@
 package com.example.jetnews.ui.theme
 
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
@@ -128,77 +129,98 @@ val md_theme_light_onErrorContainer: Color = Color(0xFF410002)
 val md_theme_light_background: Color = Color(0xFFFFFBFF)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onBackground] of our [lightColorScheme]. Color used for text and icons
+ * displayed on top of the background color.
  */
 val md_theme_light_onBackground: Color = Color(0xFF201A1A)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.surface] of our [lightColorScheme]. The surface color that affect
+ * surfaces of components, such as cards, sheets, and menus.
  */
 val md_theme_light_surface: Color = Color(0xFFFFFBFF)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onSurface] of our [lightColorScheme]. Color used for text and icons
+ * displayed on top of the surface color.
  */
 val md_theme_light_onSurface: Color = Color(0xFF201A1A)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.surfaceVariant] of our [lightColorScheme]. Another option for a color
+ * with similar uses of surface.
  */
 val md_theme_light_surfaceVariant: Color = Color(0xFFF4DDDD)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onSurfaceVariant] of our [lightColorScheme]. The color (and state
+ * variants) that can be used for content on top of surface.
  */
 val md_theme_light_onSurfaceVariant: Color = Color(0xFF524343)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.outline] of our [lightColorScheme]. Subtle color used for boundaries.
+ * Outline color role adds contrast for accessibility purposes.
  */
 val md_theme_light_outline: Color = Color(0xFF857373)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.inverseOnSurface] of our [lightColorScheme]. A color that contrasts well
+ * with inverseSurface. Useful for content that sits on top of containers that are inverseSurface.
  */
 val md_theme_light_inverseOnSurface: Color = Color(0xFFFBEEED)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.inverseSurface] of our [lightColorScheme]. A color that contrasts
+ * sharply with surface. Useful for surfaces that sit on top of other surfaces with surface color.
  */
 val md_theme_light_inverseSurface: Color = Color(0xFF362F2F)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.inversePrimary] of our [lightColorScheme]. Color to be used as a
+ * "primary" color in places where the inverse color scheme is needed, such as the button on
+ * a SnackBar.
  */
 val md_theme_light_inversePrimary: Color = Color(0xFFFFB3B4)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.surfaceTint] of our [lightColorScheme]. This color will be used by
+ * components that apply tonal elevation and is applied on top of surface. The higher the elevation
+ * the more this color is used.
  */
 val md_theme_light_surfaceTint: Color = Color(0xFFBF0031)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.primary] of our [darkColorScheme]. The primary color is the color
+ * displayed most frequently across your app’s screens and components.
  */
 val md_theme_dark_primary: Color = Color(0xFFFFB3B4)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onPrimary] of our [darkColorScheme]. Color used for text and icons
+ * displayed on top of the primary color.
  */
 val md_theme_dark_onPrimary: Color = Color(0xFF680016)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.primaryContainer] of our [darkColorScheme]. The preferred tonal color
+ * of containers.
  */
 val md_theme_dark_primaryContainer: Color = Color(0xFF920023)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onPrimaryContainer] of our [darkColorScheme]. The color (and state
+ * variants) that should be used for content on top of primaryContainer.
  */
 val md_theme_dark_onPrimaryContainer: Color = Color(0xFFFFDAD9)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.secondary] of our [darkColorScheme]. The secondary color provides more
+ * ways to accent and distinguish your product. Secondary colors are best for:
+ *  - Floating action buttons
+ *  - Selection controls, like checkboxes and radio buttons
+ *  - Highlighting selected text
+ *  - Links and headlines
  */
 val md_theme_dark_secondary: Color = Color(0xFFE6BDBC)
 
