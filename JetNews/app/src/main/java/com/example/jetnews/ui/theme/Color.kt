@@ -225,92 +225,111 @@ val md_theme_dark_onPrimaryContainer: Color = Color(0xFFFFDAD9)
 val md_theme_dark_secondary: Color = Color(0xFFE6BDBC)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onSecondary] of our [darkColorScheme]. Color used for text and icons
+ * displayed on top of the secondary color.
  */
 val md_theme_dark_onSecondary: Color = Color(0xFF44292A)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.secondaryContainer] of our [darkColorScheme]. A tonal color to be used
+ * in containers.
  */
 val md_theme_dark_secondaryContainer: Color = Color(0xFF5D3F3F)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onSecondaryContainer] of our [darkColorScheme]. The color (and state
+ * variants) that should be used for content on top of secondaryContainer.
  */
 val md_theme_dark_onSecondaryContainer: Color = Color(0xFFFFDAD9)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.tertiary] of our [darkColorScheme]. The tertiary color that can be used
+ * to balance primary and secondary colors, or bring heightened attention to an element such as an
+ * input field.
  */
 val md_theme_dark_tertiary: Color = Color(0xFFE5C18D)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onTertiary] of our [darkColorScheme]. Color used for text and icons
+ * displayed on top of the tertiary color.
  */
 val md_theme_dark_onTertiary: Color = Color(0xFF422C05)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.tertiaryContainer] of our [darkColorScheme]. A tonal color to be used
+ * in containers.
  */
 val md_theme_dark_tertiaryContainer: Color = Color(0xFF5B421A)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onTertiaryContainer] of our [darkColorScheme]. The color (and state
+ * variants) that should be used for content on top of tertiaryContainer.
  */
 val md_theme_dark_onTertiaryContainer: Color = Color(0xFFFFDDAF)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.error] of our [darkColorScheme]. The error color is used to indicate
+ * errors in components, such as invalid text in a text field.
  */
 val md_theme_dark_error: Color = Color(0xFFFFB4AB)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.errorContainer] of our [darkColorScheme]. The preferred tonal color of
+ * error containers.
  */
 val md_theme_dark_errorContainer: Color = Color(0xFF93000A)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onError] of our [darkColorScheme].  Color used for text and icons
+ * displayed on top of the error color.
  */
 val md_theme_dark_onError: Color = Color(0xFF690005)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onErrorContainer] of our [darkColorScheme]. The color (and state
+ * variants) that should be used for content on top of errorContainer.
  */
 val md_theme_dark_onErrorContainer: Color = Color(0xFFFFDAD6)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.background] of our [darkColorScheme]. The background color that appears
+ * behind scrollable content.
  */
 val md_theme_dark_background: Color = Color(0xFF201A1A)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onBackground] of our [darkColorScheme]. Color used for text and icons
+ * displayed on top of the background color.
  */
 val md_theme_dark_onBackground: Color = Color(0xFFECE0DF)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.surface] of our [darkColorScheme]. The surface color that affect
+ * surfaces of components, such as cards, sheets, and menus.
  */
 val md_theme_dark_surface: Color = Color(0xFF201A1A)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onSurface] of our [darkColorScheme]. Color used for text and icons
+ * displayed on top of the surface color.
  */
 val md_theme_dark_onSurface: Color = Color(0xFFECE0DF)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.surfaceVariant] of our [darkColorScheme]. Another option for a color
+ * with similar uses of surface.
  */
 val md_theme_dark_surfaceVariant: Color = Color(0xFF524343)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.onSurfaceVariant] of our [darkColorScheme]. The color (and state
+ * variants) that can be used for content on top of surface.
  */
 val md_theme_dark_onSurfaceVariant: Color = Color(0xFFD7C1C1)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.outline] of our [darkColorScheme]. Subtle color used for boundaries.
+ * Outline color role adds contrast for accessibility purposes.
  */
 val md_theme_dark_outline: Color = Color(0xFFA08C8C)
 
