@@ -17,11 +17,14 @@
 package com.example.jetnews.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
 /**
- * TODO: Add kdoc
+ * The [Shapes] used by the [JetnewsTheme] custom [MaterialTheme]. The `small` [RoundedCornerShape]
+ * of 4.dp is used by Small components, the `medium` [RoundedCornerShape] of 4.dp is used by medium
+ * components, and the `large` [RoundedCornerShape] of 8.dp is used by large components
  */
 val JetnewsShapes: Shapes = Shapes(
     small = RoundedCornerShape(4.dp),

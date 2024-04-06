@@ -16,6 +16,7 @@
 
 package com.example.jetnews.ui.theme
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -28,7 +29,8 @@ import androidx.compose.ui.unit.sp
 import com.example.jetnews.R
 
 /**
- * TODO: Add kdoc
+ * This is the [FontFamily] we use for our [TextStyle] field [defaultTextStyle], which is the basis
+ * for the [TextStyle]'s used to create the [Typography] for our [JetnewsTheme] custom [MaterialTheme]
  */
 private val Montserrat = FontFamily(
     Font(R.font.montserrat_regular),

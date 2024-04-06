@@ -334,21 +334,26 @@ val md_theme_dark_onSurfaceVariant: Color = Color(0xFFD7C1C1)
 val md_theme_dark_outline: Color = Color(0xFFA08C8C)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.inverseOnSurface] of our [darkColorScheme]. A color that contrasts well
+ * with inverseSurface. Useful for content that sits on top of containers that are inverseSurface.
  */
 val md_theme_dark_inverseOnSurface: Color = Color(0xFF201A1A)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.inverseSurface] of our [darkColorScheme]. A color that contrasts sharply
+ * with surface. Useful for surfaces that sit on top of other surfaces with surface color.
  */
 val md_theme_dark_inverseSurface: Color = Color(0xFFECE0DF)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.inversePrimary] of our [darkColorScheme]. Color to be used as a "primary"
+ * color in places where the inverse color scheme is needed, such as the button on a SnackBar.
  */
 val md_theme_dark_inversePrimary: Color = Color(0xFFBF0031)
 
 /**
- * TODO: Add kdoc
+ * Used as the [ColorScheme.surfaceTint] of our [darkColorScheme]. This color will be used by
+ * components that apply tonal elevation and is applied on top of surface. The higher the elevation
+ * the more this color is used.
  */
 val md_theme_dark_surfaceTint: Color = Color(0xFFFFB3B4)

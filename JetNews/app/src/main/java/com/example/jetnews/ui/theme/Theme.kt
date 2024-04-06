@@ -28,7 +28,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 /**
- * TODO: Add kdoc
+ * This is the [ColorScheme] that is used when the device is considered to be in light mode, and the
+ * [Build.VERSION.SDK_INT] of the device is is less than [Build.VERSION_CODES.S].
  */
 val LightColors: ColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -61,7 +62,8 @@ val LightColors: ColorScheme = lightColorScheme(
 )
 
 /**
- * TODO: Add kdoc
+ * This is the [ColorScheme] that is used when the device is considered to be in dark mode, and the
+ *  [Build.VERSION.SDK_INT] of the device is is less than [Build.VERSION_CODES.S].
  */
 val DarkColors: ColorScheme = darkColorScheme(
     primary = md_theme_dark_primary,
@@ -94,7 +96,14 @@ val DarkColors: ColorScheme = darkColorScheme(
 )
 
 /**
- * TODO: Add kdoc
+ * This is our custom [MaterialTheme].
+ *
+ * @param darkTheme if `true` a dark mode [ColorScheme] will be used, either [dynamicDarkColorScheme]
+ * if [Build.VERSION.SDK_INT] is greater than or equal to [Build.VERSION_CODES.S] or our custom
+ * [DarkColors]. If `false` a light mode [ColorScheme] will be used, either [dynamicLightColorScheme]
+ * if [Build.VERSION.SDK_INT] is greater than or equal to [Build.VERSION_CODES.S] or our custom
+ * [LightColors].
+ * @param content the Composable lambda to which we will supply [MaterialTheme] values to.
  */
 @Composable
 fun JetnewsTheme(
