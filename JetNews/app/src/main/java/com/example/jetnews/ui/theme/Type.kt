@@ -38,7 +38,7 @@ private val Montserrat = FontFamily(
 )
 
 /**
- * TODO: Add kdoc
+ * This is the basis for all the other [TextStyle], with its defaults overridden when necessary.
  */
 val defaultTextStyle: TextStyle = TextStyle(
     fontFamily = Montserrat,
@@ -52,7 +52,87 @@ val defaultTextStyle: TextStyle = TextStyle(
 )
 
 /**
- * TODO: Add kdoc
+ * The custom [Typography] used by our [JetnewsTheme] custom [MaterialTheme].
+ *
+ *  - `displayLarge` is the largest display text. We override the [TextStyle.fontSize] of
+ *  [defaultTextStyle] with 57.sp, the [TextStyle.lineHeight] with 64.sp, and the
+ *  [TextStyle.letterSpacing] with (-0.25).sp
+ *  - `displayMedium` is the second largest display text. We override the [TextStyle.fontSize] of
+ *  [defaultTextStyle] with 45.sp, the [TextStyle.lineHeight] with 52.sp, and the
+ *  [TextStyle.letterSpacing] with 0.sp
+ *  - `displaySmall` is the smallest display text. We override the [TextStyle.fontSize] of
+ *  [defaultTextStyle] with 36.sp, the [TextStyle.lineHeight] with 44.sp, and the
+ *  [TextStyle.letterSpacing] with 0.sp
+ *  - `headlineLarge` is the largest headline, reserved for short, important text or numerals. For
+ *  headlines, you can choose an expressive font, such as a display, handwritten, or script style.
+ *  These unconventional font designs have details and intricacy that help attract the eye. We
+ *  override the [TextStyle.fontSize] of [defaultTextStyle] with 32.sp, the [TextStyle.lineHeight]
+ *  with 40.sp, the [TextStyle.letterSpacing] with 0.sp, and the [TextStyle.lineBreak] with
+ *  [LineBreak.Heading] (Balanced line lengths, hyphenation, and phrase-based breaking. Suitable for
+ *  short text such as titles or narrow newspaper columns)
+ *  - `headlineMedium` is the second largest headline, reserved for short, important text or numerals.
+ *  For headlines, you can choose an expressive font, such as a display, handwritten, or script style.
+ *  These unconventional font designs have details and intricacy that help attract the eye. We
+ *  override the [TextStyle.fontSize] of [defaultTextStyle] with 28.sp, the [TextStyle.lineHeight]
+ *  with 36.sp, the [TextStyle.letterSpacing] with 0.sp, and the [TextStyle.lineBreak] with
+ *  [LineBreak.Heading] (Balanced line lengths, hyphenation, and phrase-based breaking. Suitable for
+ *  short text such as titles or narrow newspaper columns).
+ *  - `headlineSmall` is the smallest headline, reserved for short, important text or numerals. For
+ *  headlines, you can choose an expressive font, such as a display, handwritten, or script style.
+ *  These unconventional font designs have details and intricacy that help attract the eye. We
+ *  override the [TextStyle.fontSize] of [defaultTextStyle] with 24.sp, the [TextStyle.lineHeight]
+ *  with 32.sp, the [TextStyle.letterSpacing] with 0.sp, and the [TextStyle.lineBreak] with
+ *  [LineBreak.Heading] (Balanced line lengths, hyphenation, and phrase-based breaking. Suitable for
+ *  short text such as titles or narrow newspaper columns).
+ *  - `titleLarge` is the largest title, and is typically reserved for medium-emphasis text that is
+ *  shorter in length. Serif or sans serif typefaces work well for subtitles. We override the
+ *  [TextStyle.fontSize] of [defaultTextStyle] with 22.sp, the [TextStyle.lineHeight] with 28.sp,
+ *  the [TextStyle.letterSpacing] with 0.sp, and the [TextStyle.lineBreak] with [LineBreak.Heading]
+ *  (Balanced line lengths, hyphenation, and phrase-based breaking. Suitable for short text such as
+ *  titles or narrow newspaper columns).
+ *  - `titleMedium` is the second largest title, and is typically reserved for medium-emphasis text
+ *  that is shorter in length. Serif or sans serif typefaces work well for subtitles. We override
+ *  the [TextStyle.fontSize] of [defaultTextStyle] with 16.sp, the [TextStyle.lineHeight] with 24.sp,
+ *  the [TextStyle.letterSpacing] with 0.15.sp, the [TextStyle.fontWeight] with [FontWeight.Medium],
+ *  and the [TextStyle.lineBreak] with [LineBreak.Heading] (Balanced line lengths, hyphenation, and
+ *  phrase-based breaking. Suitable for short text such as titles or narrow newspaper columns).
+ *  - `titleSmall` is the smallest title, and is typically reserved for medium-emphasis text that is
+ *  shorter in length. Serif or sans serif typefaces work well for subtitles. We override the
+ *  [TextStyle.fontSize] of [defaultTextStyle] with 14.sp, the [TextStyle.lineHeight] with 20.sp,
+ *  the [TextStyle.letterSpacing] with 0.15.sp, the [TextStyle.fontWeight] with [FontWeight.Medium],
+ *  and the [TextStyle.lineBreak] with [LineBreak.Heading] (Balanced line lengths, hyphenation, and
+ *  phrase-based breaking. Suitable for short text such as titles or narrow newspaper columns).
+ *  - `labelLarge` is a call to action used in different types of buttons (such as text, outlined
+ *  and contained buttons) and in tabs, dialogs, and cards. Button text is typically sans serif,
+ *  using all caps text. We override the [TextStyle.fontSize] of [defaultTextStyle] with 14.sp, the
+ *  [TextStyle.lineHeight] with 20.sp, the [TextStyle.letterSpacing] with 0.1.sp, and the
+ *  [TextStyle.fontWeight] with [FontWeight.Medium].
+ *  - `labelMedium` is one of the smallest font sizes. It is used sparingly to annotate imagery or
+ *  to introduce a headline. We override the [TextStyle.fontSize] of [defaultTextStyle] with 12.sp,
+ *  the [TextStyle.lineHeight] with 20.sp, the [TextStyle.letterSpacing] with 0.5.sp, and the
+ *  [TextStyle.fontWeight] with [FontWeight.Medium].
+ *  - `labelSmall` is one of the smallest font sizes. It is used sparingly to annotate imagery or to
+ *  introduce a headline. We override the [TextStyle.fontSize] of [defaultTextStyle] with 11.sp,
+ *  [TextStyle.lineHeight] with 16.sp, the [TextStyle.letterSpacing] with 0.5.sp, and the
+ *  [TextStyle.fontWeight] with [FontWeight.Medium].
+ *  - `bodyLarge` is the largest body, and is typically used for long-form writing as it works well
+ *  for small text sizes. For longer sections of text, a serif or sans serif typeface is recommended.
+ *  We override the [TextStyle.fontSize] of [defaultTextStyle] with 16.sp, [TextStyle.lineHeight]
+ *  with 24.sp, the [TextStyle.letterSpacing] with 0.5.sp, and the [TextStyle.lineBreak] with
+ *  [LineBreak.Paragraph] (Slower, higher quality line breaking for improved readability. Suitable
+ *  for larger amounts of text).
+ *  - `bodyMedium` is the second largest body, and is typically used for long-form writing as it
+ *  works well for small text sizes. For longer sections of text, a serif or sans serif typeface is
+ *  recommended. We override the [TextStyle.fontSize] of [defaultTextStyle] with 14.sp,
+ *  [TextStyle.lineHeight] with 20.sp, the [TextStyle.letterSpacing] with 0.25.sp, and the
+ *  [TextStyle.lineBreak] with [LineBreak.Paragraph] (Slower, higher quality line breaking for
+ *  improved readability. Suitable for larger amounts of text).
+ *  - `bodySmall` is the smallest body, and is typically used for long-form writing as it works well
+ *  for small text sizes. For longer sections of text, a serif or sans serif typeface is recommended.
+ *  We override the [TextStyle.fontSize] of [defaultTextStyle] with 12.sp, [TextStyle.lineHeight]
+ *  with 16.sp, the [TextStyle.letterSpacing] with 0.4.sp, and the [TextStyle.lineBreak] with
+ *  [LineBreak.Paragraph] (Slower, higher quality line breaking for improved readability. Suitable
+ *  for larger amounts of text).
  */
 val JetnewsTypography: Typography = Typography(
     displayLarge = defaultTextStyle.copy(
