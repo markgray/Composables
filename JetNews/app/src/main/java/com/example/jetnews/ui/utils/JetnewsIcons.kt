@@ -21,23 +21,38 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ThumbUpOffAlt
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
+import com.example.jetnews.ui.article.ArticleScreen
+import com.example.jetnews.ui.home.PostTopBar
+import com.example.jetnews.ui.home.HomeFeedWithArticleDetailsScreen
 import com.example.jetnews.R
 
 /**
- * TODO: Add kdoc
+ * If the display is not expanded this is shown in the [ArticleScreen] in a [BottomAppBar] along
+ * with a [BookmarkButton], a [ShareButton], and a [TextSettingsButton]. If it is expanded it is
+ * shown in a [PostTopBar] with them, which is the top bar for a Post when it is displayed next to
+ * the Home feed by [HomeFeedWithArticleDetailsScreen]. It consists of an [IconButton] whose `onClick`
+ * argument is our [onClick] lambda parameter and its `content` lambda argument is an [Icon] whose
+ * `imageVector` argument causes it to display the [ImageVector] drawn by [Icons.Filled.ThumbUpOffAlt]
+ * (a stylized hand with its thumb pointing up) and whose `contentDescription` arugment is the
+ * [String] with resource ID [R.string.cd_add_to_favorites] ("Add to favorites").
+ *
+ * @param onClick a lambda that our [IconButton] should call when it is clicked
  */
 @Composable
 fun FavoriteButton(onClick: () -> Unit) {
-    IconButton(onClick) {
+    IconButton(onClick = onClick) {
         Icon(
             imageVector = Icons.Filled.ThumbUpOffAlt,
             contentDescription = stringResource(R.string.cd_add_to_favorites)
@@ -46,7 +61,24 @@ fun FavoriteButton(onClick: () -> Unit) {
 }
 
 /**
- * TODO: Add kdoc
+ * If the display is not expanded this is shown in the [ArticleScreen] in a [BottomAppBar] along
+ * with a [FavoriteButton], a [ShareButton], and a [TextSettingsButton]. If it is expanded it is
+ * shown in a [PostTopBar] with them, which is the top bar for a Post when it is displayed next to
+ * the Home feed by [HomeFeedWithArticleDetailsScreen]. It consists of an [IconToggleButton] whose
+ * `checked` argument is our [Boolean] parameter [isBookmarked], `onCheckedChange` argument is a
+ * lambda which calls our [onClick] lambda parameter and its content lambda argument is an [Icon]
+ * whose `imageVector` argument causes it to display the [ImageVector] drawn by [Icons.Filled.Bookmark]
+ * is [isBookmarked] is `true`, or [Icons.Filled.BookmarkBorder] if it is `false`. The `modifier`
+ * argument of the [IconToggleButton] chains a [Modifier.semantics] to our [modifier] parament whose
+ * [SemanticsPropertyReceiver.onClick] overrides the `label` of the [IconToggleButton] to supply
+ * a custom click label that accessibility services can communicate to the user which is the
+ * [String] with resource ID [R.string.unbookmark] ("unbookmark") if [isBookmarked] is `true` or
+ * the [String] with resource ID [R.string.bookmark] ("bookmark") if [isBookmarked] is `false`.
+ *
+ * @param isBookmarked if `true` the article has already been bookmarked
+ * @param onClick a lambda that our [IconToggleButton] should call when it is toggled.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior.
  */
 @Composable
 fun BookmarkButton(
