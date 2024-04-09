@@ -55,7 +55,7 @@ fun FavoriteButton(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
         Icon(
             imageVector = Icons.Filled.ThumbUpOffAlt,
-            contentDescription = stringResource(R.string.cd_add_to_favorites)
+            contentDescription = stringResource(id = R.string.cd_add_to_favorites)
         )
     }
 }
@@ -68,7 +68,7 @@ fun FavoriteButton(onClick: () -> Unit) {
  * `checked` argument is our [Boolean] parameter [isBookmarked], `onCheckedChange` argument is a
  * lambda which calls our [onClick] lambda parameter and its content lambda argument is an [Icon]
  * whose `imageVector` argument causes it to display the [ImageVector] drawn by [Icons.Filled.Bookmark]
- * is [isBookmarked] is `true`, or [Icons.Filled.BookmarkBorder] if it is `false`. The `modifier`
+ * if [isBookmarked] is `true`, or [Icons.Filled.BookmarkBorder] if it is `false`. The `modifier`
  * argument of the [IconToggleButton] chains a [Modifier.semantics] to our [modifier] parament whose
  * [SemanticsPropertyReceiver.onClick] overrides the `label` of the [IconToggleButton] to supply
  * a custom click label that accessibility services can communicate to the user which is the
@@ -106,27 +106,44 @@ fun BookmarkButton(
 }
 
 /**
- * TODO: Add kdoc
+ * If the display is not expanded this is shown in the [ArticleScreen] in a [BottomAppBar] along with
+ * a [FavoriteButton], a [BookmarkButton], and a [TextSettingsButton]. If it is expanded it is shown
+ * in a [PostTopBar] with them, which is the top bar for a Post when it is displayed next to the Home
+ * feed by [HomeFeedWithArticleDetailsScreen]. It consists of an [IconButton] whose `onClick` argument
+ * is our [onClick] lambda parameter and its content lambda argument is an [Icon] whose `imageVector`
+ * argument causes it to display the [ImageVector] drawn by [Icons.Filled.Share] (a sideways "V")
+ * and whose contentDescription arugment is the String with resource ID [R.string.cd_share] ("Share").
+ *
+ * @param onClick a lambda which our [IconButton] should call if it is clicked.
  */
 @Composable
 fun ShareButton(onClick: () -> Unit) {
-    IconButton(onClick) {
+    IconButton(onClick = onClick) {
         Icon(
             imageVector = Icons.Filled.Share,
-            contentDescription = stringResource(R.string.cd_share)
+            contentDescription = stringResource(id = R.string.cd_share)
         )
     }
 }
 
 /**
- * TODO: Add kdoc
+ * If the display is not expanded this is shown in the [ArticleScreen] in a [BottomAppBar] along with
+ * a [FavoriteButton], a [BookmarkButton], and a [ShareButton]. If it is expanded it is shown in a
+ * [PostTopBar] with them, which is the top bar for a Post when it is displayed next to the Home feed
+ * by [HomeFeedWithArticleDetailsScreen]. It consists of an [IconButton] whose `onClick` argument is
+ * our [onClick] lambda parameter and its `content` lambda argument is an [Icon] whose `imageVector`
+ * argument causes it to display the [ImageVector] drawn by [R.drawable.ic_text_settings] ( (a bold
+ * capital "A") and whose `contentDescription` arugment is the [String] with resource ID
+ * [R.string.cd_text_settings] ("Text settings").
+ *
+ * @param onClick a lambda which our [IconButton] should call if it is clicked.
  */
 @Composable
 fun TextSettingsButton(onClick: () -> Unit) {
     IconButton(onClick) {
         Icon(
-            painter = painterResource(R.drawable.ic_text_settings),
-            contentDescription = stringResource(R.string.cd_text_settings)
+            painter = painterResource(id = R.drawable.ic_text_settings),
+            contentDescription = stringResource(id = R.string.cd_text_settings)
         )
     }
 }

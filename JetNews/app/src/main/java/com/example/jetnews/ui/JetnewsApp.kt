@@ -26,11 +26,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.components.AppNavRail
 import com.example.jetnews.ui.theme.JetnewsTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -42,19 +45,20 @@ fun JetnewsApp(
     widthSizeClass: WindowWidthSizeClass,
 ) {
     JetnewsTheme {
-        val navController = rememberNavController()
-        val navigationActions = remember(navController) {
-            JetnewsNavigationActions(navController)
+        val navController: NavHostController = rememberNavController()
+        val navigationActions: JetnewsNavigationActions = remember(key1 = navController) {
+            JetnewsNavigationActions(navController = navController)
         }
 
-        val coroutineScope = rememberCoroutineScope()
+        val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute =
+        val navBackStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
+        val currentRoute: String =
             navBackStackEntry?.destination?.route ?: JetnewsDestinations.HOME_ROUTE
 
-        val isExpandedScreen = widthSizeClass == WindowWidthSizeClass.Expanded
-        val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
+        val isExpandedScreen: Boolean = widthSizeClass == WindowWidthSizeClass.Expanded
+        val sizeAwareDrawerState: DrawerState =
+            rememberSizeAwareDrawerState(isExpandedScreen = isExpandedScreen)
 
         ModalNavigationDrawer(
             drawerContent = {
