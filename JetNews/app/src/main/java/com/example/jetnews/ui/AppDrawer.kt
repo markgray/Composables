@@ -118,7 +118,8 @@ fun AppDrawer(
 }
 
 /**
- * TODO: Add kdoc
+ * This is our app logo, which is used as the top line of the [ModalDrawerSheet] used by our
+ * [AppDrawer] Composable.
  */
 @Composable
 private fun JetNewsLogo(modifier: Modifier = Modifier) {
