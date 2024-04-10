@@ -17,6 +17,7 @@
 package com.example.jetnews.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.os.Build
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ListAlt
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -119,7 +121,23 @@ fun AppDrawer(
 
 /**
  * This is our app logo, which is used as the top line of the [ModalDrawerSheet] used by our
- * [AppDrawer] Composable.
+ * [AppDrawer] Composable. Our root Composable is a [Row] whose `modifier` argument is our [Modifier]
+ * parameter [modifier]. The `content` of the [Row] consists of an [Icon] which displays the `vector`
+ * drawn by the drawable with resource ID [R.drawable.ic_jetnews_logo] (a greater than character ">"
+ * followed by an underline character "_" in a "box"). The `tint` argument of the [Icon] is the
+ * [ColorScheme.primary] of our custom [MaterialTheme.colorScheme] (a red in light mode and a pink
+ * in dark mode if [Build.VERSION.SDK_INT] is less than [Build.VERSION_CODES.S]). The [Icon] is
+ * followed by a [Spacer] whose `modifier` argument is a [Modifier.width] which sets its `width` to
+ * 8.dp and this is followed by another [Icon] whose `painter` argument causes it to display the
+ * `vector` drawn by the drawable with resource ID [R.drawable.ic_jetnews_wordmark] (the word
+ * "jetnews" drawn in a modernistic sans-serif font), the `contentDescription` argument of the
+ * [Icon] is the [String] with resource ID [R.string.app_name] ("Jetnews"), and the `tint` argument
+ * is the [ColorScheme.onSurfaceVariant] of our custom [MaterialTheme.colorScheme] (a black in light
+ * mode and a light pink in dark mode if [Build.VERSION.SDK_INT] is less than [Build.VERSION_CODES.S]).
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [AppDrawer] passes us a [Modifier.padding] that adds 28.dp padding to each
+ * end, and 24.dp to our top and bottom.
  */
 @Composable
 private fun JetNewsLogo(modifier: Modifier = Modifier) {
@@ -129,7 +147,7 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary
         )
-        Spacer(Modifier.width(width = 8.dp))
+        Spacer(modifier = Modifier.width(width = 8.dp))
         Icon(
             painter = painterResource(id = R.drawable.ic_jetnews_wordmark),
             contentDescription = stringResource(id = R.string.app_name),
@@ -139,10 +157,10 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of our [AppDrawer] Composable, one in light mode, and one in dark mode.
  */
-@Preview("Drawer contents")
-@Preview("Drawer contents (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Drawer contents")
+@Preview(name = "Drawer contents (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewAppDrawer() {
     JetnewsTheme {

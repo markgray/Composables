@@ -19,6 +19,7 @@ package com.example.jetnews.ui
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -32,12 +33,24 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.ui.components.AppNavRail
+import com.example.jetnews.ui.home.HomeRoute
+import com.example.jetnews.ui.interests.InterestsRoute
 import com.example.jetnews.ui.theme.JetnewsTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * TODO: Add kdoc
+ * This is the main Composable of the entire app. Wrapped in our [JetnewsTheme] custom [MaterialTheme]
+ * our root Composable is a [ModalNavigationDrawer]. We start by initializing and remembering our
+ * [NavHostController] variable `val navController` to the instance created and remembered by the
+ * [rememberNavController] method. Then we initialize and remember our  [JetnewsNavigationActions]
+ * variable `val navigationActions` to a new instance whose `navController` argument is our
+ * [NavHostController] variable `navController` (it will call its [NavHostController.navigate]
+ * method to navigate to [JetnewsDestinations.HOME_ROUTE] which displays [HomeRoute] if its
+ * [JetnewsNavigationActions.navigateToHome] method is called or to [JetnewsDestinations.INTERESTS_ROUTE]
+ * which displays [InterestsRoute] if its [JetnewsNavigationActions.navigateToInterests] method is
+ * called). Next we initialize and remember our [CoroutineScope] variable `val coroutineScope` to the
+ * new instance returned by [rememberCoroutineScope].
  */
 @Composable
 fun JetnewsApp(

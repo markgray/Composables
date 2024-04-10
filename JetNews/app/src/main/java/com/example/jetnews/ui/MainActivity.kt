@@ -21,8 +21,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.example.jetnews.JetnewsApplication
+import com.example.jetnews.data.AppContainer
 
 /**
  * TODO: Add kdoc
@@ -37,10 +39,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        val appContainer = (application as JetnewsApplication).container
+        val appContainer: AppContainer = (application as JetnewsApplication).container
         setContent {
-            val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
-            JetnewsApp(appContainer, widthSizeClass)
+            val widthSizeClass: WindowWidthSizeClass =
+                calculateWindowSizeClass(activity = this).widthSizeClass
+            JetnewsApp(appContainer = appContainer, widthSizeClass = widthSizeClass)
         }
     }
 }

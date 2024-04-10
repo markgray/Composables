@@ -42,11 +42,11 @@ class JetnewsNavigationActions(navController: NavHostController) {
      * TODO: Add kdoc
      */
     val navigateToHome: () -> Unit = {
-        navController.navigate(JetnewsDestinations.HOME_ROUTE) {
+        navController.navigate(route = JetnewsDestinations.HOME_ROUTE) {
             // Pop up to the start destination of the graph to
             // avoid building up a large stack of destinations
             // on the back stack as users select items
-            popUpTo(navController.graph.findStartDestination().id) {
+            popUpTo(id = navController.graph.findStartDestination().id) {
                 saveState = true
             }
             // Avoid multiple copies of the same destination when
@@ -60,8 +60,8 @@ class JetnewsNavigationActions(navController: NavHostController) {
      * TODO: Add kdoc
      */
     val navigateToInterests: () -> Unit = {
-        navController.navigate(JetnewsDestinations.INTERESTS_ROUTE) {
-            popUpTo(navController.graph.findStartDestination().id) {
+        navController.navigate(route = JetnewsDestinations.INTERESTS_ROUTE) {
+            popUpTo(id = navController.graph.findStartDestination().id) {
                 saveState = true
             }
             launchSingleTop = true
