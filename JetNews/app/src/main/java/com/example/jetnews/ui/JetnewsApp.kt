@@ -165,7 +165,18 @@ fun JetnewsApp(
 }
 
 /**
- * Determine the drawer state to pass to the modal drawer.
+ * Determine the drawer state to pass to the modal drawer. We start by initializing and remembering
+ * our [DrawerState] variable `val drawerState` to the value returned by the [rememberDrawerState]
+ * method for an `initialValue` of [DrawerValue.Closed]. Then if our [Boolean] parameter
+ * [isExpandedScreen] is `false` we return `drawerState` to the caller (we want to allow showing the
+ * drawer when [isExpandedScreen] is `false`, so we use a real, remembered drawer state), but if
+ * [isExpandedScreen] is `true` we just return a [DrawerState] whose `initialValue` is always
+ * [DrawerValue.Closed] (this is intentionally not remembered, because we don't want to keep track
+ * of any changes and always keep it closed).
+ *
+ * @param isExpandedScreen this is `true` if the [WindowWidthSizeClass] of the device we are running
+ * on is [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large
+ * unfolded inner displays in landscape).
  */
 @Composable
 private fun rememberSizeAwareDrawerState(isExpandedScreen: Boolean): DrawerState {

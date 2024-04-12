@@ -16,28 +16,77 @@
 
 package com.example.jetnews.ui
 
+import android.app.Application
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDeepLink
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
+import com.example.jetnews.JetnewsApplication
 import com.example.jetnews.JetnewsApplication.Companion.JETNEWS_APP_URI
 import com.example.jetnews.data.AppContainer
+import com.example.jetnews.data.interests.InterestsRepository
+import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.ui.interests.InterestsRoute
 import com.example.jetnews.ui.interests.InterestsViewModel
 
 /**
- * TODO: Add kdoc
+ * This is the `name` field of the query [String] of the [NavDeepLink] for the route
+ * [JetnewsDestinations.HOME_ROUTE] and when used it is the key to the [String] stored in the
+ * [Bundle] that is used to set the `preSelectedPostId` argument of the [HomeViewModel] that
+ * [HomeRoute] uses.
  */
 const val POST_ID: String = "postId"
 
 /**
- * TODO: Add kdoc
+ * This is the [NavHost] used by our app to navigate between displaying [HomeRoute] for the `route`
+ * [JetnewsDestinations.HOME_ROUTE] and displaying [InterestsRoute] for the `route`
+ * [JetnewsDestinations.INTERESTS_ROUTE]. The arguments to our [NavHost] root Composable are:
+ *  - `navController` our [NavHostController] parameter [navController].
+ *  - `startDestination` our [String] parameter [startDestination].
+ *  - `modifier` our [Modifier] parameter [modifier].
+ *
+ * The `builder` [NavGraphBuilder] lamba argument of our [NavHost] holds two [composable] calls
+ * which add their `content` Composable lambdas to the [NavGraphBuilder]. The arguments of the first
+ * [composable] call are:
+ *  - `route` is [JetnewsDestinations.HOME_ROUTE]
+ *  - `deepLinks` is a [navDeepLink] with a query pattern of its `uriPattern` argument allowing the
+ *  user of the deep link to preselect a particular post when the string "?postId=RequestedPostId"
+ *  is appended to the [String] "https://developer.android.com/jetnews/home"
+ *
+ * In the `content` lambda argument of the first call of [composable] we initialize our [HomeViewModel]
+ * variable `val homeViewModel` to the instance returned for a call to [HomeViewModel.provideFactory]
+ * whose `postsRepository` argument is the [PostsRepository] contained in the [AppContainer.postsRepository]
+ * field of our [AppContainer] parameter [appContainer], and whose `preSelectedPostId` argument is the
+ * [String] stored under the key [POST_ID] ("postId") in the [Bundle] of the [NavBackStackEntry.arguments]
+ * of the [NavBackStackEntry] that [NavHost] passes to its `builder` [NavGraphBuilder] lambda argument.
+ * The Composable displayed by the first call to [composable] is [HomeRoute] with its `homeViewModel`
+ * argument our [HomeViewModel] variable `homeViewModel`, whose `isExpandedScreen` argument is our
+ * [Boolean] parameter [isExpandedScreen], and whose `openDrawer` argument is our lambda parameter
+ * [openDrawer].
+ *
+ * The `route` argument of the second call to [composable] is [JetnewsDestinations.INTERESTS_ROUTE],
+ * and in the `content` lambda argument of the second call of [composable] we initialize our
+ * [InterestsViewModel] variable `val interestsViewModel` to the instance returned for a call to
+ * [InterestsViewModel.provideFactory] with its `interestsRepository` argument is the
+ * [InterestsRepository] contained in the [AppContainer.interestsRepository] field of our
+ * [AppContainer] parameter [appContainer]. The Composable displayed by the second call to
+ * [composable] is [InterestsRoute] with its `interestsViewModel` argument is our [InterestsViewModel]
+ * variable `interestsViewModel`, whose `isExpandedScreen` argument is our [Boolean] parameter
+ * [isExpandedScreen] and whose `openDrawer` argument is our lambda parameter [openDrawer].
+ *
+ * @param appContainer this is the [AppContainer] which is created in our [JetnewsApplication] custom
+ * [Application] (it contains a reference to our singleton [PostsRepository] in [AppContainer.postsRepository]
+ * and a reference to our singleton [InterestsRepository] in [AppContainer.interestsRepository]).
  */
 @Composable
 fun JetnewsNavGraph(
@@ -61,7 +110,7 @@ fun JetnewsNavGraph(
                         "$JETNEWS_APP_URI/${JetnewsDestinations.HOME_ROUTE}?$POST_ID={$POST_ID}"
                 }
             )
-        ) { navBackStackEntry ->
+        ) { navBackStackEntry: NavBackStackEntry ->
             val homeViewModel: HomeViewModel = viewModel(
                 factory = HomeViewModel.provideFactory(
                     postsRepository = appContainer.postsRepository,
@@ -74,9 +123,11 @@ fun JetnewsNavGraph(
                 openDrawer = openDrawer,
             )
         }
-        composable(JetnewsDestinations.INTERESTS_ROUTE) {
+        composable(route = JetnewsDestinations.INTERESTS_ROUTE) {
             val interestsViewModel: InterestsViewModel = viewModel(
-                factory = InterestsViewModel.provideFactory(appContainer.interestsRepository)
+                factory = InterestsViewModel.provideFactory(
+                    interestsRepository = appContainer.interestsRepository
+                )
             )
             InterestsRoute(
                 interestsViewModel = interestsViewModel,
