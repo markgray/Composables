@@ -16,30 +16,57 @@
 
 package com.example.jetnews.ui
 
+import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph
+import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.PopUpToBuilder
+import androidx.navigation.compose.NavHost
+import com.example.jetnews.ui.home.HomeRoute
+import com.example.jetnews.ui.interests.InterestsRoute
 
 /**
  * Destinations used in the [JetnewsApp].
  */
 object JetnewsDestinations {
     /**
-     * TODO: Add kdoc
+     * This route causes [JetnewsNavGraph] to navigate to display the [HomeRoute] Composable.
      */
     const val HOME_ROUTE: String = "home"
 
     /**
-     * TODO: Add kdoc
+     * This route causes [JetnewsNavGraph] to navigate to display the [InterestsRoute] Composable.
      */
     const val INTERESTS_ROUTE: String = "interests"
 }
 
 /**
- * Models the navigation actions in the app.
+ * Models the navigation actions in the app, by supplying methods that can be called to instruct
+ * our [NavHostController] parameter `navController` to navigate to one of the two routes that
+ * are provided by [JetnewsNavGraph]. By calling our [navigateToHome] method [JetnewsNavGraph]
+ * will start to display our [HomeRoute] Composable, while calling our [navigateToInterests] method
+ * [JetnewsNavGraph] will start to display our [InterestsRoute] Composable.
+ *
+ * @param navController the [NavHostController] to use to navigate to the desired `route`.
  */
-class JetnewsNavigationActions(navController: NavHostController) {
+class JetnewsNavigationActions(val navController: NavHostController) {
     /**
-     * TODO: Add kdoc
+     * Uses the [NavHostController.navigate] method of our [NavHostController] field [navController]
+     * to have the [NavHost] of [JetnewsNavGraph] display the [HomeRoute] composable. In the block
+     * of our lambda we call the [NavHostController.navigate] of [navController] with its `route`
+     * argument [JetnewsDestinations.HOME_ROUTE]. Then in its [NavOptionsBuilder] `builder` lambda
+     * argument we call [NavOptionsBuilder.popUpTo] with the `id` parameter the [NavDestination.id]
+     * returned by a call to the [NavGraph.findStartDestination] of the [NavController.graph] of our
+     * [NavHostController] field [navController] (Pops up to the start destination of the graph) and
+     * in its [PopUpToBuilder] lambda argument we set the [PopUpToBuilder.saveState] property to
+     * `true` (which sets the [NavOptionsBuilder] private field `saveState` to `true`).
+     *
+     * Next in the [NavOptionsBuilder] we set the [NavOptionsBuilder.launchSingleTop] property to
+     * `true` to avoid multiple copies of the same destination when reselecting the same item, and
+     * set the [NavOptionsBuilder.restoreState] property to `true` to restore state when reselecting
+     * a previously selected item.
      */
     val navigateToHome: () -> Unit = {
         navController.navigate(route = JetnewsDestinations.HOME_ROUTE) {

@@ -18,11 +18,14 @@ package com.example.jetnews.ui
 
 import android.app.Application
 import android.os.Bundle
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
+import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -87,6 +90,24 @@ const val POST_ID: String = "postId"
  * @param appContainer this is the [AppContainer] which is created in our [JetnewsApplication] custom
  * [Application] (it contains a reference to our singleton [PostsRepository] in [AppContainer.postsRepository]
  * and a reference to our singleton [InterestsRepository] in [AppContainer.interestsRepository]).
+ * @param isExpandedScreen if `true` the [WindowWidthSizeClass] of the device we are running on is
+ * [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large unfolded
+ * inner displays in landscape).
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [JetnewsApp] does not pass us one so the empty, default, or starter [Modifier]
+ * that contains no elements is used instead.
+ * @param navController the [NavHostController] that our [NavHost] should use. Our caller [JetnewsApp]
+ * passes us a remembered instance that it also uses to construct the [JetnewsNavigationActions] that
+ * is used to have us navigate to [JetnewsDestinations.HOME_ROUTE] by calling its
+ * [JetnewsNavigationActions.navigateToHome] method or to [JetnewsDestinations.INTERESTS_ROUTE] by
+ * calling its [JetnewsNavigationActions.navigateToInterests] method. It is also used to access the
+ * current [NavBackStackEntry] in order to determine the current [NavDestination.route] that we are
+ * displaying.
+ * @param openDrawer a lambda which we can call to open the [ModalNavigationDrawer] that we are the
+ * `content` of.
+ * @param startDestination this is the the route for the start destination of our [NavHost]. Our
+ * caller [JetnewsApp] does not pass one, so the default value [JetnewsDestinations.HOME_ROUTE] is
+ * used instead.
  */
 @Composable
 fun JetnewsNavGraph(
