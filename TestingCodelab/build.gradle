@@ -17,9 +17,9 @@
 buildscript {
     // Define versions in a single place
     ext {
-        gradleVersion = '8.3.1'
-        kotlinVersion = '1.9.22'
-        composeCompilerVersion = '1.5.10'
+        gradleVersion = '8.3.2'
+        kotlinVersion = '1.9.23'
+        composeCompilerVersion = '1.5.11'
     }
 
     repositories {
