@@ -55,13 +55,14 @@ class JetnewsNavigationActions(val navController: NavHostController) {
     /**
      * Uses the [NavHostController.navigate] method of our [NavHostController] field [navController]
      * to have the [NavHost] of [JetnewsNavGraph] display the [HomeRoute] composable. In the block
-     * of our lambda we call the [NavHostController.navigate] of [navController] with its `route`
-     * argument [JetnewsDestinations.HOME_ROUTE]. Then in its [NavOptionsBuilder] `builder` lambda
-     * argument we call [NavOptionsBuilder.popUpTo] with the `id` parameter the [NavDestination.id]
-     * returned by a call to the [NavGraph.findStartDestination] of the [NavController.graph] of our
-     * [NavHostController] field [navController] (Pops up to the start destination of the graph) and
-     * in its [PopUpToBuilder] lambda argument we set the [PopUpToBuilder.saveState] property to
-     * `true` (which sets the [NavOptionsBuilder] private field `saveState` to `true`).
+     * of our lambda we call the [NavHostController.navigate] method of [navController] with its
+     * `route` argument [JetnewsDestinations.HOME_ROUTE]. Then in its [NavOptionsBuilder] `builder`
+     * lambda argument we call [NavOptionsBuilder.popUpTo] with the `id` parameter the
+     * [NavDestination.id] returned by a call to the [NavGraph.findStartDestination] of the
+     * [NavController.graph] of our [NavHostController] field [navController] (Pops up to the start
+     * destination of the graph) and in its [PopUpToBuilder] lambda argument we set the
+     * [PopUpToBuilder.saveState] property to `true` (which sets the [NavOptionsBuilder] private
+     * field `saveState` to `true`).
      *
      * Next in the [NavOptionsBuilder] we set the [NavOptionsBuilder.launchSingleTop] property to
      * `true` to avoid multiple copies of the same destination when reselecting the same item, and
@@ -84,7 +85,21 @@ class JetnewsNavigationActions(val navController: NavHostController) {
         }
     }
     /**
-     * TODO: Add kdoc
+     * Uses the [NavHostController.navigate] method of our [NavHostController] field [navController]
+     * to have the [NavHost] of [JetnewsNavGraph] display the [InterestsRoute] composable. In the
+     * block of our lambda we call the [NavHostController.navigate] method of [navController] with
+     * its route argument [JetnewsDestinations.INTERESTS_ROUTE]. Then in its [NavOptionsBuilder]
+     * builder lambda argument we call [NavOptionsBuilder.popUpTo] with the id parameter the
+     * [NavDestination.id] returned by a call to the [NavGraph.findStartDestination] of the
+     * [NavController.graph] of our [NavHostController] field [navController] (Pops up to the start
+     * destination of the graph) and in its [PopUpToBuilder] lambda argument we set the
+     * [PopUpToBuilder.saveState] property to `true` (which sets the [NavOptionsBuilder] private
+     * field `saveState` to `true`).
+     *
+     * Next in the [NavOptionsBuilder] we set the [NavOptionsBuilder.launchSingleTop] property to
+     * `true` to avoid multiple copies of the same destination when reselecting the same item, and
+     * set the [NavOptionsBuilder.restoreState] property to `true` to restore state when reselecting
+     * a previously selected item.
      */
     val navigateToInterests: () -> Unit = {
         navController.navigate(route = JetnewsDestinations.INTERESTS_ROUTE) {

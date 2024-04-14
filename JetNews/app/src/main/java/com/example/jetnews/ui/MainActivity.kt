@@ -16,23 +16,39 @@
 
 package com.example.jetnews.ui
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.example.jetnews.JetnewsApplication
+import com.example.jetnews.JetnewsApplication.Companion.JETNEWS_APP_URI
 import com.example.jetnews.data.AppContainer
 
 /**
- * TODO: Add kdoc
+ * This is the main (and only) activity of our app.
  */
 class MainActivity : ComponentActivity() {
 
     /**
-     * TODO: Add kdoc
+     * Called when activity is starting. First we call [enableEdgeToEdge] to enable edge-to-edge
+     * display for our app, then we call our `super`'s implementation of `onCreate`. Next we
+     * initialize our [AppContainer] variable `val appContainer` to the [JetnewsApplication.container]
+     * of the application that owns this activity (which is our [JetnewsApplication] custom
+     * [Application], which exists solely to allow us to access its [JetnewsApplication.container]
+     * field and the constant [JETNEWS_APP_URI]). Next we call [setContent] to have it compose
+     * into our activity the `content` lambda argument consisting of the initialization of our
+     * [WindowWidthSizeClass] variable `val widthSizeClass` to the [WindowSizeClass.widthSizeClass]
+     * of the [WindowSizeClass] returned by [calculateWindowSizeClass] method for this `activity`.
+     * Then we compose [JetnewsApp] with its `appContainer` argument our [AppContainer] variable
+     * `appContainer`, and its `widthSizeClass` argument our [WindowWidthSizeClass] variable
+     * `widthSizeClass`.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState]
      */
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

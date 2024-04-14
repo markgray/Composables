@@ -17,11 +17,25 @@
 package com.example.jetnews.utils
 
 import androidx.annotation.StringRes
+import com.example.jetnews.R
+import com.example.jetnews.data.Result
+import com.example.jetnews.data.posts.PostsRepository
+import com.example.jetnews.data.posts.impl.FakePostsRepository
+import com.example.jetnews.ui.home.HomeUiState
+import com.example.jetnews.ui.home.HomeViewModel
+import java.util.UUID
 
 /**
- * TODO: Add kdoc
+ * A [List] of these is created by [HomeViewModel.refreshPosts] for the [HomeUiState.errorMessages]
+ * field of both [HomeUiState.NoPosts] and [HomeUiState.HasPosts] data classes, with a new instance
+ * added every time the [PostsRepository.getPostsFeed] returns a [Result.Error] instead of a
+ * [Result.Success] (this will happen every 5 requests thanks to the `shouldRandomlyFail` method of
+ * [FakePostsRepository]).
  *
- * @param id TODO: Add kdoc
- * @param messageId TODO: Add kdoc
+ * @param id the ID of this [ErrorMessage], [HomeViewModel.refreshPosts] uses [UUID.randomUUID] to
+ * generate a [UUID] and uses the [UUID.getMostSignificantBits] to get the most significant 64 bits
+ * when it creates a new [ErrorMessage] and this is the only place a new [ErrorMessage] is created.
+ * @param messageId the resource ID of a [String] explaining this [ErrorMessage]. Always
+ * [R.string.load_error] ("Can't update latest news").
  */
 data class ErrorMessage(val id: Long, @StringRes val messageId: Int)
