@@ -17,10 +17,15 @@
 package com.example.jetnews.utils
 
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 
 /**
- * TODO: Add kdoc
+ * Convenience extension property of [LazyListState uses [derivedStateOf] to create a [State] wrapped
+ * [Boolean] based on the calculation [LazyListState.firstVisibleItemIndex] is greater than 0, or
+ * [LazyListState.firstVisibleItemScrollOffset] is greater than 0 and returns the [State.value] of
+ * that to the caller. It might be useful if the app only wanted to display a "go to top" button if
+ * the [LazyListState] is scrolled (but this app does not use it).
  */
 @Suppress("unused")
 val LazyListState.isScrolled: Boolean

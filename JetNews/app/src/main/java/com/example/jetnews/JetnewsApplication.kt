@@ -17,22 +17,33 @@
 package com.example.jetnews
 
 import android.app.Application
+import android.content.Context
+import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.AppContainerImpl
+import com.example.jetnews.ui.JetnewsDestinations
 
 /**
- * TODO: Add kdoc
+ * This custom [Application] allows our app to access our [AppContainer] field [container] and our
+ * constant [JETNEWS_APP_URI] by fetching a reference to this [JetnewsApplication] using either
+ * [android.app.Activity.getApplication] or [Context.getApplicationContext] then casting the
+ * [Application] returned to a [JetnewsApplication].
  */
 class JetnewsApplication : Application() {
     companion object {
         /**
-         * TODO: Add kdoc
+         * This is used to construct a [navDeepLink] for the [JetnewsDestinations.HOME_ROUTE] route
+         * [composable]. In the `AndroidManifest.xml` file there is an `intent-filter` which echos
+         * this in its `data` element where it specifies android:host="developer.android.com",
+         * android:pathPrefix="/jetnews", and android:scheme="https". The widget of the app allows
+         * you to select an article and it will be opened in this app (very nifty).
          */
         const val JETNEWS_APP_URI: String = "https://developer.android.com/jetnews"
     }
 
     /**
-     * AppContainer instance used by the rest of classes to obtain dependencies
+     * [AppContainer] instance used by the rest of classes to obtain dependencies
      */
     lateinit var container: AppContainer
 
