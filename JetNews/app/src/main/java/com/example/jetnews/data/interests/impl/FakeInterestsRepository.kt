@@ -20,17 +20,26 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
+import com.example.jetnews.ui.interests.InterestsViewModel
+import com.example.jetnews.ui.interests.rememberTabContent
+import com.example.jetnews.ui.interests.Sections
+import com.example.jetnews.ui.interests.TabContent
 import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
 /**
- * Implementation of InterestRepository that returns a hardcoded list of
+ * Implementation of [InterestsRepository] that returns a hardcoded list of
  * topics, people and publications synchronously.
  */
 class FakeInterestsRepository : InterestsRepository {
 
+    /**
+     * Holds the [List] of [InterestSection] that is returned by our [getTopics] method. It is
+     * read by [rememberTabContent] for the [TabContent] whose `section` is [Sections.Topics].
+     */
     private val topics: List<InterestSection> by lazy {
         listOf(
             InterestSection(
@@ -48,6 +57,10 @@ class FakeInterestsRepository : InterestsRepository {
         )
     }
 
+    /**
+     * Holds the [List] of [String] that is returned by our [getPeople] method. It is read by
+     * [rememberTabContent] for the [TabContent] whose `section` is [Sections.People].
+     */
     private val people: List<String> by lazy {
         listOf(
             "Kobalt Toral",
@@ -62,6 +75,10 @@ class FakeInterestsRepository : InterestsRepository {
         )
     }
 
+    /**
+     * Holds the [List] of [String] that is returned by our [getPublications] method. It is read by
+     * [rememberTabContent] for the [TabContent] whose `section` is [Sections.Publications].
+     */
     private val publications: List<String> by lazy {
         listOf(
             "Kotlin Vibe",
@@ -77,7 +94,19 @@ class FakeInterestsRepository : InterestsRepository {
     }
 
     // for now, keep the selections in memory
+
+    /**
+     * This is the [MutableStateFlow] of set of [TopicSelection] returned by our [observeTopicsSelected]
+     * method. [InterestsViewModel] uses the [Flow] of [Set] of [TopicSelection] returned to produce
+     * the [StateFlow] of [Set] of [TopicSelection] property [InterestsViewModel.selectedTopics] which
+     * is collected by [rememberTabContent] for the [TabContent] whose `section` is [Sections.Topics].
+     */
     private val selectedTopics = MutableStateFlow(value = setOf<TopicSelection>())
+
+    /**
+     * This is the [MutableStateFlow] of set of [String] returned by our [observePeopleSelected]
+     * method.
+     */
     private val selectedPeople = MutableStateFlow(value = setOf<String>())
     private val selectedPublications = MutableStateFlow(value = setOf<String>())
 

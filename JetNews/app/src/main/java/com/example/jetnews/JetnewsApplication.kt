@@ -22,6 +22,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.AppContainerImpl
+import com.example.jetnews.data.interests.InterestsRepository
+import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.ui.JetnewsDestinations
 
 /**
@@ -43,12 +45,17 @@ class JetnewsApplication : Application() {
     }
 
     /**
-     * [AppContainer] instance used by the rest of classes to obtain dependencies
+     * [AppContainer] instance used by the rest of classes to obtain dependencies. It has a reference
+     * to our singleton [PostsRepository] in its [AppContainer.postsRepository] field and a reference
+     * to our singleton [InterestsRepository] in its [AppContainer.interestsRepository] field.
      */
     lateinit var container: AppContainer
 
     /**
-     * TODO: Add kdoc
+     * Called when the application is starting, before any activity, service, or receiver objects
+     * (excluding content providers) have been created. First we call our super's implementation of
+     * `onCreate`, then we initialize our [AppContainer] field with a new instance of [AppContainerImpl]
+     * using `this` as its `applicationContext` [Context] argument.
      */
     override fun onCreate() {
         super.onCreate()
