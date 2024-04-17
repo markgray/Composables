@@ -20,11 +20,14 @@ import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
+import com.example.jetnews.ui.interests.InterestsUiState
 import com.example.jetnews.ui.interests.InterestsViewModel
 import com.example.jetnews.ui.interests.rememberTabContent
 import com.example.jetnews.ui.interests.Sections
 import com.example.jetnews.ui.interests.TabContent
 import com.example.jetnews.utils.addOrRemove
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -105,35 +108,104 @@ class FakeInterestsRepository : InterestsRepository {
 
     /**
      * This is the [MutableStateFlow] of set of [String] returned by our [observePeopleSelected]
-     * method.
+     * method. [InterestsViewModel] uses the [Flow] of [Set] of [String] returned to produce the
+     * [StateFlow] of [Set] of [String] property [InterestsViewModel.selectedPeople] which is
+     * collected by [rememberTabContent] for the [TabContent] whose `section` is [Sections.People].
      */
     private val selectedPeople = MutableStateFlow(value = setOf<String>())
+
+    /**
+     * This is the [MutableStateFlow] of set of [String] returned by our [observePublicationSelected]
+     * method. [InterestsViewModel] uses the [Flow] of [Set] of [String] returned to produce the
+     * [StateFlow] of [Set] of [String] property [InterestsViewModel.selectedPublications] which is
+     * collected by [rememberTabContent] for the [TabContent] whose `section` is [Sections.Publications].
+     */
     private val selectedPublications = MutableStateFlow(value = setOf<String>())
 
+    /**
+     * Returns a [Result.Success] whose [Result.Success.data] is our [List] of [InterestSection]
+     * field [topics]. The private `refreshAll` method of [InterestsViewModel] calls this in an
+     * [async] block to produce a [Deferred] of [Result] of [List] of [InterestSection] then calls
+     * the [Deferred.await] method of that to initialze a [List] of [InterestSection] which it uses
+     * to update its private [MutableStateFlow] of [InterestsUiState] field `_uiState` with a new
+     * [InterestsUiState.topics] field whose read-only value is exposed by its [StateFlow] of
+     * [InterestsUiState] property [InterestsViewModel.uiState] which is collected by
+     * [rememberTabContent] for the [TabContent] whose `section` is [Sections.Topics].
+     */
     override suspend fun getTopics(): Result<List<InterestSection>> {
         return Result.Success(data = topics)
     }
 
+    /**
+     * Returns a [Result.Success] whose [Result.Success.data] is our [List] of [String] field
+     * [people]. The private `refreshAll` method of [InterestsViewModel] calls this in an [async]
+     * block to produce a [Deferred] of [Result] of [List] of [String] then calls the [Deferred.await]
+     * method of that to initialze a [List] of [String] which it uses to update its private
+     * [MutableStateFlow] of [InterestsUiState] field `_uiState` with a new [InterestsUiState.people]
+     * field whose read-only value is exposed by its [StateFlow] of [InterestsUiState] property
+     * [InterestsViewModel.uiState] which is collected by [rememberTabContent] for the [TabContent]
+     * whose `section` is [Sections.People].
+     */
     override suspend fun getPeople(): Result<List<String>> {
         return Result.Success(data = people)
     }
 
+    /**
+     * Returns a [Result.Success] whose [Result.Success.data] is our [List] of [String] field
+     * [publications]. The private `refreshAll` method of [InterestsViewModel] calls this in an
+     * [async] block to produce a [Deferred] of [Result] of [List] of [String] then calls the
+     * [Deferred.await] method of that to initialze a [List] of [String] which it uses to update
+     * its private [MutableStateFlow] of [InterestsUiState] field `_uiState` with a new
+     * [InterestsUiState.publications] field whose read-only value is exposed by its [StateFlow]
+     * of [InterestsUiState] property [InterestsViewModel.uiState] which is collected by
+     * [rememberTabContent] for the [TabContent] whose `section` is [Sections.Publications].
+     */
     override suspend fun getPublications(): Result<List<String>> {
         return Result.Success(data = publications)
     }
 
+    /**
+     * Toggles the presence of its [TopicSelection] parameter [topic] in our [MutableStateFlow] of
+     * set of [TopicSelection] field [selectedTopics]. We just call the [MutableStateFlow.update]
+     * method of [selectedTopics] with its `function` lambda argument a call to our [Set.addOrRemove]
+     * extension function with [selectedTopics] the receiver and its `element` argument our
+     * [TopicSelection] parameter [topic].
+     *
+     * @param topic the [TopicSelection] whose presence in our [MutableStateFlow] of set of
+     * [TopicSelection] field [selectedTopics] we wish to toggle.
+     */
     override suspend fun toggleTopicSelection(topic: TopicSelection) {
         selectedTopics.update {
             it.addOrRemove(element = topic)
         }
     }
 
+    /**
+     * Toggles the presence of its [String] parameter [person] in our [MutableStateFlow] of
+     * set of [String] field [selectedPeople]. We just call the [MutableStateFlow.update]
+     * method of [selectedPeople] with its `function` lambda argument a call to our [Set.addOrRemove]
+     * extension function with [selectedPeople] the receiver and its `element` argument our
+     * [String] parameter [person].
+     *
+     * @param person the [String] whose presence in our [MutableStateFlow] of set of [String] field
+     * [selectedPeople] we wish to toggle.
+     */
     override suspend fun togglePersonSelected(person: String) {
         selectedPeople.update {
             it.addOrRemove(element = person)
         }
     }
 
+    /**
+     * Toggles the presence of its [String] parameter [publication] in our [MutableStateFlow] of
+     * set of [String] field [selectedPublications]. We just call the [MutableStateFlow.update]
+     * method of [selectedPeople] with its `function` lambda argument a call to our [Set.addOrRemove]
+     * extension function with [selectedPublications] the receiver and its `element` argument our
+     * [String] parameter [publication].
+     *
+     * @param publication the [String] whose presence in our [MutableStateFlow] of set of [String]
+     * field [selectedPublications] we wish to toggle.
+     */
     override suspend fun togglePublicationSelected(publication: String) {
         selectedPublications.update {
             it.addOrRemove(element = publication)
