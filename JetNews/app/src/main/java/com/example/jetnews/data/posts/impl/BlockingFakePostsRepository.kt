@@ -16,24 +16,40 @@
 
 package com.example.jetnews.data.posts.impl
 
+import androidx.lifecycle.viewModelScope
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
+import com.example.jetnews.ui.home.HomeUiState
+import com.example.jetnews.ui.home.HomeViewModel
 import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 
 /**
- * Implementation of PostsRepository that returns a hardcoded list of
- * posts with resources synchronously.
+ * Implementation of [PostsRepository] that returns a hardcoded list of
+ * posts with resources synchronously. It is used for previews.
  */
 class BlockingFakePostsRepository : PostsRepository {
 
-    // for now, keep the favorites in memory
+    /**
+     * This is the [MutableStateFlow] wrapped [Set] of [String] which represents the [Post]'s which
+     * the user has marked as their favorites. Our [observeFavorites] method returns a read-only
+     * [Flow] of [Set] of [String]. [HomeViewModel] updates its [StateFlow] of [HomeUiState] property
+     * [HomeViewModel.uiState] from this using the [stateIn] extension function of [Flow] to convert
+     * the cold [Flow] that we return to a hot [StateFlow] that is started in the [viewModelScope]
+     * coroutine scope, sharing the most recently emitted value from a single running instance of
+     * the upstream flow with multiple downstream subscribers. NOTE: There is an intermediate private
+     * [MutableStateFlow] wrapped `HomeViewModelState` which a [viewModelScope] coroutine launched in
+     * the [HomeViewModel] `init` block updates by calling the [Flow.collect] method of the value
+     * returned by [observeFavorites], which on update cause the [HomeUiState] to be updated.
+     */
     private val favorites = MutableStateFlow<Set<String>>(value = setOf())
 
     private val postsFeed = MutableStateFlow<PostsFeed?>(value = null)

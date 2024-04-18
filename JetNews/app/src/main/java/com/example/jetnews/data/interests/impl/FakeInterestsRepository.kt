@@ -16,6 +16,7 @@
 
 package com.example.jetnews.data.interests.impl
 
+import androidx.lifecycle.viewModelScope
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.InterestsRepository
@@ -31,6 +32,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 /**
@@ -212,9 +214,33 @@ class FakeInterestsRepository : InterestsRepository {
         }
     }
 
+    /**
+     * This is called to retrieve a read-only version of our [MutableStateFlow] of [Set] of
+     * [TopicSelection] property [selectedTopics]. [InterestsViewModel] calls this for its [StateFlow]
+     * of [Set] of [TopicSelection] property [InterestsViewModel.selectedTopics] using the [stateIn]
+     * extension function of [Flow] to convert the cold [Flow] that we return to a hot [StateFlow]
+     * that is started in the [viewModelScope] coroutine scope, sharing the most recently emitted
+     * value from a single running instance of the upstream flow with multiple downstream subscribers.
+     */
     override fun observeTopicsSelected(): Flow<Set<TopicSelection>> = selectedTopics
 
+    /**
+     * This is called to retrieve a read-only version of our [MutableStateFlow] of [Set] of [String]
+     * property [selectedPeople]. [InterestsViewModel] calls this for its [StateFlow] of [Set] of
+     * [String] property [InterestsViewModel.selectedPeople] using the [stateIn] extension function of
+     * [Flow] to convert the cold [Flow] that we return to a hot [StateFlow] that is started in the
+     * [viewModelScope] coroutine scope, sharing the most recently emitted value from a single running
+     * instance of the upstream flow with multiple downstream subscribers.
+     */
     override fun observePeopleSelected(): Flow<Set<String>> = selectedPeople
 
+    /**
+     * This is called to retrieve a read-only version of our [MutableStateFlow] of [Set] of [String]
+     * property [selectedPublications]. [InterestsViewModel] calls this for its [StateFlow] of [Set] of
+     * [String] property [InterestsViewModel.selectedPublications] using the [stateIn] extension
+     * function of [Flow] to convert the cold [Flow] that we return to a hot [StateFlow] that is
+     * started in the [viewModelScope] coroutine scope, sharing the most recently emitted value from
+     * a single running instance of the upstream flow with multiple downstream subscribers.
+     */
     override fun observePublicationSelected(): Flow<Set<String>> = selectedPublications
 }
