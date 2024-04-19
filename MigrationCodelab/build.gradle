@@ -18,7 +18,7 @@ buildscript {
     // Define versions in a single place
     ext {
         // App dependencies
-        composeCompilerVersion = '1.5.11'
+        composeCompilerVersion = '1.5.12'
         gradleVersion = '8.3.2'
         kotlinVersion = '1.9.23'
         ktlintVersion = '0.45.2'
@@ -34,7 +34,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:$gradleVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7"
-        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.22-1.0.17"
+        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.23-1.0.19"
     }
 }
 
