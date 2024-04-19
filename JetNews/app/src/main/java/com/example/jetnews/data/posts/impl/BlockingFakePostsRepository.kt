@@ -52,8 +52,24 @@ class BlockingFakePostsRepository : PostsRepository {
      */
     private val favorites = MutableStateFlow<Set<String>>(value = setOf())
 
+    /**
+     * This is the [MutableStateFlow] wrapped [PostsFeed] which is updated to our fake [PostsFeed]
+     * global variable [posts] by our [getPostsFeed] method.
+     */
     private val postsFeed = MutableStateFlow<PostsFeed?>(value = null)
 
+    /**
+     * Tries to find the [Post] whose [Post.id] is equal to our [String] parameter [postId] in the
+     * [List] of [Post] returned by the [PostsFeed.allPosts] property of [PostsFeed] global variable
+     * [posts] and if successful returns that [Post] as the [Result.Success.data] of a new instance
+     * of [Result.Success] otherwise it returns a [Result.Error] whose [Result.Error.exception] is
+     * an [IllegalArgumentException] whose [String] argument is "Unable to find post".
+     *
+     * @param postId the [Post.id] of the [Post] we are to look for
+     * @return a [Result.Success] whose [Result.Success.data] is the [Post] requested if we find it,
+     * or a [Result.Error] whose [Result.Error.exception] is an [IllegalArgumentException] whose
+     * [String] argument is "Unable to find post".
+     */
     override suspend fun getPost(postId: String?): Result<Post> {
         return withContext(context = Dispatchers.IO) {
             val post: Post? = posts.allPosts.find { it.id == postId }
@@ -65,14 +81,35 @@ class BlockingFakePostsRepository : PostsRepository {
         }
     }
 
+    /**
+     * Updates our [MutableStateFlow] wrapped [PostsFeed] property [postsFeed] with the fake
+     * [PostsFeed] global variable [posts], and returns a [Result.Success] instance whose
+     * [Result.Success.data] is [posts].
+     *
+     * @return a [Result.Success] instance whose [Result.Success.data] is the [PostsFeed] global
+     * variable [posts].
+     */
     override suspend fun getPostsFeed(): Result<PostsFeed> {
         postsFeed.update { posts }
         return Result.Success(data = posts)
     }
 
+    /**
+     * Returns a read-only [Flow] of [Set] of [String] reference to our [MutableStateFlow] wrapped
+     * [Set] of [String] property [favorites].
+     */
     override fun observeFavorites(): Flow<Set<String>> = favorites
+
+    /**
+     * Returns a read-only [Flow] of [PostsFeed] reference to our [MutableStateFlow] wrapped
+     * [PostsFeed] property [postsFeed]
+     */
     override fun observePostsFeed(): Flow<PostsFeed?> = postsFeed
 
+    /**
+     * Toggles the presence of our [String] parameter [postId] in our [MutableStateFlow] wrapped
+     * [Set] of [String] property [favorites].
+     */
     override suspend fun toggleFavorite(postId: String) {
         favorites.update { it.addOrRemove(postId) }
     }
