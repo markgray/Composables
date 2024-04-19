@@ -19,7 +19,7 @@ buildscript {
     ext {
         gradleVersion = '8.3.2'
         kotlinVersion = '1.9.23'
-        composeCompilerVersion = '1.5.11'
+        composeCompilerVersion = '1.5.12'
     }
 
     repositories {
