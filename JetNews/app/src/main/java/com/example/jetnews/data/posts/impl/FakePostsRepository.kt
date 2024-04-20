@@ -25,6 +25,7 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.home.HomeUiState
 import com.example.jetnews.ui.home.HomeViewModel
+import com.example.jetnews.utils.ErrorMessage
 import com.example.jetnews.utils.addOrRemove
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -91,7 +92,24 @@ class FakePostsRepository : PostsRepository {
     }
 
     /**
+     * Delays for 800 milliseconds to pretend we're on a slow network, then if our [shouldRandomlyFail]
+     * method returns `true` (which it does every fifth time it is called) returns a [Result.Error]
+     * whose [Result.Error.exception] is a new instance of [IllegalStateException], and if
+     * [shouldRandomlyFail] returns `false` it calls the [MutableStateFlow.update] methd of our
+     * [MutableStateFlow] wrapped [PostsFeed] property [postsFeed] to set it to the latest value
+     * of our global [PostsFeed] variable [posts] and then returns a [Result.Success] whose
+     * [Result.Success.data] is [posts]. The [HomeViewModel.refreshPosts] method calls this method
+     * and updates its private [MutableStateFlow] wrapped `HomeViewModelState` with either the
+     * [PostsFeed] in a [Result.Success.data] returned or if a [Result.Error] is returned adds an
+     * [ErrorMessage] to the [List] of [ErrorMessage] of the `HomeViewModelState`. The
+     * [StateFlow] wrapped [HomeUiState] property [HomeViewModel.uiState] uses the [Flow.stateIn]
+     * method to convert this cold [Flow] into a hot [StateFlow] that is started in the [viewModelScope]
+     * coroutine scope, sharing the most recently emitted value from a single running instance of the
+     * upstream flow with multiple downstream subscribers.
      *
+     * @return a [Result.Error] whose [Result.Error.exception] is an [IllegalStateException] if our
+     * [shouldRandomlyFail] method returns `true` this time, or a [Result.Success] whose
+     * [Result.Success.data] is our [PostsFeed] global variable [posts].
      */
     override suspend fun getPostsFeed(): Result<PostsFeed> {
         return withContext(context = Dispatchers.IO) {
@@ -105,23 +123,39 @@ class FakePostsRepository : PostsRepository {
         }
     }
 
+    /**
+     * Returns a read-only [Flow] of [Set] of [String] reference to our [MutableStateFlow] wrapped
+     * [Set] of [String] property [favorites].
+     */
     override fun observeFavorites(): Flow<Set<String>> = favorites
+
+    /**
+     * Returns a read-only [Flow] of [PostsFeed] reference to our [MutableStateFlow] wrapped
+     * [PostsFeed] property [postsFeed]
+     */
     override fun observePostsFeed(): Flow<PostsFeed?> = postsFeed
 
+    /**
+     * Toggles the presence of our [String] parameter [postId] in our [MutableStateFlow] wrapped
+     * [Set] of [String] property [favorites].
+     */
     override suspend fun toggleFavorite(postId: String) {
         favorites.update {
             it.addOrRemove(postId)
         }
     }
 
-    // used to drive "random" failure in a predictable pattern, making the first request always
-    // succeed
+    /**
+     * used to drive "random" failure in a predictable pattern, making the first request
+     * always succeed
+     */
     private var requestCount = 0
 
     /**
-     * Randomly fail some loads to simulate a real network.
+     * Randomly fail some loads to simulate a real network. This will fail by returning `true`
+     * deterministically every 5 requests.
      *
-     * This will fail deterministically every 5 requests
+     * @return `true` if the "download" should fail this time, or `false` if it should succeed.
      */
     private fun shouldRandomlyFail(): Boolean = ++requestCount % 5 == 0
 }

@@ -33,7 +33,7 @@ import com.example.jetnews.model.Publication
  */
 
 /**
- * TODO: Add kdoc
+ * The [PostAuthor] of [Post] sample [post1].
  */
 val pietro: PostAuthor = PostAuthor(
     name = "Pietro Maggi",
@@ -41,7 +41,7 @@ val pietro: PostAuthor = PostAuthor(
 )
 
 /**
- * TODO: Add kdoc
+ * The [PostAuthor] of [Post] sample [post2].
  */
 val manuel: PostAuthor = PostAuthor(
     name = "Manuel Vivo",
@@ -49,7 +49,7 @@ val manuel: PostAuthor = PostAuthor(
 )
 
 /**
- * TODO: Add kdoc
+ * The [PostAuthor] of [Post] sample [post3] and [post5].
  */
 val florina: PostAuthor = PostAuthor(
     name = "Florina Muntenescu",
@@ -57,7 +57,7 @@ val florina: PostAuthor = PostAuthor(
 )
 
 /**
- * TODO: Add kdoc
+ * The [PostAuthor] of [Post] sample [post4].
  */
 val jose: PostAuthor = PostAuthor(
     name = "Jose Alcérreca",
@@ -65,7 +65,7 @@ val jose: PostAuthor = PostAuthor(
 )
 
 /**
- * TODO: Add kdoc
+ * The [Publication] which published all five of our [Post].
  */
 val publication: Publication = Publication(
     name = "Android Developers",
@@ -73,7 +73,7 @@ val publication: Publication = Publication(
 )
 
 /**
- * TODO: Add kdoc
+ * These are the [Paragraph] used for [Post] sample [post1].
  */
 val paragraphsPost1: List<Paragraph> = listOf(
     Paragraph(
@@ -215,7 +215,7 @@ val paragraphsPost1: List<Paragraph> = listOf(
 )
 
 /**
- * TODO: Add kdoc
+ * These are the [Paragraph] used for [Post] sample [post2].
  */
 val paragraphsPost2: List<Paragraph> = listOf(
     Paragraph(
@@ -494,7 +494,7 @@ val paragraphsPost2: List<Paragraph> = listOf(
 )
 
 /**
- * TODO: Add kdoc
+ * These are the [Paragraph] used for [Post] sample [post3].
  */
 val paragraphsPost3: List<Paragraph> = listOf(
     Paragraph(
@@ -582,7 +582,7 @@ val paragraphsPost3: List<Paragraph> = listOf(
 )
 
 /**
- * TODO: Add kdoc
+ * These are the [Paragraph] used for [Post] sample [post4].
  */
 val paragraphsPost4: List<Paragraph> = listOf(
     Paragraph(
@@ -677,7 +677,7 @@ val paragraphsPost4: List<Paragraph> = listOf(
 )
 
 /**
- * TODO: Add kdoc
+ * These are the [Paragraph] used for [Post] sample [post5].
  */
 val paragraphsPost5: List<Paragraph> = listOf(
     Paragraph(
@@ -977,7 +977,7 @@ val paragraphsPost5: List<Paragraph> = listOf(
 )
 
 /**
- * TODO: Add kdoc
+ * [Post] sample [post1].
  */
 val post1: Post = Post(
     id = "dc523f0ed25c",
@@ -996,7 +996,7 @@ val post1: Post = Post(
 )
 
 /**
- * TODO: Add kdoc
+ * [Post] sample [post2].
  */
 val post2: Post = Post(
     id = "7446d8dfd7dc",
@@ -1015,7 +1015,7 @@ val post2: Post = Post(
 )
 
 /**
- * TODO: Add kdoc
+ * [Post] sample [post3].
  */
 val post3: Post = Post(
     id = "ac552dcc1741",
@@ -1034,7 +1034,7 @@ val post3: Post = Post(
 )
 
 /**
- * TODO: Add kdoc
+ * [Post] sample [post4].
  */
 val post4: Post = Post(
     id = "84eb677660d9",
@@ -1053,7 +1053,7 @@ val post4: Post = Post(
 )
 
 /**
- * TODO: Add kdoc
+ * [Post] sample [post5].
  */
 val post5: Post = Post(
     id = "55db18283aca",
@@ -1072,7 +1072,7 @@ val post5: Post = Post(
 )
 
 /**
- * TODO: Add kdoc
+ * The global [PostsFeed] variable of dummy [Post] that this app uses.
  */
 val posts: PostsFeed =
     PostsFeed(
