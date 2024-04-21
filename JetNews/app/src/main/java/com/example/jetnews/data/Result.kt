@@ -16,26 +16,35 @@
 
 package com.example.jetnews.data
 
+import kotlinx.coroutines.Deferred
+
 /**
  * A generic class that holds a value or an exception
  */
 sealed class Result<out R> {
     /**
-     * TODO: Add kdoc
+     * Used to return the [data] of type [T] that was successfully retrieved.
      *
-     * @param data TODO: Add kdoc
+     * @param data the data that was retrieved.
      */
     data class Success<out T>(val data: T) : Result<T>()
     /**
-     * TODO: Add kdoc
+     * Used to return the [exception] of type [Exception] that caused the retrieval of data to fail.
      *
-     * @param exception TODO: Add kdoc
+     * @param exception the [Exception] that caused the retrieval of data to fail.
      */
     data class Error(val exception: Exception) : Result<Nothing>()
 }
 
 /**
- * TODO: Add kdoc
+ * This is used on the [Result] returned by the [Deferred.await] to allow its caller to supply a
+ * [T] parameter [fallback] to return if the [Result] is not a [Result.Success] holding non-`null`
+ * [Result.Success.data].
+ *
+ * @param fallback a [T] value to return if the [Result] is not a [Result.Success] holding non-`null`
+ * [Result.Success.data].
+ * @return the non-`null` [Result.Success.data] of the receiver [Result] or [T] parameter [fallback]
+ * if the retrieval was unsuccessful.
  */
 fun <T> Result<T>.successOr(fallback: T): T {
     return (this as? Result.Success<T>)?.data ?: fallback
