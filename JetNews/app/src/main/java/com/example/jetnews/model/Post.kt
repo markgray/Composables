@@ -19,18 +19,22 @@ package com.example.jetnews.model
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
-import androidx.compose.ui.semantics.SemanticsPropertyReceiver
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
+import com.example.jetnews.ui.article.PostContent
 
 /**
  * Data type that holds the data needed to display a single "Post".
@@ -189,69 +193,63 @@ enum class ParagraphType {
     /**
      * The title of the [Post], the `ParagraphType.getTextAndParagraphStyle` extension function
      * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the [Typography.headlineLarge]
-     * of [MaterialTheme.typography] ([FontWeight.SemiBold], `fontSize` of 30.sp, and `letterSpacing`
-     * of 0.sp, using the `Montserrat` [FontFamily] file ui/theme/Type.kt).
+     * of [MaterialTheme.typography] (`fontSize` of 32.sp, `lineHeight` of 40.sp `letterSpacing` of
+     * 0.sp, and `lineBreak` of [LineBreak.Heading] (Balanced line lengths, hyphenation, and phrase
+     * based breaking. Suitable for short text such as titles or narrow newspaper columns).
      */
     Title,
 
     /**
      * The caption of the [Post], the `ParagraphType.getTextAndParagraphStyle` extension function
-     * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the `body1` [TextStyle]
-     * of [MaterialTheme.typography] ([FontWeight.Normal], `fontSize` of 16.sp, and `letterSpacing`
-     * of 0.5.sp, using the `Domine` [FontFamily] file ui/theme/Type.kt).
+     * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the [Typography.labelMedium]
+     * of [MaterialTheme.typography] ([FontWeight.Medium], `fontSize` of 12.sp, `lineHeight` of 16.sp,
+     * `letterSpacing` of 0.5.sp).
      */
     Caption,
 
     /**
      * The header of a section of the [Post], the `ParagraphType.getTextAndParagraphStyle` extension
-     * function (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the `h5` [TextStyle]
-     * of [MaterialTheme.typography] ([FontWeight.SemiBold], `fontSize` of 24.sp, and `letterSpacing`
-     * of 0sp, using the `Montserrat` [FontFamily] file ui/theme/Type.kt), it also sets the
-     * `trailingPadding` that will be used in the `ParagraphStyling` to 16.dp which will be added to
-     * the bottom padding of the [Box] that the `Paragraph` Composable renders the text in (file
-     * ui/article/PostContent.kt). The `Paragraph` Composable also switches using a when statement
-     * and for [ParagraphType.Header] renders the [AnnotatedString] of the text of the [Paragraph]
-     * in a [Text] whose `modifier` argument is a `Modifier.padding` of 4.dp to which it adds a
-     * `Modifier.semantics` of a `heading` instance of [SemanticsPropertyReceiver].
+     * function (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the
+     * [Typography.headlineMedium] of [MaterialTheme.typography] (`fontSize` of 28.sp, `lineHeight`
+     * of 36.sp and `letterSpacing` of 0sp, and `lineBreak` of [LineBreak.Heading]. The
+     * `Paragraph` Composable of [PostContent] uses a [Modifier.padding] of 4.dp for the [Text] that
+     * it uses to render a [Paragraph] with the [ParagraphType.Header].
      */
     Header,
 
     /**
-     * The sub-heading of a section of the [Post], the `ParagraphType.getTextAndParagraphStyle` extension
-     * function (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the `h6` [TextStyle]
-     * of [MaterialTheme.typography] ([FontWeight.SemiBold], `fontSize` of 20.sp, and `letterSpacing`
-     * of 0sp, using the `Montserrat` [FontFamily] file ui/theme/Type.kt), it also sets the
-     * `trailingPadding` that will be used in the `ParagraphStyling` to 16.dp which will be added to
-     * the bottom padding of the [Box] that the `Paragraph` Composable renders the text in (file
-     * ui/article/PostContent.kt).
+     * The sub-heading of a section of the [Post], the `ParagraphType.getTextAndParagraphStyle`
+     * extension function (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the
+     * [Typography.headlineSmall] of [MaterialTheme.typography] (`fontSize` of 24.sp, `lineHeight`
+     * of 32.sp, `letterSpacing` of 0sp, and `lineBreak` of [LineBreak.Heading].
      */
     Subhead,
 
     /**
      * The `text` of a [Paragraph], the `ParagraphType.getTextAndParagraphStyle` extension function
-     * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to a copy of the `body1`
-     * [TextStyle] of [MaterialTheme.typography] whose `lineHeight` is 28.sp ([FontWeight.Normal],
-     * `fontSize` of 16.sp, and `letterSpacing` of 0.5.sp, using the `Domine` [FontFamily] (file
-     * ui/theme/Type.kt). It also modifies the `paragraphStyle` to have a `lineHeight` of 28.sp
+     * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to a copy of the
+     * [Typography.bodyLarge] of [MaterialTheme.typography] (`fontSize` of 16.sp, `lineHeight` of
+     * 24.sp `letterSpacing` of 0.5.sp, and `lineBreak` of [LineBreak.Paragraph].
      */
     Text,
 
     /**
      * A [Paragraph] containing code, the `ParagraphType.getTextAndParagraphStyle` extension function
-     * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to a copy of the `body1`
-     * [TextStyle] of [MaterialTheme.typography] modifying its `fontFamily` to [FontFamily.Monospace]
-     * ([FontWeight.Normal], `fontSize` of 16.sp, and `letterSpacing` of 0.5.sp). The `Paragraph`
-     * Composable also switches using a when statement and for [ParagraphType.CodeBlock] renders the
+     * (file ui/article/PostContent.kt) sets the [TextStyle] to be used to a copy of the
+     * [Typography.bodyLarge] of [MaterialTheme.typography] modifying its `fontFamily` to
+     * [FontFamily.Monospace] (`fontSize` of 16.sp, `lineHeight` of 24.sp, `letterSpacing` of 0.5.sp,
+     * and `lineBreak` of [LineBreak.Paragraph]). The `Paragraph` of the [PostContent] Composable
+     * also switches using a when statement and for [ParagraphType.CodeBlock] renders the
      * [AnnotatedString] of the text of the [Paragraph] in a `CodeBlockParagraph` Composable (file
      * ui/article/PostContent.kt)
      */
     CodeBlock,
 
     /**
-     * Not sure about the use of this [ParagraphType], the `ParagraphType.getTextAndParagraphStyle`
-     * extension function (file ui/article/PostContent.kt) sets the [TextStyle] to be used to the
-     * `body1` [TextStyle] of [MaterialTheme.typography] ([FontWeight.Normal], `fontSize` of 16.sp,
-     * and `letterSpacing` of 0.5.sp, using the `Domine` [FontFamily] file ui/theme/Type.kt).
+     * The `ParagraphType.getTextAndParagraphStyle` extension function (file ui/article/PostContent.kt)
+     * sets the [TextStyle] to be used to the [Typography.bodyLarge] of [MaterialTheme.typography]
+     * (`fontSize` of 16.sp, `lineHeight` of 24.sp, `letterSpacing` of 0.5.sp, and `lineBreak` of
+     * [LineBreak.Paragraph]).
      */
     Quote,
 
@@ -259,9 +257,9 @@ enum class ParagraphType {
      * A "Bullet Point", the `ParagraphType.getTextAndParagraphStyle` extension function (file
      * ui/article/PostContent.kt) sets the `paragraphStyle` to be used to a `ParagraphStyle` with
      * a [TextIndent] for the `firstLine` of 8.sp as its `textIndent` argument. The `Paragraph`
-     * Composable also switches using a when statement and for [ParagraphType.Bullet] renders the
-     * [AnnotatedString] of the text of the [Paragraph] in a `BulletParagraph` Composable (file
-     * ui/article/PostContent.kt)
+     * Composable of [PostContent] also switches using a when statement and for [ParagraphType.Bullet]
+     * renders the [AnnotatedString] of the text of the [Paragraph] in a `BulletParagraph` Composable
+     * (file ui/article/PostContent.kt)
      */
     Bullet,
 }

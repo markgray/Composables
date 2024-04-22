@@ -38,7 +38,7 @@ private val Montserrat = FontFamily(
 )
 
 /**
- * This is the basis for all the other [TextStyle], with its defaults overridden when necessary.
+ * This is the basis for all the [TextStyle], with its defaults overridden when necessary.
  */
 val defaultTextStyle: TextStyle = TextStyle(
     fontFamily = Montserrat,
