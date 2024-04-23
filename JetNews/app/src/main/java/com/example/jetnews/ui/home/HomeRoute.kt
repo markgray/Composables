@@ -184,9 +184,18 @@ fun HomeRoute(
  * - [Feed], which displays just the list of all articles
  * - [ArticleDetails], which displays just a specific article.
  */
-private enum class HomeScreenType {
+enum class HomeScreenType {
+    /**
+     * Displays both a list of all articles and a specific article
+     */
     FeedWithArticleDetails,
+    /**
+     * Displays just the list of all articles
+     */
     Feed,
+    /**
+     * Displays just a specific article
+     */
     ArticleDetails
 }
 

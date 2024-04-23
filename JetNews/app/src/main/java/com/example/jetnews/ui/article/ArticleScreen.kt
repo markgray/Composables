@@ -45,6 +45,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -62,7 +63,9 @@ import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.post3
+import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.home.HomeScreenType
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.utils.FavoriteButton
@@ -72,12 +75,23 @@ import kotlinx.coroutines.runBlocking
 
 /**
  * Stateless Article Screen that displays a single post adapting the UI to different screen sizes.
+ * Composed by [HomeRoute] when the [HomeScreenType] is [HomeScreenType.ArticleDetails]. We start
+ * by initializing and remembering our [MutableState] wrapped [Boolean] variable
+ * `var showUnimplementedActionDialog` to `false`. Then if on this recomposition it is `true`
+ * we compose our [FunctionalityNotAvailablePopup] with its `onDismiss` lambda argument a lambda
+ * which sets `showUnimplementedActionDialog` to `false` (this is used as the lambda that the
+ * [AlertDialog] of [FunctionalityNotAvailablePopup] should call to dismiss itself). Then our root
+ * Composable is a [Row] whose `modifier` argument chains a [Modifier.fillMaxSize] to our [Modifier]
+ * parameter [modifier].
  *
  * @param post (state) item to display
- * @param showNavigationIcon (state) if the navigation icon should be shown
+ * @param isExpandedScreen (state) whether the screen is expanded
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
  * @param onToggleFavorite (event) request that this post toggle it's favorite state
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [HomeRoute] passes us none so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
  * @param lazyListState (state) the [LazyListState] for the article content
  */
 @OptIn(ExperimentalMaterial3Api::class)
