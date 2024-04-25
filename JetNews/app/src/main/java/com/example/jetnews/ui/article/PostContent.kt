@@ -41,14 +41,19 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.LocalDensity
@@ -77,17 +82,37 @@ import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.example.jetnews.ui.home.HomeRoute
+import com.example.jetnews.ui.home.HomeUiState
 
 private val defaultSpacerSize = 16.dp
 
 /**
- * TODO: Add kdoc
+ * Occupies the `content` lambda of the [Scaffold] used by `ArticleScreenContent` to display the
+ * [Post] parameter [post]. Our root Composable is a [LazyColumn] whose `contentPadding` argument is
+ * our [PaddingValues] parameter `contentPadding`, whose `modifier` argument chains a [Modifier.padding]
+ * to our [Modifier] parameter [modifier] which adds [defaultSpacerSize] (16.dp) to both sides, and
+ * whose `state` argument is our [LazyListState] parameter [state]. The `content` of the [LazyColumn]
+ * is our [LazyListScope] extension function [postContentItems] with its `post` argument our [Post]
+ * parameter [post].
+ *
+ * @param post the [Post] we are supposed to display.
+ * @param modifier a [Modifier] instance that our caller can use to alter our appearance and/or
+ * behavior. Our caller `ArticleScreenContent` passes us a [Modifier.nestedScroll] whose `connection`
+ * is the [TopAppBarScrollBehavior.nestedScrollConnection] of the [TopAppBarDefaults.enterAlwaysScrollBehavior]
+ * that if creates from its remembered [TopAppBarState] variable.
+ * @param contentPadding this is the [PaddingValues] that the [Scaffold] passes its `content` lambda
+ * argument.
+ * @param state a [LazyListState] that can be hoisted to control and observe scrolling. It is hoisted
+ * all the way up to the call to [ArticleScreen] in [HomeRoute] where it is picked from a [Map] of
+ * [String] to [LazyListState] based on the [Post.id] of the [HomeUiState.HasPosts.selectedPost] of
+ * the current [HomeUiState].
  */
 @Composable
 fun PostContent(
     post: Post,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
+    contentPadding: PaddingValues = PaddingValues(all = 0.dp),
     state: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(
@@ -100,7 +125,7 @@ fun PostContent(
 }
 
 /**
- * TODO: Add kdoc
+ * Called as the `content` of the [LazyColumn] used by [PostContent].
  */
 fun LazyListScope.postContentItems(post: Post) {
     item {

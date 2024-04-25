@@ -46,6 +46,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
+import androidx.compose.material3.Typography
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -61,6 +62,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -246,7 +250,14 @@ private fun ArticleScreenContent(
  * which sets the size of the [Image] to 36.dp. The [Image] is followed in the [Row] by a [Text]
  * whose `text` argument is the [String] returned by the [stringResource] when it uses the format
  * [String] with resource ID [R.string.published_in] to format our [String] parameter [title]
- * (prefixes the [title] with the [String] "Published in:").
+ * (prefixes the [title] with the [String] "Published in:"). The [TextStyle] `style` argument of the
+ * [Text] is the [Typography.labelLarge] of our custom [MaterialTheme.typography] (`fontSize` = 14.sp,
+ * `lineHeight` = 20.sp, `letterSpacing` = 0.1.sp, `fontWeight` = [FontWeight.Medium]). The `modifier`
+ * argument is a [Modifier.padding] that adds 8.dp to the start of the [Text].
+ *
+ * The `navigationIcon` argument of the [CenterAlignedTopAppBar] is our lambda parameter
+ * `navigationIconContent`, the `scrollBehavior` argument is our [TopAppBarScrollBehavior] parameter
+ * [scrollBehavior], and its `modifier` argument is our [Modifier] parameter [modifier].
  *
  * @param title the [Publication.name] of the [Publication] that the [Post] was published in.
  * @param navigationIconContent the navigation icon displayed at the start of the top app bar.
@@ -292,7 +303,16 @@ private fun TopAppBar(
 }
 
 /**
- * Display a popup explaining functionality not available.
+ * Display a popup explaining functionality not available. Our root Composable is an [AlertDialog]
+ * whose `onDismissRequest` argument is our lambda parameter [onDismiss], whose `text` argument is
+ * a lambda which composes a [Text] whose `text` argument is the [String] with resource ID
+ * [R.string.article_functionality_not_available] ("Functionality not available"), and whose
+ * [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom [MaterialTheme.typography]
+ * (`fontSize` is 16.sp, `lineHeight` is 24.sp, `letterSpacing` is 0.5.sp, and `lineBreak` is
+ * [LineBreak.Paragraph] (slower, higher quality line breaking for improved readability). The
+ * `confirmButton` argument of the [AlertDialog] is a lambda which composes a [TextButton] whose
+ * `onClick` argument is our lambda parameter [onDismiss], and whose `content` lambda parameter is
+ * a [Text] whose `text` argument is the [String] with resource ID [R.string.close] ("Close").
  *
  * @param onDismiss (event) request the popup be dismissed
  */
@@ -315,13 +335,23 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
 }
 
 /**
- * Show a share sheet for a post
+ * Show a share sheet for a post. We start by initializing our [Intent] variable `val intent` to a
+ * new instance whose `action` argument is [Intent.ACTION_SEND], then use the [apply] extension
+ * function to call is [Intent.setType] method (kotlin `type` property) to set the type of data to
+ * return to "text/plain", then we call [Intent.putExtra] to add the [Post.title] of our [Post]
+ * parameter [post] under the key [Intent.EXTRA_TITLE], and we call [Intent.putExtra] to add the
+ * [Post.url] of our [Post] parameter [post] under the key [Intent.EXTRA_TEXT]. Finally we call the
+ * [Context.startActivity] method to launch the [Intent] created by the [Intent.createChooser] for
+ * the `target` argument of our [Intent] variable `intent`, and the `title` argument of the [String]
+ * with resource ID [R.string.article_share_post] ("Share post"). (a new [Intent.ACTION_CHOOSER]
+ * [Intent] that wraps the `target` [Intent] that will launch an activity chooser, allowing the user
+ * to pick what they want to before proceeding).
  *
  * @param post to share
  * @param context Android context to show the share sheet in
  */
 fun sharePost(post: Post, context: Context) {
-    val intent = Intent(Intent.ACTION_SEND).apply {
+    val intent: Intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_TITLE, post.title)
         putExtra(Intent.EXTRA_TEXT, post.url)
@@ -335,7 +365,7 @@ fun sharePost(post: Post, context: Context) {
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of our [ArticleScreen].
  */
 @Preview("Article screen")
 @Preview("Article screen (dark)", uiMode = UI_MODE_NIGHT_YES)
@@ -356,7 +386,8 @@ fun PreviewArticleDrawer() {
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of our [ArticleScreen] using the `device` [Devices.PIXEL_C] (a 10.2 inch tablet, height
+ * 9.53 inches, width 7.05 inches).
  */
 @Preview(name = "Article screen navrail", device = Devices.PIXEL_C)
 @Preview(
