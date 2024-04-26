@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,12 +37,14 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -53,6 +56,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
@@ -67,6 +73,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
@@ -125,7 +132,30 @@ fun PostContent(
 }
 
 /**
- * Called as the `content` of the [LazyColumn] used by [PostContent].
+ * Called as the `content` of the [LazyColumn] used by [PostContent]. The `content` is a [LazyListScope]
+ * so all of our Composable use that [LazyListScope] as their `this`. Our first [LazyListScope.item]
+ * adds to the [LazyColumn]:
+ *  - a [PostHeaderImage] whose `post` argument is our [Post] parameter [post] which composes an
+ *  [Image] which displays the drawable whose resource ID is the [Post.imageId] of [post]
+ *  - a [Spacer] whose height is [defaultSpacerSize] (16.dp)
+ *  - a [Text] whose `text` argument is the [Post.title] of [post], and whose [TextStyle] `style`
+ *  argument is the [Typography.bodyMedium] of our custom [MaterialTheme.typography] (`fontSize` is
+ *  14.sp, `lineHeight` is 20.sp, `letterSpacing` is 0.25.sp, and `lineBreak` is [LineBreak.Paragraph]
+ *  (a Slower, higher quality line breaking for improved readability)).
+ *  - a [Spacer] whose height is 8.dp
+ *  - if the [Post.subtitle] of [post] is not `null` then a [Text] whose `text` is the [Post.subtitle]
+ *  of [post] and whose [TextStyle] `style` argument is the [Typography.bodyMedium] of our custom
+ *  [MaterialTheme.typography], and that is followed by a [Spacer] whose `height` is [defaultSpacerSize]
+ *  (16.dp)
+ *
+ * Next we add a [LazyListScope.item] that composes a [PostMetadata] whose `metadata` argument is the
+ * [Post.metadata] of [post], and `modifier` argument is a [Modifier.padding] that adds 24.dp to the
+ * bottom of the [PostMetadata]. Finally we add a [LazyListScope.items] whose `items` argument is the
+ * [List] of [Paragraph] field [Post.paragraphs] of [post]. In the `itemContent` lambda argument of
+ * [LazyListScope.items] we compose a [Paragraph] whose `paragraph` argument is the [Paragraph] that
+ * is passed to the lambda each time it loops through the [List] of [Paragraph].
+ *
+ * @param post the [Post] whose information we are to display.
  */
 fun LazyListScope.postContentItems(post: Post) {
     item {
@@ -142,9 +172,26 @@ fun LazyListScope.postContentItems(post: Post) {
     items(items = post.paragraphs) { Paragraph(paragraph = it) }
 }
 
+/**
+ * Used to display the drawable whose resource ID is the [Post.imageId] field of our [Post] parameter
+ * [post]. We start by initializing our [Modifier] variable `val imageModifier` to a [Modifier.heightIn]
+ * that constrains its size to be at least 180.dp, to which is chained a [Modifier.fillMaxWidth] which
+ * causes users of `imageModifier` to occupy their entire incoming width constraint, and at the end
+ * of the chain is added a [Modifier.clip] which clips the composable using the [Modifier] to the
+ * [Shape] of the [Shapes.medium] of our custom [MaterialTheme.shapes] (a [RoundedCornerShape] whose
+ * `size` is 4.dp). Then our root composable is an [Image] whose [Painter] is created from the drawable
+ * whose resource ID is the [Post.imageId] of [post], whose `modifier` argument is our [Modifier]
+ * variable `imageModifier`, and whose `contentScale` argument is [ContentScale.Crop] (scales the
+ * source uniformly (maintaining the source's aspect ratio) so that both dimensions (width and
+ * height) of the source will be equal to or larger than the corresponding dimension of the
+ * destination).
+ *
+ * @param post the [Post] whose [Post.imageId] is the drawable resource ID of the png that we are to
+ * have our [Image] Composable draw.
+ */
 @Composable
 private fun PostHeaderImage(post: Post) {
-    val imageModifier = Modifier
+    val imageModifier: Modifier = Modifier
         .heightIn(min = 180.dp)
         .fillMaxWidth()
         .clip(shape = MaterialTheme.shapes.medium)
@@ -156,6 +203,24 @@ private fun PostHeaderImage(post: Post) {
     )
 }
 
+/**
+ * Used to display the information in the [Metadata] instance found in the [Post.metadata] property
+ * of the [Post] being displayed (our [metadata] parameter). Our root Composable is a [Row] whose
+ * `modifier` argument adds a [Modifier.semantics] to our [Modifier] parameter [modifier] with its
+ * `mergeDescendants` argument `true` to merge semantics so that accessibility services consider
+ * the [Row] a single element. In the [RowScope] `content` lambda argument of [Row] we compose:
+ *  - an [Image] whose [ImageVector] argument `imageVector` causes it to render the [ImageVector]
+ *  drawn by [Icons.Filled.AccountCircle] (a stylized bust consisting of a white circle above a
+ *  white circle segment all in a black circle). The `modifier` argument is a [Modifier.size] that
+ *  sets its size to 40.dp, its `colorFilter` argument ([ColorFilter] to apply to the ImageVector
+ *  when it is rendered onscreen) is a [ColorFilter.tint] whose `color` is the `current`
+ *  [LocalContentColor] (preferred content color for a given position in the hierarchy), and its
+ *  `contentScale` argument is [ContentScale.Fit] (scales the source uniformly (maintaining the
+ *  source's aspect ratio) so that both dimensions (width and height) of the source will be equal
+ *  to or less than the corresponding dimension of the destination).
+ *  - a [Spacer] whose `width` is 8.dp
+ *  - a [Column]
+ */
 @Composable
 private fun PostMetadata(
     metadata: Metadata,

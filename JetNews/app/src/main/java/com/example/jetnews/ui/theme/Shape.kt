@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
  * components, and the `large` [RoundedCornerShape] of 8.dp is used by large components
  */
 val JetnewsShapes: Shapes = Shapes(
-    small = RoundedCornerShape(4.dp),
-    medium = RoundedCornerShape(4.dp),
-    large = RoundedCornerShape(8.dp)
+    small = RoundedCornerShape(size = 4.dp),
+    medium = RoundedCornerShape(size = 4.dp),
+    large = RoundedCornerShape(size = 8.dp)
 )
