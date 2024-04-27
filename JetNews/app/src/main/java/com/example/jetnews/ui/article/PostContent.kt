@@ -88,6 +88,7 @@ import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.ui.home.HomeUiState
@@ -219,7 +220,19 @@ private fun PostHeaderImage(post: Post) {
  *  source's aspect ratio) so that both dimensions (width and height) of the source will be equal
  *  to or less than the corresponding dimension of the destination).
  *  - a [Spacer] whose `width` is 8.dp
- *  - a [Column]
+ *  - a [Column] containing:
+ *  * a [Text] whose `text` is the [PostAuthor.name] of the [Metadata.author] of our [Metadata]
+ *  parameter [metadata], whose [TextStyle] `style` argument is the [Typography.labelLarge] of our
+ *  custom [MaterialTheme.typography] `fontSize` = 14.sp, `lineHeight` = 20.sp, `letterSpacing` =
+ *  0.1.sp, `fontWeight` = [FontWeight.Medium], and whose `modifier` argument is a [Modifier.padding]
+ *  that adds 4.dp to the top of the [Text].
+ *  * a [Text] whose `text` is the [String] that the format [String] whose resource ID is
+ *  [R.string.article_post_min_read] ("%1$s • %2$d min read") creates when it substitutes the values
+ *  of the [Metadata.date] of [metadata] and the [Metadata.readTimeMinutes] of [metadata] for the
+ *  format arguments, and the [TextStyle] `style` argument is the [Typography.bodySmall] of our
+ *  custom [MaterialTheme.typography] `fontSize` = 12.sp, `lineHeight` = 16.sp, `letterSpacing` = 0.4.sp,
+ *  and `lineBreak` = [LineBreak.Paragraph].
+ *
  */
 @Composable
 private fun PostMetadata(
@@ -259,6 +272,44 @@ private fun PostMetadata(
     }
 }
 
+/**
+ * Used to display the data in its [Paragraph] parameter [paragraph] according to the [ParagraphStyling]
+ * that the [ParagraphType.getTextAndParagraphStyle] extension function creates based on the [ParagraphType]
+ * specified by its [Paragraph.type] property. We start by initializings our [TextStyle] variable
+ * `textStyle`, our [ParagraphStyle] variable `paragraphStyle` and our [Dp] variable `trailingPadding`
+ * by Destructuring the [ParagraphStyling] data class returned by the [ParagraphType.getTextAndParagraphStyle]
+ * extension function for the [ParagraphType] found in the [Paragraph.type] property of [paragraph].
+ * Then we initialize our [AnnotatedString] variable `val annotatedString` to the [AnnotatedString]
+ * that the [paragraphToAnnotatedString] method returns when it is passed the arguments:
+ *  - `paragraph` our [Paragraph] parameter [paragraph].
+ *  - `typography` the [Typography] of our custom [MaterialTheme.typography]
+ *  - `codeBlockBackground` the [ColorScheme.codeBlockBackground] of our custom [MaterialTheme.colorScheme]
+ *  a copy of the [ColorScheme.onSurface] whose `alpha` is overridden to be .15f
+ *
+ * Then our root Composable is a [Box] whose `modifier` argument is a [Modifier.padding] that adds
+ * our [Dp] variable `trailingPadding` to the bottom of the [Box]. The `content` of the [Box] uses
+ * a `when` switch on the [ParagraphType] value of the [Paragraph.type] property of [paragraph]:
+ *  - [ParagraphType.Bullet] causes a [BulletParagraph] to be composed with its `text` argument
+ *  our [AnnotatedString] variable `annotatedString`, its `textStyle` argument is our [TextStyle]
+ *  variable `textStyle` and its `paragraphStyle` argument is our [ParagraphStyle] variable
+ *  `paragraphStyle`.
+ *  - [ParagraphType.CodeBlock] causes a [CodeBlockParagraph] to be composed with its `text` argument
+ *  our [AnnotatedString] variable `annotatedString`, its `textStyle` argument is our [TextStyle]
+ *  variable `textStyle` and its `paragraphStyle` argument is our [ParagraphStyle] variable
+ *  `paragraphStyle`.
+ *  - [ParagraphType.Header] causes a [Text] to be composed whose `modifier` argument is a
+ *  [Modifier.padding] that adds 4.dp to all sides of the [Text], with its `text` argument our
+ *  [AnnotatedString] variable `annotatedString`, and its [TextStyle] `style` argument is the
+ *  [TextStyle] created when the [TextStyle.merge] method of our [TextStyle] variable `textStyle`
+ *  creates a new text style that is a combination of `textStyle` and our [ParagraphStyle] variable
+ *  `paragraphStyle`,
+ *  - `else` causes a [Text] to be composed whose `modifier` argument is a [Modifier.padding] that
+ *  adds 4.dp to all sides of the [Text], with its `text` argument our [AnnotatedString] variable
+ *  `annotatedString`, and its [TextStyle] `style` argument is our [TextStyle] variable `textStyle`.
+ *
+ * @param paragraph the [Paragraph] whose [Paragraph.text] we are to display according to its
+ * [ParagraphType] property [Paragraph.type] and [List] of [Markup] field [Paragraph.markups].
+ */
 @Composable
 private fun Paragraph(paragraph: Paragraph) {
     val (textStyle: TextStyle, paragraphStyle: ParagraphStyle, trailingPadding: Dp) =
@@ -271,17 +322,21 @@ private fun Paragraph(paragraph: Paragraph) {
     )
     Box(modifier = Modifier.padding(bottom = trailingPadding)) {
         when (paragraph.type) {
-            ParagraphType.Bullet -> BulletParagraph(
-                text = annotatedString,
-                textStyle = textStyle,
-                paragraphStyle = paragraphStyle
-            )
+            ParagraphType.Bullet -> {
+                BulletParagraph(
+                    text = annotatedString,
+                    textStyle = textStyle,
+                    paragraphStyle = paragraphStyle
+                )
+            }
 
-            ParagraphType.CodeBlock -> CodeBlockParagraph(
-                text = annotatedString,
-                textStyle = textStyle,
-                paragraphStyle = paragraphStyle
-            )
+            ParagraphType.CodeBlock -> {
+                CodeBlockParagraph(
+                    text = annotatedString,
+                    textStyle = textStyle,
+                    paragraphStyle = paragraphStyle
+                )
+            }
 
             ParagraphType.Header -> {
                 Text(
@@ -291,15 +346,27 @@ private fun Paragraph(paragraph: Paragraph) {
                 )
             }
 
-            else -> Text(
-                modifier = Modifier.padding(all = 4.dp),
-                text = annotatedString,
-                style = textStyle
-            )
+            else -> {
+                Text(
+                    modifier = Modifier.padding(all = 4.dp),
+                    text = annotatedString,
+                    style = textStyle
+                )
+            }
         }
     }
 }
 
+/**
+ * Used to display the contents of a [Paragraph] whose [ParagraphType] property [Paragraph.type] is
+ * [ParagraphType.CodeBlock].
+ *
+ * @param text the [AnnotatedString] that we are to display in our [Text].
+ * @param textStyle the [TextStyle] we are to [TextStyle.merge] with our [ParagraphStyle] parameter
+ * [paragraphStyle] to use as the [TextStyle] argument `style` of our [Text].
+ * @param paragraphStyle the [ParagraphStyle] we are to [TextStyle.merge] with our [TextStyle]
+ * parameter [textStyle] to use as the [TextStyle] argument `style` of our [Text].
+ */
 @Composable
 private fun CodeBlockParagraph(
     text: AnnotatedString,
@@ -427,7 +494,8 @@ fun Markup.toAnnotatedStringItem(
 
         MarkupType.Link -> {
             AnnotatedString.Range(
-                item = typography.bodyLarge.copy(textDecoration = TextDecoration.Underline).toSpanStyle(),
+                item = typography.bodyLarge.copy(textDecoration = TextDecoration.Underline)
+                    .toSpanStyle(),
                 start = start,
                 end = end
             )
