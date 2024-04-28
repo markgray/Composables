@@ -60,6 +60,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.LocalDensity
@@ -77,6 +78,7 @@ import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -359,7 +361,16 @@ private fun Paragraph(paragraph: Paragraph) {
 
 /**
  * Used to display the contents of a [Paragraph] whose [ParagraphType] property [Paragraph.type] is
- * [ParagraphType.CodeBlock].
+ * [ParagraphType.CodeBlock]. Our root Composable is a [Surface] whose `color` argument is the
+ * [ColorScheme.codeBlockBackground] of our custom [MaterialTheme.colorScheme] (a copy of the
+ * [ColorScheme.onSurface] with its alpha .15f), the `shape` argument is the [Shapes.small] of our
+ * custom [MaterialTheme.shapes] (a [RoundedCornerShape] whose `size` is 4.dp), and its `modifier`
+ * argument is a [Modifier.fillMaxWidth] that causes it to occupy its entire incoming width
+ * constraint. The `content` lambda argument of the [Surface] composes a [Text] whose `modifier`
+ * argument is a [Modifier.padding] that adds 16.dp padding to all sides, , its `text` argument is
+ * our [AnnotatedString] parameter [text], and its [TextStyle] `style` argument is the [TextStyle]
+ * that results when the [TextStyle.merge] method of our [TextStyle] parameter [textStyle] merges
+ * its values with those of our [ParagraphStyle] parameter [paragraphStyle].
  *
  * @param text the [AnnotatedString] that we are to display in our [Text].
  * @param textStyle the [TextStyle] we are to [TextStyle.merge] with our [ParagraphStyle] parameter
@@ -386,6 +397,29 @@ private fun CodeBlockParagraph(
     }
 }
 
+/**
+ * Used to display the contents of a [Paragraph] whose [ParagraphType] property [Paragraph.type] is
+ * [ParagraphType.Bullet]. Our root Composable is a [Row] whose [RowScope] `content` lambda starts
+ * with a [Box] which is wrapped in a [with] with supplies the current [LocalDensity] as the
+ * [Density] receiver, the `modifier` argument is a [Modifier.size] which sets its `width` to 8.sp
+ * converted to [Dp] and its `height` to 8.sp converted to [Dp], with a [RowScope.alignBy] chained
+ * to that which adds 9.sp as an alignment "baseline" 1sp below the bottom of the circle, and at the
+ * end of the [Modifier] chain is a [Modifier.background] whose `color` is the current [LocalContentColor]
+ * and whose `shape` is a [CircleShape]. At the end of the [Row] is a [Text] whose `modifier` argument
+ * is a [RowScope.weight] whose `weight` is 1f (causes it to take up all the incoming size constraints
+ * once its unweighted sidlings are measured and placed), and to this is chained a [RowScope.alignBy]
+ * whose `alignmentLine` argument is [FirstBaseline] ([AlignmentLine] defined by the baseline of a
+ * first line of a [androidx.compose.foundation.text.BasicText]). The `text` argument of the [Text]
+ * is our [AnnotatedString] parameter [text], and its [TextStyle] `style` argument is the [TextStyle]
+ * that results when the [TextStyle.merge] method of our [TextStyle] parameter [textStyle] merges
+ * its values with those of our [ParagraphStyle] parameter [paragraphStyle].
+ *
+ * @param text the [AnnotatedString] that we are to display in our [Text].
+ * @param textStyle the [TextStyle] we are to [TextStyle.merge] with our [ParagraphStyle] parameter
+ * [paragraphStyle] to use as the [TextStyle] argument `style` of our [Text].
+ * @param paragraphStyle the [ParagraphStyle] we are to [TextStyle.merge] with our [TextStyle]
+ * parameter [textStyle] to use as the [TextStyle] argument `style` of our [Text].
+ */
 @Composable
 private fun BulletParagraph(
     text: AnnotatedString,
@@ -415,18 +449,68 @@ private fun BulletParagraph(
     }
 }
 
+/**
+ * Convenience Data class that holds the [TextStyle], [ParagraphStyle], and [trailingPadding] for
+ * the [ParagraphType] that the [ParagraphType.getTextAndParagraphStyle] extension function is
+ * called for.
+ *
+ * @param textStyle the [TextStyle] that should be used for `this` [ParagraphType].
+ * @param paragraphStyle the [ParagraphStyle] that should be used for `this` [ParagraphType].
+ * @param trailingPadding the [Dp] that should be added as padding to the bottom of the Composable
+ * that is rendering the text of the [Paragraph] whose [Paragraph.type] is [ParagraphType].
+ */
 private data class ParagraphStyling(
     val textStyle: TextStyle,
     val paragraphStyle: ParagraphStyle,
     val trailingPadding: Dp
 )
 
+/**
+ * Determines the [TextStyle], [ParagraphStyle], and `trailingPadding` (padding to be added to the
+ * bottom) that should be used for its receiver [ParagraphType] and returns those values in a
+ * [ParagraphStyling] data class. We start by initializing our [Typography] variable `val typography`
+ * to our custom [MaterialTheme.typography], we initialize our [TextStyle] variable `var textStyle`
+ * to the [Typography.bodyLarge] of `typography`, initalize our [ParagraphStyle] variable
+ * `var paragraphStyle` to a new instance, and initialize our [Dp] variable `var trailingPadding` to
+ * 24.dp. We then `when` switch on our [ParagraphType] receiver (`this`):
+ *  - [ParagraphType.Caption] we set `textStyle` to the [Typography.labelMedium] of `typography`
+ *  (`fontSize` = 12.sp, `lineHeight` = 16.sp, `letterSpacing` = 0.5.sp, `fontWeight` =
+ *  [FontWeight.Medium])
+ *  - [ParagraphType.Title] we set `textStyle` to the [Typography.headlineLarge] of `typography`
+ *  (`fontSize` = 32.sp, `lineHeight` = 40.sp, `letterSpacing` = 0.sp, `lineBreak` =
+ *  [LineBreak.Heading])
+ *  - [ParagraphType.Subhead] we set `textStyle` to the [Typography.headlineSmall] of `typography`
+ *  (`fontSize` = 24.sp, `lineHeight` = 32.sp, `letterSpacing` = 0.sp, `lineBreak` =
+ *  [LineBreak.Heading]), and set `trailingPadding` to 16.dp
+ *  - [ParagraphType.Text] we set `textStyle` to a copy of the [Typography.bodyLarge] of `typography`
+ *  with its `lineHeight` overridden to be 28.sp (ie. `fontSize` = 16.sp, `lineHeight` = 28.sp,
+ *  `letterSpacing` = 0.5.sp, `lineBreak` = [LineBreak.Paragraph]).
+ *  - [ParagraphType.Header] we set `textStyle` to the [Typography.headlineMedium] of `typography`
+ *  (`fontSize` = 28.sp, `lineHeight` = 36.sp, `letterSpacing` = 0.sp, `lineBreak` =
+ *  [LineBreak.Heading]), and set `trailingPadding` to 16.dp
+ *  - [ParagraphType.CodeBlock] we set `textStyle` to a copy of the [Typography.bodyLarge] of
+ *  `typography` with its `fontFamily` overridden to be [FontFamily.Monospace] (`fontSize` = 16.sp,
+ *  `lineHeight` = 24.sp, `letterSpacing` = 0.5.sp, `lineBreak` = [LineBreak.Paragraph])
+ *  - [ParagraphType.Quote] we set `textStyle` to the [Typography.bodyLarge] of `typography`
+ *  (`fontSize` = 16.sp, `lineHeight` = 24.sp, `letterSpacing` = 0.5.sp, `lineBreak` =
+ *  [LineBreak.Paragraph])
+ *  - [ParagraphType.Bullet] we set our [ParagraphStyle] variable `paragraphStyle` to a new instance
+ *  whose `textIndent` argument is a [TextIndent] whose `firstLine` argument is 8.sp (indents the
+ *  first line by 8.sp).
+ *
+ * Finally we return a new instance of [ParagraphStyling] with its [ParagraphStyling.textStyle] our
+ * [TextStyle] variable `textStyle`, its [ParagraphStyling.paragraphStyle] our [ParagraphStyle]
+ * variable `paragraphStyle` and its [ParagraphStyling.trailingPadding] our [Dp] variable
+ * `trailingPadding`.
+ *
+ * @return a [ParagraphStyling] holding values that are appropriate for our [ParagraphType] receiver
+ */
 @Composable
 private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
     val typography: Typography = MaterialTheme.typography
     var textStyle: TextStyle = typography.bodyLarge
     var paragraphStyle = ParagraphStyle()
-    var trailingPadding = 24.dp
+    var trailingPadding: Dp = 24.dp
 
     when (this) {
         ParagraphType.Caption -> textStyle = typography.labelMedium
@@ -461,14 +545,27 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
     )
 }
 
+/**
+ * Creates a [List] of [AnnotatedString.Range] of [SpanStyle] from the [List] of [Markup] found in
+ * the [Paragraph.markups] property of our [Paragraph] parameter [paragraph] and returns a new
+ * instance of [AnnotatedString] that uses the [String] property [Paragraph.text] of [paragraph] as
+ * the [AnnotatedString.text] and the created [List] of [AnnotatedString.Range] of [SpanStyle] as
+ * the [AnnotatedString.spanStyles].
+ *
+ * @param paragraph the [Paragraph] we are to convert to an [AnnotatedString].
+ * @param typography the [Typography] of our custom [MaterialTheme.typography] whose [TextStyle]'s
+ * we are to use.
+ * @param codeBlockBackground the [Color] to use for the `background` of text that is marked with
+ * the [Markup.type] of type [MarkupType.Code].
+ */
 private fun paragraphToAnnotatedString(
     paragraph: Paragraph,
     typography: Typography,
     codeBlockBackground: Color
 ): AnnotatedString {
     val styles: List<AnnotatedString.Range<SpanStyle>> = paragraph.markups
-        .map {
-            it.toAnnotatedStringItem(
+        .map { markup: Markup ->
+            markup.toAnnotatedStringItem(
                 typography = typography,
                 codeBlockBackground = codeBlockBackground
             )
