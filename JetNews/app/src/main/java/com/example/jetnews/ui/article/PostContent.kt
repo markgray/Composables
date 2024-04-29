@@ -550,13 +550,26 @@ private fun ParagraphType.getTextAndParagraphStyle(): ParagraphStyling {
  * the [Paragraph.markups] property of our [Paragraph] parameter [paragraph] and returns a new
  * instance of [AnnotatedString] that uses the [String] property [Paragraph.text] of [paragraph] as
  * the [AnnotatedString.text] and the created [List] of [AnnotatedString.Range] of [SpanStyle] as
- * the [AnnotatedString.spanStyles].
+ * the [AnnotatedString.spanStyles]. We start by applying the [map] extension function to the [List]
+ * of [Markup] in the [Paragraph.markups] property of our [Paragraph] parameter [paragraph] and in
+ * the `transform` lambda argument we call the [Markup.toAnnotatedStringItem] extension function
+ * on each [Markup] in the [List] with our [Typography] parameter [typography] as its `typography`
+ * argument and our [Color] parameter [codeBlockBackground] as its `codeBlockBackground` argument
+ * collecting the [AnnotatedString.Range] of [SpanStyle] returned into the [List] of [AnnotatedString.Range]
+ * of [SpanStyle] used to initialize our variable `val styles`. When done interpreting all of the
+ * [Markup] we return a new instance of [AnnotatedString] whose `text` argument is the [Paragraph.text]
+ * property of our [Paragraph] parameter [paragraph], and the `spanStyles` argument is our [List] of
+ * [AnnotatedString.Range] of [SpanStyle] variable `styles`.
  *
  * @param paragraph the [Paragraph] we are to convert to an [AnnotatedString].
  * @param typography the [Typography] of our custom [MaterialTheme.typography] whose [TextStyle]'s
  * we are to use.
  * @param codeBlockBackground the [Color] to use for the `background` of text that is marked with
  * the [Markup.type] of type [MarkupType.Code].
+ * @return a new instance of [AnnotatedString] created from the [String] property [Paragraph.text]
+ * of our [Paragraph] parameter [paragraph] and the [List] of [AnnotatedString.Range] of [SpanStyle]
+ * created by interpreting the [Markup] in the [List] of [Markup] of the [Paragraph.markups] property
+ * of [paragraph].
  */
 private fun paragraphToAnnotatedString(
     paragraph: Paragraph,
@@ -574,7 +587,36 @@ private fun paragraphToAnnotatedString(
 }
 
 /**
- * TODO: Add kdoc
+ * Interprets its [Markup] receiver and returns an [AnnotatedString.Range] of [SpanStyle] that is
+ * appropriate for the [MarkupType] found in its [Markup.type] property. We return the
+ * [AnnotatedString.Range] returned by a `when` expression when it switches on the [Markup.type]
+ * of our [Markup] receiver:
+ *  - [MarkupType.Italic] returns an [AnnotatedString.Range] whose `item` argument uses a copy of the
+ *  [Typography.bodyLarge] of our [Typography] parameter [typography] overriding its `fontStyle`
+ *  value with [FontStyle.Italic] which it converts to a [SpanStyle] using its [TextStyle.toSpanStyle]
+ *  method, its `start` argument is the [Markup.start] of our receiver, and its `end` argument is the
+ *  [Markup.end] of our receiver.
+ *  - [MarkupType.Link] returns an [AnnotatedString.Range] whose `item` argument uses a copy of the
+ *  [Typography.bodyLarge] of our [Typography] parameter [typography] overriding its `textDecoration`
+ *  value with [TextDecoration.Underline] which it converts to a [SpanStyle] using its [TextStyle.toSpanStyle]
+ *  method, its `start` argument is the [Markup.start] of our receiver, and its `end` argument is the
+ *  [Markup.end] of our receiver.
+ *  - [MarkupType.Bold] returns an [AnnotatedString.Range] whose `item` argument uses a copy of the
+ *  [Typography.bodyLarge] of our [Typography] parameter [typography] overriding its `fontWeight`
+ *  value with [FontWeight.Bold] which it converts to a [SpanStyle] using its [TextStyle.toSpanStyle]
+ *  method, its `start` argument is the [Markup.start] of our receiver, and its `end` argument is the
+ *  [Markup.end] of our receiver.
+ *  - [MarkupType.Code] returns an [AnnotatedString.Range] whose `item` argument uses a copy of the
+ *  [Typography.bodyLarge] of our [Typography] parameter [typography] overriding its `background`
+ *  value with our [Color] parameter [codeBlockBackground], and its `fontFamily` value with
+ *  [FontFamily.Monospace] which it converts to a [SpanStyle] using its [TextStyle.toSpanStyle]
+ *  method, its `start` argument is the [Markup.start] of our receiver, and its `end` argument is the
+ *  Markup.end] of our receiver.
+ *
+ * @param typography the [Typography] of the [MaterialTheme.typography] of our [JetnewsTheme] custom
+ * [MaterialTheme] which we should use to retrieve the [TextStyle] that we use.
+ * @param codeBlockBackground the [Color] to use as the [TextStyle.background] of text with [Markup]
+ * of type [MarkupType.Code].
  */
 fun Markup.toAnnotatedStringItem(
     typography: Typography,
@@ -620,11 +662,15 @@ fun Markup.toAnnotatedStringItem(
     }
 }
 
+/**
+ * The [Color] to use as the [TextStyle.background] of text with [Markup] of type [MarkupType.Code].
+ * It is a copy of the [ColorScheme.onSurface] with its [Color.alpha] set to .15f
+ */
 private val ColorScheme.codeBlockBackground: Color
     get() = onSurface.copy(alpha = .15f)
 
 /**
- * TODO: Add kdoc
+ * Preview of our [PostContent] Composable
  */
 @Preview(name = "Post content")
 @Preview(name = "Post content (dark)", uiMode = UI_MODE_NIGHT_YES)
