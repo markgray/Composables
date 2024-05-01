@@ -22,25 +22,49 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
 import com.example.jetnews.model.Post
+import com.example.jetnews.ui.JetnewsDestinations
+import com.example.jetnews.ui.JetnewsNavGraph
 import com.example.jetnews.ui.article.ArticleScreen
 import com.example.jetnews.ui.home.HomeScreenType.ArticleDetails
 import com.example.jetnews.ui.home.HomeScreenType.Feed
 import com.example.jetnews.ui.home.HomeScreenType.FeedWithArticleDetails
+import kotlinx.coroutines.flow.StateFlow
 
 /**
- * Displays the Home route.
+ * Displays the Home route. This is composed by the [NavHost] in [JetnewsNavGraph] for the route
+ * [JetnewsDestinations.HOME_ROUTE]. We start by initializing our [HomeUiState] variable `val uiState`
+ * using the [StateFlow.collectAsStateWithLifecycle] extension function to values from the [StateFlow]
+ * of [HomeUiState] property [HomeViewModel.uiState] of our [HomeViewModel] parameter [homeViewModel]
+ * and representing its latest value via [State] in a lifecycle-aware manner. Then our root composable
+ * is a call to our [HomeRoute] stateless (more or less) override with its `uiState` argument our
+ * [State] wrapped [HomeUiState] variable `uiState`, its `isExpandedScreen` argument is our [Boolean]
+ * parameter [isExpandedScreen], its `onToggleFavorite` argument is a lambda which calls the
+ * [HomeViewModel.toggleFavourite] method of [homeViewModel] with the [String] passed the lambda,
+ * its `onSelectPost` argument is a lambda which calls the [HomeViewModel.selectArticle] method of
+ * [homeViewModel] with the [String] passed the lambda, its `onRefreshPosts` argument is a lambda
+ * which calls the [HomeViewModel.refreshPosts] method of [homeViewModel], its `onErrorDismiss`
+ * argument is a lambda which calls the [HomeViewModel.errorShown] method of [homeViewModel] with
+ * the [Long] passed the lambda, its `onInteractWithFeed` argument is a lambda which calls the
+ * [HomeViewModel.interactedWithFeed] method of [homeViewModel], its `onInteractWithArticleDetails`
+ * argument is a lambda which calls the [HomeViewModel.interactedWithArticleDetails] method of
+ * [homeViewModel] with the [String] passed the lambda, its `onSearchInputChanged` argument is
+ * a lambda which calls the [HomeViewModel.onSearchInputChanged] method of [homeViewModel] with the
+ * [String] passed the lambda, its `openDrawer` argument is our [openDrawer] lambda parameter, and
+ * its `snackbarHostState` argument is our [SnackbarHostState] parameter [snackbarHostState].
  *
  * Note: AAC ViewModels don't work with Compose Previews currently.
  *
  * @param homeViewModel ViewModel that handles the business logic of this screen
  * @param isExpandedScreen (state) whether the screen is expanded
  * @param openDrawer (event) request opening the app drawer
- * @param snackbarHostState (state) state for the [Scaffold] component on this screen
+ * @param snackbarHostState (state) [SnackbarHostState] for the [Scaffold] component on this screen
  */
 @Composable
 fun HomeRoute(
@@ -68,7 +92,8 @@ fun HomeRoute(
 }
 
 /**
- * Displays the Home route.
+ * Displays the Home route, with the [HomeUiState] and [HomeViewModel] hoisted to its "stateful"
+ * [HomeRoute] override.
  *
  * This composable is not coupled to any specific state management.
  *
