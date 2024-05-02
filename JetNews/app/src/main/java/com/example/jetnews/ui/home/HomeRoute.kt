@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.JetnewsDestinations
 import com.example.jetnews.ui.JetnewsNavGraph
 import com.example.jetnews.ui.article.ArticleScreen
@@ -93,9 +95,59 @@ fun HomeRoute(
 
 /**
  * Displays the Home route, with the [HomeUiState] and [HomeViewModel] hoisted to its "stateful"
- * [HomeRoute] override.
+ * [HomeRoute] override. We start by initializing and remembering our [LazyListState] variable
+ * `val homeListLazyListState` to a new instance. Then we initialize our [Map] of [String] to
+ * [LazyListState] variable `val articleDetailLazyListStates` based on whether our [HomeUiState]
+ * parameter [uiState] is:
+ *  - a [HomeUiState.HasPosts] we use the [List] of [Post] of the [PostsFeed.allPosts] property of
+ *  the [HomeUiState.HasPosts.postsFeed] of [uiState] as the receiver of the [associate] extension
+ *  function and in its `transform` lambda argument we use the [Post.id] of each [Post] passed the
+ *  lambda as the [key] and our [LazyListState] variable `homeListLazyListState` as the value.
+ *  - a [HomeUiState.NoPosts] we just pass an [emptyList] to [associate] which produces an empty [Map].
  *
- * This composable is not coupled to any specific state management.
+ * Next we initialize our [HomeScreenType] variable `val homeScreenType` to the value returned by
+ * [getHomeScreenType] when called with its `isExpandedScreen` argument our [Boolean] parameter
+ * [isExpandedScreen], and its `uiState` argument our [HomeUiState] parameter [uiState] (it returns
+ * [FeedWithArticleDetails] when [isExpandedScreen] is `true`, and when [isExpandedScreen] is `false`
+ * it returns [ArticleDetails] when [uiState] is a [HomeUiState.HasPosts] and
+ * [HomeUiState.HasPosts.isArticleOpen] is `true` or a [Feed] if [HomeUiState.HasPosts.isArticleOpen]
+ * is `false`, and a [Feed] if [uiState] is a [HomeUiState.NoPosts]). Then we `when` switch on the
+ * value of our [HomeScreenType] variable `homeScreenType`
+ *  - [FeedWithArticleDetails] -> we compose a [HomeFeedWithArticleDetailsScreen] with its `uiState`
+ *  argument our [HomeUiState] parameter [uiState], its `showTopAppBar` the inverse of our [Boolean]
+ *  parameter [isExpandedScreen], its `onToggleFavorite` argument our lambda parameter [onToggleFavorite],
+ *  its `onSelectPost` argument our lambda parameter [onSelectPost], its `onRefreshPosts` argument our
+ *  lambda parameter [onRefreshPosts], its `onErrorDismiss` argument our lambda parameter [onErrorDismiss],
+ *  its `onInteractWithList` argument our lambda parameter [onInteractWithFeed], its `onInteractWithDetail`
+ *  argument our lambda parameter [onInteractWithArticleDetails], its `openDrawer` argument our lambda
+ *  parameter [openDrawer], its `homeListLazyListState` argument our [LazyListState] variable
+ *  `homeListLazyListState`, its `articleDetailLazyListStates` argument our [Map] of [String] to
+ *  [LazyListState] variable `articleDetailLazyListStates`, its `snackbarHostState` argument our
+ *  [SnackbarHostState] parameter [snackbarHostState], and its `onSearchInputChanged` argument our
+ *  lambda parameter [onSearchInputChanged].
+ *  - [Feed] -> we compose a [HomeFeedScreen] with its `uiState` argument our [HomeUiState] parameter
+ *  [uiState], its `showTopAppBar` the inverse of our [Boolean] parameter [isExpandedScreen], its
+ *  `onToggleFavorite` argument our lambda parameter [onToggleFavorite], its `onSelectPost` argument
+ *  our lambda parameter [onSelectPost], its `onRefreshPosts` argument our lambda parameter
+ *  [onRefreshPosts], its `onErrorDismiss` argument our lambda parameter [onErrorDismiss], its
+ *  `openDrawer` argument our lambda parameter [openDrawer], its `homeListLazyListState` argument our
+ *  [LazyListState] variable `homeListLazyListState`, its `snackbarHostState` argument our
+ *  [SnackbarHostState] parameter [snackbarHostState], and its `onSearchInputChanged` argument our
+ *  lambda parameter [onSearchInputChanged].
+ *  - [ArticleDetails] -> first we use [check] to make sure that [uiState] is a [HomeUiState.HasPosts]
+ *  throwing a [IllegalStateException] if it is not (this cannot happen of course but better safe than
+ *  sorry). The we compose an [ArticleScreen] whose `post` argument is the [HomeUiState.HasPosts.selectedPost]
+ *  property of [uiState], its `isExpandedScreen` argument is our [Boolean] parameter [isExpandedScreen],
+ *  its `onBack` argument is our lambda parameter [onInteractWithFeed], its `isFavorite` argument is
+ *  `true` if the [Set] of [String] in the [HomeUiState.HasPosts.favorites] property of [uiState]
+ *  `contains` an `element` matching the [Post.id] of the [HomeUiState.HasPosts.selectedPost] property
+ *  of [uiState], its `onToggleFavorite` argument is a lambda which alls our lambda parameter
+ *  [onToggleFavorite] with the [Post.id] of the [HomeUiState.HasPosts.selectedPost] property of
+ *  [uiState], and its `lazyListState` is the [LazyListState] that is stored in our [Map] of [String]
+ *  to [LazyListState] variable `articleDetailLazyListStates` under the [String] key of the [Post.id]
+ *  of the [HomeUiState.HasPosts.selectedPost] property of [uiState]. After composing the [ArticleScreen]
+ *  we call [BackHandler] with its `onBack` lambda argument a lambda which calls our [onInteractWithFeed]
+ *  lambda parameter when the user presses the `Back` button.
  *
  * @param uiState (state) the data to show on the screen
  * @param isExpandedScreen (state) whether the screen is expanded
@@ -126,7 +178,7 @@ fun HomeRoute(
     // Construct the lazy list states for the list and the details outside of deciding which one to
     // show. This allows the associated state to survive beyond that decision, and therefore
     // we get to preserve the scroll throughout any changes to the content.
-    val homeListLazyListState = rememberLazyListState()
+    val homeListLazyListState: LazyListState = rememberLazyListState()
 
     @Suppress("Destructure")
     val articleDetailLazyListStates: Map<String, LazyListState> = when (uiState) {
@@ -226,7 +278,16 @@ enum class HomeScreenType {
 
 /**
  * Returns the current [HomeScreenType] to display, based on whether or not the screen is expanded
- * and the [HomeUiState].
+ * and the [HomeUiState]. Returns [FeedWithArticleDetails] when [isExpandedScreen] is `true`, and
+ * when [isExpandedScreen] is `false` it returns [ArticleDetails] when [uiState] is a [HomeUiState.HasPosts]
+ * and [HomeUiState.HasPosts.isArticleOpen] is `true` or a [Feed] if [HomeUiState.HasPosts.isArticleOpen]
+ * is `false`, and a [Feed] if [uiState] is a [HomeUiState.NoPosts].
+ *
+ * @param isExpandedScreen `true` if the [WindowWidthSizeClass] of the device we are running on is
+ * [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large unfolded
+ * inner displays in landscape),
+ * @param uiState the current [HomeUiState] of the app, collected as a [State] from the [StateFlow]
+ * of [HomeUiState] property [HomeViewModel.uiState].
  */
 @Composable
 private fun getHomeScreenType(
