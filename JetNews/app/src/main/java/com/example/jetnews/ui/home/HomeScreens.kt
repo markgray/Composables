@@ -52,13 +52,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
@@ -68,6 +71,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -98,14 +102,18 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
+import com.example.jetnews.ui.JetnewsApp
+import com.example.jetnews.ui.JetnewsNavGraph
 import com.example.jetnews.ui.article.postContentItems
 import com.example.jetnews.ui.article.sharePost
 import com.example.jetnews.ui.components.JetnewsSnackbarHost
+import com.example.jetnews.ui.home.HomeScreenType.FeedWithArticleDetails
 import com.example.jetnews.ui.modifiers.interceptKey
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
@@ -115,12 +123,57 @@ import com.example.jetnews.ui.utils.TextSettingsButton
 import com.example.jetnews.utils.ErrorMessage
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
- * The home screen displaying the feed along with an article details.
+ * The home screen displaying the feed along with an article details. Called by [HomeRoute] when the
+ * [HomeScreenType] is [FeedWithArticleDetails] which occurs when `isExpandedScreen` is `true` which
+ * happens when the [WindowWidthSizeClass] of the device we are running on is
+ * [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large unfolded
+ * inner displays in landscape). Our root Composable is a [HomeScreenWithList]
+ *
+ * @param uiState the current [HomeUiState]. It is collected using the [StateFlow.collectAsStateWithLifecycle]
+ * extension function from the [StateFlow] of [HomeUiState] property [HomeViewModel.uiState] of the
+ * [HomeViewModel] in the stateful override of [HomeRoute].
+ * @param showTopAppBar this is `true` if `isExpandedScreen` is `false` ie. the [WindowWidthSizeClass]
+ * of the device we are running on is not [WindowWidthSizeClass.Expanded]. When `true` the `topBar`
+ * argument of the [Scaffold] in [HomeScreenWithList] will compose a [HomeTopAppBar] and the [PostList]
+ * will compose a [HomeSearch] in its [LazyColumn] if it is `false`.
+ * @param onToggleFavorite a lambda that we can call with the [Post.id] property of the [Post] that
+ * the user wishes to "toggle" the "favorite" status of. The call to the stateless override of
+ * [HomeRoute] in the stateful override of [HomeRoute] passes down a lambda which calls the
+ * [HomeViewModel.toggleFavourite] method with the [String] passed the lambda.
+ * @param onSelectPost a lambda that we can call with the [Post.id] property of the [Post] that the
+ * user wishes to "select". The call to the stateless override of [HomeRoute] in the stateful override
+ * of [HomeRoute] passes down a lambda which calls the [HomeViewModel.selectArticle] method with the
+ * [String] passed the lambda.
+ * @param onRefreshPosts a lambda we can call when we wish the apps [List] of [Post] to be "refreshed".
+ * This is passed down to the `onClick` argument of a [TextButton] labeled "Tap to load content" which
+ * appears when the [HomeUiState] is a [HomeUiState.NoPosts] but there are no errors, and it is also
+ * passed to a `SwipeRefresh` in [LoadingContent] as its `onRefresh` argument. The call to the stateless
+ * override of [HomeRoute] in the stateful override of [HomeRoute] passes down a lambda which calls
+ * the [HomeViewModel.refreshPosts] method.
+ * @param onErrorDismiss a lambda we should call with the [ErrorMessage.id] of the [ErrorMessage]
+ * that has been displayed and dismissed in order to notify the [HomeViewModel]. The call to the stateless
+ * override of [HomeRoute] in the stateful override of [HomeRoute] passes down a lambda which calls
+ * the [HomeViewModel.errorShown] method with the [Long] passed the lambda.
+ * @param openDrawer a lambda we can call when we wish to open the navigation drawer. The call to
+ * [JetnewsNavGraph] in [JetnewsApp] passes down a lambda which calls the [CoroutineScope.launch]
+ * method to launch a coroutine that calls the [DrawerState.open] method of the `drawerState` of the
+ * [ModalNavigationDrawer] to open the drawer.
+ * @param snackbarHostState the [SnackbarHostState] that is used as the `hostState` of the
+ * [JetnewsSnackbarHost] that is used as the `snackbarHost` argument of the [Scaffold] in
+ * [HomeScreenWithList]. It is used for its [SnackbarHostState.showSnackbar] method to show a
+ * [Snackbar], and it is called in a [LaunchedEffect] of the [HomeScreenWithList] Composable whenever
+ * the current [HomeUiState.errorMessages] property is not empty.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [HomeRoute] does not pass us one so the empty, default, or starter [Modifier]
+ * that contains no elements is used.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

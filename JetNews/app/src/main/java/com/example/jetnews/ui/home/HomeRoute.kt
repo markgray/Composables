@@ -285,7 +285,7 @@ enum class HomeScreenType {
  *
  * @param isExpandedScreen `true` if the [WindowWidthSizeClass] of the device we are running on is
  * [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large unfolded
- * inner displays in landscape),
+ * inner displays in landscape).
  * @param uiState the current [HomeUiState] of the app, collected as a [State] from the [StateFlow]
  * of [HomeUiState] property [HomeViewModel.uiState].
  */
