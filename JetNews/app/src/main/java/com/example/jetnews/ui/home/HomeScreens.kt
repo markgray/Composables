@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,6 +43,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -135,7 +137,56 @@ import kotlinx.coroutines.runBlocking
  * [HomeScreenType] is [FeedWithArticleDetails] which occurs when `isExpandedScreen` is `true` which
  * happens when the [WindowWidthSizeClass] of the device we are running on is
  * [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large unfolded
- * inner displays in landscape). Our root Composable is a [HomeScreenWithList]
+ * inner displays in landscape). Our root Composable is a [HomeScreenWithList] whose `uiState` argument
+ * is our [HomeUiState] parameter [uiState], whose `showTopAppBar` argument is our [Boolean] parameter
+ * [showTopAppBar], whose `onRefreshPosts` argument is our lambda parameter [onRefreshPosts], whose
+ * `onErrorDismiss` argument is our lambda parameter [onErrorDismiss], whose `openDrawer` argument is
+ * our lambda parameter [openDrawer], whose `snackbarHostState` argument is our [SnackbarHostState]
+ * parameter [snackbarHostState], and whose `modifier` argument is our [Modifier] parameter [modifier].
+ * For the `hasPostsContent` lambda argument of [HomeScreenWithList] we pass a lambda which accepts
+ * the [HomeUiState.HasPosts] passed the lambda in variable `hasPostsUiState`, the [PaddingValues]
+ * passed the lambda in variable `contentPadding`, and the [Modifier] passed the lambda in variable
+ * `contentModifier`. The the root composable of the lambda is a [Row] whose `modifier` argument is
+ * the `contentModifier` passed the lambda. In the [RowScope] `content` lambda argument of the [Row]
+ * we compose a [PostList] whose `postsFeed` argument is the [HomeUiState.HasPosts.postsFeed] property
+ * of the `hasPostsUiState` passed to the `hasPostsContent` lambda, whose `favorites` argument is the
+ * [HomeUiState.HasPosts.favorites] property of the `hasPostsUiState` passed to the `hasPostsContent`
+ * lambda, whose `showExpandedSearch` argument is the inverse of our [Boolean] parameter [showTopAppBar],
+ * whose `onArticleTapped` argument is our lambda parameter [onSelectPost], whose `onToggleFavorite`
+ * argument is our lambda parameter [onToggleFavorite], whose `contentPadding` argument is the
+ * [PaddingValues] `contentPadding` passed, whose `modifier` argument is a [Modifier.width] that sets
+ * the width of 334.dp with a [Modifier.notifyInput] chained to that whose `block` argument is our
+ * lambda parameter  [onInteractWithList], whose `state` argument is our [LazyListState] parameter
+ * [homeListLazyListState], whose `searchInput` argument is the [HomeUiState.HasPosts.searchInput]
+ * property of the `hasPostsUiState` passed, and whose `onSearchInputChanged` argument is our lambda
+ * parameter [onSearchInputChanged]. Next to the [PostList] in the [Row] is a [Crossfade] whose
+ * `targetState` argument is the [HomeUiState.HasPosts.selectedPost] property of the `hasPostsUiState`
+ * passed, and whose `label` argument is "Crossfade". The `content` lambda argument of the [Crossfade]
+ * accepts the [Post] passed the lambda as the variable `detailPost`, then initializes and remember
+ * its [State] wrapped [LazyListState] using the [derivedStateOf] method with its `calculation` lambda
+ * argument fetching the [LazyListState] in the [Map] of [String] to [LazyListState] parameter
+ * [articleDetailLazyListStates] whose `key` is the [Post.id] of `detailPost`. We then [key] on the
+ * [Post.id] of `detailPost` (to avoid sharing any state between different posts) and compose a
+ * [LazyColumn] whose `state` argument is our [State] wrapped [LazyListState] variable `detailLazyListState`,
+ * whose `contentPadding` argument is the [PaddingValues] variable `contentPadding` passed the
+ * `hasPostsContent` lambda argument of [HomeScreenWithList], and whose `modifier` argument is a
+ * [Modifier.padding] that adds 16.dp to both sides, with a [Modifier.fillMaxSize] chained to that
+ * which makes it occupy its entire incoming size constraints, and this is followed by a
+ * [Modifier.notifyInput] whose `block` lambda argument calls our lambda parameter [onInteractWithDetail]
+ * with the [Post.id] of `detailPost`. In the [LazyListScope] lambda argument of the [LazyColumn] we
+ * first compose a [LazyListScope.stickyHeader] in whose `content` lambda argument we initialize our
+ * [Context] variable `val context` to the `current` [LocalContext] then compose a [PostTopBar] whose
+ * `isFavorite` argument is the [Boolean] value returned by the [Set.contains] method of the [Set] of
+ * [String] property of the [HomeUiState.HasPosts.favorites] property of `hasPostsUiState` for the
+ * `element` of the [Post.id] of `detailPost`, whose `onToggleFavorite` argument is a lambda which
+ * calls our [onToggleFavorite] lambda parameter with the [Post.id] of `detailPost`, whose `onSharePost`
+ * argument is a lambda which calls our [sharePost] method with its `post` argument `detailPost`, and
+ * with its `context` argument our [Context] variable `context`, and the `modifier` argument of the
+ * [PostTopBar] is a [Modifier.fillMaxWidth] that causes it to occupy its entire incoming width
+ * constraint to which is chained a [Modifier.wrapContentWidth] whose `align` argument of [Alignment.End]
+ * causes it to align its content to the end. This is followed in the [LazyColumn] by our
+ * [LazyListScope.postContentItems] composable which adds items to the [LazyColumn] constructed from
+ * the [Post] `post` argument `detailPost` we pass it.
  *
  * @param uiState the current [HomeUiState]. It is collected using the [StateFlow.collectAsStateWithLifecycle]
  * extension function from the [StateFlow] of [HomeUiState] property [HomeViewModel.uiState] of the
