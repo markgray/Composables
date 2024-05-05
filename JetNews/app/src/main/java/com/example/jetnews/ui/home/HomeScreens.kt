@@ -89,7 +89,10 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerInputScope
+import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -131,6 +134,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.CoroutineContext
 
 /**
  * The home screen displaying the feed along with an article details. Called by [HomeRoute] when the
@@ -312,7 +316,17 @@ fun HomeFeedWithArticleDetailsScreen(
 }
 
 /**
- * A [Modifier] that tracks all input, and calls [block] every time input is received.
+ * A [Modifier] that tracks all input, and calls [block] every time input is received. We initialize
+ * and remember our [State] wrapped lambda variable `val blockState` to our lambda parameter [block].
+ * Then we chain a [Modifier.pointerInput] to our [Modifier] receiver keyed to [Unit] and in its
+ * [PointerInputScope] lambda argument we loop while the [CoroutineContext.isActive] property of
+ * the current [CoroutineContext] that [currentCoroutineContext] returns is `true`. In the loop we
+ * call [PointerInputScope.awaitPointerEventScope] to suspend and install a pointer input [block]
+ * that will await input events and resume when our [block] returns. In that [block] we call
+ * [AwaitPointerEventScope.awaitPointerEvent] to suspend until a [PointerEvent] is reported to the
+ * input [PointerEventPass.Initial] (Allows ancestors to consume aspects of PointerInputChange before
+ * descendants) and when that happens we call the [State.value] of our [State] wrapped lambda variable
+ * `blockState` to execute our lambda parameter [block].
  */
 private fun Modifier.notifyInput(block: () -> Unit): Modifier =
     this then composed {
@@ -328,7 +342,23 @@ private fun Modifier.notifyInput(block: () -> Unit): Modifier =
     }
 
 /**
- * The home screen displaying just the article feed.
+ * The home screen displaying just the article feed. This is called by [HomeRoute] when the
+ * [HomeScreenType] is [HomeScreenType.Feed] which happens when `isExpandedScreen` is `false` (ie.
+ * a phone instead of a tablet) and the [HomeUiState] is a [HomeUiState.NoPosts] or it is a
+ * [HomeUiState.HasPosts] but [HomeUiState.HasPosts.isArticleOpen] is `false`.
+ *
+ * @param uiState the current [HomeUiState] of the app.
+ * @param showTopAppBar if `true` [HomeScreenWithList] should display a [HomeTopAppBar] as the
+ * `topBar` of its [Scaffold], and [PostList] should _not_ show a [HomeSearch]. Our caller
+ * [HomeRoute] calls us with the inverse of `isExpandedScreen` and since `isExpandedScreen` is
+ * `false` when we are chosen to be composed [showTopAppBar] is always `true`.
+ * @param onToggleFavorite a lambda which can be called with the [Post.id] of a [Post] to toggle its
+ * "favorite" status.
+ * @param onSelectPost a lambda that we can call with the [Post.id] of the [Post] that we wish to
+ * "select" to view more information aboutt. Sets the [HomeUiState.HasPosts.selectedPost] property
+ * to that [Post] (eventually).
+ * @param onRefreshPosts a lambda we can call when we want the [HomeViewModel] to refresh its [List]
+ * of [Post].
  */
 @Composable
 fun HomeFeedScreen(
