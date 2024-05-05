@@ -22,6 +22,6 @@ tasks.register('clean', Delete) {
 
 buildscript {
     ext {
-        compose_compiler_version = '1.5.12'
+        compose_compiler_version = '1.5.13'
     }
 }
