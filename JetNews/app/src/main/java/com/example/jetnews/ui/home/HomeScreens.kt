@@ -345,7 +345,26 @@ private fun Modifier.notifyInput(block: () -> Unit): Modifier =
  * The home screen displaying just the article feed. This is called by [HomeRoute] when the
  * [HomeScreenType] is [HomeScreenType.Feed] which happens when `isExpandedScreen` is `false` (ie.
  * a phone instead of a tablet) and the [HomeUiState] is a [HomeUiState.NoPosts] or it is a
- * [HomeUiState.HasPosts] but [HomeUiState.HasPosts.isArticleOpen] is `false`.
+ * [HomeUiState.HasPosts] but [HomeUiState.HasPosts.isArticleOpen] is `false`. Our root composable
+ * is a [HomeScreenWithList] whose `uiState` argument is our [HomeUiState] parameter [uiState],
+ * whose `showTopAppBar` argument is our [Boolean] parameter [showTopAppBar], whose `onRefreshPosts`
+ * argument is our lambda parameter [onRefreshPosts], whose `onErrorDismiss` argument is our lambda
+ * parameter [onErrorDismiss], whose `openDrawer` argument is our lambda parameter [openDrawer],
+ * whose `snackbarHostState` argument is our [SnackbarHostState] parameter [snackbarHostState], and
+ * whose `modifier` argument is our [Modifier] parameter [modifier]. Then in the `hasPostsContent`
+ * lambda argument of [HomeScreenWithList] we accept the [HomeUiState.HasPosts] passed the lambda as
+ * variable `hasPostsUiState`, the [PaddingValues] passed as variable `contentPadding` and the
+ * [Modifier] passed as variable `contentModifier`. Then we compose a [PostList] whose `postsFeed`
+ * argument is the [HomeUiState.HasPosts.postsFeed] of `hasPostsUiState`, whose `favorites` argument
+ * argument is the [HomeUiState.HasPosts.favorites] of `hasPostsUiState`, whose `showExpandedSearch`
+ * argument is the inverse of our [Boolean] parameter [showTopAppBar] (which is always `true` so we
+ * pass `false`), whose `onArticleTapped` argument is our lambda parameter [onSelectPost], whose
+ * `onToggleFavorite` argument is our lambda parameter [onToggleFavorite], whose `contentPadding`
+ * argument is the [PaddingValues] passed our lambda that we accepted as `contentPadding`, whose
+ * `modifier` argument is the [Modifier] passed our lambda that we accepted as `contentModifier`,
+ * whose `state` argument is our [LazyListState] parameter [homeListLazyListState], whose `searchInput`
+ * argument is our [String] parameter [searchInput], and whose `onSearchInputChanged` argument is
+ * our lambda parameter [onSearchInputChanged].
  *
  * @param uiState the current [HomeUiState] of the app.
  * @param showTopAppBar if `true` [HomeScreenWithList] should display a [HomeTopAppBar] as the
@@ -355,10 +374,32 @@ private fun Modifier.notifyInput(block: () -> Unit): Modifier =
  * @param onToggleFavorite a lambda which can be called with the [Post.id] of a [Post] to toggle its
  * "favorite" status.
  * @param onSelectPost a lambda that we can call with the [Post.id] of the [Post] that we wish to
- * "select" to view more information aboutt. Sets the [HomeUiState.HasPosts.selectedPost] property
+ * "select" to view more information about. Sets the [HomeUiState.HasPosts.selectedPost] property
  * to that [Post] (eventually).
  * @param onRefreshPosts a lambda we can call when we want the [HomeViewModel] to refresh its [List]
  * of [Post].
+ * @param onErrorDismiss a lambda we should call with an [ErrorMessage.id] to "dismiss" an error
+ * [Snackbar] that was shown for that [ErrorMessage]. The lambda is passed down to us from the
+ * stateful [HomeRoute] calls the [HomeViewModel.errorShown] method with the [Long] passed to the
+ * lambda
+ * @param openDrawer a lambda that we can call to open the [ModalNavigationDrawer] of the app.
+ * @param homeListLazyListState the [LazyListState] that the [LazyColumn] in [PostList] should as
+ * its `state` argument.
+ * @param snackbarHostState the [SnackbarHostState] that is used as the `hostState` of the
+ * [JetnewsSnackbarHost] that is used as the `snackbarHost` argument of the [Scaffold] in
+ * [HomeScreenWithList]. It is used for its [SnackbarHostState.showSnackbar] method to show a
+ * [Snackbar], and it is called in a [LaunchedEffect] of the [HomeScreenWithList] Composable whenever
+ * the current [HomeUiState.errorMessages] property is not empty.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller the stateless [HomeRoute] does not pass one so the empty, default, or starter
+ * [Modifier] that contains no elements is used instead.
+ * @param searchInput passed as the `searchInput` argument of [HomeSearch] in our [PostList] composable
+ * it is always the empty [String] (search is not implemented yet in this configuration).
+ * @param onSearchInputChanged a lambda that can be called by [HomeSearch] when the search input
+ * changes. The stateful [HomeRoute] passes down a lambda that calls [HomeViewModel.onSearchInputChanged]
+ * method with the [String] passed the lambda and the method updates the [HomeUiState.HasPosts.searchInput]
+ * property with it (which is not read in this configuration).
+ *
  */
 @Composable
 fun HomeFeedScreen(
