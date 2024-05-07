@@ -379,7 +379,7 @@ private fun Modifier.notifyInput(block: () -> Unit): Modifier =
  * @param onRefreshPosts a lambda we can call when we want the [HomeViewModel] to refresh its [List]
  * of [Post].
  * @param onErrorDismiss a lambda we should call with an [ErrorMessage.id] to "dismiss" an error
- * [Snackbar] that was shown for that [ErrorMessage]. The lambda is passed down to us from the
+ * [Snackbar] that was shown for that [ErrorMessage]. The lambda that is passed down to us from the
  * stateful [HomeRoute] calls the [HomeViewModel.errorShown] method with the [Long] passed to the
  * lambda
  * @param openDrawer a lambda that we can call to open the [ModalNavigationDrawer] of the app.
@@ -441,13 +441,82 @@ fun HomeFeedScreen(
 }
 
 /**
- * A display of the home screen that has the list.
+ * A Composable that displays its [hasPostsContent] lambda parameter if its [HomeUiState] parameter
+ * [uiState] is a [HomeUiState.HasPosts] or displays a [TextButton] labeled "Tap to load content"
+ * that calls its [onRefreshPosts] lambda parameter when clicked to have the [HomeViewModel] reload
+ * its dataset if it is a [HomeUiState.NoPosts]. It sets up a scaffold with the top app bar, and
+ * surrounds the [hasPostsContent] with refresh, loading and error handling. This is essentially a
+ * helper function that is used by both [HomeFeedWithArticleDetailsScreen] and [HomeFeedScreen]
+ * because they are  extremely similar, except for the rendered content when there are posts to
+ * display. We start by initializing and remembering our [TopAppBarState] variable `val topAppBarState`
+ * to a new instance. Then we initialize our [TopAppBarScrollBehavior] variable `val scrollBehavior`
+ * to a [TopAppBarDefaults.pinnedScrollBehavior] whose `state` argument is `topAppBarState`.
+ * Our root Composable is a [Scaffold] whose `snackbarHost` argument is a lambda which composes a
+ * [JetnewsSnackbarHost] whose `hostState` argument is our [SnackbarHostState] parameter
+ * [snackbarHostState], whose `topBar` argument is if our [Boolean] parameter [showTopAppBar] is
+ * `true` a [HomeTopAppBar] whose `openDrawer` argument is our lambda parameter [openDrawer], and
+ * whose `topAppBarState` argument is our [TopAppBarState] variable `topAppBarState`. The `modifier`
+ * argument of the [Scaffold] is our [Modifier] parameter [modifier].
  *
- * This sets up the scaffold with the top app bar, and surrounds the [hasPostsContent] with refresh,
- * loading and error handling.
+ * The `content` lambda of the [Scaffold] accepts the [PaddingValues] passed it in the variable
+ * `innerPadding`. It initializes its [Modifier] variable `val contentModifier` to a
+ * [Modifier.nestedScroll] whose `connection` argument is the [TopAppBarScrollBehavior.nestedScrollConnection]
+ * of our [TopAppBarScrollBehavior] variable `scrollBehavior`. Then it composes a [LoadingContent]
+ * whose [Boolean] argument `empty` is `false` when [HomeUiState] parameter [uiState] is a
+ * [HomeUiState.HasPosts] or the value of the [HomeUiState.isLoading] property if [uiState] is a
+ * [HomeUiState.NoPosts], whose `emptyContent` argument is a lambda which composes a [FullScreenLoading]
+ * Composable, whose `loading` argument is the [HomeUiState.isLoading] property of our [HomeUiState]
+ * parameter [uiState], whose `onRefresh` argument is our lambda parameter [onRefreshPosts].
  *
- * This helper functions exists because [HomeFeedWithArticleDetailsScreen] and [HomeFeedScreen] are
- * extremely similar, except for the rendered content when there are posts to display.
+ * The `content` of the [LoadingContent] is when [HomeUiState] parameter [uiState] is a
+ * [HomeUiState.HasPosts] just a call to our [hasPostsContent] lambda parameter with its
+ * [HomeUiState] argument our [HomeUiState] parameter [uiState], with its [PaddingValues] argument
+ * the [PaddingValues] passed by [Scaffold] to its `content` which we accepted as our `innerPadding`
+ * variable, and with its [Modifier] argument the [Modifier.nestedScroll] we initialized our variable
+ * `contentModifier` to. On the other hand if our [HomeUiState] parameter [uiState] is a
+ * [HomeUiState.NoPosts] we check if the [List] of [ErrorMessage] in the [HomeUiState.errorMessages]
+ * of [uiState] is empty and if so we compose a [TextButton] with its `onClick` argument our lambda
+ * parameter [onRefreshPosts], and with its `modifier` argument our [Modifier] parameter [modifier]
+ * with a [Modifier.padding] that adds the `paddingValues` that the [Scaffold] passed to our
+ * variable `innerPadding`, and with [Modifier.fillMaxSize] added to that to have the [TextButton]
+ * occupy its entire incoming size constraints. The `content` of the [TextButton] is a [Text] that
+ * displays the `text` whose resource ID is [R.string.home_tap_to_load_content] ("Tap to load content"),
+ * and whose `textAlign` is [TextAlign.Center] to center the `text`. If on the other hand the [List]
+ * of [ErrorMessage] in the [HomeUiState.errorMessages] of [uiState] is not empty we compose a [Box]
+ * whose `modifier` argument chains to our [Modifier] variable `contentModifier` a [Modifier.padding]
+ * that adds our [PaddingValues] variable `innerPadding` as padding, and then chains a
+ * [Modifier.fillMaxSize] to that to have it occupy its entire incoming constraits.
+ *
+ * When done composing our [Scaffold] we check if the [List] of [ErrorMessage] in the
+ * [HomeUiState.errorMessages] property of [uiState] is not empty, and if so we initialize and
+ * remember keyed on [uiState] our [ErrorMessage] variable `val errorMessage` to the [ErrorMessage]
+ * at index 0 in the [HomeUiState.errorMessages] of [uiState].
+ *
+ * @param uiState the current [HomeUiState] of the app.
+ * @param showTopAppBar if `true` we display a [HomeTopAppBar] as the topBar` of our [Scaffold].
+ * This is `true` when we are called by [HomeFeedScreen], and `false` when we are called by
+ * [HomeFeedWithArticleDetailsScreen].
+ * @param onRefreshPosts a lambda we can call when we want the [HomeViewModel] to refresh its [List]
+ * of [Post].
+ * @param onErrorDismiss a lambda we should call with an [ErrorMessage.id] to "dismiss" an error
+ * [Snackbar] that was shown for that [ErrorMessage]. The lambda that is passed down to us from the
+ * stateful [HomeRoute] calls the [HomeViewModel.errorShown] method with the [Long] passed to the
+ * lambda.
+ * @param openDrawer  a lambda that we can call to open the [ModalNavigationDrawer] of the app.
+ * @param snackbarHostState the [SnackbarHostState] that is used as the `hostState` of the
+ * [JetnewsSnackbarHost] that is used as the `snackbarHost` argument of our [Scaffold]. It is used
+ * for its [SnackbarHostState.showSnackbar] method to show a [Snackbar], and it is called in our
+ * [LaunchedEffect] whenever the current [HomeUiState.errorMessages] property is not empty.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our callers just pass us the empty, default, or starter [Modifier] that their own
+ * `modifier` parameter defaults to.
+ * @param hasPostsContent a Composable lambda that will be composed by [LoadingContent] as its
+ * `content` argument when our [HomeUiState] parameter [uiState] is a [HomeUiState.HasPosts].
+ * It is called with our [HomeUiState] parameter [uiState], the [PaddingValues] passed the `content`
+ * lambda of the [Scaffold] that [LoadingContent] is in, and the [Modifier.nestedScroll] we create
+ * whose `connection` argument is the [TopAppBarScrollBehavior.nestedScrollConnection] of the
+ * [TopAppBarDefaults.pinnedScrollBehavior] we create from the [TopAppBarState] we use for our
+ * [HomeTopAppBar] (when our [Boolean] parameter [showTopAppBar] is `true`.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -467,7 +536,7 @@ private fun HomeScreenWithList(
 ) {
     val topAppBarState: TopAppBarState = rememberTopAppBarState()
     val scrollBehavior: TopAppBarScrollBehavior =
-        TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
+        TopAppBarDefaults.pinnedScrollBehavior(state = topAppBarState)
     Scaffold(
         snackbarHost = { JetnewsSnackbarHost(hostState = snackbarHostState) },
         topBar = {
