@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("Destructure")
+@file:Suppress("Destructure", "DEPRECATION")
 
 package com.example.jetnews.ui.home
 
@@ -127,6 +127,7 @@ import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
 import com.example.jetnews.utils.ErrorMessage
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -399,7 +400,6 @@ private fun Modifier.notifyInput(block: () -> Unit): Modifier =
  * changes. The stateful [HomeRoute] passes down a lambda that calls [HomeViewModel.onSearchInputChanged]
  * method with the [String] passed the lambda and the method updates the [HomeUiState.HasPosts.searchInput]
  * property with it (which is not read in this configuration).
- *
  */
 @Composable
 fun HomeFeedScreen(
@@ -490,7 +490,26 @@ fun HomeFeedScreen(
  * When done composing our [Scaffold] we check if the [List] of [ErrorMessage] in the
  * [HomeUiState.errorMessages] property of [uiState] is not empty, and if so we initialize and
  * remember keyed on [uiState] our [ErrorMessage] variable `val errorMessage` to the [ErrorMessage]
- * at index 0 in the [HomeUiState.errorMessages] of [uiState].
+ * at index 0 in the [HomeUiState.errorMessages] of [uiState]. We initialize our [String] variable
+ * `val errorMessageText` to the [String] whose resource ID is the [ErrorMessage.messageId] property
+ * of `errorMessage`, and our [String] variable `val retryMessageText` to the [String] with resource
+ * ID [R.string.retry] ("Retry"). We use [rememberUpdatedState] to initialize our lambda variable
+ * `val onRefreshPostsState` using our lambda parameter [onRefreshPosts] as the `newValue` argument
+ * of [rememberUpdatedState] so that it will be updated to the latest value of [onRefreshPosts] should
+ * it change, and do the same for our lambda taking a [Long] variable `val onErrorDismissState` with
+ * our lambda parameter [onErrorDismiss] as the `newValue` argument of [rememberUpdatedState]. Then
+ * we compose a  [LaunchedEffect] keyed on `errorMessageText`, `retryMessageText`, and our
+ * [SnackbarHostState] parameter [snackbarHostState] so that if there is a change to any of these
+ * any previous effect will be canceled and re-launched with the new values. In the [CoroutineScope]
+ * `block` argument of the [LaunchedEffect] we initialize our [SnackbarResult] variable `val snackbarResult`
+ * to the value returned when we call the [SnackbarHostState.showSnackbar] method of our
+ * [SnackbarHostState] parameter [snackbarHostState] when called with its `message` argument our
+ * [String] variable `errorMessageText`, and its `actionLabel` argument our [String] variable
+ * `retryMessageText` to have it show a [Snackbar] displaying these [String]'s. Then if our
+ * [SnackbarResult] variable `snackbarResult` is [SnackbarResult.ActionPerformed] we call our
+ * lambda variable `onRefreshPostsState`. Once the message is displayed and dismissed we call our
+ * lambda of [Long] variable `onErrorDismissState` with the [ErrorMessage.id] of `errorMessage`
+ * to notify the [HomeViewModel].
  *
  * @param uiState the current [HomeUiState] of the app.
  * @param showTopAppBar if `true` we display a [HomeTopAppBar] as the topBar` of our [Scaffold].
@@ -625,7 +644,12 @@ private fun HomeScreenWithList(
 }
 
 /**
- * Display an initial empty state or swipe to refresh content.
+ * Display an initial empty state or swipe to refresh content. If our [Boolean] parameter [empty] is
+ * `true` we compose our [emptyContent] composable lambda, otherwise we compose a [SwipeRefresh]
+ * whose state argument is a remembered [SwipeRefreshState] whose `isRefreshing` argument is our
+ * [Boolean] parameter [loading], whose `onRefresh` argument  is our lambda parameter [onRefresh],
+ * (Lambda which is invoked when a swipe to refresh gesture is completed) and whose `content` argument
+ * is our Composable lambda parameter [content] (the main content to show).
  *
  * @param empty (state) when true, display [emptyContent]
  * @param emptyContent (slot) the content to display for the empty state
@@ -654,13 +678,31 @@ private fun LoadingContent(
 }
 
 /**
- * Display a feed of posts.
+ * Display a feed of posts. When a post is clicked on, [onArticleTapped] will be called with the
+ * [Post.id] of the [Post].
  *
- * When a post is clicked on, [onArticleTapped] will be called.
- *
- * @param postsFeed (state) the feed to display
- * @param onArticleTapped (event) request navigation to Article screen
- * @param modifier modifier for the root element
+ * @param postsFeed (state) the [PostsFeed] to display found in the [HomeUiState.HasPosts.postsFeed]
+ * property of the current [HomeUiState].
+ * @param favorites (state) the [Set] of [String] found in the [HomeUiState.HasPosts.favorites] of
+ * the current [HomeUiState], the [String] is the [Post.id] of a [Post] that is a "favorite".
+ * @param showExpandedSearch (state) if `true` we should compose a [HomeSearch] as the top item of
+ * our [LazyColumn].
+ * @param onArticleTapped (event) request navigation to Article screen to display the [Post] whose
+ * [Post.id] is the `postId` passed the lambda.
+ * @param onToggleFavorite (event) lambda that can be called with the [Post.id] of a [Post] whose
+ * presence in the [favorites] we wish to toggle.
+ * @param modifier modifier for the [LazyColumn] root element. Our when [HomeFeedScreen] calls
+ * [HomeScreenWithList] it passes down the empty, default, or starter [Modifier] that contains no
+ * elements, while when [HomeFeedWithArticleDetailsScreen] calls [HomeScreenWithList] passes down a
+ * [Modifier.width] that sets the width of the [LazyColumn] to 334.dp with a [Modifier.notifyInput]
+ * chained to that ends up calling the [HomeViewModel.interactedWithArticleDetails] method with the
+ * [Post.id] of the [Post] that has been selected.
+ * @param contentPadding (state) the [PaddingValues] to use as the `contentPadding` argument of
+ * our [LazyColumn] (a padding around the whole content of the [LazyColumn])
+ * @param state (state) the [LazyListState] that our [LazyColumn] should use.
+ * @param searchInput (state) the current search [String] of our [HomeSearch] composable.
+ * @param onSearchInputChanged (event) a lambda that [HomeSearch] can call when it wants to update
+ * the [searchInput] to the [String] passed the lambda.
  */
 @Composable
 private fun PostList(
