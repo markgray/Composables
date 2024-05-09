@@ -29,7 +29,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -54,6 +56,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -72,6 +75,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
+import androidx.compose.material3.Typography
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -86,6 +90,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -101,7 +106,10 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -679,7 +687,34 @@ private fun LoadingContent(
 
 /**
  * Display a feed of posts. When a post is clicked on, [onArticleTapped] will be called with the
- * [Post.id] of the [Post].
+ * [Post.id] of the [Post]. Our root Composable is a [LazyColumn] whose `modifier` argument is our
+ * [Modifier] parameter [modifier], whose `contentPadding` argument is our [PaddingValues] parameter
+ * [contentPadding], and whose `state` argument is our [LazyListState] parameter [state]. The
+ * [LazyListScope] `content` lambda argument first checks if our [Boolean] parameter [showExpandedSearch]
+ * is `true` and if so composes an [LazyListScope.item] containing an [HomeSearch] whose `modifier`
+ * argument is a [Modifier.padding] that adds 16.dp to the `horizontal` sides of the [HomeSearch],
+ * whose `searchInput` argument is our [String] parameter [searchInput], and whose `onSearchInputChanged`
+ * argument is our lambda parameter [onSearchInputChanged]. Then it composes an [LazyListScope.item]
+ * containing a [PostListTopSection] whose [Post] `post` argument is the [PostsFeed.highlightedPost]
+ * property of our [PostsFeed] parameter [postsFeed], and whose `navigateToArticle` argument is our
+ * lambda parameter [onArticleTapped].
+ *
+ * Then if the [List] of [Post] property [PostsFeed.recommendedPosts] of [postsFeed] is not empty
+ * we compose an [LazyListScope.item] containing a [PostListSimpleSection] whose `posts` argument is
+ * the [PostsFeed.recommendedPosts] property of [postsFeed], whose `navigateToArticle` argument is
+ * our lambda parameter [onArticleTapped], and whose `onToggleFavorite` argument is our lambda
+ * parameter [onToggleFavorite].
+ *
+ * Next if the [List] of [Post] property [PostsFeed.popularPosts] of [postsFeed] is not empty and
+ * our [Boolean] parameter [showExpandedSearch] is `false` we compose an [LazyListScope.item]
+ * containing a [PostListPopularSection] whose `posts` parameter is the [PostsFeed.popularPosts]
+ * property of [postsFeed], and whose `navigateToArticle` argument is our lambda parameter
+ * [onArticleTapped].
+ *
+ * Finally if the [List] of [Post] property [PostsFeed.recentPosts] of [postsFeed] is not empty we
+ * compose an [LazyListScope.item] containing a [PostListHistorySection] whose `posts` argument is
+ * the [PostsFeed.recentPosts] property of [postsFeed], and whose `navigateToArticle` argument is
+ * our lambda parameter [onArticleTapped].
  *
  * @param postsFeed (state) the [PostsFeed] to display found in the [HomeUiState.HasPosts.postsFeed]
  * property of the current [HomeUiState].
@@ -767,7 +802,12 @@ private fun PostList(
 }
 
 /**
- * Full screen circular progress indicator
+ * Full screen circular progress indicator. Our root Composable is a [Box] whose `modifier` argument
+ * is a [Modifier.fillMaxSize] that causes it to occupy its entire incoming size constraints, and to
+ * this is chained a [Modifier.wrapContentSize] whose `align` argument of [Alignment.Center] causes
+ * the content of the [Box] to be aligned to the center of the [Box]. The [BoxScope] lambda argument
+ * of the [Box] holds a [CircularProgressIndicator] (Indeterminate Material Design circular progress
+ * indicator).
  */
 @Composable
 private fun FullScreenLoading() {
@@ -781,7 +821,19 @@ private fun FullScreenLoading() {
 }
 
 /**
- * Top section of [PostList]
+ * Top section of [PostList], used for the [Post] of the [PostsFeed.highlightedPost] property. We
+ * start by composing a [Text] whose `modifier` argument is a [Modifier.padding] that adds 16.dp
+ * to the [Text]'s `start`. 16.dp to its `top`, and 16.dp to its `end`, whose `text` argument is the
+ * [String] with resource ID [R.string.home_top_section_title] ("Top stories for you"), and whose
+ * [TextStyle] argument `style` is the [Typography.titleMedium] of our custom [MaterialTheme.typography]
+ * (`fontSize` = 16.sp, `lineHeight` = 24.sp, `letterSpacing` = 0.15.sp, `fontWeight` = [FontWeight.Medium],
+ * lineBreak = [LineBreak.Heading]). The [Text] is followed by a [PostCardTop] whose `post` argument
+ * is our [Post] parameter [post], and whose `modifier` argument is a [Modifier.clickable] whose
+ * `onClick` argument is a lambda which calls our [navigateToArticle] lambda parameter with the [Post.id]
+ * of our [Post] parameter [post]. After that we compose a [PostListDivider] that composes a full-width
+ * [HorizontalDivider] with 16.dp padding at each end, and with its `color` argument a copy of the
+ * [ColorScheme.onSurface] color of our custom [MaterialTheme.colorScheme] with its `alpha` overridden
+ * by 0.0f.
  *
  * @param post (state) highlighted post to display
  * @param navigateToArticle (event) request navigation to Article screen
@@ -801,10 +853,24 @@ private fun PostListTopSection(post: Post, navigateToArticle: (String) -> Unit) 
 }
 
 /**
- * Full-width list items for [PostList]
+ * Composes full-width list items for [PostList], used for the [List] of [Post] in the property
+ * [PostsFeed.recommendedPosts] of the [PostsFeed] that [PostList] is called with. Our root Composable
+ * is a [Column] in whose [ColumnScope] `content` lambda we use the [forEach] extension method to loop
+ * through all of the [Post] in our [List] of [Post] parameter [posts] composing a [PostCardSimple]
+ * for each [Post] whose `post` argument if the current [Post] fed us by [forEach], whose
+ * `navigateToArticle` argument is our lambda parameter [navigateToArticle], whose `isFavorite` argument
+ * is `true` if our [Set] of [String] parameter [favorites] contain the [String] in the [Post.id]
+ * property of the current [Post] as an `element`, and whose `onToggleFavorite` argument is a lambda
+ * which calls our lambda parameter [onToggleFavorite] with the [Post.id] of the current [Post]. A
+ * [PostListDivider] is composed below the [PostCardSimple] before [forEach] loops around for the
+ * next [Post].
  *
  * @param posts (state) to display
  * @param navigateToArticle (event) request navigation to Article screen
+ * @param favorites (state) the [Set] of [String] containing all of the [Post.id] of the [Post]'s
+ * that the user has marked as a "favorite".
+ * @param onToggleFavorite (event) a lambda that can be called with the [Post.id] of a [Post] whose
+ * status as a "favorite" the user want to toggle.
  */
 @Composable
 private fun PostListSimpleSection(
@@ -814,7 +880,7 @@ private fun PostListSimpleSection(
     onToggleFavorite: (String) -> Unit
 ) {
     Column {
-        posts.forEach { post ->
+        posts.forEach { post: Post ->
             PostCardSimple(
                 post = post,
                 navigateToArticle = navigateToArticle,
@@ -827,10 +893,12 @@ private fun PostListSimpleSection(
 }
 
 /**
- * Horizontal scrolling cards for [PostList]
+ * Horizontal scrolling cards for [PostList], used for the [List] of [Post] in the [PostsFeed.popularPosts]
+ * property of the [PostsFeed] that [PostList] is called with.
  *
- * @param posts (state) to display
- * @param navigateToArticle (event) request navigation to Article screen
+ * @param posts (state) [List] of [Post] to display
+ * @param navigateToArticle (event) call with the [Post.id] of a [Post] to request navigation to
+ * the Article screen.
  */
 @Composable
 private fun PostListPopularSection(
@@ -882,7 +950,9 @@ private fun PostListHistorySection(
 }
 
 /**
- * Full-width divider with padding for [PostList]
+ * Full-width [HorizontalDivider] with 16.dp padding at each end for [PostList]. Its [Color] is
+ * a copy of the [ColorScheme.onSurface] color of our custom [MaterialTheme.colorScheme] with its
+ * `alpha` overridden by 0.08f
  */
 @Composable
 private fun PostListDivider() {
