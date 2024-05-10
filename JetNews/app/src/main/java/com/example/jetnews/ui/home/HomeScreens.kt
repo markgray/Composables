@@ -92,7 +92,10 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventPass
@@ -109,6 +112,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -894,11 +898,28 @@ private fun PostListSimpleSection(
 
 /**
  * Horizontal scrolling cards for [PostList], used for the [List] of [Post] in the [PostsFeed.popularPosts]
- * property of the [PostsFeed] that [PostList] is called with.
+ * property of the [PostsFeed] that [PostList] is called with. Our root Composable is a [Column] whose
+ * [ColumnScope] `content` lambda argument we have:
+ *  - a [Text] whose `modifier` argument is a [Modifier.padding] that adds 16.dp to all of its sides,
+ *  whose `text` is the [String] with resouce ID [R.string.home_popular_section_title] ("Popular on
+ *  Jetnews"), and whose `style` [TextStyle] argument is the [Typography.titleLarge] of our custom
+ *  [MaterialTheme.typography] (`fontSize` = 22.sp, `lineHeight` = 28.sp, `letterSpacing` = 0.sp,
+ *  and `lineBreak` = [LineBreak.Heading]).
+ *  - a [Row] whose `modifier` argument is a [Modifier.horizontalScroll] with a [Modifier.height]
+ *  whose `intrinsicSize` is [IntrinsicSize.Max] (the max of the incoming constraints), and a
+ *  [Modifier.padding] that adds 16.dp to each side or the [Row], and the `horizontalArrangement`
+ *  of the [Row] is an [Arrangement.spacedBy] that spaces its childen with 8.dp between each.
+ *  - in the `content` [RowScope] lambda argument of the [Row] we loop through all of the [Post]
+ *  in our [List] of [Post] parameter [posts] composing a [PostCardPopular] whose `post` argument
+ *  is the [Post], and whose `navigateToArticle` argument is our lambda parameter [navigateToArticle].
+ *  - Next in the [Column] is a [Spacer] whose `modifier` argument is a [Modifier.height] that sets
+ *  its `height` to 16.dp
+ *  - the last Composable in the [Column] is a [PostListDivider] to draw a [HorizontalDivider] to
+ *  separate this [PostListPopularSection] from the Composable below it.
  *
  * @param posts (state) [List] of [Post] to display
  * @param navigateToArticle (event) call with the [Post.id] of a [Post] to request navigation to
- * the Article screen.
+ * the Article screen for that [Post]
  */
 @Composable
 private fun PostListPopularSection(
@@ -925,16 +946,22 @@ private fun PostListPopularSection(
                 )
             }
         }
-        Spacer(Modifier.height(height = 16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
         PostListDivider()
     }
 }
 
 /**
- * Full-width list items that display "based on your history" for [PostList]
+ * Full-width list items that display "based on your history" for [PostList]. Our root Composable is
+ * a [Column] in whose `content` [ColumnScope] lambda argument we loop through all of the [Post] in
+ * our [List] of [Post] parameter [posts] composing a [PostCardHistory] whose `post` argument is the
+ * [Post], and whose `navigateToArticle` argument is our lambda parameter [navigateToArticle], followed
+ * by a [PostListDivider] to draw a [HorizontalDivider] to separate this [PostCardHistory] from the
+ * Composable below it.
  *
- * @param posts (state) to display
- * @param navigateToArticle (event) request navigation to Article screen
+ * @param posts (state) the [List] of [Post] to display
+ * @param navigateToArticle (event) request navigation to Article screen for the [Post] whose [Post.id]
+ * is the [String] argument passed the lambd
  */
 @Composable
 private fun PostListHistorySection(
@@ -942,7 +969,7 @@ private fun PostListHistorySection(
     navigateToArticle: (String) -> Unit
 ) {
     Column {
-        posts.forEach { post ->
+        posts.forEach { post: Post ->
             PostCardHistory(post = post, navigateToArticle = navigateToArticle)
             PostListDivider()
         }
@@ -963,7 +990,50 @@ private fun PostListDivider() {
 }
 
 /**
- * Expanded search UI - includes support for enter-to-send on the search field
+ * Expanded search UI - includes support for enter-to-send on the search field. We start by initializing
+ * our [Context] variable `val context` to the current [LocalContext], our [FocusManager] variable
+ * `val focusManager` to the current [LocalFocusManager], and our [SoftwareKeyboardController] to the
+ * current [LocalSoftwareKeyboardController]. The our root Composable is an [OutlinedTextField]
+ * whose arguments are:
+ *  - `value` (the input text to be shown in the text field) is our [String] parameter [searchInput].
+ *  - `onValueChange` (The callback that is triggered when the input service updates the text. The
+ *  updated text comes as a parameter of the callback) is our lambda parameter [onSearchInputChanged].
+ *  - `placeholder` (the optional placeholder to be displayed when the text field is in focus and the
+ *  input text is empty. The default text style for internal Text is [Typography.bodyLarge]) is a
+ *  lambda that composes a [Text] whose `text` is the [String] with resource ID [R.string.home_search]
+ *  ("Search articles").
+ *  - `leadingIcon` (the optional leading icon to be displayed at the beginning of the text field
+ *  container) is an [Icon] that displays the [ImageVector] drawn by [Icons.Filled.Search] (a stylized
+ *  magnifying glass)
+ *  - `modifier` we chain to our [Modifier] parameter [modifier] a [Modifier.fillMaxWidth] that causes
+ *  the [OutlinedTextField] to occupy its entire incoming width constraint, followed by a [interceptKey]
+ *  whose `key` argument is the [Key.Enter] causing it to execute its `onKeyEvent` lambda argument when
+ *  the [KeyEvent] that [onPreviewKeyEvent] passes its `onPreviewKeyEvent` lambda is a [Key.Enter].
+ *  The `onKeyEvent` lambda is a lambda which submit a search query when Enter is pressed by calling
+ *  [submitSearch] with its `onSearchInputChanged` argument our lambda parameter [onSearchInputChanged],
+ *  and with its `context` argument our [Context] variable `context`. The lambda then calls the
+ *  [SoftwareKeyboardController.hide] method of `keyboardController` to hide the software keyboard,
+ *  and the [FocusManager.clearFocus] method of `focusManager` with its `force` argument `true` to
+ *  clear focus from the currently focused component.
+ *  - `singleLine` (when `true`, this text field becomes a single horizontally scrolling text field
+ *  instead of wrapping onto multiple lines) we pass `true`.
+ *  - `keyboardOptions` (software keyboard options that contains configuration such as [KeyboardType]
+ *  and [ImeAction]) we pass a [KeyboardOptions] whose `imeAction` is [ImeAction.Search] which changes
+ *  the newline key to a search key on the soft keyboard.
+ *  - `keyboardActions` (when the input service emits an IME action, the corresponding callback is
+ *  called. Note that this IME action may be different from what you specified in
+ *  [KeyboardOptions.imeAction]) we pass a [KeyboardActions] whose `onSearch` argument is a lambda
+ *  that calls [submitSearch] with its `onSearchInputChanged` argument our lambda parameter
+ *  [onSearchInputChanged], and with its `context` argument our [Context] variable `context`. The
+ *  lambda then calls the [SoftwareKeyboardController.hide] method of `keyboardController` to hide
+ *  the software keyboard.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [PostList] calls us with a [Modifier.padding] what will add 16.dp to the
+ * sides of any Composable using it.
+ * @param searchInput the current [String] that the user has typed into our [OutlinedTextField].
+ * @param onSearchInputChanged a lambda that our [OutlinedTextField] can use when the input service
+ * updates the text. The updated text comes as the [String] parameter of the callback.
  */
 @Composable
 private fun HomeSearch(
