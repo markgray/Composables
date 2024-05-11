@@ -1071,7 +1071,12 @@ private fun HomeSearch(
 }
 
 /**
- * Stub helper function to submit a user's search query
+ * Stub helper function to submit a user's search query. It just calls its
+ *
+ * @param onSearchInputChanged a lambda we can call to call the [HomeViewModel.onSearchInputChanged]
+ * method to have it update the search query to the [String] we pass it (the search [String] is kept
+ * in [HomeUiState.searchInput]).
+ * @param context the [Context] we can use to create our [Toast].
  */
 private fun submitSearch(
     onSearchInputChanged: (String) -> Unit,
@@ -1086,7 +1091,31 @@ private fun submitSearch(
 }
 
 /**
- * Top bar for a Post when displayed next to the Home feed
+ * Top bar for a Post when displayed next to the Home feed. Our root Composable is a [Surface] whose
+ * `shape` argument is a [RoundedCornerShape] of `size` 8.dp, the `border` argument of the [Surface]
+ * is a [BorderStroke] with `width` [Dp.Hairline], and `color` a copy of the [ColorScheme.onSurface]
+ * of our custom [MaterialTheme.colorScheme] with its `alpha` overridden to .6f, and the `modifier`
+ * argument of the [Surface] chains to our [Modifier] parameter [modifier] a [Modifier.padding] that
+ * adds 16.dp to the end of the [Surface]. The `content` of the [Surface] is a [Row] whose `modifier`
+ * argument is a [Modifier.padding] that adds 8.dp to each side of the [Row]. The [RowScope] `content`
+ * lambda of the [Row] composes:
+ *  - a [FavoriteButton] whose `onClick` argument is a do-nothing lambda.
+ *  - a [BookmarkButton] whose `isBookmarked` argument is our [Boolean] parameter [isFavorite], and
+ *  whose `onClick` argument is our lambda parameter [onToggleFavorite].
+ *  - a [ShareButton] whose `onClick` argument is our lambda parameter [onSharePost].
+ *  - a [TextSettingsButton] whose `onClick` argument is a do-nothing lambda.
+ *
+ * @param isFavorite if `true` the [Post.id] of current [Post] is in the [Set] of [String] property
+ * [HomeUiState.HasPosts.favorites] of the current [HomeUiState].
+ * @param onToggleFavorite a lambda we can call to toggle the presence of the [Post.id] of current
+ * [Post] in the [Set] of [String] property [HomeUiState.HasPosts.favorites] of the current
+ * [HomeUiState]..
+ * @param onSharePost a lambda we can call to "share" the [Post] using the [sharePost] method.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [HomeFeedWithArticleDetailsScreen] calls us with a [Modifier.fillMaxWidth]
+ * that causes us to occupy our entire incoming width constraint, with a [Modifier.wrapContentWidth]
+ * whose `align` argument [Alignment.End] is chained to that which causes us to align our `content`
+ * to the end of our width.
  */
 @Composable
 fun PostTopBar(
@@ -1103,7 +1132,7 @@ fun PostTopBar(
         ),
         modifier = modifier.padding(end = 16.dp)
     ) {
-        Row(Modifier.padding(horizontal = 8.dp)) {
+        Row(modifier = Modifier.padding(horizontal = 8.dp)) {
             FavoriteButton(onClick = { /* Functionality not available */ })
             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
             ShareButton(onClick = onSharePost)
@@ -1113,7 +1142,35 @@ fun PostTopBar(
 }
 
 /**
- * TopAppBar for the Home screen
+ * TopAppBar for the Home screen, it is used as the `topBar` argument of the [Scaffold] used by
+ * [HomeScreenWithList]. We start by initializing our [Context] variable `val context` to the
+ * current [LocalContext] and our [String] variable `val title` to the [String] with resource ID
+ * [R.string.app_name] ("Jetnews"). When our root Composable is a [CenterAlignedTopAppBar] whose
+ * arguments are:
+ *  - `title` is a lambda that composes an [Image] that displays the drawable with resource ID
+ *  [R.drawable.ic_jetnews_wordmark], with the `contentDescription` our [String] variable `title`,
+ *  the `contentScale` [ContentScale.Inside] (Scales the source to maintain the aspect ratio to be
+ *  inside the destination bounds), with the `colorFilter` a [ColorFilter.tint] whose `color`
+ *  argument is the [ColorScheme.onBackground] of our custom [MaterialTheme.colorScheme], and the
+ *  `modifier` a [Modifier.fillMaxWidth] that causes the [Image] to occupy its entire incoming width
+ *  constraint.
+ *  - `navigationIcon` is a lambda that composes an [IconButton] whose `onClick` argument is our
+ *  lambda parameter [openDrawer], and whose `content` is an [Icon] that draws the drawable with
+ *  resourse ID [R.drawable.ic_jetnews_logo] (a "greater than" character followed by an underline
+ *  character, the `contentDescription` of the [Icon] is the [String] with resource ID
+ *  [R.string.cd_open_navigation_drawer] ("Open navigation drawer"), and the `tint` of the [Icon]
+ *  is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme].
+ *
+ * @param openDrawer a lambda we can call to open the [ModalNavigationDrawer] of the app.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [HomeScreenWithList] does not pass us one so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
+ * @param topAppBarState the [TopAppBarState] we can use to create the [TopAppBarScrollBehavior]
+ * that we use for the `scrollBehavior` argument of our [CenterAlignedTopAppBar].
+ * @param scrollBehavior the [TopAppBarScrollBehavior] to use for the `scrollBehavior` argument of
+ * our [CenterAlignedTopAppBar]. Our caller [HomeScreenWithList] does not pass us one so the default
+ * [TopAppBarDefaults.enterAlwaysScrollBehavior] whose `state` is our [TopAppBarState] parameter
+ * [topAppBarState] is used instead.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -1124,8 +1181,8 @@ private fun HomeTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? =
         TopAppBarDefaults.enterAlwaysScrollBehavior(state = topAppBarState)
 ) {
-    val context = LocalContext.current
-    val title = stringResource(id = R.string.app_name)
+    val context: Context = LocalContext.current
+    val title: String = stringResource(id = R.string.app_name)
     CenterAlignedTopAppBar(
         title = {
             Image(
