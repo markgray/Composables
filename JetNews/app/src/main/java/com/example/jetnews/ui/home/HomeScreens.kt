@@ -1157,9 +1157,15 @@ fun PostTopBar(
  *  - `navigationIcon` is a lambda that composes an [IconButton] whose `onClick` argument is our
  *  lambda parameter [openDrawer], and whose `content` is an [Icon] that draws the drawable with
  *  resourse ID [R.drawable.ic_jetnews_logo] (a "greater than" character followed by an underline
- *  character, the `contentDescription` of the [Icon] is the [String] with resource ID
+ *  character), the `contentDescription` of the [Icon] is the [String] with resource ID
  *  [R.string.cd_open_navigation_drawer] ("Open navigation drawer"), and the `tint` of the [Icon]
  *  is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme].
+ *  - `actions` is a [RowScope] lambda holding an [IconButton] whose `onClick` argument is a lambda
+ *  that calls [Toast.makeText] to toast the message "Search is not yet implemented in this
+ *  configuration", and the `content` Composable of the [IconButton] is an [Icon] whose `imageVector`
+ *  is the [ImageVector] drawn by [Icons.Filled.Search] (a stylized magnifying glass).
+ *  - `scrollBehavior` is our [TopAppBarScrollBehavior] parameter [scrollBehavior].
+ *  - `modifier` is our [Modifier] parameter [modifier].
  *
  * @param openDrawer a lambda we can call to open the [ModalNavigationDrawer] of the app.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
@@ -1222,7 +1228,7 @@ private fun HomeTopAppBar(
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of our [HomeFeedScreen] using the default `device` which uses the  "Home list drawer screen"
  */
 @Preview("Home list drawer screen")
 @Preview("Home list drawer screen (dark)", uiMode = UI_MODE_NIGHT_YES)
@@ -1257,7 +1263,8 @@ fun PreviewHomeListDrawerScreen() {
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of our [HomeFeedScreen] using the `Devices.NEXUS_7_2013` `device` (a 7.0 inch tablet)
+ * which uses the  "Home list navrail screen"
  */
 @Preview(name = "Home list navrail screen", device = Devices.NEXUS_7_2013)
 @Preview(
@@ -1296,7 +1303,8 @@ fun PreviewHomeListNavRailScreen() {
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of our [HomeFeedWithArticleDetailsScreen] using the `Devices.PIXEL_C` `device` (a 10.2
+ * inch tablet)
  */
 @Preview(name = "Home list detail screen", device = Devices.PIXEL_C)
 @Preview(name = "Home list detail screen (dark)", uiMode = UI_MODE_NIGHT_YES, device = Devices.PIXEL_C)

@@ -18,6 +18,8 @@
 
 package com.example.jetnews.ui.home
 
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -27,7 +29,6 @@ import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.ErrorMessage
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +36,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 /**
  * UI state for the Home route.
@@ -45,17 +47,19 @@ import kotlinx.coroutines.launch
 sealed interface HomeUiState {
 
     /**
-     * TODO: Add kdoc
+     * If `true` the [List] of [Post] dataset is being loaded.
      */
     val isLoading: Boolean
 
     /**
-     * TODO: Add kdoc
+     * The [List] of [ErrorMessage] that is added to when [PostsRepository.getPostsFeed] returns a
+     * [Result.Error], and removed from when [HomeViewModel.errorShown] is called after the error
+     * [Snackbar] displaying the error has been dismissed.
      */
     val errorMessages: List<ErrorMessage>
 
     /**
-     * TODO: Add kdoc
+     * The current search string that the user has entered.
      */
     val searchInput: String
 
@@ -78,23 +82,38 @@ sealed interface HomeUiState {
      */
     data class HasPosts(
         /**
-         * TODO: Add kdoc
+         * The [PostsFeed] returned by the [PostsRepository.getPostsFeed] method in the [Result]
+         * of [PostsFeed] that it returns.
          */
         val postsFeed: PostsFeed,
         /**
-         * TODO: Add kdoc
+         * The [Post] in the [PostsFeed] whose [Post.id] is the same as the ID of the selected [Post]
+         * ir the [PostsFeed.highlightedPost]
          */
         val selectedPost: Post,
         /**
-         * TODO: Add kdoc
+         * Used when the [WindowWidthSizeClass] of the device we are running on is not
+         * [WindowWidthSizeClass.Expanded] (ie. its a phone). If `true` the selected [Post] is being
+         * displayed instead of the [PostsFeed].
          */
         val isArticleOpen: Boolean,
         /**
-         * TODO: Add kdoc
+         * The [Set] of [Post.id] of [Post]'s that the user has checked the "favorite" button on.
          */
         val favorites: Set<String>,
+        /**
+         * If `true` the [List] of [Post] dataset is being loaded.
+         */
         override val isLoading: Boolean,
+        /**
+         * The [List] of [ErrorMessage] that is added to when [PostsRepository.getPostsFeed] returns a
+         * [Result.Error], and removed from when [HomeViewModel.errorShown] is called after the error
+         * [Snackbar] displaying the error has been dismissed.
+         */
         override val errorMessages: List<ErrorMessage>,
+        /**
+         * The current search string that the user has entered.
+         */
         override val searchInput: String
     ) : HomeUiState
 }
@@ -103,18 +122,50 @@ sealed interface HomeUiState {
  * An internal representation of the Home route state, in a raw form
  */
 private data class HomeViewModelState(
+    /**
+     * The [PostsFeed] returned by the [PostsRepository.getPostsFeed] method in the [Result]
+     * of [PostsFeed] that it returns.
+     */
     val postsFeed: PostsFeed? = null,
+    /**
+     * The [Post] in the [PostsFeed] whose [Post.id] is the same as the ID of the selected [Post]
+     * ir the [PostsFeed.highlightedPost]
+     */
     val selectedPostId: String? = null, // TODO back selectedPostId in a SavedStateHandle
+    /**
+     * Used when the [WindowWidthSizeClass] of the device we are running on is not
+     * [WindowWidthSizeClass.Expanded] (ie. its a phone). If `true` the selected [Post] is being
+     * displayed instead of the [PostsFeed].
+     */
     val isArticleOpen: Boolean = false,
+    /**
+     * The [Set] of [Post.id] of [Post]'s that the user has checked the "favorite" button on.
+     */
     val favorites: Set<String> = emptySet(),
+    /**
+     * If `true` the [List] of [Post] dataset is being loaded.
+     */
     val isLoading: Boolean = false,
+    /**
+     * The [List] of [ErrorMessage] that is added to when [PostsRepository.getPostsFeed] returns a
+     * [Result.Error], and removed from when [HomeViewModel.errorShown] is called after the error
+     * [Snackbar] displaying the error has been dismissed.
+     */
     val errorMessages: List<ErrorMessage> = emptyList(),
+    /**
+     * The current search string that the user has entered.
+     */
     val searchInput: String = "",
 ) {
 
     /**
      * Converts this [HomeViewModelState] into a more strongly typed [HomeUiState] for driving
-     * the ui.
+     * the ui. We branch on the value of [postsFeed]:
+     *  - `null` we construct and return a [HomeUiState.NoPosts] whose [HomeUiState.NoPosts.isLoading]
+     *  is our [isLoading] property, whose [HomeUiState.NoPosts.errorMessages] is our [errorMessages]
+     *  property, and whose [HomeUiState.NoPosts.searchInput] is our [searchInput] property.
+     *  - non-`null` we construct and return a [HomeUiState.HasPosts] whose [HomeUiState.HasPosts.postsFeed]
+     *  is our [postsFeed] property,
      */
     fun toUiState(): HomeUiState =
         if (postsFeed == null) {
