@@ -29,6 +29,8 @@ import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.utils.ErrorMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -165,7 +167,15 @@ private data class HomeViewModelState(
      *  is our [isLoading] property, whose [HomeUiState.NoPosts.errorMessages] is our [errorMessages]
      *  property, and whose [HomeUiState.NoPosts.searchInput] is our [searchInput] property.
      *  - non-`null` we construct and return a [HomeUiState.HasPosts] whose [HomeUiState.HasPosts.postsFeed]
-     *  is our [postsFeed] property,
+     *  is our [postsFeed] property, whose [HomeUiState.HasPosts.selectedPost] is the [Post] we `find`
+     *  in the [List] of [Post] property [PostsFeed.allPosts] of [postsFeed] whose [Post.id] is equal
+     *  to our [String] property [selectedPostId] defaulting to the [PostsFeed.highlightedPost] of
+     *  [postsFeed] if none is found, whose [HomeUiState.HasPosts.isArticleOpen] property is our
+     *  [Boolean] property [isArticleOpen], whose [HomeUiState.HasPosts.favorites] is our [Set] of
+     *  [String] property [favorites], whose [HomeUiState.HasPosts.isLoading] is our [Boolean] property
+     *  [isLoading], whose [HomeUiState.HasPosts.errorMessages] is our [List] of [ErrorMessage]
+     *  property [errorMessages], and whose [HomeUiState.HasPosts.searchInput] is our [String] property
+     *  [searchInput].
      */
     fun toUiState(): HomeUiState =
         if (postsFeed == null) {
@@ -194,12 +204,23 @@ private data class HomeViewModelState(
 
 /**
  * ViewModel that handles the business logic of the Home screen
+ *
+ * @param postsRepository the [PostsRepository] that we should use to fetch our [PostsFeed] from.
+ * @param preSelectedPostId use to set the [HomeViewModelState.selectedPostId] property of our
+ * [MutableStateFlow] wrapped [HomeViewModelState] when we are first constructed.
  */
 class HomeViewModel(
     private val postsRepository: PostsRepository,
     preSelectedPostId: String?
 ) : ViewModel() {
 
+    /**
+     * Tne [MutableStateFlow] wrapped [HomeViewModelState] that we use to update our publicly readable
+     * [StateFlow] wrapped [HomeUiState]. Our initial value is a [HomeViewModelState] whose [Boolean]
+     * property [HomeViewModelState.isLoading] is `true`, whose [HomeViewModelState.selectedPostId]
+     * if the [String] `preSelectedPostId` we were constructed with, and whose [Boolean] property
+     * [HomeViewModelState.isArticleOpen] is `true` if `preSelectedPostId` is not `null`.
+     */
     private val viewModelState: MutableStateFlow<HomeViewModelState> = MutableStateFlow(
         HomeViewModelState(
             isLoading = true,
@@ -209,7 +230,14 @@ class HomeViewModel(
     )
 
     /**
-     * UI state exposed to the UI
+     * UI state exposed to the UI. Our [StateFlow] wrapped [HomeUiState] is created by applying the
+     * [map] extension function to our [MutableStateFlow] wrapped [HomeViewModelState] property
+     * [viewModelState] applying the `transform` [HomeViewModelState.toUiState] to each of the
+     * [HomeViewModelState] passed it and emitting a [Flow] of [HomeUiState] which is chained to a
+     * [Flow.stateIn] whose `scope` argument is [viewModelScope], whose `started` argument is
+     * [SharingStarted.Eagerly] (sharing is started immediately and never stops), and whose
+     * `initialValue` is the [HomeViewModelState.toUiState] of the [MutableStateFlow.value] of our
+     * [MutableStateFlow] wrapped [HomeViewModelState] property  [viewModelState].
      */
     val uiState: StateFlow<HomeUiState> = viewModelState
         .map(transform = HomeViewModelState::toUiState)
@@ -222,7 +250,9 @@ class HomeViewModel(
     init {
         refreshPosts()
 
-        // Observe for favorite changes in the repo layer
+        /**
+         * Observe for favorite changes in the repo layer
+         */
         viewModelScope.launch {
             postsRepository.observeFavorites().collect { favorites: Set<String> ->
                 viewModelState.update { it.copy(favorites = favorites) }
@@ -231,7 +261,24 @@ class HomeViewModel(
     }
 
     /**
-     * Refresh posts and update the UI state accordingly
+     * Refresh posts and update the UI state accordingly. We first call the [MutableStateFlow.update]
+     * method of [MutableStateFlow] wrapped [HomeViewModelState] property [viewModelState] to update
+     * its [HomeViewModelState.isLoading] properyt to `true` (Ui state is refreshing). Then we use the
+     * [CoroutineScope] of [viewModelScope] to [CoroutineScope.launch] a coroutine in whose [CoroutineScope]
+     * lambda `block` we initialize our [Result] of [PostsFeed] variable `val result` to the value returned
+     * by the [PostsRepository.getPostsFeed] method of our [PostsRepository] field [postsRepository].
+     * Then we call the [MutableStateFlow.update] method of [viewModelState] to update it based on the
+     * type of [Result] of [Result] of [PostsFeed] variable `result`:
+     *  - [Result.Success] we copy the current [HomeViewModelState] with its [HomeViewModelState.postsFeed]
+     *  changed to the [Result.Success.data] of `result`, and its [HomeViewModelState.isLoading] changed
+     *  to `false`.
+     *  - [Result.Error] we initialize our [List] of [ErrorMessage] variable `val errorMessages` to the
+     *  current [HomeViewModelState.errorMessages] property appending a new instance of [ErrorMessage]
+     *  whose [ErrorMessage.id] is the [UUID.getMostSignificantBits] of the random [UUID] returned
+     *  by [UUID.randomUUID], and whose [ErrorMessage.messageId] is the resource ID [R.string.load_error]
+     *  (points to the [String] ("Can't update latest news"). We then update [viewModelState] with a
+     *  copy whose [HomeViewModelState.errorMessages] is our variable `errorMessages`, and whose
+     *  [HomeViewModelState.isLoading] property is `false`.
      */
     fun refreshPosts() {
         // Ui state is refreshing
@@ -243,7 +290,7 @@ class HomeViewModel(
                 when (result) {
                     is Result.Success -> it.copy(postsFeed = result.data, isLoading = false)
                     is Result.Error -> {
-                        val errorMessages = it.errorMessages + ErrorMessage(
+                        val errorMessages: List<ErrorMessage> = it.errorMessages + ErrorMessage(
                             id = UUID.randomUUID().mostSignificantBits,
                             messageId = R.string.load_error
                         )
@@ -255,7 +302,9 @@ class HomeViewModel(
     }
 
     /**
-     * Toggle favorite of a post
+     * Toggle favorite of a post.
+     *
+     * @param
      */
     fun toggleFavourite(postId: String) {
         viewModelScope.launch {
