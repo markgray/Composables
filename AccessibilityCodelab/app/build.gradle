@@ -94,7 +94,7 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1"
 
     implementation "androidx.compose.runtime:runtime:1.6.7"
     implementation "androidx.compose.ui:ui:1.6.7"
