@@ -219,6 +219,7 @@ fun Greeting(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(space = 6.dp)
     ) {
+        val textModifier: Modifier = modifier.padding(all = 8.dp)
         Spacer(modifier = Modifier.height(height = 6.dp))
         Surface(
             color = MaterialTheme.colorScheme.primary,
@@ -226,7 +227,7 @@ fun Greeting(
         ) {
             Text(
                 text = "primary",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onPrimary
             )
         }
@@ -236,7 +237,7 @@ fun Greeting(
         ) {
             Text(
                 text = "primaryContainer",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
@@ -246,7 +247,7 @@ fun Greeting(
         ) {
             Text(
                 text = "secondary",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onSecondary
             )
         }
@@ -256,7 +257,7 @@ fun Greeting(
         ) {
             Text(
                 text = "secondaryContainer",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
@@ -266,7 +267,7 @@ fun Greeting(
         ) {
             Text(
                 text = "tertiary",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onTertiary
             )
         }
@@ -276,7 +277,7 @@ fun Greeting(
         ) {
             Text(
                 text = "tertiaryContainer",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onTertiaryContainer
             )
         }
@@ -286,7 +287,7 @@ fun Greeting(
         ) {
             Text(
                 text = "error",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onError
             )
         }
@@ -296,7 +297,7 @@ fun Greeting(
         ) {
             Text(
                 text = "errorContainer",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
         }
@@ -306,7 +307,7 @@ fun Greeting(
         ) {
             Text(
                 text = "background",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
@@ -316,7 +317,7 @@ fun Greeting(
         ) {
             Text(
                 text = "surface",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -326,7 +327,7 @@ fun Greeting(
         ) {
             Text(
                 text = "surfaceVariant",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -336,7 +337,7 @@ fun Greeting(
         ) {
             Text(
                 text = "inverseSurface",
-                modifier = modifier,
+                modifier = textModifier,
                 color = MaterialTheme.colorScheme.inverseOnSurface
             )
         }
@@ -346,7 +347,7 @@ fun Greeting(
         ) {
             Text(
                 text = "inversePrimary",
-                modifier = modifier
+                modifier = textModifier
             )
         }
         Surface(
@@ -355,7 +356,7 @@ fun Greeting(
         ) {
             Text(
                 text = "surfaceTint",
-                modifier = modifier
+                modifier = textModifier
             )
         }
         Surface(
@@ -364,7 +365,7 @@ fun Greeting(
         ) {
             Text(
                 text = "outlineVariant",
-                modifier = modifier
+                modifier = textModifier
             )
         }
         Surface(
@@ -373,7 +374,7 @@ fun Greeting(
         ) {
             Text(
                 text = "scrim",
-                modifier = modifier
+                modifier = textModifier
             )
         }
     }
