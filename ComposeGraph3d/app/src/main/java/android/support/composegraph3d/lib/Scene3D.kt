@@ -306,6 +306,7 @@ class Scene3D {
     /**
      * TODO: Add kdoc
      */
+    @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
     val lookPoint: String
         get() = Arrays.toString(mMatrix.lookPoint)
 
