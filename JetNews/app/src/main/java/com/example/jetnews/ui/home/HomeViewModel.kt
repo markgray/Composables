@@ -302,9 +302,12 @@ class HomeViewModel(
     }
 
     /**
-     * Toggle favorite of a post.
+     * Toggle favorite status of a post. We use the [CoroutineScope.launch] method of [viewModelScope]
+     * to launch a corroutine which calls the [PostsRepository.toggleFavorite] method of [postsRepository]
+     * with its `postId` argument our [String] parameter [postId].
      *
-     * @param
+     * @param postId the [Post.id] of the [Post] whose presence in the [Set] of [String] field
+     * [HomeUiState.HasPosts.favorites] we wish to toggle.
      */
     fun toggleFavourite(postId: String) {
         viewModelScope.launch {
@@ -313,7 +316,12 @@ class HomeViewModel(
     }
 
     /**
-     * Selects the given article to view more information about it.
+     * Selects the given article to view more information about it. We just call
+     * [interactedWithArticleDetails] with its `postId` argument or [String] parameter [postId], and
+     * it will update the [HomeViewModelState.selectedPostId] to [postId], and set the
+     * [HomeViewModelState.isArticleOpen] property to `true`.
+     *
+     * @param postId the [Post.id] of the [Post] whose details we wish to view.
      */
     fun selectArticle(postId: String) {
         // Treat selecting a detail as simply interacting with it
@@ -321,7 +329,13 @@ class HomeViewModel(
     }
 
     /**
-     * Notify that an error was displayed on the screen
+     * Notify that an error was displayed on the screen. We initialize our [List] of [ErrorMessage]
+     * by using the [filterNot] extension to produce a [List] of [ErrorMessage] from the
+     * [HomeViewModelState.errorMessages] of [viewModelState] with any [ErrorMessage] whose
+     * [ErrorMessage.id] is equal to our [Long] parameter [errorId] excluded. We then update the
+     * [HomeViewModelState.errorMessages] to our `errorMessages` variable.
+     *
+     * @param errorId the [ErrorMessage.id] of the [ErrorMessage] that was shown.
      */
     fun errorShown(errorId: Long) {
         viewModelState.update { currentUiState: HomeViewModelState ->
@@ -332,7 +346,8 @@ class HomeViewModel(
     }
 
     /**
-     * Notify that the user interacted with the feed
+     * Notify that the user interacted with the feed. We do this by updating the
+     * [HomeViewModelState.isArticleOpen] property of [viewModelState] to be `false`.
      */
     fun interactedWithFeed() {
         viewModelState.update {
@@ -341,7 +356,11 @@ class HomeViewModel(
     }
 
     /**
-     * Notify that the user interacted with the article details
+     * Notify that the user interacted with the article details. We do this by updating the
+     * [HomeViewModelState.selectedPostId] of [viewModelState] to our [String] parameter [postId]
+     * and updating the [HomeViewModelState.isArticleOpen] property to be `true`.
+     *
+     * @param postId the [Post.id] of the [Post] that the user interacted with.
      */
     fun interactedWithArticleDetails(postId: String) {
         viewModelState.update {
@@ -353,7 +372,11 @@ class HomeViewModel(
     }
 
     /**
-     * Notify that the user updated the search query
+     * Notify that the user updated the search query. We do this by updating the
+     * [HomeViewModelState.searchInput] property of [viewModelState] to our [String] parameter
+     * [searchInput].
+     *
+     * @param searchInput the new search [String].
      */
     fun onSearchInputChanged(searchInput: String) {
         viewModelState.update {
@@ -362,11 +385,18 @@ class HomeViewModel(
     }
 
     /**
-     * Factory for HomeViewModel that takes PostsRepository as a dependency
+     * Factory for [HomeViewModel] that takes [PostsRepository] as a dependency
      */
     companion object {
         /**
-         * TODO: Add kdoc
+         * Creates and returns a new instance of [HomeViewModel] using its [PostsRepository]
+         * parameter [postsRepository] as the `postsRepository` argument an its [String] parameter
+         * [preSelectedPostId] as its `preSelectedPostId` argument.
+         *
+         * @param postsRepository the [PostsRepository] to use as the `postsRepository` argument of
+         * the [HomeViewModel] constructor.
+         * @param preSelectedPostId the [String] to use as the `preSelectedPostId` argument of the
+         * [HomeViewModel] constructor.
          */
         fun provideFactory(
             postsRepository: PostsRepository,

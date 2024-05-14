@@ -49,13 +49,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.post3
+import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostAuthor
+import com.example.jetnews.ui.home.PostCardHistory
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.home.PostCardHistory as PostCardHistory1
 
 /**
- * TODO: Add kdoc
+ * Used by [PostCardHistory] and [PostCardSimple] to display the [PostAuthor.name] of the
+ * [Metadata.author] of the [Post.metadata] property of our [Post] parameter [post], and the
+ * [Metadata.readTimeMinutes] of the [Post.metadata] property.
+ *
+ * @param post the [Post] whose author and read time we are to display.
  */
 @Composable
 fun AuthorAndReadTime(
