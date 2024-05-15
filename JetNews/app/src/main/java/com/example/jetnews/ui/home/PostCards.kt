@@ -21,16 +21,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,12 +42,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,16 +68,28 @@ import com.example.jetnews.ui.home.PostCardHistory as PostCardHistory1
 /**
  * Used by [PostCardHistory] and [PostCardSimple] to display the [PostAuthor.name] of the
  * [Metadata.author] of the [Post.metadata] property of our [Post] parameter [post], and the
- * [Metadata.readTimeMinutes] of the [Post.metadata] property.
+ * [Metadata.readTimeMinutes] of the [Post.metadata] property. Our root Composable is a [Row]
+ * whose `modifier` argument is our [Modifier] parameter [modifier]. In the [RowScope] `content`
+ * lambda argument of the [Row] we have a [Text] whose `text` is a [String] that is formatted by
+ * the format string whose resource `id` is [R.string.home_post_min_read] "%1$s - %2$d min read"
+ * with the `formatArgs` for the format string the [PostAuthor.name] of the [Metadata.author] of
+ * the [Post.metadata] property of our [Post] parameter [post], and the [Metadata.readTimeMinutes]
+ * of the [Post.metadata] property. The [TextStyle] `style` argument of the [Text] is the
+ * [Typography.bodyMedium] of our custom [MaterialTheme.typography] (`fontSize` = 14.sp, `lineHeight`
+ * = 20.sp, `letterSpacing` = 0.25.sp, and `lineBreak` = [LineBreak.Paragraph])
  *
  * @param post the [Post] whose author and read time we are to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [PostCardHistory] passes us a [Modifier.padding] that adds 4.dp to the `top` of our
+ * Composable, and [PostCardSimple] passes us none so empty, default, or starter [Modifier] that
+ * contains no elements is used.
  */
 @Composable
 fun AuthorAndReadTime(
     post: Post,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier) {
+    Row(modifier = modifier) {
         Text(
             text = stringResource(
                 id = R.string.home_post_min_read,
@@ -84,7 +104,20 @@ fun AuthorAndReadTime(
 }
 
 /**
- * TODO: Add kdoc
+ * Displays the drawable whose resource `id` is the [Post.imageThumbId] property of our [Post]
+ * parameter [post]. Our root Composable is an [Image] whose `painter` argument is the [Painter]
+ * that is returned by [painterResource] for the `id` argument of the [Post.imageThumbId] of our
+ * [Post] parameter [post], and whose `modifier` argument chains a [Modifier.size] to our [Modifier]
+ * parameter [modifier] that sets the size of the [Image] to `width` 40.dp, and `height` 40.dp, and
+ * to that is chained a [Modifier.clip] that clips the [Image] to the `shape` [Shapes.small] of our
+ * custom [MaterialTheme.shapes] (a [RoundedCornerShape] whose `size` if 4.dp).
+ *
+ * @param post the [Post] whose [Post.imageThumbId] we should use as the resource `id` of the
+ * [Image] to draw (they are all png's).
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [PostCardHistory] passes us a [Modifier.padding] that adds 16.dp to the `all` of our
+ * sides, and [PostCardSimple] passes us none so empty, default, or starter [Modifier] that contains
+ * no elements is used.
  */
 @Composable
 fun PostImage(post: Post, modifier: Modifier = Modifier) {
@@ -98,7 +131,17 @@ fun PostImage(post: Post, modifier: Modifier = Modifier) {
 }
 
 /**
- * TODO: Add kdoc
+ * Used by [PostCardHistory] and [PostCardSimple] to display the [Post.title] property of our [Post]
+ * parameter [post]. Our root (and only) Composable is a [Text] whose `text` argument is the [String]
+ * property [Post.title] or our [Post] parameter [post]. The [TextStyle] `style` argument of the
+ * [Text] is the [Typography.titleMedium] of our custom [MaterialTheme.typography] (`fontSize` = 16.sp,
+ * `lineHeight` = 24.sp, `letterSpacing` = 0.15.sp, `fontWeight` = [FontWeight.Medium], and `lineBreak`
+ * = [LineBreak.Heading]). The `maxLines` argument of the [Text] is 3 (maximum number of lines for
+ * the text to span, wrapping if necessary. If the text exceeds the given number of lines, it will
+ * be truncated according to overflow), and the `overflow` argument is [TextOverflow.Ellipsis] (Uses
+ * an ellipsis to indicate that the text has overflowed).
+ *
+ * @param post the [Post] whose [Post.title] we are supposed to display.
  */
 @Composable
 fun PostTitle(post: Post) {
