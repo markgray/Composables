@@ -141,6 +141,7 @@ fun TimeGraph(
     hoursHeader: @Composable () -> Unit,
     dayItemsCount: Int,
     dayLabel: @Composable (index: Int) -> Unit,
+    @Suppress("unused", "RedundantSuppression") // Left in for no good reason.
     bar: @Composable TimeGraphScope.(index: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {

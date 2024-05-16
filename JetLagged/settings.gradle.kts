@@ -15,7 +15,7 @@
  */
 
 /**
- * TODO: Figure out what this is.
+ * This environment variable allows you to select snapshot repositories
  */
 val snapshotVersion : String? = System.getenv("COMPOSE_SNAPSHOT_ID")
 
