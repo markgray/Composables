@@ -20,6 +20,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -60,6 +61,7 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
+import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.home.PostCardHistory
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
@@ -154,7 +156,41 @@ fun PostTitle(post: Post) {
 }
 
 /**
- * TODO: Add kdoc
+ * Used by the `PostListSimpleSection` to display a [PostTitle] and [AuthorAndReadTime] for one of
+ * the [Post] in the [List] of [Post] found in the [PostsFeed.recommendedPosts] of the current
+ * [PostsFeed]. We start by initializing our [String] variable `val bookmarkAction` to the [String]
+ * with resource ID [R.string.unbookmark] ("unbookmark") if our [Boolean] parameter [isFavorite] is
+ * `true` or the the [String] with resource ID [R.string.bookmark] ("bookmark") if it is `false`.
+ * Then our root Composable is a [Row] whose `modifier` argument is a [Modifier.clickable] whose
+ * `onClick` argument is a lambda that calls our lambda parameter [navigateToArticle] with the
+ * [Post.id] of our [Post] parameter [post] to navigate to the article screen to have it display the
+ * contents of [post]. Chained to the [Modifier.clickable] is a [Modifier.semantics] whose
+ * [customActions] argument is a [CustomAccessibilityAction] whose `label` argument is our [String]
+ * variable `bookmarkAction` and whose `action` argument is a lambda which calls our lambda parameter
+ * [onToggleFavorite] and returns `true` to indicate that the action was successfully handled. In
+ * the [RowScope] lambda `content` argument of the [Row] we compose a [PostImage] whose `post`
+ * argument is our [Post] parameter [post] and whose `modifier` argument is a [Modifier.padding] that
+ * adds 16.dp to all of its sides. Next in the [Row] is a [Column] whose `modifier` argument is a
+ * [RowScope.weight] that sets its `weight` to 1f (to have it take up all remaining width after its
+ * unweighted siblings are measured and placed), with a [Modifier.padding] that adds 16.dp to its
+ * `top` and `bottom` chained to that. In the [ColumnScope] `content` lambda of the [Column] we
+ * compose a [PostTitle] whose `post` argument is our [Post] parameter [post], and below that in the
+ * [Column] is an [AuthorAndReadTime] whose `post` argument is our [Post] parameter [post].
+ *
+ * At the end of the [Row] is a [BookmarkButton] whose `isBookmarked` argument is our [Boolean]
+ * parameter [isFavorite], whose `onClick` argument is our lambda parameter [onToggleFavorite], and
+ * whose `modifier` argument is a [Modifier.clearAndSetSemantics] (to remove button semantics so the
+ * action can be handled at [Row] level), with a [Modifier.padding] that adds 2.dp to `top` and `bottom`
+ * and add 6.dp to each side.
+ *
+ * @param post the [Post] we are supposed to display.
+ * @param navigateToArticle a lambda we can call with the [Post.id] property of our [Post] parameter
+ * to request navigation to the Article screen to have it display the [Post] contents.
+ * @param isFavorite if `true` the [Post.id] of [post] is in the [Set] of [String] of
+ * [HomeUiState.HasPosts.favorites].
+ * @param onToggleFavorite lambda that can be called to toggle the presence of the [Post.id] of our
+ * [Post] parameter [post] in the [Set] of [String] of [HomeUiState.HasPosts.favorites]. Used as the
+ * `onClick` argument of our [BookmarkButton].
  */
 @Composable
 fun  PostCardSimple(
@@ -200,7 +236,7 @@ fun  PostCardSimple(
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable is called to display
  */
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
