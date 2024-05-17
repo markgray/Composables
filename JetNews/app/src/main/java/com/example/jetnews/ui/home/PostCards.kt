@@ -37,6 +37,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
@@ -236,22 +238,62 @@ fun  PostCardSimple(
 }
 
 /**
- * This Composable is called to display
+ * This Composable is called by `PostListHistorySection` to display each of the [Post] in its [List]
+ * of [Post] parameter `posts` (which is the [PostsFeed.recentPosts] property of the current
+ * [PostsFeed] that it is called with by `PostList`). We start by initializing and remembering our
+ * [MutableState] wrapped [Boolean] variable `var openDialog` to an initial value of `false`. Then
+ * our root Composable is a [Row] whose `modifier` is a [Modifier.clickable] whose `onClick` argument
+ * is a lambda that calls our lambda parameter [navigateToArticle] with the [Post.id] of our [Post]
+ * parameter [post] (to have the article screen display the [Post]'s contents). In the [RowScope]
+ * `content` lambda argument of the [Row] we compose:
+ *  - a [PostImage] whose `post` argument is our [Post] parameter [post], and whose `modifier`
+ *  parameter is a [Modifier.padding] that adds 16.dp padding to all of its sides.
+ *  - a [Column] whose `modifier` argument is a [RowScope.weight] whose `weight` argument is 1f
+ *  causing it to take up all remaining space after its siblings have been measured and placed.
+ *  Chained to that [Modifier] is a [Modifier.padding] that adds 12.dp padding to its top and
+ *  bottom.
+ *  - the [ColumnScope] `content` lambda of the [Column] contains a [Text] whose `text` argument is
+ *  the [String] with resource ID [R.string.home_post_based_on_history] ("BASED ON YOUR HISTORY"),
+ *  and whose [TextStyle] `style` argument is the [Typography.labelMedium] of our custom
+ *  [MaterialTheme.typography]. Below that in the [Column] is a [PostTitle] whose `post` argument
+ *  is our [Post] parameter [post], and that is followed by an [AuthorAndReadTime] whose `post`
+ *  argument is our [Post] parameter [post], and whose `modifier` argument is a [Modifier.padding]
+ *  that adds 4.dp to its `top`.
+ *  - At the end of the [Row] is an [IconButton] whose `onClick` argument is a lambda that sets our
+ *  [MutableState] wrapped [Boolean] variable `openDialog` to `true` (this causes an [AlertDialog]
+ *  to be displayed that advises "This feature is not yet implemented"). The `content` lambda of
+ *  the [AlertDialog] is an [Icon] whose `imageVector` argument causes it to display the [ImageVector]
+ *  drawn by [Icons.Filled.MoreVert] (three verical dots), and whose `contentDescription` argument is
+ *  the [String] with resource ID [R.string.cd_more_actions] ("More actions").
+ *
+ * When done composing our content we check if our [MutableState] wrapped [Boolean] variable `openDialog`
+ * is now `true` (the user clicked the [IconButton] in our [Row]) and if it is we compose an [AlertDialog]
+ * whose arguments are:
+ *  - `modifier` is a [Modifier.padding] that adds 20.dp to all sides of he [AlertDialog]
+ *  - `onDismissRequest` is a lambda that sets `openDialog` back to `false` (causing us to disappear
+ *  on the next recomposition) This is called when the user tries to dismiss the Dialog by clicking
+ *  outside or pressing the back button.
+ *  - `title` is a lambda that composes a [Text] whose `text` is the [String] with resourse ID
+ *  [R.string.fewer_stories] ("Show fewer stories like this?"), and whose [TextStyle] `style` argument
+ *  is the [Typography.titleLarge] of our custom [MaterialTheme.typography] (`fontSize` = 22.sp,
+ *  `lineHeight` = 28.sp, `letterSpacing` = 0.sp, `lineBreak` = [LineBreak.Heading])
+ *  - `text` is a lambda that composes a [Text] whose `text` argument is the [String] with resource
+ *  ID [R.string.fewer_stories_content] ("This feature is not yet implemented")
+ *
  */
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
     var openDialog: Boolean by remember { mutableStateOf(false) }
 
     Row(
-        Modifier
-            .clickable(onClick = { navigateToArticle(post.id) })
+        modifier = Modifier.clickable(onClick = { navigateToArticle(post.id) })
     ) {
         PostImage(
             post = post,
             modifier = Modifier.padding(all = 16.dp)
         )
         Column(
-            Modifier
+            modifier = Modifier
                 .weight(1f)
                 .padding(vertical = 12.dp)
         ) {
