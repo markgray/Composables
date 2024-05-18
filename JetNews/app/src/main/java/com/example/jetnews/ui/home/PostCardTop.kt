@@ -17,19 +17,25 @@
 package com.example.jetnews.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,11 +44,31 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.CompletePreviews
 
 /**
- * TODO: Add kdoc
+ * Used by `PostListTopSection` to display the [Post.imageId], [Post.title], and [Post.metadata]
+ * information of the [Post] found in the [PostsFeed.highlightedPost] property of the current
+ * [PostsFeed]. We start by initialzing our [Typography] variable to our custom
+ * [MaterialTheme.typography]. Then our root Composable is a [Column] whose `modifier` argument
+ * chains a [Modifier.fillMaxWidth] to our [Modifier] parameter [modifier] to have it fill its
+ * entire incoming width constraint, and to this is chained a [Modifier.padding] that adds 16.dp to
+ * all sides of the [Column]. Its [ColumnScope] `content` lambda argument starts by initializing its
+ * [Modifier] variable to a [Modifier.heightIn] that sets its `min` minimum height to 180.dp, with
+ * a [Modifier.fillMaxWidth] chained to that to make the Composable using the [Modifier] occupy its
+ * entire width constraint, and to this is chained a [Modifier.clip] that clips its [Shape] to the
+ * [Shapes.medium] of our custom [MaterialTheme.shapes] (a [RoundedCornerShape] whose `size` is 4.dp).
+ * The children Composables of the [Column] are:
+ *  - an [Image] whose `painter` argument is the [Painter] returned by [painterResource] for the
+ *  drawable whose resource ID is the [Post.imageId] property of our [Post] parameter [post]
+ *
+ * @param post the [Post] whose [Post.imageId], [Post.title], and [Post.metadata] information we are
+ * to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller passes us a [Modifier.clickable] whose `onClick` lambda argument causes us
+ * to navigate to have the article screen to display the content of our [Post] parameter [post].
  */
 @Composable
 fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
@@ -53,7 +79,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .padding(all = 16.dp)
     ) {
-        val imageModifier = Modifier
+        val imageModifier: Modifier = Modifier
             .heightIn(min = 180.dp)
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)

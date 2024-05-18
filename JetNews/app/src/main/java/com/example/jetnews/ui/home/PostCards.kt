@@ -29,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -278,8 +280,20 @@ fun  PostCardSimple(
  *  is the [Typography.titleLarge] of our custom [MaterialTheme.typography] (`fontSize` = 22.sp,
  *  `lineHeight` = 28.sp, `letterSpacing` = 0.sp, `lineBreak` = [LineBreak.Heading])
  *  - `text` is a lambda that composes a [Text] whose `text` argument is the [String] with resource
- *  ID [R.string.fewer_stories_content] ("This feature is not yet implemented")
+ *  ID [R.string.fewer_stories_content] ("This feature is not yet implemented"), whose [TextStyle]
+ *  `style` argument is the [Typography.bodyLarge] of our custom [MaterialTheme.typography] (`fontSize`
+ *  = 16.sp, `lineHeight` = 24.sp, `letterSpacing` = 0.5.sp, and `lineBreak` = [LineBreak.Paragraph]).
+ *  - `confirmButton` is a lambda that composes a [Text] whose `text` is the [String] with resource
+ *  ID [R.string.agree] ("Agree"), whose [TextStyle] `style` argument is the [Typography.titleLarge]
+ *  of our custom [MaterialTheme.typography] (`fontSize` = 22.sp, `lineHeight` = 28.sp, `letterSpacing`
+ *  = 0.sp, `lineBreak` = [LineBreak.Heading], whose [Color] `color` argument is the [ColorScheme.primary]
+ *  of our custom [MaterialTheme.colorScheme], and whose `modifier` argument is a [Modifier.padding]
+ *  that adds 15.dp to all sides, with a [Modifier.clickable] chained to that whose lambda argument
+ *  sets our [MutableState] wrapped [Boolean] variable `openDialog` to `false`.
  *
+ * @param post the [Post] that we are supposed to display.
+ * @param navigateToArticle a lambda that we can call with the [Post.id] property of a [Post] to have
+ * the article screen display the content of the [Post].
  */
 @Composable
 fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
@@ -345,7 +359,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
 }
 
 /**
- * TODO: Add kdoc
+ * Preview of the [BookmarkButton] Composable with its [Boolean] `isBookmarked` argument `false`
  */
 @Preview(name = "Bookmark Button")
 @Composable
@@ -358,7 +372,7 @@ fun BookmarkButtonPreview() {
 }
 
 /**
- * TODO: Add kdoc
+ * Preview of the [BookmarkButton] Composable with its [Boolean] `isBookmarked` argument `true`
  */
 @Preview(name = "Bookmark Button Bookmarked")
 @Composable
@@ -371,7 +385,7 @@ fun BookmarkButtonBookmarkedPreview() {
 }
 
 /**
- * TODO: Add kdoc
+ * Preview of the [PostCardSimple] Composable.
  */
 @Preview(name = "Simple post card")
 @Preview(name = "Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
@@ -389,7 +403,7 @@ fun SimplePostPreview() {
 }
 
 /**
- * TODO: Add kdoc
+ * Preview of the [PostCardHistory1] Composable.
  */
 @Preview(name = "Post History card")
 @Composable
