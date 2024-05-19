@@ -110,11 +110,11 @@ dependencies {
     implementation "androidx.compose.foundation:foundation-layout:1.6.7"
     implementation "androidx.compose.animation:animation:1.6.7"
     implementation "androidx.compose.ui:ui-tooling-preview:1.6.7"
-    implementation 'com.google.dagger:hilt-android:2.48.1'
+    implementation 'com.google.dagger:hilt-android:2.51.1'
     implementation 'io.coil-kt:coil-compose:2.6.0'
-    kapt 'com.google.dagger:hilt-compiler:2.48.1'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
+    kapt 'com.google.dagger:hilt-compiler:2.51.1'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0"
 
     debugImplementation "androidx.compose.ui:ui-tooling:1.6.7"
     debugImplementation "androidx.compose.ui:ui-test-manifest:1.6.7"
@@ -126,7 +126,7 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit-ktx:1.1.5"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.6.7"
-    androidTestImplementation 'com.google.dagger:hilt-android:2.48.1'
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.48.1'
-    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.48.1'
+    androidTestImplementation 'com.google.dagger:hilt-android:2.51.1'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.51.1'
+    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.51.1'
 }
