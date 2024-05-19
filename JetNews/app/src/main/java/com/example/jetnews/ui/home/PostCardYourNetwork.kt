@@ -19,17 +19,21 @@ package com.example.jetnews.ui.home
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,10 +50,32 @@ import com.example.jetnews.data.posts.impl.post4
 import com.example.jetnews.data.posts.impl.post5
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
+import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 /**
- * TODO: Add kdoc
+ * Used by the `PostListPopularSection` Composable to display information about each of the [Post]
+ * in the [List] of [Post] property [PostsFeed.popularPosts] of the current [PostsFeed] that is passed
+ * to it by the `PostList` Composable. Our root Composable is a [Card] whose `onClick` argument is a
+ * lambda that calls our lambda parameter [navigateToArticle] with the [Post.id] of our [Post] parameter
+ * [post], whose `shape` argument is the [Shapes.medium] of our custom [MaterialTheme.shapes] (which
+ * is a [RoundedCornerShape] whose `size` is 4.dp), and whose `modifier` argument chains a [Modifier.width]
+ * to our [Modifier] parameter [modifier] that sets its width to 280dp. In the [ColumnScope] `content`
+ * lambda of the [Card] we compose:
+ *  - a [Column] that contains an [Image] whose `painter` is the [Painter] returned by [painterResource]
+ *  for the drawable whose resource `id` is the [Post.imageId] of our [Post] parameter [post], whose
+ *  `contentScale` argument is [ContentScale.Crop] (Scale the source uniformly (maintaining the
+ *  source's aspect ratio) so that both dimensions (width and height) of the source will be equal
+ *  to or larger than the corresponding dimension of the destination), and whose `modifier` argument
+ *  is a [Modifier.height] that sets its `height` to 100.dp with a [Modifier.fillMaxWidth] that has
+ *  it fill its entire incoming width constraint.
+ *
+ * @param post the [Post] whose information we are to display in a clickable [Card].
+ * @param navigateToArticle a lambda which when called with the [Post.id] property of a [Post] will
+ * navigate to the article screen to have it display the [Post].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller `PostListPopularSection` does not pass us one so the empty, default, or
+ * starter [Modifier] that contains no elements is used.
  */
 @Composable
 fun PostCardPopular(

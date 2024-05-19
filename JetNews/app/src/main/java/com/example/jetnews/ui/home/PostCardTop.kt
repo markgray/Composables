@@ -39,11 +39,16 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.posts
+import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Post
+import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.CompletePreviews
@@ -62,7 +67,27 @@ import com.example.jetnews.utils.CompletePreviews
  * [Shapes.medium] of our custom [MaterialTheme.shapes] (a [RoundedCornerShape] whose `size` is 4.dp).
  * The children Composables of the [Column] are:
  *  - an [Image] whose `painter` argument is the [Painter] returned by [painterResource] for the
- *  drawable whose resource ID is the [Post.imageId] property of our [Post] parameter [post]
+ *  drawable whose resource ID is the [Post.imageId] property of our [Post] parameter [post], whose
+ *  `modifier` argument is our [Modifier] variable `imageModifier`, and whose `contentScale` argument
+ *  is [ContentScale.Crop] (Scale the source uniformly (maintaining the source's aspect ratio) so
+ *  that both dimensions (width and height) of the source will be equal to or larger than the
+ *  corresponding dimension of the destination).
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to 16.dp
+ *  - a [Text] whose `text` is the [Post.title] of our [Post] parameter [post], whose [TextStyle]
+ *  `style` argument is the [Typography.titleLarge] of our [Typography] variable `typography`
+ *  (`fontSize` = 22.sp, `lineHeight` = 28.sp, `letterSpacing` = 0.sp, `lineBreak` = [LineBreak.Heading]),
+ *  and whose `modifier` argument is a [Modifier.padding] that adds 8.dp to its `bottom`
+ *  - a [Text] whose `text` us the [PostAuthor.name] of the [Metadata.author] of the [Post.metadata]
+ *  of our [Post] parameter [post], whose [TextStyle] `style` argument is the [Typography.labelLarge]
+ *  of our [Typography] variable `typography` (`fontSize` = 14.sp, `lineHeight` = 20.sp, `letterSpacing`
+ *  = 0.1.sp, `fontWeight` = [FontWeight.Medium]), and whose `modifier` argument is a [Modifier.padding]
+ *  that adds 4.dp to its `bottom`
+ *  - a [Text] whose `text` is the [String] that is formatted using the [String] whose resource `id`
+ *  is [R.string.home_post_min_read] ("%1$s - %2$d min read") using [Metadata.date] of the
+ *  [Post.metadata] of our [Post] parameter [post] and the [Metadata.readTimeMinutes] of the
+ *  [Post.metadata] of our [Post] parameter [post] as the `formatArgs`, and whose [TextStyle] `style`
+ *  argument is the [Typography.bodySmall] of our [Typography] variable `typography` (`fontSize` =
+ *  12.sp, `lineHeight` = 16.sp, `letterSpacing` = 0.4.sp, `lineBreak` = [LineBreak.Paragraph])
  *
  * @param post the [Post] whose [Post.imageId], [Post.title], and [Post.metadata] information we are
  * to display.
@@ -89,7 +114,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
             modifier = imageModifier,
             contentScale = ContentScale.Crop
         )
-        Spacer(Modifier.height(height = 16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
 
         Text(
             text = post.title,
