@@ -31,12 +31,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -48,6 +51,7 @@ import com.example.jetnews.data.posts.impl.post2
 import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.data.posts.impl.post4
 import com.example.jetnews.data.posts.impl.post5
+import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.model.PostsFeed
@@ -61,14 +65,36 @@ import com.example.jetnews.ui.theme.JetnewsTheme
  * [post], whose `shape` argument is the [Shapes.medium] of our custom [MaterialTheme.shapes] (which
  * is a [RoundedCornerShape] whose `size` is 4.dp), and whose `modifier` argument chains a [Modifier.width]
  * to our [Modifier] parameter [modifier] that sets its width to 280dp. In the [ColumnScope] `content`
- * lambda of the [Card] we compose:
+ * lambda of the [Card] we compose: *
  *  - a [Column] that contains an [Image] whose `painter` is the [Painter] returned by [painterResource]
  *  for the drawable whose resource `id` is the [Post.imageId] of our [Post] parameter [post], whose
  *  `contentScale` argument is [ContentScale.Crop] (Scale the source uniformly (maintaining the
  *  source's aspect ratio) so that both dimensions (width and height) of the source will be equal
  *  to or larger than the corresponding dimension of the destination), and whose `modifier` argument
  *  is a [Modifier.height] that sets its `height` to 100.dp with a [Modifier.fillMaxWidth] that has
- *  it fill its entire incoming width constraint.
+ *  it fill its entire incoming width constraint chained to that.
+ *  - a [Column] whose `modifier` argument is a [Modifier.padding] that adds 16.dp to `all` sides,
+ *  and the [ColumnScope] `content` lambda argument composes:
+ *  - a [Text] whose `text` argument is the [Post.title] of our [Post] parameter [post], whose [TextStyle]
+ *  `style` argument is the [Typography.headlineSmall] of our custom [MaterialTheme.typography]
+ *  (`fontSize` = 24.sp, `lineHeight` = 32.sp, `letterSpacing` = 0.sp, `lineBreak` = [LineBreak.Heading]),
+ *  whose `maxLines` argument is 2 (maximum number of lines for the text to span), and the `overflow`
+ *  argument is [TextOverflow.Ellipsis] (Use an ellipsis to indicate that the text has overflowed.).
+ *  - a [Spacer] whose `modifier` argument is a [ColumnScope.weight] whose `weight` is 1f causing it
+ *  to take up all the height remaining in the [Column] once its unweighted siblings have been measured
+ *  and placed.
+ *  - a [Text] whose text is the [PostAuthor.name] of the [Metadata.author] of the [Post.metadata]
+ *  of our [Post] parameter [post], whose `maxLines` argument is 1 (maximum number of lines for the
+ *  text to span), whose `overflow` argument is [TextOverflow.Ellipsis] (Use an ellipsis to indicate
+ *  that the text has overflowed), and whose [TextStyle] style argument is the [Typography.bodyMedium]
+ *  of our custom [MaterialTheme.typography] (`fontSize` = 14.sp, `lineHeight` = 20.sp, `letterSpacing`
+ *  = 0.25.sp, `lineBreak` = [LineBreak.Paragraph]).
+ *  - a [Text] whose `text` is the [String] that is formatted using the [String] whose resource id
+ *  is [R.string.home_post_min_read] ("%1$s - %2$d min read") using [Metadata.date] of the [Post.metadata]
+ *  of our [Post] parameter [post] and the [Metadata.readTimeMinutes] of the [Post.metadata] of our
+ *  [Post] parameter [post] as the `formatArgs`, and whose [TextStyle] `style` argument is the
+ *  [Typography.bodySmall] of our custom [MaterialTheme.typography] (`fontSize` = 12.sp, `lineHeight`
+ *  = 16.sp, `letterSpacing` = 0.4.sp, `lineBreak` = [LineBreak.Paragraph]).
  *
  * @param post the [Post] whose information we are to display in a clickable [Card].
  * @param navigateToArticle a lambda which when called with the [Post.id] property of a [Post] will
@@ -130,7 +156,7 @@ fun PostCardPopular(
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of our [PostCardPopular]
  */
 @Preview(name = "Regular colors")
 @Preview(name = "Dark colors", uiMode = UI_MODE_NIGHT_YES)
@@ -146,7 +172,7 @@ fun PreviewPostCardPopular(
 }
 
 /**
- * TODO: Add kdoc
+ * Preview of our [PostCardPopular] with a [Post] with very long [Post.title] and [PostAuthor.name]
  */
 @Preview(name = "Regular colors, long text")
 @Composable

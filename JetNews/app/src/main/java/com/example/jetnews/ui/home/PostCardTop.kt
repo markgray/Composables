@@ -77,7 +77,7 @@ import com.example.jetnews.utils.CompletePreviews
  *  `style` argument is the [Typography.titleLarge] of our [Typography] variable `typography`
  *  (`fontSize` = 22.sp, `lineHeight` = 28.sp, `letterSpacing` = 0.sp, `lineBreak` = [LineBreak.Heading]),
  *  and whose `modifier` argument is a [Modifier.padding] that adds 8.dp to its `bottom`
- *  - a [Text] whose `text` us the [PostAuthor.name] of the [Metadata.author] of the [Post.metadata]
+ *  - a [Text] whose `text` is the [PostAuthor.name] of the [Metadata.author] of the [Post.metadata]
  *  of our [Post] parameter [post], whose [TextStyle] `style` argument is the [Typography.labelLarge]
  *  of our [Typography] variable `typography` (`fontSize` = 14.sp, `lineHeight` = 20.sp, `letterSpacing`
  *  = 0.1.sp, `fontWeight` = [FontWeight.Medium]), and whose `modifier` argument is a [Modifier.padding]

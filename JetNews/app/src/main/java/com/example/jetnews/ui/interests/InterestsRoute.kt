@@ -16,19 +16,27 @@
 
 package com.example.jetnews.ui.interests
 
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 
 /**
- * Stateful composable that displays the Navigation route for the Interests screen.
+ * Stateful composable that displays the Navigation route for the Interests screen. We start by
+ * initializing and remembering  our [List] of [TabContent] variable `val tabContent` to the value
+ * returned from calling [rememberTabContent] with its `interestsViewModel` argument our
+ * [InterestsViewModel] parameter [interestsViewModel].
  *
- * @param interestsViewModel ViewModel that handles the business logic of this screen
- * @param isExpandedScreen (state) true if the screen is expanded
- * @param openDrawer (event) request opening the app drawer
- * @param snackbarHostState (state) state for screen snackbar host
+ * @param interestsViewModel the [InterestsViewModel] ViewModel that handles the business logic of
+ * this screen.
+ * @param isExpandedScreen (state) `true` if the screen is expanded ie. its [WindowWidthSizeClass]
+ * is [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large
+ * unfolded inner displays in landscape).
+ * @param openDrawer (event) request opening the [ModalNavigationDrawer] app drawer
+ * @param snackbarHostState (state) [SnackbarHostState] state for screen snackbar host
  */
 @Composable
 fun InterestsRoute(
