@@ -54,6 +54,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -84,37 +85,49 @@ import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.ui.theme.JetnewsTheme
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
 import kotlin.math.max
 
 /**
- * TODO: Add kdoc
+ * Used to provide a title [String] for the type of [Sections] that a [TabContent] displays.
  *
- * @param titleResId TODO: Add kdoc
+ * @param titleResId resource ID of a [String] to use as the title of a [Tab] in the
+ * [InterestsTabRowContent] Composable
  */
 enum class Sections(@StringRes val titleResId: Int) {
     /**
-     *  TODO: Add kdoc
+     * Used by the [TabContent] that displays the [List] of [InterestSection] of the
+     * [InterestsUiState.topics], and the [Set] of [TopicSelection] collected as [State] from
+     * the [StateFlow] of [Set] of [TopicSelection] of the [InterestsViewModel.selectedTopics]
+     * property in a [TabWithSections]. The `titleResId` property is the resource ID
+     * [R.string.interests_section_topics] ("Topics")
      */
     Topics(titleResId = R.string.interests_section_topics),
 
     /**
-     * TODO: Add kdoc
+     * Used by the [TabContent] that displays the [List] of [String] of the
+     * [InterestsUiState.people], and the [Set] of [String] collected as [State] from
+     * the [StateFlow] of [Set] of [String] of the [InterestsViewModel.selectedPeople]
+     * property in a [TabWithTopics]. The `titleResId` property is the resource ID
+     * [R.string.interests_section_people] ("People")
      */
     People(titleResId = R.string.interests_section_people),
 
     /**
-     * TODO: Add kdoc
+     * Used by the [TabContent] that displays the [List] of [String] of the
+     * [InterestsUiState.publications], and the [Set] of [String] collected as [State] from
+     * the [StateFlow] of [Set] of [String] of the [InterestsViewModel.selectedPublications]
+     * property in a [TabWithTopics]. The `titleResId` property is the resource ID
+     * [R.string.interests_section_publications] ("Publications")
      */
     Publications(titleResId = R.string.interests_section_publications)
 }
 
 /**
- * TabContent for a single tab of the screen.
- *
- * This is intended to encapsulate a tab & it's content as a single object. It was added to avoid
- * passing several parameters per-tab from the stateful composable to the composable that displays
- * the current tab.
+ * TabContent for a single tab of the screen. This is intended to encapsulate a tab & it's content
+ * as a single object. It was added to avoid passing several parameters per-tab from the stateful
+ * composable to the composable that displays the current tab.
  *
  * @param section the tab that this content is for
  * @param content content of the tab, a composable that describes the content
