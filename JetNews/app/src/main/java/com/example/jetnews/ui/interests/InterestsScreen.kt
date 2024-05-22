@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -40,6 +41,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -53,6 +55,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -63,6 +66,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.Placeable
@@ -71,6 +75,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
@@ -136,7 +142,39 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 
 /**
  * Stateless interest screen displays the tabs specified in [tabContent] adapting the UI to
- * different screen sizes.
+ * different screen sizes. We start by initializing our [Context] variable `val context` to the
+ * `current` [LocalContext]. Then our root Composable is a [Scaffold] whose arguments are:
+ *  - `snackbarHost` is a lambda which composes a [SnackbarHost] whose `hostState` argument is our
+ *  [SnackbarHostState] parameter [snackbarHostState].
+ *  - `topBar` is a lambda that composes a [CenterAlignedTopAppBar] whose `title` argument is a
+ *  lambda that composes a [Text] whose `text` argument is the [String] with resource ID
+ *  [R.string.cd_interests] ("Interests"), using as its [TextStyle] `style` argument the
+ *  [Typography.titleLarge] of our custom [MaterialTheme.typography] (`fontSize` = 22.sp, `lineHeight`
+ *  = 28.sp, `letterSpacing` = 0.sp, and `lineBreak` = [LineBreak.Heading]). The `navigationIcon`
+ *  argument of the [CenterAlignedTopAppBar] is defined only is our [Boolean] parameter [isExpandedScreen]
+ *  is `false` (a phone instead of a table) in which case it is an [IconButton] whose `onClick` argument
+ *  is our lambda parameter [openDrawer], and whose `content` lambda argument composes an [Icon] whose
+ *  [Painter] argument `painter` causes it to render the vector drawable whose resource ID is
+ *  [R.drawable.ic_jetnews_logo] (a "greater than" character followed by an "underline" character).
+ *  The `contentDescription` argument of the [Icon] is the [String] with resource ID
+ *  [R.string.cd_open_navigation_drawer] ("Open navigation drawer"), and its [Color] `tint` argument
+ *  is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme]. The `actions` argument of
+ *  the [CenterAlignedTopAppBar] is a [RowScope] lambda that composes an [IconButton] whose `onClick`
+ *  argument is a lambda which pops ups a [Toast] with the message "Search is not yet implemented in
+ *  this configuration". The `content` lambda argument of the [IconButton] composes an [Icon] whose
+ *  `imageVector` argument is the [ImageVector] drawn by [Icons.Filled.Search] (a stylized magnifying
+ *  glass), and its `contentDescription` argument is the [String] whose resource ID is
+ *  [R.string.cd_search] ("Search").
+ *
+ * The `content` lambda argument of the [Scaffold] accepts the [PaddingValues] passed the lambda as
+ * variable `val innerPadding` and uses it to initialize its [Modifier] variable `val screenModifier`
+ * to a [Modifier.padding] whose `paddingValues` argument is that `innerPadding`. Its root Composable
+ * is an [InterestScreenContent] whose arguments are:
+ *  - `currentSection` is our [Sections] parameter [currentSection]
+ *  - `isExpandedScreen` is our [Boolean] parameter [isExpandedScreen]
+ *  - `updateSection` is our lambda taking a [Sections] parameter [onTabChange]
+ *  - `tabContent` is our [List] of [TabContent] parameter [tabContent]
+ *  - `modifier` is our [Modifier] variable `screenModifier`
  *
  * @param tabContent (slot) the tabs and their content to display on this screen, must be a
  * non-empty list, tabs are displayed in the order specified by this list
@@ -212,7 +250,12 @@ fun InterestsScreen(
 
 /**
  * Remembers the content for each tab on the Interests screen
- * gathering application data from [InterestsViewModel]
+ * gathering application data from [InterestsViewModel] parameter [interestsViewModel]
+ *
+ * @param interestsViewModel the [InterestsViewModel] instance being used by the app
+ * @return a [List] of the three [TabContent] (tab `section` names [Sections.Topics], [Sections.People]
+ * and [Sections.Publications]) that we construct from data that we collect from the various fields
+ * of our [InterestsViewModel] parameter [interestsViewModel] as they are emitted.
  */
 @Composable
 fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent> {
