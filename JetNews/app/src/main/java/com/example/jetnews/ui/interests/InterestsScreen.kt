@@ -249,8 +249,54 @@ fun InterestsScreen(
 }
 
 /**
- * Remembers the content for each tab on the Interests screen
- * gathering application data from [InterestsViewModel] parameter [interestsViewModel]
+ * Remembers the content for each tab on the Interests screen gathering application data from
+ * [InterestsViewModel] parameter [interestsViewModel]. We start by initializing our [State] wrapped
+ * [InterestsUiState] variable `val uiState` by using the [StateFlow.collectAsStateWithLifecycle]
+ * extension function on the [StateFlow] wrapped [InterestsUiState] property [InterestsViewModel.uiState]
+ * of our [InterestsViewModel] parameter [interestsViewModel] (it will get updated every time that
+ * the [InterestsViewModel] emits a new value causing the recomposition of any Composable that uses
+ * it). Then we proceed to the three [TabContent] that we return in a [List]:
+ *  - `val topicsSection` is a [TabContent] whose `section` is [Sections.Topics] ("Topics") and in
+ *  its `content` Composable lambda argument we initialize our [State] wrapped [Set] of
+ *  [TopicSelection] variable `val selectedTopics` by using the [StateFlow.collectAsStateWithLifecycle]
+ *  extension function on the [StateFlow] wrapped [Set] of [TopicSelection] property
+ *  [InterestsViewModel.selectedTopics] of our [InterestsViewModel] parameter [interestsViewModel]
+ *  (it will get updated every time that the [InterestsViewModel] emits a new value causing the
+ *  recomposition of our [TabWithSections] Composable since it is used as its `selectedTopics`
+ *  argument). Our root Composable is a [TabWithSections] whose `topics` argument is the
+ *  [InterestsUiState.topics] property of our [State] wrapped [InterestsUiState] variable `uiState`,
+ *  whose `selectedTopics` argument is our [State] wrapped [Set] of [TopicSelection] variable
+ *  `selectedTopics`, and whose `onTopicSelect` is a lambda that calls the
+ *  [InterestsViewModel.toggleTopicSelection] method of our [InterestsViewModel] parameter
+ *  [interestsViewModel] with the [TopicSelection] passed it.
+ *  - `val peopleSection` is a [TabContent] whose `section` is [Sections.People] ("People") and in
+ *  its `content` Composable lambda argument we initialize our [State] wrapped [Set] of [String]
+ *  variable `val selectedPeople` by using the [StateFlow.collectAsStateWithLifecycle] extension
+ *  function on the [StateFlow] wrapped [Set] of [String] property [InterestsViewModel.selectedPeople]
+ *  of our [InterestsViewModel] parameter [interestsViewModel] (it will get updated every time that
+ *  the [InterestsViewModel] emits a new value causing the recomposition of our [TabWithTopics]
+ *  Composable since it is used as its `selectedTopics` argument). Our root Composable is a [TabWithTopics]
+ *  whose `topics` argument is the [InterestsUiState.people] property of our [State] wrapped
+ *  [InterestsUiState] variable `uiState`, whose `selectedTopics` argument is our [State] wrapped
+ *  [Set] of [String] variable `selectedPeople`, and whose `onTopicSelect` is a lambda that calls the
+ *  [InterestsViewModel.togglePersonSelected] method of our [InterestsViewModel] parameter
+ *  [interestsViewModel] with the [String] passed it.
+ *  - `val publicationSection` is a [TabContent] whose `section` is [Sections.Publications]
+ *  ("Publications") and in its `content` Composable lambda argument we initialize our [State]
+ *  wrapped [Set] of [String] variable `val selectedPublications` by using the
+ *  [StateFlow.collectAsStateWithLifecycle] extension function on the [StateFlow] wrapped [Set] of
+ *  [String] property [InterestsViewModel.selectedPublications] of our [InterestsViewModel] parameter
+ *  [interestsViewModel] (it will get updated every time that the [InterestsViewModel] emits a new
+ *  value causing the recomposition of our [TabWithTopics]  Composable since it is used as its
+ *  `selectedTopics` argument). Our root Composable is a [TabWithTopics] whose `topics` argument is
+ *  the [InterestsUiState.publications] property of our [State] wrapped [InterestsUiState] variable
+ *  `uiState`, whose `selectedTopics` argument is our [State] wrapped [Set] of [String] variable
+ *  `selectedPublications`, and whose `onTopicSelect` is a lambda that calls the
+ *  [InterestsViewModel.togglePublicationSelected] method of our [InterestsViewModel] parameter
+ *  [interestsViewModel] with the [String] passed it.
+ *
+ * Finally we return a [List] of [TabContent] containing our variables `topicsSection`, `peopleSection`
+ * and `publicationSection` to the caller.
  *
  * @param interestsViewModel the [InterestsViewModel] instance being used by the app
  * @return a [List] of the three [TabContent] (tab `section` names [Sections.Topics], [Sections.People]
