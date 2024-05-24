@@ -23,6 +23,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -344,13 +345,32 @@ fun rememberTabContent(interestsViewModel: InterestsViewModel): List<TabContent>
 }
 
 /**
- * Displays a tab row with [currentSection] selected and the body of the corresponding [tabContent].
+ * Displays an [InterestsTabRow] tab row of all the [List] of [TabContent] parameter [tabContent]
+ * with [Sections] parameter [currentSection] selected and the [TabContent.content] body of that
+ * selected [TabContent]. We start by initializing our [Int] variable `val selectedTabIndex` by
+ * finding the index of the first [TabContent] in the [List] of [TabContent] parameter [tabContent]
+ * whose [TabContent.section] is equal to our [Sections] parameter [currentSection]. Then our root
+ * Composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier]. In the
+ * [ColumnScope] `content` lambda argument of the [Column] we compose:
+ *  - an [InterestsTabRow] whose `selectedTabIndex` argument is our [Int] variable `selectedTabIndex`,
+ *  whose `updateSection` argument is our lambda parameter [updateSection], whose `tabContent` argument
+ *  is our [List] of [TabContent] parameter [tabContent], and whose `isExpandedScreen` argument is
+ *  our [Boolean] parameter [isExpandedScreen].
+ *  - a [HorizontalDivider] whose [Color] argument `color` is a copy of the [ColorScheme.onSurface]
+ *  of our custom [MaterialTheme.colorScheme] with its `alpha` set to 0.1f
+ *  -  a [Box] whose `modifier` argument is a [ColumnScope.weight] of `weight` 1f causing it to take
+ *  up all remaining space once its unweighted siblings are measured and placed. The `content` of
+ *  the [Box] composes the [TabContent.content] of the [TabContent] at index `selectedTabIndex` in
+ *  our [List] of [TabContent] parameter [tabContent].
  *
  * @param currentSection (state) the tab that is currently selected
  * @param isExpandedScreen (state) whether or not the screen is expanded
  * @param updateSection (event) request a change in tab selection
  * @param tabContent (slot) tabs and their content to display, must be a non-empty list, tabs are
  * displayed in the order of this list
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller passes us a [Modifier.padding] that adds the [PaddingValues] that [Scaffold]
+ * passes its `content` lambda argument (us) to our padding.
  */
 @Composable
 private fun InterestScreenContent(
@@ -379,7 +399,11 @@ private fun InterestScreenContent(
 }
 
 /**
- * Modifier for UI containers that show interests items
+ * [Modifier] for UI containers that show interests items. To a [Modifier.fillMaxWidth] that causes
+ * the Composable using the [Modifier] to occupy the entire incoming width constraint, is chained a
+ * [Modifier.wrapContentWidth] whose `align` argument of [Alignment.CenterHorizontally] causes the
+ * content to measure at its desired width without regard for the incoming measurement minimum width
+ * constraint centering it horizontally.
  */
 private val tabContainerModifier: Modifier = Modifier
     .fillMaxWidth()
