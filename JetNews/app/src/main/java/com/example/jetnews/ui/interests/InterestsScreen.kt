@@ -77,6 +77,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -410,7 +411,16 @@ private val tabContainerModifier: Modifier = Modifier
     .wrapContentWidth(align = Alignment.CenterHorizontally)
 
 /**
- * Display a simple list of topics
+ * Display a simple list of topics. Our root Composable is an [InterestsAdaptiveContentLayout] whose
+ * `topPadding` argument is 16.dp (padding that [InterestsAdaptiveContentLayout] adds to the top y
+ * position that it places its children at), whose `modifier` argument is a [Modifier.verticalScroll]
+ * chained to our [Modifier] variable [tabContainerModifier] (modifies any element using the [Modifier]
+ *  to allow it to scroll vertically when height of the content is bigger than max constraints allow).
+ *  The `content` Composable lambda argument loops through each of the `var topic` [String] in our
+ *  [List] of [String] parameter [topics] composing a [TopicItem] whose `itemTitle` argument is that
+ *  `topic` [String], whose `selected` [Boolean] argument is `true` if that `topic` is in our [Set]
+ *  of [String] parameter [selectedTopics], and whose `onToggle` argument is a lambda that calls our
+ *  lambda parameter [onTopicSelect] with the `topic` [String].
  *
  * @param topics (state) topics to display
  * @param selectedTopics (state) currently selected topics
@@ -437,7 +447,26 @@ private fun TabWithTopics(
 }
 
 /**
- * Display a sectioned list of topics
+ * Display a sectioned list of topics. Our root Composable is a [Column] `modifier` argument is a
+ * [Modifier.verticalScroll] chained to our [Modifier] variable [tabContainerModifier] (modifies it
+ * to allow it to scroll vertically when height of the content is bigger than max constraints allow).
+ * In the [ColumnScope] `content` lambda argument we loop though each of the [InterestSection] in
+ * our [List] of [InterestSection] using destructuring to initialize [String] variable `section` to
+ * the [InterestSection.title] and to initialize [List] of [String] variable `topics` to the its
+ * [InterestSection.interests] property. We then compose a [Text] whose `text` argument is the current
+ * value of `section`, whose `modifier` argument is a [Modifier.padding] that adds 16.dp to all sides,
+ * with a [Modifier.semantics] chained to that which marks the [Text] as a heading for accessibility,
+ * and whose [TextStyle] `style` argument is the [Typography.titleMedium] of our custom
+ * [MaterialTheme.typography] (`fontSize` = 16.sp, `lineHeight` = 24.sp, `letterSpacing` = 0.15.sp,
+ * `fontWeight` = [FontWeight.Medium], and `lineBreak` = [LineBreak.Heading]). This is followed by
+ * an [InterestsAdaptiveContentLayout] in whose Composable `content` lambda we loop through each of
+ * the `topic` [String] in the [InterestSection.interests] `topics` [List] of [String] composing an
+ * [TopicItem] whose `itemTitle` is the current `topic` [String], whose `selected` argument is `true`
+ * if our [Set] of [TopicSelection] parmeter [selectedTopics] contains a [TopicSelection] constructed
+ * from the `section` [String] of the outside [forEach] loop and the `topic` [String] of the inside
+ * [forEach] loop, and whose `onToggle` argument is a lambda which calls our [onTopicSelect] lambda
+ * parameter with a [TopicSelection] constructed from the `section` [String] of the outside [forEach]
+ * loop and the `topic` [String] of the inside [forEach] loop.
  *
  * @param sections (state) topics to display, grouped by sections
  * @param selectedTopics (state) currently selected topics
