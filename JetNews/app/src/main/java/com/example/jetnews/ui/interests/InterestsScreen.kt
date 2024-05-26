@@ -501,11 +501,41 @@ private fun TabWithSections(
 }
 
 /**
- * Display a full-width topic item
+ * Display a full-width topic item. Our root Composable is a [Column] whose `modifier` argument is a
+ * [Modifier.padding] that adds 16.dp to the `horizontal` sides of the [Column]. In its [ColumnScope]
+ * `content` lambda argument we have a [Row] whose `modifier` argument chains a [Modifier.toggleable]
+ * to our [Modifier] parameter [modifier] whose `value` argument is our [Boolean] parameter [selected],
+ * and whose `onValueChange` argument is a lambda that calls our [onToggle] lambda parameter. The
+ * `verticalAlignment` argument of the [Row] is [Alignment.CenterVertically] to center its children
+ * vertically. In the [RowScope] `content` lambda argument of the [Row]:
+ *  - we start by initializing our [Painter] variable `val image` to a [Painter] created to draw the
+ *  drawable with resource ID [R.drawable.placeholder_1_1].
+ *  - Then we compose an [Image] whose `painter` argument is our [Painter] variable `image`, and whose
+ *  `modifier` argument is a [Modifier.size] that sets its size to 56.dp, with a [Modifier.clip] that
+ *  clips the [Image] `shape` to a  [RoundedCornerShape] with `size` 4.dp
+ *  - next in the [Row] is a [Text] whose `text` argument is our [String] parameter [itemTitle], whose
+ *  `modifier` argument is a [Modifier.padding] that adds 16.dp padding to all sides with a
+ *  [RowScope.weight] of `weight` 1f chained to that that causes the [Text] to occupy all remaining
+ *  width of the [Row] once its siblings have been measured and placed, and whose [TextStyle] `style`
+ *  argument is the [Typography.titleMedium] of our custom [MaterialTheme.typography] (`fontSize`
+ *  = 16.sp, `lineHeight` = 24.sp, `letterSpacing` = 0.15.sp, `fontWeight` = [FontWeight.Medium], and
+ *  `lineBreak` = [LineBreak.Heading])
+ *  - next in the [Row] is a [Spacer] whose `modifier` argument is a [Modifier.width] that sets its
+ *  `width` to 16.dp
+ *  - last in the [Row] is a [SelectTopicButton] whose `selected` argument is our [Boolean] parameter
+ *  [selected].
+ *
+ * Below the [Row] in the column is a [HorizontalDivider] whose `modifier` argument chains to our
+ * [Modifier] parameter [modifier] a [Modifier.padding] that adds 72.dp padding to the `start`, 8.dp
+ * to the `top` and 8.dp to the `bottom`. The [Color] `color` argument is a copy of the
+ * [ColorScheme.onSurface] of our [MaterialTheme.colorScheme] with its `alpha` set to 0.1f
  *
  * @param itemTitle (state) topic title
  * @param selected (state) is topic currently selected
  * @param onToggle (event) toggle selection for topic
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Neither of our two callers ([TabWithSections] and [TabWithTopics]) pass us any so the
+ * empty, default, or starter [Modifier] that contains no elements is used.
  */
 @Composable
 private fun TopicItem(
@@ -549,6 +579,9 @@ private fun TopicItem(
 
 /**
  * TabRow for the InterestsScreen
+ *
+ * @param selectedTabIndex the index of the currently selected tab
+ * @param updateSection
  */
 @Composable
 private fun InterestsTabRow(
