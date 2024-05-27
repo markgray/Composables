@@ -578,10 +578,29 @@ private fun TopicItem(
 }
 
 /**
- * TabRow for the InterestsScreen
+ * [TabRow] for the [InterestsScreen]. We branch on the value of our [Boolean] parameter
+ * [isExpandedScreen]:
+ *  - `false` (we are running on a phone) we compose a [TabRow] whose `selectedTabIndex` argument is
+ *  our [Int] parameter [selectedTabIndex], and whose [Color] `contentColor` argument is the
+ *  [ColorScheme.primary] of our custom [MaterialTheme.colorScheme]. The `tabs` composable lambda
+ *  argument of the [TabRow] is an [InterestsTabRowContent] whose `selectedTabIndex` argument is our
+ *  [Int] parameter [selectedTabIndex], whose `updateSection` argument is our lambda of [Sections]
+ *  parameter [updateSection], and whose `tabContent` argument is our [List] of [TabContent] parameter
+ *  [tabContent]
+ *  - `true` (we are running on a tablet) we compose a [ScrollableTabRow] whose `selectedTabIndex`
+ *  argument is our [Int] parameter [selectedTabIndex], whose [Color] `contentColor` argument is the
+ *  [ColorScheme.primary] of our custom [MaterialTheme.colorScheme], and whose `edgePadding` argument
+ *  is 0.dp. The `tabs` composable lambda argument of the [TabRow] is an [InterestsTabRowContent]
+ *  whose `selectedTabIndex` argument is our [Int] parameter [selectedTabIndex], whose `updateSection`
+ *  argument is our lambda of [Sections] parameter [updateSection], whose `tabContent` argument is
+ *  our [List] of [TabContent] parameter [tabContent], and whose `modifier` argument is a
+ *  [Modifier.padding] that adds 8.dp to the `horizontal` sides of the [InterestsTabRowContent].
  *
  * @param selectedTabIndex the index of the currently selected tab
- * @param updateSection
+ * @param updateSection a lambda which will cause the UI display the [TabContent] of its [Sections]
+ * argument when called.
+ * @param tabContent the [List] of [TabContent] that is constructed and remembered by [rememberTabContent].
+ * @param isExpandedScreen if `true` the device we are running on is a tablet.
  */
 @Composable
 private fun InterestsTabRow(
@@ -621,6 +640,22 @@ private fun InterestsTabRow(
     }
 }
 
+/**
+ * This composes the [Tab]'s that are displayed in the [InterestsTabRow]. We use [forEachIndexed] to
+ * loop over each of the [TabContent] in our [List] of [TabContent] parameter [tabContent] setting
+ * [Int] variable `index` to the index of the [TabContent] in the [List] and `content` to the
+ * [TabContent]. In the [forEachIndexed] `action` lambda
+ *
+ * @param selectedTabIndex the index of the currently selected [TabContent] in our [List] of
+ * [TabContent] parameter [tabContent].
+ * @param updateSection lambda which when called with a [Sections] will change the currently selected
+ * [TabContent] to the one for that [Sections].
+ * @param tabContent the [List] of [TabContent] that is constructed and remembered by [rememberTabContent].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. When called by [InterestsTabRow] for a table we are passed a [Modifier.padding] that
+ * adds 8.dp to our `horizontal` sides, and when called for a phone we are passed none so the empty,
+ * default, or starter [Modifier] that contains no elements is used.
+ */
 @Composable
 private fun InterestsTabRowContent(
     selectedTabIndex: Int,
