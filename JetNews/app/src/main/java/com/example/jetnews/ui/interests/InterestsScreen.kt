@@ -70,6 +70,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasurePolicy
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -644,7 +646,24 @@ private fun InterestsTabRow(
  * This composes the [Tab]'s that are displayed in the [InterestsTabRow]. We use [forEachIndexed] to
  * loop over each of the [TabContent] in our [List] of [TabContent] parameter [tabContent] setting
  * [Int] variable `index` to the index of the [TabContent] in the [List] and `content` to the
- * [TabContent]. In the [forEachIndexed] `action` lambda
+ * [TabContent]. In the [forEachIndexed] `action` lambda we start by initializing our [Color]
+ * variable `val colorText` to the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme]
+ * if our [Int] parameter [selectedTabIndex] is equal to the current `index` of the [forEachIndexed]
+ * loop (the current [TabContent] `content` is the selected [TabContent]), and if it is not then
+ * to a copy of the [ColorScheme.onSurface] with its `alpha` set to 0.8f. Then we compose a [Tab]
+ * whose `selected` argument is `true` if our [Int] parameter [selectedTabIndex] is equal to the
+ * current `index` of the [forEachIndexed], whose `onClick` is a lambda that calls our lambda
+ * parameter [updateSection] with the [TabContent.section] property of the current [TabContent]
+ * `content`, and whose `modifier` is a [Modifier.heightIn] that sets its minimum height to 48.dp.
+ * In the [ColumnScope] `content` lambda argument of the [Tab] we compose a [Text] whose `text` is
+ * the [String] whose resource `id` is the [Sections.titleResId] propery of the [TabContent.section]
+ * of the current [TabContent] `content` of the [forEachIndexed] loop, whose [Color] `color` argument
+ * is our [Color] variable `color`, whose [TextStyle] `style` argument is the [Typography.titleMedium]
+ * of our custom [MaterialTheme.typography] (`fontSize` = 16.sp, `lineHeight` = 24.sp, `letterSpacing`
+ * = 0.15.sp, `fontWeight` = [FontWeight.Medium], and `lineBreak` = [LineBreak.Heading]), and whose
+ * `modifier` argument chains a [Modifier.paddingFromBaseline] to our [Modifier] parameter [modifier]
+ * that positions the content in the layout such that the distance from the top of the layout to the
+ * baseline of the first line of text in the content is 20.dp
  *
  * @param selectedTabIndex the index of the currently selected [TabContent] in our [List] of
  * [TabContent] parameter [tabContent].
@@ -689,9 +708,28 @@ private fun InterestsTabRowContent(
  *
  * For example: Given a list of items (A, B, C, D, E) and a screen size that allows 2 columns,
  * the items will be displayed on the screen as follows:
- *     A B
- *     C D
- *     E
+ *  - A B
+ *  - C D
+ *  - E
+ *
+ * Our root composable is a [Layout] whose `modifier` argument is our [Modifier] parameter [modifier],
+ * and whose `content` argument is our Composable lambda parameter [content]. In the [MeasurePolicy]
+ * `measurePolicy` [MeasureScope] lambda argument we accept the [List] of [Measurable] passed the
+ * lambda as variable `measurables` and the [Constraints] passed the lambda as `outerConstraints`.
+ *
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [TabWithTopics] passes us a [Modifier.verticalScroll] that permits us to
+ * scroll if we need to, and our caller [TabWithSections] passes us none so the empty, default, or
+ * starter Modifier that contains no elements is used.
+ * @param topPadding the padding to add to the top of our [Layout]. Our caller [TabWithTopics] passes
+ * us 16.dp, but our caller [TabWithSections] passes us none so the default 0.dp is used.
+ * @param itemSpacing spacing to add between our children
+ * @param itemMaxWidth maximum width of our children.
+ * @param multipleColumnsBreakPoint the size of the available incoming [Constraints.maxWidth] of our
+ * [Layout] at we switch from one column to two. This is hard coded to the default 600.dp
+ * @param content a Composable lambda that provides the children composables to be laid out. These
+ * will be [TopicItem] composed for each of the [String]'s in [List] of [String]'s in our case.
  */
 @Composable
 private fun InterestsAdaptiveContentLayout(
