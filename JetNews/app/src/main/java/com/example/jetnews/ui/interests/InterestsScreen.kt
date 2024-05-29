@@ -716,7 +716,47 @@ private fun InterestsTabRowContent(
  * and whose `content` argument is our Composable lambda parameter [content]. In the [MeasurePolicy]
  * `measurePolicy` [MeasureScope] lambda argument we accept the [List] of [Measurable] passed the
  * lambda as variable `measurables` and the [Constraints] passed the lambda as `outerConstraints`.
+ * We initialize our [Int] variable `val multipleColumnsBreakPointPx` to the pixel value of our [Dp]
+ * parameter [multipleColumnsBreakPoint], initialize our [Int] variable `val topPaddingPx` to the
+ * pixel value of our [Dp] parameter [topPadding], initialize our [Int] variable `val itemSpacingPx`
+ * to the pixel value of our [Dp] parameter [itemSpacing], and initialize our [Int] variable
+ * `val itemMaxWidthPx` to the pixel value of our [Dp] parameter [itemMaxWidth]. Next we set our
+ * [Int] variable `val columns` to 1 if the [Constraints.maxWidth] of the [Constraints] passed the
+ * lambda in variable `outerConstraints` is less than our variable `multipleColumnsBreakPointPx`,
+ * or to 2 if it is not (we use this value for the number of columns to display on the screen).
+ * We set our [Int] variable `val itemWidth` to the [Constraints.maxWidth] of the [Constraints] passed
+ * the lambda in variable `outerConstraints` is `columns` is equal to 1 otherwise we initialize our
+ * [Int] variable `val maxWidthWithSpaces` to the [Constraints.maxWidth] of `outerConstraints` minus
+ * the quantity `columns` minus 1 times `itemSpacingPx`, and set `itemWidth` to `maxWidthWithSpaces`
+ * divided by `columns` coerced to be between 0 and `itemMaxWidthPx`. We then initialize our
+ * [Constraints] variable `val itemConstraints` to a copy of `outerConstraints` with its
+ * [Constraints.maxWidth] set to `itemWidth`. We initialize our [IntArray] variable `val rowHeights`
+ * to an [IntArray] whose `size` is the [List.size] of the [List] of [Measurable] passed the lambda
+ * in `measurables` divided by `columns` with 1 added to it (we will use this [IntArray] to keep
+ * track of the height of each row to calculate the layout's final size).
  *
+ * Next we initialize our [List] of [Placeable] variable `val placeables` by using [mapIndexed] to
+ * loop through all the [Measurable] in the [List] of [Measurable] in `measurables` capturing the
+ * `index` that [mapIndexed] passes its `transform` lambda argument in [Int] variable `index` and
+ * the [Measurable] passed in [Measurable] variable `measureable`. In the `tranform` lambda argument
+ * we initialize our [Placeable] variable `val placeable` to the value that the [Measurable.measure]
+ * method returns for `measureable` when called with its `constraints` argument our [Constraints]
+ * variable `itemConstraints`. We calculate the [Int] `row` this [Placeable] will be in by dividing
+ * `index` by `columns` and set the value stored at index `row` in [IntArray] `rowHeights` to the
+ * [max] of its current value and the [Placeable.height] of `placeable`. Finally we return `placeable`
+ * to be added to the [List] of [Placeable] variable `placeable` that [mapIndexed] is producing.
+ *
+ * We calculate the `maxHeight` of the Interests layout to initialize [Int] variable `val layoutHeight`
+ * by summing the values in [IntArray] variable `rowHeights` and adding `topPaddingPx` to that. We
+ * calulate the `maxWidth` of the Interests layout to initialize [Int] variable `val layoutWidth`
+ * by multiplying `itemWidth` times `columns` and adding the quantity `itemSpacingPx` times `columns`
+ * minus 1 to that value.
+ *
+ * Finally we call [MeasureScope.layout] with its `width` argument the [Constraints.constrainWidth]
+ * method of `outerConstraints` called with its `width` argument `layoutWidth`, and its `height`
+ * argument the [Constraints.constrainHeight] method of `outerConstraints` called with its `height`
+ * argument `layoutHeight`. In its [Placeable.PlacementScope] lambda argument we:
+ *  - initialize our [Int] variable `var yPosition` to `topPaddingPx`
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [TabWithTopics] passes us a [Modifier.verticalScroll] that permits us to
@@ -763,10 +803,10 @@ private fun InterestsAdaptiveContentLayout(
         val itemConstraints: Constraints = outerConstraints.copy(maxWidth = itemWidth)
 
         // Keep track of the height of each row to calculate the layout's final size
-        val rowHeights = IntArray(measurables.size / columns + 1)
+        val rowHeights = IntArray(size = measurables.size / columns + 1)
         // Measure elements with their maximum width and keep track of the height
         val placeables: List<Placeable> = measurables.mapIndexed { index: Int, measureable: Measurable ->
-            val placeable: Placeable = measureable.measure(itemConstraints)
+            val placeable: Placeable = measureable.measure(constraints = itemConstraints)
             // Update the height for each row
             val row: Int = index.floorDiv(other = columns)
             rowHeights[row] = max(rowHeights[row], placeable.height)
