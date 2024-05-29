@@ -15,20 +15,20 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.9.24'
+    ext.kotlin_version = "1.9.24"
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.4.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath ("com.android.tools.build:gradle:8.4.1")
+        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '6.7.0'
+    id ("com.diffplug.spotless") version ("6.7.0")
 }
 
 subprojects {
@@ -37,15 +37,15 @@ subprojects {
         mavenCentral()
     }
 
-    apply plugin: 'com.diffplug.spotless'
+    apply plugin: "com.diffplug.spotless"
     spotless {
         kotlin {
-            target '**/*.kt'
+            target ("**/*.kt")
             targetExclude("$layout.buildDir/**/*.kt")
-            targetExclude('bin/**/*.kt')
+            targetExclude("bin/**/*.kt")
 
             ktlint("0.45.2")
-            licenseHeaderFile rootProject.file('spotless/copyright.kt')
+            licenseHeaderFile (rootProject.file("spotless/copyright.kt"))
         }
     }
 }
