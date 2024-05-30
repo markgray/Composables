@@ -757,6 +757,22 @@ private fun InterestsTabRowContent(
  * argument the [Constraints.constrainHeight] method of `outerConstraints` called with its `height`
  * argument `layoutHeight`. In its [Placeable.PlacementScope] lambda argument we:
  *  - initialize our [Int] variable `var yPosition` to `topPaddingPx`
+ *  - we use the [List.chunked] extension function on our [List] of [Placeable] variable `placeables`
+ *  to split it into `columns` [List] of [List]'s (ie. one [List] of [List] for 1 `columns` or two
+ *  [List] of [List] of [Placeable] for 2 `columns`)
+ *  - we then use [forEachIndexed] to loop through the one or two [List] of [List] or [Placeable]
+ *  capturing the index passed the `action` lambda in [Int] variable `rowIndex`, and the [List] of
+ *  [Placeable] in variable `row`.
+ *  - in the `action` lambda of the [forEachIndexed] we initialize our [Int] variable `var xPosition`
+ *  to 0.
+ *  - we then use [forEach] to loop through all of the [Placeable] in [List] of [Placeable] `row`
+ *  capturing the [Placeable] passed the `action` lambda in variable `placeable` and we then call
+ *  the [Placeable.PlacementScope.placeRelative] method on `placeable` with `xPosition` as the `x`
+ *  argument and `yPosition`, after which we add to `xPosition` the [Placeable.width] of `placeable`
+ *  plus `itemSpacingPx`.
+ *  - When done with the `row` [List] of [Placeable] we add to `yPosition` the value of the entry in
+ *  `rowHeights` at index `rowIndex` and loop around for the next [List] of [Placeable] (if there is
+ *  one).
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [TabWithTopics] passes us a [Modifier.verticalScroll] that permits us to
@@ -840,7 +856,7 @@ private fun InterestsAdaptiveContentLayout(
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of the [InterestsScreen] for `isExpandedScreen` argument `false` (a phone)
  */
 @Preview(name = "Interests screen", group = "Interests")
 @Preview(name = "Interests screen (dark)", group = "Interests", uiMode = UI_MODE_NIGHT_YES)
@@ -865,7 +881,7 @@ fun PreviewInterestsScreenDrawer() {
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of the [InterestsScreen] for `isExpandedScreen` argument `true` (a tablet)
  */
 @Preview(name = "Interests screen navrail", group = "Interests", device = Devices.PIXEL_C)
 @Preview(
@@ -896,7 +912,7 @@ private fun PreviewInterestsScreenNavRail() {
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of [TabWithSections] for group "Topics"
  */
 @Preview(name = "Interests screen topics tab", group = "Topics")
 @Preview(name = "Interests screen topics tab (dark)", group = "Topics", uiMode = UI_MODE_NIGHT_YES)
@@ -913,7 +929,7 @@ fun PreviewTopicsTab() {
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of [TabWithSections] for group "People"
  */
 @Preview(name = "Interests screen people tab", group = "People")
 @Preview(name = "Interests screen people tab (dark)", group = "People", uiMode = UI_MODE_NIGHT_YES)
@@ -930,7 +946,7 @@ fun PreviewPeopleTab() {
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of [TabWithSections] for group "Publications"
  */
 @Preview(name = "Interests screen publications tab", group = "Publications")
 @Preview(name = "Interests screen publications tab (dark)", group = "Publications", uiMode = UI_MODE_NIGHT_YES)
@@ -946,6 +962,9 @@ fun PreviewPublicationsTab() {
     }
 }
 
+/**
+ * Returns a fake [List] of [TabContent] to be used for previews.
+ */
 private fun getFakeTabsContent(): List<TabContent> {
     val interestsRepository = FakeInterestsRepository()
     val topicsSection = TabContent(Sections.Topics) {
