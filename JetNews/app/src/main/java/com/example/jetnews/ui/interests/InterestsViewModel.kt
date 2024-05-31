@@ -24,6 +24,7 @@ import com.example.jetnews.data.interests.InterestSection
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.successOr
+import com.example.jetnews.ui.JetnewsDestinations
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,41 +36,48 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
- * UI state for the Interests screen
+ * UI state for the [InterestsScreen] Interests screen
  */
 data class InterestsUiState(
     /**
-     * TODO: Add kdoc
+     * Used by the `TabWithSections` widget for the [TabContent] of the [Sections.Topics] "People"
+     * tab
      */
     val topics: List<InterestSection> = emptyList(),
     /**
-     * TODO: Add kdoc
+     * Used by the `TabWithTopics` widget for the [TabContent] of the [Sections.People] "Topics"
+     * tab
      */
     val people: List<String> = emptyList(),
     /**
-     * TODO: Add kdoc
+     * Used by the `TabWithTopics` widget for the [TabContent] of the [Sections.Publications]
+     * "Publications" tab.
      */
     val publications: List<String> = emptyList(),
     /**
-     * TODO: Add kdoc
+     * Used to simulate network delay [InterestsViewModel.refreshAll] method, but never read.
      */
     val loading: Boolean = false,
 )
 
 /**
- * TODO: Add kdoc
+ * This is used as the [ViewModel] for the [InterestsRoute] that is composed for the `route`
+ * [JetnewsDestinations.INTERESTS_ROUTE]
+ *
+ * @param interestsRepository the [InterestsRepository] we should use to retrieve our data from.
  */
 class InterestsViewModel(
     private val interestsRepository: InterestsRepository
 ) : ViewModel() {
 
     /**
-     * TODO: Add kdoc
+     * The private [MutableStateFlow] wrapped [InterestsUiState] that is exposed to the UI by our
+     * [StateFlow] wrapped [InterestsUiState] property [uiState].
      */
     private val _uiState = MutableStateFlow(value = InterestsUiState(loading = true))
 
     /**
-     * UI state exposed to the UI
+     * Read only UI state exposed to the UI
      */
     val uiState: StateFlow<InterestsUiState> = _uiState.asStateFlow()
 
