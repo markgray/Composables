@@ -16,8 +16,10 @@
 
 package com.example.jetnews.ui.interests
 
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.interests.InterestSection
@@ -25,6 +27,7 @@ import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.TopicSelection
 import com.example.jetnews.data.successOr
 import com.example.jetnews.ui.JetnewsDestinations
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -77,12 +80,16 @@ class InterestsViewModel(
     private val _uiState = MutableStateFlow(value = InterestsUiState(loading = true))
 
     /**
-     * Read only UI state exposed to the UI
+     * Read only UI state exposed to the UI. [rememberTabContent] uses the [collectAsStateWithLifecycle]
+     * extension function on this property to initialize the [State] wrapped [InterestsUiState] that
+     * it uses to keep the [TabContent]'s it creates and remembers updated with the latest data.
      */
     val uiState: StateFlow<InterestsUiState> = _uiState.asStateFlow()
 
     /**
-     * TODO: Add kdoc
+     * The current [StateFlow] wrapped [Set] of selected [TopicSelection] that we keep updated to
+     * the latest value emitted by the [InterestsRepository.observeTopicsSelected] method. It is
+     * collected by [rememberTabContent] for the [TabContent] whose `section` is [Sections.Topics]
      */
     val selectedTopics: StateFlow<Set<TopicSelection>> =
         interestsRepository.observeTopicsSelected().stateIn(
@@ -92,7 +99,9 @@ class InterestsViewModel(
         )
 
     /**
-     * TODO: Add kdoc
+     * The current [StateFlow] wrapped [Set] of selected [String] that we keep updated to the latest
+     * value emitted by the [InterestsRepository.observePeopleSelected] method. It is collected by
+     * [rememberTabContent] for the [TabContent] whose `section` is [Sections.People].
      */
     val selectedPeople: StateFlow<Set<String>> =
         interestsRepository.observePeopleSelected().stateIn(
@@ -102,7 +111,9 @@ class InterestsViewModel(
         )
 
     /**
-     * TODO: Add kdoc
+     * The current [StateFlow] wrapped [Set] of selected [String] that we keep updated to the latest
+     * value emitted by the [InterestsRepository.observePublicationSelected] method. It is collected
+     * by [rememberTabContent] for the [TabContent] whose `section` is [Sections.Publications].
      */
     val selectedPublications: StateFlow<Set<String>> =
         interestsRepository.observePublicationSelected().stateIn(
@@ -116,7 +127,15 @@ class InterestsViewModel(
     }
 
     /**
-     * TODO: Add kdoc
+     * Toggles the presence of our [TopicSelection] parameter [topic] in the [MutableStateFlow] of
+     * [Set] of [TopicSelection] maintained by [InterestsRepository] which we read for our [StateFlow]
+     * of [Set] of [TopicSelection] property [selectedTopics]. We call the [CoroutineScope.launch]
+     * method of our [viewModelScope] to launch a coroutine which calls the
+     * [InterestsRepository.toggleTopicSelection] method of our [interestsRepository] field with its
+     * `topic` argument our [TopicSelection] parameter [topic].
+     *
+     * @param topic the [TopicSelection] whose presence in the [Set] of [TopicSelection] maintained
+     * by [InterestsRepository] that we follow for our [selectedTopics] property  we wish to toggle.
      */
     fun toggleTopicSelection(topic: TopicSelection) {
         viewModelScope.launch {
@@ -125,7 +144,15 @@ class InterestsViewModel(
     }
 
     /**
-     * TODO: Add kdoc
+     * Toggles the presence of our [String] parameter [person] in the [MutableStateFlow] of [Set] of
+     * [String] maintained by [InterestsRepository] which we read for our [StateFlow] of [Set] of
+     * [String] property [selectedPeople]. We call the [CoroutineScope.launch] method of our
+     * [viewModelScope] to launch a coroutine which calls the [InterestsRepository.togglePersonSelected]
+     * method of our [interestsRepository] field with its `person` argument our [String] parameter
+     * [person].
+     *
+     * @param person the [String] whose presence in the [Set] of [String] maintained by
+     * [InterestsRepository] that we follow for our [selectedPeople] property we wish to toggle.
      */
     fun togglePersonSelected(person: String) {
         viewModelScope.launch {
@@ -134,7 +161,15 @@ class InterestsViewModel(
     }
 
     /**
-     * TODO: Add kdoc
+     * Toggles the presence of our [String] parameter [publication] in the [MutableStateFlow] of [Set]
+     * of [String] maintained by [InterestsRepository] which we read for our [StateFlow] of [Set] of
+     * [String] property [selectedPublications]. We call the [CoroutineScope.launch] method of our
+     * [viewModelScope] to launch a coroutine which calls the [InterestsRepository.togglePublicationSelected]
+     * method of our [interestsRepository] field with its `publication` argument our [String] parameter
+     * [publication].
+     *
+     * @param publication the [String] whose presence in the [Set] of [String] maintained by
+     * [InterestsRepository] that we follow for our [selectedPublications] property we wish to toggle.
      */
     fun togglePublicationSelected(publication: String) {
         viewModelScope.launch {
