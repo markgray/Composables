@@ -178,7 +178,41 @@ class InterestsViewModel(
     }
 
     /**
-     * Refresh topics, people, and publications
+     * Refresh topics, people, and publications. We begin by updating our [MutableStateFlow] wrapped
+     * [InterestsUiState] property [_uiState] to a copy whose [InterestsUiState.loading] property is
+     * `true`. Then we use the [CoroutineScope.launch] method of our [viewModelScope] to launch a
+     * coroutine which use [async] to fire three repository requests in parallel:
+     *  - [Deferred] wrapped [Result] of [List] of [InterestSection] variable `val topicsDeferred`
+     *  is set to the value returned by [async] for a call to the [InterestsRepository.getTopics]
+     *  method of our [InterestsRepository] field [interestsRepository].
+     *  - [Deferred] wrapped [Result] of [List] of [String] variable `val peopleDeferred` is set to
+     *  the value returned by [async] for a call to the [InterestsRepository.getPeople] method of our
+     *  [InterestsRepository] field [interestsRepository].
+     *  - [Deferred] wrapped [Result] of [List] of [String] variable `val publicationsDeferred` is
+     *  set to  the value returned by [async] for a call to the [InterestsRepository.getPublications]
+     *  method of our [InterestsRepository] field [interestsRepository].
+     *
+     * We then wait all requests to finish:
+     *  - we set our [List] of [InterestSection] variable `val topics` to the value returned by the
+     *  [Deferred.await] method of our [Deferred] wrapped [Result] of [List] of [InterestSection]
+     *  variable `topicsDeferred` using the [Result.successOr] method to fetch either the
+     *  [Result.Success.data] if the value returned is a [Result.Success] or an [emptyList] if it is
+     *  `null`.
+     *  - we set our [List] of [String] variable `val people` to the value returned by the
+     *  [Deferred.await] method of our [Deferred] wrapped [Result] of [List] of [String] variable
+     *  `peopleDeferred` using the [Result.successOr] method to fetch either the [Result.Success.data]
+     *  if the value returned is a [Result.Success] or an [emptyList] if it is `null`.
+     *  - we set our [List] of [String] variable `val publications` to the value returned by the
+     *  [Deferred.await] method of our [Deferred] wrapped [Result] of [List] of [String] variable
+     *  `publicationsDeferred` using the [Result.successOr] method to fetch either the
+     *  [Result.Success.data] if the value returned is a [Result.Success] or an [emptyList] if it is
+     *  `null`.
+     *
+     * We then call the [MutableStateFlow.update] method of [_uiState] to update it to a copy with
+     * its [InterestsUiState.loading] property `false`, its [InterestsUiState.topics] property
+     * our [List] of [InterestSection] variable `topics`, its [InterestsUiState.people] property our
+     * [List] of [String] variable `people`, and its [InterestsUiState.publications] property our
+     * [List] of [String] variable `publications`.
      */
     private fun refreshAll() {
         _uiState.update { it.copy(loading = true) }
@@ -214,7 +248,13 @@ class InterestsViewModel(
      */
     companion object {
         /**
-         * TODO: Add kdoc
+         * Returns a new instance of [InterestsViewModel] using our [InterestsRepository] parameter
+         * [interestsRepository] as the `interestsRepository` argument of the constructor.
+         *
+         * @param interestsRepository the [InterestsRepository] to use when constructing the
+         * [InterestsViewModel] we return.
+         * @return a new instance of [InterestsViewModel] using our [InterestsRepository] parameter
+         * [interestsRepository] as the `interestsRepository` argument of the constructor.
          */
         fun provideFactory(
             interestsRepository: InterestsRepository,

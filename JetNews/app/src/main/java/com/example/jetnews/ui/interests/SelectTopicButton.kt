@@ -37,7 +37,13 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 /**
- * TODO: Add kdoc
+ * Used by [TopicItem] to indicate whether the topic it displays is "selected" of not.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [TopicItem] passes none so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
+ * @param selected if `true` the [TopicItem] that we are decorating is currently "selected" and our
+ * appearance needs to reflect this fact.
  */
 @Composable
 fun SelectTopicButton(
