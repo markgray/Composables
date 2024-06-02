@@ -1,11 +1,11 @@
 plugins {
-    id 'java-library'
+    id ("java-library")
 }
 
 sourceSets {
     main {
         java {
-            srcDirs = ['../../Drag2DCompose/engine/src/main/java']
+            srcDirs = ["../../Drag2DCompose/engine/src/main/java"]
         }
     }
 }

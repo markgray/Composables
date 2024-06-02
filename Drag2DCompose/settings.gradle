@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Drag2DCompose"
-include ':app'
-include ':engine'
-include ':compose-impl'
+include (":app")
+include (":engine")
+include (":compose-impl")
