@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "DiceRollerCompose"
-include ':app'
+include (":app")
