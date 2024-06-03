@@ -1071,7 +1071,8 @@ private fun HomeSearch(
 }
 
 /**
- * Stub helper function to submit a user's search query. It just calls its
+ * Stub helper function to submit a user's search query. It just calls its [onSearchInputChanged]
+ * lambda parameter with the empty [String] and toasts "Search is not yet implemented".
  *
  * @param onSearchInputChanged a lambda we can call to call the [HomeViewModel.onSearchInputChanged]
  * method to have it update the search query to the [String] we pass it (the search [String] is kept

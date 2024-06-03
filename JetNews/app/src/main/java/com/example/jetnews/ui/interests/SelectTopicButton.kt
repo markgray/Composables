@@ -25,19 +25,40 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.ui.theme.JetnewsTheme
 
 /**
- * Used by [TopicItem] to indicate whether the topic it displays is "selected" of not.
+ * Used by [TopicItem] to indicate whether the topic it displays is "selected" or not. We start by
+ * initializing our [ImageVector] variable `val icon` to the [ImageVector] drawn by [Icons.Filled.Done]
+ * if our [Boolean] parameter [selected] is `true` (a check-mark character), or to the [ImageVector]
+ * drawn by [Icons.Filled.Add] if `false` (a "+" character). We initializxe our [Color] variable
+ * `val iconColor` to the [ColorScheme.onPrimary] of our custom [MaterialTheme.colorScheme] if
+ * [selected] is `true` or to the [ColorScheme.primary] if it is `false`. We initialize our [Color]
+ * variable `val borderColor` to the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme]
+ * if [selected] is `true` or the a copy of the [ColorScheme.onSurface] with an `alpha` of 0.1f if
+ * it is `false`. We initialize our [Color] variable `val backgroundColor` to the [ColorScheme.primary]
+ * of our custom [MaterialTheme.colorScheme] if [selected] is `true` or to the [ColorScheme.onPrimary]
+ * if it is `false`.
+ *
+ * Our root Composable is a [Surface] whose `color` argument is our [Color] variable `backgroundColor`,
+ * whose [Shape] `shape` argument is [CircleShape], whose `border` argument is a [BorderStroke] with
+ * `width` of 1.dp and `color` our [Color] variable `borderColor`, and whose `modifier` argument is
+ * chains a [Modifier.size] to our [Modifier] parameter [modifier] that sets its `width` to 36.dp
+ * and its `height` to 36.dp. In its `content` lambda argument it composes an [Image] whose `imageVector`
+ * argument is our [ImageVector] variable `icon`, whose `colorFilter` argument is a [ColorFilter.tint]
+ * with `color` our [Color] variable `iconColor`, and the `modifier` argument of the [Image] is a
+ * [Modifier.padding] that adds 8.dp to all of its sides.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [TopicItem] passes none so the empty, default, or starter [Modifier] that
@@ -82,7 +103,7 @@ fun SelectTopicButton(
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of [SelectTopicButtonPreviewTemplate] with its `selected` argument `false`
  */
 @Preview(name = "Off")
 @Preview(name = "Off (dark)", uiMode = UI_MODE_NIGHT_YES)
@@ -94,7 +115,7 @@ fun SelectTopicButtonPreviewOff() {
 }
 
 /**
- * TODO: Add kdoc
+ * Previews of [SelectTopicButtonPreviewTemplate] with its `selected` argument `true`
  */
 @Preview(name = "On")
 @Preview(name = "On (dark)", uiMode = UI_MODE_NIGHT_YES)
@@ -106,7 +127,11 @@ fun SelectTopicButtonPreviewOn() {
 }
 
 /**
- * TODO: Add kdoc
+ * Our Previews use this to preview [SelectTopicButton] with different values of its [Boolean]
+ * argument [selected] but the same `modifier` argument, a [Modifier.padding] that adds 32.dp
+ * to all sides.
+ *
+ * @param selected the value to use for the `selected` argument of [SelectTopicButton].
  */
 @Composable
 private fun SelectTopicButtonPreviewTemplate(
