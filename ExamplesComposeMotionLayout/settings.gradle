@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "ExamplesComposeMotionLayout"
-include ':app'
+include (":app")
