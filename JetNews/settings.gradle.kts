@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * If the environment variable COMPOSE_SNAPSHOT_ID is non-null the snapshot maven repository at
+ * https://androidx.dev/snapshots/builds/${COMPOSE_SNAPSHOT_ID} is added.
+ */
 val snapshotVersion : String? = System.getenv("COMPOSE_SNAPSHOT_ID")
 
 pluginManagement {
@@ -23,7 +28,9 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
     repositories {
         snapshotVersion?.let {
             println("https://androidx.dev/snapshots/builds/$it/artifacts/repository/")
