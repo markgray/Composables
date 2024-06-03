@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "ExamplesComposeConstraintLayout"
-include ':app'
+include (":app")
