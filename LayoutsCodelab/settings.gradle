@@ -15,4 +15,4 @@
  */
 
 rootProject.name = "LayoutsCodelab"
-include ':app'
+include (":app")
