@@ -15,20 +15,20 @@
  */
 
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
+    id ("com.android.application")
+    id ("kotlin-android")
 }
 
 android {
-    compileSdk 34
+    compileSdk (34)
 
     defaultConfig {
-        applicationId "com.example.compose.rally"
-        minSdkVersion 21
-        targetSdkVersion 34
-        versionCode 1
-        versionName '1.0'
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        applicationId ("com.example.compose.rally")
+        minSdkVersion (21)
+        targetSdkVersion (34)
+        versionCode (1)
+        versionName ("1.0")
+        testInstrumentationRunner ("androidx.test.runner.AndroidJUnitRunner")
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -36,82 +36,82 @@ android {
     signingConfigs {
         // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
         debug {
-            storeFile rootProject.file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile (rootProject.file("debug.keystore"))
+            storePassword ("android")
+            keyAlias ("androiddebugkey")
+            keyPassword ("android")
         }
     }
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
+            signingConfig (signingConfigs.debug)
         }
 
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled (true)
+            proguardFiles (getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = "17"
     }
 
     buildFeatures {
-        compose true
+        compose (true)
 
         // Disable unused AGP features
-        aidl false
-        renderScript false
-        resValues false
-        shaders false
+        aidl (false)
+        renderScript (false)
+        resValues (false)
+        shaders (false)
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "${composeCompilerVersion}"
+        kotlinCompilerExtensionVersion ("${composeCompilerVersion}")
     }
     packagingOptions {
         jniLibs {
-            excludes += ['META-INF/licenses/**']
+            excludes += ["META-INF/licenses/**"]
         }
         resources {
-            excludes += ['META-INF/licenses/**', 'META-INF/AL2.0', 'META-INF/LGPL2.1']
+            excludes += ["META-INF/licenses/**", "META-INF/AL2.0", "META-INF/LGPL2.1"]
         }
     }
 
-    namespace 'com.example.compose.rally'
+    namespace ("com.example.compose.rally")
 }
 
 dependencies {
-    implementation "androidx.appcompat:appcompat:1.6.1"
-    implementation "androidx.core:core-ktx:1.13.1"
-    implementation "com.google.android.material:material:1.12.0"
-    implementation "androidx.fragment:fragment-ktx:1.7.1"
+    implementation ("androidx.appcompat:appcompat:1.7.0")
+    implementation ("androidx.core:core-ktx:1.13.1")
+    implementation ("com.google.android.material:material:1.12.0")
+    implementation ("androidx.fragment:fragment-ktx:1.7.1")
 
     // Compose
-    implementation "androidx.compose.runtime:runtime:1.6.7"
-    implementation "androidx.compose.ui:ui:1.6.7"
-    implementation "androidx.compose.foundation:foundation:1.6.7"
-    implementation "androidx.compose.foundation:foundation-layout:1.6.7"
-    implementation "androidx.compose.material:material:1.6.7"
-    implementation "androidx.compose.runtime:runtime-livedata:1.6.7"
-    implementation "androidx.compose.ui:ui-tooling-preview:1.6.7"
-    implementation "androidx.compose.material:material-icons-extended:1.6.7"
-    implementation "androidx.activity:activity-compose:1.9.0"
-    debugImplementation "androidx.compose.ui:ui-tooling:1.6.7"
+    implementation ("androidx.compose.runtime:runtime:1.6.7")
+    implementation ("androidx.compose.ui:ui:1.6.7")
+    implementation ("androidx.compose.foundation:foundation:1.6.7")
+    implementation ("androidx.compose.foundation:foundation-layout:1.6.7")
+    implementation ("androidx.compose.material:material:1.6.7")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.7")
+    implementation ("androidx.compose.ui:ui-tooling-preview:1.6.7")
+    implementation ("androidx.compose.material:material-icons-extended:1.6.7")
+    implementation ("androidx.activity:activity-compose:1.9.0")
+    debugImplementation ("androidx.compose.ui:ui-tooling:1.6.7")
 
     // Testing dependencies
-    androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.5.1"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
+    androidTestImplementation ("androidx.arch.core:core-testing:2.2.0")
+    androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.5.1")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
 
     // Compose testing dependencies
-    androidTestImplementation "androidx.compose.ui:ui-test:1.6.7"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.6.7"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:1.6.7"
+    androidTestImplementation ("androidx.compose.ui:ui-test:1.6.7")
+    androidTestImplementation ("androidx.compose.ui:ui-test-junit4:1.6.7")
+    debugImplementation ("androidx.compose.ui:ui-test-manifest:1.6.7")
 }
