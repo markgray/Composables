@@ -18,10 +18,10 @@ buildscript {
     // Define versions in a single place
     ext {
         // App dependencies
-        composeCompilerVersion = '1.5.14'
-        gradleVersion = '8.4.1'
-        kotlinVersion = '1.9.24'
-        ktlintVersion = '0.45.2'
+        composeCompilerVersion = "1.5.14"
+        gradleVersion = "8.4.1"
+        kotlinVersion = "1.9.24"
+        ktlintVersion = "0.45.2"
     }
 
     repositories {
@@ -31,15 +31,15 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:$gradleVersion"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7"
-        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.24-1.0.20"
+        classpath ("com.android.tools.build:gradle:$gradleVersion")
+        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath ("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7")
+        classpath ("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.24-1.0.20")
     }
 }
 
 plugins {
-    id 'com.diffplug.spotless' version '6.7.0'
+    id ("com.diffplug.spotless") version "6.7.0"
 }
 
 allprojects {
@@ -52,9 +52,9 @@ allprojects {
 
 spotless {
     kotlin {
-        target "**/*.kt"
+        target ("**/*.kt")
         targetExclude("$layout.buildDir/**/*.kt")
-        targetExclude('bin/**/*.kt')
+        targetExclude("bin/**/*.kt")
         ktlint(ktlintVersion)
     }
 }
