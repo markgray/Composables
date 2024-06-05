@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "TrackMySleepQuality"
-include ':app'
+include (":app")
