@@ -16,17 +16,17 @@
 
 buildscript {
     ext {
-        composeCompiler_version = '1.5.14'
-        kotlin_version = '1.9.24'
-        ktlint_version = '0.45.2'
+        composeCompiler_version = "1.5.14"
+        kotlin_version = "1.9.24"
+        ktlint_version = "0.45.2"
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.4.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath ("com.android.tools.build:gradle:8.4.1")
+        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }
 
