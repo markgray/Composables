@@ -61,6 +61,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -315,6 +316,13 @@ fun UserInput(
                         resetScroll()
                     }
                     textFieldFocusState = focused
+                },
+                onMessageSent = {
+                    onMessageSent(textState.text)
+                    // Reset text field and close keyboard
+                    textState = TextFieldValue()
+                    // Move scroll to bottom
+                    resetScroll()
                 },
                 focusState = textFieldFocusState
             )
@@ -798,6 +806,7 @@ var SemanticsPropertyReceiver.keyboardShownProperty: Boolean by KeyboardShownKey
  * passed down the hierarchy to where it is eventually used in a [Modifier.onFocusChanged] of a
  * [BasicTextField] as the [Modifier]'s `onFocusChanged` lambda argument where it is called with
  * the value of the [FocusState.isFocused] passed the lambda.
+ * @param onMessageSent a lambda to call when the input service emits an IME action.
  * @param focusState the current value of the [MutableState] wrapped [Boolean] variable that our
  * caller saves the focus state of the keyboard in, it is updated using our [onTextFieldFocused]
  * lambda parameter by a [Modifier.onFocusChanged] of a [BasicTextField] further down the hierarchy.
@@ -810,6 +819,7 @@ private fun UserInputText(
     textFieldValue: TextFieldValue,
     keyboardShown: Boolean,
     onTextFieldFocused: (Boolean) -> Unit,
+    onMessageSent: (String) -> Unit,
     focusState: Boolean
 ) {
     val swipeOffset: MutableFloatState = remember { mutableFloatStateOf(value = 0f) }
@@ -838,6 +848,7 @@ private fun UserInputText(
                         onTextFieldFocused = onTextFieldFocused,
                         keyboardType = keyboardType,
                         focusState = focusState,
+                        onMessageSent = onMessageSent,
                         modifier = Modifier.semantics {
                             contentDescription = a11ylabel
                             keyboardShownProperty = keyboardShown
@@ -912,6 +923,7 @@ private fun UserInputText(
  * @param focusState a [MutableState] wrapped [Boolean] variable maintained by our caller which is
  * updated by calling our [onTextFieldFocused] lambda parameter with the new value. If `true` our
  * [BasicTextField] has focus, and the IME will allow the user to type into it.
+ * @param onMessageSent a lambda to call when the input service emits an IME action.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller calls us with a [Modifier.semantics] which adds semantics key/value pairs to
  * our layout node, for the keys `contentDescription` and `keyboardShownProperty`.
@@ -923,6 +935,7 @@ private fun BoxScope.UserInputTextField(
     onTextFieldFocused: (Boolean) -> Unit,
     keyboardType: KeyboardType,
     focusState: Boolean,
+    onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var lastFocusState: Boolean by remember { mutableStateOf(value = false) }
@@ -942,6 +955,9 @@ private fun BoxScope.UserInputTextField(
             keyboardType = keyboardType,
             imeAction = ImeAction.Send
         ),
+        keyboardActions = KeyboardActions {
+            if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
+        },
         maxLines = 1,
         cursorBrush = SolidColor(value = LocalContentColor.current),
         textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current)
