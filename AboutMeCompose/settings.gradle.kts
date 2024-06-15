@@ -1,16 +1,16 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
     repositories {
         google()
         mavenCentral()
     }
 }
 rootProject.name = "AboutMeCompose"
-include ':app'
+include(":app")
