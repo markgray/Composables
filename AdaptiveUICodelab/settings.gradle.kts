@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-buildscript {
-    ext {
-        kotlin_version = "1.9.24"
-        composeCompiler_version = "1.5.14"
-        agp_version = "8.4.1"
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
     }
-}// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    id ("com.android.application") version ("$agp_version") apply (false)
-    id ("com.android.library") version ("$agp_version") apply (false)
-    id ("org.jetbrains.kotlin.android") version ("$kotlin_version") apply (false)
 }
-
-tasks.register("clean", Delete) {
-    delete rootProject.layout.buildDir
+dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
+    repositories {
+        google()
+        mavenCentral()
+    }
 }
+rootProject.name = "Reply"
+include(":app")
