@@ -32,7 +32,7 @@ android {
     }
     signingConfigs {
         // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
-        getByName("debug")  {
+        getByName("debug") {
             storeFile = rootProject.file("debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"
