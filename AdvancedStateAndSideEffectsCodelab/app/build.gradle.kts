@@ -24,23 +24,6 @@ plugins {
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
-/**
- * Reads the contents of local.properties
- */
-fun readProperties(propertiesFile: File): Properties = Properties().apply {
-    propertiesFile.inputStream().use { fis ->
-        load(fis)
-    }
-}
-
-/**
- * Reads the Google maps key that is used in the AndroidManifest
- */
-val properties: Properties = Properties()
-if (rootProject.file("local.properties").exists()) {
-    readProperties(rootProject.file("local.properties"))
-}
-
 android {
     compileSdk = 34
     defaultConfig {
@@ -51,9 +34,7 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.compose.samples.crane.CustomTestRunner"
         vectorDrawables.useSupportLibrary = true
-
-        //noinspection GroovyConstructorNamedArguments
-        manifestPlaceholders["googleMapsKey"] = properties.getProperty("google.maps.key", "")
+        manifestPlaceholders["googleMapsKey"] = Properties().getProperty("google.maps.key", "")
     }
 
     signingConfigs {
