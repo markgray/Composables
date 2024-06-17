@@ -19,17 +19,16 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven { url 'https://androidx.dev/snapshots/builds/8843244/artifacts/repository' }
     }
 }
 dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-        maven { url 'https://androidx.dev/snapshots/builds/8843244/artifacts/repository' }
     }
 }
 rootProject.name = "MySoothe"
-include ':app'
+include(":app")
