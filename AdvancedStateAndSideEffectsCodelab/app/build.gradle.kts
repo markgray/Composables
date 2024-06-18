@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import java.util.Properties
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -34,7 +32,7 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.compose.samples.crane.CustomTestRunner"
         vectorDrawables.useSupportLibrary = true
-        manifestPlaceholders["googleMapsKey"] = Properties().getProperty("google.maps.key", "")
+        manifestPlaceholders["googleMapsKey"] = ""
     }
 
     signingConfigs {
