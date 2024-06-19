@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-tasks.register("clean", Delete) {
-    delete (rootProject.layout.buildDir)
-}
-
-buildscript {
-    ext {
-        compose_compiler_version = "1.5.14"
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
     }
 }
+dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "ComposeMail"
+include(":app")
