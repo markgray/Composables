@@ -6,13 +6,13 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
     repositories {
         google()
         mavenCentral()
     }
 }
 rootProject.name = "Drag2DCompose"
-include (":app")
-include (":engine")
-include (":compose-impl")
+include(":app")
+include(":engine")
+include(":compose-impl")
