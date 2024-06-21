@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    ext {
-        compose_version = "1.5.14"
-    }
-    ext.kotlin_version = "1.9.24"
+pluginManagement {
     repositories {
         google()
         mavenCentral()
-    }
-    dependencies {
-        classpath ('com.android.tools.build:gradle:8.5.0')
-        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        gradlePluginPortal()
     }
 }
-
-allprojects {
+dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
     repositories {
         google()
         mavenCentral()
     }
 }
+rootProject.name = "LayoutsCodelab"
+include(":app")
