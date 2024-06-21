@@ -14,25 +14,9 @@
  * limitations under the License.
  */
 
-buildscript {
-    ext {
-        composeCompiler_version = "1.5.14"
-        kotlin_version = "1.9.24"
-        ktlint_version = "0.45.2"
-    }
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath ("com.android.tools.build:gradle:8.4.1")
-        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-    }
-}
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
+plugins {
+    id("com.android.application") version "8.5.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.24" apply false
 }
