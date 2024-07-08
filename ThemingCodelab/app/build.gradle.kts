@@ -17,6 +17,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -63,8 +64,8 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
     packaging {
         resources {
@@ -107,8 +108,8 @@ dependencies {
     //noinspection GradleDependency TODO: 2.8.0 Requires androidx.compose.ui 1.7.0 still in beta
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
-    androidTestImplementation("androidx.test:rules:1.5.0")
-    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestImplementation("androidx.test:runner:1.6.1")
 }
 
 tasks.withType<Test> {
