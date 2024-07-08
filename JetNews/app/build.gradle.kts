@@ -60,6 +60,7 @@ android {
         }
     }
 
+    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests {
             isReturnDefaultValues = true
@@ -154,5 +155,5 @@ dependencies {
 }
 
 tasks.withType<Test>().configureEach {
-    systemProperties.put("robolectric.logging", "stdout")
+    systemProperties["robolectric.logging"] = "stdout"
 } 
