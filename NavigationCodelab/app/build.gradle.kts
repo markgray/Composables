@@ -17,6 +17,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -61,8 +62,8 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
     packaging {
         jniLibs {
@@ -92,8 +93,8 @@ dependencies {
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     // Compose testing dependencies
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.8")
