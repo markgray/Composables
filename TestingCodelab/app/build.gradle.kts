@@ -17,6 +17,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -67,8 +68,8 @@ android {
         resValues = false
         shaders = false
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
     packaging {
         jniLibs {
@@ -85,7 +86,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.fragment:fragment-ktx:1.8.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.1")
 
     // Compose
     implementation("androidx.compose.runtime:runtime:1.6.8")
@@ -101,8 +102,8 @@ dependencies {
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     // Compose testing dependencies
     androidTestImplementation("androidx.compose.ui:ui-test:1.6.8")
