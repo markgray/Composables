@@ -1152,7 +1152,7 @@ fun PostTopBar(
  *  [R.drawable.ic_jetnews_wordmark], with the `contentDescription` our [String] variable `title`,
  *  the `contentScale` [ContentScale.Inside] (Scales the source to maintain the aspect ratio to be
  *  inside the destination bounds), with the `colorFilter` a [ColorFilter.tint] whose `color`
- *  argument is the [ColorScheme.onBackground] of our custom [MaterialTheme.colorScheme], and the
+ *  argument is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme], and the
  *  `modifier` a [Modifier.fillMaxWidth] that causes the [Image] to occupy its entire incoming width
  *  constraint.
  *  - `navigationIcon` is a lambda that composes an [IconButton] whose `onClick` argument is our
@@ -1196,7 +1196,7 @@ private fun HomeTopAppBar(
                 painter = painterResource(id = R.drawable.ic_jetnews_wordmark),
                 contentDescription = title,
                 contentScale = ContentScale.Inside,
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
                 modifier = Modifier.fillMaxWidth()
             )
         },

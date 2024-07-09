@@ -181,8 +181,8 @@ fun LazyListScope.postContentItems(post: Post) {
  * that constrains its size to be at least 180.dp, to which is chained a [Modifier.fillMaxWidth] which
  * causes users of `imageModifier` to occupy their entire incoming width constraint, and at the end
  * of the chain is added a [Modifier.clip] which clips the composable using the [Modifier] to the
- * [Shape] of the [Shapes.medium] of our custom [MaterialTheme.shapes] (a [RoundedCornerShape] whose
- * `size` is 4.dp). Then our root composable is an [Image] whose [Painter] is created from the drawable
+ * [Shape] of the [Shapes.large] of our custom [MaterialTheme.shapes] (a [RoundedCornerShape] whose
+ * `size` is 8.dp). Then our root composable is an [Image] whose [Painter] is created from the drawable
  * whose resource ID is the [Post.imageId] of [post], whose `modifier` argument is our [Modifier]
  * variable `imageModifier`, and whose `contentScale` argument is [ContentScale.Crop] (scales the
  * source uniformly (maintaining the source's aspect ratio) so that both dimensions (width and
@@ -197,7 +197,7 @@ private fun PostHeaderImage(post: Post) {
     val imageModifier: Modifier = Modifier
         .heightIn(min = 180.dp)
         .fillMaxWidth()
-        .clip(shape = MaterialTheme.shapes.medium)
+        .clip(shape = MaterialTheme.shapes.large)
     Image(
         painter = painterResource(id = post.imageId),
         contentDescription = null, // decorative

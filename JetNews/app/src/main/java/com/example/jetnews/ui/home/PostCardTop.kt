@@ -64,7 +64,7 @@ import com.example.jetnews.utils.CompletePreviews
  * [Modifier] variable to a [Modifier.heightIn] that sets its `min` minimum height to 180.dp, with
  * a [Modifier.fillMaxWidth] chained to that to make the Composable using the [Modifier] occupy its
  * entire width constraint, and to this is chained a [Modifier.clip] that clips its [Shape] to the
- * [Shapes.medium] of our custom [MaterialTheme.shapes] (a [RoundedCornerShape] whose `size` is 4.dp).
+ * [Shapes.large] of our custom [MaterialTheme.shapes] (a [RoundedCornerShape] whose `size` is 8.dp).
  * The children Composables of the [Column] are:
  *  - an [Image] whose `painter` argument is the [Painter] returned by [painterResource] for the
  *  drawable whose resource ID is the [Post.imageId] property of our [Post] parameter [post], whose
@@ -107,7 +107,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
         val imageModifier: Modifier = Modifier
             .heightIn(min = 180.dp)
             .fillMaxWidth()
-            .clip(shape = MaterialTheme.shapes.medium)
+            .clip(shape = MaterialTheme.shapes.large)
         Image(
             painter = painterResource(id = post.imageId),
             contentDescription = null, // decorative

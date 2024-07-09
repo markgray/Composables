@@ -154,7 +154,8 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  *  lambda that composes a [Text] whose `text` argument is the [String] with resource ID
  *  [R.string.cd_interests] ("Interests"), using as its [TextStyle] `style` argument the
  *  [Typography.titleLarge] of our custom [MaterialTheme.typography] (`fontSize` = 22.sp, `lineHeight`
- *  = 28.sp, `letterSpacing` = 0.sp, and `lineBreak` = [LineBreak.Heading]). The `navigationIcon`
+ *  = 28.sp, `letterSpacing` = 0.sp, and `lineBreak` = [LineBreak.Heading]), and as its `color`
+ *  argument the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme]. The `navigationIcon`
  *  argument of the [CenterAlignedTopAppBar] is defined only is our [Boolean] parameter [isExpandedScreen]
  *  is `false` (a phone instead of a table) in which case it is an [IconButton] whose `onClick` argument
  *  is our lambda parameter [openDrawer], and whose `content` lambda argument composes an [Icon] whose
@@ -206,7 +207,8 @@ fun InterestsScreen(
                 title = {
                     Text(
                         text = stringResource(id = R.string.cd_interests),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 },
                 navigationIcon = {
