@@ -34,7 +34,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.samples.crane.R
@@ -45,6 +45,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun CalendarScreen(
     onBackPressed: () -> Unit,
@@ -109,7 +112,7 @@ private fun CalendarTopAppBar(calendarState: CalendarState, onBackPressed: () ->
             navigationIcon = {
                 IconButton(onClick = { onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(id = R.string.cd_back),
                         tint = MaterialTheme.colors.onSurface
                     )
