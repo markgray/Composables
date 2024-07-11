@@ -29,6 +29,7 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +41,7 @@ import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.samples.crane.ui.captionTextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
@@ -121,7 +123,24 @@ fun CraneUserInput(
 /**
  * This is used by the [ToDestinationUserInput] Composable to allow the user to input a destination
  * to search for. We start by initializing and "remembering saveable" our [TextFieldValue] variable
- * `var textFieldState`. The our base Composable is a [CraneBaseUserInput]
+ * `var textFieldState`. The our root Composable is a [CraneBaseUserInput] whose `caption` argument
+ * is our [caption] parameter, whose `tintIcon` argument is a lambda that returns `true` is the
+ * [TextFieldValue.text] property of our [TextFieldValue] variable `textFieldState` is not empty,
+ * its `showCaption` argument is a lambda that returns `true` is the [TextFieldValue.text] property
+ * of our [TextFieldValue] variable `textFieldState` is not empty, and whose `vectorImageId` argument
+ * is our [vectorImageId] parameter. The `content` Composable lambda argument of [CraneBaseUserInput]
+ * is a [BasicTextField] whose `value` argument is our [TextFieldValue] variable `textFieldState`,
+ * whose `onValueChange` lambda argument is a lambda which sets `textFieldState` to the [TextFieldValue]
+ * passed the lambda, then calls our [onInputChanged] lambda parameter with the [TextFieldValue.text]
+ * of `textFieldState`. its `textStyle` [TextStyle] argument is a copy of the [Typography.body1] of
+ * our custom [MaterialTheme.typography] with its `color` the current value of [LocalContentColor],
+ * its `cursorBrush` [Brush] argument is a [SolidColor] whose `value` is the current value of
+ * [LocalContentColor], its `decorationBox` Composable lambda argument is a lambda which checks
+ * whether our [hint] parameter is not empty and the [TextFieldValue.text] of our `textFieldState`
+ * variable is empty and if this is so composes a [Text] whose `text` argument is our [hint] parameter,
+ * and whose `style` [TextStyle] argument is a copy of the [captionTextStyle] whose `color` is the
+ * current value of [LocalContentColor], and this is followed by composing the `innerTextField`
+ * Composable lambda passed the lambda into the UI.
  *
  * @param hint a [String] for the [Text] in the [BasicTextField] content of our [CraneBaseUserInput]
  * Composable to display when the user has yet to enter anything to search for. In our case it is
@@ -171,8 +190,8 @@ fun CraneEditableUserInput(
                 onInputChanged(textFieldState.text)
             },
             textStyle = MaterialTheme.typography.body1.copy(color = LocalContentColor.current),
-            cursorBrush = SolidColor(LocalContentColor.current),
-            decorationBox = { innerTextField ->
+            cursorBrush = SolidColor(value = LocalContentColor.current),
+            decorationBox = { innerTextField: () -> Unit ->
                 if (hint.isNotEmpty() && textFieldState.text.isEmpty()) {
                     Text(
                         text = hint,
