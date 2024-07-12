@@ -36,7 +36,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -52,7 +54,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import androidx.compose.samples.crane.home.CraneHomeContent
+import androidx.compose.samples.crane.home.CraneScreen
+import androidx.compose.samples.crane.home.HomeTabBar
 
+/**
+ * This is used in [CraneHomeContent] for the each of the three `pageContent` of the [HorizontalPager]
+ * used as the `frontLayerContent` of its [BackdropScaffold]. These three [ExploreSection] are switched
+ * by the [HomeTabBar] that is used as the `appBar` argument of the [BackdropScaffold]. The first is
+ * used to display the [CraneScreen.Fly] "Explore Flights by Destination" [ExploreSection], the second
+ * is used to display the [CraneScreen.Sleep] "Explore Properties by Destination" [ExploreSection],
+ * and the third is used to display the [CraneScreen.Eat] "Explore Restaurants by Destination"
+ * [ExploreSection].
+ */
 @Composable
 fun ExploreSection(
     widthSize: WindowWidthSizeClass,

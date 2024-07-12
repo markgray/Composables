@@ -180,7 +180,7 @@ fun CraneHomeContent(
 }
 
 @Composable
-private fun HomeTabBar(
+fun HomeTabBar(
     openDrawer: () -> Unit,
     tabSelected: CraneScreen,
     onTabSelected: (CraneScreen) -> Unit,
