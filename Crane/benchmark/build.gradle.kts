@@ -35,6 +35,7 @@ android {
     }
 
     targetProjectPath = ":app"
+    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
     experimentalProperties["android.experimental.self-instrumenting"] = true
 }
 
@@ -50,6 +51,7 @@ dependencies {
 
 androidComponents {
     beforeVariants(selector().all()) {
+        @Suppress("DEPRECATION") // TODO: Keep an eye on this
         it.enabled = it.buildType == "benchmark"
     }
 }

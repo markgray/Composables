@@ -190,8 +190,8 @@ fun CraneEditableUserInput(
                 onInputChanged(textFieldState.text)
             },
             textStyle = MaterialTheme.typography.body1.copy(color = LocalContentColor.current),
-            cursorBrush = SolidColor(value = LocalContentColor.current),
-            decorationBox = { innerTextField: () -> Unit ->
+            cursorBrush = SolidColor(LocalContentColor.current),
+            decorationBox = { innerTextField ->
                 if (hint.isNotEmpty() && textFieldState.text.isEmpty()) {
                     Text(
                         text = hint,
