@@ -17,17 +17,33 @@
 @file:Suppress("ktlint:max-line-length") // String constants read better
 package androidx.compose.samples.crane.data
 
+import androidx.compose.samples.crane.home.CraneScreen
+import androidx.compose.samples.crane.home.MainViewModel
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * The default image width to use when requesting an image from unsplash.com, it is used as the value
+ * of the url query parameter &w=
+ */
 private const val DEFAULT_IMAGE_WIDTH = "250"
 
 /**
- * Annotated with Singleton as the class created a lot of objects.
+ * Annotated with Singleton as the class created a lot of objects. The `Inject` annotation
+ * identifies our constructor as a injectable constructor to Hilt and Hilt generates a
+ * [DestinationsLocalDataSource_Factory] java class from this file which it will use when a
+ * [DestinationsLocalDataSource] class injection is requested.
  */
 @Singleton
 class DestinationsLocalDataSource @Inject constructor() {
-    val craneRestaurants = listOf(
+
+    /**
+     * This [List] of [ExploreModel] is returned by the [DestinationsRepository.restaurants] property,
+     * and is used by [MainViewModel] for its [MainViewModel.restaurants] property, which is used when
+     * the [CraneScreen.Eat] tab of `CraneHomeContent` is selected (file home/CraneHome.kt)
+     */
+    val craneRestaurants: List<ExploreModel> = listOf(
         ExploreModel(
             city = NAPLES,
             description = "1286 Restaurants",
@@ -65,7 +81,12 @@ class DestinationsLocalDataSource @Inject constructor() {
         )
     )
 
-    val craneHotels = listOf(
+    /**
+     * This [List] of [ExploreModel] is returned by the [DestinationsRepository.hotels] property,
+     * and is used by [MainViewModel] for its [MainViewModel.hotels] property, which is used when
+     * the [CraneScreen.Sleep] tab of `CraneHomeContent` is selected (file home/CraneHome.kt)
+     */
+    val craneHotels: List<ExploreModel> = listOf(
         ExploreModel(
             city = MALDIVAS,
             description = "1286 Available Properties",
@@ -103,7 +124,15 @@ class DestinationsLocalDataSource @Inject constructor() {
         )
     )
 
-    val craneDestinations = listOf(
+    /**
+     * This [List] of [ExploreModel] is returned by the [DestinationsRepository.destinations] property,
+     * and is used by [MainViewModel] in its [MainViewModel.toDestinationChanged] method, and its
+     * [MainViewModel.updatePeople] method to update its [MainViewModel.suggestedDestinations] property
+     * of [StateFlow] of [List] of [ExploreModel], which is collected as "state" for the variable
+     * `suggestedDestinations` in `CraneHomeContent` (file home/CraneHome.kt) which is used when
+     * the [CraneScreen.Fly] tab of `CraneHomeContent` is selected (file home/CraneHome.kt)
+     */
+    val craneDestinations: List<ExploreModel> = listOf(
         ExploreModel(
             city = KHUMBUVALLEY,
             description = "Nonstop - 5h 16m+",
@@ -151,8 +180,33 @@ class DestinationsLocalDataSource @Inject constructor() {
         ),
         ExploreModel(
             city = NAPLES,
-            description = "1286 Restaurants",
+            description = "Nonstop - 1h 45m+",
             imageUrl = "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?ixlib=rb-1.2.1&auto=format&fit=crop&w=$DEFAULT_IMAGE_WIDTH"
+        ),
+        ExploreModel(
+            city = DALLAS,
+            description = "Nonstop - 8h 30m+",
+            imageUrl = "https://images.unsplash.com/photo-1495749388945-9d6e4e5b67b1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=$DEFAULT_IMAGE_WIDTH"
+        ),
+        ExploreModel(
+            city = CORDOBA,
+            description = "1 stop - 11h 30m+",
+            imageUrl = "https://images.unsplash.com/photo-1562625964-ffe9b2f617fc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=250&q=$DEFAULT_IMAGE_WIDTH"
+        ),
+        ExploreModel(
+            city = BIGSUR,
+            description = "Nonstop - 10h 45m+",
+            imageUrl = "https://images.unsplash.com/photo-1561409037-c7be81613c1f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=$DEFAULT_IMAGE_WIDTH"
+        ),
+        ExploreModel(
+            city = LONDON,
+            description = "Nonstop - 1h 5m+",
+            imageUrl = "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=$DEFAULT_IMAGE_WIDTH"
+        ),
+        ExploreModel(
+            city = PARIS,
+            description = "Nonstop - 2h 25m+",
+            imageUrl = "https://images.unsplash.com/photo-1509299349698-dd22323b5963?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=$DEFAULT_IMAGE_WIDTH"
         ),
     )
 }
