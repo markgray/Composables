@@ -42,9 +42,11 @@ import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.samples.crane.data.ExploreModel
+import androidx.compose.samples.crane.details.launchDetailsActivity
 import androidx.compose.samples.crane.home.OnExploreItemClicked
 import androidx.compose.samples.crane.ui.crane_caption
 import androidx.compose.ui.Modifier
@@ -54,9 +56,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import androidx.compose.samples.crane.details.DetailsActivity
 import androidx.compose.samples.crane.home.CraneHomeContent
 import androidx.compose.samples.crane.home.CraneScreen
 import androidx.compose.samples.crane.home.HomeTabBar
+import androidx.compose.samples.crane.home.MainActivity
+import androidx.compose.samples.crane.ui.CraneTheme
+import com.google.maps.android.compose.GoogleMap
 
 /**
  * This is used in [CraneHomeContent] for the each of the three `pageContent` of the [HorizontalPager]
@@ -65,7 +71,55 @@ import androidx.compose.samples.crane.home.HomeTabBar
  * used to display the [CraneScreen.Fly] "Explore Flights by Destination" [ExploreSection], the second
  * is used to display the [CraneScreen.Sleep] "Explore Properties by Destination" [ExploreSection],
  * and the third is used to display the [CraneScreen.Eat] "Explore Restaurants by Destination"
- * [ExploreSection].
+ * [ExploreSection]. In each case it displays its [List] of [ExploreModel] parameter [exploreList]
+ * in a [LazyVerticalStaggeredGrid] using an [ExploreItemColumn] when its [WindowWidthSizeClass]
+ * parameter is [WindowWidthSizeClass.Medium] or [WindowWidthSizeClass.Expanded] and using a
+ * [ExploreItemRow] is its is [WindowWidthSizeClass.Compact] (a phone).
+ *
+ * Our root composable is a [Surface] whose `modifier` argument chains a [Modifier.fillMaxSize] to
+ * our [Modifier] parameter [modifier], and whose `color` argument is [Color.White]. Its `content`
+ * is a [Column] whose `modifier` argument is a [Modifier.padding] that adds 24.dp to the `start`,
+ * 20.dp to the `top` and 24.dp to the end. The `content` of the [Column] holds:
+ *  - a [Text] whose `text` is our [String] parameter [title]. and whose `style` is a copy of the
+ *  [Typography.caption] of our [CraneTheme] custom [MaterialTheme] whose `color` is overridden to
+ *  be [crane_caption] ([Color.DarkGray]).
+ *  - a [Spacer] whose `modifier` is a [Modifier.height] that sets its height to 8.dp
+ *  - a [LazyVerticalStaggeredGrid]
+ *
+ * The arguments of the [LazyVerticalStaggeredGrid] are:
+ *  - `columns` (description of the size and number of staggered grid columns) is `minSize` of 200.dp
+ *  [StaggeredGridCells.Adaptive] (Defines a grid with as many rows or columns as possible on the
+ *  condition that every cell has at least 200.dp space and all extra space is distributed evenly)
+ *  - `modifier` is a [Modifier.fillMaxWidth] to which is chained a [Modifier.imePadding] (causes
+ *  the [LazyVerticalStaggeredGrid] to occupy its entire incoming width constraint, and adds padding
+ *  to accommodate the ime insets)
+ *  - `horizontalArrangement` is [Arrangement.spacedBy] of 8.dp (places children such that each two
+ *  adjacent ones are spaced by 8.dp across the main axis)
+ *
+ * In the `content` lambda of the [LazyVerticalStaggeredGrid] we use the [itemsIndexed] extension
+ * function to loop through all of the [ExploreModel] in our [List] of [ExploreModel] parameter
+ * [exploreList] using a when switch to branch
+ *
+ * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
+ * [WindowWidthSizeClass.Medium] (the majority of tablets in portrait and large unfolded inner
+ * displays in portrait), [WindowWidthSizeClass.Expanded] (the majority of tablets in landscape and
+ * large unfolded inner displays in landscape), or [WindowWidthSizeClass.Compact] (the majority of
+ * phones in portrait).
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [CraneHomeContent] does not pass us any, so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
+ * @param title the title of our contents, the [CraneScreen.Fly] tab uses "Explore Flights by Destination",
+ * the [CraneScreen.Sleep] tab uses "Explore Properties by Destination" and the [CraneScreen.Eat] tab
+ * uses "Explore Restaurants by Destination". This is displayed in a [Text] at the top of the [Column]
+ * contents of our root [Surface] Composable.
+ * @param exploreList the [List] of [ExploreModel] that we are to display.
+ * @param onItemClicked an [OnExploreItemClicked] lambda that we pass to [ExploreItemColumn] and
+ * [ExploreItemRow] in their `onItemClicked` argument. They in turn use it as the `onClick` lambda
+ * argument of the [Modifier.clickable] that they use as the `modifier` argument of their [Column]
+ * or [Row] root composables, with it being called with the [ExploreModel] that it is displaying.
+ * It traces back up the Composable hierarchy to a lambda created in the `onCreate` override of
+ * [MainActivity] that calls the [launchDetailsActivity] method to have it launch the [DetailsActivity]
+ * to display a [GoogleMap] for the [ExploreModel] that was clicked.
  */
 @Composable
 fun ExploreSection(
@@ -81,14 +135,14 @@ fun ExploreSection(
                 text = title,
                 style = MaterialTheme.typography.caption.copy(color = crane_caption)
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Adaptive(200.dp),
+                columns = StaggeredGridCells.Adaptive(minSize = 200.dp),
                 modifier = Modifier.fillMaxWidth().imePadding(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 content = {
-                    itemsIndexed(exploreList) { _, exploreItem ->
+                    itemsIndexed(exploreList) { _, exploreItem: ExploreModel ->
                         when (widthSize) {
                             WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
                                 ExploreItemColumn(
