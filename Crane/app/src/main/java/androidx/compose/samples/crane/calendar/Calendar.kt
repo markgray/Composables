@@ -50,7 +50,6 @@ import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Calendar(
     calendarState: CalendarState,
@@ -163,6 +162,14 @@ private fun LazyListScope.itemsCalendarMonth(
     }
 }
 
+/**
+ * The ISO-8601 definition, where a week starts on Monday and the first week has a minimum of 4 days.
+ * The ISO-8601 standard defines a calendar system based on weeks. It uses the week-based-year and
+ * week-of-week-based-year concepts to split up the passage of days instead of the standard year,
+ * month. day. Note that the first week may start in the previous calendar year. Note also that the
+ * first few days of a calendar year may be in the week-based-year corresponding to the previous
+ * calendar year
+ */
 internal val CALENDAR_STARTS_ON = WeekFields.ISO
 
 @Preview
