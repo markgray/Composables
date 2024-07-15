@@ -224,10 +224,10 @@ fun ExploreSection(
  * behavior. Our caller [ExploreSection] passes us a [Modifier.fillMaxWidth] to have us take up our
  * entire incoming width constraint.
  * @param item the [ExploreModel] whose information we are to display.
- * @param onItemClicked a lambda we should call with our [item] parameter when we are clicked. Traced
- * up the Composable hierarchy we end up with a lambda created in the `onCreate` override of
- * [MainActivity] that calls the [launchDetailsActivity] method to have it launch the [DetailsActivity]
- * to display a [GoogleMap] for the [ExploreModel] that it is called with.
+ * @param onItemClicked a lambda we should call with our [ExploreModel] parameter [item] when we are
+ * clicked. Traced up the Composable hierarchy we end up with a lambda created in the `onCreate`
+ * override of [MainActivity] that calls the [launchDetailsActivity] method to have it launch the
+ * [DetailsActivity] to display a [GoogleMap] for the [ExploreModel] that it is called with.
  */
 @Composable
 private fun ExploreItemColumn(
@@ -264,6 +264,37 @@ private fun ExploreItemColumn(
     }
 }
 
+/**
+ * Composable with large image card and text to its right. Our root Composable is a [Row] whose
+ * `modifier` argument chains a [Modifier.clickable] to our [Modifier] parameter [modifier] that
+ * calls our [OnExploreItemClicked] lambda parameter [onItemClicked] when the [Row] is clicked,
+ * and to that is chained a [Modifier.padding] that adds 12.dp padding to the `top` and 12.dp padding
+ * to the `bottom` of the [Row]. The `content` of the [Row] is:
+ *  - an [ExploreImageContainer] whose `modifier` argument is a [Modifier.size] that sets its `size`
+ *  to 64.dp, and the `content` of the [ExploreImageContainer] is an [ExploreImage] whose `item`
+ *  argument is our [ExploreModel] parameter [item] (downloads and displays the picture whose URL
+ *  is the [ExploreModel.imageUrl] of [item]).
+ *  - a [Spacer] whose `modifier` is a [Modifier.width] that sets its `width` to 24.dp
+ *  - a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth] that causes it to occupy its
+ *  entire incoming width constraint. The `content` of this [Column] is:
+ *  - a [Text] whose `text` argument is the [City.nameToDisplay] property of the [ExploreModel.city]
+ *  of [item], and whose [TextStyle] argument `style` is the [Typography.h6] of our custom
+ *  [MaterialTheme.typography].
+ *  - a [Spacer] whose `modifier` is a [Modifier.height] that sets its `height` to 4.dp
+ *  - a [Text] whose `text` argument is the [ExploreModel.description] of our [ExploreModel] parameter
+ *  [item], and whose [TextStyle] argument `style` is a copy of the [Typography.caption] of our custom
+ *  [MaterialTheme.typography] with its [TextStyle.color] overridden to be [crane_caption]
+ *  ([Color.DarkGray])
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [ExploreSection] passes us a [Modifier.fillMaxWidth] to have us take up our
+ * entire incoming width constraint.
+ * @param item the [ExploreModel] whose information we are to display.
+ * @param onItemClicked a lambda we should call with our [ExploreModel] parameter [item] when we are
+ * clicked. Traced up the Composable hierarchy we end up with a lambda created in the `onCreate`
+ * override of [MainActivity] that calls the [launchDetailsActivity] method to have it launch the
+ * [DetailsActivity] to display a [GoogleMap] for the [ExploreModel] that it is called with.
+ */
 @Composable
 private fun ExploreItemRow(
     modifier: Modifier = Modifier,
@@ -275,16 +306,16 @@ private fun ExploreItemRow(
             .clickable { onItemClicked(item) }
             .padding(top = 12.dp, bottom = 12.dp)
     ) {
-        ExploreImageContainer(modifier = Modifier.size(64.dp)) {
-            ExploreImage(item)
+        ExploreImageContainer(modifier = Modifier.size(size = 64.dp)) {
+            ExploreImage(item = item)
         }
-        Spacer(Modifier.width(24.dp))
+        Spacer(Modifier.width(width = 24.dp))
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = item.city.nameToDisplay,
                 style = MaterialTheme.typography.h6
             )
-            Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(height = 4.dp))
             Text(
                 text = item.description,
                 style = MaterialTheme.typography.caption.copy(color = crane_caption)
@@ -293,12 +324,27 @@ private fun ExploreItemRow(
     }
 }
 
+/**
+ * This Composable uses [AsyncImage] to download an image asynchronously and render the result. Our
+ * root Composable is an [AsyncImage] whose `model` is the [ImageRequest] that we build by using
+ * an [ImageRequest.Builder] for the current [LocalContext] then chain a [ImageRequest.Builder.data]
+ * to it to set its `data` to the [ExploreModel.imageUrl] url of our [ExploreModel] parameter [item],
+ * then chain a [ImageRequest.Builder.crossfade] with its `enable` argument `true` to have it
+ * crossfades from the current drawable to the success/error drawable, finally calling
+ * [ImageRequest.Builder.build] to build the [ImageRequest]. The `contentScale` argument of the
+ * [AsyncImage] is [ContentScale.Crop] to have it Scale the source uniformly (maintaining the source's
+ * aspect ratio) so that both dimensions (width and height) of the source will be equal to or larger
+ * than the corresponding dimension of the destination. The `modifier` argument of the [AsyncImage]
+ * is a [Modifier.fillMaxSize] to have it occupy its entire incoming size constrain.
+ *
+ * @param item the [ExploreModel] whose [ExploreModel.imageUrl] we are to download and render.
+ */
 @Composable
 private fun ExploreImage(item: ExploreModel) {
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(item.imageUrl)
-            .crossfade(true)
+        model = ImageRequest.Builder(context = LocalContext.current)
+            .data(data = item.imageUrl)
+            .crossfade(enable = true)
             .build(),
         contentDescription = null,
         contentScale = ContentScale.Crop,
@@ -306,12 +352,25 @@ private fun ExploreImage(item: ExploreModel) {
     )
 }
 
+/**
+ * A container for holding a [ExploreImage].
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [ExploreItemColumn] passes us a [Modifier.fillMaxWidth] to have us occupy
+ * our entire incoming `width` constraint, and [ExploreItemRow] passes us a [Modifier.size] that
+ * sets our `size` to 64.dp
+ * @param content a Composable we should display. In our case this is alway an [ExploreImage] that
+ * will download an image asynchronously and render the result.
+ */
 @Composable
 private fun ExploreImageContainer(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    Surface(modifier.wrapContentHeight().fillMaxWidth(), RoundedCornerShape(4.dp)) {
+    Surface(
+        modifier = modifier.wrapContentHeight().fillMaxWidth(),
+        shape = RoundedCornerShape(size = 4.dp)
+    ) {
         content()
     }
 }
