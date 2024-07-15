@@ -34,7 +34,7 @@ class DetailsViewModel @Inject constructor(
 
     val cityDetails: Result<City>
         get() {
-            val destination = destinationsRepository.getDestination(cityName)
+            val destination: City? = destinationsRepository.getDestination(cityName)
             return if (destination != null) {
                 Result.Success(destination)
             } else {

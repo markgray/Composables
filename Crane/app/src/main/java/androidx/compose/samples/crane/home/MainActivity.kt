@@ -143,7 +143,7 @@ fun MainScreen(
 
         Box {
             LandingScreen(
-                modifier = Modifier.alpha(splashAlpha),
+                modifier = Modifier.alpha(alpha = splashAlpha),
                 onTimeout = {
                     transitionState.targetState = SplashState.Completed
                     mainViewModel.shownSplash.value = SplashState.Completed
