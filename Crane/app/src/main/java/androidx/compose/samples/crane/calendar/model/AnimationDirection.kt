@@ -16,10 +16,34 @@
 
 package androidx.compose.samples.crane.calendar.model
 
+import androidx.compose.samples.crane.calendar.WeekSelectionPill
+
+/**
+ * This is used to indicate what direction the [WeekSelectionPill] should animate the extension of
+ * the RoundedRect red background of the calendar date selection. When the user selects a date after
+ * the first selected date [AnimationDirection.FORWARDS] is used, and when the user selects a date
+ * before the first selected date [AnimationDirection.BACKWARDS] is used.
+ */
 enum class AnimationDirection {
+    /**
+     * Animate the extension of the RoundedRect red background of the calendar date selection in the
+     * forward direction (the user has selected a date after the first selected date).
+     */
     FORWARDS,
+
+    /**
+     * Animate the extension of the RoundedRect red background of the calendar date selection in the
+     * backward direction (the user has selected a date before the first selected date).
+     */
     BACKWARDS;
 
-    fun isBackwards() = this == BACKWARDS
-    fun isForwards() = this == FORWARDS
+    /**
+     * Convenience function to determine if an instance of [AnimationDirection] is [BACKWARDS].
+     */
+    fun isBackwards(): Boolean = this == BACKWARDS
+
+    /**
+     * Convenience function to determine if an instance of [AnimationDirection] is [FORWARDS].
+     */
+    fun isForwards(): Boolean = this == FORWARDS
 }
