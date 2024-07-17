@@ -59,8 +59,8 @@ fun CalendarScreen(
 
     CalendarContent(
         calendarState = calendarState,
-        onDayClicked = { dateClicked ->
-            mainViewModel.onDaySelected(dateClicked)
+        onDayClicked = { dateClicked: LocalDate ->
+            mainViewModel.onDaySelected(daySelected = dateClicked)
         },
         onBackPressed = onBackPressed
     )

@@ -18,6 +18,7 @@ package androidx.compose.samples.crane.calendar.model
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.samples.crane.home.MainViewModel
 import androidx.compose.samples.crane.util.getNumberWeeks
 import java.time.LocalDate
 import java.time.Period
@@ -30,9 +31,10 @@ class CalendarState {
 
     /**
      * Our [MutableState] wrapped instance of [CalendarUiState]. It represents the actual current
-     * state of the calendar being displayed.
+     * "selected days state" of the calendar being displayed, and contains methods to query and
+     * manipulate them.
      */
-    val calendarUiState = mutableStateOf(CalendarUiState())
+    val calendarUiState: MutableState<CalendarUiState> = mutableStateOf(CalendarUiState())
 
     /**
      * The [List] of [Month] that we are concerned with. It is initialized to start at the [Month]
@@ -84,22 +86,35 @@ class CalendarState {
     }
 
     /**
-     * TODO: Add kdoc
+     * Called by [MainViewModel.onDaySelected] when the user clicks on one of the days in the
+     * calendar. We set the `value` of our [MutableState] wrapped [CalendarUiState] field
+     * [calendarUiState] to the value returned by our [updateSelectedDay] when called with its
+     * `newDate` argument our [LocalDate] parameter [newDate].
+     *
+     * @param newDate the [LocalDate] of the day that was clicked.
      */
     fun setSelectedDay(newDate: LocalDate) {
-        calendarUiState.value = updateSelectedDay(newDate)
+        calendarUiState.value = updateSelectedDay(newDate = newDate)
     }
 
+    /**
+     * Returns an instance of [CalendarUiState] that represents the new "selected days state" of the
+     * calendar that results when the day representing [LocalDate] parameter [newDate] is clicked.
+     * We start by initializing our [CalendarUiState] variable `val currentState` to the value of
+     * our [MutableState] wrapped [CalendarUiState] field [calendarUiState].
+     */
     private fun updateSelectedDay(newDate: LocalDate): CalendarUiState {
-        val currentState = calendarUiState.value
-        val selectedStartDate = currentState.selectedStartDate
-        val selectedEndDate = currentState.selectedEndDate
+        val currentState: CalendarUiState = calendarUiState.value
+        val selectedStartDate: LocalDate? = currentState.selectedStartDate
+        val selectedEndDate: LocalDate? = currentState.selectedEndDate
 
         return when {
+            // No existing start or end date
             selectedStartDate == null && selectedEndDate == null -> {
-                currentState.setDates(newDate, null)
+                currentState.setDates(newFrom = newDate, newTo = null)
             }
 
+            // Both start date and end date are not null. Reset both to null and call our selves again.
             selectedStartDate != null && selectedEndDate != null -> {
                 val animationDirection: AnimationDirection =
                     if (newDate.isBefore(selectedStartDate)) {
@@ -116,26 +131,29 @@ class CalendarState {
                 updateSelectedDay(newDate = newDate)
             }
 
+            // Start date is null but end date is not (How can this happen?)
             selectedStartDate == null -> {
                 if (newDate.isBefore(selectedEndDate)) {
                     currentState.copy(animateDirection = AnimationDirection.BACKWARDS)
-                        .setDates(newDate, selectedEndDate)
+                        .setDates(newFrom = newDate, newTo = selectedEndDate)
                 } else if (newDate.isAfter(selectedEndDate)) {
                     currentState.copy(animateDirection = AnimationDirection.FORWARDS)
-                        .setDates(selectedEndDate, newDate)
+                        .setDates(newFrom = selectedEndDate, newTo = newDate)
                 } else {
                     currentState
                 }
             }
 
+            // Start date is not null
             else -> {
                 if (newDate.isBefore(selectedStartDate)) {
                     currentState.copy(animateDirection = AnimationDirection.BACKWARDS)
-                        .setDates(newDate, selectedStartDate)
+                        .setDates(newFrom = newDate, newTo = selectedStartDate)
                 } else if (newDate.isAfter(selectedStartDate)) {
                     currentState.copy(animateDirection = AnimationDirection.FORWARDS)
-                        .setDates(selectedStartDate, newDate)
+                        .setDates(newFrom = selectedStartDate, newTo = newDate)
                 } else {
+                    // newDate is the same as start date, do nothing.
                     currentState
                 }
             }
@@ -144,7 +162,7 @@ class CalendarState {
 
     companion object {
         /**
-         * TODO: Add kdoc
+         * Constant for number of days in a week.
          */
         const val DAYS_IN_WEEK: Int = 7
     }
