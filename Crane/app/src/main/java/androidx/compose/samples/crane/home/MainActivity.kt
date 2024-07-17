@@ -43,6 +43,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
@@ -57,6 +58,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -76,7 +78,39 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     /**
-     * Called when the activity is starting.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge-to-edge
+     * display with the `statusBarStyle` argument a [SystemBarStyle.dark] whose `scrim` is
+     * [Color.TRANSPARENT] (This lets the color of our app show through the system bar), then we
+     * call our super's implementation of `onCreate`. We call [setContent] to compose its `content`
+     * lambda into the activity. We wrap it all in our [CraneTheme] custom [MaterialTheme] to have
+     * it supply values for the material widgets to use as their defaults. We initialize our
+     * [WindowWidthSizeClass] variable `val widthSizeClass` to the the [WindowWidthSizeClass] of our
+     * window's [WindowSizeClass]. We initialize and remember our [NavHostController] variable
+     * `val navController` to a new instance. Then we compose a [NavHost] whose `navController`
+     * argument is `navController`, and whose `startDestination` argument is [Routes.Home.route].
+     * The `builder` lambda argument consists of:
+     *  - A [NavGraphBuilder.composable] whose `route` argument is [Routes.Home.route], and in whose
+     *  `content` lambda argument we initialize our [MainViewModel] variable `val mainViewModel` by
+     *  the [hiltViewModel] method (Returns an existing HiltViewModel annotated [MainViewModel] or
+     *  creates a new one scoped to the current navigation graph present on the [NavController] back
+     *  stack. Then we compose a [MainScreen] Composable with its `widthSize` our [WindowWidthSizeClass]
+     *  variable `widthSize`, its `onExploreItemClicked` lambda argument a lambda that calls the
+     *  [launchDetailsActivity] with the `context` of this [MainActivity] and the [ExploreModel]
+     *  that the lambda is called with, the `onDateSelectionClicked` lambda argument is a lambda that
+     *  [NavHostController.navigate] method of our [NavHostController] variable `navController` to
+     *  navigate to the `route` [Routes.Calendar.route], and its `mainViewModel` argument is our
+     *  [MainViewModel] variable `mainViewModel`.
+     *  - A [NavGraphBuilder.composable] whose `route` argument is [Routes.Calendar.route], and in
+     *  whose `content` lambda argument we initialize and remember our [NavBackStackEntry] variable
+     *  `val parentEntry` to the topmost [NavBackStackEntry] for the route [Routes.Home.route],
+     *  then we initialize our [MainViewModel] variable `val parentViewModel` to the [MainViewModel]
+     *  returned for the [NavBackStackEntry] variable `parentEntry` by the [hiltViewModel] method.
+     *  Finally we compose a [CalendarScreen] whose `onBackPressed` lambda argument is a lambda
+     *  that calls the [NavHostController.popBackStack] method of our [NavHostController] variable
+     *  `navController`, and whose `mainViewModel` argument is our [MainViewModel] variable
+     *  `parentViewModel`.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use this.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(scrim = Color.TRANSPARENT))
@@ -97,7 +131,7 @@ class MainActivity : ComponentActivity() {
                                 launchDetailsActivity(context = this@MainActivity, item = it)
                             },
                             onDateSelectionClicked = {
-                                navController.navigate(Routes.Calendar.route)
+                                navController.navigate(route = Routes.Calendar.route)
                             },
                             mainViewModel = mainViewModel
                         )
