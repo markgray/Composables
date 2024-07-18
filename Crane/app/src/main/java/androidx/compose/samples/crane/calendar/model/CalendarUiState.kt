@@ -22,12 +22,24 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
+/**
+ * Contains information and methods for keeping track of the days that the user has selected on the
+ * calendar.
+ *
+ * @param selectedStartDate the [LocalDate] of the start of the day range.
+ * @param selectedEndDate the [LocalDate] of the end of the day range.
+ * @param animateDirection the [AnimationDirection] that should be used when animating the extension
+ * of the selection range. One of [AnimationDirection.FORWARDS] or [AnimationDirection.BACKWARDS].
+ */
 data class CalendarUiState(
     val selectedStartDate: LocalDate? = null,
     val selectedEndDate: LocalDate? = null,
     val animateDirection: AnimationDirection? = null
 ) {
 
+    /**
+     * Returns the number of days between [selectedStartDate] and [selectedEndDate].
+     */
     val numberSelectedDays: Float
         get() {
             if (selectedStartDate == null) return 0f
@@ -35,15 +47,27 @@ data class CalendarUiState(
             return ChronoUnit.DAYS.between(selectedStartDate, selectedEndDate.plusDays(1)).toFloat()
         }
 
+    /**
+     * Returns `true` if the user has selected at least one day.
+     */
     val hasSelectedDates: Boolean
         get() {
             return selectedStartDate != null || selectedEndDate != null
         }
 
+    /**
+     * Returns a [String] describing the selected day range. If [selectedStartDate] is `null` we
+     * return an empty [String], otherwise we initialize our [String] variable `var output` to the
+     * [String] returned by the [LocalDate.format] method of [selectedStartDate] for the
+     * [DateTimeFormatter] constant [SHORT_DATE_FORMAT] (a [DateTimeFormatter.ofPattern] with the
+     * `pattern` "MMM dd"). Then if [selectedEndDate] is not `null`, we append to `output` the
+     * [String] returned by the [LocalDate.format] method of [selectedEndDate] for the formatter
+     * [SHORT_DATE_FORMAT]. Finally we return `output`.
+     */
     val selectedDatesFormatted: String
         get() {
             if (selectedStartDate == null) return ""
-            var output = selectedStartDate.format(SHORT_DATE_FORMAT)
+            var output: String = selectedStartDate.format(SHORT_DATE_FORMAT)
             if (selectedEndDate != null) {
                 output += " - ${selectedEndDate.format(SHORT_DATE_FORMAT)}"
             }
@@ -222,6 +246,7 @@ data class CalendarUiState(
     }
 
     companion object {
-        private val SHORT_DATE_FORMAT = DateTimeFormatter.ofPattern("MMM dd")
+        private val SHORT_DATE_FORMAT: DateTimeFormatter =
+            DateTimeFormatter.ofPattern("MMM dd")
     }
 }

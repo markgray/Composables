@@ -101,7 +101,44 @@ class CalendarState {
      * Returns an instance of [CalendarUiState] that represents the new "selected days state" of the
      * calendar that results when the day representing [LocalDate] parameter [newDate] is clicked.
      * We start by initializing our [CalendarUiState] variable `val currentState` to the value of
-     * our [MutableState] wrapped [CalendarUiState] field [calendarUiState].
+     * our [MutableState] wrapped [CalendarUiState] field [calendarUiState]. We initialize our
+     * [LocalDate] variable `val selectedStartDate` to the value of the [CalendarUiState.selectedStartDate]
+     * property of `currentState`, and [LocalDate] variable `val selectedEndDate` to the value of the
+     * [CalendarUiState.selectedEndDate] property of `currentState`. Then we use a `when` switch to
+     * return different [CalendarUiState] based on:
+     *  - Both `selectedStartDate` and `selectedEndDate` are `null` (no selected date range exists)
+     *  we return the [CalendarUiState] that the [CalendarUiState.setDates] method of `currentState`
+     *  returns when called with its `newFrom` argument our [LocalDate] parameter [newDate], and its
+     *  `newTo` argument `null` (only the day just clicked is "selected").
+     *  - Both `selectedStartDate` and `selectedEndDate` are non-`null` (a selected date range already
+     *  exists). We initialize our [AnimationDirection] variable `val animationDirection` to
+     *  [AnimationDirection.BACKWARDS] if our [LocalDate] parameter [newDate] is before `selectedStartDate`
+     *  or to [AnimationDirection.FORWARDS] if it is after or equal to `selectedStartDate`. Then we
+     *  set the [MutableState.value] of our [MutableState] wrapped [CalendarUiState] field
+     *  [calendarUiState] to a copy of `currentState` with its [CalendarUiState.selectedStartDate]
+     *  propery set to `null`, its [CalendarUiState.selectedEndDate] property set to `null` and its
+     *  [CalendarUiState.animateDirection] set to `animationDirection`. Then we call ourselves again
+     *  with the same [LocalDate] argument [newDate] (resets the selected date range which causes
+     *  the second call to return a [CalendarUiState] with just the [CalendarUiState.selectedStartDate]
+     *  set to [newDate].
+     *  - `selectedStartDate` is `null` and `selectedEndDate` is non-`null`. I do not see how this
+     *  can happen (and until I do, I won't waste time commenting it).
+     *  - `else` is reached when `selectedStartDate` is non-`null` and `selectedEndDate` is `null`.
+     *  If [LocalDate] parameter [newDate] is before `selectedStartDate` we copy [CalendarUiState]
+     *  variable `currentState` with its [CalendarUiState.animateDirection] set to
+     *  [AnimationDirection.BACKWARDS], then return the [CalendarUiState] that results when we call
+     *  the [CalendarUiState.setDates] method on that copy with the `newFrom` argument our [LocalDate]
+     *  parameter [newDate] and the `newTo` argument `selectedStartDate`. Else if [newDate] is after
+     *  `selectedStartDate` we copy [CalendarUiState] variable `currentState` with its
+     *  [CalendarUiState.animateDirection] set to [AnimationDirection.FORWARDS], then return the
+     *  [CalendarUiState] that results when we call the [CalendarUiState.setDates] method on that
+     *  copy with the `newFrom` argument our `selectedStartDate` and the `newTo` argument [LocalDate]
+     *  parameter [newDate]. Else [newDate] is equal to `selectedStartDate` so we just return an
+     *  unmodified [CalendarUiState] variable `currentState`.
+     *
+     * @param newDate the [LocalDate] of the day in the calendar that was clicked.
+     * @return a new [CalendarUiState] which reflects the new selected days caused by the click of
+     * the day whose [LocalDate] is our [LocalDate] parameter [newDate].
      */
     private fun updateSelectedDay(newDate: LocalDate): CalendarUiState {
         val currentState: CalendarUiState = calendarUiState.value
