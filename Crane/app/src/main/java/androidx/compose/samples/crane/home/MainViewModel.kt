@@ -16,6 +16,7 @@
 
 package androidx.compose.samples.crane.home
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.samples.crane.calendar.model.CalendarState
 import androidx.compose.samples.crane.data.DestinationsRepository
@@ -41,7 +42,7 @@ class MainViewModel @Inject constructor(
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    val shownSplash = mutableStateOf(SplashState.Shown)
+    val shownSplash: MutableState<SplashState> = mutableStateOf(SplashState.Shown)
     val hotels: List<ExploreModel> = destinationsRepository.hotels
     val restaurants: List<ExploreModel> = destinationsRepository.restaurants
 
