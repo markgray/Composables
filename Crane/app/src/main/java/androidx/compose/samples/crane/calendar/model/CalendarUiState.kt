@@ -74,6 +74,25 @@ data class CalendarUiState(
             return output
         }
 
+    /**
+     * Called to check whether the date range defined by the [LocalDate] parameters [start] to [end]
+     * overlaps with the date range defined by [selectedStartDate] to [selectedEndDate].
+     *  - if [hasSelectedDates] returns `false` we return `false`
+     *  - if [selectedStartDate] is `null` and [selectedEndDate] is `null` we return `false`.
+     *  - if [selectedStartDate] is equal to [start] or [selectedEndDate] is equal to [end] we
+     *  return `true`
+     *  - if [selectedEndDate] is `null` we return `true` if [selectedStartDate] is not before [start]
+     *  and [selectedStartDate] is not after [end].
+     *  - we return `true` if [end] is not before [selectedStartDate] and [start] is not after
+     *  [selectedEndDate].
+     *
+     * @param start the [LocalDate] of the start of the date range whose overlap with the date range
+     * defined by [selectedStartDate] to [selectedEndDate] we are checking.
+     * @param end the [LocalDate] of the end of the date range whose overlap with the date range
+     * defined by [selectedStartDate] to [selectedEndDate] we are checking.
+     * @return `true` if the date range defined by the [LocalDate] parameters [start] to [end]
+     * overlaps with the date range defined by [selectedStartDate] to [selectedEndDate].
+     */
     fun hasSelectedPeriodOverlap(start: LocalDate, end: LocalDate): Boolean {
         if (!hasSelectedDates) return false
         if (selectedStartDate == null && selectedEndDate == null) return false
@@ -84,6 +103,21 @@ data class CalendarUiState(
         return !end.isBefore(selectedStartDate) && !start.isAfter(selectedEndDate)
     }
 
+    /**
+     * Checks whether its [LocalDate] parameter [date] is in the date range defined by
+     * [selectedStartDate] to [selectedEndDate].
+     *  - if [selectedStartDate] is `null` we return `false`
+     *  - if [selectedStartDate] is equal to [date] we return `true`
+     *  - if [selectedEndDate] is `null` we return `false`
+     *  - if [date] is before [selectedStartDate] or [date] is after [selectedEndDate] we
+     *  return `false
+     *  - otherwise we return `true`.
+     *
+     * @param date the [LocalDate] of the date whose presence in the date range defined by
+     * [selectedStartDate] to [selectedEndDate] we are checking for.
+     * @return `true` is our [LocalDate] parameter [date] is in the date range defined by
+     * [selectedStartDate] to [selectedEndDate].
+     */
     fun isDateInSelectedPeriod(date: LocalDate): Boolean {
         if (selectedStartDate == null) return false
         if (selectedStartDate == date) return true
@@ -94,9 +128,29 @@ data class CalendarUiState(
         return true
     }
 
+    /**
+     * Returns how many days in the week starting at [LocalDate] parameter [currentWeekStartDate]
+     * that are included in the the date range defined by [selectedStartDate] to [selectedEndDate].
+     * We start by initializing our [Int] variable `var countSelected` to 0, and initializing our
+     * [LocalDate] variable `var currentDate` to our [LocalDate] parameter [currentWeekStartDate].
+     * Then we loop over `i` from 0 until [CalendarState.DAYS_IN_WEEK]:
+     *  - if our [isDateInSelectedPeriod] method returns `true` for [LocalDate] variable `currentDate`
+     *  and the [LocalDate.getMonth] of `currentDate` (kotlin `LocalDate.month`) is equal to the
+     *  [YearMonth.getMonth] of our [YearMonth] parameter [month] we increment `countSelected`
+     *  - we add one day to `currentDate` and loop back for the next day in the week.
+     *
+     * Finally we return `countSelected` to the caller
+     *
+     * @param currentWeekStartDate the [LocalDate] of the first day of the week whose number of days
+     * in the date range defined by [selectedStartDate] to [selectedEndDate] we are to count.
+     * @param month the [YearMonth] of the week whose number of days in the date range defined by
+     * [selectedStartDate] to [selectedEndDate] we are to count.
+     * @return the number of days in the week starting at [LocalDate] parameter [currentWeekStartDate]
+     * that are included in the the date range defined by [selectedStartDate] to [selectedEndDate].
+     */
     fun getNumberSelectedDaysInWeek(currentWeekStartDate: LocalDate, month: YearMonth): Int {
         var countSelected = 0
-        var currentDate = currentWeekStartDate
+        var currentDate: LocalDate = currentWeekStartDate
         for (i in 0 until CalendarState.DAYS_IN_WEEK) {
             if (isDateInSelectedPeriod(currentDate) && currentDate.month == month.month) {
                 countSelected++
@@ -108,10 +162,24 @@ data class CalendarUiState(
 
     /**
      * Returns the number of selected days from the start or end of the week, depending on direction.
+     * We branch on the value of our [AnimationDirection] property [animateDirection]:
+     *  - [animateDirection] is `null` or [animateDirection] is [AnimationDirection.FORWARDS]:
+     *  We initialize our [LocalDate] variable `var startDate` to our [LocalDate] parameter
+     *  [currentWeekStartDate], and our [Int] variable `var startOffset` to 0. Then we loop over `i`
+     *  from 0 until [CalendarState.DAYS_IN_WEEK] and if our [isDateInSelectedPeriod] method returns
+     *  `false` for [LocalDate] variable `startDate` or the [LocalDate.getMonth] of `startDate`
+     *  (kotlin `LocalDate.month`) is not equal to [YearMonth.getMonth] of our [YearMonth] parameter
+     *  [yearMonth] we increment `startOffset` (otherwise we have entered the date range of this
+     *  [CalendarUiState] so we break out of the `for` loop). Otherwise we add 1 day to `startDate`
+     *  and loop back for the next day. Once done with the loop we return `startOffset` to the caller.
+     *
+     *  - [animateDirection] is [AnimationDirection.BACKWARDS]:
+     *  We initialize our [LocalDate] variable `var startDate` to our [LocalDate] parameter plus 6
+     *  days, and our [Int] variable `var startOffset` to 0.
      */
     fun selectedStartOffset(currentWeekStartDate: LocalDate, yearMonth: YearMonth): Int {
         return if (animateDirection == null || animateDirection.isForwards()) {
-            var startDate = currentWeekStartDate
+            var startDate: LocalDate = currentWeekStartDate
             var startOffset = 0
             for (i in 0 until CalendarState.DAYS_IN_WEEK) {
                 if (!isDateInSelectedPeriod(startDate) || startDate.month != yearMonth.month) {
@@ -123,7 +191,7 @@ data class CalendarUiState(
             }
             startOffset
         } else {
-            var startDate = currentWeekStartDate.plusDays(6)
+            var startDate: LocalDate = currentWeekStartDate.plusDays(6)
             var startOffset = 0
 
             for (i in 0 until CalendarState.DAYS_IN_WEEK) {

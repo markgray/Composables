@@ -108,7 +108,7 @@ internal fun Day(
     month: YearMonth,
     modifier: Modifier = Modifier
 ) {
-    val selected = calendarState.isDateInSelectedPeriod(day)
+    val selected: Boolean = calendarState.isDateInSelectedPeriod(day)
     DayContainer(
         modifier = modifier.semantics {
             text = AnnotatedString(
