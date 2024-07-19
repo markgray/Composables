@@ -97,16 +97,11 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-compose:1.9.0")
 
-    //noinspection GradleDependency TODO: 2.8.0 Requires androidx.compose.ui 1.7.0 still in beta
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    //noinspection GradleDependency TODO: 2.8.0 Requires androidx.compose.ui 1.7.0 still in beta
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0")
-    //noinspection GradleDependency TODO: 2.8.0 Requires androidx.compose.ui 1.7.0 still in beta
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
-    //noinspection GradleDependency TODO: 2.8.0 Requires androidx.compose.ui 1.7.0 still in beta
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    //noinspection GradleDependency TODO: 2.8.0 Requires androidx.compose.ui 1.7.0 still in beta
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
 
     androidTestImplementation("androidx.test:rules:1.6.1")
     androidTestImplementation("androidx.test:runner:1.6.1")
