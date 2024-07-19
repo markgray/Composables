@@ -189,7 +189,35 @@ sealed class Routes(val route: String) {
  * by the [updateTransition] method for [MutableTransitionState] wrapped [SplashState] varible
  * `transitionState` (Creates a [Transition] and puts it in the `currentState` of the provided
  * `transitionState`. Whenever the `targetState` of the `transitionState` changes, the [Transition]
- * will animate to the new target state).
+ * will animate to the new target state). We initialize our animated [Float] variable
+ * `val splashAlpha` using the [Transition.animateFloat] method of `transition` with its
+ * `transitionSpec` a [tween] of 100 milisecond `durationMillis` with its `targetValueByState`
+ * lambda argument returning 1f if the current state is [SplashState.Shown] and 0f otherwise. We
+ * initialize our animated [Float] variable `val contentAlpha` using the [Transition.animateFloat]
+ * method of `transition` with its `transitionSpec` a [tween] of 300 milisecond `durationMillis`
+ * with its `targetValueByState` lambda argument returning 0f the current state is
+ * [SplashState.Shown] and 1f otherwise. We initialize our animated [Dp] variable
+ * `val contentTopPadding` using the [Transition.animateDp] method of `transition` with its
+ * `transitionSpec` a [spring] whose `stiffness` is [StiffnessLow], with its `targetValueByState`
+ * lambda argument returning 100.dp if the current state is [SplashState.Shown] and 0.dp otherwise.
+ *
+ * The Composable content of the [Surface] is a [Box] holding a [LandingScreen] and a [MainContent]
+ * composable with which one is visible controlled by their [Modifier.alpha]. The arguments passed
+ * to the [LandingScreen] are:
+ *  - `modifier` is a [Modifier.alpha] whose `alpha` argument is our animated [Float] variable
+ *  `splashAlpha`.
+ *  - `onTimeout` is a lambda which sets the [MutableTransitionState.targetState] of our variable
+ *  `transitionState` to [SplashState.Completed], and sets the [MutableState.value] of the
+ *  [MutableState] wrapped [SplashState] field [MainViewModel.shownSplash] to [SplashState.Completed].
+ *
+ * The arguments passed to the [MainContent] are:
+ *  - `modifier` is a [Modifier.alpha] whose `alpha` argument is our animated [Float] variable
+ *  `contentAlpha`
+ *  - `topPadding` is our animated [Dp] variable `contentTopPadding`
+ *  - `widthSize` is our [WindowWidthSizeClass] parameter [widthSize]
+ *  - `onExploreItemClicked` is our [OnExploreItemClicked] parameter [onExploreItemClicked]
+ *  - `onDateSelectionClicked` is our lambda parameter [onDateSelectionClicked]
+ *  - `viewModel` is our [MainViewModel] parameter [mainViewModel]
  *
  * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
  * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
@@ -223,17 +251,17 @@ fun MainScreen(
         }
         val transition: Transition<SplashState> =
             updateTransition(transitionState = transitionState, label = "splashTransition")
-        val splashAlpha by transition.animateFloat(
+        val splashAlpha: Float by transition.animateFloat(
             transitionSpec = { tween(durationMillis = 100) }, label = "splashAlpha"
         ) {
             if (it == SplashState.Shown) 1f else 0f
         }
-        val contentAlpha by transition.animateFloat(
+        val contentAlpha: Float by transition.animateFloat(
             transitionSpec = { tween(durationMillis = 300) }, label = "contentAlpha"
         ) {
             if (it == SplashState.Shown) 0f else 1f
         }
-        val contentTopPadding by transition.animateDp(
+        val contentTopPadding: Dp by transition.animateDp(
             transitionSpec = { spring(stiffness = StiffnessLow) }, label = "contentTopPadding"
         ) {
             if (it == SplashState.Shown) 100.dp else 0.dp
@@ -260,6 +288,11 @@ fun MainScreen(
     }
 }
 
+/**
+ * This is essentially just a convenience Composable that composes a [Spacer] whose `modifier`
+ * argument uses the animated [Dp] parameter [topPadding] as the [Modifier.padding] for the `top`
+ * of the [Spacer] (animating towards 0.dp) atop the [CraneHome] main application Composable.
+ */
 @Composable
 private fun MainContent(
     modifier: Modifier = Modifier,
