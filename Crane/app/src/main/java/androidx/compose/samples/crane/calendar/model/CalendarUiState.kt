@@ -174,8 +174,15 @@ data class CalendarUiState(
      *  and loop back for the next day. Once done with the loop we return `startOffset` to the caller.
      *
      *  - [animateDirection] is [AnimationDirection.BACKWARDS]:
-     *  We initialize our [LocalDate] variable `var startDate` to our [LocalDate] parameter plus 6
-     *  days, and our [Int] variable `var startOffset` to 0.
+     *  We initialize our [LocalDate] variable `var startDate` to our [LocalDate] parameter
+     *  [currentWeekStartDate] plus 6 days, and our [Int] variable `var startOffset` to 0. Then we
+     *  loop over `i` from 0 until [CalendarState.DAYS_IN_WEEK] and if our [LocalDate] variable
+     *  `startDate` is not in our selected date range, or the [LocalDate.getMonth] of `startDate`
+     *  (kotlin `LocalDate.month`) is not equal to [YearMonth.getMonth] of our [YearMonth] parameter
+     *  [yearMonth] we increment `startOffset` (otherwise we have entered the date range of this
+     *  [CalendarUiState] so we break out of the `for` loop). Otherwise we subtract 1 day from
+     *  `startDate` and loop back for the next day. Once done with the loop we return 7 minus
+     *  `startOffset` to the caller.
      */
     fun selectedStartOffset(currentWeekStartDate: LocalDate, yearMonth: YearMonth): Int {
         return if (animateDirection == null || animateDirection.isForwards()) {
@@ -206,13 +213,31 @@ data class CalendarUiState(
         }
     }
 
+    /**
+     * Returns `true` if both [LocalDate] parameter [beginningWeek] and the last day of the week before
+     * [beginningWeek] are included in the selected date range of this [CalendarUiState].
+     *  - If our [LocalDate] parameter [beginningWeek] is `null` we return `false`
+     *  - if the [Int] value of the [YearMonth.getMonth] of our [YearMonth] parameter [month] is not
+     *  equal to the [Int] value of the [LocalDate.getMonth] of our [LocalDate] parameter [beginningWeek]
+     *  we return `false`.
+     *  - Otherwise we initialize our [Boolean] variable `val beginningWeekSelected` to `true` if
+     *  [beginningWeek] is included in the selected date range of this [CalendarUiState], then we
+     *  initialize our [LocalDate] variable `val lastDayPreviousWeek` to [beginningWeek] minus 1 day.
+     *  Finally we we return `true` if `lastDayPreviousWeek` is included in the selected date range
+     *  of this [CalendarUiState] and our [Boolean] variable `beginningWeekSelected` is `true`.
+     *
+     * @param beginningWeek the [LocalDate] of the day we are interested in.
+     * @param month the [YearMonth] of the day we are interested in.
+     * @return `true` if our [LocalDate] parameter [beginningWeek] and the day before it are both
+     * included in the selected date range of this [CalendarUiState].
+     */
     fun isLeftHighlighted(beginningWeek: LocalDate?, month: YearMonth): Boolean {
         return if (beginningWeek != null) {
             if (month.month.value != beginningWeek.month.value) {
                 false
             } else {
-                val beginningWeekSelected = isDateInSelectedPeriod(beginningWeek)
-                val lastDayPreviousWeek = beginningWeek.minusDays(1)
+                val beginningWeekSelected: Boolean = isDateInSelectedPeriod(beginningWeek)
+                val lastDayPreviousWeek: LocalDate = beginningWeek.minusDays(1)
                 isDateInSelectedPeriod(lastDayPreviousWeek) && beginningWeekSelected
             }
         } else {
@@ -220,6 +245,27 @@ data class CalendarUiState(
         }
     }
 
+    /**
+     * Returns `true` if the last day of the week starting at [LocalDate] parameter [beginningWeek]
+     * and the first day the week after that week are included in the selected date range of this
+     * [CalendarUiState]. We begin by initializing our [LocalDate] variable `val lastDayOfTheWeek`
+     * to our [LocalDate] parameter [beginningWeek] plus 6 days. Then:
+     *  - If `lastDayOfTheWeek` is `null` we return `false`
+     *  - if the [Int] value of the [YearMonth.getMonth] of our [YearMonth] parameter [month] is not
+     *  equal to the [Int] value of the [LocalDate.getMonth] of our [LocalDate] variable
+     *  `lastDayOfTheWeek` we return `false`
+     *  - Otherwise we initialize our [Boolean] variable `val lastDayOfTheWeekSelected` to `true` if
+     *  `lastDayOfTheWeek` is included in the selected date range of this [CalendarUiState], then we
+     *  initialize our [LocalDate] variable `val firstDayNextWeek` to `lastDayOfTheWeek` plus 1 day.
+     *  Finally we we return `true` if `firstDayNextWeek` is included in the selected date range
+     *  of this [CalendarUiState] and our [Boolean] variable `lastDayOfTheWeekSelected` is `true`.
+     *
+     * @param beginningWeek the [LocalDate] of the first day of the week we interested in.
+     * @param month the [YearMonth] of the week we are interested in.
+     * @return `true` if the last day of the week beginning on [LocalDate] parameter [beginningWeek]
+     * and the first day of the next week are both included in the selected date range of this
+     * [CalendarUiState].
+     */
     fun isRightHighlighted(
         beginningWeek: LocalDate?,
         month: YearMonth
@@ -238,6 +284,14 @@ data class CalendarUiState(
         }
     }
 
+    /**
+     * Returns 0 if the [selectedEndDate] or the [selectedStartDate] is in the week starting at
+     * [LocalDate] parameter [currentWeekStartDate], otherwise it returns the number of days until
+     * [selectedEndDate] and the end of the week beginning on [currentWeekStartDate] when
+     * [animateDirection] is [AnimationDirection.BACKWARDS], or the number of days since
+     * [selectedStartDate] and [currentWeekStartDate] when [animateDirection] is
+     * [AnimationDirection.FORWARDS].
+     */
     fun dayDelay(currentWeekStartDate: LocalDate): Int {
         if (selectedStartDate == null && selectedEndDate == null) return 0
         // if selected week contains start date, don't have any delay
