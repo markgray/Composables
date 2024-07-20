@@ -289,9 +289,39 @@ fun MainScreen(
 }
 
 /**
- * This is essentially just a convenience Composable that composes a [Spacer] whose `modifier`
- * argument uses the animated [Dp] parameter [topPadding] as the [Modifier.padding] for the `top`
- * of the [Spacer] (animating towards 0.dp) atop the [CraneHome] main application Composable.
+ * This is essentially just a convenience Composable that uses a [Column] to hold a [Spacer] whose
+ * `modifier` argument uses the animated [Dp] parameter [topPadding] as the [Modifier.padding] for
+ * the `top` of the [Spacer] (animating from 100.dp down to 0.dp), and holds the application's
+ * [CraneHome] main Composable, which slides up in the window as the [Spacer] shrinks. Our root
+ * Composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier] (in our
+ * case this is a [Modifier.alpha] which animates the [Column] from invisible to visible). The
+ * `content` of the [Column] is a [Spacer] whose `modifier` argument is a [Modifier.padding] that
+ * uses our animated [Dp] parameter [topPadding] to animate the `top` padding of the [Spacer] from
+ * 100.dp down to 0.dp. Below the shrinking [Spacer] is a [CraneHome] whose `widthSize` argument is
+ * our [WindowWidthSizeClass] parameter [widthSize], whose `modifier` argument is our [Modifier]
+ * parameter [modifier], whose `onExploreItemClicked` argument is our [OnExploreItemClicked]
+ * parameter [onExploreItemClicked], whose `onDateSelectionClicked` arugment is our
+ * [onDateSelectionClicked], and whose `viewModel` argument is our [MainViewModel] parameter
+ * [viewModel].
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [MainScreen] passes us a [Modifier.alpha] whose `alpha` argument is an
+ * animated [Float] that goes from 0f to 1f causing us to go from invisible to visible.
+ * @param topPadding used as the [Modifier.padding] for the `top` of the [Spacer] that is at the top
+ * or our [Column]. Our caller [MainScreen] passes us an animated [Dp] that animates from 100.dp
+ * down to 0.dp
+ * @param widthSize the [WindowWidthSizeClass] of the device we are running on. One of
+ * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded].
+ * @param onExploreItemClicked a [OnExploreItemClicked] lambda that should be called with the
+ * [ExploreModel] of a city that the user has clicked. It traces up the hierarchy to the `onCreate`
+ * override where it is defined as a lambda that calls the [launchDetailsActivity] method with the
+ * [ExploreModel] that [onExploreItemClicked] is called with.
+ * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
+ * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
+ * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * the [CalendarScreen] Composable.
+ * @param viewModel the app's singleton [MainViewModel]. It is injected by [hiltViewModel] up in the
+ * `onCreate` override.
  */
 @Composable
 private fun MainContent(
