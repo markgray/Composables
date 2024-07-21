@@ -107,7 +107,7 @@ fun CraneHomeContent(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel
 ) {
-    val suggestedDestinations by viewModel.suggestedDestinations.observeAsState()
+    val suggestedDestinations: List<ExploreModel>? by viewModel.suggestedDestinations.observeAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
     val craneScreenValues = CraneScreen.values()
