@@ -73,7 +73,7 @@ fun WeekSelectionPill(
                 drawRoundRect(
                     color = pillColor,
                     topLeft = offset,
-                    size = Size(size, widthPerDayPx),
+                    size = Size(width = size, height = widthPerDayPx),
                     cornerRadius = CornerRadius(cornerRadiusPx)
                 )
             }

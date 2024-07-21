@@ -290,12 +290,29 @@ data class CalendarUiState(
      * [selectedEndDate] and the end of the week beginning on [currentWeekStartDate] when
      * [animateDirection] is [AnimationDirection.BACKWARDS], or the number of days since
      * [selectedStartDate] and [currentWeekStartDate] when [animateDirection] is
-     * [AnimationDirection.FORWARDS].
+     * [AnimationDirection.FORWARDS]. If [selectedStartDate] is `null` and [selectedEndDate] is
+     * `null` we return 0. We initialze [LocalDate] variable `val endWeek` to our [LocalDate] parameter
+     *  [currentWeekStartDate] plus 6 days (the end of the week). Then:
+     *  - If [animateDirection] is not `null` and [animateDirection] is [AnimationDirection.BACKWARDS]
+     *  we return the number of days between `endWeek` and [selectedEndDate] if [selectedEndDate] is
+     *  before [currentWeekStartDate] or [selectedEndDate] is after `endWeek`, otherwise we return 0
+     *  - If [animateDirection] is [AnimationDirection.FORWARDS] we return the number of days between
+     *  [currentWeekStartDate] and [selectedStartDate] if [selectedStartDate] is before
+     *  [currentWeekStartDate] or [selectedStartDate] is after `endWeek`, otherwise we return 0
+     *
+     * @param currentWeekStartDate the [LocalDate] of the first day of the week that we are
+     * interested in.
+     * @return if neither [selectedStartDate] nor [selectedEndDate] is in this week we return the
+     * number of days between the end of the week and [selectedEndDate] when [animateDirection] is
+     * [AnimationDirection.BACKWARDS] or the number of days between [currentWeekStartDate] and
+     * [selectedStartDate] when [animateDirection] is [AnimationDirection.FORWARDS]. If however
+     * [selectedStartDate] or [selectedEndDate] is in the week of [currentWeekStartDate] we return
+     * 0. We also return 0 if both [selectedStartDate] and [selectedEndDate] are `null`.
      */
     fun dayDelay(currentWeekStartDate: LocalDate): Int {
         if (selectedStartDate == null && selectedEndDate == null) return 0
         // if selected week contains start date, don't have any delay
-        val endWeek = currentWeekStartDate.plusDays(6)
+        val endWeek: LocalDate = currentWeekStartDate.plusDays(6)
         return if (animateDirection != null && animateDirection.isBackwards()) {
             if (selectedEndDate?.isBefore(currentWeekStartDate) == true ||
                 selectedEndDate?.isAfter(endWeek) == true
@@ -317,15 +334,23 @@ data class CalendarUiState(
         }
     }
 
+    /**
+     * We branch on the value of [animateDirection]:
+     *  - [AnimationDirection.BACKWARDS] we initialize our [LocalDate] variable `val endWeek` to our
+     *  [LocalDate] parameter [currentWeekStartDate] plus 6 days. We initialize our [Boolean] variable
+     *  `val isStartInADifferentMonth` to `true` if the [LocalDate.getMonth] of `endWeek` is not equal
+     *  to the [YearMonth.getMonth] of [Week.yearMonth] (the end of the week is in a different month
+     *  from [currentWeekStartDate]).
+     */
     fun monthOverlapSelectionDelay(
         currentWeekStartDate: LocalDate,
         week: Week
     ): Int {
         return if (animateDirection?.isBackwards() == true) {
-            val endWeek = currentWeekStartDate.plusDays(6)
+            val endWeek: LocalDate = currentWeekStartDate.plusDays(6)
             val isStartInADifferentMonth = endWeek.month != week.yearMonth.month
             if (isStartInADifferentMonth) {
-                var currentDate = endWeek
+                var currentDate: LocalDate = endWeek
                 var offset = 0
                 for (i in 0 until CalendarState.DAYS_IN_WEEK) {
                     if (currentDate.month.value != week.yearMonth.month.value &&
