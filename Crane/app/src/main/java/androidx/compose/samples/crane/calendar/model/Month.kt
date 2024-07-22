@@ -16,8 +16,16 @@
 
 package androidx.compose.samples.crane.calendar.model
 
+import androidx.compose.samples.crane.calendar.Calendar
 import java.time.YearMonth
 
+/**
+ * The data class that we use to hold information needed to render each of the 24 months that our
+ * [Calendar] Composable draws.
+ *
+ * @param yearMonth the [YearMonth] of this [Month]
+ * @param weeks the [List] of [Week] of the weeks in this [Month].
+ */
 data class Month(
     val yearMonth: YearMonth,
     val weeks: List<Week>

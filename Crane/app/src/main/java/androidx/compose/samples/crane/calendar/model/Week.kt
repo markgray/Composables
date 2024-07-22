@@ -18,6 +18,12 @@ package androidx.compose.samples.crane.calendar.model
 
 import java.time.YearMonth
 
+/**
+ * Used to model a single week.
+ *
+ * @param number the week number of this [Week] in its [YearMonth] (0 to whatever)
+ * @param yearMonth the [YearMonth] that this [Week] is in.
+ */
 data class Week(
     val number: Int,
     val yearMonth: YearMonth

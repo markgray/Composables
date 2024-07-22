@@ -78,7 +78,7 @@ class CalendarState {
                     )
                 )
             }
-            val month = Month(startYearMonth, listWeekItems)
+            val month = Month(yearMonth = startYearMonth, weeks = listWeekItems)
             tempListMonths.add(month)
             startYearMonth = startYearMonth.plusMonths(1)
         }

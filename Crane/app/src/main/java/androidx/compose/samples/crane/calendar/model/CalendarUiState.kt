@@ -340,7 +340,28 @@ data class CalendarUiState(
      *  [LocalDate] parameter [currentWeekStartDate] plus 6 days. We initialize our [Boolean] variable
      *  `val isStartInADifferentMonth` to `true` if the [LocalDate.getMonth] of `endWeek` is not equal
      *  to the [YearMonth.getMonth] of [Week.yearMonth] (the end of the week is in a different month
-     *  from [currentWeekStartDate]).
+     *  from [currentWeekStartDate]). Then if `isStartInADifferentMonth` is `false` we return 0,
+     *  otherwise we initialize our [LocalDate] variable `var currentDate` to `endWeek`, and our [Int]
+     *  variable `var offset` to 0. We then loop over `i` from 0 until [CalendarState.DAYS_IN_WEEK]
+     *  and if the [LocalDate.getMonth] of `currentDate` is not equal to the [YearMonth.getMonth] of
+     *  the [Week.yearMonth] of our [Week] parameter [week] and `currentDate` is in the date range
+     *  [selectedStartDate] to [selectedEndDate] we add 1 to `offset`. In either case we subtract
+     *  1 day from `currentDate` and loop back for the next day. When done we return `offset` to the
+     *  caller.
+     *  - [AnimationDirection.FORWARDS] we initialize our [Boolean] variable `val isStartInADifferentMonth`
+     *  to `true` if the [LocalDate.getMonth] of our [LocalDate] parameter [currentWeekStartDate] is
+     *  not equal to the [YearMonth.getMonth] of the [Week.yearMonth] or our [Week] parameter [week].
+     *  Then if `isStartInADifferentMonth` is `false` we return 0, otherwise we initialize our
+     *  [LocalDate] variable `var currentDate` to [currentWeekStartDate], and our [Int] variable
+     *  `var offset` to 0. We then loop over `i` from 0 until [CalendarState.DAYS_IN_WEEK] and if
+     *  the [LocalDate.getMonth] of `currentDate` is not equal to the [YearMonth.getMonth] of the
+     *  [Week.yearMonth] of our [Week] parameter [week] and `currentDate` is in the date range
+     *  [selectedStartDate] to [selectedEndDate] we add 1 to `offset`. In either case we add 1 day
+     *  to `currentDate` and loop back for the next day. When done we return `offset` to the caller.
+     *
+     * @param currentWeekStartDate the [LocalDate] of the beginning of the [Week] we are interested
+     * in.
+     * @param week the [Week] of the [Week] we are interested in.
      */
     fun monthOverlapSelectionDelay(
         currentWeekStartDate: LocalDate,
@@ -365,7 +386,7 @@ data class CalendarUiState(
                 0
             }
         } else {
-            val isStartInADifferentMonth = currentWeekStartDate.month != week.yearMonth.month
+            val isStartInADifferentMonth: Boolean = currentWeekStartDate.month != week.yearMonth.month
             return if (isStartInADifferentMonth) {
                 var currentDate = currentWeekStartDate
                 var offset = 0
@@ -384,6 +405,14 @@ data class CalendarUiState(
         }
     }
 
+    /**
+     * Used to set [LocalDate] fields [selectedStartDate] and/or [selectedEndDate] to new vaules.
+     *
+     * @param newFrom the new [LocalDate] value for our [selectedStartDate] field.
+     * @param newTo the new [LocalDate] value for our [selectedEndDate] field.
+     * @return a copy of this [CalendarUiState] with new values for [selectedStartDate] and/or
+     * [selectedEndDate].
+     */
     fun setDates(newFrom: LocalDate?, newTo: LocalDate?): CalendarUiState {
         return if (newTo == null) {
             copy(selectedStartDate = newFrom)
@@ -393,6 +422,11 @@ data class CalendarUiState(
     }
 
     companion object {
+        /**
+         * The [DateTimeFormatter] used by our [selectedDatesFormatted] property in calls to the
+         * [LocalDate.format] method of both [selectedStartDate] and [selectedEndDate] when forming
+         * the [String] it returns.
+         */
         private val SHORT_DATE_FORMAT: DateTimeFormatter =
             DateTimeFormatter.ofPattern("MMM dd")
     }
