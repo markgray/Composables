@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 
 /**
  * This enum is used to indicate whether the value of [PeopleUserInputState.people] (the number of
@@ -141,17 +142,17 @@ class PeopleUserInputState {
  * and when the [MutableTransitionState.targetState] is [Invalid] it displays an additional [Text]
  * which displays the [String] "Error: We don't support more than $[MAX_PEOPLE] people". Our root
  * Composable is a [Column] wherein we `remember` a [MutableTransitionState] of
- * [PeopleUserInputAnimationState] variable `val transitionState`
- * whose initial value is the current value of the [PeopleUserInputState.animationState] property of
- * our [peopleState] parameter, then we initialize our [State] of [Color] variable `val tint` to the
- * instance that the [tintPeopleUserInput] method returns (the current value of the `tint` [Color]
- * is used to "tint" the [Icon] and the text of the `caption` [Text] of the [CraneBaseUserInput] that
- * [CraneUserInput] uses to display the number of people traveling (its [Color] is animated using the
+ * [PeopleUserInputAnimationState] variable `val transitionState` whose initial value is the current
+ * value of the [PeopleUserInputState.animationState] property of our [peopleState] parameter, then
+ * we initialize our [State] of [Color] variable `val tint` to the instance that the
+ * [tintPeopleUserInput] method returns (the current value of the `tint` [Color] is used to "tint"
+ * the [Icon] and the text of the `caption` [Text] of the [CraneBaseUserInput] that [CraneUserInput]
+ * uses to display the number of people traveling (its [Color] is animated using the
  * [Transition.animateColor] method by [tintPeopleUserInput] between the `onSurface` [Color] of
- * [MaterialTheme.colors] ([Color.White]) and the `secondary` [Color] of [MaterialTheme.colors] (which
- * our [CraneTheme] custom [MaterialTheme] specifies to be `crane_red`: the [Color] 0xFFE30425, a
- * bright blood red). Next we initialize our [Int] variable `val people` to the [PeopleUserInputState.people]
- * property of our [peopleState] parameter.
+ * [MaterialTheme.colors] ([Color.White]) and the `secondary` [Color] of [MaterialTheme.colors]
+ * (which our [CraneTheme] custom [MaterialTheme] specifies to be `crane_red`: the [Color] 0xFFE30425,
+ * a bright blood red). Next we initialize our [Int] variable `val people` to the
+ * [PeopleUserInputState.people] property of our [peopleState] parameter.
  *
  * As long as the [MutableTransitionState.targetState] of `transitionState` is not [Invalid] the only
  * child of the [Column] is a [CraneUserInput] Composable whose `text` argument displays the value of
@@ -196,9 +197,9 @@ fun PeopleUserInput(
     Column {
         val transitionState: MutableTransitionState<PeopleUserInputAnimationState> =
             remember { peopleState.animationState }
-        val tint = tintPeopleUserInput(transitionState)
+        val tint: State<Color> = tintPeopleUserInput(transitionState)
 
-        val people = peopleState.people
+        val people: Int = peopleState.people
         CraneUserInput(
             text = pluralStringResource(
                 id = R.plurals.number_adults_selected,
@@ -264,10 +265,19 @@ fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
 
 /**
  * This Composable is used as part of the [CraneSearch] Composables used by [EatSearchContent],
- * [FlySearchContent] and [SleepSearchContent]. It does nothing except ripple when clicked. Its
- * `content` is a [CraneUserInput] whose `caption` argument is the [String] "Select Dates", whose
- * `text` argument is the empty [String] and whose `vectorImageId` argument is the drawable with
- * resource ID [R.drawable.ic_calendar] (a stylized picture of a hanging calendar).
+ * [FlySearchContent] and [SleepSearchContent]. Its `content` is a [CraneUserInput] whose `caption`
+ * argument is the [String] "Select Dates" if our [String] parameter [datesSelected] is empty or
+ * `null` if it is not, whose `text` argument is our [String] parameter [datesSelected] and whose
+ * `vectorImageId` argument is the drawable with resource ID [R.drawable.ic_calendar] (a stylized
+ * picture of a hanging calendar). It `onClick` argument is our [onDateSelectionClicked] lambda
+ * parameter lambda parameter which traces back up the hierarchy to a lambda that calls the
+ * [NavHostController.navigate] method to navigate to the `route` [Routes.Calendar.route] when
+ * it is clicked to allow the user to select a new date range for [datesSelected].
+ *
+ * @param datesSelected the [String] representing the date range the user has selected.
+ * @param onDateSelectionClicked a lambda to be called when our [CraneUserInput] is clicked. It
+ * traces back up the hierarchy to a lambda that calls the [NavHostController.navigate] method to
+ * navigate to the `route` [Routes.Calendar.route] when called.
  */
 @Composable
 fun DatesUserInput(datesSelected: String, onDateSelectionClicked: () -> Unit) {
@@ -293,16 +303,17 @@ fun DatesUserInput(datesSelected: String, onDateSelectionClicked: () -> Unit) {
  * changes, the [Transition] will animate to the new target state. Finally we return the [State] of
  * [Color] that the [Transition.animateColor] method of `transition` creates when its `transitionSpec`
  * argument is a [tween] whose `durationMillis` argument is 300 milliseconds, whose `label` argument
- * is the empty [String] and whose `targetValueByState` lambda argument returns `validColor` if its
+ * is "tintTransitionSpec" and whose `targetValueByState` lambda argument returns `validColor` if its
  * `state` argument is [Valid] or `invalidColor` if it is not.
  *
- * @param transitionState the [MutableTransitionState] created from the [PeopleUserInputState.animationState]
- * enum ([Valid] or [Invalid]) of the `peopleState` [PeopleUserInputState] parameter of [PeopleUserInput].
- * A [MutableTransitionState] contains two fields: [MutableTransitionState.currentState] and
- * [MutableTransitionState.targetState]. Our `currentState` is initialized to [Valid], and can only
- * be mutated by a [Transition]. `targetState` is also initialized to [Valid]. It can be mutated
- * to alter the course of a transition animation that is created with the [MutableTransitionState]
- * using [updateTransition]. Both `currentState` and `targetState` are backed by a [State] object.
+ * @param transitionState the [MutableTransitionState] created from the
+ * [PeopleUserInputState.animationState] enum ([Valid] or [Invalid]) of the `peopleState`
+ * [PeopleUserInputState] parameter of [PeopleUserInput]. A [MutableTransitionState] contains two
+ * fields: [MutableTransitionState.currentState] and [MutableTransitionState.targetState]. Our
+ * `currentState` is initialized to [Valid], and can only be mutated by a [Transition].
+ * `targetState` is also initialized to [Valid]. It can be mutated to alter the course of a
+ * transition animation that is created with the [MutableTransitionState] using [updateTransition].
+ * Both `currentState` and `targetState` are backed by a [State] object.
  * @return a [State] object holding the current [Color] in its [State.value] field.
  */
 @Composable
@@ -312,7 +323,7 @@ private fun tintPeopleUserInput(
     val validColor = MaterialTheme.colors.onSurface
     val invalidColor = MaterialTheme.colors.secondary
 
-    val transition = updateTransition(transitionState, label = "tintTransition")
+    val transition = updateTransition(transitionState = transitionState, label = "tintTransition")
     return transition.animateColor(
         transitionSpec = { tween(durationMillis = 300) }, label = "tintTransitionSpec"
     ) {

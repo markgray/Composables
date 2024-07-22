@@ -30,15 +30,15 @@ class DetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val cityName = savedStateHandle.get<String>(KEY_ARG_DETAILS_CITY_NAME)!!
+    private val cityName: String = savedStateHandle.get<String>(KEY_ARG_DETAILS_CITY_NAME)!!
 
     val cityDetails: Result<City>
         get() {
             val destination: City? = destinationsRepository.getDestination(cityName)
             return if (destination != null) {
-                Result.Success(destination)
+                Result.Success(data = destination)
             } else {
-                Result.Error(IllegalArgumentException("City doesn't exist"))
+                Result.Error(exception = IllegalArgumentException("City doesn't exist"))
             }
         }
 }

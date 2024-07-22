@@ -52,6 +52,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.ExploreModel
+import androidx.compose.samples.crane.home.MainActivity
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,12 +72,34 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * The key under which the city name is stored as an extra in the [Intent] used to launch
+ * [DetailsActivity], and which is used by Hilt when it stores the city name in the [SavedStateHandle]
+ * passed to [DetailsViewModel].
+ */
 internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
 
+/**
+ * Launches the [Intent] created by [createDetailsActivityIntent] to launch the [DetailsActivity]
+ * activity. It just uses the [Context.startActivity] of its [Context] parameter [context] to launch
+ * the [Intent] created by [createDetailsActivityIntent] when passed our [context] parameter and our
+ * [item] parameter.
+ *
+ * @param context the [Context] of our apps [MainActivity].
+ * @param item the [ExploreModel] of the [City] whose map the user wants to see.
+ */
 fun launchDetailsActivity(context: Context, item: ExploreModel) {
-    context.startActivity(createDetailsActivityIntent(context, item))
+    context.startActivity(createDetailsActivityIntent(context = context, item = item))
 }
 
+/**
+ * Creates an [Intent] to launch [DetailsActivity], adds an extra that stores the [City.name] of the
+ * [ExploreModel.city] of its [ExploreModel] parameter [item] under the key [KEY_ARG_DETAILS_CITY_NAME]
+ * and returns the [Intent] to the caller.
+ *
+ * @param context the [Context] of our apps [MainActivity].
+ * @param item the [ExploreModel] of the [City] whose map the user wants to see.
+ */
 @VisibleForTesting
 fun createDetailsActivityIntent(context: Context, item: ExploreModel): Intent {
     val intent = Intent(context, DetailsActivity::class.java)
@@ -84,8 +107,33 @@ fun createDetailsActivityIntent(context: Context, item: ExploreModel): Intent {
     return intent
 }
 
+/**
+ * This activity displays the "details" of a city clicked in [MainActivity]. The AndroidEntryPoint
+ * annotation Marks an Android component class to be setup for injection with the standard Hilt
+ * Dagger Android components. This will generate a base class that the annotated class should extend,
+ * either directly or via the Hilt Gradle Plugin (as we do). This base class will take care of
+ * injecting members into the Android class as well as handling instantiating the proper Hilt
+ * components at the right point in the lifecycle. The name of the base class will be
+ * "Hilt_DetailsActivity.java".
+ */
 @AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
+
+    /**
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge-to-edge
+     * display with the `statusBarStyle` argument a [SystemBarStyle.dark] whose `scrim` is
+     * [Color.TRANSPARENT] (This lets the color of our app show through the system bar), then we
+     * call our super's implementation of `onCreate`. Finally we call the [setContent] method to have
+     * it compose the composable lambda it is passed into our activity. The content will become the
+     * root view of our activity. That lambda uses our [CraneTheme] custom [MaterialTheme] to wrap
+     * a [Surface] whose `content` is a [DetailsScreen] whose `onErrorLoading` argument is a lambda
+     * which logs the error message "Error loading screen", then calls [finish] to close this activity,
+     * and whose `modifier` argument uses [Modifier.statusBarsPadding] to add padding to accommodate
+     * the system status bars insets, and [Modifier.navigationBarsPadding] to add padding to
+     * accommodate the navigation bars insets.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
@@ -108,6 +156,18 @@ class DetailsActivity : ComponentActivity() {
     }
 }
 
+/**
+ * This data class it used by [DetailsScreen] to determine whether it is currently "loading" the
+ * [City] it needs for its [city] field ([isLoading] is `true`, whether it has successfully loaded
+ * its [City] ([city] is not equal to `null`), or whether an error has occurred ([throwError] is
+ * `true`).
+ *
+ * @param city the [City] retrieved from the [DetailsViewModel.cityDetails] property when it returns
+ * a [Result.Success] of a [City].
+ * @param isLoading if `true` we are waiting for a [Result] to be returned from the
+ * [DetailsViewModel.cityDetails] property.
+ * @param throwError `true` if [DetailsViewModel.cityDetails] returns a [Result.Error].
+ */
 private data class DetailsScreenUiState(
     val city: City? = null,
     val isLoading: Boolean = false,
@@ -126,15 +186,15 @@ fun DetailsScreen(
         key1 = viewModel,
         initialValue = DetailsScreenUiState(isLoading = true)
     ) {
-        val cityDetailsResult = viewModel.cityDetails
+        val cityDetailsResult: Result<City> = viewModel.cityDetails
         value = if (cityDetailsResult is Result.Success<City>) {
-            DetailsScreenUiState(cityDetailsResult.data)
+            DetailsScreenUiState(city = cityDetailsResult.data)
         } else {
             DetailsScreenUiState(throwError = true)
         }
     }
 
-    Crossfade(targetState = uiState, modifier) { currentUiState ->
+    Crossfade(targetState = uiState, modifier = modifier, label = "Crossfade") { currentUiState: DetailsScreenUiState ->
         when {
             currentUiState.city != null -> {
                 DetailsContent(currentUiState.city, Modifier.fillMaxSize())
