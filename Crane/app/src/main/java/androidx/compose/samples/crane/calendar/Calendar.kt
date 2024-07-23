@@ -17,10 +17,10 @@
 package androidx.compose.samples.crane.calendar
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.EaseOutQuart
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -34,12 +34,14 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.samples.crane.calendar.model.CalendarState
 import androidx.compose.samples.crane.calendar.model.CalendarUiState
 import androidx.compose.samples.crane.calendar.model.Month
+import androidx.compose.samples.crane.home.MainViewModel
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +52,34 @@ import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 
+/**
+ * This is the Composable that is responsible for producing and managing the [LazyColumn] that holds
+ * all of the [LazyListScope.itemsCalendarMonth] created from the [List] of [Month] field
+ * [CalendarState.listMonths] of our [CalendarState] parameter [calendarState]. It also has a
+ * [LaunchedEffect] which animates the extension of the red background that is used to indicate the
+ * selected date range whenever the [CalendarUiState.numberSelectedDays] property of the
+ * [CalendarState.calendarUiState] of [calendarState] changes value. We start by initializing our
+ * [CalendarUiState] variable `val calendarUiState` to the value of the [CalendarState.calendarUiState]
+ * property of our [CalendarState] parameter [calendarState]. We then initialize our [Int] variable
+ * `val numberSelectedDays` to the [CalendarUiState.numberSelectedDays] property of `calendarUiState`.
+ * We initialize and remember our [Animatable] of [Float] to an [Animatable] whose `initialValue`
+ * is 0f.
+ *
+ * We then start a [LaunchedEffect] keyed on `numberSelectedDays` so that it will run whenever
+ * `numberSelectedDays` changes.
+ *
+ * @param calendarState the [CalendarState] holding all of the information needed to render a 24
+ * month calendar.
+ * @param onDayClicked a lambda to be called with the [LocalDate] of the day whenever the user
+ * clicks one of the days in our calendar. It traces up the hierarchy to [CalendarScreen] which
+ * passes `CalendarContent` a lambda for its `onDayClicked` argument that calls the
+ * [MainViewModel.onDaySelected] method with the [LocalDate] passed the lambda.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
+ * @param contentPadding the [PaddingValues] that [Scaffold] passes its `content` Composable lambda
+ * argument.
+ */
 @Composable
 fun Calendar(
     calendarState: CalendarState,
@@ -57,12 +87,11 @@ fun Calendar(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues()
 ) {
-    val calendarUiState = calendarState.calendarUiState.value
-    val numberSelectedDays = calendarUiState.numberSelectedDays.toInt()
+    val calendarUiState: CalendarUiState = calendarState.calendarUiState.value
+    val numberSelectedDays: Int = calendarUiState.numberSelectedDays.toInt()
 
-    val selectedAnimationPercentage = remember(numberSelectedDays) {
-        Animatable(0f)
-    }
+    val selectedAnimationPercentage: Animatable<Float, AnimationVector1D> =
+        remember(key1 = numberSelectedDays) { Animatable(initialValue = 0f) }
     // Start a Launch Effect when the number of selected days change.
     // using .animateTo() we animate the percentage selection from 0f - 1f
     LaunchedEffect(numberSelectedDays) {
@@ -172,6 +201,9 @@ private fun LazyListScope.itemsCalendarMonth(
  */
 internal val CALENDAR_STARTS_ON = WeekFields.ISO
 
+/**
+ * TODO: Add kdoc
+ */
 @Preview
 @Composable
 fun DayPreview() {
