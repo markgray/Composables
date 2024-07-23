@@ -45,6 +45,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -58,6 +60,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -74,8 +77,8 @@ import kotlinx.coroutines.launch
 
 /**
  * The key under which the city name is stored as an extra in the [Intent] used to launch
- * [DetailsActivity], and which is used by Hilt when it stores the city name in the [SavedStateHandle]
- * passed to [DetailsViewModel].
+ * [DetailsActivity], and which is used by Hilt when it stores the city name in the
+ * [SavedStateHandle] passed to [DetailsViewModel].
  */
 internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
 
@@ -158,7 +161,7 @@ class DetailsActivity : ComponentActivity() {
 
 /**
  * This data class it used by [DetailsScreen] to determine whether it is currently "loading" the
- * [City] it needs for its [city] field ([isLoading] is `true`, whether it has successfully loaded
+ * [City] it needs for its [city] field ([isLoading] is `true`), whether it has successfully loaded
  * its [City] ([city] is not equal to `null`), or whether an error has occurred ([throwError] is
  * `true`).
  *
@@ -174,6 +177,36 @@ private data class DetailsScreenUiState(
     val throwError: Boolean = false
 )
 
+/**
+ * This is the main screen of [DetailsActivity] and is composed into the activity by the
+ * [setContent] method in the [ComponentActivity.onCreate] override of [DetailsActivity].
+ * It uses a [DetailsScreenUiState] observable snapshot State that is created by the
+ * [produceState] method (which it stores in its varible `val uiState`) to decide what it
+ * needs to do during the current recomposition. The `key1` argument of [produceState] is our
+ * [DetailsViewModel] parameter [viewModel] (any change to [viewModel] will cause the
+ * [LaunchedEffect] in [produceState] to be relaunched), the `initialValue` is a
+ * [DetailsScreenUiState] whose [DetailsScreenUiState.isLoading] property is `true`, and in
+ * the `producer` lambda argument of [produceState] we initialize our [Result] of [City] variable
+ * `val cityDetailsResult` to the value returned by the [DetailsViewModel.cityDetails] property
+ * of our [DetailsViewModel] parameter [viewModel] then we set the [MutableState.value] of
+ * `uiState` to a [DetailsScreenUiState] whose [DetailsScreenUiState.city] is the
+ * [Result.Success.data] of `cityDetailsResult` if `cityDetailsResult` is a [Result.Success] of
+ * [City], or to a [DetailsScreenUiState] whose [DetailsScreenUiState.throwError] property is
+ * `true` if it is not a [Result.Success].
+ *
+ * @param onErrorLoading a lambda we should call when there is an error loading the [City] from
+ * [DetailsViewModel.cityDetails]. Our caller, the `onCreate` override of [DetailsActivity], passes
+ * us a lambda that logs the error "Error loading screen" then calls [DetailsActivity.finish] to
+ * close the activity.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller, the `onCreate` override of [DetailsActivity], passes us a
+ * [Modifier.statusBarsPadding] to have us add padding to accommodate the status bars insets, with
+ * a [Modifier.navigationBarsPadding] chained to that to have us add padding to accommodate the
+ * navigation bars insets.
+ * @param viewModel the [DetailsViewModel] that we should use. Our caller does not pass any, so we
+ * use the [viewModel] default value of the parameter, which is the [DetailsViewModel] injected by
+ * Hilt.
+ */
 @Composable
 fun DetailsScreen(
     onErrorLoading: () -> Unit,
@@ -182,7 +215,7 @@ fun DetailsScreen(
 ) {
     // The `produceState` API is used as an _alternative_ to model the
     // UiState in the ViewModel and expose it in a stream of data.
-    val uiState by produceState(
+    val uiState: DetailsScreenUiState by produceState(
         key1 = viewModel,
         initialValue = DetailsScreenUiState(isLoading = true)
     ) {
@@ -194,7 +227,12 @@ fun DetailsScreen(
         }
     }
 
-    Crossfade(targetState = uiState, modifier = modifier, label = "Crossfade") { currentUiState: DetailsScreenUiState ->
+    @Suppress("Destructure")
+    Crossfade(
+        targetState = uiState,
+        modifier = modifier,
+        label = "Crossfade"
+    ) { currentUiState: DetailsScreenUiState ->
         when {
             currentUiState.city != null -> {
                 DetailsContent(currentUiState.city, Modifier.fillMaxSize())
@@ -214,6 +252,9 @@ fun DetailsScreen(
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun DetailsContent(
     city: City,
@@ -321,15 +362,15 @@ private fun ZoomControls(
     onZoomOut: () -> Unit
 ) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        ZoomButton("-", onClick = onZoomOut)
-        ZoomButton("+", onClick = onZoomIn)
+        ZoomButton(text = "-", onClick = onZoomOut)
+        ZoomButton(text = "+", onClick = onZoomIn)
     }
 }
 
 @Composable
 private fun ZoomButton(text: String, onClick: () -> Unit) {
     Button(
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier.padding(all = 8.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colors.onPrimary,
             contentColor = MaterialTheme.colors.primary
@@ -340,6 +381,17 @@ private fun ZoomButton(text: String, onClick: () -> Unit) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 private const val InitialZoom = 5f
-const val MinZoom = 2f
-const val MaxZoom = 20f
+
+/**
+ * TODO: Add kdoc
+ */
+const val MinZoom: Float = 2f
+
+/**
+ * TODO: Add kdoc
+ */
+const val MaxZoom: Float = 20f
