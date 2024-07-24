@@ -66,7 +66,32 @@ import java.time.temporal.WeekFields
  * is 0f.
  *
  * We then start a [LaunchedEffect] keyed on `numberSelectedDays` so that it will run whenever
- * `numberSelectedDays` changes.
+ * `numberSelectedDays` changes. In that [LaunchedEffect] if the [CalendarUiState.hasSelectedDates]
+ * property of `calendarUiState` returns `true` we initialize [TweenSpec] of [Float] variable
+ * `val animationSpec` using [tween] with its `durationMillis` to `numberSelectedDays` times
+ * [DURATION_MILLIS_PER_DAY] (coerced to be between [DURATION_MILLIS_PER_DAY] and 2000ms), and with
+ * its `easing` argument [EaseOutQuart] (starts fast, then slows). Then we call the [Animatable.animateTo]
+ * method of `selectedAnimationPercentage` with its `targetValue` argument 1f, and its `animationSpec`
+ * our [TweenSpec] of [Float] variable `animationSpec`.
+ *
+ * Our root Composable is a [LazyColumn] whose `modifier` argument chains a [Modifier.consumeWindowInsets]
+ * with its `paddingValues` argument our [PaddingValues] parameter [contentPadding] to our [Modifier]
+ * parameter [modifier], and whose `contentPadding` argument is our [PaddingValues] parameter
+ * [contentPadding]. In its [LazyListScope] `content` lambda argument we use the [forEach] extension
+ * function to loop over all of the `month` [Month] in the [CalendarState.listMonths] list of months
+ * of our [CalendarState] parameter [calendarState] composing an [itemsCalendarMonth] for each `month`
+ * with its `calendarUiState` argument our [CalendarUiState] variable `calendarUiState`, its
+ * `onDayClicked` argument our lambda parameter [onDayClicked], its `selectedPercentageProvider`
+ * argument a lambda returning the [Animatable.value] of our [Animatable] of [Float] variable
+ * `selectedAnimationPercentage`, and its `month` argument the [Month] passed by [forEach] in the
+ * `month` variable.
+ *
+ * After composing all of the [Month]'s we compose an [LazyListScope.item] whose `key` is the constant
+ * [String] "bottomSpacer", which holds a [Spacer] whose `modifier` argument is a
+ * [Modifier.windowInsetsBottomHeight] whose `insets` argument is [WindowInsets.Companion.navigationBars]
+ * which prevents the [LazyColumn] from letting the navigation bar cover up the very last row of the
+ * calendar (the navigation bar is slightly transparent but blocks the calendar receiving clicks for
+ * the row it covers, thus if you want the last week to be clickable you need this [Spacer]).
  *
  * @param calendarState the [CalendarState] holding all of the information needed to render a 24
  * month calendar.
@@ -111,28 +136,40 @@ fun Calendar(
     }
 
     LazyColumn(
-        modifier = modifier.consumeWindowInsets(contentPadding),
+        modifier = modifier.consumeWindowInsets(paddingValues = contentPadding),
         contentPadding = contentPadding
     ) {
-        calendarState.listMonths.forEach { month ->
+        calendarState.listMonths.forEach { month: Month ->
             itemsCalendarMonth(
-                calendarUiState,
-                onDayClicked,
-                { selectedAnimationPercentage.value },
-                month
+                calendarUiState = calendarUiState,
+                onDayClicked = onDayClicked,
+                selectedPercentageProvider = { selectedAnimationPercentage.value },
+                month = month
             )
         }
 
         item(key = "bottomSpacer") {
             Spacer(
                 modifier = Modifier.windowInsetsBottomHeight(
-                    WindowInsets.navigationBars
+                    insets = WindowInsets.navigationBars
                 )
             )
         }
     }
 }
 
+/**
+ * This is used in the [LazyColumn] of [Calendar] to render a calendar for the [Month] parameter
+ * [month].
+ *
+ * @param calendarUiState the [CalendarUiState] which represents the actual current "selected days
+ * state" of the calendar being displayed.
+ * @param onDayClicked a lambda that should be called with the [LocalDate] of the [Day] when a day
+ * is clicked in the calendar.
+ * @param selectedPercentageProvider provided the current animated [Float] used to animate the
+ * extension of the selected date range.
+ * @param month the [Month] whose calendar we are supposed to render.
+ */
 private fun LazyListScope.itemsCalendarMonth(
     calendarUiState: CalendarUiState,
     onDayClicked: (LocalDate) -> Unit,
@@ -158,19 +195,22 @@ private fun LazyListScope.itemsCalendarMonth(
     // A custom key needs to be given to these items so that they can be found in tests that
     // need scrolling. The format of the key is ${year/month/weekNumber}. Thus,
     // the key for the fourth week of December 2020 is "2020/12/4"
-    itemsIndexed(month.weeks, key = { index, _ ->
-        month.yearMonth.year.toString() +
-            "/" +
-            month.yearMonth.month.value +
-            "/" +
-            (index + 1).toString()
-    }) { _, week ->
-        val beginningWeek = week.yearMonth.atDay(1).plusWeeks(week.number.toLong())
-        val currentDay = beginningWeek.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+    itemsIndexed(
+        items = month.weeks,
+        key = { index, _ ->
+            month.yearMonth.year.toString() +
+                "/" +
+                month.yearMonth.month.value +
+                "/" +
+                (index + 1).toString()
+        }
+    ) { _, week ->
+        val beginningWeek: LocalDate = week.yearMonth.atDay(1).plusWeeks(week.number.toLong())
+        val currentDay: LocalDate = beginningWeek.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 
         if (calendarUiState.hasSelectedPeriodOverlap(
-                currentDay,
-                currentDay.plusDays(6)
+                start = currentDay,
+                end = currentDay.plusDays(6)
             )
         ) {
             WeekSelectionPill(
@@ -187,7 +227,7 @@ private fun LazyListScope.itemsCalendarMonth(
             week = week,
             onDayClicked = onDayClicked
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(height = 8.dp))
     }
 }
 
