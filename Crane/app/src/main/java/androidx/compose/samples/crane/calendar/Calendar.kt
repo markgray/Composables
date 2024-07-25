@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.samples.crane.calendar.model.CalendarState
 import androidx.compose.samples.crane.calendar.model.CalendarUiState
 import androidx.compose.samples.crane.calendar.model.Month
+import androidx.compose.samples.crane.calendar.model.Week
 import androidx.compose.samples.crane.home.MainViewModel
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
@@ -49,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 
@@ -161,6 +163,38 @@ fun Calendar(
 /**
  * This is used in the [LazyColumn] of [Calendar] to render a calendar for the [Month] parameter
  * [month].
+ *  - The first [LazyListScope.item] we compose uses a `key` that is a [String] constructed by
+ *  appending the month name to the year to the [String] "header" to allow it to be found in tests,
+ *  and contains a [MonthHeader] Composable whose `modifier` argument is a [Modifier.padding] that
+ *  adds 32.dp to the `start`, 32.dp to the `end` and 32.dp to the `top` of the [MonthHeader], whose
+ *  `month` argument is the [YearMonth.getMonth.value] of the [Month.yearMonth] of our [Month]
+ *  parameter [month], and whose `year` argument is the [String] value of the [YearMonth.getYear]
+ *  of the [Month.yearMonth] of our [Month] parameter [month].
+ *  - We initialize our [Modifier] variable `val contentModifier` to a [Modifier.fillMaxWidth], with
+ *  a [Modifier.wrapContentWidth] whose `align` argument is an [Alignment.CenterHorizontally] to
+ *  center any composable using `contentModifier` horizontally.
+ *  - We use the [LazyListScope.itemsIndexed] method to add to add a list of items rendering each
+ *  of the [Week] variable `week` in the `items` argument of the [Month.weeks] list of [Week] of our
+ *  [Month] parameter [month], and the `key` argument of the [LazyListScope.itemsIndexed] is a custom
+ *  key of the format: ${year/month/weekNumber}. In the `itemContent` for each [Week] we initialize
+ *  our [LocalDate] variable `val beginningWeek` to the [LocalDate] of the first day of the [Month]
+ *  plus the number of weeks in the [Week.number] of `week`, then we initialize our [LocalDate]
+ *  variable `val currentDay` to the [DayOfWeek.MONDAY] of the week containing `beginningWeek`.
+ *  - If the [CalendarUiState.hasSelectedPeriodOverlap] method of [CalendarUiState] parameter
+ *  [calendarUiState] returns `true` for the date range `currentDay` to `currentDay` plus 6 days we
+ *  compose a [WeekSelectionPill] with its `state` argument our [CalendarUiState] parameter
+ *  [calendarUiState], with its `currentWeekStart` argument our [LocalDate] variable `currentDay`,
+ *  with its `widthPerDay` argument the constant [CELL_SIZE] (48.dp), with its `week` argument our
+ *  [Week] variable `week`, and its `selectedPercentageTotalProvider` argument our animated [Float]
+ *  parameter [selectedPercentageProvider] (this draws a red "pill" indicating the date range that
+ *  the user has selected, and its extension from the [CalendarUiState.selectedStartDate] to the
+ *  [CalendarUiState.selectedEndDate] is animated using the animated [Float] parameter
+ *  [selectedPercentageProvider]).
+ *  - a [Week] Composable is composed next with its `calendarUiState` argument our [CalendarUiState]
+ *  parameter [calendarUiState], with its `modifier` argument our [Modifier] variable `contentModifier`,
+ *  with its `week` argument our [Week] variable `week`, and with its `onDayClicked` argument our
+ *  lambda parameter [onDayClicked].
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to 8.dp.
  *
  * @param calendarUiState the [CalendarUiState] which represents the actual current "selected days
  * state" of the calendar being displayed.
@@ -176,7 +210,7 @@ private fun LazyListScope.itemsCalendarMonth(
     selectedPercentageProvider: () -> Float,
     month: Month
 ) {
-    item(month.yearMonth.month.name + month.yearMonth.year + "header") {
+    item(key = month.yearMonth.month.name + month.yearMonth.year + "header") {
         MonthHeader(
             modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 32.dp),
             month = month.yearMonth.month.name,
@@ -187,7 +221,7 @@ private fun LazyListScope.itemsCalendarMonth(
     // Expanding width and centering horizontally
     val contentModifier = Modifier
         .fillMaxWidth()
-        .wrapContentWidth(Alignment.CenterHorizontally)
+        .wrapContentWidth(align = Alignment.CenterHorizontally)
     item(month.yearMonth.month.name + month.yearMonth.year + "daysOfWeek") {
         DaysOfWeek(modifier = contentModifier)
     }
@@ -204,7 +238,7 @@ private fun LazyListScope.itemsCalendarMonth(
                 "/" +
                 (index + 1).toString()
         }
-    ) { _, week ->
+    ) { _, week: Week ->
         val beginningWeek: LocalDate = week.yearMonth.atDay(1).plusWeeks(week.number.toLong())
         val currentDay: LocalDate = beginningWeek.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 
@@ -227,7 +261,7 @@ private fun LazyListScope.itemsCalendarMonth(
             week = week,
             onDayClicked = onDayClicked
         )
-        Spacer(Modifier.height(height = 8.dp))
+        Spacer(modifier = Modifier.height(height = 8.dp))
     }
 }
 
@@ -242,7 +276,7 @@ private fun LazyListScope.itemsCalendarMonth(
 internal val CALENDAR_STARTS_ON = WeekFields.ISO
 
 /**
- * TODO: Add kdoc
+ * Preview of our [CraneTheme] wrapped [Calendar] Composable.
  */
 @Preview
 @Composable
