@@ -29,7 +29,9 @@ import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,9 +43,11 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -58,6 +62,7 @@ import androidx.compose.samples.crane.home.MainActivity
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
@@ -194,6 +199,24 @@ private data class DetailsScreenUiState(
  * [City], or to a [DetailsScreenUiState] whose [DetailsScreenUiState.throwError] property is
  * `true` if it is not a [Result.Success].
  *
+ * Next we use [Crossfade] with its `targetState` our [DetailsScreenUiState] variable `uiState`,
+ * with its `modifier` argument our [Modifier] parameter [modifier], and its `label` argument the
+ * [String] "Crossfade" to switch between two layouts with a crossfade animation based on the
+ * [DetailsScreenUiState] it passes its `content` lambda Composable in the variable `currentUiState`.
+ * In `content` we use a `when` switch to choose between:
+ *  - the [DetailsScreenUiState.city] property of `currentUiState` is not `null` -> we compose a
+ *  [DetailsContent] with its `city` argument the [DetailsScreenUiState.city] property of
+ *  `currentUiState` and its `modifier` argument a [Modifier.fillMaxSize] to have it fill its
+ *  entire incoming size constraints.
+ *  - the [DetailsScreenUiState.isLoading] property of `currentUiState` is `true` -> we compose a
+ *  [Box] with its `modifier` argument a [Modifier.fillMaxSize] to have it fill its entire incoming
+ *  size constraints, and the `content` of the [Box] is a [CircularProgressIndicator] whose `color`
+ *  argument is the [Colors.onSurface] color of our [CraneTheme] custom [MaterialTheme.colors],
+ *  and whose `modifier` argument is a [BoxScope.align] whose `alignment` argument is
+ *  [Alignment.Center] to align the [CircularProgressIndicator] in the center of the [Box].
+ *  - when anything else occurs we call our [onErrorLoading] lambda parameter (which is a lambda
+ *  which logs the message "Error loading screen" and finishes [DetailsActivity]).
+ *
  * @param onErrorLoading a lambda we should call when there is an error loading the [City] from
  * [DetailsViewModel.cityDetails]. Our caller, the `onCreate` override of [DetailsActivity], passes
  * us a lambda that logs the error "Error loading screen" then calls [DetailsActivity.finish] to
@@ -235,13 +258,13 @@ fun DetailsScreen(
     ) { currentUiState: DetailsScreenUiState ->
         when {
             currentUiState.city != null -> {
-                DetailsContent(currentUiState.city, Modifier.fillMaxSize())
+                DetailsContent(city = currentUiState.city, modifier = Modifier.fillMaxSize())
             }
             currentUiState.isLoading -> {
-                Box(Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(
                         color = MaterialTheme.colors.onSurface,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(alignment = Alignment.Center)
                     )
                 }
             }
@@ -253,7 +276,19 @@ fun DetailsScreen(
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable is composed by [DetailsScreen] when the [DetailsScreenUiState] it retrieves from
+ * [DetailsViewModel.cityDetails] contains a non-`null` value for its [DetailsScreenUiState.city]
+ * property. That [City] is passed to us in our [city] parameter. Our root Composable is a [Column]
+ * whose `modifier` argument is our [Modifier] parameter [modifier] and whose `verticalArrangement`
+ * argument is [Arrangement.Center] (to have it arrange its children such that they are as close as
+ * possible to the middle of the main axis). The `content` of the [Column] is:
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to 32.dp.
+ *  - a [Text] whose `modifier` argument is a [ColumnScope.align] whose `alignment` argument is
+ *  [Alignment.CenterHorizontally] to align the [Text] in the center of the [Column], whose `text`
+ *  argument is the [City.nameToDisplay] property of our [City] parameter [city], whose [TextStyle]
+ *  `style` argument is the [Typography.h4] of our [CraneTheme] custom [MaterialTheme.typography],
+ *  and whose `textAlign` argument is [TextAlign.Center] to have it center its `text`.
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to 16.dp.
  */
 @Composable
 fun DetailsContent(
@@ -261,15 +296,15 @@ fun DetailsContent(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
-        Spacer(Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(height = 32.dp))
         Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
             text = city.nameToDisplay,
             style = MaterialTheme.typography.h4,
             textAlign = TextAlign.Center
         )
-        Spacer(Modifier.height(16.dp))
-        CityMapView(city.latitude, city.longitude)
+        Spacer(modifier = Modifier.height(height = 16.dp))
+        CityMapView(latitude = city.latitude, longitude = city.longitude)
     }
 }
 
