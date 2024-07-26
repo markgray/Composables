@@ -260,6 +260,7 @@ fun DetailsScreen(
             currentUiState.city != null -> {
                 DetailsContent(city = currentUiState.city, modifier = Modifier.fillMaxSize())
             }
+
             currentUiState.isLoading -> {
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(
@@ -268,6 +269,7 @@ fun DetailsScreen(
                     )
                 }
             }
+
             else -> {
                 onErrorLoading()
             }
@@ -289,6 +291,13 @@ fun DetailsScreen(
  *  `style` argument is the [Typography.h4] of our [CraneTheme] custom [MaterialTheme.typography],
  *  and whose `textAlign` argument is [TextAlign.Center] to have it center its `text`.
  *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to 16.dp.
+ *  - a [CityMapView] whose `latitude` argument is the [City.latitude] of our [City] parameter [city]
+ *  and whose `longitude` argument is the [City.longitude] of our [City] parameter [city].
+ *
+ * @param city the [City] whose information we are to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [DetailsScreen] calls us with a [Modifier.fillMaxSize] that causes us to
+ * occupy our entire incoming size constraints.
  */
 @Composable
 fun DetailsContent(
@@ -309,8 +318,19 @@ fun DetailsContent(
 }
 
 /**
- * CityMapView
- * A composable that shows a map centered on a location with a marker.
+ * [CityMapView] -> A composable that shows a map centered on a location with a marker. We start by
+ * initializing and remembering our [LatLng] variable `val cityLocation` to the [LatLng] constructed
+ * from the [Double] value of our [String] parameters [latitude] and [longitude],
+ *
+ * @param latitude the [City.latitude] location of the city whose map we are to show.
+ * @param longitude the [City.longitude] location of the city whose map we are to show.
+ * @param onMapLoadedWithCameraState used only by tests, it is used as the `onMapLoaded` argument
+ * of our [MapViewContainer] and it uses it as the `onMapLoaded` argument of its [GoogleMap], where
+ * it will be called when the map finishes loading (if it is not the default `null` of course).
+ * @param onZoomChanged used only by tests, it is used as the `onZoomChanged` argument of our
+ * [MapViewContainer] and it uses it in the lambdas it uses for the `onZoomIn` and `onZoomOut`
+ * arguments of its [ZoomControls], where it is called (if is not the default `null`) when either
+ * of its [ZoomButton]'s are clicked.
  */
 @Composable
 fun CityMapView(
@@ -319,16 +339,17 @@ fun CityMapView(
     onMapLoadedWithCameraState: ((CameraPositionState) -> Unit)? = null, // Exposed for use in tests
     onZoomChanged: (() -> Unit)? = null
 ) {
-    val cityLocation = remember(latitude, longitude) {
+    val cityLocation: LatLng = remember(key1 = latitude, key2 = longitude) {
         LatLng(latitude.toDouble(), longitude.toDouble())
     }
 
-    val cameraPositionState = rememberCameraPositionState(cityLocation.toString()) {
-        position = CameraPosition.fromLatLngZoom(
-            cityLocation,
-            InitialZoom
-        )
-    }
+    val cameraPositionState: CameraPositionState =
+        rememberCameraPositionState(key = cityLocation.toString()) {
+            position = CameraPosition.fromLatLngZoom(
+                /* target = */ cityLocation,
+                /* zoom = */ InitialZoom
+            )
+        }
 
     MapViewContainer(
         cameraPositionState = cameraPositionState,
