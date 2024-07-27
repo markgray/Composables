@@ -78,6 +78,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -320,7 +321,18 @@ fun DetailsContent(
 /**
  * [CityMapView] -> A composable that shows a map centered on a location with a marker. We start by
  * initializing and remembering our [LatLng] variable `val cityLocation` to the [LatLng] constructed
- * from the [Double] value of our [String] parameters [latitude] and [longitude],
+ * from the [Double] value of our [String] parameters [latitude] and [longitude], then we initialize
+ * and remember our [CameraPositionState] variable `val cameraPositionState` keyed on the `key`
+ * of the [String] value of [LatLng] variable `cityLocation`, and in the `init` lambda argument we
+ * set the [CameraPositionState.position] to the [CameraPosition] created by the method
+ * [CameraPosition.fromLatLngZoom] for the `target` argument of [LatLng] variable `cityLocation` and
+ * the `zoom` argument of [InitialZoom] (5f). Then we compose a [MapViewContainer] with the arguments:
+ *  - `cameraPositionState` our [CameraPositionState] variable `cameraPositionState`
+ *  - `onMapLoaded` is a lambda which, if our lambda parameter [onMapLoadedWithCameraState] is not
+ *  `null` calls its [invoke] method with our [CameraPositionState] variable `cameraPositionState`
+ *  - `onZoomChanged` is our lambda parameter [onZoomChanged]
+ *  - in its `content` lambda parameter we compose a [Marker] whose `state` argument is a
+ *  [MarkerState] whose `position` is our [LatLng] variable `cityLocation`.
  *
  * @param latitude the [City.latitude] location of the city whose map we are to show.
  * @param longitude the [City.longitude] location of the city whose map we are to show.
@@ -363,8 +375,20 @@ fun CityMapView(
 }
 
 /**
- * MapViewContainer
- * A MapView styled with custom zoom controls.
+ * MapViewContainer -> A MapView styled with custom zoom controls. We start by initializing and
+ * remembering our [MapProperties] variable `val mapProperties` to an instance whose
+ * `maxZoomPreference` is our [Float] constant [MaxZoom] (20f) and whose `minZoomPreference` is our
+ * [Float] constant [MinZoom] (2f). Next we initialize and remember our [MapUiSettings] variable
+ * `val mapUiSettings` to an instance whose `zoomControlsEnabled` argument is `false` (we are
+ * providing our own zoom controls so we disable the built-in ones). Then we initialize and remember
+ * our [CoroutineScope] variable `val animationScope` to a new instance.
+ *
+ * @param cameraPositionState the [CameraPositionState] that can be used to control and observe the
+ * map's camera state.
+ * @param onMapLoaded a lambda to be invoked when the map is finished loading. This is `null` except
+ * for tests.
+ * @param onZoomChanged a lambda to be invoked when the user clicks either of the [ZoomButton]'s is
+ * clicked. This is `null` except for tests.
  */
 @Composable
 fun MapViewContainer(
@@ -373,19 +397,20 @@ fun MapViewContainer(
     onZoomChanged: (() -> Unit)? = null,
     content: (@Composable () -> Unit)? = null
 ) {
-    val mapProperties = remember {
+    val mapProperties: MapProperties = remember {
         MapProperties(
             maxZoomPreference = MaxZoom,
             minZoomPreference = MinZoom,
         )
     }
 
-    val mapUiSettings = remember {
+    val mapUiSettings: MapUiSettings = remember {
         // We are providing our own zoom controls so disable the built-in ones.
         MapUiSettings(zoomControlsEnabled = false)
     }
 
-    val animationScope = rememberCoroutineScope()
+    val animationScope: CoroutineScope = rememberCoroutineScope()
+
     Column {
         ZoomControls(
             onZoomIn = {
