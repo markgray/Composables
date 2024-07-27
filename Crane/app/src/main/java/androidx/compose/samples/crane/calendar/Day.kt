@@ -48,13 +48,16 @@ import androidx.compose.ui.text.style.TextAlign
 import java.time.LocalDate
 import java.time.YearMonth
 
+/**
+ * Displays the first letter of the each day of the week at the top of each month.
+ */
 @Composable
 internal fun DayOfWeekHeading(day: String) {
     DayContainer {
         Text(
             modifier = Modifier
                 .fillMaxSize()
-                .wrapContentHeight(Alignment.CenterVertically),
+                .wrapContentHeight(align = Alignment.CenterVertically),
             textAlign = TextAlign.Center,
             text = day,
             style = MaterialTheme.typography.caption.copy(Color.White.copy(alpha = 0.6f))

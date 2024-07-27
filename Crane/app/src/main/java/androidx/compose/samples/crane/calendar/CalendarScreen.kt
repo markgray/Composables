@@ -39,15 +39,19 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.calendar.model.CalendarState
+import androidx.compose.samples.crane.calendar.model.CalendarUiState
 import androidx.compose.samples.crane.calendar.model.Month
 import androidx.compose.samples.crane.home.MainActivity
 import androidx.compose.samples.crane.home.MainViewModel
 import androidx.compose.samples.crane.home.Routes
 import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -102,7 +106,15 @@ fun CalendarScreen(
  *  enter the [WindowInsetsSides.Start] and [WindowInsetsSides.End] of the [WindowInsets] of the
  *  navigation bars.
  *  - `backgroundColor` is the [Colors.primary] of our [CraneTheme] custom [MaterialTheme.colors].
- *  - `topBar` is a lambda that composes a [CalendarTopAppBar] whose `calendarState` argument
+ *  - `topBar` is a lambda that composes a [CalendarTopAppBar] whose `calendarState` argument is our
+ *  [CalendarState] parameter [calendarState], and whose `onBackPressed` argument is our lambda
+ *  parameter [onBackPressed].
+ *
+ * The `content` lambda parameter is passed [PaddingValues] in the `contentPadding` variable and
+ * composes a [Calendar] whose `calendarState` argument is our [CalendarState] parameter
+ * [calendarState], whose onDayClicked argument is our lambda parameter [onDayClicked], and whose
+ * `contentPadding` argument is the [PaddingValues] that [Scaffold] passes its `content` in the
+ * `contentPadding` variable.
  *
  * @param calendarState the [CalendarState] describing the calendar we should render. Our caller
  * [CalendarScreen] calls us with the remembered [CalendarState] that it reads from the
@@ -139,15 +151,48 @@ private fun CalendarContent(
     }
 }
 
+/**
+ * This is the `topBar` used by the [Scaffold] in [CalendarContent]. We start by initializing our
+ * [CalendarUiState] variable `val calendarUiState` to the [MutableState.value] of the
+ * [CalendarState.calendarUiState] property of our [CalendarState] parameter [calendarState]. Then
+ * our root Composable is a [Column] which holds:
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.windowInsetsTopHeight] to set its top
+ *  [WindowInsets] to the `insets` of [WindowInsets.Companion.statusBars], and to this is chained
+ *  a [Modifier.fillMaxWidth] to have the [Spacer] occupy its entire incoming width constrain, and
+ *  to this is chained a [Modifier.background] to set its [Color] to the [Colors.primaryVariant]
+ *  of the [CraneTheme] custom [MaterialTheme.colors].
+ *
+ * Below this is a [TopAppBar] whose arguments are:
+ *  - `title` is a lambda that composes a [Text] whose `text` is the [String] with resource ID
+ *  [R.string.calendar_select_dates_title] ("Select Dates") if the [CalendarUiState.hasSelectedDates]
+ *  property of [CalendarUiState] variable `calendarUiState` returns `false` or if it returns `true`
+ *  the [String] returned by the [CalendarUiState.selectedDatesFormatted] property of
+ *  `calendarUiState`.
+ *  - `navigationIcon` is an [IconButton] whose `onClick` lambda argument is a lambda which calls
+ *  our lambda parameter [onBackPressed], and its `content` Composable lambda argument is an [Icon]
+ *  whose `imageVector` argument is the [ImageVector] drawn by [Icons.AutoMirrored.Filled.ArrowBack],
+ *  whose `contentDescription` is the [String] with resource ID [R.string.cd_back] ("Back"), and
+ *  whose `tint` [Color] is the [Colors.onSurface] of the [CraneTheme] custom [MaterialTheme.colors].
+ *  - `backgroundColor` is the [Colors.primaryVariant] of the [CraneTheme] custom
+ *  [MaterialTheme.colors].
+ *  - `elevation` is 0.dp
+ *
+ * @param calendarState the current [CalendarState] of our [Calendar]. It traces back to
+ * [CalendarScreen] where it is the remembered [CalendarState] that it reads from the
+ * [MainViewModel.calendarState] property.
+ * @param onBackPressed a lambda to call when the user presses the back button. It traces back to
+ * the [NavHost] in the `onCreate` override of [MainActivity] where it is a lambda that calls the
+ * [NavHostController.popBackStack] method of the `navController` of the [NavHost].
+ */
 @Composable
 private fun CalendarTopAppBar(calendarState: CalendarState, onBackPressed: () -> Unit) {
-    val calendarUiState = calendarState.calendarUiState.value
+    val calendarUiState: CalendarUiState = calendarState.calendarUiState.value
     Column {
         Spacer(
             modifier = Modifier
-                .windowInsetsTopHeight(WindowInsets.statusBars)
+                .windowInsetsTopHeight(insets = WindowInsets.statusBars)
                 .fillMaxWidth()
-                .background(MaterialTheme.colors.primaryVariant)
+                .background(color = MaterialTheme.colors.primaryVariant)
         )
         TopAppBar(
             title = {
