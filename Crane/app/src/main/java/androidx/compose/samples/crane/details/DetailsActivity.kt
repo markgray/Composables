@@ -383,6 +383,24 @@ fun CityMapView(
  * providing our own zoom controls so we disable the built-in ones). Then we initialize and remember
  * our [CoroutineScope] variable `val animationScope` to a new instance.
  *
+ * Our root Composable is a [Column] which holds:
+ *  - a [ZoomControls] whose `onZoomIn` argument is a lambda which uses our [CoroutineScope] variable
+ *  `animationScope` to launch a coroutine that calls the [CameraPositionState.animate] method of
+ *  our [CameraPositionState] parameter [cameraPositionState] to Animate the camera position as
+ *  specified by its argument [CameraUpdateFactory.zoomIn] (Returns a CameraUpdate that zooms in on
+ *  the map by moving the viewpoint's height closer to the Earth's surface using zoom increment 1.0)
+ *  and then if our [onZoomChanged] lambda parameter is not `null` it calls its [invoke] method.
+ *  - a [GoogleMap] whose `properties` argument is our [MapProperties] variable `mapProperties`
+ *  (the properties that can be modified on the map, we just modify `maxZoomPreference` to [MaxZoom]
+ *  (20f) and `minZoomPreference` to [MinZoom] (2f)), whose `cameraPositionState` argument is our
+ *  [CameraPositionState] parameter [cameraPositionState] (the [CameraPositionState] to be used to
+ *  control or observe the map's camera state), whose `uiSettings` is our [MapUiSettings] variable
+ *  `mapUiSettings` (the [MapUiSettings] to be used for UI-specific settings on the map, we just
+ *  disable the `zoomControlsEnabled` setting since we provide our own zoom controls), whose
+ *  `onMapLoaded` argument is our lambda parameter [onMapLoaded] (lambda invoked when the map is
+ *  finished loading), and whose `content` is our Composable lambda parameter [content] (our caller
+ *  [MapViewContainer] passes us a [Marker] which composes a marker over the [LatLng] of the city).
+ *
  * @param cameraPositionState the [CameraPositionState] that can be used to control and observe the
  * map's camera state.
  * @param onMapLoaded a lambda to be invoked when the map is finished loading. This is `null` except
@@ -437,17 +455,33 @@ fun MapViewContainer(
     }
 }
 
+/**
+ * Renders our custom zoom control buttons just above the [GoogleMap] in our [MapViewContainer]
+ * Composable. Our root Composable is a [Row] whose `modifier` argument is a [Modifier.fillMaxWidth]
+ * to have the [Row] consume its entire incoming width constraint, and its `horizontalArrangement`
+ * argument is an [Arrangement.Center] (which causes the [Row] to place its children such that they
+ * are as close as possible to the middle of the main axis). The `content` of the [Row] is a
+ * [ZoomButton] whose `text` argument is the [String] "-", and whose `onClick` argument is our
+ * [onZoomOut] lambda parameter, and a [ZoomButton] whose `text` argument is the [String] "+", and
+ * whose `onClick` argument is our [onZoomIn] lambda parameter.
+ *
+ * @param onZoomIn a lambda to be called when the user clicks our "zoom in" [ZoomButton].
+ * @param onZoomOut a lambda to be called when the user clicks our "zoom out" [ZoomButton].
+ */
 @Composable
 private fun ZoomControls(
     onZoomIn: () -> Unit,
     onZoomOut: () -> Unit
 ) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         ZoomButton(text = "-", onClick = onZoomOut)
         ZoomButton(text = "+", onClick = onZoomIn)
     }
 }
 
+/**
+ * This is used by [ZoomControls] for both the "zoom out" and "zoom in" buttons it holds.
+ */
 @Composable
 private fun ZoomButton(text: String, onClick: () -> Unit) {
     Button(
