@@ -41,6 +41,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Colors
@@ -433,13 +434,13 @@ fun MapViewContainer(
         ZoomControls(
             onZoomIn = {
                 animationScope.launch {
-                    cameraPositionState.animate(CameraUpdateFactory.zoomIn())
+                    cameraPositionState.animate(update = CameraUpdateFactory.zoomIn())
                     onZoomChanged?.invoke()
                 }
             },
             onZoomOut = {
                 animationScope.launch {
-                    cameraPositionState.animate(CameraUpdateFactory.zoomOut())
+                    cameraPositionState.animate(update = CameraUpdateFactory.zoomOut())
                     onZoomChanged?.invoke()
                 }
             }
@@ -480,7 +481,21 @@ private fun ZoomControls(
 }
 
 /**
- * This is used by [ZoomControls] for both the "zoom out" and "zoom in" buttons it holds.
+ * This is used by [ZoomControls] for both the "zoom out" and "zoom in" buttons it holds. Our root
+ * Composable is a [Button] whose `modifier` argument is a [Modifier.padding] that adds 8.dp to all
+ * size, whose `colors` argument is a [ButtonColors] with its `backgroundColor` [Color] the
+ * [Colors.onPrimary] of our [CraneTheme] custom [MaterialTheme.colors] and whose `contentColor`
+ * [Color] the [Colors.primary] of our [CraneTheme] custom [MaterialTheme.colors], and whose
+ * `onClick` argument is our lambda parameter [onClick]. The `content` of the [Button] is a [Text]
+ * whose `text` is our [String] parameter [text], and whose `style` [TextStyle] argument is the
+ * [Typography.h5] of our [CraneTheme] custom [MaterialTheme.typography].
+ *
+ * @param text the [String] we should use as the [Text] label of the [Button]. This is "-" for the
+ * "zoom out" [ZoomButton], and "+" for the "zoom in" [ZoomButton].
+ * @param onClick a lambda we should call when our [Button] is clicked. This traces back to
+ * [MapViewContainer] where if is a lambda which launches a coroutine to call the method
+ * [CameraPositionState.animate] with its `update` argument [CameraUpdateFactory.zoomIn] for the
+ * "zoom in" [ZoomButton] and [CameraUpdateFactory.zoomOut] for the "zoom out" [ZoomButton].
  */
 @Composable
 private fun ZoomButton(text: String, onClick: () -> Unit) {
@@ -497,16 +512,22 @@ private fun ZoomButton(text: String, onClick: () -> Unit) {
 }
 
 /**
- * TODO: Add kdoc
+ * The initial zoom level of the camera. Zoom level is defined such that at zoom level 0, the whole
+ * world is approximately 256dp wide (assuming that the camera is not tilted). Increasing the zoom
+ * level by 1 doubles the width of the world on the screen. Hence at zoom level N, the width of the
+ * world is approximately 256 * 2 ^ N dp, i.e., at zoom level 5, the whole world is approximately
+ * 8192dp wide.
  */
 private const val InitialZoom = 5f
 
 /**
- * TODO: Add kdoc
+ * The minimum zoom level of the camera. At zoom level 2, the whole world is
+ * approximately 1024dp wide.
  */
 const val MinZoom: Float = 2f
 
 /**
- * TODO: Add kdoc
+ * The maximum zoom level of the camera. At zoom level 20, the whole world is approximately
+ * 268,435,456dp wide.
  */
 const val MaxZoom: Float = 20f

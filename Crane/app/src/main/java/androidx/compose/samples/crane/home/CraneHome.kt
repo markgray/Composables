@@ -36,6 +36,9 @@ import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
 import androidx.compose.material.rememberBackdropScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -56,12 +59,41 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
+/**
+ * This `typealias` for a function which takes an [ExploreModel] and returns [Unit] probably exists
+ * because [OnExploreItemClicked] is easier to type, but then again it does make its purpose clearer.
+ */
 typealias OnExploreItemClicked = (ExploreModel) -> Unit
 
+/**
+ * This `enum` is used to identify which [Tab] in the [TabRow] of [CraneTabs] has been selected by
+ * the user. It is then used to determine which Composable is rendered and where the data it uses
+ * comes from (see the `frontLayerContent` argument of the [BackdropScaffold] in [CraneHomeContent]
+ * for the different Composables and datasets used depending on which [Tab] has been selected).
+ */
 enum class CraneScreen {
-    Fly, Sleep, Eat
+    /**
+     * When the [Tab] using this `enum` value as its index is clicked the user is able to find out
+     * flight information for the various cities he can fly to.
+     */
+    Fly,
+
+    /**
+     * When the [Tab] using this `enum` value as its index is clicked the user is able to find out
+     * hotel information for the various cities.
+     */
+    Sleep,
+
+    /**
+     * When the [Tab] using this `enum` value as its index is clicked the user is able to find out
+     * restaurant information for the various cities.
+     */
+    Eat
 }
 
+/**
+ *
+ */
 @Composable
 fun CraneHome(
     widthSize: WindowWidthSizeClass,
