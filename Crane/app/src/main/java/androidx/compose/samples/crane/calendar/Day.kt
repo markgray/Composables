@@ -33,6 +33,7 @@ import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
@@ -80,7 +81,26 @@ internal fun DayOfWeekHeading(day: String) {
 
 /**
  * This is used by [DayOfWeekHeading] to display the first letter of each day of the week, and by
- * [Day] to display a numbered day in the Calendar.
+ * [Day] to display a numbered day in the Calendar. We start by initializing our [String] variable
+ * `val stateDescriptionLabel` to the [String] with resource ID [R.string.state_descr_selected]
+ * ("Selected") if our [Boolean] parameter [selected] is `true` or to the [String] with resource ID
+ * [R.string.state_descr_not_selected] ("Not selected") if it is `false`. Our root Composable is a
+ * [Box] whose `modifier` argument is a [Modifier.size] that sets its `width` and `height` to
+ * [CELL_SIZE] (48.dp), with a [Modifier.pointerInput] chained to that that uses the `block`
+ * [PointerInputScope] lambda to call the [PointerInputScope.detectTapGestures] method where it
+ * calls our [onClick] lambda parameter in the lambda that it uses as the `onTap` argument of the
+ * [PointerInputScope.detectTapGestures]. It uses [Modifier.then] to add a [Modifier] based on the
+ * value of our [Boolean] parameter [onClickEnabled]:
+ *  - `true` it adds a [Modifier.semantics] whose `properties` lambda argument is a lambda that
+ *  sets the [SemanticsPropertyReceiver.stateDescription] property to our [String] variable
+ *  `stateDescriptionLabel`, and calls the [SemanticsPropertyReceiver.onClick] method with its
+ *  `label` argument our [String] parameter [onClickLabel], and its `action` argument `null`.
+ *  - `false` it adds a [Modifier.clearAndSetSemantics] to clear the semantics of all the descendant
+ *  nodes.
+ *
+ * At the tail end of the [Modifier] chain is a [Modifier.background] that sets its background `color`
+ * to our [Color] parameter [backgroundColor]. The `content` of the [Box] is just our Composable
+ * lambda parameter [content].
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. [DayOfWeekHeading] passes us none so the default empty [Modifier] is used, but [Day]
@@ -108,7 +128,7 @@ private fun DayContainer(
     onClickLabel: String? = null,
     content: @Composable () -> Unit
 ) {
-    val stateDescriptionLabel = stringResource(
+    val stateDescriptionLabel: String = stringResource(
         if (selected) R.string.state_descr_selected else R.string.state_descr_not_selected
     )
     Box(
@@ -135,6 +155,19 @@ private fun DayContainer(
     }
 }
 
+/**
+ * Called by [androidx.compose.samples.crane.calendar.Week] to render a single day of the month.
+ *
+ * @param day the [LocalDate] of the day of the month we are to render.
+ * @param calendarState the current [CalendarUiState] that we can use to determine if our [day] is
+ * in the selected date range of our calendar.
+ * @param onDayClicked a lambda that we should call with the [LocalDate] of [day] when the
+ * [DayContainer] we compose for it is clicked.
+ * @param month the [YearMonth] containing [LocalDate] parameter [day].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [androidx.compose.samples.crane.calendar.Week] does not pass us one so the empty,
+ * default, or starter [Modifier] that contains no elements is used.
+ */
 @Composable
 internal fun Day(
     day: LocalDate,
