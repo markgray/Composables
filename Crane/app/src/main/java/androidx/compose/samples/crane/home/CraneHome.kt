@@ -25,7 +25,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.ui.draw.alpha
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -34,6 +36,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
+import androidx.compose.material.DrawerState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
@@ -51,12 +54,19 @@ import androidx.compose.samples.crane.base.CraneDrawer
 import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
 import androidx.compose.samples.crane.base.ExploreSection
+import androidx.compose.samples.crane.calendar.CalendarScreen
 import androidx.compose.samples.crane.data.ExploreModel
+import androidx.compose.samples.crane.details.DetailsActivity
+import androidx.compose.samples.crane.details.launchDetailsActivity
 import androidx.compose.samples.crane.ui.BottomSheetShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.google.maps.android.compose.GoogleMap
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -92,7 +102,41 @@ enum class CraneScreen {
 }
 
 /**
+ * Our app's main composable, its parent [MainContent] just adds some animated padding above it
+ * (100dp to 0dp) to "dramatize" the transition from [LandingScreen] to  [CraneHome]. We start by
+ * initializing and remembering our [ScaffoldState] variable `val scaffoldState` to a new instance.
+ * Then our root composable is a [Scaffold] whose `scaffoldState` argument is our [ScaffoldState]
+ * variable `scaffoldState`, whose `modifier` argument is a [Modifier.statusBarsPadding] to have it
+ * add padding to avoid the status bars, and whose `drawerContent` is a lambda which composes our
+ * [CraneDrawer] composable. In the `content` argument of the [Scaffold] it passes [PaddingValues]
+ * in the variable `contentPadding` to the lambda which initializes and remembers its [CoroutineScope]
+ * variable `val scope`, then composes a [CraneHomeContent] composable. The `modifier` argument of
+ * [CraneHomeContent] chains a [Modifier.padding] to our [Modifier] parameter [modifier] which adds
+ * the [PaddingValues] passed the lambda in the `contentPadding` variable, the `widthSize` argument
+ * is our [WindowWidthSizeClass] parameter [widthSize], the `onExploreItemClicked` argument is our
+ * [OnExploreItemClicked] parameter [onExploreItemClicked], the `onDateSelectionClicked` argument is
+ * our lambda parameter [onDateSelectionClicked], the `openDrawer` argument is a lambda which uses
+ * the [CoroutineScope.launch] method of `scope` to launch a coroutine that calls the
+ * [DrawerState.open] method of the [ScaffoldState.drawerState] of [ScaffoldState] variable
+ * `scaffoldState` to open the drawer of the [Scaffold], and the `viewModel` argument is our
+ * [MainViewModel] parameter [viewModel].
  *
+ * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
+ * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
+ * @param onExploreItemClicked a lambda that we should call with the [ExploreModel] of the item that
+ * the user has clicked. It traces up the hierarchy to a lambda created in the `onCreate`  override
+ * of [MainActivity] that calls the [launchDetailsActivity] method to launch the [DetailsActivity]
+ * to display a [GoogleMap] that corresponds to the [ExploreModel] it is called with.
+ * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
+ * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
+ * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * the [CalendarScreen] Composable.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [MainContent] passes the [Modifier] that is passed it by its parent
+ * [MainScreen] which is a [Modifier.alpha] using an animated `alpha` argument which animates from
+ * 0f to 1f with a duration of 300ms as the [LandingScreen] fades out.
+ * @param viewModel the [MainViewModel] for the app. It is injected using [hiltViewModel] in
+ * the `onCreate` override.
  */
 @Composable
 fun CraneHome(
@@ -102,17 +146,17 @@ fun CraneHome(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel
 ) {
-    val scaffoldState = rememberScaffoldState()
+    val scaffoldState: ScaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier.statusBarsPadding(),
         drawerContent = {
             CraneDrawer()
         }
-    ) { contentPadding ->
-        val scope = rememberCoroutineScope()
+    ) { contentPadding: PaddingValues ->
+        val scope: CoroutineScope = rememberCoroutineScope()
         CraneHomeContent(
-            modifier = modifier.padding(contentPadding),
+            modifier = modifier.padding(paddingValues = contentPadding),
             widthSize = widthSize,
             onExploreItemClicked = onExploreItemClicked,
             onDateSelectionClicked = onDateSelectionClicked,
@@ -126,6 +170,9 @@ fun CraneHome(
     }
 }
 
+/**
+ *
+ */
 @OptIn(
     ExperimentalMaterialApi::class,
     ExperimentalFoundationApi::class
