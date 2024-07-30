@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
@@ -189,27 +190,30 @@ fun CraneHomeContent(
     val suggestedDestinations: List<ExploreModel>? by viewModel.suggestedDestinations.observeAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
-    val craneScreenValues = CraneScreen.values()
-    val pagerState =
+    val craneScreenValues: Array<CraneScreen> = CraneScreen.values()
+    val pagerState: PagerState =
         rememberPagerState(initialPage = CraneScreen.Fly.ordinal) { craneScreenValues.size }
 
-    val coroutineScope = rememberCoroutineScope()
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
     BackdropScaffold(
         modifier = modifier,
-        scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),
+        scaffoldState = rememberBackdropScaffoldState(initialValue = BackdropValue.Revealed),
         frontLayerShape = BottomSheetShape,
         frontLayerScrimColor = Color.Unspecified,
         appBar = {
-            HomeTabBar(openDrawer, craneScreenValues[pagerState.currentPage], onTabSelected = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(
-                        it.ordinal,
-                        animationSpec = tween(
-                            TAB_SWITCH_ANIM_DURATION
+            HomeTabBar(
+                openDrawer = openDrawer,
+                tabSelected = craneScreenValues[pagerState.currentPage],
+                onTabSelected = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(
+                            page = it.ordinal,
+                            animationSpec = tween(
+                                TAB_SWITCH_ANIM_DURATION
+                            )
                         )
-                    )
-                }
-            })
+                    }
+                })
         },
         backLayerContent = {
             SearchContent(
@@ -222,13 +226,13 @@ fun CraneHomeContent(
             )
         },
         frontLayerContent = {
-            HorizontalPager(state = pagerState) { page ->
+            HorizontalPager(state = pagerState) { page: Int ->
                 when (craneScreenValues[page]) {
                     CraneScreen.Fly -> {
-                        suggestedDestinations?.let { destinations ->
+                        suggestedDestinations?.let { destinations: List<ExploreModel> ->
                             ExploreSection(
                                 widthSize = widthSize,
-                                title = stringResource(R.string.explore_flights_by_destination),
+                                title = stringResource(id = R.string.explore_flights_by_destination),
                                 exploreList = destinations,
                                 onItemClicked = onExploreItemClicked
                             )
@@ -238,7 +242,7 @@ fun CraneHomeContent(
                     CraneScreen.Sleep -> {
                         ExploreSection(
                             widthSize = widthSize,
-                            title = stringResource(R.string.explore_properties_by_destination),
+                            title = stringResource(id = R.string.explore_properties_by_destination),
                             exploreList = viewModel.hotels,
                             onItemClicked = onExploreItemClicked
                         )
@@ -247,7 +251,7 @@ fun CraneHomeContent(
                     CraneScreen.Eat -> {
                         ExploreSection(
                             widthSize = widthSize,
-                            title = stringResource(R.string.explore_restaurants_by_destination),
+                            title = stringResource(id = R.string.explore_restaurants_by_destination),
                             exploreList = viewModel.restaurants,
                             onItemClicked = onExploreItemClicked
                         )
