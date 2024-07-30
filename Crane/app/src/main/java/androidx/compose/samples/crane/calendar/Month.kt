@@ -24,6 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.clearAndSetSemantics
 
+/**
+ * This [Composable]
+ */
 @Composable
 internal fun MonthHeader(modifier: Modifier = Modifier, month: String, year: String) {
     Row(modifier = modifier.clearAndSetSemantics { }) {

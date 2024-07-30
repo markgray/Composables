@@ -156,7 +156,27 @@ private fun DayContainer(
 }
 
 /**
- * Called by [androidx.compose.samples.crane.calendar.Week] to render a single day of the month.
+ * Called by [androidx.compose.samples.crane.calendar.Week] to render a single day of the month. We
+ * start by initializing our [Boolean] variable `val selected` to `true` if the
+ * [CalendarUiState.isDateInSelectedPeriod] method of [CalendarUiState] parameter [calendarState]
+ * returns `true` for our [LocalDate] variable [day] (the day is in the currently selected date
+ * range of the [CalendarUiState]). Then we compose a [DayContainer] whose `modifier` argument
+ * chains a [Modifier.semantics] to our [Modifier] parameter [modifier] and in the `properties`
+ * [SemanticsPropertyReceiver] lambda we set the [SemanticsPropertyReceiver.text] property to an
+ * [AnnotatedString] whose `text` is a [String] formed from the month, day of month, and year of
+ * [LocalDate] parameter [day], and whose [SemanticsPropertyReceiver.dayStatusProperty] property we
+ * set to our [Boolean] variable `selected`. The `selected` argument of the [DayContainer] is our
+ * [Boolean] variable `selected`, the `onClick` argument is a lambda that calls our [onDayClicked]
+ * lambda argument with [LocalDate] parameter [day], and the `onClickLabel` argument is the [String]
+ * with the resource ID [R.string.click_label_select] ("select"). In the `content` Composable lambda
+ * argument of the [DayContainer] we compose a [Text] whose `modifier` argument is a
+ * [Modifier.fillMaxSize] to have the [Text] occupy its entire incoming size constraints, chained to
+ * that is a [Modifier.wrapContentSize] with its `align` argument of [Alignment.Center] causing it
+ * to align its content in the center of its size constraints, and that is chained to a
+ * [Modifier.clearAndSetSemantics] to allow its parent to handle semantics. The `text` argument of
+ * the [Text] is the [String] value of the [LocalDate.getDayOfMonth] of [LocalDate] parameter [day],
+ * and the `style` [TextStyle] argument is a copy of the [Typography.body1] of our [CraneTheme]
+ * custom [MaterialTheme.typography] with its [TextStyle.color] set to [Color.White].
  *
  * @param day the [LocalDate] of the day of the month we are to render.
  * @param calendarState the current [CalendarUiState] that we can use to determine if our [day] is
@@ -176,11 +196,11 @@ internal fun Day(
     month: YearMonth,
     modifier: Modifier = Modifier
 ) {
-    val selected: Boolean = calendarState.isDateInSelectedPeriod(day)
+    val selected: Boolean = calendarState.isDateInSelectedPeriod(date = day)
     DayContainer(
         modifier = modifier.semantics {
             text = AnnotatedString(
-                "${month.month.name.lowercase().capitalize(Locale.current)} " +
+                text = "${month.month.name.lowercase().capitalize(Locale.current)} " +
                     "${day.dayOfMonth} ${month.year}"
             )
             dayStatusProperty = selected
@@ -193,7 +213,7 @@ internal fun Day(
         Text(
             modifier = Modifier
                 .fillMaxSize()
-                .wrapContentSize(Alignment.Center)
+                .wrapContentSize(align = Alignment.Center)
                 // Parent will handle semantics
                 .clearAndSetSemantics {},
             text = day.dayOfMonth.toString(),
@@ -203,12 +223,14 @@ internal fun Day(
 }
 
 /**
- * TODO: Add kdoc
+ * We use this [SemanticsPropertyKey] of [Boolean] to implement the [SemanticsPropertyReceiver]
+ * extension property [dayStatusProperty]
  */
 val DayStatusKey: SemanticsPropertyKey<Boolean> =
     SemanticsPropertyKey("DayStatusKey")
 
 /**
- * TODO: Add kdoc
+ * We use this to provide accessibility output for the "selected" state of the [DayContainer] used
+ * in [Day].
  */
 var SemanticsPropertyReceiver.dayStatusProperty: Boolean by DayStatusKey
