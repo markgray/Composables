@@ -47,6 +47,7 @@ import androidx.compose.material.rememberBackdropScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,6 +57,7 @@ import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
 import androidx.compose.samples.crane.base.ExploreSection
 import androidx.compose.samples.crane.calendar.CalendarScreen
+import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.details.DetailsActivity
 import androidx.compose.samples.crane.details.launchDetailsActivity
@@ -65,6 +67,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
 import com.google.maps.android.compose.GoogleMap
 import kotlinx.coroutines.CoroutineScope
@@ -172,7 +175,36 @@ fun CraneHome(
 }
 
 /**
+ * This is the `content` of the [Scaffold] in our app's main composable [CraneHome]. We start by
+ * initializing our [State] wrapped [List] of [ExploreModel] variable `val suggestedDestinations`
+ * using the [LiveData.observeAsState] method of the [LiveData] wrapped [List] of [ExploreModel]
+ * field [MainViewModel.suggestedDestinations] ([MainViewModel] loads this from the
+ * [DestinationsRepository.destinations] property of [DestinationsRepository]). Next we initialize
+ * our lambda taking [Int] variable `val onPeopleChanged` to a lambda that calls the
+ * [MainViewModel.updatePeople] method with the [Int] passed it. We initialize our [Array] of
+ * [CraneScreen] to the [CraneScreen.values] of [CraneScreen] ([CraneScreen.Fly], [CraneScreen.Sleep],
+ * and [CraneScreen.Eat]).
  *
+ * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
+ * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
+ * @param onExploreItemClicked a lambda that we should call with the [ExploreModel] of the item that
+ * the user has clicked. It traces up the hierarchy to a lambda created in the `onCreate`  override
+ * of [MainActivity] that calls the [launchDetailsActivity] method to launch the [DetailsActivity]
+ * to display a [GoogleMap] that corresponds to the [ExploreModel] it is called with.
+ * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
+ * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
+ * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * the [CalendarScreen] Composable.
+ * @param openDrawer a lambda that we should call when the user indicates that they want to open the
+ * [CraneDrawer] drawer of the [Scaffold] we are in. [CraneHome] calls us with a lambda which uses
+ * the [CoroutineScope.launch] method to launch a coroutine that calls the [DrawerState.open] method
+ * of the [ScaffoldState.drawerState] of the [ScaffoldState] used for the [Scaffold] to open the
+ * drawer of the [Scaffold].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [CraneHome] passes us its [Modifier] parameter with a [Modifier.padding]
+ * that adds the [PaddingValues] that [Scaffold] passes its `content` lambda to our padding.
+ * @param viewModel the [MainViewModel] for the app. It is injected using [hiltViewModel] in
+ * the `onCreate` override.
  */
 @OptIn(
     ExperimentalMaterialApi::class,
