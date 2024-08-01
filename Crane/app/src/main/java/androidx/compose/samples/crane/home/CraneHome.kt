@@ -36,6 +36,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.BackdropScaffold
+import androidx.compose.material.BackdropScaffoldState
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.DrawerState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -183,7 +184,38 @@ fun CraneHome(
  * our lambda taking [Int] variable `val onPeopleChanged` to a lambda that calls the
  * [MainViewModel.updatePeople] method with the [Int] passed it. We initialize our [Array] of
  * [CraneScreen] to the [CraneScreen.values] of [CraneScreen] ([CraneScreen.Fly], [CraneScreen.Sleep],
- * and [CraneScreen.Eat]).
+ * and [CraneScreen.Eat]). We initialize and remember our [PagerState] variable `val pagerState` to
+ * a new instance whose `initialPage` is [CraneScreen.Fly.ordinal] setting its [PagerState.pageCount]
+ * to the [Array.size] of array of [CraneScreen] variable `craneScreenValues`. We initialize and
+ * remember our [CoroutineScope] variable `val coroutineScope` to a new instance.
+ *
+ * Our root Composable is a [BackdropScaffold] whose arguments are:
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *  - `scaffoldState` is a remembered [BackdropScaffoldState] whose `initialValue` is
+ *  [BackdropValue.Revealed] (Indicates the back layer is revealed and the front layer is inactive).
+ *  - `frontLayerShape` is [BottomSheetShape] (a [RoundedCornerShape] whose top two corners are
+ *  rounded by 20.dp, and whose bottom two corners are not rounded).
+ *  - `frontLayerScrimColor` is [Color.Unspecified] (Because [Color] is an inline class, this
+ *  represents an unset value without having to box the [Color]. It will be treated as
+ *  [Color.Transparent] when drawn)
+ *  - `appBar` is a lambda that composes a [HomeTabBar] with its `openDrawer` argument our lambda
+ *  parameter [openDrawer], with its `tabSelected` argument the [CraneScreen] at the index
+ *  [PagerState.currentPage] of variable `pagerState` in the [Array] of [CraneScreen] variable
+ *  `craneScreenValues`, with its `onTabSelected` argument a lambda that uses the
+ *  [CoroutineScope.launch] method of [CoroutineScope] variable `coroutineScope` to launch a
+ *  coroutine which calls the [PagerState.animateScrollToPage] method of [PagerState] variable
+ *  `pagerState` to scroll to the `page` [CraneScreen.ordinal] of the [CraneScreen] passed the
+ *  `onTabSelected` lambda with an `animationSpec` of [tween] with `durationMillis` of
+ *  [TAB_SWITCH_ANIM_DURATION] (300ms). The `backLayerContent` argument of the [BackdropScaffold]
+ *  is a lambda that composes a [SearchContent] with its `widthSize` argument our [WindowWidthSizeClass]
+ *  parameter [widthSize], with its `tabSelected` argument the [CraneScreen] at the index
+ *  [PagerState.currentPage] of variable `pagerState` in the [Array] of [CraneScreen] variable
+ *  `craneScreenValues`, with its `viewModel` argument our [MainViewModel] parameter [viewModel],
+ *  with its `onPeopleChanged` argument our lambda variable `onPeopleChanged`, with its
+ *  `onDateSelectionClicked` argument our lambda parameter [onDateSelectionClicked], and with its
+ *  `onExploreItemClicked` argument our lambda parameter [onExploreItemClicked].
+ *  - `frontLayerContent` argument is a lambda that composes a [HorizontalPager] whose `state`
+ *  argument is our [PagerState] variable `pagerState`
  *
  * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
  * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
@@ -241,7 +273,7 @@ fun CraneHomeContent(
                         pagerState.animateScrollToPage(
                             page = it.ordinal,
                             animationSpec = tween(
-                                TAB_SWITCH_ANIM_DURATION
+                                durationMillis = TAB_SWITCH_ANIM_DURATION
                             )
                         )
                     }
