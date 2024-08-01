@@ -18,6 +18,7 @@ package androidx.compose.samples.crane.calendar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -36,7 +37,11 @@ import java.time.temporal.TemporalAdjusters
 
 /**
  * The Composable displays the first letter of each day of the week in a header at the top of each
- * month.
+ * month. Our root Composable is a [Row] whose `modifier` argument chains a
+ * [Modifier.clearAndSetSemantics] to our [Modifier] parameter [modifier] to clear the semantics of
+ * all of its descendant nodes. In the [RowScope] `content` lambda we loop through all of the
+ * [DayOfWeek] in the [DayOfWeek.entries] composing a [DayOfWeekHeading] whose `day` argument is the
+ * first letter of the [DayOfWeek.name] of the current [DayOfWeek].
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller (the private extension function `LazyListScope.itemsCalendarMonth` in the
@@ -47,12 +52,27 @@ import java.time.temporal.TemporalAdjusters
 @Composable
 internal fun DaysOfWeek(modifier: Modifier = Modifier) {
     Row(modifier = modifier.clearAndSetSemantics { }) {
-        for (day: DayOfWeek in DayOfWeek.values()) {
+        for (day: DayOfWeek in DayOfWeek.entries) {
             DayOfWeekHeading(day = day.name.take(1))
         }
     }
 }
 
+/**
+ * This Composable is used by the private `LazyListScope.itemsCalendarMonth` extension function in
+ * the file `Calendar.kt` to display the 7 days in its [Week] parameter [week] in a [Day] Composable
+ * and if the day falls in the previous or following month it will compose an empty [Box] instead.
+ *
+ * @param calendarUiState the current [CalendarUiState] that we can query for the selected state of
+ * the [Day] being composed. We just pass it to the [Day] composable as its `calendarState` argument.
+ * @param week the [Week] whose days we are to display in [Day] composables.
+ * @param onDayClicked a lambda that should be called when the user clicks on a [Day] with the
+ * [LocalDate] that the [Day] represents.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller, the private `LazyListScope.itemsCalendarMonth` extension function in the
+ * file `Calendar.kt` calls us with a [Modifier.fillMaxWidth] with a [Modifier.wrapContentWidth]
+ * chained to that to have us fill our incoming width constraint and center our content horizontally.
+ */
 @Composable
 internal fun Week(
     calendarUiState: CalendarUiState,
