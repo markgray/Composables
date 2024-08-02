@@ -33,6 +33,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.temporal.TemporalAdjusters
 
 /**
@@ -62,6 +63,33 @@ internal fun DaysOfWeek(modifier: Modifier = Modifier) {
  * This Composable is used by the private `LazyListScope.itemsCalendarMonth` extension function in
  * the file `Calendar.kt` to display the 7 days in its [Week] parameter [week] in a [Day] Composable
  * and if the day falls in the previous or following month it will compose an empty [Box] instead.
+ * We start by initializing our [LocalDate] variable `val beginningWeek` to the first day of the
+ * month that our [Week] parameter [week] is in plus the number of weeks of the [Week.number] of
+ * [week]. We then initialize our [LocalDate] variable `var currentDay` to the [DayOfWeek.MONDAY]
+ * of the week containing `beginningWeek`.
+ *
+ * Our root Composable is a [Box], and in the `content` composable lambda of the [Box] we have a
+ * [Row] whose `modifier` argument is our [Modifier] parameter [modifier]. In the [RowScope] `content`
+ * lambda argument of the [Row] we have:
+ *  - a [Spacer] whose `modifier` argument is a [RowScope.weight] whose `weight` is 1f, (which causes
+ *  it to split all the remaining incoming horizontal constraint with the similarly weighted [Spacer]
+ *  at the end of the [Row] after the unweighted siblings have been measured and placed) with a
+ *  [Modifier.heightIn] whose `max` value is [CELL_SIZE] (48.dp) chained to that (causes the maximum
+ *  height of the [Spacer] to be limited to 48.dp).
+ *  - We loop over `var i` in 0 until 6 branching on whether the [LocalDate.getMonth] of `currentDay`
+ *  is equal to the [YearMonth.getMonth] of the [Week.yearMonth] of [Week] parameter [week]:
+ *  * they are in the same month so we compose a [Day] whose `calendarState` argument is our
+ *  [CalendarUiState] parameter [calendarUiState], whose `day` argument is our [LocalDate] variable
+ *  `currentDay`, whose `onDayClicked` argument is our lambda parameter [onDayClicked], and whose
+ *  `month` argument is the [Week.yearMonth] of our [Week] parameter [week].
+ *  * they are NOT in the same month so we compose a [Box] whose `modifier` argument is a
+ *  [Modifier.size] that sets its size to [CELL_SIZE] (48.dp)
+ *  * in either case we add 1 day to [LocalDate] variable `currentDay` and loop around.
+ *  - a [Spacer] whose `modifier` argument is a [RowScope.weight] whose `weight` is 1f, (which causes
+ *  it to split all the remaining incoming horizontal constraint with the similarly weighted [Spacer]
+ *  at the beginning of the [Row] after the unweighted siblings have been measured and placed) with a
+ *  [Modifier.heightIn] whose `max` value is [CELL_SIZE] (48.dp) chained to that (causes the maximum
+ *  height of the [Spacer] to be limited to 48.dp).
  *
  * @param calendarUiState the current [CalendarUiState] that we can query for the selected state of
  * the [Day] being composed. We just pass it to the [Day] composable as its `calendarState` argument.
@@ -87,7 +115,7 @@ internal fun Week(
         Row(modifier = modifier) {
             Spacer(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(weight = 1f)
                     .heightIn(max = CELL_SIZE)
             )
             for (i in 0..6) {
@@ -99,7 +127,7 @@ internal fun Week(
                         month = week.yearMonth
                     )
                 } else {
-                    Box(modifier = Modifier.size(CELL_SIZE))
+                    Box(modifier = Modifier.size(size = CELL_SIZE))
                 }
                 currentDay = currentDay.plusDays(1)
             }
@@ -112,4 +140,7 @@ internal fun Week(
     }
 }
 
+/**
+ * The size of a [Day] in our calendar.
+ */
 internal val CELL_SIZE = 48.dp
