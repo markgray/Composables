@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.BackdropScaffold
@@ -215,7 +216,29 @@ fun CraneHome(
  *  `onDateSelectionClicked` argument our lambda parameter [onDateSelectionClicked], and with its
  *  `onExploreItemClicked` argument our lambda parameter [onExploreItemClicked].
  *  - `frontLayerContent` argument is a lambda that composes a [HorizontalPager] whose `state`
- *  argument is our [PagerState] variable `pagerState`
+ *  argument is our [PagerState] variable `pagerState`, and it feeds its [PagerScope] `pageContent`
+ *  Composable lambda argument the current page number in [Int] variable `page`. In the lambda we
+ *  pass as the `pageContent` argument we branch on the value of the [CraneScreen] at index `page`
+ *  of our [Array] of [CraneScreen] variable `craneScreenValues`:
+ *
+ *  - [CraneScreen.Fly] if our [List] of [ExploreModel] variable `suggestedDestinations` is not
+ *  `null` we compose an [ExploreSection] whose `widthSize` argument is our [WindowWidthSizeClass]
+ *  parameter [widthSize], whose `title` argument is the [String] with resource ID
+ *  [R.string.explore_flights_by_destination] ("Explore Flights by Destination"), whose `exploreList`
+ *  argument is our [List] of [ExploreModel] variable `suggestedDestinations`, and whose
+ *  `onItemClicked` argument is our [OnExploreItemClicked] parameter [onExploreItemClicked].
+ *  - [CraneScreen.Sleep] we compose an [ExploreSection] whose `widthSize` argument is our
+ *  [WindowWidthSizeClass] parameter [widthSize], whose `title` argument is the [String] with
+ *  resource ID [R.string.explore_properties_by_destination] ("Explore Properties by Destination"),
+ *  whose `exploreList` is the [List] of [ExploreModel] field [MainViewModel.hotels] of our
+ *  [MainViewModel] parameter [viewModel], and whose `onItemClicked` argument is our
+ *  [OnExploreItemClicked] parameter [onExploreItemClicked].
+ *  - [CraneScreen.Eat] we compose an [ExploreSection] whose `widthSize` argument is our
+ *  [WindowWidthSizeClass] parameter [widthSize], whose `title` argument is the [String] with
+ *  resource ID [R.string.explore_restaurants_by_destination] ("Explore Restaurants by Destination"),
+ *  whose `exploreList` is the [List] of [ExploreModel] field [MainViewModel.restaurants] of our
+ *  [MainViewModel] parameter [viewModel], and whose `onItemClicked` argument is our
+ *  [OnExploreItemClicked] parameter [onExploreItemClicked].
  *
  * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
  * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
@@ -326,6 +349,9 @@ fun CraneHomeContent(
     )
 }
 
+/**
+ * This is used as the `appBar` argument of the [BackdropScaffold] in [CraneHomeContent].k
+ */
 @Composable
 fun HomeTabBar(
     openDrawer: () -> Unit,
