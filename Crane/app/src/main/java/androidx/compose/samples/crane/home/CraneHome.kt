@@ -28,6 +28,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.ui.draw.alpha
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -65,6 +66,7 @@ import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.details.DetailsActivity
 import androidx.compose.samples.crane.details.launchDetailsActivity
 import androidx.compose.samples.crane.ui.BottomSheetShape
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -185,7 +187,7 @@ fun CraneHome(
  * [DestinationsRepository.destinations] property of [DestinationsRepository]). Next we initialize
  * our lambda taking [Int] variable `val onPeopleChanged` to a lambda that calls the
  * [MainViewModel.updatePeople] method with the [Int] passed it. We initialize our [Array] of
- * [CraneScreen] to the [CraneScreen.values] of [CraneScreen] ([CraneScreen.Fly], [CraneScreen.Sleep],
+ * [CraneScreen] to the [CraneScreen.entries] of [CraneScreen] ([CraneScreen.Fly], [CraneScreen.Sleep],
  * and [CraneScreen.Eat]). We initialize and remember our [PagerState] variable `val pagerState` to
  * a new instance whose `initialPage` is [CraneScreen.Fly.ordinal] setting its [PagerState.pageCount]
  * to the [Array.size] of array of [CraneScreen] variable `craneScreenValues`. We initialize and
@@ -278,7 +280,7 @@ fun CraneHomeContent(
     val suggestedDestinations: List<ExploreModel>? by viewModel.suggestedDestinations.observeAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
-    val craneScreenValues: Array<CraneScreen> = CraneScreen.values()
+    val craneScreenValues: Array<CraneScreen> = CraneScreen.entries.toTypedArray()
     val pagerState: PagerState =
         rememberPagerState(initialPage = CraneScreen.Fly.ordinal) { craneScreenValues.size }
 
@@ -351,7 +353,38 @@ fun CraneHomeContent(
 }
 
 /**
- * This is used as the `appBar` argument of the [BackdropScaffold] in [CraneHomeContent].k
+ * This is used as the `appBar` argument of the [BackdropScaffold] in [CraneHomeContent]. Our root
+ * Composable is a [CraneTabBar] whose `modifier` argument chains a [Modifier.wrapContentWidth] to
+ * our [Modifier] parameter [modifier], followed by a [Modifier.sizeIn] whose `maxWidth` limits the
+ * width of the [CraneTabBar] to 500.dp, and its `onMenuClicked` argument is our lambda parameter
+ * [openDrawer]. In the `children` lambda argument of [CraneTabBar] it passes a [Modifier] in the
+ * `tabBarModifier` variable to the lambda (this is a [RowScope.weight] of 1f with a [RowScope.align]
+ * whose `alignment` is [Alignment.CenterVertically] which causes the [CraneTabs] `children` to
+ * split the incoming width constraint equally, and centers them vertically). In the `children`
+ * lambda of [CraneTabBar] we have a [CraneTabs] whose `modifier` argument is the `tabBarModifier`
+ * variable that [CraneTabBar] passes the `children` lambda, whose `titles` argument is the [List]
+ * of [String] formed by using the [map] extension function on [CraneScreen.entries] and using the
+ * [CraneScreen.name] property of each [CraneScreen] to build the [List], whose`tabSelected` argument
+ * is our [CraneScreen] parameter [tabSelected], and whose `onTabSelected` argument is a lambda which
+ * accepts the [CraneScreen] passed the lambda in the `newTab` variable then calls our lambda
+ * parameter [onTabSelected] with the [CraneScreen] that it finds when it indexes into the [List] of
+ * [CraneScreen] returned by [CraneScreen.entries] using the [CraneScreen.ordinal] of the `newTab`
+ * [CraneScreen] variable passed to the lambda.
+ *
+ * @param openDrawer a lambda that we should call when the user indicates that they want to open the
+ * [CraneDrawer] drawer of the [Scaffold] that [CraneHomeContent] is in. [CraneHome] calls
+ * [CraneHomeContent] with a lambda which uses the [CoroutineScope.launch] method to launch a
+ * coroutine that calls the [DrawerState.open] method of the [ScaffoldState.drawerState] of the
+ * [ScaffoldState] used for the [Scaffold] to open the drawer of the [Scaffold].
+ * @param tabSelected the [CraneScreen] of the tab that has been selected by the user (one of
+ * [CraneScreen.Fly], [CraneScreen.Sleep] or [CraneScreen.Eat]). [CraneHomeContent] calls us with
+ * the [CraneScreen] whose index is [PagerState.currentPage] in its [Array] of [CraneScreen.entries]
+ * variable.
+ * @param onTabSelected a lambda that should be called with the [CraneScreen] of the [Tab] that the
+ * user has clicked.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [CraneHomeContent] does not pass us one, so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
  */
 @Composable
 fun HomeTabBar(
@@ -365,18 +398,27 @@ fun HomeTabBar(
             .wrapContentWidth()
             .sizeIn(maxWidth = 500.dp),
         onMenuClicked = openDrawer
-    ) { tabBarModifier ->
+    ) { tabBarModifier: Modifier ->
         CraneTabs(
             modifier = tabBarModifier,
-            titles = CraneScreen.values().map { it.name },
+            titles = CraneScreen.entries.map { it.name },
             tabSelected = tabSelected,
-            onTabSelected = { newTab -> onTabSelected(CraneScreen.values()[newTab.ordinal]) }
+            onTabSelected = { newTab: CraneScreen ->
+                onTabSelected(CraneScreen.entries[newTab.ordinal])
+            }
         )
     }
 }
 
+/**
+ * This is used as the duration for several [tween]'s that are used to animate the switching from
+ * one tab to another.
+ */
 private const val TAB_SWITCH_ANIM_DURATION = 300
 
+/**
+ * This is used as the `backLayerContent` argument of the [BackdropScaffold] used by [CraneHomeContent]
+ */
 @Composable
 private fun SearchContent(
     widthSize: WindowWidthSizeClass,
@@ -393,15 +435,15 @@ private fun SearchContent(
         targetState = tabSelected,
         transitionSpec = {
             fadeIn(
-                animationSpec = tween(TAB_SWITCH_ANIM_DURATION, easing = EaseIn)
+                animationSpec = tween(durationMillis = TAB_SWITCH_ANIM_DURATION, easing = EaseIn)
             ).togetherWith(
                 fadeOut(
-                    animationSpec = tween(TAB_SWITCH_ANIM_DURATION, easing = EaseOut)
+                    animationSpec = tween(durationMillis = TAB_SWITCH_ANIM_DURATION, easing = EaseOut)
                 )
             ).using(
                 SizeTransform(
                     sizeAnimationSpec = { _, _ ->
-                        tween(TAB_SWITCH_ANIM_DURATION, easing = EaseInOut)
+                        tween(durationMillis = TAB_SWITCH_ANIM_DURATION, easing = EaseInOut)
                     }
                 )
             )
