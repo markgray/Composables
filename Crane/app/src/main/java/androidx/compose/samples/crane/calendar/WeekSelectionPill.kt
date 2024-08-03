@@ -18,11 +18,14 @@ package androidx.compose.samples.crane.calendar
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.samples.crane.calendar.model.AnimationDirection
 import androidx.compose.samples.crane.calendar.model.CalendarState
 import androidx.compose.samples.crane.calendar.model.CalendarUiState
 import androidx.compose.samples.crane.calendar.model.Week
+import androidx.compose.samples.crane.ui.CraneTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -36,10 +39,33 @@ import java.time.LocalDate
 
 /**
  * Draws the RoundedRect red background of the calendar date selection. Animates the selection based
- * on the direction of selection change. CalendarState stores the selectedStartDate and
- * selectedEndDate of selection, as well as the AnimationDirection. These dates are then used to
- * determine a few things: The start offset of the rounded rect drawing, the delay when the pill
- * animation for the week should start and the size of the rounded rect that should be drawn.
+ * on the direction of selection change. [CalendarUiState] stores the `selectedStartDate` and
+ * `selectedEndDate` of the selection, as well as the [AnimationDirection]. These dates are then
+ * used to determine a few things: The start offset of the rounded rect drawing, the delay when the
+ * pill animation for the week should start and the size of the rounded rect that should be drawn.
+ *
+ * @param week the [Week] in the calendar whose [WeekSelectionPill] we are drawing. Our caller the
+ * private `LazyListScope.itemsCalendarMonth` extension function in the file `Calendar.kt` has
+ * already verified that our [Week] parameter [week] contains days which are in the selected date
+ * of our [CalendarUiState] parameter [state] before bothering to call us.
+ * @param currentWeekStart this is the [LocalDate] of the Monday of the [Week] parameter [week] even
+ * if it is in the previous month.
+ * @param state this is the [CalendarUiState] which contains the [CalendarUiState.selectedStartDate],
+ * [CalendarUiState.selectedEndDate], and [CalendarUiState.animateDirection] which define the current
+ * selected date range that dictates where and when we should draw our RoundedRect red background of
+ * the calendar date selection.
+ * @param selectedPercentageTotalProvider provides a [Float] which animates from 0f to 1f to represent
+ * the progress of the animation of the extension of the selected date range red rounded rectangle.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller the private `LazyListScope.itemsCalendarMonth` extension function in the file
+ * `Calendar.kt` does not pass us one so the empty, default, or starter [Modifier] that contains no
+ * elements is used.
+ * @param widthPerDay the [Dp] width of a day when it is render in our calendar. Our caller, the
+ * private `LazyListScope.itemsCalendarMonth` extension function in the file `Calendar.kt` passes us
+ * [CELL_SIZE] (48.dp)
+ * @param pillColor the [Color] we are to draw our selected date range RoundedRect. Defaults to the
+ * [Colors.secondary] of our [CraneTheme] custom [MaterialTheme.colors].
+ *
  */
 @Composable
 fun WeekSelectionPill(
@@ -51,30 +77,30 @@ fun WeekSelectionPill(
     widthPerDay: Dp = 48.dp,
     pillColor: Color = MaterialTheme.colors.secondary
 ) {
-    val widthPerDayPx = with(LocalDensity.current) { widthPerDay.toPx() }
-    val cornerRadiusPx = with(LocalDensity.current) { 24.dp.toPx() }
+    val widthPerDayPx: Float = with(LocalDensity.current) { widthPerDay.toPx() }
+    val cornerRadiusPx: Float = with(LocalDensity.current) { 24.dp.toPx() }
 
     Canvas(
         modifier = modifier.fillMaxWidth(),
         onDraw = {
-            val (offset, size) = getOffsetAndSize(
-                this.size.width,
-                state,
-                currentWeekStart,
-                week,
-                widthPerDayPx,
-                cornerRadiusPx,
-                selectedPercentageTotalProvider()
+            val (offset: Offset, size: Float) = getOffsetAndSize(
+                width = this.size.width,
+                state = state,
+                currentWeekStart = currentWeekStart,
+                week = week,
+                widthPerDayPx = widthPerDayPx,
+                cornerRadiusPx = cornerRadiusPx,
+                selectedPercentage = selectedPercentageTotalProvider()
             )
 
-            val translationX = if (state.animateDirection?.isBackwards() == true) -size else 0f
+            val translationX: Float = if (state.animateDirection?.isBackwards() == true) -size else 0f
 
-            translate(translationX) {
+            translate(left = translationX) {
                 drawRoundRect(
                     color = pillColor,
                     topLeft = offset,
                     size = Size(width = size, height = widthPerDayPx),
-                    cornerRadius = CornerRadius(cornerRadiusPx)
+                    cornerRadius = CornerRadius(x = cornerRadiusPx)
                 )
             }
         }
@@ -82,8 +108,8 @@ fun WeekSelectionPill(
 }
 
 /**
- * Calculates the animated Offset and Size of the red selection pill based on the CalendarState and
- * the Week SelectionState, based on the overall selectedPercentage.
+ * Calculates the animated Offset and Size of the red selection pill based on the [CalendarUiState]
+ * and the Week SelectionState, based on the overall [selectedPercentage].
  */
 private fun getOffsetAndSize(
     width: Float,
@@ -94,16 +120,16 @@ private fun getOffsetAndSize(
     cornerRadiusPx: Float,
     selectedPercentage: Float
 ): Pair<Offset, Float> {
-    val numberDaysSelected = state.getNumberSelectedDaysInWeek(currentWeekStart, week.yearMonth)
-    val monthOverlapDelay = state.monthOverlapSelectionDelay(currentWeekStart, week)
-    val dayDelay = state.dayDelay(currentWeekStart)
-    val edgePadding = (width - widthPerDayPx * CalendarState.DAYS_IN_WEEK) / 2
+    val numberDaysSelected: Int = state.getNumberSelectedDaysInWeek(currentWeekStart, week.yearMonth)
+    val monthOverlapDelay: Int = state.monthOverlapSelectionDelay(currentWeekStart, week)
+    val dayDelay: Int = state.dayDelay(currentWeekStart)
+    val edgePadding: Float = (width - widthPerDayPx * CalendarState.DAYS_IN_WEEK) / 2
 
-    val percentagePerDay = 1f / state.numberSelectedDays
-    val startPercentage = (dayDelay + monthOverlapDelay) * percentagePerDay
-    val endPercentage = startPercentage + numberDaysSelected * percentagePerDay
+    val percentagePerDay: Float = 1f / state.numberSelectedDays
+    val startPercentage: Float = (dayDelay + monthOverlapDelay) * percentagePerDay
+    val endPercentage: Float = startPercentage + numberDaysSelected * percentagePerDay
 
-    val scaledPercentage = if (selectedPercentage >= endPercentage) {
+    val scaledPercentage: Float = if (selectedPercentage >= endPercentage) {
         1f
     } else if (selectedPercentage < startPercentage) {
         0f
@@ -114,34 +140,35 @@ private fun getOffsetAndSize(
         // in the week - so we normalize the percentage between the startPercentage + endPercentage
         // to a range between at min 0f and 1f.
         normalize(
-            selectedPercentage,
-            startPercentage, endPercentage
+            x = selectedPercentage,
+            inMin = startPercentage,
+            inMax = endPercentage
         )
     }
 
-    val scaledSelectedNumberDays = scaledPercentage * numberDaysSelected
+    val scaledSelectedNumberDays: Float = scaledPercentage * numberDaysSelected
 
-    val sideSize = edgePadding + cornerRadiusPx
+    val sideSize: Float = edgePadding + cornerRadiusPx
 
-    val leftSize =
+    val leftSize: Float =
         if (state.isLeftHighlighted(currentWeekStart, week.yearMonth)) sideSize else 0f
-    val rightSize =
+    val rightSize: Float =
         if (state.isRightHighlighted(currentWeekStart, week.yearMonth)) sideSize else 0f
 
-    var totalSize = (scaledSelectedNumberDays * widthPerDayPx) +
+    var totalSize: Float = (scaledSelectedNumberDays * widthPerDayPx) +
         (leftSize + rightSize) * scaledPercentage
     if (dayDelay + monthOverlapDelay == 0 && numberDaysSelected >= 1) {
         totalSize = totalSize.coerceAtLeast(widthPerDayPx)
     }
 
-    val startOffset =
+    val startOffset: Float =
         state.selectedStartOffset(currentWeekStart, week.yearMonth) * widthPerDayPx
 
-    val offset =
+    val offset: Offset =
         if (state.animateDirection?.isBackwards() == true) {
-            Offset(startOffset + edgePadding + rightSize, 0f)
+            Offset(x = startOffset + edgePadding + rightSize, y = 0f)
         } else {
-            Offset(startOffset + edgePadding - leftSize, 0f)
+            Offset(x = startOffset + edgePadding - leftSize, y = 0f)
         }
 
     return offset to totalSize
@@ -156,7 +183,7 @@ private fun normalize(
     outMin: Float = 0f,
     outMax: Float = 1f
 ): Float {
-    val outRange = outMax - outMin
-    val inRange = inMax - inMin
+    val outRange: Float = outMax - outMin
+    val inRange: Float = inMax - inMin
     return (x - inMin) * outRange / inRange + outMin
 }
