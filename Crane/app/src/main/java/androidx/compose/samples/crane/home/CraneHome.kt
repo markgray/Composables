@@ -51,6 +51,7 @@ import androidx.compose.material.rememberBackdropScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -61,6 +62,8 @@ import androidx.compose.samples.crane.base.CraneTabBar
 import androidx.compose.samples.crane.base.CraneTabs
 import androidx.compose.samples.crane.base.ExploreSection
 import androidx.compose.samples.crane.calendar.CalendarScreen
+import androidx.compose.samples.crane.calendar.model.CalendarState
+import androidx.compose.samples.crane.calendar.model.CalendarUiState
 import androidx.compose.samples.crane.data.DestinationsRepository
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.details.DetailsActivity
@@ -417,7 +420,38 @@ fun HomeTabBar(
 private const val TAB_SWITCH_ANIM_DURATION = 300
 
 /**
- * This is used as the `backLayerContent` argument of the [BackdropScaffold] used by [CraneHomeContent]
+ * This is used as the `backLayerContent` argument of the [BackdropScaffold] used by [CraneHomeContent].
+ * We start by initializing our [String] variable `val selectedDates` to the [String] returned by
+ * the [CalendarUiState.selectedDatesFormatted] method of the [MutableState.value] of the
+ * [CalendarState.calendarUiState] property of the [MainViewModel.calendarState] property (ie. the
+ * formatted value of the currently selected date range). Then our root Composable is an
+ * [AnimatedContent] whose `targetState` argument is our [CraneScreen] parameter [tabSelected], and
+ * whose `transitionSpec` argument is a lambda which contains a chain of [fadeIn] whose `animationSpec`
+ * is a [tween] of `durationMillis` [TAB_SWITCH_ANIM_DURATION] and `easing` [EaseIn], chained with
+ * a [togetherWith] a [fadeOut] whose `animationSpec` is a [tween] of `durationMillis`
+ * [TAB_SWITCH_ANIM_DURATION] and `easing` [EaseOut], and chained with a `ContentTransform.using`
+ * to a [SizeTransform] whose `sizeAnimationSpec` is a lambda calling a [tween] of `durationMillis`
+ * [TAB_SWITCH_ANIM_DURATION] and `easing` [EaseInOut].
+ *
+ * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
+ * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
+ * @param tabSelected the [CraneScreen] of the tab that has been selected by the user (one of
+ * [CraneScreen.Fly], [CraneScreen.Sleep] or [CraneScreen.Eat]). [CraneHomeContent] calls us with
+ * the [CraneScreen] whose index is [PagerState.currentPage] in its [Array] of [CraneScreen.entries]
+ * variable.
+ * @param viewModel the [MainViewModel] for the app. It is injected using [hiltViewModel] in
+ * the `onCreate` override.
+ * @param onPeopleChanged a lambda to be called with the new number of people traveling when it
+ * changes. Our caller [CraneHomeContent] calls us with a lambda that calls the
+ * [MainViewModel.updatePeople] method with the [Int] passed it.
+ * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
+ * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
+ * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * the [CalendarScreen] Composable.
+ * @param onExploreItemClicked a lambda that we should call with the [ExploreModel] of the item that
+ * the user has clicked. It traces up the hierarchy to a lambda created in the `onCreate` override
+ * of [MainActivity] that calls the [launchDetailsActivity] method to launch the [DetailsActivity]
+ * to display a [GoogleMap] that corresponds to the [ExploreModel] it is called with.
  */
 @Composable
 private fun SearchContent(
@@ -430,7 +464,8 @@ private fun SearchContent(
 ) {
     // Reading datesSelected State from here instead of passing the String from the ViewModel
     // to cause a recomposition when the dates change.
-    val selectedDates = viewModel.calendarState.calendarUiState.value.selectedDatesFormatted
+    val selectedDates: String =
+        viewModel.calendarState.calendarUiState.value.selectedDatesFormatted
     AnimatedContent(
         targetState = tabSelected,
         transitionSpec = {
@@ -449,7 +484,7 @@ private fun SearchContent(
             )
         },
         label = "SearchContent"
-    ) { targetState ->
+    ) { targetState: CraneScreen ->
         when (targetState) {
             CraneScreen.Fly -> FlySearchContent(
                 widthSize = widthSize,
