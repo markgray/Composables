@@ -31,6 +31,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -43,6 +44,29 @@ import java.time.LocalDate
  * `selectedEndDate` of the selection, as well as the [AnimationDirection]. These dates are then
  * used to determine a few things: The start offset of the rounded rect drawing, the delay when the
  * pill animation for the week should start and the size of the rounded rect that should be drawn.
+ *
+ * We start by initializing our [Float] variable `val widthPerDayPx` to the current [LocalDensity]
+ * number of pixels in our [Dp] parameter [widthPerDay], and initializing our [Float] variable
+ * `val cornerRadiusPx` to the current [LocalDensity] number of pixels in 24.dp. Then our root
+ * Composable is a [Canvas] whose `modifier` argument chains a [Modifier.fillMaxWidth] to our
+ * [Modifier] parameter [modifier] to have it take up its entire incoming width constraint, and in
+ * its `onDraw` argument we have a lambda which:
+ *  - uses decomposition to initialize its [Offset] variable `offset` and its [Float] variable `size`
+ *  from the the [Pair] of [Offset] and [Float] returned by the [getOffsetAndSize] method when called
+ *  with its `width` argument the [Size.width] of the current drawing environment, with its `state`
+ *  argument our [CalendarUiState] parameter [state], with its `currentWeekStart` argument our
+ *  [LocalDate] parameter [currentWeekStart], with its `week` argument our [Week] parameter [week],
+ *  with its `widthPerDayPx` our [Float] variable `widthPerDayPx`, with its `cornerRadiusPx` our
+ *  [Float] variable `cornerRadiusPx` and with its `selectedPercentage` variable the [Float] returned
+ *  by our lambda parameter [selectedPercentageTotalProvider].
+ *  - it then initializes its [Float] variable `val translationX` to minus `size` if the
+ *  [CalendarUiState.animateDirection] is [AnimationDirection.BACKWARDS], or to 0f if it is not.
+ *  - it uses the [DrawScope.translate] method to translate `left` by `translationX` then draws a
+ *  [DrawScope.drawRoundRect] whose `color` argument is our [Color] parameter [pillColor], whose
+ *  `topLeft` argument is our [Offset] variable `offset`, whose `size` argument is a [Size] whose
+ *  `width` is our [Float] variable `size` and whose `height` is our [Float] variable `widthPerDayPx`,
+ *  and the `cornerRadius` argument is a [CornerRadius] whose `x` argument is our [Float] variable
+ *  `cornerRadiusPx`.
  *
  * @param week the [Week] in the calendar whose [WeekSelectionPill] we are drawing. Our caller the
  * private `LazyListScope.itemsCalendarMonth` extension function in the file `Calendar.kt` has
@@ -110,6 +134,16 @@ fun WeekSelectionPill(
 /**
  * Calculates the animated Offset and Size of the red selection pill based on the [CalendarUiState]
  * and the Week SelectionState, based on the overall [selectedPercentage].
+ *
+ * @param width the [Size.width] of the current drawing environment.
+ * @param state the current [CalendarUiState] containing information about the selected date range.
+ * @param currentWeekStart the [LocalDate] of the Monday of the [Week] parameter [week] even
+ * if it is in the previous month.
+ * @param week the [Week] in the calendar whose [WeekSelectionPill] is being drawn.
+ * @param widthPerDayPx the width of a day in pixels.
+ * @param cornerRadiusPx the radius of the [CornerRadius] used by the [DrawScope.drawRoundRect].
+ * @param selectedPercentage the animated [Float] that represents the current progress of the
+ * animated extension of the date range "pill".
  */
 private fun getOffsetAndSize(
     width: Float,
