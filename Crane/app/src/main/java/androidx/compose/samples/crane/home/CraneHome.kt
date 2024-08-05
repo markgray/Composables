@@ -17,6 +17,7 @@
 package androidx.compose.samples.crane.home
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseInOut
@@ -431,7 +432,29 @@ private const val TAB_SWITCH_ANIM_DURATION = 300
  * a [togetherWith] a [fadeOut] whose `animationSpec` is a [tween] of `durationMillis`
  * [TAB_SWITCH_ANIM_DURATION] and `easing` [EaseOut], and chained with a `ContentTransform.using`
  * to a [SizeTransform] whose `sizeAnimationSpec` is a lambda calling a [tween] of `durationMillis`
- * [TAB_SWITCH_ANIM_DURATION] and `easing` [EaseInOut].
+ * [TAB_SWITCH_ANIM_DURATION] and `easing` [EaseInOut], and whose `label` argument is "SearchContent".
+ *
+ * In the `content` [AnimatedContentScope] Composable lambda argument the current value of [CraneScreen]
+ * is fed to the lambda in the `targetState` variable and we `when` switch on this value:
+ *  - [CraneScreen.Fly] -> we compose a [FlySearchContent] whose `widthSize` argument is our
+ *  [WindowWidthSizeClass] parameter [widthSize], whose `datesSelected` argument is our [String]
+ *  variable `selectedDates`, and whose `searchUpdates` argument is a [FlySearchContentUpdates] whose
+ *  `onPeopleChanged` argument is our [onPeopleChanged] lambda parameter, whose `onToDestinationChanged`
+ *  argument is a lambda that calls the [MainViewModel.toDestinationChanged] method with the [String]
+ *  passed the lambda, whose `onDateSelectionClicked` argument is our [onDateSelectionClicked] lambda
+ *  parameter, and whose `onExploreItemClicked` argument is our [onExploreItemClicked] lambda parameter.
+ *  - [CraneScreen.Sleep] -> we compose a [SleepSearchContent] whose `widthSize` argument is our
+ *  [WindowWidthSizeClass] parameter [widthSize], whose `datesSelected` argument is our [String]
+ *  variable `selectedDates`, and whose `sleepUpdates` argument is a [SleepSearchContentUpdates]
+ *  whose `onPeopleChanged` argument is our [onPeopleChanged] lambda parameter, whose
+ *  `onDateSelectionClicked` argument is our [onDateSelectionClicked] lambda parameter, and whose
+ *  `onExploreItemClicked` argument is our [onExploreItemClicked] lambda parameter.
+ *  - [CraneScreen.Eat] -> we compose a [EatSearchContent] whose `widthSize` argument is our
+ *  [WindowWidthSizeClass] parameter [widthSize], whose `datesSelected` argument is our [String]
+ *  variable `selectedDates`, and whose `eatUpdates` argument is a [EatSearchContentUpdates]
+ *  whose `onPeopleChanged` argument is our [onPeopleChanged] lambda parameter, whose
+ *  `onDateSelectionClicked` argument is our [onDateSelectionClicked] lambda parameter, and whose
+ *  `onExploreItemClicked` argument is our [onExploreItemClicked] lambda parameter.
  *
  * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
  * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
@@ -520,6 +543,23 @@ private fun SearchContent(
     }
 }
 
+/**
+ * Data class used as the `searchUpdates` argument to the [FlySearchContent] Composable.
+ *
+ * @param onPeopleChanged a lambda to be called with the new number of people traveling when it
+ * changes. [CraneHomeContent] passes down a lambda that calls the [MainViewModel.updatePeople]
+ * method with the [Int] passed it.
+ * @param onToDestinationChanged lambda to be called when the user indicates that they wish to
+ * search for a new destination containing the [String] they are entering.
+ * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
+ * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
+ * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * the [CalendarScreen] Composable.
+ * @param onExploreItemClicked a lambda that we should call with the [ExploreModel] of the item that
+ * the user has clicked. It traces up the hierarchy to a lambda created in the `onCreate` override
+ * of [MainActivity] that calls the [launchDetailsActivity] method to launch the [DetailsActivity]
+ * to display a [GoogleMap] that corresponds to the [ExploreModel] it is called with.
+ */
 data class FlySearchContentUpdates(
     val onPeopleChanged: (Int) -> Unit,
     val onToDestinationChanged: (String) -> Unit,
@@ -527,12 +567,42 @@ data class FlySearchContentUpdates(
     val onExploreItemClicked: OnExploreItemClicked
 )
 
+/**
+ * Data class used as the `sleepUpdates` argument to the [SleepSearchContentUpdates] Composable.
+ *
+ * @param onPeopleChanged a lambda to be called with the new number of people traveling when it
+ * changes. [CraneHomeContent] passes down a lambda that calls the [MainViewModel.updatePeople]
+ * method with the [Int] passed it.
+ * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
+ * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
+ * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * the [CalendarScreen] Composable.
+ * @param onExploreItemClicked a lambda that we should call with the [ExploreModel] of the item that
+ * the user has clicked. It traces up the hierarchy to a lambda created in the `onCreate` override
+ * of [MainActivity] that calls the [launchDetailsActivity] method to launch the [DetailsActivity]
+ * to display a [GoogleMap] that corresponds to the [ExploreModel] it is called with.
+ */
 data class SleepSearchContentUpdates(
     val onPeopleChanged: (Int) -> Unit,
     val onDateSelectionClicked: () -> Unit,
     val onExploreItemClicked: OnExploreItemClicked
 )
 
+/**
+ * Data class used as the `eatUpdates` argument to the [EatSearchContent] Composable.
+ *
+ * @param onPeopleChanged a lambda to be called with the new number of people traveling when it
+ * changes. [CraneHomeContent] passes down a lambda that calls the [MainViewModel.updatePeople]
+ * method with the [Int] passed it.
+ * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
+ * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
+ * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * the [CalendarScreen] Composable.
+ * @param onExploreItemClicked a lambda that we should call with the [ExploreModel] of the item that
+ * the user has clicked. It traces up the hierarchy to a lambda created in the `onCreate` override
+ * of [MainActivity] that calls the [launchDetailsActivity] method to launch the [DetailsActivity]
+ * to display a [GoogleMap] that corresponds to the [ExploreModel] it is called with.
+ */
 data class EatSearchContentUpdates(
     val onPeopleChanged: (Int) -> Unit,
     val onDateSelectionClicked: () -> Unit,

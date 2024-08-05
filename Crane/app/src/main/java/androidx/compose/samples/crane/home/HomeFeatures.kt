@@ -29,6 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun FlySearchContent(
     widthSize: WindowWidthSizeClass,
@@ -70,6 +73,9 @@ fun FlySearchContent(
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun SleepSearchContent(
     widthSize: WindowWidthSizeClass,
@@ -104,6 +110,9 @@ fun SleepSearchContent(
     )
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun EatSearchContent(
     widthSize: WindowWidthSizeClass,
