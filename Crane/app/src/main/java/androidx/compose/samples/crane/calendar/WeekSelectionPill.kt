@@ -133,7 +133,29 @@ fun WeekSelectionPill(
 
 /**
  * Calculates the animated Offset and Size of the red selection pill based on the [CalendarUiState]
- * and the Week SelectionState, based on the overall [selectedPercentage].
+ * and the Week SelectionState, based on the overall [selectedPercentage]. We start by initializing
+ * our [Int] variable `val numberDaysSelected` to the value returned by the
+ * [CalendarUiState.getNumberSelectedDaysInWeek] method of [CalendarUiState] parameter [state] for
+ * the week starting on [LocalDate] parameter [currentWeekStart] of the [Week.yearMonth] of [Week]
+ * parameter [week] (this is the number of days in the week that are included in the selected date
+ * range defined by [CalendarUiState.selectedStartDate] to [CalendarUiState.selectedEndDate]). We
+ * then initialize our [Int] variable `val monthOverlapDelay` to the value returned by the
+ * [CalendarUiState.monthOverlapSelectionDelay] method of [CalendarUiState] parameter [state] for
+ * the week starting on [LocalDate] parameter [currentWeekStart] of the [Week.yearMonth] of [Week]
+ * parameter [week] (this is the number of days of the [Week] that are in the month before the first
+ * day of the week or the month after the last day of the week). We initialize our [Int] variable
+ * `val dayDelay` to the value returned by the [CalendarUiState.dayDelay] method of [CalendarUiState]
+ * parameter [state] for our [LocalDate] parameter [currentWeekStart] (this is the number of days
+ * between [CalendarUiState.selectedStartDate] and the first day of the week when the
+ * [CalendarUiState.animateDirection] is [AnimationDirection.FORWARDS] or between
+ * [CalendarUiState.selectedEndDate] and the end day of the week when the
+ * [CalendarUiState.animateDirection] is [AnimationDirection.FORWARDS], or 0 if either the
+ * [CalendarUiState.selectedStartDate] or [CalendarUiState.selectedEndDate] occurs in the week). We
+ * initialize our [Float] variable `val edgePadding` to one half of the quantity [width] minus
+ * [widthPerDayPx] times [CalendarState.DAYS_IN_WEEK]. We initialize our [Float] variable
+ * `val percentagePerDay` to 1 divided by the value of the [CalendarUiState.numberSelectedDays]
+ * property. We initialize our [Float] variable `val startPercentage` to `percentagePerDay` times
+ * the quantity `dayDelay` plus `monthOverlapDelay`
  *
  * @param width the [Size.width] of the current drawing environment.
  * @param state the current [CalendarUiState] containing information about the selected date range.
