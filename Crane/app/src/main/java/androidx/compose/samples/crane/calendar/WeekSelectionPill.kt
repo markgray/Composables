@@ -155,7 +155,24 @@ fun WeekSelectionPill(
  * [widthPerDayPx] times [CalendarState.DAYS_IN_WEEK]. We initialize our [Float] variable
  * `val percentagePerDay` to 1 divided by the value of the [CalendarUiState.numberSelectedDays]
  * property. We initialize our [Float] variable `val startPercentage` to `percentagePerDay` times
- * the quantity `dayDelay` plus `monthOverlapDelay`
+ * the quantity `dayDelay` plus `monthOverlapDelay`. We initialize our [Float] variable
+ * `val endPercentage` to `startPercentage` plus the quantity `numberDaysSelected` times
+ * `percentagePerDay`. We initialize our [Float] variable `val scaledPercentage` using a `when`
+ * expression:
+ *  - `selectedPercentage` is greater than or equal to `endPercentage` we initialize it to 1f
+ *  - `selectedPercentage` is less than `startPercentage` we initialize it to 0f
+ *  - else we initialize it using the [normalize] method to a value between 0f and 1f
+ *
+ * We initialize our [Float] variable `val scaledSelectedNumberDays` to `scaledPercentage` times
+ * `numberDaysSelected`. We initialize our [Float] variable `val sideSize` to `edgePadding` plus
+ * `cornerRadiusPx`. We initialize our [Float] variable `val leftSize` to `sideSize` it the days
+ * to the left of [LocalDate] parameter [currentWeekStart] are highlighted, or to 0f if they are not.
+ * We initialize our [Float] variable `val rightSize` to `sideSize` it the days to the right of
+ * [LocalDate] parameter [currentWeekStart] are highlighted, or to 0f if they are not. We initialize
+ * our [Float] variable `var totalSize` to the quantity `scaledSelectedNumberDays` times
+ * `widthPerDayPx` plus `scaledPercentage` times the quantity `leftSize` plus `rightSize`, then if
+ * `dayDelay` plus `monthOverlapDelay` is equal to 0 and `numberDaysSelected` is greater than or
+ * equal to 1 we coerce `totalSize` to be at least `widthPerDayPx`.
  *
  * @param width the [Size.width] of the current drawing environment.
  * @param state the current [CalendarUiState] containing information about the selected date range.
@@ -185,21 +202,25 @@ private fun getOffsetAndSize(
     val startPercentage: Float = (dayDelay + monthOverlapDelay) * percentagePerDay
     val endPercentage: Float = startPercentage + numberDaysSelected * percentagePerDay
 
-    val scaledPercentage: Float = if (selectedPercentage >= endPercentage) {
-        1f
-    } else if (selectedPercentage < startPercentage) {
-        0f
-    } else {
-        // Scale the overall percentage between the start selection of days to the end selection for
-        // the current week. eg: if this week has 3 days before it selected, we only want to
-        // start this animation after 3 * percentagePerDay and end it at the number of selected days
-        // in the week - so we normalize the percentage between the startPercentage + endPercentage
-        // to a range between at min 0f and 1f.
-        normalize(
-            x = selectedPercentage,
-            inMin = startPercentage,
-            inMax = endPercentage
-        )
+    val scaledPercentage: Float = when {
+        selectedPercentage >= endPercentage -> {
+            1f
+        }
+        selectedPercentage < startPercentage -> {
+            0f
+        }
+        else -> {
+            // Scale the overall percentage between the start selection of days to the end selection for
+            // the current week. eg: if this week has 3 days before it selected, we only want to
+            // start this animation after 3 * percentagePerDay and end it at the number of selected days
+            // in the week - so we normalize the percentage between the startPercentage + endPercentage
+            // to a range between at min 0f and 1f.
+            normalize(
+                x = selectedPercentage,
+                inMin = startPercentage,
+                inMax = endPercentage
+            )
+        }
     }
 
     val scaledSelectedNumberDays: Float = scaledPercentage * numberDaysSelected
@@ -214,7 +235,7 @@ private fun getOffsetAndSize(
     var totalSize: Float = (scaledSelectedNumberDays * widthPerDayPx) +
         (leftSize + rightSize) * scaledPercentage
     if (dayDelay + monthOverlapDelay == 0 && numberDaysSelected >= 1) {
-        totalSize = totalSize.coerceAtLeast(widthPerDayPx)
+        totalSize = totalSize.coerceAtLeast(minimumValue = widthPerDayPx)
     }
 
     val startOffset: Float =
