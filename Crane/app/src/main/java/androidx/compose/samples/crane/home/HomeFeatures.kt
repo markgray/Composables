@@ -30,7 +30,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 /**
- * TODO: Add kdoc
+ * This Composable is loaded when the user selects the [CraneScreen.Fly] tab in the [SearchContent]
+ * Composable. We start by initializing our [Int] variable `val columns` based on the value of our
+ * [WindowWidthSizeClass] parameter [widthSize] setting it to 1 for [WindowWidthSizeClass.Compact],
+ * 2 for [WindowWidthSizeClass.Medium], and 4 for [WindowWidthSizeClass.Expanded]. Then our root
+ * Composable is a [CraneSearch] whose `columns` argument is our `columns` variable, and whose
+ * [LazyGridScope] `content` argument is a lambda holding 4 [LazyGridScope.item] Composables which
+ * hold:
+ *  - a [PeopleUserInput] whose `titleSuffix` argument is the [String] ", Economy" and whose
+ *  `onPeopleChanged` argument is the [FlySearchContentUpdates.onPeopleChanged] lambda from our
+ *  [FlySearchContentUpdates] parameter [searchUpdates].
+ *  - a [FromDestination] composable.
+ *  - a [ToDestinationUserInput] Composable whose `onToDestinationChanged` argument is the
+ *  [FlySearchContentUpdates.onToDestinationChanged] lambda from our [FlySearchContentUpdates]
+ *  parameter [searchUpdates].
+ *  - a [DatesUserInput] Composable whose `datesSelected` argument is our [String] parameter
+ *  [datesSelected], and whose `onDateSelectionClicked` argument is the
+ *  [FlySearchContentUpdates.onDateSelectionClicked] lambda from our [FlySearchContentUpdates]
+ *  parameter [searchUpdates].
+ *
+ * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
+ * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
+ * @param datesSelected a [String] representation of the currently selected date range.
+ * @param searchUpdates a [FlySearchContentUpdates] data class instance containing lambda callbacks
+ * for several different events that might occur.
  */
 @Composable
 fun FlySearchContent(
@@ -39,7 +62,7 @@ fun FlySearchContent(
     searchUpdates: FlySearchContentUpdates
 ) {
 
-    val columns = when (widthSize) {
+    val columns: Int = when (widthSize) {
         WindowWidthSizeClass.Compact -> 1
         WindowWidthSizeClass.Medium -> 2
         WindowWidthSizeClass.Expanded -> 4
@@ -47,7 +70,7 @@ fun FlySearchContent(
     }
 
     CraneSearch(
-        columns,
+        columns = columns,
         content = {
             item {
                 PeopleUserInput(
@@ -65,7 +88,7 @@ fun FlySearchContent(
             }
             item {
                 DatesUserInput(
-                    datesSelected,
+                    datesSelected = datesSelected,
                     onDateSelectionClicked = searchUpdates.onDateSelectionClicked
                 )
             }
@@ -74,7 +97,29 @@ fun FlySearchContent(
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable is loaded when the user selects the [CraneScreen.Sleep] tab in the [SearchContent]
+ * Composable. We start by initializing our [Int] variable `val columns` based on the value of our
+ * [WindowWidthSizeClass] parameter [widthSize] setting it to 1 for [WindowWidthSizeClass.Compact],
+ * 2 for [WindowWidthSizeClass.Medium], and 4 for [WindowWidthSizeClass.Expanded]. Then our root
+ * Composable is a [CraneSearch] whose `columns` argument is our `columns` variable, and whose
+ * [LazyGridScope] `content` argument is a lambda holding 3 [LazyGridScope.item] Composables which
+ * hold:
+ *  - a [PeopleUserInput] whose `onPeopleChanged` argument is the
+ *  [SleepSearchContentUpdates.onPeopleChanged] lambda from our [SleepSearchContentUpdates] parameter
+ *  [sleepUpdates].
+ *  - a [DatesUserInput] Composable whose `datesSelected` argument is our [String] parameter
+ *  [datesSelected], and whose `onDateSelectionClicked` argument is the
+ *  [SleepSearchContentUpdates.onDateSelectionClicked] lambda from our [SleepSearchContentUpdates]
+ *  parameter [sleepUpdates].
+ *  - a [SimpleUserInput] whose `caption` argument is the [String] with resource ID
+ *  [R.string.input_select_location] ("Select Location"), and whose `vectorImageId` argument is
+ *  the [Int] DrawableRes [R.drawable.ic_hotel] (a stylized "head in a bed")
+ *
+ * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
+ * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
+ * @param datesSelected a [String] representation of the currently selected date range.
+ * @param sleepUpdates a [SleepSearchContentUpdates] data class instance containing lambda callbacks
+ * for several different events that might occur.
  */
 @Composable
 fun SleepSearchContent(
@@ -82,27 +127,27 @@ fun SleepSearchContent(
     datesSelected: String,
     sleepUpdates: SleepSearchContentUpdates
 ) {
-    val columns = when (widthSize) {
+    val columns: Int = when (widthSize) {
         WindowWidthSizeClass.Compact -> 1
         WindowWidthSizeClass.Medium -> 3
         WindowWidthSizeClass.Expanded -> 3
         else -> 1
     }
     CraneSearch(
-        columns,
+        columns = columns,
         content = {
             item {
                 PeopleUserInput(onPeopleChanged = { sleepUpdates.onPeopleChanged })
             }
             item {
                 DatesUserInput(
-                    datesSelected,
+                    datesSelected = datesSelected,
                     onDateSelectionClicked = sleepUpdates.onDateSelectionClicked
                 )
             }
             item {
                 SimpleUserInput(
-                    caption = stringResource(R.string.input_select_location),
+                    caption = stringResource(id = R.string.input_select_location),
                     vectorImageId = R.drawable.ic_hotel
                 )
             }
@@ -119,31 +164,31 @@ fun EatSearchContent(
     datesSelected: String,
     eatUpdates: EatSearchContentUpdates
 ) {
-    val columns = when (widthSize) {
+    val columns: Int = when (widthSize) {
         WindowWidthSizeClass.Compact -> 1
         WindowWidthSizeClass.Medium -> 2
         WindowWidthSizeClass.Expanded -> 4
         else -> 1
     }
-    CraneSearch(columns) {
+    CraneSearch(columns = columns) {
         item {
             PeopleUserInput(onPeopleChanged = eatUpdates.onPeopleChanged)
         }
         item {
             DatesUserInput(
-                datesSelected,
+                datesSelected = datesSelected,
                 onDateSelectionClicked = eatUpdates.onDateSelectionClicked
             )
         }
         item {
             SimpleUserInput(
-                caption = stringResource(R.string.input_select_time),
+                caption = stringResource(id = R.string.input_select_time),
                 vectorImageId = R.drawable.ic_time
             )
         }
         item {
             SimpleUserInput(
-                caption = stringResource(R.string.input_select_location),
+                caption = stringResource(id = R.string.input_select_location),
                 vectorImageId = R.drawable.ic_restaurant
             )
         }
@@ -157,9 +202,9 @@ private fun CraneSearch(
 ) {
     LazyVerticalGrid(
         modifier = Modifier.padding(start = 24.dp, top = 0.dp, end = 24.dp, bottom = 12.dp),
-        columns = GridCells.Fixed(columns),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        columns = GridCells.Fixed(count = columns),
+        horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(space = 8.dp),
         content = content
     )
 }
