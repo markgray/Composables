@@ -16,11 +16,13 @@
 
 package androidx.compose.samples.crane.calendar
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.samples.crane.calendar.model.AnimationDirection
 import androidx.compose.samples.crane.calendar.model.CalendarState
 import androidx.compose.samples.crane.calendar.model.CalendarUiState
@@ -172,7 +174,19 @@ fun WeekSelectionPill(
  * our [Float] variable `var totalSize` to the quantity `scaledSelectedNumberDays` times
  * `widthPerDayPx` plus `scaledPercentage` times the quantity `leftSize` plus `rightSize`, then if
  * `dayDelay` plus `monthOverlapDelay` is equal to 0 and `numberDaysSelected` is greater than or
- * equal to 1 we coerce `totalSize` to be at least `widthPerDayPx`.
+ * equal to 1 we coerce `totalSize` to be at least `widthPerDayPx`. We initialize our [Float] variable
+ * `val startOffset` to the value returned by the [CalendarUiState.selectedStartOffset] method given
+ * our [LocalDate] parameter [currentWeekStart] for its `currentWeekStartDate` argument an the
+ * [Week.yearMonth] of our [Week] parameter [week] for its `yearMonth` argument, multiplied by our
+ * [Float] parameter [widthPerDayPx]. We initialize our [Offset] variable `val offset` depending on
+ * the [CalendarUiState.animateDirection] of our [CalendarUiState] parameter [state]:
+ *  - [AnimationDirection.BACKWARDS] -> we initialize it to an [Offset] whose `x` is the sum of
+ *  `startOffset`, `edgePadding`, and `rightSize`, and whose `y` is 0f
+ *  - [AnimationDirection.FORWARDS] -> we initialize it to an [Offset] whose `x` is `startOffset`
+ *  plus `edgePadding` minus `leftSize`, and whose `y` is 0f
+ *
+ * Finally we return the [Pair] composed of [Offset] variable `offset` and [Float] variable
+ * `totalSize` to the caller.
  *
  * @param width the [Size.width] of the current drawing environment.
  * @param state the current [CalendarUiState] containing information about the selected date range.
@@ -239,7 +253,10 @@ private fun getOffsetAndSize(
     }
 
     val startOffset: Float =
-        state.selectedStartOffset(currentWeekStart, week.yearMonth) * widthPerDayPx
+        state.selectedStartOffset(
+            currentWeekStartDate = currentWeekStart,
+            yearMonth = week.yearMonth
+        ) * widthPerDayPx
 
     val offset: Offset =
         if (state.animateDirection?.isBackwards() == true) {
@@ -251,8 +268,23 @@ private fun getOffsetAndSize(
     return offset to totalSize
 }
 
+/**
+ * This is used in the [LaunchedEffect] of [Calendar] where it is multiplied by the
+ * [CalendarUiState.numberSelectedDays] to calculate the `durationMillis` of the [tween]
+ * used to animate the extension of the selected date range
+ */
 internal const val DURATION_MILLIS_PER_DAY = 150
 
+/**
+ * This is used to scale its [Float] parameter [x] from its input range of [inMin] to [inMax] to the
+ * output range of [outMin] to [outMax].
+ *
+ * @param x the [Float] value that is to be scaled.
+ * @param inMin the minimum value that [x] can be.
+ * @param inMax the maximum value that [x] can be.
+ * @param outMin the minimum value that we can return.
+ * @param outMax the maximum value that we can return.
+ */
 private fun normalize(
     x: Float,
     inMin: Float,
