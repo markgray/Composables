@@ -156,7 +156,32 @@ fun SleepSearchContent(
 }
 
 /**
- * TODO: Add kdoc
+ * This Composable is loaded when the user selects the [CraneScreen.Eat] tab in the [SearchContent]
+ * Composable. We start by initializing our [Int] variable `val columns` based on the value of our
+ * [WindowWidthSizeClass] parameter [widthSize] setting it to 1 for [WindowWidthSizeClass.Compact],
+ * 2 for [WindowWidthSizeClass.Medium], and 4 for [WindowWidthSizeClass.Expanded]. Then our root
+ * Composable is a [CraneSearch] whose `columns` argument is our `columns` variable, and whose
+ * [LazyGridScope] `content` argument is a lambda holding 4 [LazyGridScope.item] Composables which
+ * hold:
+ *  - a [PeopleUserInput] whose `onPeopleChanged` argument is the
+ *  [EatSearchContentUpdates.onPeopleChanged] lambda from our [EatSearchContentUpdates] parameter
+ *  [eatUpdates].
+ *  - a [DatesUserInput] Composable whose `datesSelected` argument is our [String] parameter
+ *  [datesSelected], and whose `onDateSelectionClicked` argument is the
+ *  [EatSearchContentUpdates.onDateSelectionClicked] lambda from our [EatSearchContentUpdates]
+ *  parameter [eatUpdates].
+ *  - a [SimpleUserInput] whose `caption` argument is the [String] with resource ID
+ *  [R.string.input_select_time] ("Select Time"), and whose `vectorImageId` argument is
+ *  the [Int] DrawableRes [R.drawable.ic_time] (a stylized clock)
+ *  - a [SimpleUserInput] whose `caption` argument is the [String] with resource ID
+ *  [R.string.input_select_location] ("Select Location"), and whose `vectorImageId` argument is
+ *  the [Int] DrawableRes [R.drawable.ic_restaurant] (a stylized crossed spoon and knife)
+ *
+ * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
+ * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
+ * @param datesSelected a [String] representation of the currently selected date range.
+ * @param eatUpdates a [EatSearchContentUpdates] data class instance containing lambda callbacks
+ * for several different events that might occur.
  */
 @Composable
 fun EatSearchContent(
@@ -195,6 +220,24 @@ fun EatSearchContent(
     }
 }
 
+/**
+ * This is used as the root composable for the [FlySearchContent], [SleepSearchContent], and
+ * [EatSearchContent] Composable. Our root Composable is a [LazyVerticalGrid] whose `modifier`
+ * argument is a [Modifier.padding] that adds 24.dp padding to the `start`, 0.dp to the `top`, 24.dp
+ * to the `end`, and 12.dp to the `bottom`, whose `columns` argument is a [GridCells.Fixed] whose
+ * `count` is our [Int] parameter [columns], whose `horizontalArrangement` argument is a
+ * [Arrangement.spacedBy] which spaces the content horizontally by 8.dp, whose `verticalArrangement`
+ * is a [Arrangement.spacedBy] which spaces the content vertically by 8.dp, and the [LazyGridScope]
+ * `content` argument is our [LazyGridScope] lambda argument [content].
+ *
+ * @param columns the number of columns in our [LazyVerticalGrid]. Our three caller pass us a value
+ * based on the [WindowWidthSizeClass] of the device we are running on:
+ *  - [WindowWidthSizeClass.Compact] -> 1
+ *  - [WindowWidthSizeClass.Medium] -> 2
+ *  - [WindowWidthSizeClass.Expanded] -> 4
+ * @param content a lambda containing one or more [LazyGridScope.item] composables depending on the
+ * needs of our callers.
+ */
 @Composable
 private fun CraneSearch(
     columns: Int,
