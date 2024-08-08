@@ -56,6 +56,7 @@ android {
     targetProjectPath = ":app"
 
     testOptions.managedDevices.devices {
+        @Suppress("UnstableApiUsage")
         create<ManagedVirtualDevice>("pixel6Api33") {
             device = "Pixel 6"
             apiLevel = 33
