@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 /*
 * Copyright 2019 Google, Inc.
 *
