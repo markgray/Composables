@@ -51,6 +51,7 @@ android {
         // but it might slightly affect performance in your app, but in a linear way (everything is slowed down the same).
         // If you want to measure performance as close as to your production app, consider not using for that case.
         // TODO Codelab task: Add androidx.benchmark.fullTracing.enable argument to enable Composition Tracing for benchmarks
+        testInstrumentationRunnerArguments["androidx.benchmark.fullTracing.enable"] = "true"
     }
 
     targetProjectPath = ":app"
@@ -79,4 +80,6 @@ dependencies {
     implementation(libs.benchmark.macro.junit4)
 
     // TODO Codelab task: Add tracing-perfetto(-binary) dependencies to enable Composition Tracing
+    implementation(libs.androidx.tracing.perfetto)
+    implementation(libs.androidx.tracing.perfetto.binary)
 }
