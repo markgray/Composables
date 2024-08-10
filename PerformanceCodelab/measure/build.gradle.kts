@@ -50,7 +50,7 @@ android {
         // It's helpful for analysing what takes the longest during composition,
         // but it might slightly affect performance in your app, but in a linear way (everything is slowed down the same).
         // If you want to measure performance as close as to your production app, consider not using for that case.
-        // TODO Codelab task: Add androidx.benchmark.fullTracing.enable argument to enable Composition Tracing for benchmarks
+        // TODO Codelab task: Add androidx.benchmark.fullTracing.enable argument to enable Composition Tracing for benchmarks DONE
         testInstrumentationRunnerArguments["androidx.benchmark.fullTracing.enable"] = "true"
     }
 
@@ -79,7 +79,7 @@ dependencies {
     implementation(libs.uiautomator)
     implementation(libs.benchmark.macro.junit4)
 
-    // TODO Codelab task: Add tracing-perfetto(-binary) dependencies to enable Composition Tracing
+    // TODO Codelab task: Add tracing-perfetto(-binary) dependencies to enable Composition Tracing DONE
     implementation(libs.androidx.tracing.perfetto)
     implementation(libs.androidx.tracing.perfetto.binary)
 }

@@ -90,7 +90,7 @@ dependencies {
     implementation(libs.profileinstaller)
     implementation(libs.androidx.tracing.ktx)
 
-    // TODO Codelab task: Add androidx.runtime-tracing dependency to enable Composition Tracing
+    // TODO Codelab task: Add androidx.runtime-tracing dependency to enable Composition Tracing DONE
     implementation(libs.androidx.runtime.tracing)
 
     implementation(libs.coil.compose)
