@@ -55,7 +55,7 @@ fun PhasesComposeLogo() = trace("PhasesComposeLogo") {
             Image(
                 painter = logo,
                 contentDescription = "logo",
-                modifier = Modifier.offset(logoPosition.x.toDp(), logoPosition.y.toDp())
+                modifier = Modifier.offset { IntOffset(logoPosition.x,  logoPosition.y) }
             )
         }
     }
