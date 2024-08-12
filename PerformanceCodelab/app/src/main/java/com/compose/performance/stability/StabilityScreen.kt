@@ -58,12 +58,12 @@ import java.time.LocalDate
 
 @Composable
 fun StabilityScreen(viewModel: StabilityViewModel = viewModel()) {
-    // TODO Codelab task: Make items stable with strong skipping mode and annotation to prevent recomposing
+    // TODO Codelab task: Make items stable with strong skipping mode and annotation to prevent recomposing DONE
     val items by viewModel.items.collectAsState()
 
     Box {
         Column {
-            // TODO Codelab task: make LocalDate stable to prevent recomposing with each change
+            // TODO Codelab task: make LocalDate stable to prevent recomposing with each change DONE
             LatestChange(viewModel.latestDateChange)
 
             LazyColumn(
