@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    //noinspection GradleDependency TODO: alpha14 requires SDK 35 - keep an eye on this
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
