@@ -15,6 +15,7 @@
  */
 package com.compose.performance
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -29,6 +30,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -43,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
@@ -54,7 +58,26 @@ import com.compose.performance.phases.PhasesComposeLogo
 import com.compose.performance.stability.StabilityScreen
 import com.compose.performance.ui.theme.PerformanceWorkshopTheme
 
+/**
+ * This is the Activity for the Performance with Jetpack Compose codelab.
+ */
 class MainActivity : ComponentActivity() {
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`
+     * then we call [enableEdgeToEdge] to enable edge-to-edge display. We call [setContent] to have
+     * it Compose its `content` composable lambda argument into our activity. In that lambda we
+     * initialize our [PerformanceCodeLabViewModel] variable `val viewModel` to an existing instance
+     * or a new instance if there is none whose `startFromStep` argument is the [String] stored under
+     * the key [EXTRA_START_TASK] ("EXTRA_START_TASK") that we have retrieved from the [Intent] that
+     * started the app to initialize our [String] variable `val startFromStep`. Then wrapped in our
+     * [PerformanceWorkshopTheme] custom [MaterialTheme] we compose a [Surface] whose `modifier`
+     * argument is a [Modifier.fillMaxSize] to have it take up its entire incoming size constraints,
+     * with a [Modifier.semantics] chained to that sets the [SemanticsPropertyReceiver.testTagsAsResourceId]
+     * property to `true` to map testTags to resource-id to make them available to tests. The
+     * background `color` argument of the [Surface] is the [ColorScheme.background] of our custom
+     * [MaterialTheme.colorScheme]. In the `content` composable lambda argument we compose our
+     * [PerformanceCodeLabScreen] composable with its `selectedPage` argument the
+     */
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +87,8 @@ class MainActivity : ComponentActivity() {
             val viewModel: PerformanceCodeLabViewModel = viewModel {
                 // Allows us to start the workshop from a various screen
                 // so that we can have a run configuration for each task.
-                val startFromStep = intent.getStringExtra(EXTRA_START_TASK)
-                PerformanceCodeLabViewModel(startFromStep)
+                val startFromStep: String? = intent.getStringExtra(EXTRA_START_TASK)
+                PerformanceCodeLabViewModel(startFromStep = startFromStep)
             }
 
             PerformanceWorkshopTheme {
@@ -78,8 +101,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     PerformanceCodeLabScreen(
                         selectedPage = viewModel.selectedPage.value,
-                        onPageSelected = {
-                            viewModel.selectedPage.value = it
+                        onPageSelected = { taskScreen: TaskScreen ->
+                            viewModel.selectedPage.value = taskScreen
                         }
                     )
                 }
@@ -89,7 +112,7 @@ class MainActivity : ComponentActivity() {
 }
 
 private class PerformanceCodeLabViewModel(startFromStep: String?) : ViewModel() {
-    val selectedPage = mutableStateOf(TaskScreen.from(startFromStep))
+    val selectedPage: MutableState<TaskScreen> = mutableStateOf(TaskScreen.from(startFromStep))
 }
 
 @Composable
