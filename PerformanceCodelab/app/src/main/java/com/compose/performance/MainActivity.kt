@@ -76,7 +76,15 @@ class MainActivity : ComponentActivity() {
      * property to `true` to map testTags to resource-id to make them available to tests. The
      * background `color` argument of the [Surface] is the [ColorScheme.background] of our custom
      * [MaterialTheme.colorScheme]. In the `content` composable lambda argument we compose our
-     * [PerformanceCodeLabScreen] composable with its `selectedPage` argument the
+     * [PerformanceCodeLabScreen] composable with its `selectedPage` argument the [MutableState.value]
+     * of the [MutableState] wrapped [TaskScreen] property [PerformanceCodeLabViewModel.selectedPage]
+     * of our [PerformanceCodeLabViewModel] variable `viewModel`, and with its `onPageSelected`
+     * argument a lambda which accepts the [TaskScreen] passed it in the variable `taskScreen`, then
+     * sets the [MutableState.value] of the [MutableState] wrapped [TaskScreen] property
+     * [PerformanceCodeLabViewModel.selectedPage] of our [PerformanceCodeLabViewModel] variable
+     * `viewModel` to the [TaskScreen] in the `taskScreen` variable.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use this.
      */
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,10 +119,27 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * This is the [ViewModel] that holds the [TaskScreen] that controls what [TaskScreen.composable]
+ * [PerformanceCodeLabScreen] displays.
+ *
+ * @param startFromStep the [TaskScreen.id] of the start [TaskScreen], or if `null` it will default
+ * to [TaskScreen.AccelerateHeavyScreen].
+ */
 private class PerformanceCodeLabViewModel(startFromStep: String?) : ViewModel() {
+    /**
+     * The [TaskScreen] whose [TaskScreen.composable] should be displayed by [PerformanceCodeLabScreen]
+     */
     val selectedPage: MutableState<TaskScreen> = mutableStateOf(TaskScreen.from(startFromStep))
 }
 
+/**
+ * This is the main screen of our app.
+ *
+ * @param selectedPage the [TaskScreen] whose [TaskScreen.composable] we should display.
+ * @param onPageSelected a lambda we should call with the [TaskScreen] that the user has chosen to
+ * replace [selectedPage].
+ */
 @Composable
 private fun PerformanceCodeLabScreen(
     selectedPage: TaskScreen,
