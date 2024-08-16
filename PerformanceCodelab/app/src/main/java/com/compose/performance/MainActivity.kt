@@ -24,6 +24,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -134,7 +135,25 @@ private class PerformanceCodeLabViewModel(startFromStep: String?) : ViewModel() 
 }
 
 /**
- * This is the main screen of our app.
+ * This is the main screen of our app. We start by calling [BackHandler] with its `enabled` argument
+ * `true` if [TaskScreen] parameter [selectedPage] if [TaskScreen.isFirst] returns `false`
+ * (returns `false` if the [TaskScreen.ordinal] of [selectedPage] is not 0, so the [BackHandler] is
+ * enabled for all [TaskScreen] except [TaskScreen.AccelerateHeavyScreen]). In the `onBack` lambda
+ * argument of [BackHandler] we call our [onPageSelected] lambda with the [TaskScreen] that the
+ * [TaskScreen.previous] method of [selectedPage] returns (this will be the [TaskScreen] whose
+ * [TaskScreen.ordinal] is 1 less than the [TaskScreen.ordinal] of [selectedPage]). Our root
+ * Composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxSize] to have it take
+ * up its entire incoming size constraints, with a [Modifier.systemBarsPadding] chained to that to
+ * add padding to accommodate the system bars insets, and to that is chained a [Modifier.testTag]
+ * to add the `tag` of the [TaskScreen.id] of [selectedPage] to allow the [Column] to be found in
+ * tests. The `horizontalAlignment` argument of the [Column] is [Alignment.CenterHorizontally] to
+ * center its children horizontally.
+ *
+ * In the `content` lambda argument of the [Column] we have:
+ *  - a [Row] whose `verticalAlignment argument is [Alignment.CenterVertically] to center its children
+ *  vertically, whose `modifier` argument is a [Modifier.fillMaxWidth] to have it occupy its entire
+ *  incoming width constraint, and whose `horizontalArrangement` argument is [Arrangement.Center] to
+ *  center the horizontal arrangement its children. In the [RowScope] `content`
  *
  * @param selectedPage the [TaskScreen] whose [TaskScreen.composable] we should display.
  * @param onPageSelected a lambda we should call with the [TaskScreen] that the user has chosen to
@@ -153,13 +172,12 @@ private fun PerformanceCodeLabScreen(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
-            .testTag(selectedPage.id),
+            .testTag(tag = selectedPage.id),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             val previousTaskLabel = stringResource(R.string.previous_task)
