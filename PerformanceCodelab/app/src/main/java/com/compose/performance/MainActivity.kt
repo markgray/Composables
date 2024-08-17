@@ -44,6 +44,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -153,7 +154,30 @@ private class PerformanceCodeLabViewModel(startFromStep: String?) : ViewModel() 
  *  - a [Row] whose `verticalAlignment argument is [Alignment.CenterVertically] to center its children
  *  vertically, whose `modifier` argument is a [Modifier.fillMaxWidth] to have it occupy its entire
  *  incoming width constraint, and whose `horizontalArrangement` argument is [Arrangement.Center] to
- *  center the horizontal arrangement its children. In the [RowScope] `content`
+ *  center the horizontal arrangement its children. In the [RowScope] `content` lambda argument of
+ *  [Row] we first initialize our [String] variable `val previousTaskLabel` to the [String] with
+ *  resource ID [R.string.previous_task] ("Previous task"), and our [String] variable `val nextTaskLabel`
+ *  to the [String] with resource ID [R.string.next_task] ("Next task"). We then compose an [IconButton]
+ *  whose `onClick` argument is a lambda that calls our [onPageSelected] lambda parameter with the
+ *  [TaskScreen] returned by the [TaskScreen.previous] method of our [TaskScreen] parameter
+ *  [selectedPage], and whose `modifier` argument is a [Modifier.semantics] with our [String] variable
+ *  `previousTaskLabel` ("Previous task"). The `content` argument of the [IconButton] is an [Icon]
+ *  whose `painter` argument is the remembered [VectorPainter] created from the `image` argument
+ *  [Icons.AutoMirrored.Filled.ArrowBack]. Next in the [Row] is a [Text] displaying the `text` formed
+ *  by concatenating the [String] "Task" followed by the [String] value of the [TaskScreen.ordinal]
+ *  plus 1 of our [TaskScreen] parameter [selectedPage], followed by the [String] "/" followed by the
+ *  [String] value of the total number of [TaskScreen] enums. (ie. "Task 1/4", "Task 2/4" ... etc).
+ *  At the end of the [Row] is another [IconButton] whose `onClick` argument is a lambda that calls
+ *  our [onPageSelected] lambda parameter with the [TaskScreen] returned by the [TaskScreen.next]
+ *  method of our [TaskScreen] parameter [selectedPage], and whose `modifier` argument is a
+ *  [Modifier.semantics] with our [String] variable `nextTaskLabel` ("Next task"). The `content`
+ *  argument of the [IconButton] is an [Icon] whose `painter` argument is the remembered
+ *  [VectorPainter] created from the `image` argument [Icons.AutoMirrored.Filled.ArrowForward]. *
+ *  - Next in the [Column] is a [Text] displaying the `text` of the [TaskScreen.label] of our
+ *  [TaskScreen] parameter [selectedPage].
+ *  - There follows a [HorizontalDivider]
+ *  - and at the bottom of the [Column] we compose the [TaskScreen.composable] composable lambda of
+ *  our [TaskScreen] parameter [selectedPage].
  *
  * @param selectedPage the [TaskScreen] whose [TaskScreen.composable] we should display.
  * @param onPageSelected a lambda we should call with the [TaskScreen] that the user has chosen to
@@ -180,8 +204,8 @@ private fun PerformanceCodeLabScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            val previousTaskLabel = stringResource(R.string.previous_task)
-            val nextTaskLabel = stringResource(R.string.next_task)
+            val previousTaskLabel: String = stringResource(R.string.previous_task)
+            val nextTaskLabel: String = stringResource(R.string.next_task)
 
             IconButton(
                 onClick = { onPageSelected(selectedPage.previous()) },
@@ -214,6 +238,10 @@ private fun PerformanceCodeLabScreen(
     }
 }
 
+/**
+ * This the key which is used to store the `startFromStep` [String] of the [TaskScreen.id] of the
+ * [TaskScreen] that our app should start from in the [Intent] that lauched our app.
+ */
 const val EXTRA_START_TASK = "EXTRA_START_TASK"
 
 private enum class TaskScreen(
