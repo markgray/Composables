@@ -54,6 +54,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.compose.performance.TaskScreen.AccelerateHeavyScreen
 import com.compose.performance.accelerate.AccelerateHeavyScreen
 import com.compose.performance.phases.PhasesAnimatedShape
 import com.compose.performance.phases.PhasesComposeLogo
@@ -240,42 +241,86 @@ private fun PerformanceCodeLabScreen(
 
 /**
  * This the key which is used to store the `startFromStep` [String] of the [TaskScreen.id] of the
- * [TaskScreen] that our app should start from in the [Intent] that lauched our app.
+ * [TaskScreen] that our app should start from in the [Intent] that lauches our app.
  */
 const val EXTRA_START_TASK = "EXTRA_START_TASK"
 
+/**
+ * This enum is used to control which "task" is displayed by [PerformanceCodeLabScreen].
+ *
+ * @param id the [String] that identifies the [TaskScreen].
+ * @param label a [String] that [PerformanceCodeLabScreen] can use to "label" the [TaskScreen].
+ * @param composable a Composable lambda which [PerformanceCodeLabScreen] should compose when the
+ * [TaskScreen] is the selected one.
+ */
 private enum class TaskScreen(
     val id: String,
     val label: String,
     val composable: @Composable () -> Unit
 ) {
+    /**
+     * [TaskScreen] used to display the [AccelerateHeavyScreen] Composable
+     */
     AccelerateHeavyScreen(
         id = "accelerate_heavy",
         label = "Accelerate - HeavyScreen",
         composable = { AccelerateHeavyScreen() }
     ),
+
+    /**
+     * [TaskScreen] used to display the [PhasesComposeLogo] Composable
+     */
     PhasesLogo(
         id = "phases_logo",
         label = "Phases - Compose Logo",
         composable = { PhasesComposeLogo() }
     ),
+
+    /**
+     * [TaskScreen] used to display the [PhasesAnimatedShape] Composable
+     */
     PhasesAnimatedShape(
         id = "phases_animatedshape",
         label = "Phases - Animating Shape",
         composable = { PhasesAnimatedShape() }
     ),
+
+    /**
+     * [TaskScreen] used to display the [StabilityScreen] Composable
+     */
     StabilityList(
         id = "stability_screen",
         label = "Stability - Stable LazyList",
         composable = { StabilityScreen() }
     );
 
+    /**
+     * Convenience property to check if `this` [TaskScreen] is the first of the four. Returns `true`
+     * if the [ordinal] of this [TaskScreen] is equal to 0.
+     */
     val isFirst get() = ordinal == 0
 
+    /**
+     * Convenience property to retrieve the [TaskScreen] whose [ordinal] is one less then `this`
+     * [TaskScreen].
+     */
     fun previous() = entries[Math.floorMod(ordinal - 1, entries.size)]
+
+    /**
+     * Convenience property to retrieve the [TaskScreen] whose [ordinal] is one more then `this`
+     * [TaskScreen].
+     */
     fun next() = entries[Math.floorMod(ordinal + 1, entries.size)]
 
     companion object {
+        /**
+         * Returns the [TaskScreen] whose [TaskScreen.id] is equal to our [String] parameter [extra]
+         * defaulting to the "first" [TaskScreen] in the enum declaration ([AccelerateHeavyScreen]).
+         *
+         * @param extra the [String] we are to search the [TaskScreen.id]'s of the [TaskScreen] for.
+         * @return the [TaskScreen] whose [TaskScreen.id] is equal to [String] parameter [extra] or
+         * [AccelerateHeavyScreen] if none match.
+         */
         fun from(extra: String?) = entries.firstOrNull { it.id == extra } ?: entries.first()
     }
 }
