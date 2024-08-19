@@ -1,6 +1,8 @@
 # Performance with Jetpack Compose Codelab
 
-The folder contains the source code for the Performance with Jetpack Compose codelab.
+The folder contains the source code for the Performance with Jetpack Compose codelab:
+
+https://developer.android.com/codelabs/jetpack-compose-performance
 
 ## Formatting
 To run spotless use the following command

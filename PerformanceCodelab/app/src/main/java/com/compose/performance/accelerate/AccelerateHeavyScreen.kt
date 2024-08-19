@@ -68,6 +68,9 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 
+/**
+ * This Composable is the first task in the codelab.
+ */
 @Composable
 fun AccelerateHeavyScreen(
     modifier: Modifier = Modifier,
