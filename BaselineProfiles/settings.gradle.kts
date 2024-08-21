@@ -32,3 +32,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "BaselineProfilesCodelab"
 include(":app")
+include(":app:baselineprofile")
