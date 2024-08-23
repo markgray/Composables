@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.ManagedVirtualDevice
+import com.android.build.api.variant.BuiltArtifactsLoader
 
 plugins {
     alias(libs.plugins.android.test)
@@ -32,6 +33,7 @@ android {
     // To use GMD please invoke generation through the command line:
     // ./gradlew :app:generateBaselineProfile
     testOptions.managedDevices.devices {
+        @Suppress("UnstableApiUsage")
         create<ManagedVirtualDevice>("pixel6Api34") {
             device = "Pixel 6"
             apiLevel = 34
@@ -56,10 +58,11 @@ dependencies {
 
 androidComponents {
     onVariants { v ->
-        val artifactsLoader = v.artifacts.getBuiltArtifactsLoader()
+        val artifactsLoader: BuiltArtifactsLoader = v.artifacts.getBuiltArtifactsLoader()
+        @Suppress("UnstableApiUsage")
         v.instrumentationRunnerArguments.put(
             "targetAppId",
-            v.testedApks.map { artifactsLoader.load(it)?.applicationId }
+            v.testedApks.map { artifactsLoader.load(it)!!.applicationId }
         )
     }
 }
