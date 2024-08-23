@@ -2,12 +2,15 @@ package com.example.android.baselineprofile
 
 import androidx.benchmark.macro.BaselineProfileMode
 import androidx.benchmark.macro.CompilationMode
+import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.Until
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -66,11 +69,19 @@ class StartupBenchmarks {
                 // The app is fully drawn when Activity.reportFullyDrawn is called.
                 // For Jetpack Compose, you can use ReportDrawn, ReportDrawnWhen and ReportDrawnAfter
                 // from the AndroidX Activity library.
+                waitForAsyncContent() // <------- Added to wait for async content.
 
                 // Check the UiAutomator documentation for more information on how to
                 // interact with the app.
                 // https://d.android.com/training/testing/other-components/ui-automator
             }
         )
+    }
+
+    private fun MacrobenchmarkScope.waitForAsyncContent() {
+        device.wait(Until.hasObject(By.res("snack_list")), 5_000)
+        val contentList = device.findObject(By.res("snack_list"))
+        // Wait until a snack collection item within the list is rendered.
+        contentList.wait(Until.hasObject(By.res("snack_collection")), 5_000)
     }
 }
