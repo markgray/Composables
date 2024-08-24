@@ -69,7 +69,8 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 
 /**
- * This Composable is the first task in the codelab.
+ * This Composable is the first task in the codelab. Here, you optimize heavy composables.
+ *
  */
 @Composable
 fun AccelerateHeavyScreen(
