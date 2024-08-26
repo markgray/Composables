@@ -101,7 +101,7 @@ dependencies {
     implementation("androidx.compose.animation:animation:1.6.8")
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.8")
     implementation("com.google.dagger:hilt-android:2.51.1")
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
