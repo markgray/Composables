@@ -1,11 +1,11 @@
 [versions]
 coil = "2.7.0"
 com-android-application = "8.5.2"
-desugar_jdk_libs = "2.0.4"
+desugar_jdk_libs = "2.1.0"
 kotlinx-datetime = "0.6.0"
 lifecycle-viewmodel-compose = "2.8.4"
 material-icons-core = "1.6.8"
-media3 = "1.4.0"
+media3 = "1.4.1"
 org-jetbrains-kotlin-android = "2.0.10"
 core-ktx = "1.13.1"
 junit = "4.13.2"
