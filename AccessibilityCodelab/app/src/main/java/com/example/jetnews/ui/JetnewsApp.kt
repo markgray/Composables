@@ -18,19 +18,14 @@ package com.example.jetnews.ui
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.view.View
-import android.view.Window
 import androidx.compose.material.DrawerState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalView
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph
@@ -41,22 +36,13 @@ import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.ui.theme.JetnewsTheme
-import com.google.accompanist.systemuicontroller.SystemUiController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * This is the main Composable of the app. We start by initializing our [SystemUiController] variable
- * `val systemUiController` using the [rememberSystemUiController] metod. It "remembers" it using the
- * `current` [LocalView] and the [Window] associated with that [View] as `keys`. We then use the
- * Composable [SideEffect] function to schedule its `effect` lambda to run when the current composition
- * finishes and then every recomposition thereafter. In that lambda we call the method
- * [SystemUiController.setSystemBarsColor] of `systemUiController` to set the color of the status and
- * navigation bars [Color.Transparent], and to set its `darkIcons` property to `false` to prevent the
- * use of dark navigation bar icons.
+ * This is the main Composable of the app.
  *
- * Next we initialize and remember our [NavHostController] variable `val navController`, initialize
+ * First we initialize and remember our [NavHostController] variable `val navController`, initialize
  * and remember our [CoroutineScope] variable `val coroutineScope`, and initialize and remember our
  * [ScaffoldState] variable `val scaffoldState`.
  *
@@ -94,11 +80,6 @@ fun JetnewsApp(
     appContainer: AppContainer
 ) {
     JetnewsTheme {
-        val systemUiController: SystemUiController = rememberSystemUiController()
-        SideEffect {
-            systemUiController.setSystemBarsColor(color = Color.Transparent, darkIcons = false)
-        }
-
         val navController: NavHostController = rememberNavController()
         val coroutineScope: CoroutineScope = rememberCoroutineScope()
         // This top level scaffold contains the app drawer, which needs to be accessible
