@@ -70,7 +70,12 @@ android {
         compose = true
     }
     composeCompiler {
-        enableStrongSkippingMode = true
+//        featureFlags = setOf(
+//            ComposeFeatureFlag.IntrinsicRemember,
+//            ComposeFeatureFlag.OptimizeNonSkippingGroups.disabled(),
+//            ComposeFeatureFlag.StrongSkipping
+//        ) // The default settings for compose 2.0.20 and above
+// import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
     }
     packaging {
         resources {
