@@ -35,7 +35,7 @@ android {
         compose = true
     }
     composeCompiler {
-        enableStrongSkippingMode = true
+        // Use the featureFlags option
     }
     packaging {
         resources {
