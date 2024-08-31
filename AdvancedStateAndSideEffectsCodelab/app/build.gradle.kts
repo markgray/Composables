@@ -76,7 +76,7 @@ android {
         shaders = false
     }
     composeCompiler {
-        enableStrongSkippingMode = true
+        // Use the featureFlags option
     }
     packaging {
         resources {
