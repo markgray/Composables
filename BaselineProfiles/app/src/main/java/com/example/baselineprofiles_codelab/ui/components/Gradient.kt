@@ -58,7 +58,7 @@ fun Modifier.diagonalGradientBorder(
     colors: List<Color>,
     borderSize: Dp = 2.dp,
     shape: Shape
-) = border(
+) = this.border(
     width = borderSize,
     brush = Brush.linearGradient(colors),
     shape = shape

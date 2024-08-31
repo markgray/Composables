@@ -82,7 +82,7 @@ android {
 }
 
 composeCompiler {
-    enableStrongSkippingMode = true
+    // Use the featureFlags option
 }
 
 dependencies {
