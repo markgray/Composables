@@ -62,7 +62,7 @@ android {
         compose = true
     }
     composeCompiler {
-        enableStrongSkippingMode = true
+        // enableStrongSkippingMode = true is default now
     }
     packaging {
         resources {
