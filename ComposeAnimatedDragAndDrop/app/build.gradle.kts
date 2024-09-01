@@ -36,7 +36,7 @@ android {
         compose = true
     }
     composeCompiler {
-        enableStrongSkippingMode = true
+        /// enableStrongSkippingMode = true is now default
     }
     packaging {
         resources {
