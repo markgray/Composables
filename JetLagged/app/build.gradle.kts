@@ -95,7 +95,7 @@ android {
 
 composeCompiler {
     // Configure compose compiler options if required
-    enableStrongSkippingMode = true
+    // enableStrongSkippingMode = true is now default
 }
 
 dependencies {
