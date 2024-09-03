@@ -69,7 +69,7 @@ android {
         shaders = false
     }
     composeCompiler {
-        enableStrongSkippingMode = true
+        // enableStrongSkippingMode = true is now default
     }
     packaging {
         jniLibs {
