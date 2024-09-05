@@ -124,7 +124,7 @@ class MainActivity : ComponentActivity() {
  *  case we use the `Search` [ImageVector] of [Icons.Default] (a magnifying glass).
  *  - `colors` - [TextFieldColors] that will be used to resolve color of the text, content (including
  *  label, placeholder, leading and trailing icons, indicator line) and background for the [TextField]
- *  in different states. We use the defaults produced by [TextFieldDefaults.textFieldColors] except
+ *  in different states. We use the defaults produced by [TextFieldDefaults.colors] except
  *  for the `unfocusedContainerColor` and `focusedContainerColor` colors both of which we replace
  *  with the [ColorScheme.surface] color of our [MaterialTheme] (Color(0xFFFFFBFF) (White) for our
  *  `lightColorScheme`, and Color(0xFF1D1B1A) (Black) for our `darkColorScheme`.
