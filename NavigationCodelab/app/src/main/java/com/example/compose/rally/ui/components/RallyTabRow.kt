@@ -22,6 +22,7 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Indication
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
@@ -48,14 +49,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.compose.rally.Accounts
 import com.example.compose.rally.Bills
 import com.example.compose.rally.Overview
-import com.example.compose.rally.RallyDestination
 import com.example.compose.rally.RallyApp
+import com.example.compose.rally.RallyDestination
 import com.example.compose.rally.rallyTabRowScreens
 import com.example.compose.rally.ui.theme.RallyTheme
 import java.util.Locale
@@ -190,11 +190,7 @@ fun RallyTab(
                 onClick = onSelected,
                 role = Role.Tab,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(
-                    bounded = false,
-                    radius = Dp.Unspecified,
-                    color = Color.Unspecified
-                )
+                indication = LocalIndication.current
             )
             .clearAndSetSemantics { contentDescription = text }
     ) {
