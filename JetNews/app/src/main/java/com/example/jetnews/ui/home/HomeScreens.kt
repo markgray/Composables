@@ -342,7 +342,7 @@ fun HomeFeedWithArticleDetailsScreen(
  * `blockState` to execute our lambda parameter [block].
  */
 private fun Modifier.notifyInput(block: () -> Unit): Modifier =
-    this then composed {
+    this.composed {
         val blockState: State<() -> Unit> = rememberUpdatedState(newValue = block)
         pointerInput(key1 = Unit) {
             while (currentCoroutineContext().isActive) {
