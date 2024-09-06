@@ -57,8 +57,7 @@ import com.codelab.layouts.ui.LayoutsCodelabTheme
  */
 fun Modifier.firstBaselineToTop(
     firstBaselineToTop: Dp
-): Modifier = this.then(
-    layout { measurable: Measurable, constraints: Constraints ->
+): Modifier = this.layout { measurable: Measurable, constraints: Constraints ->
         val placeable: Placeable = measurable.measure(constraints)
 
         // Check the composable has a first baseline
@@ -73,7 +72,6 @@ fun Modifier.firstBaselineToTop(
             placeable.placeRelative(x = 0, y = placeableY)
         }
     }
-)
 
 /**
  * Preview of a [Text] wrapped in our [LayoutsCodelabTheme] custom [MaterialTheme] which uses
