@@ -17,8 +17,8 @@
 package com.example.baselineprofiles_codelab.ui.utils
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -36,5 +36,5 @@ fun mirroringIcon(ltrIcon: ImageVector, rtlIcon: ImageVector): ImageVector =
  */
 @Composable
 fun mirroringBackIcon() = mirroringIcon(
-    ltrIcon = Icons.Outlined.ArrowBack, rtlIcon = Icons.Outlined.ArrowForward
+    ltrIcon = Icons.AutoMirrored.Outlined.ArrowBack, rtlIcon = Icons.AutoMirrored.Outlined.ArrowForward
 )
