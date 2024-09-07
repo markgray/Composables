@@ -36,7 +36,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -48,9 +48,9 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.compose.rally.RallyScreen
-import com.example.compose.rally.RallyApp
 import com.example.compose.rally.RallyActivity
+import com.example.compose.rally.RallyApp
+import com.example.compose.rally.RallyScreen
 import com.example.compose.rally.ui.theme.RallyTheme
 import java.util.Locale
 
@@ -178,7 +178,7 @@ private fun RallyTab(
                 onClick = onSelected,
                 role = Role.Tab,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(
+                indication = ripple(
                     bounded = false,
                     radius = Dp.Unspecified,
                     color = Color.Unspecified
