@@ -28,6 +28,7 @@ import androidx.compose.animation.core.Spring.StiffnessLow
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
@@ -250,7 +251,7 @@ fun MainScreen(
             MutableTransitionState(initialState = mainViewModel.shownSplash.value)
         }
         val transition: Transition<SplashState> =
-            updateTransition(transitionState = transitionState, label = "splashTransition")
+            rememberTransition(transitionState = transitionState, label = "splashTransition")
         val splashAlpha: Float by transition.animateFloat(
             transitionSpec = { tween(durationMillis = 100) }, label = "splashAlpha"
         ) {
