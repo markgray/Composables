@@ -865,6 +865,7 @@ fun ClickableMessage(
         primary = isUserMe
     )
 
+    // TODO: Use Text or BasicText and pass an AnnotatedString that contains a LinkAnnotation
     ClickableText(
         text = styledMessage,
         style = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
