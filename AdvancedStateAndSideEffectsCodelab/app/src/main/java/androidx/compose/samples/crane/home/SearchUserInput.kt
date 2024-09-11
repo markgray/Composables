@@ -19,6 +19,7 @@ package androidx.compose.samples.crane.home
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Column
@@ -351,7 +352,7 @@ private fun tintPeopleUserInput(
     val validColor: Color = MaterialTheme.colors.onSurface
     val invalidColor: Color = MaterialTheme.colors.secondary
 
-    val transition: Transition<PeopleUserInputAnimationState> = updateTransition(transitionState, label = "")
+    val transition: Transition<PeopleUserInputAnimationState> = rememberTransition(transitionState, label = "")
     return transition.animateColor(
         transitionSpec = { tween(durationMillis = 300) }, label = ""
     ) { state: PeopleUserInputAnimationState ->
