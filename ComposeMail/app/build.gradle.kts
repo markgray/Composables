@@ -77,11 +77,10 @@ dependencies {
     //noinspection GradleDependency TODO: Newer version breaks compilation!
     implementation("androidx.paging:paging-common-ktx:3.1.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.3.0")
-    implementation("androidx.compose.ui:ui:1.7.0")
-    //noinspection GradleDependency TODO: material:1.7.0 breaks compilation FIX this
-    implementation("androidx.compose.material:material:1.6.8")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.7.0")
-    implementation("androidx.compose.material:material-icons-extended:1.7.0")
+    implementation("androidx.compose.ui:ui:1.7.1")
+    implementation("androidx.compose.material:material:1.7.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.1")
+    implementation("androidx.compose.material:material-icons-extended:1.7.1")
     //noinspection GradleDependency TODO: Newer version breaks compilation!
     implementation("androidx.paging:paging-compose:1.0.0-alpha17")
     //noinspection GradleDependency TODO: Newer version breaks compilation!
@@ -94,7 +93,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.0")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.7.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.1")
 }
 

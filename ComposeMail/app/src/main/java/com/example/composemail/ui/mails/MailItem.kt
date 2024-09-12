@@ -40,7 +40,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -347,7 +347,7 @@ fun MotionLayoutMail(
             .background(color = backgroundColor)
             .indication(
                 interactionSource, // Consume MailContent's interactions
-                rememberRipple(bounded = true)
+                ripple(bounded = true)
             )
             .padding(8.dp),
         constraintSetName = targetState.tag,
