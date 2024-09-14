@@ -37,11 +37,22 @@ android {
         }
     }
 
+    signingConfigs {
+        // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
+        create("release") {
+            storeFile = rootProject.file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isProfileable = true
             isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
