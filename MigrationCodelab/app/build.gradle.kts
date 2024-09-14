@@ -90,15 +90,15 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.5")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.7.0")
-    implementation("androidx.compose.ui:ui:1.7.0")
-    implementation("androidx.compose.foundation:foundation:1.7.0")
-    implementation("androidx.compose.foundation:foundation-layout:1.7.0")
-    implementation("androidx.compose.material:material:1.7.0")
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.0")
+    implementation("androidx.compose.runtime:runtime:1.7.1")
+    implementation("androidx.compose.ui:ui:1.7.1")
+    implementation("androidx.compose.foundation:foundation:1.7.1")
+    implementation("androidx.compose.foundation:foundation-layout:1.7.1")
+    implementation("androidx.compose.material:material:1.7.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.1")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.7.0")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.7.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.1")
 
     implementation("com.google.accompanist:accompanist-themeadapter-material:0.34.0")
 
@@ -111,6 +111,6 @@ dependencies {
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
     androidTestImplementation("androidx.work:work-testing:2.9.1")
     androidTestImplementation("com.google.truth:truth:1.4.2")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.1")
     testImplementation("junit:junit:4.13.2")
 }
