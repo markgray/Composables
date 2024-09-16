@@ -23,7 +23,10 @@ import android.os.Bundle
 import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -32,6 +35,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -128,6 +132,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         /**
          * Flow of [DevicePosture] that emits every time there's a change in the windowLayoutInfo
          */
@@ -160,15 +165,17 @@ class MainActivity : ComponentActivity() {
             )
 
         setContent {
-            ReplyTheme {
-                val uiState: ReplyHomeUIState = viewModel.uiState.collectAsState().value
-                val windowSize: WindowSizeClass = calculateWindowSizeClass(this)
-                val devicePosture: DevicePosture = devicePostureFlow.collectAsState().value
-                ReplyApp(
-                    replyHomeUIState = uiState,
-                    windowSize = windowSize.widthSizeClass,
-                    foldingDevicePosture = devicePosture
-                )
+            Box(modifier = Modifier.safeDrawingPadding()) {
+                ReplyTheme {
+                    val uiState: ReplyHomeUIState = viewModel.uiState.collectAsState().value
+                    val windowSize: WindowSizeClass = calculateWindowSizeClass(this@MainActivity)
+                    val devicePosture: DevicePosture = devicePostureFlow.collectAsState().value
+                    ReplyApp(
+                        replyHomeUIState = uiState,
+                        windowSize = windowSize.widthSizeClass,
+                        foldingDevicePosture = devicePosture
+                    )
+                }
             }
         }
     }
