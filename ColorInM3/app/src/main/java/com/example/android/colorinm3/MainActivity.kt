@@ -2,8 +2,10 @@ package com.example.android.colorinm3
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -64,6 +67,7 @@ class MainActivity : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             var dynamicColor: Boolean by rememberSaveable {
                 mutableStateOf(value = true)
@@ -72,17 +76,19 @@ class MainActivity : ComponentActivity() {
                 mutableStateOf(value = true)
             }
             ColorInM3Theme(dynamicColor = dynamicColor, darkTheme = darkTheme) {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MyApp(
-                        dynamicColor = dynamicColor,
-                        darkTheme = darkTheme,
-                        toggleDynamic = { dynamicColor = !dynamicColor },
-                        toggleDarkTheme = { darkTheme = !darkTheme }
-                    )
+                Box(modifier = Modifier.safeDrawingPadding()) {
+                    // A surface container using the 'background' color from the theme
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        MyApp(
+                            dynamicColor = dynamicColor,
+                            darkTheme = darkTheme,
+                            toggleDynamic = { dynamicColor = !dynamicColor },
+                            toggleDarkTheme = { darkTheme = !darkTheme }
+                        )
+                    }
                 }
             }
         }
@@ -215,7 +221,8 @@ fun Greeting(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(space = 6.dp)
     ) {
