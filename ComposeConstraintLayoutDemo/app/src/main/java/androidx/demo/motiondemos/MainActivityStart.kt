@@ -3,6 +3,7 @@ package androidx.demo.motiondemos
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -53,14 +55,17 @@ class MainActivityStart : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             MotionDemosTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    CycleScale( )
+                Box(modifier = Modifier.safeDrawingPadding()) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colors.background
+                    ) {
+                        CycleScale()
+                    }
                 }
             }
         }
@@ -178,7 +183,8 @@ fun CycleScale() {
                 .layoutId("cover")
                 .clip(
                     RoundedCornerShape(
-                    bottomEnd = 32.dp, bottomStart = 32.dp)
+                        bottomEnd = 32.dp, bottomStart = 32.dp
+                    )
                 )
                 .background(Color.Red))
 
