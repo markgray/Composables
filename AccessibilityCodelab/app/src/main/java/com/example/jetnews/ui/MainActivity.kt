@@ -20,6 +20,9 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.jetnews.JetnewsApplication
@@ -53,7 +56,9 @@ class MainActivity : AppCompatActivity() {
 
         val appContainer: AppContainer = (application as JetnewsApplication).container
         setContent {
-            JetnewsApp(appContainer = appContainer)
+            Box(modifier = Modifier.safeDrawingPadding()) {
+                JetnewsApp(appContainer = appContainer)
+            }
         }
     }
 }
