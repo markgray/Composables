@@ -20,6 +20,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -32,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.data.ExploreModel
 import androidx.compose.samples.crane.details.launchDetailsActivity
 import androidx.compose.samples.crane.ui.CraneTheme
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -69,9 +72,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CraneTheme {
-                MainScreen(
-                    onExploreItemClicked = { launchDetailsActivity(context = this, item = it) }
-                )
+                Box(modifier = Modifier.safeDrawingPadding()) {
+                    MainScreen(
+                        onExploreItemClicked = { launchDetailsActivity(context = this@MainActivity, item = it) }
+                    )
+                }
             }
         }
     }
