@@ -18,8 +18,11 @@ package com.example.composemail
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -57,6 +60,7 @@ class MainActivity : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             val windowSizeClass = calculateWindowSizeClass(activity = this)
             val foldableInfo by collectFoldableInfoAsState(activity = this)
@@ -67,11 +71,13 @@ class MainActivity : ComponentActivity() {
             ) {
                 ComposeMailTheme {
                     // A surface container using the 'background' color from the theme
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.background
-                    ) {
-                        ComposeMailHome(Modifier.fillMaxSize())
+                    Box(modifier = Modifier.safeDrawingPadding()) {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colors.background
+                        ) {
+                            ComposeMailHome(Modifier.fillMaxSize())
+                        }
                     }
                 }
             }
