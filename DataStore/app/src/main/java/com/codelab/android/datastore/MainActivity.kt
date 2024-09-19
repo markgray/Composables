@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -139,6 +142,7 @@ class MainActivity : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         viewModel = ViewModelProvider(
             this,
             TasksViewModelFactory(
@@ -169,24 +173,26 @@ class MainActivity : ComponentActivity() {
                     tasksUiModel = newtasksUiModel
                 }
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    val taskListFlow: Flow<List<Task>> = flow {
-                        emit(value = tasksUiModel.tasks)
-                    }
-                    var showStartupScreen: Boolean by remember { mutableStateOf(true) }
-                    if (showStartupScreen) {
-                        StartUpScreen(onTimeout = { showStartupScreen = false })
-                    } else {
-                        MainScreen(
-                            viewModel = viewModel,
-                            tasksUiModel = tasksUiModel,
-                            tasks = taskListFlow
-                        )
-                    }
+                Box(modifier = Modifier.safeDrawingPadding()) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colors.background
+                    ) {
+                        val taskListFlow: Flow<List<Task>> = flow {
+                            emit(value = tasksUiModel.tasks)
+                        }
+                        var showStartupScreen: Boolean by remember { mutableStateOf(true) }
+                        if (showStartupScreen) {
+                            StartUpScreen(onTimeout = { showStartupScreen = false })
+                        } else {
+                            MainScreen(
+                                viewModel = viewModel,
+                                tasksUiModel = tasksUiModel,
+                                tasks = taskListFlow
+                            )
+                        }
 
+                    }
                 }
             }
         }
