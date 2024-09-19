@@ -2,14 +2,17 @@ package androidx.demo.composedemos
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -42,14 +45,17 @@ class MainActivity : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             ComposeDemosTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Login()
+                Box(modifier = Modifier.safeDrawingPadding()) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colors.background
+                    ) {
+                        Login()
+                    }
                 }
             }
         }
@@ -143,11 +149,15 @@ fun  Login() {
             var name by remember { mutableStateOf(TextFieldValue("Name ")) }
             var password by remember { mutableStateOf(TextFieldValue("Password")) }
 
-             BasicTextField(modifier = Modifier.layoutId("name").background(Color.Gray),
+             BasicTextField(modifier = Modifier
+                 .layoutId("name")
+                 .background(Color.Gray),
                  value = name,
                  onValueChange = {   name = it })
 
-            BasicTextField(modifier = Modifier.layoutId("password").background(Color.Gray),
+            BasicTextField(modifier = Modifier
+                .layoutId("password")
+                .background(Color.Gray),
                 value = password,
                 onValueChange = {  password = it  })
 
