@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Surface
@@ -42,6 +43,7 @@ class MainActivity : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         val extra = intent.extras
         var cfunc: ComposeFunc? = null
         if (extra != null) {
@@ -57,15 +59,17 @@ class MainActivity : ComponentActivity() {
         val com = ComposeView(this)
         setContentView(com)
         com.setContent {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color(0xFFF0E7FC)
-            ) {
-                if (cfunc != null) {
-                    Log.v("MAIN", " running $cfunc")
-                    cfunc.Run()
-                } else {
-                    ComposableMenu(map = cmap) { act -> launch(act) }
+            Box(modifier = Modifier.safeDrawingPadding()) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color(0xFFF0E7FC)
+                ) {
+                    if (cfunc != null) {
+                        Log.v("MAIN", " running $cfunc")
+                        cfunc.Run()
+                    } else {
+                        ComposableMenu(map = cmap) { act -> launch(act) }
+                    }
                 }
             }
         }
