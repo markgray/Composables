@@ -19,10 +19,14 @@ package com.codelab.layouts
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.codelab.layouts.ui.LayoutsCodelabTheme
 
@@ -40,6 +44,7 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         /**
          * Composes the LayoutsCodelabTheme wrapped LayoutsCodelab composable into our activity. The
          * content will become the root view of the activity. This is roughly equivalent to calling
@@ -59,7 +64,9 @@ class MainActivity : AppCompatActivity() {
                  * Design top app bar and whose content is a `BodyContent` Composable (both of these
                  * are in the file LayoutsCodelab.kt
                  */
-                LayoutsCodelab()
+                Box(modifier = Modifier.safeDrawingPadding()) {
+                    LayoutsCodelab()
+                }
             }
         }
     }
