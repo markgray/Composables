@@ -18,8 +18,11 @@ package com.codelab.theming.ui.finish
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.Surface
+import androidx.compose.ui.Modifier
 
 /**
  * This activity demonstrates the final state of the codelab, I have only added comments, bug fixes
@@ -35,8 +38,9 @@ class FinishActivity : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
-            Surface {
+            Surface(modifier = Modifier.safeDrawingPadding()) {
                 Home()
             }
         }
