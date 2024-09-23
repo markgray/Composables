@@ -4,8 +4,10 @@ import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -85,6 +87,7 @@ class MainActivity : ComponentActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         val application: Application = requireNotNull(this).application
 
@@ -106,7 +109,7 @@ class MainActivity : ComponentActivity() {
                 var sleepNightClicked: SleepNight = fakeSleepNight()
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.safeDrawingPadding().fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
                     SleepTrackerScreen(
