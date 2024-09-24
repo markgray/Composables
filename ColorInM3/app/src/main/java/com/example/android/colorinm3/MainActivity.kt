@@ -66,8 +66,8 @@ class MainActivity : ComponentActivity() {
      * changes.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             var dynamicColor: Boolean by rememberSaveable {
                 mutableStateOf(value = true)
