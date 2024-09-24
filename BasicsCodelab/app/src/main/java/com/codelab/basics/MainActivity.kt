@@ -77,8 +77,8 @@ class MainActivity : ComponentActivity() {
      * [Boolean] flag used by [MyApp].
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             BasicsCodelabTheme {
                 Box(modifier = Modifier.safeDrawingPadding()) {
