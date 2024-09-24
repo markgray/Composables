@@ -59,8 +59,8 @@ class MainActivity : ComponentActivity() {
      * TODO: Add kdoc
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             val windowSizeClass = calculateWindowSizeClass(activity = this)
             val foldableInfo by collectFoldableInfoAsState(activity = this)
