@@ -141,8 +141,8 @@ class MainActivity : ComponentActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so we ignore this.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
             this,
             TasksViewModelFactory(
