@@ -23,8 +23,8 @@ class MainActivity : ComponentActivity() {
      * TODO: Add kdoc
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             ExampleComposeGridTheme {
                 // A surface container using the 'background' color from the theme
