@@ -48,8 +48,8 @@ class MainActivity : ComponentActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             Drag2DComposeTheme {
                 // A surface container using the 'background' color from the theme
