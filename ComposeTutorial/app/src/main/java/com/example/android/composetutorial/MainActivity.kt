@@ -57,8 +57,8 @@ class MainActivity : ComponentActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use this.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             ComposeTutorialTheme {
                 Box(modifier = Modifier.safeDrawingPadding()) {
