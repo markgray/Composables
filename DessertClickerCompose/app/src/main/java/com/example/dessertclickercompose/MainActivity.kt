@@ -50,8 +50,8 @@ class MainActivity : ComponentActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so ignore this.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             DessertClickerComposeTheme {
                 // A surface container using the 'background' color from the theme
