@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
      * TODO: Add kdoc
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         val extra = intent.extras
         var cfunc: ComposeFunc? = null
         if (extra != null) {
