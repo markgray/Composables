@@ -52,8 +52,8 @@ class RallyActivity : ComponentActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             Box(modifier = Modifier.safeDrawingPadding()) {
                 RallyApp()
