@@ -91,8 +91,8 @@ class MainActivity : ComponentActivity() {
      */
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
 
         setContent {
             val viewModel: PerformanceCodeLabViewModel = viewModel {
