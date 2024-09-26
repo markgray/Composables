@@ -89,8 +89,8 @@ class MainActivity : ComponentActivity() {
      * it is `null`.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             TipTimeTheme {
                 Box(modifier = Modifier.safeDrawingPadding()) {
