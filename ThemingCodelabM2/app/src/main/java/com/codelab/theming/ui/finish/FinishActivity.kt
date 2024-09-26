@@ -37,8 +37,8 @@ class FinishActivity : ComponentActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use it here.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             Surface(modifier = Modifier.safeDrawingPadding()) {
                 Home()
