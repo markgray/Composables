@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         /**
          * Composes the LayoutsCodelabTheme wrapped LayoutsCodelab composable into our activity. The
          * content will become the root view of the activity. This is roughly equivalent to calling
