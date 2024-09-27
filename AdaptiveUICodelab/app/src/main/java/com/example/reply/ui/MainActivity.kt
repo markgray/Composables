@@ -131,8 +131,8 @@ class MainActivity : ComponentActivity() {
      */
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         /**
          * Flow of [DevicePosture] that emits every time there's a change in the windowLayoutInfo
          */
