@@ -62,8 +62,8 @@ class MainActivity : ComponentActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so we ignore it.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             AndroidTriviaComposeTheme {
                 Box(modifier = Modifier.safeDrawingPadding()) {
