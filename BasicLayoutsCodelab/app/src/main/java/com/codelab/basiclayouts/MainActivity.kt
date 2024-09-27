@@ -105,8 +105,8 @@ class MainActivity : ComponentActivity() {
      */
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(activity = this)
             Box(modifier = Modifier.safeDrawingPadding()) {
