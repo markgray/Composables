@@ -17,7 +17,9 @@
 package com.example.baselineprofiles_codelab.ui.home
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,8 +58,7 @@ import com.example.baselineprofiles_codelab.model.SnackRepo
 import com.example.baselineprofiles_codelab.ui.components.FilterChip
 import com.example.baselineprofiles_codelab.ui.components.JetsnackScaffold
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
+import androidx.compose.foundation.layout.FlowRow
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -151,11 +152,12 @@ fun FilterScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FilterChipSection(title: String, filters: List<Filter>) {
     FilterTitle(text = title)
     FlowRow(
-        mainAxisAlignment = FlowMainAxisAlignment.Center,
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 12.dp, bottom = 16.dp)
@@ -200,6 +202,7 @@ fun SortFilters(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
     FlowRow {

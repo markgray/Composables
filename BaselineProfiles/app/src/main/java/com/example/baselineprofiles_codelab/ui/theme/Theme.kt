@@ -90,13 +90,6 @@ fun JetsnackTheme(
 ) {
     val colors = if (darkTheme) DarkColorPalette else LightColorPalette
 
-    val sysUiController = rememberSystemUiController()
-    SideEffect {
-        sysUiController.setSystemBarsColor(
-            color = colors.uiBackground.copy(alpha = AlphaNearOpaque)
-        )
-    }
-
     ProvideJetsnackColors(colors) {
         MaterialTheme(
             colors = debugColors(darkTheme),
