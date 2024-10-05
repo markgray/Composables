@@ -24,6 +24,7 @@ import com.example.jetnews.ui.JetnewsApp
 /**
  * Launches the app from a test context
  */
+@Suppress("unused")
 fun ComposeContentTestRule.launchJetNewsApp(context: Context) {
     setContent {
         JetnewsApp(

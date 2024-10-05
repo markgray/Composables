@@ -67,7 +67,7 @@ val jose: PostAuthor = PostAuthor(
 /**
  * The [PostAuthor] of [Post] sample [post6].
  */
-val androidstudioteam =
+val androidstudioteam: PostAuthor =
     PostAuthor("Android Studio Team", "https://twitter.com/androidstudio")
 
 /**
@@ -985,7 +985,7 @@ val paragraphsPost5: List<Paragraph> = listOf(
 /**
  * These are the [Paragraph] used for [Post] sample [post6].
  */
-val paragraphsPost6 = listOf(
+val paragraphsPost6: List<Paragraph> = listOf(
     Paragraph(
         ParagraphType.Text,
         "The Android Studio logo redesign caught the attention of the developer community since its sneak peek at the Android Developer Summit. We are thrilled to release the new Android Studio logo with the stable release of Flamingo. Now that the new logo is available to most Android Studio users, we can examine the design changes in greater detail and decode their meaning."
@@ -1230,7 +1230,7 @@ val post5: Post = Post(
 /**
  * [Post] sample [post6].
  */
-val post6 = Post(
+val post6: Post = Post(
     id = "55db18283ac0",
     title = "Redesigning the Android Studio Logo",
     subtitle = "A case study offering a comprehensive overview of the design journey of the Android Studio product logo.",
