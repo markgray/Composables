@@ -126,7 +126,7 @@ object LocalEmailsDataProvider {
     /**
      * The [List] of all of the [Email] instances in our database.
      */
-    val allEmails = listOf(
+    val allEmails: List<Email> = listOf(
         Email(
             id = 0L,
             sender = LocalAccountsDataProvider.getContactAccountByUid(9L),
@@ -348,7 +348,7 @@ object LocalEmailsDataProvider {
      * Get a list of by which [Email]s can be categorized.
      */
     @Suppress("unused")
-    fun getAllFolders() = listOf(
+    fun getAllFolders(): List<String> = listOf(
         "Receipts",
         "Pine Elementary",
         "Taxes",
