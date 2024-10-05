@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 /**
  * In the real world, you should get this data from a backend.
  */
-val sleepData = SleepGraphData(
+val sleepData: SleepGraphData = SleepGraphData(
     listOf(
         SleepDayData(
             LocalDateTime.now().minusDays(7),

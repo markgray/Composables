@@ -19,7 +19,6 @@ package com.example.jetlagged
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateDp
@@ -87,6 +86,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import com.example.jetlagged.TimeGraphScope.timeGraphBar
 import com.example.jetlagged.ui.theme.LegendHeadingStyle
 
 /**
@@ -132,7 +132,6 @@ import com.example.jetlagged.ui.theme.LegendHeadingStyle
  * [SleepGraphData.latestEndHour]. (The [TimeGraphScope.timeGraphBar] appears to be used to offset
  * the [SleepBar] to align it with the [HoursHeader] at the top of the [JetLaggedTimeGraph]).
  */
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SleepBar(
     sleepData: SleepDayData,

@@ -48,9 +48,9 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.jetlagged.TimeGraphScope.timeGraphBar
 import com.example.jetlagged.ui.theme.SmallHeadingStyle
 import com.example.jetlagged.ui.theme.Yellow
 import com.example.jetlagged.ui.theme.YellowVariant
@@ -95,7 +95,7 @@ import java.util.Locale
  * method of the [HomeScreenDrawer] that calls it.
  */
 @Preview(showBackground = true)
-@Preview(device = Devices.FOLDABLE, showBackground = true)
+@Preview(device = "spec:width=673dp,height=841dp", showBackground = true)
 @Composable
 fun JetLaggedScreen(
     modifier: Modifier = Modifier,
