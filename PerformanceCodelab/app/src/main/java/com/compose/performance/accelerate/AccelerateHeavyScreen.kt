@@ -42,6 +42,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -52,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -70,7 +72,7 @@ import kotlinx.datetime.TimeZone
 
 /**
  * This Composable is the first task in the codelab. Here, you optimize heavy composables.
- *
+ * This is the stateful overload.
  */
 @Composable
 fun AccelerateHeavyScreen(
@@ -81,6 +83,9 @@ fun AccelerateHeavyScreen(
     AccelerateHeavyScreen(items = items, modifier = modifier)
 }
 
+/**
+ * Stateless overload of stateful [AccelerateHeavyScreen]
+ */
 @Composable
 fun AccelerateHeavyScreen(items: List<HeavyItem>, modifier: Modifier = Modifier) {
     // TODO: Codelab task: Wrap this with timezone provider DONE
@@ -99,6 +104,9 @@ fun AccelerateHeavyScreen(items: List<HeavyItem>, modifier: Modifier = Modifier)
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun ScreenContent(items: List<HeavyItem>) {
     LazyVerticalGrid(
@@ -113,6 +121,9 @@ fun ScreenContent(items: List<HeavyItem>) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun HeavyItem(item: HeavyItem, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
@@ -142,7 +153,7 @@ fun HeavyItem(item: HeavyItem, modifier: Modifier = Modifier) {
  * TODO Codelab task: Improve this placeholder_vector.xml loading DONE
  */
 @Composable
-fun imagePlaceholder() = trace("ImagePlaceholder") {
+fun imagePlaceholder(): Painter = trace("ImagePlaceholder") {
     painterResource(R.drawable.placeholder_vector)
 }
 
@@ -158,7 +169,10 @@ fun PublishedText(published: Instant, modifier: Modifier = Modifier) {
     )
 }
 
-val LocalTimeZone = compositionLocalOf { TimeZone.currentSystemDefault() }
+/**
+ * TODO: Add kdoc
+ */
+val LocalTimeZone: ProvidableCompositionLocal<TimeZone> = compositionLocalOf { TimeZone.currentSystemDefault() }
 
 /**
  * TODO Codelab task: Write a composition local provider that will always provide current TimeZone DONE
@@ -210,8 +224,11 @@ fun ItemTags(tags: List<String>, modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
-fun ItemTag(tag: String) = trace("ItemTag") {
+fun ItemTag(tag: String): Unit = trace("ItemTag") {
     Text(
         text = tag,
         style = MaterialTheme.typography.labelSmall,
