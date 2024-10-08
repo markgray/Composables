@@ -31,7 +31,7 @@ import kotlin.random.Random
  * Demonstrates how to dynamically create constraints based on input. See [DynamicGraph]. Where
  * constraints are created to lay out the given values into a single graph layout.
  */
-@Preview(group = "scroll", device = "spec:shape=Normal,width=480,height=800,unit=dp,dpi=440")
+@Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
 @Composable
 fun ManyGraphs() {
     val graphs = remember {
@@ -59,7 +59,7 @@ fun ManyGraphs() {
  * TODO: Add kdoc
  */
 @OptIn(ExperimentalMotionApi::class)
-@Preview(group = "scroll", device = "spec:shape=Normal,width=480,height=800,unit=dp,dpi=440")
+@Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
 @Composable
 fun DynamicGraph(values: List<Float> = listOf(12f, 32f, 21f, 32f, 2f), max: Int = 100) {
     val scale = values.map { (it * 0.8f) / max }

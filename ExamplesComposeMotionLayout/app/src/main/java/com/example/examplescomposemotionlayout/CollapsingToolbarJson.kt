@@ -25,7 +25,7 @@ import androidx.constraintlayout.compose.MotionScene
  * A demo of using MotionLayout as a collapsing Toolbar using JSON to define the MotionScene
  */
 @OptIn(ExperimentalMotionApi::class)
-@Preview(group = "scroll", device = "spec:shape=Normal,width=480,height=800,unit=dp,dpi=440")
+@Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
 @Composable
 fun ToolBarExample() {
     val scroll = rememberScrollState(0)

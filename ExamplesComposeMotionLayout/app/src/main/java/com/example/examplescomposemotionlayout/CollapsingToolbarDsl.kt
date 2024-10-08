@@ -43,7 +43,7 @@ import androidx.constraintlayout.compose.MotionScene
  */
 @SuppressLint("Range")
 @OptIn(ExperimentalMotionApi::class)
-@Preview(group = "scroll", device = "spec:shape=Normal,width=480,height=800,unit=dp,dpi=440")
+@Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
 @Composable
 fun ToolBarExampleDsl() {
     val scroll = rememberScrollState(0)

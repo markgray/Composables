@@ -20,7 +20,7 @@ import androidx.constraintlayout.compose.*
 /**
  * TODO: Add kdoc
  */
-@Preview(group = "scroll", device = "spec:shape=Normal,width=480,height=800,unit=dp,dpi=440")
+@Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
 @Composable
 fun Puzzle() {
     val grid = 5
