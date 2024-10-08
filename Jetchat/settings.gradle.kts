@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
  * Environment variable that allows the use of a snapshot repository
  */
@@ -26,10 +27,12 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage")
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    @Suppress("UnstableApiUsage")
     repositories {
         snapshotVersion?.let {
-            println("https://androidx.dev/snapshots/builds/$it/artifacts/repository/") 
+            println("https://androidx.dev/snapshots/builds/$it/artifacts/repository/")
             maven { url = uri("https://androidx.dev/snapshots/builds/$it/artifacts/repository/") }
         }
 
