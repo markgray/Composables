@@ -72,7 +72,7 @@ import kotlinx.datetime.TimeZone
 
 /**
  * This Composable is the first task in the codelab. Here, you optimize heavy composables.
- * This is the stateful overload.
+ * This is the stateful overload of [AccelerateHeavyScreen]
  */
 @Composable
 fun AccelerateHeavyScreen(
