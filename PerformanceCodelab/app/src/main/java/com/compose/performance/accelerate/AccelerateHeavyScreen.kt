@@ -150,7 +150,7 @@ fun HeavyItem(item: HeavyItem, modifier: Modifier = Modifier) {
 }
 
 /**
- * TODO Codelab task: Improve this placeholder_vector.xml loading DONE
+ * TASK Codelab task: Improve this placeholder_vector.xml loading DONE
  */
 @Composable
 fun imagePlaceholder(): Painter = trace("ImagePlaceholder") {
@@ -158,7 +158,7 @@ fun imagePlaceholder(): Painter = trace("ImagePlaceholder") {
 }
 
 /**
- * TODO Codelab task: Remove the side effect from every item and hoist it to the parent composable DONE
+ * TASK Codelab task: Remove the side effect from every item and hoist it to the parent composable DONE
  */
 @Composable
 fun PublishedText(published: Instant, modifier: Modifier = Modifier) {
@@ -175,12 +175,12 @@ fun PublishedText(published: Instant, modifier: Modifier = Modifier) {
 val LocalTimeZone: ProvidableCompositionLocal<TimeZone> = compositionLocalOf { TimeZone.currentSystemDefault() }
 
 /**
- * TODO Codelab task: Write a composition local provider that will always provide current TimeZone DONE
+ * TASK Codelab task: Write a composition local provider that will always provide current TimeZone DONE
  */
 @Composable
 fun ProvideCurrentTimeZone(content: @Composable () -> Unit) {
-    // TODO Codelab task: move the side effect for TimeZone changes DONE
-    // TODO Codelab task: create a composition local for current TimeZone DONE
+    // TASK Codelab task: move the side effect for TimeZone changes DONE
+    // TASK Codelab task: create a composition local for current TimeZone DONE
     val context = LocalContext.current
 
     var currentTimeZone: TimeZone by remember { mutableStateOf(TimeZone.currentSystemDefault()) }
@@ -209,7 +209,7 @@ fun ProvideCurrentTimeZone(content: @Composable () -> Unit) {
 }
 
 /**
- * TODO Codelab task: remove unnecessary lazy layout DONE
+ * TASK Codelab task: remove unnecessary lazy layout DONE
  */
 @Composable
 fun ItemTags(tags: List<String>, modifier: Modifier = Modifier) {
