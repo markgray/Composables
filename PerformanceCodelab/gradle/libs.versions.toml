@@ -1,6 +1,6 @@
 [versions]
 coil = "2.7.0"
-com-android-application = "8.7.0"
+com-android-application = "8.7.1"
 desugar_jdk_libs = "2.1.2"
 kotlinx-datetime = "0.6.0"
 lifecycle-viewmodel-compose = "2.8.6"
