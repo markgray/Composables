@@ -53,6 +53,5 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.7.4")
     implementation("androidx.compose.ui:ui-tooling-preview:1.7.4")
     implementation("androidx.compose.material:material:1.7.4")
-    //noinspection GradleDependency TODO: alpha14 requires SDK 35 - keep an eye on this
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-rc01")
 }
