@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "androidx.demo.composedemos"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "androidx.demo.composedemos"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
