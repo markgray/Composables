@@ -21,11 +21,11 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.example.composemail"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -76,7 +76,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     //noinspection GradleDependency TODO: Newer version breaks compilation!
     implementation("androidx.paging:paging-common-ktx:3.1.1")
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.0")
+    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
     implementation("androidx.compose.ui:ui:1.7.4")
     implementation("androidx.compose.material:material:1.7.4")
     implementation("androidx.compose.ui:ui-tooling-preview:1.7.4")
@@ -85,7 +85,7 @@ dependencies {
     implementation("androidx.paging:paging-compose:1.0.0-alpha17")
     //noinspection GradleDependency TODO: Newer version breaks compilation!
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha07")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.window:window:1.3.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
