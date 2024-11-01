@@ -106,7 +106,7 @@ fun Material2DMotionPreview() {
                     // TODO: Draw curves from Velocity2D
                     offset.value // Trigger recomposition
 
-                    if (accumulator.size < 1) {
+                    if (accumulator.isEmpty) {
                         return@drawWithContent
                     }
                     for (i in 0 until accumulator.size) {
