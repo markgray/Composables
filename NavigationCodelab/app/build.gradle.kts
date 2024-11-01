@@ -21,11 +21,11 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.example.compose.rally"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 1
         versionName = "1.0"
@@ -78,18 +78,18 @@ android {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.core:core-ktx:1.15.0")
     implementation("com.google.android.material:material:1.12.0")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.7.4")
-    implementation("androidx.compose.ui:ui:1.7.4")
-    implementation("androidx.compose.foundation:foundation:1.7.4")
-    implementation("androidx.compose.material:material:1.7.4")
-    implementation("androidx.compose.material:material-icons-extended:1.7.4")
+    implementation("androidx.compose.runtime:runtime:1.7.5")
+    implementation("androidx.compose.ui:ui:1.7.5")
+    implementation("androidx.compose.foundation:foundation:1.7.5")
+    implementation("androidx.compose.material:material:1.7.5")
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.navigation:navigation-compose:2.8.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.7.4")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.5")
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
@@ -97,7 +97,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     // Compose testing dependencies
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.4")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.5")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
     androidTestImplementation("androidx.navigation:navigation-testing:2.8.3")
 }
