@@ -1,11 +1,7 @@
 package com.example.aboutmecompose.ui.theme
 
-import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.view.View
-import android.view.Window
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
@@ -16,11 +12,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 
 /**
  * The [ColorScheme] that is used when the device is considered to be in Light Mode, either
@@ -104,17 +96,7 @@ private val DarkColors = darkColorScheme(
  * than [Build.VERSION_CODES.S] and [useDarkTheme] is `true` or to [dynamicLightColorScheme] if it
  * is `false`. When the device is older than [Build.VERSION_CODES.S] our custom [darkColorScheme]
  * field [DarkColors] is used if [useDarkTheme] is `true` or else our custom [lightColorScheme]
- * field [LightColors] is used. We initialize our [View] variable `val view` to the current Compose
- * [View] then if the [View.isInEditMode] method of `view` returns `true` (a [View] is usually in
- * edit mode when displayed within a developer tool) we lauch a [SideEffect] that schedules its
- * `effect` lambda to run when the current composition completes successfully and applies changes.
- * The lambda initializes its [Window] variable `val window` to the current [Window] for the activity,
- * then it calls the [Window.setStatusBarColor] method (kotlin `statusBarColor` property) to set the
- * the color of the status bar to the [ColorScheme.primary] color of `colors` (after converting it
- * to to an ARGB color [Int]), and use the [WindowCompat.getInsetsController] to fetch the single
- * [WindowInsetsControllerCompat] of the window this `view` is attached to call its
- * [WindowInsetsControllerCompat.setAppearanceLightStatusBars] method (kotlin
- * `isAppearanceLightStatusBars` property) to the value of [useDarkTheme].
+ * field [LightColors] is used.
  *
  * Finally we call the [MaterialTheme] Composable with its [MaterialTheme.colorScheme] argument our
  * [ColorScheme] `colors` variable, its [MaterialTheme.typography] argument our custom [Typography]
@@ -144,17 +126,6 @@ fun AboutMeComposeTheme(
 
         useDarkTheme -> DarkColors
         else -> LightColors
-    }
-    // Add primary status bar color from chosen color scheme.
-    val view: View = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window: Window = (view.context as Activity).window
-            window.statusBarColor = colors.primary.toArgb()
-            WindowCompat
-                .getInsetsController(window, view)
-                .isAppearanceLightStatusBars = useDarkTheme
-        }
     }
 
     MaterialTheme(
