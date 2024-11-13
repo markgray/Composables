@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.DebugFlags
+import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 import androidx.demo.motiondemos.ui.theme.MotionDemosTheme
@@ -75,6 +76,7 @@ class MainActivityStart : ComponentActivity() {
 /**
  * This Composable consists of a [MotionLayout] whose [MotionScene] is defined by a JSON string.
  */
+@OptIn(ExperimentalMotionApi::class)
 @Preview(group = "motion8")
 @Composable
 fun CycleScale() {
