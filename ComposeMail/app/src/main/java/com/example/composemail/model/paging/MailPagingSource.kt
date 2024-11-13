@@ -34,6 +34,7 @@ class MailPagingSource(private val mailRepo: MailRepository) : PagingSource<Int,
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MailInfoPeek> {
         val nextPage = params.key ?: 0
 
+        @Suppress("KotlinConstantConditions")
         if (PROVIDE_INITIAL_PLACEHOLDER && params.key == null) {
             // You can provide initial placeholders by returning an empty List for the initial request.
             // Note that doing this consumes the request that corresponds to `initialLoadSize` in
