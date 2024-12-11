@@ -100,9 +100,9 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-layout:1.7.5")
     implementation("androidx.compose.animation:animation:1.7.5")
     implementation("androidx.compose.ui:ui-tooling-preview:1.7.5")
-    implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation("com.google.dagger:hilt-android:2.53")
     implementation("io.coil-kt:coil-compose:2.7.0")
-    kapt("com.google.dagger:hilt-compiler:2.51.1")
+    kapt("com.google.dagger:hilt-compiler:2.53")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
 
@@ -116,7 +116,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.5")
-    androidTestImplementation("com.google.dagger:hilt-android:2.51.1")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
-    kaptAndroidTest("com.google.dagger:hilt-compiler:2.51.1")
+    androidTestImplementation("com.google.dagger:hilt-android:2.53")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.53")
+    kaptAndroidTest("com.google.dagger:hilt-compiler:2.53")
 }
