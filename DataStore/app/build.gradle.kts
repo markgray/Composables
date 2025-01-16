@@ -60,9 +60,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
 
     // ProtBuf
-    implementation("androidx.datastore:datastore-core:1.1.1")
+    implementation("androidx.datastore:datastore-core:1.1.2")
     implementation("com.google.protobuf:protobuf-javalite:4.26.1")
-    implementation("androidx.datastore:datastore:1.1.1")
+    implementation("androidx.datastore:datastore:1.1.2")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
 
