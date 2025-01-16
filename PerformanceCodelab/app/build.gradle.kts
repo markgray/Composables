@@ -83,7 +83,9 @@ composeCompiler {
     // enableStrongSkippingMode = true is now default
 
     // TODO Codelab task: Enable Stability Configuration file DONE
-    stabilityConfigurationFile = project.rootDir.resolve("stability_config.conf")
+    stabilityConfigurationFiles.addAll(
+        project.layout.projectDirectory.file("stability_config.conf")
+    )
 }
 
 dependencies {
