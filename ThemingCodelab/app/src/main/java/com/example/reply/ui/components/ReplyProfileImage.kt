@@ -32,7 +32,7 @@ import com.example.reply.data.Email
 /**
  * This Composable is used to display the `drawable` whose resource ID is our [Int] parameter
  * [drawableResource]. It is used by the [ReplySearchBar] to display the jpg with resource ID
- * [R.drawable.avatar_6] and by both the [ReplyEmailListItem] and the [ReplyEmailThreadItem] to
+ * `R.drawable.avatar_6` and by both the [ReplyEmailListItem] and the [ReplyEmailThreadItem] to
  * display the [Account.avatar] of the [Email.sender] field of the [Email] whose information they
  * are displaying. Its `content` is an [Image] whose `painter` is a [painterResource] drawing the
  * drawable with the resource ID of our [Int] parameter [drawableResource], and whose `contentDescription`
@@ -42,7 +42,7 @@ import com.example.reply.data.Email
  *
  * @param drawableResource the resource ID of the drawable that we are supposed to display.
  * @param description a [String] that we should use as the `contentDescription` of our [Image].
- * [ReplySearchBar] uses the [String] with resource ID [R.string.profile] ("Profile") and both
+ * [ReplySearchBar] uses the [String] with resource ID `R.string.profile` ("Profile") and both
  * [ReplyEmailListItem] and [ReplyEmailThreadItem] use the [Account.fullName] property of the
  * [Email.sender] field of the [Email] whose information they are displaying.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or

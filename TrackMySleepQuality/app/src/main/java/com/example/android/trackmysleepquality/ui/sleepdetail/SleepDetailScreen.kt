@@ -175,15 +175,15 @@ private val ONE_HOUR_MILLIS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
  *
  *  - less than [ONE_MINUTE_MILLIS] we initialize our variable `val seconds` to the result of
  *  converting `durationMilli` to seconds and set `val returnString` to the string formatted using
- *  the format [R.string.seconds_length] ("%d seconds on %s") for `seconds` and `weekdayString`.
+ *  the format `R.string.seconds_length` ("%d seconds on %s") for `seconds` and `weekdayString`.
  *
  *  - less than [ONE_HOUR_MILLIS] we initialize our variable `val minutes` to the result of
  *  converting `durationMilli` to minutes and set `val returnString` to the string formatted using
- *  the format [R.string.minutes_length] ("%d minutes on %s") for `minutes` and `weekdayString`.
+ *  the format `R.string.minutes_length` ("%d minutes on %s") for `minutes` and `weekdayString`.
  *
  *  - For larger values we initialize our variable `val hours` to the result of converting
  *  `durationMilli` to hours and set `val returnString` to the string formatted using the format
- *  [R.string.hours_length] ("%d hours on %s") for `hours` and `weekdayString`.
+ *  `R.string.hours_length` ("%d hours on %s") for `hours` and `weekdayString`.
  *
  * Finally we return `returnString` to the caller. It is used as the `text` displayed in one of the
  * [Text] widgets of [SleepDetailScreen].

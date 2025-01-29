@@ -59,7 +59,7 @@ private val craneFontFamily = FontFamily(fonts = listOf(light, regular, medium, 
 /**
  * [CraneBaseUserInput] and [CraneEditableUserInput] use copies of this [TextStyle] with the `color`
  * of the [Font] changed according to their needs. The resource ID of the [Font] that is used it
- * [R.font.raleway_regular].
+ * `R.font.raleway_regular`.
  */
 val captionTextStyle: TextStyle = TextStyle(
     fontFamily = craneFontFamily,

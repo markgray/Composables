@@ -29,7 +29,7 @@ import com.google.samples.apps.sunflower.databinding.ActivityGardenBinding
 /**
  * This is the main activity of our app, and is used only to configure the decor view for
  * edge-to-edge display and to set the Activity's content view to the layout file with
- * resource ID [R.layout.activity_garden].
+ * resource ID `R.layout.activity_garden`.
  */
 class GardenActivity : AppCompatActivity() {
 
@@ -40,7 +40,7 @@ class GardenActivity : AppCompatActivity() {
      * will not fit the content view to the insets and will just pass through the [WindowInsetsCompat]
      * to the content view, ie "edge-to-edge mode"). Finally we call the [setContentView] method to
      * have it set our content view to the [ActivityGardenBinding] that [DataBindingUtil] inflates
-     * from the layout file with resource ID [R.layout.activity_garden].
+     * from the layout file with resource ID `R.layout.activity_garden`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */

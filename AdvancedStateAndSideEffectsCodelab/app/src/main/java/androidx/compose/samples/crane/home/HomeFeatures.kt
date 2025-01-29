@@ -99,7 +99,7 @@ fun FlySearchContent(
  *  "Select Dates", but does nothing when clicked).
  *  - A [Spacer] whose `height` is 8.dp
  *  - A [SimpleUserInput] whose `caption` argument is "Select Location", and whose `vectorImageId`
- *  is the drawable with resource ID [R.drawable.ic_hotel] (a stylized picture of someone sleeping
+ *  is the drawable with resource ID `R.drawable.ic_hotel` (a stylized picture of someone sleeping
  *  in a bed). It also does nothing when clicked.
  *
  * @param onPeopleChanged a lambda that our [PeopleUserInput] Composable can call with the new number

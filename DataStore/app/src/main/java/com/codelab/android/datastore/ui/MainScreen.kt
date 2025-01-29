@@ -109,7 +109,7 @@ fun MainScreen(
  *
  * The `content` of the first [Row] consists of:
  *  - an [Icon] whose `painter` argument causes it to render the drawable whose resource ID is
- *  [R.drawable.ic_baseline_filter_list_24] (three horizontal lines of descending length one atop
+ *  `R.drawable.ic_baseline_filter_list_24` (three horizontal lines of descending length one atop
  *  the other, centered horizontally in the [Icon]).
  *  - an 8.dp wide [Spacer].
  *  - a [Text] displaying the `text` "Show completed tasks".
@@ -129,7 +129,7 @@ fun MainScreen(
  *
  * The `content` of the second [Row] consists of:
  *  - an [Icon] whose `painter` argument causes it to render the drawable whose resource ID is
- *  [R.drawable.ic_baseline_reorder_24] (four horizontal lines of equal length one atop the other,
+ *  `R.drawable.ic_baseline_reorder_24` (four horizontal lines of equal length one atop the other,
  *  centered horizontally in the [Icon]).
  *  - an 8.dp wide [Spacer].
  *  - a [FilterChip] whose `selected` argument is our `prioritySelected` [Boolean] variable, and

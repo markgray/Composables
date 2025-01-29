@@ -70,13 +70,13 @@ import com.example.reply.ui.ReplyEmailDetail
  *  is [Arrangement.Center] to center its children. The `content` of the [Column] is two [Text]
  *  widgets, the first displaying the [Account.firstName] of the [Email.sender] of [email] using as
  *  its `style` the [Typography.labelMedium] of our custom [MaterialTheme.typography], and the second
- *  [Text] displaying the [stringResource] whose ID is [R.string.twenty_mins_ago] ("20 mins ago")
+ *  [Text] displaying the [stringResource] whose ID is `R.string.twenty_mins_ago` ("20 mins ago")
  *  using the `style` [Typography.labelMedium] of our custom [MaterialTheme.typography]. Next in the
  *  [Row] is an [IconButton] whose `modifier` is a [Modifier.clip] that clips its content to a
  *  [CircleShape] with a [Modifier.background] that sets its `color` to [ColorScheme.surface] color
  *  of our [MaterialTheme], and its `content` is an [Icon] which displays [Icons.Filled.Star] if the
  *  [Email.isStarred] field of [email] is `true` or [Icons.Filled.StarBorder] if it is `false`, using
- *  as its `contentDescription` the [String] with resource ID [R.string.description_favorite]
+ *  as its `contentDescription` the [String] with resource ID `R.string.description_favorite`
  *  ("Favorite"), and as its `tint` the [ColorScheme.secondary] of our [MaterialTheme] if the
  *  [Email.isStarred] field of [email] is `true` or [ColorScheme.outline] if it is `false`.
  *
@@ -93,8 +93,8 @@ import com.example.reply.ui.ReplyEmailDetail
  *  dp space along the top and bottom edges, and its `horizontalArrangement` uses a [Arrangement.spacedBy]
  *  to have its children spaced with 4.dp between them. Its `content` is two [Button] widgets, both
  *  of which use a [RowScope] `Modifier.weight` of 1f to have them share the available space equally.
- *  The `content` of the first uses a [Text] to display the [String] with resource ID [R.string.reply]
- *  ("Reply") and the second uses a [Text] to display the [String] with resource ID [R.string.reply_all]
+ *  The `content` of the first uses a [Text] to display the [String] with resource ID `R.string.reply`
+ *  ("Reply") and the second uses a [Text] to display the [String] with resource ID `R.string.reply_all`
  *  ("Reply All"). The `onClick` of both are "do nothing" lambdas.
  *
  * @param email the [Email] whose information we are to display.

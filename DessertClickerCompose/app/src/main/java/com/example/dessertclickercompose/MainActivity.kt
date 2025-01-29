@@ -102,7 +102,7 @@ fun MainScreen() {
  *
  * The widgets contained in the [ConstraintLayout] listed by the [ConstrainedLayoutReference] used
  * to constrain them:
- *  - `backgroundImage` is an [Image] displaying our background drawable [R.drawable.bakery_back],
+ *  - `backgroundImage` is an [Image] displaying our background drawable `R.drawable.bakery_back`,
  *  whose `top` is linked to the `top` of its parent, and its `absoluteLeft` and `absoluteRight`
  *  are linked to its parent's `absoluteLeft` and `absoluteRight` respectively.
  *  - `whiteBackground` is a 100.dp high white [Box] whose `bottom` is linked to its parent's `bottom`

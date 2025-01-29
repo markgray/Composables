@@ -74,7 +74,7 @@ import kotlinx.coroutines.flow.StateFlow
  * [Alignment.BottomEnd] to align the [LargeFloatingActionButton] at the bottom end of the [Box], to
  * which is chained a  [Modifier.padding] that adds 16.dp to all its sides. The `content` of the
  * [LargeFloatingActionButton] is an [Icon] displaying as its `imageVector` argument the [ImageVector]
- * [Icons.Filled.Edit], its `contentDescription` argument is the [String] with resource ID [R.string.edit]
+ * [Icons.Filled.Edit], its `contentDescription` argument is the [String] with resource ID `R.string.edit`
  * ("Edit"), and its `modifier` argument is a [Modifier.size] that sets its size to 28.dp.
  *
  * @param replyHomeUIState the current [ReplyHomeUIState]. It is passed down the hierarchy from

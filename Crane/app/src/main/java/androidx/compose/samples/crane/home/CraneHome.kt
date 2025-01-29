@@ -231,18 +231,18 @@ fun CraneHome(
  *  - [CraneScreen.Fly] if our [List] of [ExploreModel] variable `suggestedDestinations` is not
  *  `null` we compose an [ExploreSection] whose `widthSize` argument is our [WindowWidthSizeClass]
  *  parameter [widthSize], whose `title` argument is the [String] with resource ID
- *  [R.string.explore_flights_by_destination] ("Explore Flights by Destination"), whose `exploreList`
+ *  `R.string.explore_flights_by_destination` ("Explore Flights by Destination"), whose `exploreList`
  *  argument is our [List] of [ExploreModel] variable `suggestedDestinations`, and whose
  *  `onItemClicked` argument is our [OnExploreItemClicked] parameter [onExploreItemClicked].
  *  - [CraneScreen.Sleep] we compose an [ExploreSection] whose `widthSize` argument is our
  *  [WindowWidthSizeClass] parameter [widthSize], whose `title` argument is the [String] with
- *  resource ID [R.string.explore_properties_by_destination] ("Explore Properties by Destination"),
+ *  resource ID `R.string.explore_properties_by_destination` ("Explore Properties by Destination"),
  *  whose `exploreList` is the [List] of [ExploreModel] field [MainViewModel.hotels] of our
  *  [MainViewModel] parameter [viewModel], and whose `onItemClicked` argument is our
  *  [OnExploreItemClicked] parameter [onExploreItemClicked].
  *  - [CraneScreen.Eat] we compose an [ExploreSection] whose `widthSize` argument is our
  *  [WindowWidthSizeClass] parameter [widthSize], whose `title` argument is the [String] with
- *  resource ID [R.string.explore_restaurants_by_destination] ("Explore Restaurants by Destination"),
+ *  resource ID `R.string.explore_restaurants_by_destination` ("Explore Restaurants by Destination"),
  *  whose `exploreList` is the [List] of [ExploreModel] field [MainViewModel.restaurants] of our
  *  [MainViewModel] parameter [viewModel], and whose `onItemClicked` argument is our
  *  [OnExploreItemClicked] parameter [onExploreItemClicked].

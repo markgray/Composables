@@ -166,9 +166,9 @@ private enum class TabPage {
  * that has it as an argument will recompose every step of the animation between the colors.
  *
  * We start by using the [stringArrayResource] method to initialize our [Array] of [String] variable
- * `val allTasks` with the `string-array` with resource ID [R.array.tasks], and using the [toList]
+ * `val allTasks` with the `string-array` with resource ID `R.array.tasks`, and using the [toList]
  * extension function on the [Array] of [String] returned by the [stringArrayResource] method for the
- * `string-array` with resource ID [R.array.topics] to initialize our [List] of [String] variable
+ * `string-array` with resource ID `R.array.topics` to initialize our [List] of [String] variable
  * `val allTopics`. We initialize and remember our [TabPage] variable `var tabPage` as a [MutableState]
  * with the initial value of [TabPage.Home], initialize and remember our [Boolean] variable
  * `var weatherLoading` as a [MutableState] with the initial value of `false`, initialize and
@@ -657,7 +657,7 @@ private fun Header(
  * default Roboto font, weight normal, size 16.sp, and letter spacing 0.5.sp. Below the [Row] in the
  * [Column] is an `if` statement which causes its block to be executed only if [expanded] is `true`,
  * and if it is a [Spacer] with a height of 8.dp is composed followed by a [Text] whose `text` is
- * the [String] with resource `id` [R.string.lorem_ipsum] (bunch of nonsense words), and whose
+ * the [String] with resource `id` `R.string.lorem_ipsum` (bunch of nonsense words), and whose
  * `textAlign` argument is [TextAlign.Justify] (Stretches lines of text that end with a soft line
  * break to fill the width of the container, and Lines that end with hard line breaks are aligned
  * towards the Start edge).

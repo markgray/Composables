@@ -124,12 +124,12 @@ fun AppDrawer(
  * This Composable displays two [Image]'s in a [Row], and is used as the top "line" in the [Column]
  * root Composable of [AppDrawer]. Our root Composable is a [Row] whose `modifier` argument is our
  * [modifier] parameter. The `content` of the [Row] is an [Image] whose `painter` draws the drawable
- * with resource ID [R.drawable.ic_jetnews_logo] (a "greater than" character followed by an underline),
+ * with resource ID `R.drawable.ic_jetnews_logo` (a "greater than" character followed by an underline),
  * with a `colorFilter` argument is a [ColorFilter.tint] whose `color` argument is the `primary` color
  * of [MaterialTheme.colors] ([Red700] for `LightThemeColors` and [Red300] for `DarkThemeColors` is
  * specified by our [JetnewsTheme] custom [MaterialTheme]). This is followed by a [Spacer] whose
  * `width` is 8.dp, and that is followed by a second [Image] whose `painter` draws the drawable
- * with resource ID [R.drawable.ic_jetnews_wordmark] (which is the word "jetnews" written in a fancy
+ * with resource ID `R.drawable.ic_jetnews_wordmark` (which is the word "jetnews" written in a fancy
  * font), with a `colorFilter` argument is a [ColorFilter.tint] whose `color` argument is the
  * `onSurface` color of [MaterialTheme.colors] (our [JetnewsTheme] custom [MaterialTheme] does not
  * specify one so the default [Color.Black] is used for `LightThemeColors` and [Color.White] is used
@@ -195,7 +195,7 @@ private fun JetNewsLogo(modifier: Modifier = Modifier) {
  * is our [String] parameter [label], whose `style` argument is the `body2` [TextStyle] of
  * [MaterialTheme.typography] which our [JetnewsTypography] custom [Typography] defines to be
  * `Montserrat` [FontFamily] with `fontWeight` = [FontWeight.Medium], `fontSize` = 14.sp, and
- * `letterSpacing` = 0.25.sp (the [Font] with resource ID [R.font.montserrat_medium]). The `color`
+ * `letterSpacing` = 0.25.sp (the [Font] with resource ID `R.font.montserrat_medium`). The `color`
  * of the text is our [Color] variable `textIconColor`.
  *
  * @param icon the [ImageVector] that our [Image] Composable should draw.

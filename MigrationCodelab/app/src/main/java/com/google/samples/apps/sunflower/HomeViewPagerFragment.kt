@@ -47,7 +47,7 @@ class HomeViewPagerFragment : Fragment() {
      *
      * We initialize our [FragmentViewPagerBinding] variable `val binding` by having the method
      * [FragmentViewPagerBinding.inflate] use our [LayoutInflater] parameter [inflater] to inflate
-     * its associated layout file (the file with resource ID [R.layout.fragment_view_pager]), with
+     * its associated layout file (the file with resource ID `R.layout.fragment_view_pager`), with
      * our [ViewGroup] parameter [container] supplying the LayoutParams without attaching to it.
      * Then we initialize our [TabLayout] variable to the [FragmentViewPagerBinding.tabs] view in
      * `binding`, and our [ViewPager2] variable `val viewPager` to the [FragmentViewPagerBinding.viewPager]
@@ -103,8 +103,8 @@ class HomeViewPagerFragment : Fragment() {
     /**
      * Returns the resource ID of the drawable that is to be used as the icon for the [TabLayout.Tab]
      * whose position is our [Int] parameter [position]. The `tab` in position [MY_GARDEN_PAGE_INDEX]
-     * (0) gets [R.drawable.garden_tab_selector] and the `tab` in position [MY_GARDEN_PAGE_INDEX]
-     * (1) gets [R.drawable.plant_list_tab_selector].
+     * (0) gets `R.drawable.garden_tab_selector` and the `tab` in position [MY_GARDEN_PAGE_INDEX]
+     * (1) gets `R.drawable.plant_list_tab_selector`.
      *
      * @param position the position of the [TabLayout.Tab] in the [TabLayout].
      * @return the resource ID of a drawable to use as the icon for the [TabLayout.Tab] in the
@@ -121,9 +121,9 @@ class HomeViewPagerFragment : Fragment() {
     /**
      * Returns the [String] that is to be used as the [TabLayout.Tab.text] (title)  for the
      * [TabLayout.Tab] whose position is our [Int] parameter [position]. The `tab` in position
-     * [MY_GARDEN_PAGE_INDEX] (0) gets the [String] whose resource ID is [R.string.my_garden_title]
+     * [MY_GARDEN_PAGE_INDEX] (0) gets the [String] whose resource ID is `R.string.my_garden_title`
      * ("My garden") and the `tab` in position [MY_GARDEN_PAGE_INDEX] (1) gets the [String] whose
-     * resource ID is  [R.string.plant_list_title] ("Plant list").
+     * resource ID is  `R.string.plant_list_title` ("Plant list").
      *
      * @param position the position of the [TabLayout.Tab] in the [TabLayout].
      * @return a [String] to use as the title of the [TabLayout.Tab] in the [TabLayout] in position

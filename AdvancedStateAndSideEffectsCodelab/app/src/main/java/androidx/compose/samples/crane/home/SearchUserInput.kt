@@ -159,7 +159,7 @@ class PeopleUserInputState {
  * `people` followed by the [String] "Adult" (or "Adults" if `people` is greater than 1) followed by
  * our [titleSuffix] parameter (which is the empty string except when we are called to be part of the
  * [FlySearchContent] Composable in which case it is the string ", Economy"). The `vectorImageId`
- * argument is the resource ID [R.drawable.ic_person] (a stylized silhouette of the bust of a person).
+ * argument is the resource ID `R.drawable.ic_person` (a stylized silhouette of the bust of a person).
  * The `tint` argument is the current [State.value] color of our [State] of [Color] variable `tint`.
  * The `onClick` argument is a lambda which calls the [PeopleUserInputState.addPerson] method of our
  * [peopleState] parameter to add another person to the current number of people traveling, followed
@@ -170,7 +170,7 @@ class PeopleUserInputState {
  * to the [Column] displaying the `text` "Error: We don't support more than $[MAX_PEOPLE] people"
  * using as its `style` argument a copy of the `body1` [TextStyle] of [MaterialTheme.typography]
  * (the `craneFontFamily` [FontFamily] with a `fontWeight` of [FontWeight.W600] (the [Font] with
- * resource ID [R.font.raleway_semibold]) and a `fontSize` of 16.dp) with the `color` of the [Font]
+ * resource ID `R.font.raleway_semibold`) and a `fontSize` of 16.dp) with the `color` of the [Font]
  * the `secondary` [Color] of [MaterialTheme.colors] (which our [CraneTheme] custom [MaterialTheme]
  * specifies to be `crane_red`: the [Color] 0xFFE30425, a bright blood red).
  *
@@ -223,7 +223,7 @@ fun PeopleUserInput(
  * that is displayed by the `SearchContent` that is used as the `backLayerContent` argument (the
  * content of the back layer) of the [BackdropScaffold] in [CraneHomeContent] when the [CraneScreen.Fly]
  * tab is selected. Its `content` is a [CraneUserInput] whose `text` argument is "Seoul, South Korea"
- * and whose `vectorImageId` argument is the drawable with resource ID [R.drawable.ic_location] (the
+ * and whose `vectorImageId` argument is the drawable with resource ID `R.drawable.ic_location` (the
  * "inverted tear drop with a circular hole" that is used as a location marker on Google Maps and
  * elsewhere). The text is not modifiable, and no `onClick` argument is given so the Composable just
  * "ripples" when clicked.
@@ -250,7 +250,7 @@ fun FromDestination() {
  * [rememberEditableUserInputState]. Our Composable `content` consists of a [CraneEditableUserInput]
  * whose `state` argument is our [EditableUserInputState] variable `editableUserInputState` (its `text`
  * field will be updated with the text entered by the user), whose `caption` argument is the [String]
- * "To", and whose `vectorImageId` is the drawable with resource ID [R.drawable.ic_plane] (a stylized
+ * "To", and whose `vectorImageId` is the drawable with resource ID `R.drawable.ic_plane` (a stylized
  * airplane).
  *
  * We next use the [rememberUpdatedState] method to initialize and remember our lambda variable
@@ -308,7 +308,7 @@ fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
  * [FlySearchContent] and [SleepSearchContent]. It does nothing except ripple when clicked. Its
  * `content` is a [CraneUserInput] whose `caption` argument is the [String] "Select Dates", whose
  * `text` argument is the empty [String] and whose `vectorImageId` argument is the drawable with
- * resource ID [R.drawable.ic_calendar] (a stylized picture of a hanging calendar).
+ * resource ID `R.drawable.ic_calendar` (a stylized picture of a hanging calendar).
  */
 @Composable
 fun DatesUserInput() {

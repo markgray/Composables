@@ -70,11 +70,11 @@ import com.example.reply.ui.ReplyHomeViewModel
  * children vertically. The `content` of the [Row] is an [Icon] displaying the [ImageVector] drawn
  * by [Icons.Filled.Search] (`Icons.Default.Search` is an alias for [Icons.Filled.Search]) which is
  * a stylized magnifying glass, the `contentDescription` argument is the [stringResource] with ID
- * [R.string.search] ("Search"), whose `modifier` argument is a [Modifier.padding] that adds 16.dp
+ * `R.string.search` ("Search"), whose `modifier` argument is a [Modifier.padding] that adds 16.dp
  * to its `start`, and its `tint` is the [ColorScheme.outline] of our custom [MaterialTheme.colorScheme],
  * Color(0xFF817567) for the [lightColorScheme] (light Gray) and Color(0xFF9C8F80) for the [darkColorScheme]
  * (also a light Gray). This is followed by a [Text] whose `text` argument is the [stringResource]
- * with ID [R.string.search_replies] ("Search replies"), whose `modifier` argument is a [RowScope]
+ * with ID `R.string.search_replies` ("Search replies"), whose `modifier` argument is a [RowScope]
  * `Modifier.weight` whose `weight` is 1f (the [Text] will take up all available space remaining
  * after its siblings are measured and placed), chained to this is a [Modifier.padding] that adds
  * 16.dp to all sides of the [Text]. The `style` argument of the text uses as its [TextStyle] the
@@ -84,7 +84,7 @@ import com.example.reply.ui.ReplyHomeViewModel
  * [MaterialTheme.colorScheme], Color(0xFF817567) for the [lightColorScheme] (light Gray) and
  * Color(0xFF9C8F80) for the [darkColorScheme] (also a light Gray). At the end of the [Row] is
  * a [ReplyProfileImage] Composable, whose `drawableResource` is the jpg whose ID is
- * [R.drawable.avatar_6], whose `description` is the [stringResource] with ID [R.string.profile]
+ * `R.drawable.avatar_6`, whose `description` is the [stringResource] with ID `R.string.profile`
  * ("Profile"), and whose `modifier` argument is a [Modifier.padding] that adds 12.dp to all sides
  * with a [Modifier.size] which sets its `size` to 32.dp.
  *
@@ -142,7 +142,7 @@ fun ReplySearchBar(modifier: Modifier = Modifier) {
  * for our [lightColorScheme] (a shade of black) and Color(0xFFD3C4B4) for our [darkColorScheme] (a
  * shade of orange). The second [Text] uses a [Modifier.padding] of 4.dp for its `top` and displays
  * the `text` formed by concatenating [List.size] of the [Email.threads] list of our [Email] parameter
- * [email] to the [String] whose resource ID is [R.string.messages] ("Messages"). Its `style`
+ * [email] to the [String] whose resource ID is `R.string.messages` ("Messages"). Its `style`
  * [TextStyle] argument is the [Typography.labelMedium] of our custom [MaterialTheme.typography],
  * and the `color` of the text uses the [ColorScheme.outline] color of our [MaterialTheme.colorScheme]
  * (Color(0xFF817567) for our [lightColorScheme] (a shade of Gray) and Color(0xFF9C8F80) for our

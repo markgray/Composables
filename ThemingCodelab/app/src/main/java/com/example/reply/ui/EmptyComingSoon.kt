@@ -49,7 +49,7 @@ import com.example.reply.ui.theme.md_theme_light_primary
  * entire incoming width constraints, its `verticalArrangement` argument is an [Arrangement.Center]
  * to center its children vertically, and its horizontalAlignment is [Alignment.CenterHorizontally]
  * to center the horizontal alignment of the layout's children. Its `content` is:
- *  - a [Text] displaying the `text` with resource ID [R.string.empty_screen_title] ("Screen under
+ *  - a [Text] displaying the `text` with resource ID `R.string.empty_screen_title` ("Screen under
  *  construction"), with a [Modifier.padding] that adds 8.dp to all its sides, its `style` uses the
  *  [TextStyle] that is defined for [Typography.titleLarge] by our custom [MaterialTheme], which is
  *  the [FontWeight.SemiBold] `fontWeight` with a `fontSize` of 18.sp, `lineHeight` of 32.sp, and
@@ -58,7 +58,7 @@ import com.example.reply.ui.theme.md_theme_light_primary
  *  [ColorScheme.primary] of our custom [MaterialTheme] which is [md_theme_light_primary] for our
  *  [lightColorScheme] and [md_theme_dark_primary] for our [darkColorScheme].
  *
- *  - The second [Text] displays the `text` with resource ID [R.string.empty_screen_subtitle] ("This
+ *  - The second [Text] displays the `text` with resource ID `R.string.empty_screen_subtitle` ("This
  *  screen is still under construction), with a [Modifier.padding] that adds 8.dp along the left and
  *  right edges of its content, its `style` uses the [TextStyle] that is defined for
  *  [Typography.bodySmall] by our custom [MaterialTheme], which is the default defined by the system

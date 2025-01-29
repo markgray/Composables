@@ -68,7 +68,7 @@ import java.text.DecimalFormat
  *  - `color` argument is just our [Color] parameter [color]
  *  - `title` argument is just our [String] parameter [name]
  *  - `subtitle` argument is created by concatenating the [String] whose resource ID is
- *  [R.string.account_redacted] and the [String] returned by the [DecimalFormat.format] method of
+ *  `R.string.account_redacted` and the [String] returned by the [DecimalFormat.format] method of
  *  our [AccountDecimalFormat] field when passed our [Int] parameter [number].
  *  - `amount` argument is just our [Float] parameter [amount]
  *  - `negative` argument is `false` (if it were `true` [BaseRow] would prepend a minus sign to its
@@ -161,13 +161,13 @@ fun BillRow(name: String, due: String, amount: Float, color: Color) {
  * [Column] which contains a [Text] displaying our [title] parameter using the [TextStyle] specified
  * for [Typography.body1] by our [RallyTheme] custom [MaterialTheme] (`fontWeight` = [FontWeight.Normal],
  * `fontSize` = 16.sp, and `letterSpacing` = 0.1.em with the default `RobotoCondensed` [FontFamily]
- * using the  [Font] whose resource ID is [R.font.robotocondensed_regular]. Next in the [Column] is
+ * using the  [Font] whose resource ID is `R.font.robotocondensed_regular`. Next in the [Column] is
  * a [CompositionLocalProvider] providing [ContentAlpha.medium] as the [LocalContentAlpha] to a
  * [Text] that is wraps which displays our [String] parameter [subtitle] using the [TextStyle]
  * specified for [Typography.subtitle1] by our [RallyTheme] custom [MaterialTheme] (`fontWeight` =
  * [FontWeight.Light], `fontSize` = 14.sp, `lineHeight` = 20.sp, `letterSpacing` = 3.sp with the
  * default `RobotoCondensed` [FontFamily] using the [Font] whose resource ID is
- * [R.font.robotocondensed_light]. After the [Column] in the [Row]
+ * `R.font.robotocondensed_light`. After the [Column] in the [Row]
  * is a [Spacer] whose `modifier` argument is a [RowScope] `Modifier.weight` of 1f which will cause
  * it to use all of the space that remains in the [Row]'s incoming horizontal constraints after its
  * siblings have been measured and placed. We follow the [Spacer] with an inner [Row] that is used
@@ -177,7 +177,7 @@ fun BillRow(name: String, due: String, amount: Float, color: Color) {
  * our `dollarSign` variable using the [TextStyle] specified for [Typography.h6] by our [RallyTheme]
  * custom [MaterialTheme] (`fontWeight` = [FontWeight.Normal], `fontSize` = 18.sp, `lineHeight` =
  * 20.sp, `fontFamily` = `EczarFontFamily`, `letterSpacing` = 3.sp using the [Font] whose resource
- * ID is [R.font.eczar_regular]), this is followed in the inner [Row] by a [Text] that displays our
+ * ID is `R.font.eczar_regular`), this is followed in the inner [Row] by a [Text] that displays our
  * `formattedAmount` variable using the same [TextStyle] with both [Text] having as their `modifier`
  * argument a [RowScope] `Modifier.align` of [Alignment.CenterVertically] which centers their `content`
  * about the centerline of the [Row]. This is followed in the outer [Row] by another [Spacer] that

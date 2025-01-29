@@ -43,7 +43,7 @@ import com.example.compose.rally.ui.components.StatementBody
  * [Bill.color] of the [Bill] passed it, its `amountsTotal` argument is calculated by using the
  * [map] extension function to extract the [Bill.amount] of all the [Bill] objects in [bills]
  * into a list of [Float] and feeding that list to the [sum] extension function to have it sum them
- * and return the total, its `circleLabel` argument is the [String] with resource ID [R.string.due]
+ * and return the total, its `circleLabel` argument is the [String] with resource ID `R.string.due`
  * ("Due") and its `rows` lambda destructures the [Bill] passed it into `name`: [String], `due`:
  * [String], `amount`: [Float], and `color`: [Color] then composes a [BillRow] whose `name` argument
  * is the [Bill.name], whose `due` argument is the [Bill.due], whose `amount` argument is the

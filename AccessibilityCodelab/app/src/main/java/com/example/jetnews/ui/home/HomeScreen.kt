@@ -98,13 +98,13 @@ fun HomeScreen(
  * `val coroutineScope` using the [rememberCoroutineScope] method, then call our [Scaffold] root
  * Composable with our [ScaffoldState] parameter [scaffoldState] as its `scaffoldState` argument, and
  * as its `topBar` argument we use the [stringResource] method to retrieve the [String] whose resource
- * ID is [R.string.app_name] ("Jetnews") and call our [InsetAwareTopAppBar] Composable with a [Text]
+ * ID is `R.string.app_name` ("Jetnews") and call our [InsetAwareTopAppBar] Composable with a [Text]
  * displaying our [String] variable `title` as its `title` argument, and as its `navigationIcon`
  * argument we use a lambda to create an [IconButton] whose `onClick` argument uses the method
  * [CoroutineScope.launch] of our `coroutineScope` variable to launch a new coroutine which calls
  * our [openDrawer] lambda parameter. The `content` of the [IconButton] is an [Icon] whose `painter`
- * argument renders the drawable with resource ID [R.drawable.ic_jetnews_logo], and whose
- * contentDescription` argument is the [String] with resource ID [R.string.cd_open_navigation_drawer]
+ * argument renders the drawable with resource ID `R.drawable.ic_jetnews_logo`, and whose
+ * contentDescription` argument is the [String] with resource ID `R.string.cd_open_navigation_drawer`
  * ("Open navigation drawer"). The `content` of the [Scaffold] is a lambda which receives as its
  * argument an [PaddingValues] variable `innerPadding` that should be applied to the content root via
  * [Modifier.padding] to properly offset top and bottom bars. To do this we initialize our [Modifier]
@@ -209,10 +209,10 @@ private fun PostList(
  * Horizontal scrolling cards for [PostList] to display its `postsPopular` [List] of [Post]'s. Our
  * root Composable is a [Column] whose top child is a [Text] whose `modifier` argument is a
  * [Modifier.padding] of 16.dp for all sides, whose `text` argument is the [String] with resource ID
- * [R.string.home_popular_section_title] ("Popular on Jetnews") and whose `style` argument is the
+ * `R.string.home_popular_section_title` ("Popular on Jetnews") and whose `style` argument is the
  * `subtitle1` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography] of our
  * [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat` [FontFamily] with a
- * `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID [R.font.montserrat_semibold])
+ * `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID `R.font.montserrat_semibold`)
  * with a `fontSize` of 16.sp, and `letterSpacing` of 0.15.sp. The next Composable in the [Column]
  * is a [LazyRow] whose `contentPadding` argument is a [PaddingValues] of 16.dp at the `end` of the
  * [LazyRow], and its `content` is an [items] which feeds each [Post] in our [List] of [Post] parameter

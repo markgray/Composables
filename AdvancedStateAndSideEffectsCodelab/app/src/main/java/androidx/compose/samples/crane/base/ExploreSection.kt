@@ -104,7 +104,7 @@ import kotlinx.coroutines.launch
  *   to be the [crane_caption] color [Color.DarkGray] (defined in the file ui/CraneTheme.kt). The
  *   `caption` [TextStyle] uses `craneFontFamily` as its `fontFamily`, uses a `fontWeight` of
  *   [FontWeight.W500] and a `fontSize` of 12.sp (`craneFontFamily` uses the [Font] whose resource ID
- *   is [R.font.raleway_medium] for [FontWeight.W500] (file res/font/raleway_medium.ttf).
+ *   is `R.font.raleway_medium` for [FontWeight.W500] (file res/font/raleway_medium.ttf).
  *   - A [Spacer] whose `height` is 8.dp
  *   - A [Box] whose `modifier` argument is a `ColumnScope` `Modifier.weight` of 1f which causes it
  *   to take up all space left after its siblings in the [Column] are measured and placed.
@@ -275,18 +275,18 @@ private fun ExploreList(
  *  - An [ExploreImageContainer] (which is just a wrapper around a [Surface] whose size is 60.dp by
  *  60.dp, and whose shape is a [RoundedCornerShape] of 4.dp) whose `content` is a [Box] which holds
  *  an [Image] downloaded from the URL in the [ExploreModel.imageUrl] field of [item] or an [Image]
- *  of the drawable resource ID [R.drawable.ic_crane_logo] while the photo is being loaded (ie. when
+ *  of the drawable resource ID `R.drawable.ic_crane_logo` while the photo is being loaded (ie. when
  *  the [AsyncImagePainter.state] of the [AsyncImagePainter] variable `val painter` is
  *  [AsyncImagePainter.State.Loading])
  *  - A [Spacer] whose width is 24.dp
  *  - A [Column] whose top entry is a [Text] displaying the [City.nameToDisplay] field of the
  *  [ExploreModel.city] field of [item] using the [TextStyle] `h6` of [MaterialTheme.typography] (which
  *  is the [FontFamily] `craneFontFamily` for [FontWeight.W400] (the [Font] with resource ID
- *  [R.font.raleway_regular] and `fontSize` 20.sp). Below this is a [Spacer] that is 8.dp hight, followed
+ *  `R.font.raleway_regular` and `fontSize` 20.sp). Below this is a [Spacer] that is 8.dp hight, followed
  *  by another [Text] displaying the [ExploreModel.description] field of [item] using a copy of the
  *  [TextStyle] `caption` of [MaterialTheme.typography] whose `color` is modified to be [crane_caption]
  *  ([Color.DarkGray]). The base [TextStyle] of `caption` defined by [craneTypography] is the [FontFamily]
- *  `craneFontFamily` for [FontWeight.W500] (the [Font] with resource ID [R.font.raleway_medium] and
+ *  `craneFontFamily` for [FontWeight.W500] (the [Font] with resource ID `R.font.raleway_medium` and
  *  `fontSize` 12.sp).
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance or behavior.

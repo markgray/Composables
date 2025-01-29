@@ -40,8 +40,8 @@ const val MY_GARDEN_PAGE_INDEX: Int = 0
 const val PLANT_LIST_PAGE_INDEX: Int = 1
 
 /**
- * This is the [RecyclerView.Adapter] used by the [ViewPager2] with resource ID [R.id.view_pager] in
- * the layout file layout/fragment_view_pager.xml (resource ID [R.layout.fragment_view_pager]) which
+ * This is the [RecyclerView.Adapter] used by the [ViewPager2] with resource ID `R.id.view_pager` in
+ * the layout file layout/fragment_view_pager.xml (resource ID `R.layout.fragment_view_pager`) which
  * is used as the View for the fragment's UI by [HomeViewPagerFragment].
  */
 class SunflowerPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

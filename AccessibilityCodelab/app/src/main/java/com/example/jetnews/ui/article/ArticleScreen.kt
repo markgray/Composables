@@ -91,7 +91,7 @@ fun ArticleScreen(
  * of our [post] parameter, and whose `navigationIcon` argument is an [IconButton] whose `onClick`
  * is our [onBack] parameter and whose `content` is an [Icon] whose `imageVector` is the drawable
  * [Icons.AutoMirrored.Filled.ArrowBack], and whose `contentDescription` is the [String] with resource ID
- * [R.string.cd_navigate_up] ("Navigate up"). The `content` of the [Scaffold] is a [PostContent]
+ * `R.string.cd_navigate_up` ("Navigate up"). The `content` of the [Scaffold] is a [PostContent]
  * Composable whose `post` argument is our [post] parameter, and whose `modifier` argument is a
  * [Modifier.padding] of the [PaddingValues] passed the `content` in `innerPadding` with a
  * [Modifier.supportWideScreen] added to it to center content in landscape mode.

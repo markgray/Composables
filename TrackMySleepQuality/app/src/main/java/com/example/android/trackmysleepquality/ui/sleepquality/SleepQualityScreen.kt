@@ -39,34 +39,34 @@ import com.example.android.trackmysleepquality.ui.sleeptracker.SleepTrackerScree
  * two [Row] Composables with both using a `modifier` argument of [Modifier.fillMaxWidth]. The
  * `content` of the first [Row] is:
  *  - an [Image] whose `painter` argument is a [painterResource] for the drawable with resource ID
- *  [R.drawable.ic_sleep_0], and whose `modifier` argument is a [Modifier.size] that sets its size
+ *  `R.drawable.ic_sleep_0`, and whose `modifier` argument is a [Modifier.size] that sets its size
  *  to 64.dp, to which is chained a `RowScope` `Modifier.weight` of 1f, followed by a
  *  [Modifier.clickable] which calls our [onQualityClicked] lambda argument with "0". This is our
  *  "Very Bad" sleep quality.
  *  - an [Image] whose `painter` argument is a [painterResource] for the drawable with resource ID
- *  [R.drawable.ic_sleep_1], and whose `modifier` argument is a [Modifier.size] that sets its size
+ *  `R.drawable.ic_sleep_1`, and whose `modifier` argument is a [Modifier.size] that sets its size
  *  to 64.dp, to which is chained a `RowScope` `Modifier.weight` of 1f, followed by a
  *  [Modifier.clickable] which calls our [onQualityClicked] lambda argument with "1". This is our
  *  "Poor" sleep quality.
  *  - an [Image] whose `painter` argument is a [painterResource] for the drawable with resource ID
- *  [R.drawable.ic_sleep_2], and whose `modifier` argument is a [Modifier.size] that sets its size
+ *  `R.drawable.ic_sleep_2`, and whose `modifier` argument is a [Modifier.size] that sets its size
  *  to 64.dp, to which is chained a `RowScope` `Modifier.weight` of 1f, followed by a
  *  [Modifier.clickable] which calls our [onQualityClicked] lambda argument with "2". This is our
  *  "So-so" sleep quality.
  *
  * The `content of the second [Row] is:
  *  - an [Image] whose `painter` argument is a [painterResource] for the drawable with resource ID
- *  [R.drawable.ic_sleep_3], and whose `modifier` argument is a [Modifier.size] that sets its size
+ *  `R.drawable.ic_sleep_3`, and whose `modifier` argument is a [Modifier.size] that sets its size
  *  to 64.dp, to which is chained a `RowScope` `Modifier.weight` of 1f, followed by a
  *  [Modifier.clickable] which calls our [onQualityClicked] lambda argument with "3". This is our
  *  "OK" sleep quality.
  *  - an [Image] whose `painter` argument is a [painterResource] for the drawable with resource ID
- *  [R.drawable.ic_sleep_4], and whose `modifier` argument is a [Modifier.size] that sets its size
+ *  `R.drawable.ic_sleep_4`, and whose `modifier` argument is a [Modifier.size] that sets its size
  *  to 64.dp, to which is chained a `RowScope` `Modifier.weight` of 1f, followed by a
  *  [Modifier.clickable] which calls our [onQualityClicked] lambda argument with "4". This is our
  *  "Pretty good" sleep quality.
  *  - an [Image] whose `painter` argument is a [painterResource] for the drawable with resource ID
- *  [R.drawable.ic_sleep_5], and whose `modifier` argument is a [Modifier.size] that sets its size
+ *  `R.drawable.ic_sleep_5`, and whose `modifier` argument is a [Modifier.size] that sets its size
  *  to 64.dp, to which is chained a `RowScope` `Modifier.weight` of 1f, followed by a
  *  [Modifier.clickable] which calls our [onQualityClicked] lambda argument with "5". This is our
  *  "Excellent" sleep quality.

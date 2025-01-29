@@ -43,7 +43,7 @@ import com.google.android.libraries.maps.MapView
  * its lambda argument, which will only be evaluated during the initial composition, recomposition
  * will always return the value produced by the initial composition), with the lambda constructing
  * a new instance of [MapView] for the [Context] `context` and using the [apply] extension function
- * to set the `id` of that [MapView] to [R.id.map].
+ * to set the `id` of that [MapView] to `R.id.map`.
  *
  * We initialize our [Lifecycle] variable `val lifecycle` to the [Lifecycle] of the `current`
  * [LocalLifecycleOwner], then call the [DisposableEffect] Composable with its `key1` argument
@@ -60,7 +60,7 @@ import com.google.android.libraries.maps.MapView
  * Finally we return `mapView` to our caller, the `CityMapView` Composable (see file
  * details/DetailsActivity.kt
  *
- * @return a new instance of [MapView] which has been remembered and had its ID set to [R.id.map]
+ * @return a new instance of [MapView] which has been remembered and had its ID set to `R.id.map`
  */
 @Composable
 fun rememberMapViewWithLifecycle(): MapView {

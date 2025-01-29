@@ -58,11 +58,11 @@ private val screens: List<Int> = listOf(
  * incoming measurement constraints, and adds a [Modifier.padding] to that to add 24.dp padding to
  * the `start` and 48.dp to the `top` of the [Column]. The content of the [Column] is an [Image]
  * whose `painter` argument is the [Painter] created by [painterResource] for the drawable whose
- * resource ID is [R.drawable.ic_crane_drawer] (a stylized line drawing of a crane), and this is
+ * resource ID is `R.drawable.ic_crane_drawer` (a stylized line drawing of a crane), and this is
  * followed by a [Text] widget for each of the strings whose resource ID is in the [List] of [Int]
  * field [screens], with the text drawn using [TextStyle] of the [Typography.h4] of our custom
  * [MaterialTheme.typography] (this is defined by our [CraneTheme] to be the [Font] whose resource
- * ID is [R.font.raleway_semibold] (the file raleway_semibold.ttf) with a `fontSize` of 34.sp, and
+ * ID is `R.font.raleway_semibold` (the file raleway_semibold.ttf) with a `fontSize` of 34.sp, and
  * a `fontWeight` of [FontWeight.W600]. There is a 24.dp high [Spacer] above each of the [Text]
  * widgets in the [Column].
  *

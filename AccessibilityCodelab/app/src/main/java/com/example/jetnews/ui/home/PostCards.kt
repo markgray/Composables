@@ -91,9 +91,9 @@ import com.example.jetnews.ui.article.ArticleScreen
  * of [Post] (which is arbitrarily chosen to be the first 3 posts in its `posts` [List] of [Post]
  * parameter). We start by `remember`ing our [Boolean] variable `var openDialog` with an initial
  * value of a [mutableStateOf] `false`, and initializing our [String] variable `val showFewerLabel`
- * to the [String] with resource ID [R.string.cd_show_fewer] ("Show fewer like this"). Our root
+ * to the [String] with resource ID `R.string.cd_show_fewer` ("Show fewer like this"). Our root
  * Composable is a [Row] whose `modifier` argument is a [Modifier.clickable] whose `onClickLabel`
- * is the [String] with resource ID [R.string.action_read_article] ("read article") and whose
+ * is the [String] with resource ID `R.string.action_read_article` ("read article") and whose
  * `onClick` lambda argument is a lambda which calls our [navigateToArticle] lambda parameter with
  * the [Post.id] property of our [post] parameter. A [Modifier.semantics] is chained to the
  * [Modifier.clickable] whose Custom actions is a [listOf] a single [CustomAccessibilityAction]
@@ -116,7 +116,7 @@ import com.example.jetnews.ui.article.ArticleScreen
  *  - A [Text] whose `text` is the [String] in the [Post.title] property of [post] and whose `style`
  *  is the `subtitle1` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography] of
  *  our [JetnewsTheme] custom [MaterialTheme] specifies to be the Montserrat` [FontFamily] with a
- *  `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID [R.font.montserrat_semibold])
+ *  `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID `R.font.montserrat_semibold`)
  *  `fontSize` of 16.sp, and `letterSpacing` of 0.15.sp
  *  - A [Row] whose `modifier` argument is a [Modifier.padding] that adds 4.dp to the `top` of the
  *  [Row]. And the `content` of the [Row] is two [Text] wrapped in a [CompositionLocalProvider] which
@@ -124,7 +124,7 @@ import com.example.jetnews.ui.article.ArticleScreen
  *  [CompositionLocalProvider] block we initialize our [TextStyle] variable `val textStyle` to the
  *  `body2` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography] of our
  *  [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat` [FontFamily] with a
- *  `fontWeight` of [FontWeight.Medium] (the [Font] with resource ID [R.font.montserrat_medium]),
+ *  `fontWeight` of [FontWeight.Medium] (the [Font] with resource ID `R.font.montserrat_medium`),
  *  `fontSize` of 14.sp, and `letterSpacing` of 0.25.sp. The two [Text] Composables use `textStyle`
  *  as their `style` argument, with the `text` argument of the first [Text] using the property
  *  [PostAuthor.name] of the [Metadata.author] of the [Post.metadata] field of our [Post] parameter
@@ -138,7 +138,7 @@ import com.example.jetnews.ui.article.ArticleScreen
  *  the semantics of all the descendant nodes and sets the new semantics to an empty block), and the
  *  `onClick` argument is a lambda which set `openDialog` to `true`. The `content` of the [IconButton]
  *  is an [Icon] whose `imageVector` argument is the `Close` [ImageVector] of [Icons.Default] (an "X"),
- *  and whose `contentDescription` argument is the [String] with resource ID [R.string.cd_show_fewer]
+ *  and whose `contentDescription` argument is the [String] with resource ID `R.string.cd_show_fewer`
  *  ("Show fewer like this").
  *
  * At the end of this Composable is an `if` statement which will (if `openDialog` is `true`) call an
@@ -147,24 +147,24 @@ import com.example.jetnews.ui.article.ArticleScreen
  *  the outside of the [AlertDialog] oddly enough, making it smaller which was a bit of a surprise).
  *  - `onDismissRequest` a lambda which sets `openDialog` to `false`.
  *  - `title` The title of the Dialog (which should specify the purpose of the Dialog) uses a [Text]
- *  Composable whose `text` is the [String] with resource ID [R.string.fewer_stories] ("Show fewer
+ *  Composable whose `text` is the [String] with resource ID `R.string.fewer_stories` ("Show fewer
  *  stories like this?"), and whose `style` is the `h6` [TextStyle] of [MaterialTheme.typography]
  *  which the [JetnewsTypography] of our [JetnewsTheme] custom [MaterialTheme] specifies to be the
  *  `Montserrat` [FontFamily] with a `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource
- *  ID [R.font.montserrat_semibold]), `fontSize` of 20.sp, and `letterSpacing` of 0.sp.
+ *  ID `R.font.montserrat_semibold`), `fontSize` of 20.sp, and `letterSpacing` of 0.sp.
  *  - `text` The text which presents the details regarding the Dialog's purpose uses a [Text]
- *  Composable whose `text` is the [String] with resource ID [R.string.fewer_stories_content]
+ *  Composable whose `text` is the [String] with resource ID `R.string.fewer_stories_content`
  *  ("This feature is not yet implemented"), and whose `style` is the `body1` [TextStyle] of
  *  [MaterialTheme.typography] which the [JetnewsTypography] of our [JetnewsTheme] custom
  *  [MaterialTheme] specifies to be the `Domine` [FontFamily] with a `fontWeight` of
- *  [FontWeight.Normal] (the [Font] with resource ID [R.font.domine_regular]), `fontSize` of 16.sp,
+ *  [FontWeight.Normal] (the [Font] with resource ID `R.font.domine_regular`), `fontSize` of 16.sp,
  *  and `letterSpacing` of 0.5.sp.
  *  - `confirmButton` the button which is meant to confirm a proposed action, thus resolving what
  *  triggered the dialog uses a [Text] as its lambda argument whose `text` is the [String] with
- *  resource ID [R.string.agree] ("AGREE"), whose `style` argument is the `button` [TextStyle] of
+ *  resource ID `R.string.agree` ("AGREE"), whose `style` argument is the `button` [TextStyle] of
  *  [MaterialTheme.typography] which the [JetnewsTypography] of our [JetnewsTheme] custom
  *  [MaterialTheme] specifies to be the `Montserrat` [FontFamily] with a `fontWeight` of
- *  [FontWeight.SemiBold] (the [Font] with resource ID [R.font.montserrat_semibold]), `fontSize`
+ *  [FontWeight.SemiBold] (the [Font] with resource ID `R.font.montserrat_semibold`), `fontSize`
  *  of 14.sp, and `letterSpacing` of 1.25.sp, whose `color` argument will apply to the text the
  *  `primary` [Color] of [MaterialTheme.colors] which our [JetnewsTheme] custom [MaterialTheme]
  *  defines to be [Red700] (a bright blood red: 0xffdd0d3c) for light theme, and [Red300] (a light
@@ -279,7 +279,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
  * `postsPopular` [List] of [Post] (which is arbitrarily chosen to be the posts at index 3 and 4
  * of its `posts` [List] of [Post] parameter). Our parent displays its [PostCardPopular] Composables
  * using the [items] method in a [LazyRow] so we are running in a `LazyListScope`. We initialize our
- * [String] variable `val readArticleLabel` to the string with resource ID [R.string.action_read_article]
+ * [String] variable `val readArticleLabel` to the string with resource ID `R.string.action_read_article`
  * ("read article"), then call our [Card] root Composable with its `shape` argument the `medium`
  * [Shape] of [MaterialTheme.shapes] (which the [JetnewsShapes] used by our [JetnewsTheme] custom
  * [MaterialTheme] specifies to be a [RoundedCornerShape] with 4.dp rounded corners). For its
@@ -300,7 +300,7 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
  *  1. A [Text] whose `text` is the [Post.title] field of our [post] parameter, whose `style` is the
  *  `h6` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography] custom [Typography]
  *  used by our [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat` [FontFamily]
- *  with a `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID [R.font.montserrat_semibold])
+ *  with a `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID `R.font.montserrat_semibold`)
  *  with `fontSize` = 20.sp, and `letterSpacing` = 0.sp. The `maxLines` argument of the [Text] is "2",
  *  and the `overflow` argument is [TextOverflow.Ellipsis] (uses an ellipsis to indicate that the text
  *  has overflowed).
@@ -310,15 +310,15 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
  *  an ellipsis to indicate that the text has overflowed). The `style` argument of this [Text] is the
  *  `body2` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography] custom [Typography]
  *  used by our [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat` [FontFamily]
- *  with a `fontWeight` of [FontWeight.Medium] (the [Font] with resource ID [R.font.montserrat_medium])
+ *  with a `fontWeight` of [FontWeight.Medium] (the [Font] with resource ID `R.font.montserrat_medium`)
  *  with `fontSize` = 14.sp, and `letterSpacing` = 0.25.sp
  *  3. A [Text] whose `text` is a [String] formatted using the format [String] with resource ID
- *  [R.string.home_post_min_read] ("%1$s - %2$d min read") which displays the [Metadata.date] and
+ *  `R.string.home_post_min_read` ("%1$s - %2$d min read") which displays the [Metadata.date] and
  *  [Metadata.readTimeMinutes] fields of the [Post.metadata] field of our [post] parameter, and whose
  *  `style` parameter is the `body2` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography]
  *  custom [Typography] used by our [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat`
  *  [FontFamily] with a `fontWeight` of [FontWeight.Medium] (the [Font] with resource ID
- *  [R.font.montserrat_medium]) with `fontSize` = 14.sp, and `letterSpacing` = 0.25.sp
+ *  `R.font.montserrat_medium`) with `fontSize` = 14.sp, and `letterSpacing` = 0.25.sp
  *
  * @param post the [Post] whose information we are supposed to display.
  * @param navigateToArticle a lambda which we should call with the [Post.id] field of our [post]

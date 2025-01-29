@@ -40,7 +40,7 @@ import com.example.compose.rally.ui.components.StatementBody
  *  of all of the [Bill] instances and feed that [List] to the [sum] extension function to produce
  *  a sum of the [List] which is then used as the `amountsTotal` argument.
  *  - `circleLabel` [StatementBody] expects a [String] so we pass it the [String] with resource ID
- *  [R.string.due] ("Due").
+ *  `R.string.due` ("Due").
  *  - `rows` [StatementBody] expects a lambda that takes a `T` and emits a Composable, so we pass it
  *  a lambda which destructures its [Bill] parameter into its [Bill.name], [Bill.due], [Bill.amount],
  *  and [Bill.color] properties and feeds them as the arguments of the same name to the [BillRow]

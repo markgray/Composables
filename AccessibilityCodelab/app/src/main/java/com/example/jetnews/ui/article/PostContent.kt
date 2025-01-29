@@ -233,7 +233,7 @@ private fun PostHeaderImage(post: Post) {
  *  - a [Column] which holds a [Text] displaying the [PostAuthor.name] of the [Metadata.author] field
  *  of our parameter [metadata] using the `caption` [TextStyle] of `typography` (which is the [FontFamily]
  *  Montserrat, with `fontWeight` [FontWeight.Medium], `fontSize` of 12.sp, and `letterSpacing` 0.4.sp
- *  which is the [Font] with resource ID [R.font.montserrat_medium]), and the `modifier` argument of
+ *  which is the [Font] with resource ID `R.font.montserrat_medium`), and the `modifier` argument of
  *  the [Text] is a [Modifier.padding] that adds 4.dp padding to the `top` of the [Text]. Below this
  *  is a [Text] wrapped in a [CompositionLocalProvider] which has its `content` use [ContentAlpha.medium]
  *  for its [LocalContentAlpha] (a medium level of content alpha, used to represent medium emphasis
@@ -475,7 +475,7 @@ private data class ParagraphStyling(
  * in our case). We initialize our [TextStyle] variable `var textStyle` to the `body1` [TextStyle]
  * of `typography`. Our [JetnewsTheme] custom [MaterialTheme] supplies a [TextStyle] whose [FontFamily]
  * is `Domine` with a [FontWeight] of [FontWeight.Normal] (which is the [Font] with resource ID
- * [R.font.domine_regular]), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp (see the
+ * `R.font.domine_regular`), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp (see the
  * [Typography.body1] entry of [JetnewsTypography] in the file ui/theme/Type.kt). We initialize our
  * [ParagraphStyle] variable `var paragraphStyle` to a new instance, and initialize our variable
  * `var trailingPadding` to 24.dp
@@ -483,22 +483,22 @@ private data class ParagraphStyling(
  * We then branch on the value of the [ParagraphType] we are being called on:
  *  - [ParagraphType.Caption] we set `textStyle` to the `body1` [TextStyle] of `typography` which is
  *  [FontFamily] `Domine` with a [FontWeight] of [FontWeight.Normal] (which is the [Font] with
- *  resource ID [R.font.domine_regular]), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp
+ *  resource ID `R.font.domine_regular`), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp
  *  - [ParagraphType.Title] we set `textStyle` to the `h4` [TextStyle] of `typography` which is
  *  [FontFamily] `Montserrat`, [FontWeight.SemiBold], `fontSize` of 30.sp, and `letterSpacing` 0.sp
- *  (which is the [Font] with resource ID [R.font.montserrat_semibold]).
+ *  (which is the [Font] with resource ID `R.font.montserrat_semibold`).
  *  - [ParagraphType.Subhead] we set `textStyle` to the `h6` [TextStyle] of `typography` which is
  *  [FontFamily] `Montserrat`, [FontWeight.SemiBold], `fontSize` of 20.sp, and `letterSpacing` 0.sp
- *  (which is the [Font] with resource ID [R.font.montserrat_semibold]), and we set `trailingPadding`
+ *  (which is the [Font] with resource ID `R.font.montserrat_semibold`), and we set `trailingPadding`
  *  to 16.dp
  *  - [ParagraphType.Text] we set `textStyle` to a copy of the `body1` [TextStyle] of `typography`
  *  (which is [FontFamily] `Domine` with a [FontWeight] of [FontWeight.Normal] (which is the [Font]
- *  with resource ID [R.font.domine_regular]), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp)
+ *  with resource ID `R.font.domine_regular`), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp)
  *  and set its `lineHeight` argument to 28.sp (the line height), and we also set `paragraphStyle`
  *  to a copy of `paragraphStyle` with its `lineHeight` argument set to 28.sp
  *  - [ParagraphType.Header] we set `textStyle` to the `h5` [TextStyle] of `typography` which is
  *  [FontFamily] `Montserrat`, [FontWeight.SemiBold], `fontSize` of 24.sp, and `letterSpacing` 0.sp
- *  (which is the [Font] with resource ID [R.font.montserrat_semibold]), and we set `trailingPadding`
+ *  (which is the [Font] with resource ID `R.font.montserrat_semibold`), and we set `trailingPadding`
  *  to 16.dp
  *  - [ParagraphType.CodeBlock] we set `textStyle` to a copy of the `body1` [TextStyle] of `typography`
  *  with the `fontFamily` argument set to [FontFamily.Monospace] which is the default [FontFamily]
@@ -506,7 +506,7 @@ private data class ParagraphStyling(
  *  [Typography] used by [JetnewsTheme] does not specify one.
  *  - [ParagraphType.Quote] we set `textStyle` to the `body1` [TextStyle] of `typography` which is
  *  [FontFamily] `Domine` with a [FontWeight] of [FontWeight.Normal] (which is the [Font] with
- *  resource ID [R.font.domine_regular]), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp
+ *  resource ID `R.font.domine_regular`), a `fontSize` of 16.sp and `letterSpacing` of 0.5.sp
  *  - [ParagraphType.Bullet] we set `paragraphStyle` to a [ParagraphStyle] whose `textIndent`
  *  argument is a [TextIndent] whose `firstLine` argument is 8.sp (the amount of indentation applied
  *  to the first line).

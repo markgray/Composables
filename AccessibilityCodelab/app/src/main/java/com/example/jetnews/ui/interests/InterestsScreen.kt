@@ -132,7 +132,7 @@ fun InterestsScreen(
  * whose `topBar` argument is an [InsetAwareTopAppBar]. The `title` argument of the [InsetAwareTopAppBar]
  * is a lambda which composes a [Text] displaying the `text` "Interests", the `navigationIcon`openDrawer
  * argument is an [IconButton] whose `onClick` argument is our [openDrawer] parameter, and whose
- * `content` is an [Icon] whose `painter` draws the drawable with resource ID [R.drawable.ic_jetnews_logo]
+ * `content` is an [Icon] whose `painter` draws the drawable with resource ID `R.drawable.ic_jetnews_logo`
  * (which is a "greater than" symbol followed by an underline). The `content` of the [Scaffold] is a
  * [LazyColumn] whose `modifier` argument adds a [Modifier.padding] of the [PaddingValues] passed to
  * the `content` of the [Scaffold] in the `padding` variable to the [modifier] parameter of
@@ -211,10 +211,10 @@ fun InterestsScreen(
 
 /**
  * Display a full-width topic item. First we initialize our [Painter] variable `val imagePainter`
- * to an instance which will draw the drawable with resource ID [R.drawable.placeholder_1_1] (a
+ * to an instance which will draw the drawable with resource ID `R.drawable.placeholder_1_1` (a
  * triangle intersecting a circle), initialize our [String] variable `val stateNotSubscribed` to
- * the string with resource ID [R.string.state_not_subscribed] ("not subscribed"), and our [String]
- * variable `val stateSubscribed` to the string with resource ID [R.string.state_subscribed]
+ * the string with resource ID `R.string.state_not_subscribed` ("not subscribed"), and our [String]
+ * variable `val stateSubscribed` to the string with resource ID `R.string.state_subscribed`
  * ("subscribed"). Our root Composable is a [Row] whose `modifier` argument is a [Modifier.semantics]
  * whose `properties` argument is a lambda which sets the [SemanticsPropertyReceiver.stateDescription]
  * of its receiver to `stateSubscribed` if `selected` is `true` or to `stateNotSubscribed` if it is
@@ -229,7 +229,7 @@ fun InterestsScreen(
  *
  * The `content` of the [Row] is an [Image], a [Text], a [Spacer], and a [Checkbox]. The arguments
  * for the [Image] Composable are:
- *  - `painter` = `imagePainter` The [Painter] that will draw the drawable [R.drawable.placeholder_1_1]
+ *  - `painter` = `imagePainter` The [Painter] that will draw the drawable `R.drawable.placeholder_1_1`
  *  - `contentDescription` = `null` The [Image] is decorative and does not represent an action
  *  - `modifier` is a `RowScope` `Modifier.align` whose `alignment` argument is [Alignment.CenterVertically]
  *  to center the [Image] in the [Row], to which is chained a [Modifier.size] that sets its `width`
@@ -243,7 +243,7 @@ fun InterestsScreen(
  *  all sides of the [Text].
  *  - `style` is the `subtitle1` [TextStyle] of [MaterialTheme.typography] which the [JetnewsTypography]
  *  of our [JetnewsTheme] custom [MaterialTheme] specifies to be the `Montserrat` [FontFamily] with a
- *  `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID [R.font.montserrat_semibold])
+ *  `fontWeight` of [FontWeight.SemiBold] (the [Font] with resource ID `R.font.montserrat_semibold`)
  *  with a `fontSize` of 16.sp, and `letterSpacing` of 0.15.sp.
  *
  * The `modifier` argument for the [Spacer] Composable is a `RowScope` `Modifier.weight` with a

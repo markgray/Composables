@@ -60,7 +60,7 @@ class PlantListFragment : Fragment() {
      * and move logic that operates on the returned View to [onViewCreated]. First we initialize
      * our [FragmentPlantListBinding] variable `val binding` by having the method
      * [FragmentPlantListBinding.inflate] use our [LayoutInflater] parameter inflate its associated
-     * layout file (the file with resource ID [R.layout.fragment_plant_list]) with our [ViewGroup]
+     * layout file (the file with resource ID `R.layout.fragment_plant_list`) with our [ViewGroup]
      * parameter [container] supplying LayoutParams without being attached to. If the the [Context]
      * this fragment is currently associated with is `null` we just return the outermost [View]
      * of the layout file associated with `binding` to the caller ([FragmentPlantListBinding.getRoot]
@@ -115,7 +115,7 @@ class PlantListFragment : Fragment() {
          * Initialize the contents of the Fragment host's standard options menu. You should place
          * your menu items in the [Menu] parameter [menu]. We just use our [MenuInflater] parameter
          * [menuInflater] to inflate our menu layout file into our [Menu] parameter [menu] (the file
-         * with resource ID [R.menu.menu_plant_list]).
+         * with resource ID `R.menu.menu_plant_list`).
          *
          * @param menu The options menu in which you place your items.
          * @param menuInflater a [MenuInflater] you can use to inflate an XML menu file with.
@@ -126,12 +126,12 @@ class PlantListFragment : Fragment() {
 
         /**
          * This hook is called whenever an item in your options menu is selected. If the value
-         * returned by [MenuItem.getItemId] (kotlin `itemId` property) is [R.id.filter_zone] we call
+         * returned by [MenuItem.getItemId] (kotlin `itemId` property) is `R.id.filter_zone` we call
          * our [updateData] method to "toggle" the grow zone filtering that our [PlantListViewModel]
          * performs (if the [PlantListViewModel.isFiltered] method returns `true` it calls the method
          * [PlantListViewModel.clearGrowZoneNumber] to clear, and if it is `false` it call the method
          * [PlantListViewModel.setGrowZoneNumber] to set the grow zone to "9"). If the `itemId` is not
-         * [R.id.filter_zone] we return `false`
+         * `R.id.filter_zone` we return `false`
          *
          * @param menuItem the menu item that was selected
          * @return `true` if the given menu item is handled by this menu provider, `false` otherwise.

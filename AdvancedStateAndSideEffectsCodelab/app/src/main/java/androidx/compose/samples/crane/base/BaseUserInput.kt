@@ -49,8 +49,8 @@ import androidx.compose.ui.unit.dp
  * the `CraneSearch` Composable that is used by `EatSearchContent` (see file home/HomeFeatures.kt),
  * and once by the `CraneSearch` Composable that is used by `SleepSearchContent` (also in the file
  * home/HomeFeatures.kt). These three usages only use our [caption] and [vectorImageId] parameter
- * with the values: "Select Time" [R.drawable.ic_time], "Select Location" [R.drawable.ic_restaurant]
- * and "Select Location" [R.drawable.ic_hotel] respectively.
+ * with the values: "Select Time" `R.drawable.ic_time`, "Select Location" `R.drawable.ic_restaurant`
+ * and "Select Location" `R.drawable.ic_hotel` respectively.
  *
  * @param text the [String] we should use as the `text` argument of [CraneUserInput].
  * @param caption the [String] we should use as the `caption` argument of [CraneUserInput].
@@ -73,7 +73,7 @@ fun SimpleUserInput(
 /**
  * A Composable widget which uses [CraneBaseUserInput] to host a [Text] as its `content` which will
  * display our [String] parameter [text] using [tint] as the [Color] for the [TextStyle] `body1`
- * of [MaterialTheme.typography] (which is the ttf whose resource ID is [R.font.raleway_semibold],
+ * of [MaterialTheme.typography] (which is the ttf whose resource ID is `R.font.raleway_semibold`,
  * whose `fontWeight` is `FontWeight.W600`, and `fontSize` is 16.sp). It is used by the [SimpleUserInput]
  * Composable (see above), the `DatesUserInput` Composable, the `FromDestination` Composable and the
  * `PeopleUserInput` Composable (see the file home/SearchUserInput.kt for the last three).
@@ -185,12 +185,12 @@ fun CraneBaseUserInput(
  * This is a Preview of our [CraneBaseUserInput] Composable created using the arguments:
  *  - `tintIcon` is a lambda returning `true` which causes the [Icon] created from the argument
  *  `vectorImageId` to be tinted using the default `LocalContentColor.current`.
- *  - `vectorImageId` is the drawable whose resource ID is [R.drawable.ic_plane]
+ *  - `vectorImageId` is the drawable whose resource ID is `R.drawable.ic_plane`
  *  - `caption` is the [String] "Caption"
  *  - `showCaption` is a lambda returning `true`
  *  - `content` Composable lambda argument is a [Text] displaying the [String] "text" using the
  *  `body1` [TextStyle] of [MaterialTheme.typography] which is the ttf whose resource ID is
- *  [R.font.raleway_semibold], whose `fontWeight` is `FontWeight.W600`, and `fontSize` is 16.sp
+ *  `R.font.raleway_semibold`, whose `fontWeight` is `FontWeight.W600`, and `fontSize` is 16.sp
  *
  * The [CraneBaseUserInput] Composable is wrapped in a [Surface] (for some reason) which is in turn
  * wrapped in our [CraneTheme] custom [MaterialTheme].

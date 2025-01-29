@@ -91,7 +91,7 @@ class PlantDetailFragment : Fragment() {
      * and move logic that operates on the returned View to [onViewCreated]. We initialize our
      * [FragmentPlantDetailBinding] variable `val binding` to the value returned by the method
      * [DataBindingUtil.inflate] when it uses our [LayoutInflater] parameter [inflater] to inflate
-     * the layout file with resource ID [R.layout.fragment_plant_detail] with our [ViewGroup] parameter
+     * the layout file with resource ID `R.layout.fragment_plant_detail` with our [ViewGroup] parameter
      * [container] supplying the LayoutParams without attaching to it. We then use the [apply]
      * extension function on the [FragmentPlantDetailBinding] to:
      *  - set the `viewModel` variable in the binding to our [PlantDetailViewModel] variable
@@ -101,11 +101,11 @@ class PlantDetailFragment : Fragment() {
      *  (our `viewLifecycleOwner` property).
      *  - set the `callback` variable in the binding to an anonymous [Callback] instance that
      *  overrides the [Callback.add] method which if its [Plant] parameter `plant` is not `null`
-     *  calls our [hideAppBarFab] method with the [FloatingActionButton] whose ID is [R.id.fab]
+     *  calls our [hideAppBarFab] method with the [FloatingActionButton] whose ID is `R.id.fab`
      *  to hide the [FloatingActionButton], then calls the [PlantDetailViewModel.addPlantToGarden]
      *  method of our [plantDetailViewModel] to have it add the [Plant] we are displaying to the
      *  [GardenPlantingRepository], and finally calls the [Snackbar.make] method to show the
-     *  [String] with resource ID [R.string.added_plant_to_garden] ("Added plant to garden").
+     *  [String] with resource ID `R.string.added_plant_to_garden` ("Added plant to garden").
      *  - initializes our [Boolean] variable `var isToolbarShown` to `false`.
      *  - sets the [NestedScrollView.OnScrollChangeListener] of the `plantDetailScrollview` in the
      *  binding to an anonymous instance whose [NestedScrollView.OnScrollChangeListener.onScrollChange]
@@ -126,9 +126,9 @@ class PlantDetailFragment : Fragment() {
      *  and then calls its [NavController.navigateUp] method to navigate up in the navigation hierarchy.
      *  - we set the [Toolbar.OnMenuItemClickListener] of [FragmentPlantDetailBinding.toolbar] in
      *  `binding` to a lambda which when the [MenuItem.getItemId] (kotlin `itemId` property) has
-     *  resource ID [R.id.action_share] calls [createShareIntent] to create a share [Intent] and
+     *  resource ID `R.id.action_share` calls [createShareIntent] to create a share [Intent] and
      *  launch an activity to share the [Plant.name] of our [Plant] then returns `true` to consume
-     *  the click. If it is not resource ID [R.id.action_share] we return `false` to allow normal
+     *  the click. If it is not resource ID `R.id.action_share` we return `false` to allow normal
      *  system handling of the [MenuItem].
      *  - Next we configure the [ComposeView] in our layout file that is bound to the resource ID
      *  [FragmentPlantDetailBinding.composeView] by using the [apply] extension function on it and
@@ -242,7 +242,7 @@ class PlantDetailFragment : Fragment() {
      * use the [let] extension function to apply an `if` expression to the `plant` which returns
      * the empty string if `plant` is `null` or the [String] that the [getString] method returns
      * when it formats the [Plant.name] property of the `plant` using the format string with
-     * resource ID [R.string.share_text_plant] ("Check out the %s plant in the Android Sunflower app").
+     * resource ID `R.string.share_text_plant` ("Check out the %s plant in the Android Sunflower app").
      * Then we initialize our [Intent] variable `val shareIntent` by constructing an instance of
      * [ShareCompat.IntentBuilder], and then applying the [ShareCompat.IntentBuilder.setText] method
      * to it to set the literal text data to be sent as part of the share to `shareText`, and then

@@ -37,7 +37,7 @@ private const val SplashWaitTime: Long = 2000
 
 /**
  * This Composable is called by the [MainScreen] Composable when the app is first starting up as a
- * "Splash Screen". It fills the screen with the drawable whose resource ID is [R.drawable.ic_crane_drawer]
+ * "Splash Screen". It fills the screen with the drawable whose resource ID is `R.drawable.ic_crane_drawer`
  * (a stylized crane), delays for [SplashWaitTime] milliseconds (2,000) then calls its [onTimeout]
  * lambda parameter. The root Composable is an [Image] whose `modifier` argument adds
  * [Modifier.fillMaxSize] to our [Modifier] parameter [modifier] (causes it to fill the
@@ -57,7 +57,7 @@ private const val SplashWaitTime: Long = 2000
  * [LaunchedEffect] leaves the composition. The lambda block calls [delay] with [SplashWaitTime] as
  * its `timeMillis` argument to delay [SplashWaitTime] milliseconds (2000), then calls the
  * `currentOnTimeout` lambda. While that is running in the background we call the [Image] Composable
- * to display the drawable whose resource ID is [R.drawable.ic_crane_drawer].
+ * to display the drawable whose resource ID is `R.drawable.ic_crane_drawer`.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. [MainScreen] passes us a [Modifier.alpha] that sets our `alpha` to an animated value

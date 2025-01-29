@@ -168,7 +168,7 @@ private fun AppBar() {
  * our [Modifier] parameter [modifier]. The `content` of the [Surface] is a [Text] that displays our
  * [text] parameter using the [Typography.subtitle2] of [MaterialTheme.typography] as its [TextStyle]
  * `style` argument (`fontFamily` of Montserrat, `fontWeight` of [FontWeight.W500] (the [Font] with
- * resource ID [R.font.montserrat_medium]) and a `fontSize` of 14.sp). The `modifier` argument of the
+ * resource ID `R.font.montserrat_medium`) and a `fontSize` of 14.sp). The `modifier` argument of the
  * [Text] is a [Modifier.fillMaxWidth] to have the [Text] use the entire width of its incoming
  * constraints to which is added a [Modifier.padding] that adds 16.dp to each side of the [Text] and
  * 8.dp to the top and bottom of the [Text].
@@ -287,7 +287,7 @@ fun FeaturedPost(
  *  - it uses [AnnotatedString.Builder.append] to append our `divider` variable.
  *  - it uses [AnnotatedString.Builder.append] to append the formated [String] created from the
  *  [Metadata.readTimeMinutes] field of the [Post.metadata] field of our [Post] parameter [post]
- *  using the format [String] with the resource ID [R.string.read_time] ("%1$d min read").
+ *  using the format [String] with the resource ID `R.string.read_time` ("%1$d min read").
  *  - it uses [AnnotatedString.Builder.append] to append our `divider` variable.
  *  - it initializes its [SpanStyle] variable `val tagStyle` to a copy of the [Typography.overline]
  *  custom [TextStyle] of [MaterialTheme.typography] (`fontFamily` = Montserrat, `fontWeight` =

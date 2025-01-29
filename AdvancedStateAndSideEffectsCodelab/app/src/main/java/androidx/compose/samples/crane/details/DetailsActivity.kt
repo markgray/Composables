@@ -273,7 +273,7 @@ fun DetailsScreen(
  *  is the [City.nameToDisplay] field of the [ExploreModel.city] field of our [exploreModel] parameter,
  *  whose `style` parameter is the `h4` [TextStyle] of [MaterialTheme.typography] (our [CraneTheme]
  *  defines this to be the `craneFontFamily` [FontFamily] with a [FontWeight] of [FontWeight.W600]
- *  and a `fontSize` of 34.sp, which is the [Font] with resource ID [R.font.raleway_semibold] see the
+ *  and a `fontSize` of 34.sp, which is the [Font] with resource ID `R.font.raleway_semibold` see the
  *  file ui/Typography.kt), and the `textAlign` argument of the [Text] is [TextAlign.Center] which
  *  aligns the text in the center of the container.
  *  - a [Text] whose `modifier` argument is a `ColumnScope` `Modifier.align` whose `alignment` argument
@@ -281,7 +281,7 @@ fun DetailsScreen(
  *  is the [ExploreModel.description] field of our [exploreModel] parameter, whose `style` parameter
  *  is the `h6` [TextStyle] of [MaterialTheme.typography] (our [CraneTheme] defines this to be the
  *  `craneFontFamily` [FontFamily] with a [FontWeight] of [FontWeight.W400] and a `fontSize` of 20.sp,
- *  which is the [Font] with resource ID [R.font.raleway_regular] see the file ui/Typography.kt), and
+ *  which is the [Font] with resource ID `R.font.raleway_regular` see the file ui/Typography.kt), and
  *  the `textAlign` argument of the [Text] is [TextAlign.Center] which aligns the text in the center
  *  of the container.
  *  - a [Spacer] whose `modifier` argument specifies a height of 16.dp
@@ -467,7 +467,7 @@ private fun ZoomControls(
  * [Button] is a [Text] whose `text` argument is our [text] parameter, and whose `style` parameter is
  * the `h5` [TextStyle] of [MaterialTheme.typography] which our [CraneTheme] custom [MaterialTheme]
  * specifies in its [craneTypography] custom [Typography] to be the [FontFamily] `craneFontFamily`
- * with a [FontWeight] of [FontWeight.W600] (the [Font] with resource ID [R.font.raleway_semibold])
+ * with a [FontWeight] of [FontWeight.W600] (the [Font] with resource ID `R.font.raleway_semibold`)
  * and with a `fontSize` of 24.sp
  *
  * @param text the label of the [Button] (ie. its [Text] `content` displays it).

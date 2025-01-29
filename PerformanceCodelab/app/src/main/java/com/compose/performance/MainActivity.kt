@@ -157,8 +157,8 @@ private class PerformanceCodeLabViewModel(startFromStep: String?) : ViewModel() 
  *  incoming width constraint, and whose `horizontalArrangement` argument is [Arrangement.Center] to
  *  center the horizontal arrangement its children. In the [RowScope] `content` lambda argument of
  *  [Row] we first initialize our [String] variable `val previousTaskLabel` to the [String] with
- *  resource ID [R.string.previous_task] ("Previous task"), and our [String] variable `val nextTaskLabel`
- *  to the [String] with resource ID [R.string.next_task] ("Next task"). We then compose an [IconButton]
+ *  resource ID `R.string.previous_task` ("Previous task"), and our [String] variable `val nextTaskLabel`
+ *  to the [String] with resource ID `R.string.next_task` ("Next task"). We then compose an [IconButton]
  *  whose `onClick` argument is a lambda that calls our [onPageSelected] lambda parameter with the
  *  [TaskScreen] returned by the [TaskScreen.previous] method of our [TaskScreen] parameter
  *  [selectedPage], and whose `modifier` argument is a [Modifier.semantics] with our [String] variable

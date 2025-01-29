@@ -416,7 +416,7 @@ fun ReplyProfileImage(
  * `fontSize` of 14.sp, `lineHeight` of 20.sp, and `letterSpacing` of 0.25.sp, and its `color` argument
  * is also the [ColorScheme.outline] color of the [MaterialTheme.colorScheme]. The last Composable in
  * the [Row] is a [ReplyProfileImage] whose `drawableResource` argument is the jpg with Resource ID
- * [R.drawable.avatar_6], whose `description` argument is the [String] "Profile", and whose `modifier`
+ * `R.drawable.avatar_6`, whose `description` argument is the [String] "Profile", and whose `modifier`
  * argument is a [Modifier.padding] that adds 12.dp to all sides, with a [Modifier.size] which sets
  * the size of the [ReplyProfileImage] to 32.dp
  *

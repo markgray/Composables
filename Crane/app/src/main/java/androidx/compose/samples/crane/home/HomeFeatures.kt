@@ -112,8 +112,8 @@ fun FlySearchContent(
  *  [SleepSearchContentUpdates.onDateSelectionClicked] lambda from our [SleepSearchContentUpdates]
  *  parameter [sleepUpdates].
  *  - a [SimpleUserInput] whose `caption` argument is the [String] with resource ID
- *  [R.string.input_select_location] ("Select Location"), and whose `vectorImageId` argument is
- *  the [Int] DrawableRes [R.drawable.ic_hotel] (a stylized "head in a bed")
+ *  `R.string.input_select_location` ("Select Location"), and whose `vectorImageId` argument is
+ *  the [Int] DrawableRes `R.drawable.ic_hotel` (a stylized "head in a bed")
  *
  * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
  * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]
@@ -171,11 +171,11 @@ fun SleepSearchContent(
  *  [EatSearchContentUpdates.onDateSelectionClicked] lambda from our [EatSearchContentUpdates]
  *  parameter [eatUpdates].
  *  - a [SimpleUserInput] whose `caption` argument is the [String] with resource ID
- *  [R.string.input_select_time] ("Select Time"), and whose `vectorImageId` argument is
- *  the [Int] DrawableRes [R.drawable.ic_time] (a stylized clock)
+ *  `R.string.input_select_time` ("Select Time"), and whose `vectorImageId` argument is
+ *  the [Int] DrawableRes `R.drawable.ic_time` (a stylized clock)
  *  - a [SimpleUserInput] whose `caption` argument is the [String] with resource ID
- *  [R.string.input_select_location] ("Select Location"), and whose `vectorImageId` argument is
- *  the [Int] DrawableRes [R.drawable.ic_restaurant] (a stylized crossed spoon and knife)
+ *  `R.string.input_select_location` ("Select Location"), and whose `vectorImageId` argument is
+ *  the [Int] DrawableRes `R.drawable.ic_restaurant` (a stylized crossed spoon and knife)
  *
  * @param widthSize the [WindowWidthSizeClass] of the device we are running on, one of
  * [WindowWidthSizeClass.Compact], [WindowWidthSizeClass.Medium], or [WindowWidthSizeClass.Expanded]

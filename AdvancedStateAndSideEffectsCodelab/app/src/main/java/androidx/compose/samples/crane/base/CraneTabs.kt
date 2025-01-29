@@ -51,9 +51,9 @@ import androidx.core.os.ConfigurationCompat
  * This is used by the `HomeTabBar` Composable (see the file home/CraneHome.kt) which is used as the
  * `appBar` argument of the [BackdropScaffold] of `CraneHomeContent` (also in home/CraneHome.kt) which
  * is used as the `content` of the [Scaffold] of `CraneHome` (also in home/CraneHome.kt). It consists
- * of a [Row] holding a [Row] which holds a `clickable` [Image] displaying the [R.drawable.ic_menu]
+ * of a [Row] holding a [Row] which holds a `clickable` [Image] displaying the `R.drawable.ic_menu`
  * "Menu" icon which calls our [onMenuClicked] parameter when clicked, an 8.dp wide [Spacer] then
- * another [Image] displaying the [R.drawable.ic_crane_logo] icon (our "Crane" logo). Following the
+ * another [Image] displaying the `R.drawable.ic_crane_logo` icon (our "Crane" logo). Following the
  * inner [Row] in the outer [Row] are all of the Composables in our [children] parameter (in our case
  * a [CraneTabs] which is a a [TabRow] holding a [Tab] that displays all of the [CraneScreen.name]
  * entries of the [CraneScreen] enum ("Fly", "Sleep", and "Eat") in a [Text]. The `onClick` argument

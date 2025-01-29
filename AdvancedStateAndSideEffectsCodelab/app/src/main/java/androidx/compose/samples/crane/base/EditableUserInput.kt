@@ -148,7 +148,7 @@ fun rememberEditableUserInputState(hint: String): EditableUserInputState =
  * @param caption a caption [String] for the `caption` argument of our [CraneBaseUserInput]. Our
  * caller `ToDestinationUserInput` uses the [String] "To" when it calls us.
  * @param vectorImageId a drawable resource ID for the `vectorImageId` argument of our
- * [CraneBaseUserInput]. Our caller `ToDestinationUserInput` uses [R.drawable.ic_plane] when it
+ * [CraneBaseUserInput]. Our caller `ToDestinationUserInput` uses `R.drawable.ic_plane` when it
  * calls us.
  */
 @Composable
@@ -185,7 +185,7 @@ fun CraneEditableUserInput(
  * [CraneEditableUserInput] with the arguments:
  *  - `state` our [EditableUserInputState] variable `editableUserInputState`
  *  - `caption` the [String] "To"
- *  - `vectorImageId` the drawable resource ID [R.drawable.ic_plane].
+ *  - `vectorImageId` the drawable resource ID `R.drawable.ic_plane`.
  */
 @Preview
 @Composable

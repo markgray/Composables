@@ -82,7 +82,7 @@ fun PlantDetailDescription(plantDetailViewModel: PlantDetailViewModel) {
  * This Composable displays several fields from its [Plant] parameter [plant]. It wraps a [Column]
  * in a [Surface], with the [Column] using the [dimensionResource] method to fetch the value it uses
  * for its `modifier` argument (a [Modifier.padding] on all sides) from the resource value stored
- * under the ID [R.dimen.margin_normal] in the app's resources. The `content` of the [Column] is
+ * under the ID `R.dimen.margin_normal` in the app's resources. The `content` of the [Column] is
  * three Composables:
  *  - [PlantName] to display the [Plant.name] field of our [Plant] parameter [plant].
  *  - [PlantWatering] to display the [Plant.wateringInterval] field of our [Plant] parameter [plant].
@@ -108,7 +108,7 @@ fun PlantDetailContent(plant: Plant) {
  * this will be Rotboto Regular, with a font size of 24sp). Its `modifier` argument is a
  * [Modifier.fillMaxWidth] to have it take all of the horizontal space of its incoming constraints,
  * to which is chained a [Modifier.padding] whose `horizontal` padding (the padding on each side of
- * the [Text] is the value returned by the [dimensionResource] method for the [R.dimen.margin_small]
+ * the [Text] is the value returned by the [dimensionResource] method for the `R.dimen.margin_small`
  * resource ID, and at the end of the chain is a [Modifier.wrapContentWidth] whose `align` argument
  * is [Alignment.CenterHorizontally] to align the `text` displayed about the centerline of the [Text].
  *
@@ -133,26 +133,26 @@ private fun PlantName(name: String) {
  * question. Our root Composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth]
  * causing it to occupy its entire incoming width constraint. In its `content` we initialize our
  * [Modifier] variable `val centerWithPaddingModifier` with a [Modifier.padding] whose `horizontal`
- * padding is taken from the [dimensionResource] whose resource ID is [R.dimen.margin_small] (8.dp),
+ * padding is taken from the [dimensionResource] whose resource ID is `R.dimen.margin_small` (8.dp),
  * to which is chained a [ColumnScope] `Modifier.align` whose `alignment` argument is
  * [Alignment.CenterHorizontally] to have the "modified" Composable center its children horizontally
  * about its centerline (this [Modifier] is then used by both of the [Text]'s in the [Column]). Next
  * we initialize our [Dp] variable `val normalPadding` to the [dimensionResource] whose resource ID
- * is [R.dimen.margin_normal] (16.dp).
+ * is `R.dimen.margin_normal` (16.dp).
  *
  * Next we have a [Text] Composable displaying as its `text` argument the [String] whose resource ID
- * is [R.string.watering_needs_prefix] ("Watering needs"), with its `color` argument the [Color] that
+ * is `R.string.watering_needs_prefix` ("Watering needs"), with its `color` argument the [Color] that
  * is specified for [Colors.primaryVariant] in the default [MaterialTheme.colors] (we use [MdcTheme]
- * as our custom [MaterialTheme] which parses our [R.style.Base_Theme_Sunflower] and uses the [Color]
- * whose resource ID is [R.color.sunflower_green_700] (0x005d2b) for light mode and the [Color] whose
- * resource ID is [R.color.sunflower_green_200] (0x81ca9d) for night mode), for its `fontWeight`
+ * as our custom [MaterialTheme] which parses our `R.style.Base_Theme_Sunflower` and uses the [Color]
+ * whose resource ID is `R.color.sunflower_green_700` (0x005d2b) for light mode and the [Color] whose
+ * resource ID is `R.color.sunflower_green_200` (0x81ca9d) for night mode), for its `fontWeight`
  * argument we use [FontWeight.Bold], and for its `modifier` argument we chain a [Modifier.padding]
  * to our [Modifier] variable `centerWithPaddingModifier` that sets its `top` padding to our [Dp]
  * variable `normalPadding` (16dp).
  *
  * Next we initialize our [String] variable `val wateringIntervalText` to the [String] returned by
  * the current [Resources.getQuantityString] method using the String plural format specified by the
- * resource ID [R.plurals.watering_needs_suffix] and applying it to our parameter [wateringInterval].
+ * resource ID `R.plurals.watering_needs_suffix` and applying it to our parameter [wateringInterval].
  * We then use `wateringIntervalText` as the `text` argument of a [Text] and as its `modifier`
  * argument we chain a [Modifier.padding] to our [Modifier] variable `centerWithPaddingModifier`
  * that sets its `bottom` padding to our [Dp] variable `normalPadding` (16dp).

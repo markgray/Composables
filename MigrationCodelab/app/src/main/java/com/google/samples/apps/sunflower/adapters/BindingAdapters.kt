@@ -27,9 +27,9 @@ import com.google.samples.apps.sunflower.R
  * This `BindingAdapter` is called when a widget has an app:isGone="@{[Boolean]}" attribute with the
  * [View] of the widget in our [view] parameter and the [Boolean] value in our [isGone] parameter.
  * It is used twice in the layout/fragment_garden.xml (app:isGone="@{!hasPlantings}" for the
- * [RecyclerView] with ID [R.id.garden_list] and app:isGone="@{hasPlantings}" for the [LinearLayout]
+ * [RecyclerView] with ID `R.id.garden_list` and app:isGone="@{hasPlantings}" for the [LinearLayout]
  * that is displayed when the garden is empty) and once in layout/fragment_plant_detail.xml
- * (app:isGone="@{viewModel.isPlanted}" for the [FloatingActionButton] with ID [R.id.fab]).
+ * (app:isGone="@{viewModel.isPlanted}" for the [FloatingActionButton] with ID `R.id.fab`).
  * When called it sets the `visibility` of [view] to [View.GONE] if [isGone] is `true` or to
  * [View.VISIBLE] it it is `false`.
  *

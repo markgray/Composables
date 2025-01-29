@@ -49,7 +49,7 @@ import com.example.compose.rally.ui.components.StatementBody
  *  - `amounts` is a lambda which returns the [Account.balance] property of the [Account] passed it.
  *  - `colors` is a lambda which returns the [Account.color] property of the [Account] passed it.
  *  - `amountsTotal` is our `amountsTotal` variable.
- *  - `circleLabel` is the [String] whose resource ID is [R.string.total] ("Total").
+ *  - `circleLabel` is the [String] whose resource ID is `R.string.total` ("Total").
  *  - `rows` is a a lambda which destructures its [Account] parameter into its [Account.name],
  *  [Account.number], [Account.balance], and [Account.color] properties and feeds them as the
  *  arguments of the same name to the [AccountRow] Composable. The `modifier` argument of the

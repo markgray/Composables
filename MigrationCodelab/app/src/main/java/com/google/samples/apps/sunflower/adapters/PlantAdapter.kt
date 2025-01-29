@@ -35,7 +35,7 @@ import com.google.samples.apps.sunflower.plantdetail.PlantDetailFragment
 import com.google.samples.apps.sunflower.views.MaskedCardView
 
 /**
- * This is the [ListAdapter] that is used for the [RecyclerView] with ID [R.id.plant_list] in the
+ * This is the [ListAdapter] that is used for the [RecyclerView] with ID `R.id.plant_list` in the
  * file layout/fragment_plant_list.xml used by in [PlantListFragment].
  */
 class PlantAdapter : ListAdapter<Plant, RecyclerView.ViewHolder>(PlantDiffCallback()) {
@@ -44,7 +44,7 @@ class PlantAdapter : ListAdapter<Plant, RecyclerView.ViewHolder>(PlantDiffCallba
      * Called when [RecyclerView] needs a new [PlantViewHolder] of the given type to represent an
      * item. We return a [PlantViewHolder] whose `binding` argument is the [ListItemPlantBinding]
      * that the [ListItemPlantBinding.inflate] method inflates from the layout file with ID
-     * [R.layout.list_item_plant] using the [LayoutInflater] that the method [LayoutInflater.from]
+     * `R.layout.list_item_plant` using the [LayoutInflater] that the method [LayoutInflater.from]
      * returns for the [Context] of our [ViewGroup] parameter [parent], using [parent] to provide
      * the `LayoutParams` without attaching to it.
      *
@@ -81,12 +81,12 @@ class PlantAdapter : ListAdapter<Plant, RecyclerView.ViewHolder>(PlantDiffCallba
 
     /**
      * This is the [RecyclerView.ViewHolder] that is used to hold item views for the [RecyclerView]
-     * with ID [R.id.plant_list] in the file [R.layout.fragment_plant_list]. It is constructed with
+     * with ID `R.id.plant_list` in the file `R.layout.fragment_plant_list`. It is constructed with
      * a [ListItemPlantBinding] binding that is inflated from the file with resource ID
-     * [R.layout.list_item_plant] as the [binding] argument.
+     * `R.layout.list_item_plant` as the [binding] argument.
      *
      * @param binding a [ListItemPlantBinding] that has been inflated from the file with
-     * resource ID [R.layout.list_item_plant].
+     * resource ID `R.layout.list_item_plant`.
      */
     class PlantViewHolder(
         private val binding: ListItemPlantBinding

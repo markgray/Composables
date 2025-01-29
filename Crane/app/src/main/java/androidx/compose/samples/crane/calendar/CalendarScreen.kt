@@ -164,14 +164,14 @@ private fun CalendarContent(
  *
  * Below this is a [TopAppBar] whose arguments are:
  *  - `title` is a lambda that composes a [Text] whose `text` is the [String] with resource ID
- *  [R.string.calendar_select_dates_title] ("Select Dates") if the [CalendarUiState.hasSelectedDates]
+ *  `R.string.calendar_select_dates_title` ("Select Dates") if the [CalendarUiState.hasSelectedDates]
  *  property of [CalendarUiState] variable `calendarUiState` returns `false` or if it returns `true`
  *  the [String] returned by the [CalendarUiState.selectedDatesFormatted] property of
  *  `calendarUiState`.
  *  - `navigationIcon` is an [IconButton] whose `onClick` lambda argument is a lambda which calls
  *  our lambda parameter [onBackPressed], and its `content` Composable lambda argument is an [Icon]
  *  whose `imageVector` argument is the [ImageVector] drawn by [Icons.AutoMirrored.Filled.ArrowBack],
- *  whose `contentDescription` is the [String] with resource ID [R.string.cd_back] ("Back"), and
+ *  whose `contentDescription` is the [String] with resource ID `R.string.cd_back` ("Back"), and
  *  whose `tint` [Color] is the [Colors.onSurface] of the [CraneTheme] custom [MaterialTheme.colors].
  *  - `backgroundColor` is the [Colors.primaryVariant] of the [CraneTheme] custom
  *  [MaterialTheme.colors].

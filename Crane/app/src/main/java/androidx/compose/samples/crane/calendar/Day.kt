@@ -82,9 +82,9 @@ internal fun DayOfWeekHeading(day: String) {
 /**
  * This is used by [DayOfWeekHeading] to display the first letter of each day of the week, and by
  * [Day] to display a numbered day in the Calendar. We start by initializing our [String] variable
- * `val stateDescriptionLabel` to the [String] with resource ID [R.string.state_descr_selected]
+ * `val stateDescriptionLabel` to the [String] with resource ID `R.string.state_descr_selected`
  * ("Selected") if our [Boolean] parameter [selected] is `true` or to the [String] with resource ID
- * [R.string.state_descr_not_selected] ("Not selected") if it is `false`. Our root Composable is a
+ * `R.string.state_descr_not_selected` ("Not selected") if it is `false`. Our root Composable is a
  * [Box] whose `modifier` argument is a [Modifier.size] that sets its `width` and `height` to
  * [CELL_SIZE] (48.dp), with a [Modifier.pointerInput] chained to that that uses the `block`
  * [PointerInputScope] lambda to call the [PointerInputScope.detectTapGestures] method where it
@@ -114,7 +114,7 @@ internal fun DayOfWeekHeading(day: String) {
  * [Color] of our [Box].
  * @param onClickLabel used as the `label` argument of a [SemanticsPropertyReceiver.onClick] that
  * is used in a [Modifier.semantics] of our [Box]. [DayOfWeekHeading] passes us none, but [Day]
- * passes us the [String] with resource ID [R.string.click_label_select] ("select").
+ * passes us the [String] with resource ID `R.string.click_label_select` ("select").
  * @param content the Composable lambda that we should use as the `content` Composable lambda of our
  * [Box]. Both of our callers pass us a [Text] configured for their purposes.
  */
@@ -168,7 +168,7 @@ private fun DayContainer(
  * set to our [Boolean] variable `selected`. The `selected` argument of the [DayContainer] is our
  * [Boolean] variable `selected`, the `onClick` argument is a lambda that calls our [onDayClicked]
  * lambda argument with [LocalDate] parameter [day], and the `onClickLabel` argument is the [String]
- * with the resource ID [R.string.click_label_select] ("select"). In the `content` Composable lambda
+ * with the resource ID `R.string.click_label_select` ("select"). In the `content` Composable lambda
  * argument of the [DayContainer] we compose a [Text] whose `modifier` argument is a
  * [Modifier.fillMaxSize] to have the [Text] occupy its entire incoming size constraints, chained to
  * that is a [Modifier.wrapContentSize] with its `align` argument of [Alignment.Center] causing it

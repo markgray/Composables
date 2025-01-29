@@ -37,7 +37,7 @@ import com.google.samples.apps.sunflower.viewmodels.PlantAndGardenPlantingsViewM
 import com.google.samples.apps.sunflower.views.MaskedCardView
 
 /**
- * This is the [ListAdapter] that is used for the [RecyclerView] with ID [R.id.garden_list] in the
+ * This is the [ListAdapter] that is used for the [RecyclerView] with ID `R.id.garden_list` in the
  * file layout/fragment_garden.xml used by [GardenFragment].
  */
 class GardenPlantingAdapter :
@@ -49,7 +49,7 @@ class GardenPlantingAdapter :
      * Called when [RecyclerView] needs a new [ViewHolder] of the given type to represent an item.
      * We return a [ViewHolder] whose `binding` argument is the [ListItemGardenPlantingBinding] that
      * the [DataBindingUtil.inflate] method inflates from the layout file with ID
-     * [R.layout.list_item_garden_planting] using the [LayoutInflater] that the method
+     * `R.layout.list_item_garden_planting` using the [LayoutInflater] that the method
      * [LayoutInflater.from] returns for the [Context] of our [ViewGroup] parameter [parent], using
      * [parent] to provide the `LayoutParams` without attaching to it.
      *
@@ -88,12 +88,12 @@ class GardenPlantingAdapter :
 
     /**
      * This is the [RecyclerView.ViewHolder] that is used to hold item views for the [RecyclerView]
-     * with ID [R.id.garden_list] in the file [R.layout.fragment_garden]. It is constructed with a
+     * with ID `R.id.garden_list` in the file `R.layout.fragment_garden`. It is constructed with a
      * [ListItemGardenPlantingBinding] binding that is inflated from the file with resource ID
-     * [R.layout.list_item_garden_planting] as the [binding] argument.
+     * `R.layout.list_item_garden_planting` as the [binding] argument.
      *
      * @param binding a [ListItemGardenPlantingBinding] that has been inflated from the file with
-     * resource ID [R.layout.list_item_garden_planting].
+     * resource ID `R.layout.list_item_garden_planting`.
      */
     class ViewHolder(
         private val binding: ListItemGardenPlantingBinding

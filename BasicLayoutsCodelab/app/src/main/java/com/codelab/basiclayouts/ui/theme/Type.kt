@@ -27,12 +27,12 @@ import com.codelab.basiclayouts.R
 
 /**
  * Font family that contains a [Font] created from the kulim_park_light.ttf font file contained in
- * our resources (resource ID [R.font.kulim_park_regular]), and a [Font] created from the
- * kulim_park_light.ttf font file contained in our resources (resource ID [R.font.kulim_park_light])
+ * our resources (resource ID `R.font.kulim_park_regular`), and a [Font] created from the
+ * kulim_park_light.ttf font file contained in our resources (resource ID `R.font.kulim_park_light`)
  * whose `weight` is [FontWeight.Light] (The system uses this to match a font to a font request).
- * The [Font] built from [R.font.kulim_park_regular] is used for the `displayMedium`, and
+ * The [Font] built from `R.font.kulim_park_regular` is used for the `displayMedium`, and
  * `displaySmall` [TextStyle] of our [typography] custom [Typography], the [Font] built from
- * [R.font.kulim_park_light] is used for the `displayLarge` [TextStyle] (because its `fontWeight`
+ * `R.font.kulim_park_light` is used for the `displayLarge` [TextStyle] (because its `fontWeight`
  * is specified to be [FontWeight.Light]).
  */
 private val fontFamilyKulim = FontFamily(
@@ -49,8 +49,8 @@ private val fontFamilyKulim = FontFamily(
 
 /**
  * Font family that contains a [Font] created from the lato_regular.ttf font file contained in
- * our resources (resource ID [R.font.lato_regular]), and a [Font] created from the
- * lato_bold.ttf font file contained in our resources (resource ID [R.font.lato_bold])
+ * our resources (resource ID `R.font.lato_regular`), and a [Font] created from the
+ * lato_bold.ttf font file contained in our resources (resource ID `R.font.lato_bold`)
  * whose `weight` is [FontWeight.Bold] (The system uses this to match a font to a font request)
  * It is used for the `titleMedium` (Bold), `bodySmall` (Regular), `bodyMedium` (Regular),
  * `bodyLarge` (Regular), `labelMedium` (Bold), and `labelLarge` (Regular) [TextStyle]s of our

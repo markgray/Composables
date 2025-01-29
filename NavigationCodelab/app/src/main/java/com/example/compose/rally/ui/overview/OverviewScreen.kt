@@ -189,7 +189,7 @@ fun AlertCard() {
  * width constraints. The `content` of the [Row] is a [Text] diplaying the `text` "Alerts" using the
  * `subtitle2` [TextStyle] of the custom [Typography] of [MaterialTheme.typography], defined by our
  * [RallyTheme] custom [MaterialTheme] to be the [FontWeight.Normal] font of the `RobotoCondensed`
- * [FontFamily] (the [Font] with resource ID [R.font.robotocondensed_regular]) with a `fontSize` of
+ * [FontFamily] (the [Font] with resource ID `R.font.robotocondensed_regular`) with a `fontSize` of
  * 14.sp, and `letterSpacing` of `0.1.em` and the `modifier` argument of the [Text] is a [RowScope]
  * `Modifier.align` whose `alignment` argument [Alignment.CenterVertically] centers the [Text]'s
  * `text` vertically about its center line. The [Text] is followed by a [TextButton] whose `onClick`
@@ -200,7 +200,7 @@ fun AlertCard() {
  * "SEE ALL" using as its `style` the `button` [TextStyle] of the custom [Typography] of
  * [MaterialTheme.typography], defined by our [RallyTheme] custom [MaterialTheme] to be the
  * [FontWeight.Bold] font of the `RobotoCondensed` [FontFamily] (the [Font] with resource ID
- * [R.font.robotocondensed_bold]) with a `fontSize` of 14.sp, `lineHeight` of 16.sp and
+ * `R.font.robotocondensed_bold`) with a `fontSize` of 14.sp, `lineHeight` of 16.sp and
  * `letterSpacing` of `0.2.em`.
  *
  * @param onClickSeeAll a lambda that is to be executed when the "SEE ALL" [TextButton] is clicked.
@@ -242,7 +242,7 @@ fun AlertHeader(onClickSeeAll: () -> Unit) {
  * component and its descendants should be treated as one logical entity. The `content` of the [Row]
  * is a [Text] whose `style` argument is a `body2` [TextStyle] of [MaterialTheme.typography] (which
  * is [FontWeight.Normal] of the `RobotoCondensed` [FontFamily] (the [Font] file with resource ID
- * [R.font.robotocondensed_regular]) with `fontSize` = 14.sp, `lineHeight` = 20.sp, and `letterSpacing`
+ * `R.font.robotocondensed_regular`) with `fontSize` = 14.sp, `lineHeight` = 20.sp, and `letterSpacing`
  * = 0.1.em, and the `modifier` argument of the [Text] is a [RowScope] `Modifier.weight` of 1f which
  * causes the [Text] to take all the incoming width constraint that remains after its sibling is
  * measured and placed, and the `text` argument is our [String] parameter [message]. The [IconButton]
@@ -296,7 +296,7 @@ private fun AlertItem(message: String) {
  *  formatted `text` representation of our [amount] parameter using the `h2` [TextStyle] of
  *  [MaterialTheme.typography] (`fontWeight` = [FontWeight.SemiBold], `fontSize` = 44.sp,
  *  `letterSpacing` = 1.5.em, `fontFamily` = `EczarFontFamily` the [Font] whose resource ID is
- *  [R.font.eczar_semibold]).
+ *  `R.font.eczar_semibold`).
  *  - an [OverViewDivider] which displays different [Color] horizontal lines in a [Row] whose length
  *  represents the relative "weight" of the [Account] or [Bill]
  *  - a [Column] whose `modifier` argument is a [Modifier.padding] that adds 16.dp to the `start`,
@@ -410,7 +410,7 @@ private fun <T> OverViewDivider(
  * The Accounts card within the Rally Overview screen. We use the [map] extension function to sum
  * all of the [Account.balance] properties in the [List] of [Account] field [UserData.accounts] and
  * initialize our [Float] variable `val amount` to the result. We use [OverviewScreenCard] as our
- * root Composable with its `title` argument the [String] whose resource ID is [R.string.accounts]
+ * root Composable with its `title` argument the [String] whose resource ID is `R.string.accounts`
  * ("Accounts"), its `amount` argument is our `amount` variable, its `onClickSeeAll` argument is
  * our [onClickSeeAll] lambda parameter. Its `data` argument is the [List] of [Account] field
  * [UserData.accounts], its `colors` argument is a lambda that returns the [Account.color] of the
@@ -450,7 +450,7 @@ private fun AccountsCard(onClickSeeAll: () -> Unit, onAccountClick: (String) -> 
  * The Bills card within the Rally Overview screen. We use the [map] extension function to sum
  * all of the [Bill.amount] properties in the [List] of [Bill] field [UserData.bills] and
  * initialize our [Float] variable `val amount` to the result. We use [OverviewScreenCard] as our
- * root Composable with its `title` argument the [String] whose resource ID is [R.string.bills]
+ * root Composable with its `title` argument the [String] whose resource ID is `R.string.bills`
  * ("Bills"), its `amount` argument is our `amount` variable, its `onClickSeeAll` argument is our
  * [onClickSeeAll] parameter, its `data` argument is the [List] of [Bill] field [UserData.bills],
  * its `colors` argument is a lambda that returns the [Bill.color] of the [Bill] it is called with,
@@ -488,7 +488,7 @@ private fun BillsCard(onClickSeeAll: () -> Unit) {
  * with the `onClick` argument our [onClick] lambda parameter, and the `modifier` argument a
  * [Modifier.height] of 44.dp, to which is chained a [Modifier.fillMaxWidth] that causes the button
  * to occupy the entire incoming width constraint. Its label `content` is a [Text] whose `text` is
- * the [String] with resource ID [R.string.see_all] ("SEE ALL").
+ * the [String] with resource ID `R.string.see_all` ("SEE ALL").
  *
  * @param modifier a [Modifier] that our caller can use to modify our appearance and/or behavior.
  * [OverviewScreenCard] calls us with a [Modifier.clearAndSetSemantics] that sets our `contentDescription`

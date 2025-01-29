@@ -42,7 +42,7 @@ class GardenFragment : Fragment() {
 
     /**
      * The [FragmentGardenBinding] view binding that is inflated from the associated layout file with
-     * resource ID [R.layout.fragment_garden] in our [onCreateView] override.
+     * resource ID `R.layout.fragment_garden` in our [onCreateView] override.
      */
     private lateinit var binding: FragmentGardenBinding
 
@@ -65,11 +65,11 @@ class GardenFragment : Fragment() {
      *
      * We start by initializing our [FragmentGardenBinding] field [binding] by having the
      * [FragmentGardenBinding.inflate] method use our [LayoutInflater] parameter [inflater] to
-     * inflate its associated layout file (resource ID [R.layout.fragment_garden]) using our
+     * inflate its associated layout file (resource ID `R.layout.fragment_garden`) using our
      * [ViewGroup] parameter [container] for its LayoutParams without attaching to the [ViewGroup].
      * We initialize our [GardenPlantingAdapter] variable `val adapter` to a new instance and set
-     * the adapter of the [RecyclerView] with resource ID [R.id.garden_list] to it. Then we set the
-     * [View.OnClickListener] of the [MaterialButton] with resource ID [R.id.add_plant] to a lambda
+     * the adapter of the [RecyclerView] with resource ID `R.id.garden_list` to it. Then we set the
+     * [View.OnClickListener] of the [MaterialButton] with resource ID `R.id.add_plant` to a lambda
      * that calls our [navigateToPlantListPage] method. We call our [subscribeUi] method to have
      * it add an observer to the [GardenPlantingListViewModel.plantAndGardenPlantings] property
      * which will update the `hasPlantings` variable of [binding] and submit the [List] of
@@ -124,7 +124,7 @@ class GardenFragment : Fragment() {
 
     /**
      * Calls the [ViewPager2.setCurrentItem] method (kotlin `currentItem` property) of the view with
-     * ID [R.id.view_pager] to set its item to [PLANT_LIST_PAGE_INDEX] which is the [ViewPager2] page
+     * ID `R.id.view_pager` to set its item to [PLANT_LIST_PAGE_INDEX] which is the [ViewPager2] page
      * index for the [PlantListFragment] which displays all the [Plant] objects available for planting.
      */
     private fun navigateToPlantListPage() {

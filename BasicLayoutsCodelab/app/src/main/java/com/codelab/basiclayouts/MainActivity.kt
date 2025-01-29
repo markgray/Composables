@@ -135,7 +135,7 @@ class MainActivity : ComponentActivity() {
  *  with the [ColorScheme.surface] color of our [MaterialTheme] (Color(0xFFFFFBFF) (White) for our
  *  `lightColorScheme`, and Color(0xFF1D1B1A) (Black) for our `darkColorScheme`.
  *  - `placeholder` - placeholder to be displayed when the text field is in focus and the input text
- *  is empty, we use the string with resource ID [R.string.placeholder_search] ("Search").
+ *  is empty, we use the string with resource ID `R.string.placeholder_search` ("Search").
  *  - - `modifier` - the [Modifier] for the [TextField], we use our parameter [modifier] as a starter
  *  and chain a [Modifier.fillMaxWidth] (have the content fill its incoming measurement constraints,
  *  followed by a [Modifier.heightIn] specifying 56.dp as the minimum height of the [TextField].
@@ -185,7 +185,7 @@ fun SearchBar(
  * `style` argument of the `bodyMedium` font of [MaterialTheme.typography]. The `bodyMedium` font in
  * our custom [Typography] uses 14.sp as the `fontSize`, 20.sp as the `lineHeight`. (0.25).sp as the
  * `letterSpacing` and the `fontFamily` is the regular `fontFamilyLato`, so the [Font] is loaded
- * from the resource ID [R.font.lato_regular] (which is the file "font/lato_regular.ttf"). The
+ * from the resource ID `R.font.lato_regular` (which is the file "font/lato_regular.ttf"). The
  * `modifier` argument of the [Text] is [Modifier.paddingFromBaseline] with the padding from the top
  * of the layout to the baseline of the first line of text in the content given by `top` = 24.dp,
  * and the distance from the baseline of the last line of text in the content to the bottom of the
@@ -240,7 +240,7 @@ fun AlignYourBodyElement(
  * be equal to or larger than the corresponding dimension of the destination). This [Image] is then
  * followed by a [Text] Composable that displays the string whose resource ID is our [text] parameter,
  * using the `titleMedium` [TextStyle] of [MaterialTheme.typography] (in our case the [FontFamily]
- * whose [FontWeight.Bold] is provided by the [Font] with ID [R.font.lato_bold] (the file
+ * whose [FontWeight.Bold] is provided by the [Font] with ID `R.font.lato_bold` (the file
  * lato_bold.ttf) whose `fontSize` is 16.sp, and whose `letterSpacing` is (0.15).sp, and whose
  * `lineHeight` is 24.sp), and as its `modifier` argument it uses a [Modifier.padding] whose
  * `horizontal` padding is 16.dp
@@ -353,7 +353,7 @@ fun FavoriteCollectionsGrid(
  * root Composable is a [Column] that we pass our [Modifier] parameter [modifier] to as its
  * `modifier` argument. The `content` of the [Column] is a [Text] displaying the string with
  * resource ID [title], using the `titleMedium` [TextStyle] of [MaterialTheme.typography] (in our
- * case the [FontFamily] whose [FontWeight.Bold] is provided by the [Font] with ID [R.font.lato_bold]
+ * case the [FontFamily] whose [FontWeight.Bold] is provided by the [Font] with ID `R.font.lato_bold`
  * (the file lato_bold.ttf) whose `fontSize` is 16.sp, and whose `letterSpacing` is (0.15).sp, and
  * whose `lineHeight` is 24.sp), and its `modifier` argument is a [Modifier.padding] whose
  * `horizontal` argument is 16.dp (adds 16.dp to each end of the [Text]), to which is chained a
@@ -391,9 +391,9 @@ fun HomeSection(
  * The children of the [Column] are
  *  - a [Spacer] with its `modifier` argument a [Modifier.height] of 16.dp
  *  - a [SearchBar] with its `modifier` argument a [Modifier.padding] of 16.dp `horizontal`
- *  - a [HomeSection] whose `title` is the string with resource ID [R.string.align_your_body]
+ *  - a [HomeSection] whose `title` is the string with resource ID `R.string.align_your_body`
  *  ("Align your body") and a `content` Composable of [AlignYourBodyRow]
- *  - a [HomeSection] whose `title` is the string with resource ID [R.string.favorite_collections]
+ *  - a [HomeSection] whose `title` is the string with resource ID `R.string.favorite_collections`
  *  ("Favorite Collections") and a `content` Composable of [FavoriteCollectionsGrid]
  *  - a [Spacer] with its `modifier` argument a [Modifier.height] of 16.dp
  *
@@ -430,10 +430,10 @@ fun HomeScreen(modifier: Modifier = Modifier) {
  * [MaterialTheme.colorScheme] which is Color(0xFFE7E1DE) (Light gray) for [lightColorScheme] and
  * Color(0xFF494644) (Very dark gray) for [darkColorScheme], and whose modifier` argument is our
  * [Modifier] parameter [modifier]. Its children Composables are two [NavigationBarItem]:
- *  - First one uses as the `label` the string with resource ID [R.string.bottom_navigation_home]
+ *  - First one uses as the `label` the string with resource ID `R.string.bottom_navigation_home`
  *  ("HOME"), and its [Icon] argument `icon` is the [ImageVector] drawn by [Icons.Filled.Spa]
  *  ([Icons.Default] is an alias for [Icons.Filled])
- *  - Second one uses as the `label` the string with resource ID [R.string.bottom_navigation_profile]
+ *  - Second one uses as the `label` the string with resource ID `R.string.bottom_navigation_profile`
  *  ("PROFILE"), and its [Icon] argument `icon` is the [ImageVector] drawn by
  *  [Icons.Filled.AccountCircle] ([Icons.Default] is an alias for [Icons.Filled])
  *
@@ -494,11 +494,11 @@ private fun SootheBottomNavigation(modifier: Modifier = Modifier) {
  *  - The first [NavigationRail] uses as its `icon` argument an [Icon] which draws
  *  [Icons.Filled.AccountCircle] ([Icons.Default] is an alias for [Icons.Filled]), and for its
  *  `label` argument it uses a [Text] displaying the string with resource ID
- *  [R.string.bottom_navigation_home] ("HOME").
+ *  `R.string.bottom_navigation_home` ("HOME").
  *  - The second [NavigationRail] uses as its `icon` argument an [Icon] which draws
  *  [Icons.Filled.AccountCircle] ([Icons.Default] is an alias for [Icons.Filled]), and for its
  *  `label` argument it uses a [Text] displaying the string with resource ID
- *  [R.string.bottom_navigation_profile] ("PROFILE").
+ *  `R.string.bottom_navigation_profile` ("PROFILE").
  *
  * The `selected` argument of the "HOME" [NavigationRailItem] is hard coded to be `true`, and the
  * `selected` argument of the "PROFILE" [NavigationRailItem] is hard coded to be `false`, and the
