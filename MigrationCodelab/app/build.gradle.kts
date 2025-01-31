@@ -74,8 +74,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.2.0")
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.fragment:fragment-ktx:1.8.5")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.6")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.6")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
@@ -90,15 +90,15 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.7.6")
-    implementation("androidx.compose.ui:ui:1.7.6")
-    implementation("androidx.compose.foundation:foundation:1.7.6")
-    implementation("androidx.compose.foundation:foundation-layout:1.7.6")
-    implementation("androidx.compose.material:material:1.7.6")
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.6")
+    implementation("androidx.compose.runtime:runtime:1.7.7")
+    implementation("androidx.compose.ui:ui:1.7.7")
+    implementation("androidx.compose.foundation:foundation:1.7.7")
+    implementation("androidx.compose.foundation:foundation-layout:1.7.7")
+    implementation("androidx.compose.material:material:1.7.7")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.7")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.7.6")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.7.6")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.7")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.7")
 
     implementation("com.google.accompanist:accompanist-themeadapter-material:0.34.0")
 
@@ -111,6 +111,6 @@ dependencies {
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
     androidTestImplementation("androidx.work:work-testing:2.10.0")
     androidTestImplementation("com.google.truth:truth:1.4.4")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.6")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.7")
     testImplementation("junit:junit:4.13.2")
 }
