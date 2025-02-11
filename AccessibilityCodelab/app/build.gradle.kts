@@ -83,16 +83,16 @@ android {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 
-    implementation("androidx.compose.runtime:runtime:1.7.6")
-    implementation("androidx.compose.ui:ui:1.7.6")
-    implementation("androidx.compose.foundation:foundation-layout:1.7.6")
-    implementation("androidx.compose.material:material:1.7.6")
-    implementation("androidx.compose.material:material-icons-extended:1.7.6")
-    implementation("androidx.compose.foundation:foundation:1.7.6")
-    implementation("androidx.compose.animation:animation:1.7.6")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.7.6")
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.6")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.7.6")
+    implementation("androidx.compose.runtime:runtime:1.7.7")
+    implementation("androidx.compose.ui:ui:1.7.7")
+    implementation("androidx.compose.foundation:foundation-layout:1.7.7")
+    implementation("androidx.compose.material:material:1.7.7")
+    implementation("androidx.compose.material:material-icons-extended:1.7.7")
+    implementation("androidx.compose.foundation:foundation:1.7.7")
+    implementation("androidx.compose.animation:animation:1.7.7")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.7")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.7")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.7")
 
     implementation("com.google.accompanist:accompanist-swiperefresh:0.34.0")
     implementation("com.google.accompanist:accompanist-insets:0.30.1")
@@ -102,7 +102,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.10.0")
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.activity:activity-compose:1.10.0")
-    implementation("androidx.navigation:navigation-compose:2.8.5")
+    implementation("androidx.navigation:navigation-compose:2.8.6")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7")
@@ -111,12 +111,12 @@ dependencies {
 
     androidTestImplementation("androidx.test:rules:1.6.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
-    androidTestImplementation("androidx.compose.ui:ui-test:1.7.6")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.6")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.7.7")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.7")
 
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.6")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.7")
 
     // Robolectric dependencies
-    testImplementation("androidx.compose.ui:ui-test-junit4:1.7.6")
+    testImplementation("androidx.compose.ui:ui-test-junit4:1.7.7")
     testImplementation("org.robolectric:robolectric:4.12.2")
 }
