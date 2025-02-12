@@ -50,7 +50,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.samples.crane.R
 import androidx.compose.samples.crane.base.Result
 import androidx.compose.samples.crane.data.City
 import androidx.compose.samples.crane.data.ExploreModel
