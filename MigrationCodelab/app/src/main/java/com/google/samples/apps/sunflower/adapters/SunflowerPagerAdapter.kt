@@ -23,7 +23,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.samples.apps.sunflower.GardenFragment
 import com.google.samples.apps.sunflower.HomeViewPagerFragment
 import com.google.samples.apps.sunflower.PlantListFragment
-import com.google.samples.apps.sunflower.R
 
 /**
  * This is the ViewPager page index for the [GardenFragment] and is used by our override of

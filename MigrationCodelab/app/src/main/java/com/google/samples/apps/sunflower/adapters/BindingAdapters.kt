@@ -21,7 +21,6 @@ import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.samples.apps.sunflower.R
 
 /**
  * This `BindingAdapter` is called when a widget has an app:isGone="@{[Boolean]}" attribute with the
