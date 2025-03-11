@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "android.support.drag2d.compose"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
