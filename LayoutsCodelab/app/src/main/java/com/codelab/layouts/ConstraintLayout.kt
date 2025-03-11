@@ -89,7 +89,7 @@ fun ConstraintLayoutContent() {
 @Composable
 fun DecoupledConstraintLayout() {
     BoxWithConstraints {
-        val constraints: ConstraintSet = if (maxWidth < maxHeight) {
+        val constraints: ConstraintSet = if (this.maxWidth < this.maxHeight) {
             decoupledConstraints(margin = 16.dp) // Portrait constraints
         } else {
             decoupledConstraints(margin = 32.dp) // Landscape constraints

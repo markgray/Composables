@@ -37,7 +37,7 @@ import com.codelab.layouts.ui.LayoutsCodelabTheme
  * parameter. The arguments of the lambda argument of [Layout] are `measurables` (a [List] of
  * [Measurable]) and `constraints` (the [Constraints] imposed on our Composable by its parent).
  * We start by initializing our [List] of [Placeable] variable to the [List] created by using the
- * [List.map] method of `measurables` to create a [Placeable] out of every [Measurable] in
+ * [Iterable.map] method of `measurables` to create a [Placeable] out of every [Measurable] in
  * `measurables` using its [Measurable.measure] method with the [Constraints] `constraints` as its
  * argument. When done creating the [List] of [Placeable]'s we initialize our [Int] variable
  * `var yPosition` to 0 (we will use this to track the `y` coordinate we have placed children up to).
