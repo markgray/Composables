@@ -53,7 +53,6 @@ android {
         }
 
     }
-    @Suppress("UnstableApiUsage") // TODO: Keep an eye on this
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
@@ -102,7 +101,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.navigation:navigation-compose:2.8.8")
+    implementation("androidx.navigation:navigation-compose:2.8.9")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7")
