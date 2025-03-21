@@ -156,9 +156,9 @@ class MainViewModel @Inject constructor(
      * We use the [CoroutineScope] tied to this [ViewModel] to launch a new coroutine, and in that
      * coroutine we use our [CoroutineDispatcher] field [defaultDispatcher] (that is injected by Hilt)
      * as the [CoroutineContext] for a coroutine which sets the [List] of [ExploreModel] variable
-     * `val newDestinations` to a [List] of [ExploreModel] created using the [List.filter] method of
-     * the [DestinationsRepository.destinations] field of [destinationsRepository] to filter for only
-     * those [ExploreModel]'s whose [City.nameToDisplay] property contains our [String] parameter
+     * `val newDestinations` to a [List] of [ExploreModel] created using the [Iterable.filter] method
+     * of the [DestinationsRepository.destinations] field of [destinationsRepository] to filter for
+     * only those [ExploreModel]'s whose [City.nameToDisplay] property contains our [String] parameter
      * [newDestination]. When that coroutine finishes we set  the value of our [List] of [ExploreModel]
      * field [_suggestedDestinations] to `newDestinations` causing any Composable using a variable
      * collected from [suggestedDestinations] as a [State] to recompose.
