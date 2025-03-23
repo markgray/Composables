@@ -68,7 +68,7 @@ import kotlinx.coroutines.flow.StateFlow
  * a [List] of [Email]). [MainActivity] passes a lambda which calls the [ReplyHomeViewModel.setSelectedEmail]
  * method of [ReplyHomeViewModel] with the [Long] passed to the lambda. This method updates the value
  * of its [MutableStateFlow] of  [ReplyHomeUIState] by setting its [ReplyHomeUIState.isDetailOnlyOpen]
- * property to `true` and its [ReplyHomeUIState.selectedEmail] to the [Email] that the [List.find]
+ * property to `true` and its [ReplyHomeUIState.selectedEmail] to the [Email] that the [Iterable.find]
  * method of the [List] of [Email] property [ReplyHomeUIState.emails] finds with that [Email.id].
  */
 @Composable
