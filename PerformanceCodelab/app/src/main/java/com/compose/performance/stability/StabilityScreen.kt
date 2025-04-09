@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tracing.trace
 import com.compose.performance.R
-import com.example.android.compose.recomposehighlighter.recomposeHighlighter
+import com.compose.performance.recomposeHighlighter
 import java.time.LocalDate
 
 @Composable
