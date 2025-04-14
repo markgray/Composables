@@ -39,7 +39,7 @@ import com.compose.performance.R
 
 
 @Composable
-fun PhasesComposeLogo() = trace("PhasesComposeLogo") {
+fun PhasesComposeLogo(): Unit = trace("PhasesComposeLogo") {
     val logo = painterResource(id = R.drawable.compose_logo)
     var size by remember { mutableStateOf(IntSize.Zero) }
     val logoPosition by logoPosition(size = size, logoSize = logo.intrinsicSize)

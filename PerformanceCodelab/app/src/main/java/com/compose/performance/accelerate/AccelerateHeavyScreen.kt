@@ -39,6 +39,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -59,32 +60,66 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tracing.trace
 import coil.compose.AsyncImage
 import com.compose.performance.R
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 
 /**
- * This Composable is the first task in the codelab. Here, you optimize heavy composables.
- * This is the stateful overload of [AccelerateHeavyScreen]
+ * A composable function that represents a screen designed to showcase performance
+ * optimization techniques for heavy UI elements. This composable utilizes a [ViewModel]
+ * to manage and provide the data displayed on the screen.
+ *
+ * This function is a higher-level stateful composable that delegates to the stateless
+ * lower-level `AccelerateHeavyScreen(items, modifier)` overload.
+ *
+ * It handles the state management by collecting data from the [StateFlow] of [List] of
+ * [HeavyItem] property [HeavyScreenViewModel.items] using [StateFlow.collectAsState].
+ *
+ * @param modifier The [Modifier] to apply to the screen's layout.
+ * @param viewModel The [HeavyScreenViewModel] instance used to provide data for
+ * the screen. Defaults to a new instance obtained via [viewModel].
  */
 @Composable
 fun AccelerateHeavyScreen(
     modifier: Modifier = Modifier,
     viewModel: HeavyScreenViewModel = viewModel()
 ) {
-    val items by viewModel.items.collectAsState()
+    /**
+     * The [State] wrapped [List] of [HeavyItem] that will be displayed on the screen.
+     */
+    val items: List<HeavyItem> by viewModel.items.collectAsState()
     AccelerateHeavyScreen(items = items, modifier = modifier)
 }
 
-/**
+/*
  * Stateless overload of stateful [AccelerateHeavyScreen]
+ */
+
+/**
+ * Composes a screen that displays a list of [HeavyItem] objects.
+ *
+ * This composable wraps the main screen content ([ScreenContent]) within a [ProvideCurrentTimeZone]
+ * to manage timezone context. It also displays a [CircularProgressIndicator] while the list of items
+ * is empty, indicating that data is still loading.
+ *
+ * @param items The list of [HeavyItem] objects to be displayed on the screen. If the list is empty,
+ * a `CircularProgressIndicator` will be shown.
+ * @param modifier [Modifier] to be applied to the root container of the screen.
+ *
+ * @see ProvideCurrentTimeZone
+ * @see ScreenContent
+ * @see CircularProgressIndicator
  */
 @Composable
 fun AccelerateHeavyScreen(items: List<HeavyItem>, modifier: Modifier = Modifier) {
@@ -104,87 +139,170 @@ fun AccelerateHeavyScreen(items: List<HeavyItem>, modifier: Modifier = Modifier)
     }
 }
 
+
 /**
- * TODO: Add kdoc
+ * Displays a grid of [HeavyItem]s in a vertically scrolling list.
+ *
+ * This composable function renders a grid layout using [LazyVerticalGrid] to efficiently
+ * display a potentially large list of [HeavyItem]'s. It uses a fixed grid with two columns
+ * and provides spacing between the items both vertically and horizontally.
+ *
+ * @param items A list of [HeavyItem] objects to be displayed in the grid. Each item will be
+ * rendered using the [HeavyItem] composable.
+ *
+ * @see LazyVerticalGrid
+ * @see GridCells
+ * @see HeavyItem
+ * @see Modifier.testTag
+ * @see Modifier.fillMaxSize
  */
 @Composable
 fun ScreenContent(items: List<HeavyItem>) {
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize()
-            .testTag("list_of_items"),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        columns = GridCells.Fixed(2)
+            .testTag(tag = "list_of_items"),
+        verticalArrangement = Arrangement.spacedBy(space = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
+        columns = GridCells.Fixed(count = 2)
     ) {
-        items(items) { item -> HeavyItem(item) }
+        items(items = items) { item: HeavyItem -> HeavyItem(item = item) }
     }
 }
 
 /**
- * TODO: Add kdoc
+ * Displays a single [HeavyItem].
+ *
+ * This composable function renders a single [HeavyItem] with its description, published date,
+ * its image, and its tags. It uses a [Column] layout to arrange the elements vertically.
+ *
+ * @param item The [HeavyItem] object to be displayed.
+ * @param modifier [Modifier] to be applied to the root container of the item.
  */
 @Composable
 fun HeavyItem(item: HeavyItem, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Text(text = item.description, style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        PublishedText(item.published)
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(height = 8.dp))
+        PublishedText(published = item.published)
+        Spacer(modifier = Modifier.height(height = 8.dp))
 
         Box {
             AsyncImage(
                 model = item.url,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .shadow(8.dp, RoundedCornerShape(12.dp)),
-                contentDescription = stringResource(R.string.performance_dashboard),
+                    .aspectRatio(ratio = 1f)
+                    .shadow(elevation = 8.dp, shape = RoundedCornerShape(size = 12.dp)),
+                contentDescription = stringResource(id = R.string.performance_dashboard),
                 placeholder = imagePlaceholder(),
                 contentScale = ContentScale.Crop
             )
 
-            ItemTags(item.tags, Modifier.align(Alignment.BottomCenter))
+            ItemTags(
+                tags = item.tags,
+                modifier = Modifier.align(alignment = Alignment.BottomCenter)
+            )
         }
     }
 }
 
 /**
  * TASK Codelab task: Improve this placeholder_vector.xml loading DONE
+ * Returns a [Painter] that represents a placeholder image.
+ *
+ * This function is a composable that provides a vector-based placeholder image.
+ * It's designed to be used in situations where an image is loading or unavailable.
+ * The placeholder image is sourced from the application's resources, specifically
+ * from `R.drawable.placeholder_vector`.
+ *
+ * This function also uses [trace] to provide performance tracing information. The "ImagePlaceholder"
+ * tag will be used to identify the performance information related to drawing this placeholder.
+ *
+ *  @return A [Painter] object representing the placeholder image.
  */
 @Composable
 fun imagePlaceholder(): Painter = trace("ImagePlaceholder") {
-    painterResource(R.drawable.placeholder_vector)
+    painterResource(id = R.drawable.placeholder_vector)
 }
 
 /**
  * TASK Codelab task: Remove the side effect from every item and hoist it to the parent composable DONE
+ * Displays the formatted text representation of a publication instant.
+ *
+ * This composable formats a given [Instant] object into a human-readable string
+ * based on the user's current local time zone and displays it as a [Text] composable.
+ * It uses [Typography.labelMedium] from our custom [MaterialTheme.typography] as its
+ * [TextStyle] for styling.
+ *
+ * @param published The [Instant] representing the publication time.
+ * @param modifier Modifier to apply to the underlying [Text] composable.
  */
 @Composable
 fun PublishedText(published: Instant, modifier: Modifier = Modifier) {
     Text(
-        text = published.format(LocalTimeZone.current),
+        text = published.format(timeZone = LocalTimeZone.current),
         style = MaterialTheme.typography.labelMedium,
         modifier = modifier
     )
 }
 
+
 /**
- * TODO: Add kdoc
+ * [ProvidableCompositionLocal] that provides the system's local time zone.
+ *
+ * This composition local holds the [TimeZone] that represents the user's current
+ * system default time zone. It's useful for components that need to display or
+ * manipulate date and time information in the user's local context.
+ *
+ * The initial value is obtained from [TimeZone.currentSystemDefault].
+ *
+ * Note: Changes to the system's default time zone after the composition local is
+ * first accessed will not be reflected in the value provided by [LocalTimeZone].
+ * If the system time zone changes during the lifecycle of the app and you need to
+ * update your Composables to reflect this, you will need to re-read LocalTimeZone
+ * value to recompose with the new value.
  */
-val LocalTimeZone: ProvidableCompositionLocal<TimeZone> = compositionLocalOf { TimeZone.currentSystemDefault() }
+val LocalTimeZone: ProvidableCompositionLocal<TimeZone> =
+    compositionLocalOf { TimeZone.currentSystemDefault() }
 
 /**
  * TASK Codelab task: Write a composition local provider that will always provide current TimeZone DONE
+ * Provides the current system time zone to its composable children.
+ *
+ * This composable function sets up a listener for system time zone changes and updates
+ * the [LocalTimeZone] composition local accordingly. It ensures that composables
+ * within its scope can access the most up-to-date time zone information.
+ *
+ * It uses the following mechanisms:
+ *   - `BroadcastReceiver`: To listen for the `Intent.ACTION_TIMEZONE_CHANGED` broadcast.
+ *   - `DisposableEffect`: To register and unregister the receiver, ensuring proper cleanup.
+ *   - `CoroutineScope`: To perform the receiver registration on an IO dispatcher.
+ *   - `CompositionLocalProvider`: To make the current time zone available to child composables
+ *     through the `LocalTimeZone` composition local.
+ *   - `remember`: to save and manage the current time zone state.
+ *   - `mutableStateOf`: to track changes to the time zone.
+ *
+ * @param content The composable content that will have access to the provided time zone.
  */
 @Composable
 fun ProvideCurrentTimeZone(content: @Composable () -> Unit) {
     // TASK Codelab task: move the side effect for TimeZone changes DONE
     // TASK Codelab task: create a composition local for current TimeZone DONE
-    val context = LocalContext.current
+    /**
+     * The [Context] of the current composition.
+     */
+    val context: Context = LocalContext.current
 
+    /**
+     * The current system time zone.
+     */
     var currentTimeZone: TimeZone by remember { mutableStateOf(TimeZone.currentSystemDefault()) }
-    val scope = rememberCoroutineScope()
+
+    /**
+     * A [CoroutineScope] that is bound to the IO dispatcher.
+     */
+    val scope: CoroutineScope = rememberCoroutineScope()
 
     DisposableEffect(Unit) {
         val receiver = object : BroadcastReceiver() {
@@ -193,8 +311,8 @@ fun ProvideCurrentTimeZone(content: @Composable () -> Unit) {
             }
         }
 
-        scope.launch(Dispatchers.IO) {
-            trace("PublishDate.registerReceiver") {
+        scope.launch(context = Dispatchers.IO) {
+            trace(label = "PublishDate.registerReceiver") {
                 context.registerReceiver(receiver, IntentFilter(Intent.ACTION_TIMEZONE_CHANGED))
             }
         }
@@ -210,25 +328,44 @@ fun ProvideCurrentTimeZone(content: @Composable () -> Unit) {
 
 /**
  * TASK Codelab task: remove unnecessary lazy layout DONE
+ * Displays a horizontal row of item tags.
+ *
+ * This composable function takes a list of strings representing tags and displays them
+ * in a horizontal row. The row is scrollable horizontally if the tags exceed the available width.
+ * Each tag is displayed using the [ItemTag] composable function.
+ *
+ * @param tags The list of tags to display. Each tag will be rendered as a separate item.
+ * @param modifier The modifier to apply to the row. This allows customization of the row's
+ * layout, such as padding, size, and background. Defaults to an empty modifier.
  */
 @Composable
 fun ItemTags(tags: List<String>, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
-            .padding(4.dp)
+            .padding(all = 4.dp)
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+            .horizontalScroll(state = rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(space = 2.dp)
     ) {
-        tags.forEach { ItemTag(it) }
+        tags.forEach { tagValue: String -> ItemTag(tag = tagValue) }
     }
 }
 
 /**
- * TODO: Add kdoc
+ * Displays a tag as a small, rounded chip-like element.
+ *
+ * This composable renders a given [tag] string within a visually distinct
+ * container. It's designed for displaying concise, descriptive labels
+ * or categories associated with an item.
+ *
+ * The tag is rendered with a primary background color and on-primary text color, using the
+ * [Typography.labelSmall] text style from our custom [MaterialTheme.typography]. It includes
+ * padding and rounded corners for visual appeal.
+ *
+ * @param tag The text content of the tag to be displayed.
  */
 @Composable
-fun ItemTag(tag: String): Unit = trace("ItemTag") {
+fun ItemTag(tag: String): Unit = trace(label = "ItemTag") {
     Text(
         text = tag,
         style = MaterialTheme.typography.labelSmall,
@@ -236,7 +373,10 @@ fun ItemTag(tag: String): Unit = trace("ItemTag") {
         fontSize = 10.sp,
         maxLines = 1,
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
-            .padding(2.dp)
+            .background(
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(size = 4.dp)
+            )
+            .padding(all = 2.dp)
     )
 }

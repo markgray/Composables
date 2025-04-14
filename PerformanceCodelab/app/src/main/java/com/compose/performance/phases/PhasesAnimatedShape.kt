@@ -32,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
@@ -39,22 +41,52 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.trace
 import com.compose.performance.ui.theme.Purple80
 
+/**
+ * The small size of our animated shape. It is defined as 64 density-independent pixels (dp).
+ */
 private val smallSize = 64.dp
+
+/**
+ * The large size of our animated shape. It is defined as 200 density-independent pixels (dp).
+ */
 private val bigSize = 200.dp
 
+/**
+ * A Composable function that demonstrates an animated shape transition between two sizes.
+ *
+ * This function displays a shape (represented by [MyShape]) that smoothly changes its size
+ * between a small size and a big size using Compose's animation capabilities.
+ *
+ * The shape's size is controlled by a state variable (`targetSize`) which can be toggled
+ * by pressing a button. The actual size of the shape is animated using `animateDpAsState`,
+ * which provides a smooth transition between the current size and the `targetSize`.
+ *
+ * The animation uses a spring-based animation with a high bouncy damping ratio and very low
+ * stiffness, creating a visually appealing "bouncy" effect during the size change.
+ *
+ * @see androidx.compose.animation.core.animateDpAsState
+ * @see androidx.compose.animation.core.spring
+ * @see androidx.compose.runtime.mutableStateOf
+ * @see androidx.compose.runtime.remember
+ * @see androidx.compose.foundation.layout.Box
+ * @see androidx.compose.material3.Button
+ */
 @Composable
-fun PhasesAnimatedShape() = trace("PhasesAnimatedShape") {
-    var targetSize by remember { mutableStateOf(smallSize) }
-    val size by animateDpAsState(
+fun PhasesAnimatedShape(): Unit = trace(sectionName = "PhasesAnimatedShape") {
+    var targetSize: Dp by remember { mutableStateOf(value = smallSize) }
+    val size: Dp by animateDpAsState(
         targetValue = targetSize,
         label = "box_size",
-        animationSpec = spring(Spring.DampingRatioHighBouncy, stiffness = Spring.StiffnessVeryLow)
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioHighBouncy,
+            stiffness = Spring.StiffnessVeryLow
+        )
     )
 
-    Box(Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         MyShape(
             size = { size },
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(alignment = Alignment.Center)
         )
         Button(
             onClick = {
@@ -65,35 +97,49 @@ fun PhasesAnimatedShape() = trace("PhasesAnimatedShape") {
                 }
             },
             modifier = Modifier
-                .align(Alignment.TopCenter)
+                .align(alignment = Alignment.TopCenter)
                 .padding(horizontal = 32.dp, vertical = 16.dp)
         ) {
-            Text("Toggle Size")
+            Text(text = "Toggle Size")
         }
     }
 }
 
+/**
+ * A composable that draws a circular shape with a dynamic size.
+ *
+ * This composable creates a [Box] with a circular shape and a purple background.
+ * The size of the circle is determined by the `size` parameter, which is a lambda
+ * function that returns a `Dp` value. The size is constrained to be at least 0.
+ * The `layout` modifier is used to precisely control the size and placement of the
+ * circular `Box`.
+ *
+ * @param size A lambda function that returns the desired size (width and height) of the circle
+ * in `Dp`. This allows for dynamic sizing based on external factors or state.
+ * @param modifier An optional [Modifier] to be applied to the `Box`. This can be used to add
+ * padding, margins, or other visual effects. Defaults to [Modifier].
+ */
 @Composable
 fun MyShape(
     size: () -> Dp,
     modifier: Modifier = Modifier
-) = trace("MyShape") {
+): Unit = trace("MyShape") {
     Box(
         modifier = modifier
             .background(color = Purple80, shape = CircleShape)
-            .layout { measurable, _ ->
+            .layout { measurable: Measurable, _: Constraints ->
                 val sizePx = size()
                     .roundToPx()
-                    .coerceAtLeast(0)
+                    .coerceAtLeast(minimumValue = 0)
 
                 val constraints = Constraints.fixed(
                     width = sizePx,
                     height = sizePx,
                 )
 
-                val placeable = measurable.measure(constraints)
-                layout(sizePx, sizePx) {
-                    placeable.place(0, 0)
+                val placeable: Placeable = measurable.measure(constraints = constraints)
+                layout(width = sizePx, height = sizePx) {
+                    placeable.place(x = 0, y = 0)
                 }
             }
     )

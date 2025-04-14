@@ -29,23 +29,46 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
+
 /**
- * TODO: Add kdoc
+ * Represents a view model for a screen that displays a large list of [HeavyItem] objects.
+ *
+ * This view model is responsible for:
+ *  - Generating and managing a list of `HeavyItem` objects.
+ *  - Exposing the list as a `StateFlow` for observation by the UI.
+ *  - Simulating a delay in loading the data.
  */
 class HeavyScreenViewModel : ViewModel() {
-    private var _items = MutableStateFlow(emptyList<HeavyItem>())
+
     /**
-     * TODO: Add kdoc
+     * A [MutableStateFlow] holding a list of [HeavyItem] objects.
+     *
+     * This property is used to represent a dynamically updating list of heavy items.
+     * Changes to the list will be reflected through this flow, allowing observers
+     * to react to additions, removals, or modifications of the items.
+     *
+     * Initialized with an empty list.
+     */
+    private var _items: MutableStateFlow<List<HeavyItem>> = MutableStateFlow(emptyList<HeavyItem>())
+
+    /**
+     * A publicly accessible [StateFlow] representing the list of [HeavyItem] objects in our private
+     * [MutableStateFlow] of [List] of [HeavyItem] property [_items].
      */
     val items: StateFlow<List<HeavyItem>> = _items.asStateFlow()
 
+    /**
+     * Initializes the view model and generates a list of [HeavyItem] objects with a 500ms delay
+     * between each item.
+     */
     init {
         viewModelScope.launch {
-            delay(500)
-            _items.value = generateItems(1000)
+            delay(timeMillis = 500)
+            _items.value = generateItems(howMany = 1000)
         }
     }
 }
@@ -80,22 +103,49 @@ data class HeavyItem(
 )
 
 /**
- * Simple method formatting an [Instant] to a local time with time zone.
+ * Formats an [Instant] into a human-readable string representation.
+ *
+ * The function converts the given [Instant] to a [LocalDateTime] using the provided [timeZone].
+ * It then extracts the day, month, year, hour, and minute from the [LocalDateTime] and formats them
+ * into a string with the pattern: "dd.MM.yyyy - HH:mm\nTimeZone".
+ *
+ * The day, month, hour, and minute components are padded with a leading '0' if they are single-digit.
+ *
+ * @param timeZone The [TimeZone] to use for converting the [Instant] to a [LocalDateTime].
+ * @return A string representation of the [Instant] in the specified format.
  */
-fun Instant.format(timeZone: TimeZone): String = trace("PublishDate.format") {
-    val dt = toLocalDateTime(timeZone)
+fun Instant.format(timeZone: TimeZone): String = trace(label = "PublishDate.format") {
+    val dt: LocalDateTime = toLocalDateTime(timeZone)
 
-    val day = dt.dayOfMonth.toString().padStart(2, '0')
-    val month = dt.monthNumber.toString().padStart(2, '0')
-    val year = dt.year.toString()
-    val hh = dt.hour.toString().padStart(2, '0')
-    val mm = dt.minute.toString().padStart(2, '0')
+    val day: String = dt.dayOfMonth.toString().padStart(2, '0')
+    val month: String = dt.monthNumber.toString().padStart(2, '0')
+    val year: String = dt.year.toString()
+    val hh: String = dt.hour.toString().padStart(2, '0')
+    val mm: String = dt.minute.toString().padStart(2, '0')
 
     "$day.$month.$year - $hh:$mm\n$timeZone"
 }
 
+/**
+ * Generates a list of [HeavyItem] objects.
+ *
+ * This function creates a specified number of [HeavyItem] instances, each with
+ * a unique ID, a randomly generated publication time within the last 48 hours,
+ * a description based on the item's index, a random image URL from a predefined pool,
+ * and a shuffled selection of 4 tags from a predefined pool.
+ *
+ * The publication time is calculated by subtracting a random number of minutes
+ * (between 0 and 48*60) from the current system time.
+ *
+ * The function uses a stable random number generator (`stableRandom`) to ensure
+ * that the same set of items is generated each time the function is called with
+ * the same input `howMany`.
+ *
+ * @param howMany The number of [HeavyItem] objects to generate.
+ * @return A list of [HeavyItem] objects.
+ */
 @Suppress("SameParameterValue")
-private fun generateItems(howMany: Int) = List(howMany) { index: Int ->
+private fun generateItems(howMany: Int) = List(size = howMany) { index: Int ->
     HeavyItem(
         id = index,
         published = Clock.System.now() - stableRandom.nextInt(48 * 60).minutes,
@@ -105,9 +155,33 @@ private fun generateItems(howMany: Int) = List(howMany) { index: Int ->
     )
 }
 
+/**
+ * A predefined pool of tags that can be used as the tags for [HeavyItem] objects.
+ *
+ * This pool contains a set of common placeholder words derived from the classic
+ * "Lorem ipsum" dummy text.
+ */
 private val poolOfTags =
     listOf("Lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit")
 
+/**
+ * A pool of image URLs used for demonstration or testing purposes.
+ *
+ * These URLs point to images hosted on the Lorem Picsum service (https://picsum.photos/),
+ * which provides placeholder images. Each URL represents a different image with varying
+ * dimensions. They can be used to quickly populate views or components that display images
+ * without needing to download or manage local image assets.
+ *
+ * The URLs provided are:
+ *  - "https://picsum.photos/id/57/2448/3264"
+ *  - "https://picsum.photos/id/36/4179/2790"
+ *  - "https://picsum.photos/id/96/4752/3168"
+ *  - "https://picsum.photos/id/180/2400/1600"
+ *  - "https://picsum.photos/id/252/5000/3281"
+ *
+ * Note that these are external URLs and their availability is subject to the Lorem Picsum
+ * service.
+ */
 private val poolOfImageUrls = listOf(
     "https://picsum.photos/id/57/2448/3264",
     "https://picsum.photos/id/36/4179/2790",
@@ -116,4 +190,8 @@ private val poolOfImageUrls = listOf(
     "https://picsum.photos/id/252/5000/3281"
 )
 
-private val stableRandom = Random(0)
+/**
+ * A stable instance of [Random] that always produces the same sequence of random numbers
+ * because it's seeded with a fixed value (0).
+ */
+private val stableRandom: Random = Random(seed = 0)
