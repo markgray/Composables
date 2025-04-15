@@ -56,8 +56,8 @@ class HeavyScreenViewModel : ViewModel() {
     private var _items: MutableStateFlow<List<HeavyItem>> = MutableStateFlow(emptyList<HeavyItem>())
 
     /**
-     * A publicly accessible [StateFlow] representing the list of [HeavyItem] objects in our private
-     * [MutableStateFlow] of [List] of [HeavyItem] property [_items].
+     * A publicly accessible [StateFlow] providing read-only access to the list of [HeavyItem]
+     * objects in our private [MutableStateFlow] of [List] of [HeavyItem] property [_items].
      */
     val items: StateFlow<List<HeavyItem>> = _items.asStateFlow()
 
@@ -137,9 +137,9 @@ fun Instant.format(timeZone: TimeZone): String = trace(label = "PublishDate.form
  * The publication time is calculated by subtracting a random number of minutes
  * (between 0 and 48*60) from the current system time.
  *
- * The function uses a stable random number generator (`stableRandom`) to ensure
+ * The function uses a stable random number generator ([stableRandom]) to ensure
  * that the same set of items is generated each time the function is called with
- * the same input `howMany`.
+ * the same input [howMany].
  *
  * @param howMany The number of [HeavyItem] objects to generate.
  * @return A list of [HeavyItem] objects.
