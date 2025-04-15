@@ -45,10 +45,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tracing.trace
@@ -56,15 +58,22 @@ import com.compose.performance.R
 import com.compose.performance.recomposeHighlighter
 import java.time.LocalDate
 
+/**
+ * A Composable function that displays a [List] of [StabilityItem] items to demonstrate the benifits
+ * of making the items stable.
+ *
+ * @param viewModel The [StabilityViewModel] associated with this screen.
+ * This ViewModel manages the data and logic for the stability items.
+ */
 @Composable
 fun StabilityScreen(viewModel: StabilityViewModel = viewModel()) {
-    // TODO Codelab task: Make items stable with strong skipping mode and annotation to prevent recomposing DONE
-    val items by viewModel.items.collectAsState()
+    // TASK Codelab task: Make items stable with strong skipping mode and annotation to prevent recomposing DONE
+    val items: List<StabilityItem> by viewModel.items.collectAsState()
 
     Box {
         Column {
-            // TODO Codelab task: make LocalDate stable to prevent recomposing with each change DONE
-            LatestChange(viewModel.latestDateChange)
+            // TASK Codelab task: make LocalDate stable to prevent recomposing with each change DONE
+            LatestChange(today = viewModel.latestDateChange)
 
             LazyColumn(
                 modifier = Modifier
@@ -72,11 +81,11 @@ fun StabilityScreen(viewModel: StabilityViewModel = viewModel()) {
                     .recomposeHighlighter(),
                 contentPadding = PaddingValues(bottom = 72.dp)
             ) {
-                items(items, key = { it.id }) { item ->
+                items(items = items, key = { it.id }) { item: StabilityItem ->
                     StabilityItemRow(
                         item = item,
-                        onChecked = { viewModel.checkItem(item.id, it) },
-                        onRemoveClicked = { viewModel.removeItem(item.id) }
+                        onChecked = { viewModel.checkItem(id = item.id, checked = it) },
+                        onRemoveClicked = { viewModel.removeItem(id = item.id) }
                     )
                 }
             }
@@ -85,20 +94,25 @@ fun StabilityScreen(viewModel: StabilityViewModel = viewModel()) {
         FloatingActionButton(
             onClick = { viewModel.addItem() },
             modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomEnd)
-                .testTag("fab")
+                .padding(all = 16.dp)
+                .align(alignment = Alignment.BottomEnd)
+                .testTag(tag = "fab")
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = stringResource(R.string.add_item)
+                contentDescription = stringResource(id = R.string.add_item)
             )
         }
     }
 }
 
+/**
+ * A Composable function that displays a [Text] with the latest change date.
+ *
+ * @param today The [LocalDate] representing the latest change date.
+ */
 @Composable
-fun LatestChange(today: LocalDate) = trace("latest_change") {
+fun LatestChange(today: LocalDate): Unit = trace(label = "latest_change") {
     Surface(
         tonalElevation = 4.dp,
         modifier = Modifier.recomposeHighlighter()
@@ -107,42 +121,50 @@ fun LatestChange(today: LocalDate) = trace("latest_change") {
             text = stringResource(R.string.latest_change_was, today),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(all = 8.dp),
             textAlign = TextAlign.Center
         )
     }
 }
 
+/**
+ * A Composable function that displays a [ListItem] representing a [StabilityItem].
+ *
+ * @param item The [StabilityItem] to display.
+ * @param modifier The [Modifier] to apply to this layout node.
+ * @param onChecked A function to be invoked when the checkbox state changes.
+ * @param onRemoveClicked A function to be invoked when the remove button is clicked.
+ */
 @Composable
 fun StabilityItemRow(
     item: StabilityItem,
     modifier: Modifier = Modifier,
     onChecked: (checked: Boolean) -> Unit,
     onRemoveClicked: () -> Unit
-) = trace("item_row") {
+): Unit = trace(label = "item_row") {
     Box(modifier = modifier.recomposeHighlighter()) {
-        val (rowTonalElevation, iconBg) = when (item.type) {
+        val (rowTonalElevation: Dp, iconBg: Color) = when (item.type) {
             StabilityItemType.REFERENCE -> 4.dp to MaterialTheme.colorScheme.primary
             StabilityItemType.EQUALITY -> 0.dp to MaterialTheme.colorScheme.tertiary
         }
 
         ListItem(
             tonalElevation = rowTonalElevation,
-            headlineContent = { Text(item.name) },
+            headlineContent = { Text(text = item.name) },
             leadingContent = {
                 Text(
-                    text = item.type.name.take(3),
+                    text = item.type.name.take(n = 3),
                     modifier = Modifier
-                        .size(40.dp)
-                        .background(iconBg, CircleShape)
-                        .wrapContentHeight(Alignment.CenterVertically),
+                        .size(size = 40.dp)
+                        .background(color = iconBg, shape = CircleShape)
+                        .wrapContentHeight(align = Alignment.CenterVertically),
                     color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.labelMedium
                 )
             },
             overlineContent = {
-                Text("instance ${System.identityHashCode(item)}")
+                Text(text = "instance ${System.identityHashCode(item)}")
             },
             trailingContent = {
                 Row {
@@ -150,7 +172,7 @@ fun StabilityItemRow(
                     IconButton(onClick = onRemoveClicked) {
                         Icon(
                             painter = rememberVectorPainter(image = Icons.Default.Delete),
-                            contentDescription = stringResource(R.string.remove)
+                            contentDescription = stringResource(id = R.string.remove)
                         )
                     }
                 }
@@ -162,7 +184,7 @@ fun StabilityItemRow(
                 thickness = 2.dp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.CenterStart)
+                    .align(alignment = Alignment.CenterStart)
             )
         }
     }

@@ -54,7 +54,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.compose.performance.TaskScreen.AccelerateHeavyScreen
 import com.compose.performance.accelerate.AccelerateHeavyScreen
 import com.compose.performance.phases.PhasesAnimatedShape
 import com.compose.performance.phases.PhasesComposeLogo
@@ -243,7 +242,7 @@ private fun PerformanceCodeLabScreen(
  * This the key which is used to store the `startFromStep` [String] of the [TaskScreen.id] of the
  * [TaskScreen] that our app should start from in the [Intent] that lauches our app.
  */
-const val EXTRA_START_TASK = "EXTRA_START_TASK"
+const val EXTRA_START_TASK: String = "EXTRA_START_TASK"
 
 /**
  * This enum is used to control which "task" is displayed by [PerformanceCodeLabScreen].

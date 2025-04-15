@@ -44,12 +44,96 @@ import kotlinx.coroutines.launch
 @Stable
 fun Modifier.recomposeHighlighter(): Modifier = this.then(RecomposeHighlighterElement())
 
+/**
+ * A [ModifierNodeElement] that represents a recompose highlighter.
+ *
+ * This element is designed to trigger visual highlighting of a composable
+ * during recomposition. It achieves this by ensuring that the `update` function
+ * is called on every recomposition, thereby triggering the highlighting logic within
+ * the [RecomposeHighlighterModifier].
+ *
+ * This is primarily used for debugging purposes to visualize recompositions
+ * and understand how often a composable is being recomposed.
+ *
+ * **Key Features:**
+ *
+ * - **Triggers on Every Recomposition:** The `equals` method always returns `false`.
+ *   This ensures that the `update` function in [RecomposeHighlighterModifier] is
+ *   called on every recomposition, even if the element's properties have not
+ *   conceptually changed.
+ * - **Debug Inspector Information:**  Provides the name "recomposeHighlighter" in the
+ *   inspector for easy identification in debugging tools.
+ * - **Increments Composition Count:** The `update` function increments an internal counter
+ *   in the [RecomposeHighlighterModifier] every time it's called. This is directly
+ *   used by the recomposition highlighting logic to determine the color intensity.
+ * - **Stateless:** This Element is stateless as it doesn't hold any data.
+ *
+ * **Usage:**
+ *
+ * This class should not be used directly. Instead, use the
+ * `Modifier.recomposeHighlighter()` extension function which creates and adds
+ * this element to the Modifier chain.
+ *
+ * ```kotlin
+ * Box(Modifier.recomposeHighlighter()) {
+ *     // Content that will be highlighted on recomposition
+ * }
+ * ```
+ *
+ * **How it Works:**
+ *
+ * 1. When `Modifier.recomposeHighlighter()` is called, an instance of
+ *    [RecomposeHighlighterElement] is added to the Modifier chain.
+ * 2. During recomposition, the Compose runtime checks if the Modifier element
+ *    is considered "changed" compared to the previous composition.
+ */
 private class RecomposeHighlighterElement : ModifierNodeElement<RecomposeHighlighterModifier>() {
 
+    /**
+     * Adds debug inspection information for the `recomposeHighlighter` modifier.
+     *
+     * This function is called by the Compose Inspector to provide information about the
+     * properties of this modifier. It's used to display details about the modifier in
+     * tools like the Layout Inspector.
+     *
+     * In this specific case, it adds a single property:
+     *
+     * - **name**:  Set to "recomposeHighlighter". This indicates the type or purpose
+     *   of this modifier in the inspector UI.
+     *
+     * This metadata helps developers understand what a given composable modifier does when
+     * inspecting their UI tree.
+     *
+     * This function is intended to be used within the `InspectorInfo.inspectableProperties`
+     * lambda of a custom modifier.
+     *
+     * Example usage within a custom modifier:
+     * ```kotlin
+     * fun Modifier.myCustomModifier() = composed(
+     *     inspectorInfo = debugInspectorInfo {
+     *        name = "myCustomModifier"
+     *        properties["someProperty"] = "someValue"
+     *     }
+     * ) {
+     *    //Modifier logic
+     * }
+     * ```
+     *
+     * Note: This function should only be called within the context of `InspectorInfo.inspectableProperties`.
+     */
     override fun InspectorInfo.inspectableProperties() {
         debugInspectorInfo { name = "recomposeHighlighter" }
     }
 
+    /**
+     * Creates a new [RecomposeHighlighterModifier] instance.
+     *
+     * This function is responsible for instantiating the modifier that visually highlights
+     * recompositions in the UI.  It returns a default instance of [RecomposeHighlighterModifier]
+     * with no custom configuration.
+     *
+     * @return A new [RecomposeHighlighterModifier] instance.
+     */
     override fun create(): RecomposeHighlighterModifier = RecomposeHighlighterModifier()
 
     override fun update(node: RecomposeHighlighterModifier) {
