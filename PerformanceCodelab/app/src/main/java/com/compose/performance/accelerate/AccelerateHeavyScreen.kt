@@ -76,7 +76,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 
 /**
- * A composable function that represents a screen designed to showcase performance
+ * A composable function that renders a screen designed to showcase performance
  * optimization techniques for heavy UI elements. This composable utilizes a [ViewModel]
  * to manage and provide the data displayed on the screen.
  *
@@ -84,7 +84,8 @@ import kotlinx.datetime.TimeZone
  * lower-level `AccelerateHeavyScreen(items, modifier)` overload.
  *
  * It handles the state management by collecting data from the [StateFlow] of [List] of
- * [HeavyItem] property [HeavyScreenViewModel.items] using [StateFlow.collectAsState].
+ * [HeavyItem] property [HeavyScreenViewModel.items] of our [HeavyScreenViewModel] parameter
+ * [viewModel] using [StateFlow.collectAsState].
  *
  * @param modifier The [Modifier] to apply to the screen's layout.
  * @param viewModel The [HeavyScreenViewModel] instance used to provide data for
@@ -107,6 +108,7 @@ fun AccelerateHeavyScreen(
  */
 
 /**
+ * Stateless overload of stateful [AccelerateHeavyScreen].
  * Composes a screen that displays a list of [HeavyItem] objects.
  *
  * This composable wraps the main screen content ([ScreenContent]) within a [ProvideCurrentTimeZone]
@@ -114,7 +116,7 @@ fun AccelerateHeavyScreen(
  * is empty, indicating that data is still loading.
  *
  * @param items The list of [HeavyItem] objects to be displayed on the screen. If the list is empty,
- * a `CircularProgressIndicator` will be shown.
+ * a [CircularProgressIndicator] will be shown.
  * @param modifier [Modifier] to be applied to the root container of the screen.
  *
  * @see ProvideCurrentTimeZone
@@ -123,7 +125,7 @@ fun AccelerateHeavyScreen(
  */
 @Composable
 fun AccelerateHeavyScreen(items: List<HeavyItem>, modifier: Modifier = Modifier) {
-    // TODO: Codelab task: Wrap this with timezone provider DONE
+    // TASK: Codelab task: Wrap this with timezone provider DONE
     ProvideCurrentTimeZone {
         Box(
             modifier = modifier
@@ -233,7 +235,7 @@ fun imagePlaceholder(): Painter = trace("ImagePlaceholder") {
  * This composable formats a given [Instant] object into a human-readable string
  * based on the user's current local time zone and displays it as a [Text] composable.
  * It uses [Typography.labelMedium] from our custom [MaterialTheme.typography] as its
- * [TextStyle] for styling.
+ * [TextStyle] for styling the text.
  *
  * @param published The [Instant] representing the publication time.
  * @param modifier Modifier to apply to the underlying [Text] composable.

@@ -110,13 +110,13 @@ fun PhasesAnimatedShape(): Unit = trace(sectionName = "PhasesAnimatedShape") {
  *
  * This composable creates a [Box] with a circular shape and a purple background.
  * The size of the circle is determined by the `size` parameter, which is a lambda
- * function that returns a `Dp` value. The size is constrained to be at least 0.
+ * function that returns a [Dp] value. The size is constrained to be at least 0.
  * The `layout` modifier is used to precisely control the size and placement of the
  * circular `Box`.
  *
  * @param size A lambda function that returns the desired size (width and height) of the circle
- * in `Dp`. This allows for dynamic sizing based on external factors or state.
- * @param modifier An optional [Modifier] to be applied to the `Box`. This can be used to add
+ * in [Dp]. This allows for dynamic sizing based on external factors or state.
+ * @param modifier An optional [Modifier] to be applied to the [Box]. This can be used to add
  * padding, margins, or other visual effects. Defaults to [Modifier].
  */
 @Composable
