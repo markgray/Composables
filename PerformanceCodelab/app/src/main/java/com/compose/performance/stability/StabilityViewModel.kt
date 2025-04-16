@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.stateIn
 
 /**
  * TASK Codelab task: make this class Stable DONE
- * Represents an item which has been made stable.
+ * Example of an item which has been made stable.
  *
  * This data class holds information about a specific stable item, including its unique identifier,
  * type, name, checked state, and creation timestamp. It is designed to be immutable, ensuring that
@@ -45,7 +45,7 @@ import kotlinx.coroutines.flow.stateIn
  * @property id The unique identifier of the stability item.
  * @property type The type of the stability item, represented by a [StabilityItemType] enum.
  * @property name The name or description of the stability item.
- * @property checked A boolean indicating whether the stability item is currently checked or enabled.
+ * @property checked A boolean indicating whether the stability item is currently checked.
  * @property created The timestamp indicating when the stability item was created.
  */
 @Immutable
@@ -71,8 +71,8 @@ data class StabilityItem(
  * @property items A [StateFlow] that emits a list of [StabilityItem]s. Each emission involves
  * simulating the creation of new instances of `StabilityItem` through the `simulateNewInstances`
  * function, to potentially trigger recomposition. It also updates `latestDateChange` with the
- * current date on each emission. It utilizes `SharingStarted.WhileSubscribed` with a stop timeout
- * of 5 seconds.
+ * current date on each emission. It utilizes [SharingStarted.WhileSubscribed] to start sharing
+ * when the first subscriber appears, stopping 5 seconds after the last subscriber disappears.
  */
 class StabilityViewModel : ViewModel() {
 
@@ -84,7 +84,7 @@ class StabilityViewModel : ViewModel() {
 
     /**
      * The latest date that a change occurred. We're using neverEqualPolicy to showcase what the UI
-     * logic does for unstable parameters with each time different instance.
+     * logic does for unstable parameters with each time a different instance.
      *
      * This property holds the most recent date when any relevant modification or update took place.
      * It is represented as a [LocalDate] object, offering date-only information (without time).
@@ -192,8 +192,8 @@ class StabilityViewModel : ViewModel() {
      * Updates the checked status of a specific item in the list.
      *
      * This function searches for an item whose [StabilityItem.id] is equal to the [Int] parameter
-     * [id] in our list of [StabilityItem] objects. If an item with the matching `id` is found, its
-     * [StabilityItem.checked] property is updated to the [Boolean] parameter [checked].
+     * [id] in our [List] of [StabilityItem] objects. If an item with the matching `id` is found,
+     * its [StabilityItem.checked] property is updated to the [Boolean] parameter [checked].
      * The updated list is then emitted through our [MutableStateFlow] wrapped [List] of
      * [StabilityItem] property [_items].
      *
@@ -238,11 +238,6 @@ enum class StabilityItemType {
     }
 }
 
-/*
- * We have this method to simulate when a data source provides new instance when mapping a class.
- * This can occur for remote services like Firebase, REST Api, or local services like Room or sqlDelight.
- */
-
 /**
  * Simulates the creation of new instances for [StabilityItem]'s, specifically for items of type
  * [StabilityItemType.REFERENCE].
@@ -261,14 +256,15 @@ enum class StabilityItemType {
  * @return A new list of [StabilityItem]s where REFERENCE type items have been replaced
  * with copies, and all other items remain unchanged.
  */
-private fun simulateNewInstances(items: List<StabilityItem>): List<StabilityItem> = items.map {
-    if (it.type == StabilityItemType.REFERENCE) {
-        // For the reference types, we recreate the class to be always a new instance
-        it.copy()
-    } else {
-        it
+private fun simulateNewInstances(items: List<StabilityItem>): List<StabilityItem> =
+    items.map { stabilityItem: StabilityItem ->
+        if (stabilityItem.type == StabilityItemType.REFERENCE) {
+            // For the reference types, we recreate the class to be always a new instance
+            stabilityItem.copy()
+        } else {
+            stabilityItem
+        }
     }
-}
 
 /**
  * A list of sample words generated from Lorem Ipsum.

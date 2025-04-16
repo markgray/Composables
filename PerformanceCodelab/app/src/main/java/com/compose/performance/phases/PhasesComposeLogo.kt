@@ -50,7 +50,7 @@ import com.compose.performance.R
  * The function utilizes `remember` and `mutableStateOf` to efficiently manage
  * the state of the container's size, triggering recomposition only when necessary.
  * It also leverages the `onPlaced` modifier to get the parent container size.
- * The `logoPosition` function calculates the correct offset for centering the logo.
+ * The [logoPosition] function calculates the correct offset for centering the logo.
  *
  * The [Image] composable displays the actual logo and is placed using the calculated offset.
  */
@@ -82,7 +82,7 @@ fun PhasesComposeLogo(): Unit = trace(sectionName = "PhasesComposeLogo") {
  *
  * This composable function uses `produceState` to create a state object that represents the
  * current position of a moving logo. The logo bounces off the edges of the defined area.
- * The movement is continuous and controlled by the `MOVE_SPEED` constant.
+ * The movement is continuous and controlled by the [MOVE_SPEED] constant.
  *
  * @param size The size of the area within which the logo should move. If this is `IntSize.Zero`,
  * the logo will remain stationary at the origin (0, 0).
