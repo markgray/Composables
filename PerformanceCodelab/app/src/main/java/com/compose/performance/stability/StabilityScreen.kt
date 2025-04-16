@@ -128,7 +128,7 @@ fun LatestChange(today: LocalDate): Unit = trace(label = "latest_change") {
 }
 
 /**
- * A Composable function that displays a [ListItem] representing a [StabilityItem].
+ * A Composable function that displays a [StabilityItem] in a [ListItem].
  *
  * @param item The [StabilityItem] to display.
  * @param modifier The [Modifier] to apply to this layout node.
