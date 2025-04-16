@@ -47,7 +47,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.activity:activity-compose:1.10.1")
@@ -56,9 +56,9 @@ dependencies {
     implementation("androidx.compose.material:material:1.7.8")
 
     // Room dependencies
-    implementation("androidx.room:room-runtime:2.6.1")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.7.0")
+    annotationProcessor("androidx.room:room-compiler:2.7.0")
+    ksp("androidx.room:room-compiler:2.7.0")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
