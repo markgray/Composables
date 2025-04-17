@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
 import java.util.Objects
 import kotlin.math.min
 import kotlinx.coroutines.Job
@@ -227,7 +228,7 @@ private class RecomposeHighlighterModifier : Modifier.Node(), DrawModifierNode {
     /**
      * A [Job] representing the currently running timer.
      *
-     * This job is used to manage the lifecycle of a recurring task or a countdown timer.
+     * This job is used to manage the lifecycle of our countdown timer.
      * It can be used to start, pause, resume, or cancel the timer.
      *
      * When the timer is started, a new [Job] is created and assigned to this property.
@@ -280,7 +281,7 @@ private class RecomposeHighlighterModifier : Modifier.Node(), DrawModifierNode {
     /**
      * Called when the node is attached to a Layout which is part of the UI tree.
      *
-     * When called, node is guaranteed to be non-null. You can call sideEffect, coroutineScope, etc.
+     * When called, node is guaranteed to be non-`null`. You can call sideEffect, coroutineScope, etc.
      * This is not guaranteed to get called at a time where the rest of the Modifier Nodes in the
      * hierarchy are "up to date". For instance, at the time of calling onAttach for this node,
      * another node may be in the tree that will be detached by the time Compose has finished
@@ -329,10 +330,6 @@ private class RecomposeHighlighterModifier : Modifier.Node(), DrawModifierNode {
         timerJob?.cancel()
     }
 
-    /*
-     * Start the timeout, and reset everytime there's a recomposition.
-     */
-    
     /**
      * Restarts the timer responsible for resetting the composition count and invalidating the draw.
      *
@@ -341,8 +338,8 @@ private class RecomposeHighlighterModifier : Modifier.Node(), DrawModifierNode {
      * returns, doing nothing.
      * 2. **Cancel Existing Timer:** If a timer is already running ([timerJob] is not null), it
      * cancels the existing timer job to prevent multiple timers from running concurrently.
-     * 3. **Start New Timer:** It launches a new coroutine using the [coroutineScope] provided by
-     * [Modifier] to launch a timer coroutine which:
+     * 3. **Start New Timer:** It launches a new coroutine using the [CoroutineScope] property
+     * [coroutineScope] provided by [Modifier] to launch a timer coroutine which:
      *     - **Delay:** The timer waits for 3000 milliseconds (3 seconds) before executing
      *     its actions.
      *     - **Reset Composition Count:** After the delay, it resets the `totalCompositions`
@@ -389,7 +386,7 @@ private class RecomposeHighlighterModifier : Modifier.Node(), DrawModifierNode {
      * on the value of [totalCompositions] using a [Pair]:
      *  - 1L -> [Color.Blue] to a [Float] pixel value of 1f.
      *  - 2L -> [Color.Green] to a [Float] pixel value of 2dp.
-     *  - else -> [Color.Yellow] to [Color.Red] based on a linear interpolation between the minimum
+     *  - else -> [Color.Yellow] ... [Color.Red] based on a linear interpolation between the minimum
      *  of 1f and [totalCompositions] minus 1 divided by 100f to a [Float] pixel value of
      *  [totalCompositions] converted to a [Dp] then converted to its [Float] pixel value.
      *
@@ -399,11 +396,12 @@ private class RecomposeHighlighterModifier : Modifier.Node(), DrawModifierNode {
      * the [Size.width] of the layout minus `strokeWidthPx` and whose [Size.height] is equal to
      * the [Size.height] of the layout minus `strokeWidthPx`, initialize our [Boolean] variable
      * `val fillArea` to `true` if `strokeWidthPx` times 2 is greater than the [Size.minDimension]
-     * of the layout, otherwise setting it to `false`, initialize our [Offset] variable `val rectTopLeft`
-     * to `Offset.Zero` if `fillArea` is `true`, otherwise we set it to `topLeft`, initialize
-     * our [Size] variable `val size` to [ContentDrawScope.size] if `fillArea` is `true`, otherwise
-     * we set `borderSize`, initialize our [DrawStyle] variable `val style` to [Fill] if `fillArea`
-     * is `true`, otherwise we set it to [Stroke] with `strokeWidthPx` as the [Stroke.width].
+     * of the layout, otherwise setting it to `false`, initialize our [Offset] variable
+     * `val rectTopLeft` to `Offset.Zero` if `fillArea` is `true`, otherwise we set it to `topLeft`,
+     * initialize our [Size] variable `val size` to [ContentDrawScope.size] if `fillArea` is `true`,
+     * otherwise we set it to `borderSize`, initialize our [DrawStyle] variable `val style` to [Fill]
+     * if `fillArea` is `true`, otherwise we set it to [Stroke] with `strokeWidthPx` as the
+     * [Stroke.width].
      *
      * Finally we call [ContentDrawScope.drawRect] with the following arguments:
      *  - `brush = SolidColor(value = color)`: The color to fill the rectangle with.
