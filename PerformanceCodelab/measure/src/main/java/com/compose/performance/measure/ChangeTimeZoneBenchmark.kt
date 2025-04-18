@@ -73,12 +73,38 @@ class ChangeTimeZoneBenchmark : AbstractBenchmark(StartupMode.WARM) {
     @Test
     fun changeTimeZoneCompilationFull(): Unit = benchmark(compilationMode = CompilationMode.Full())
 
+    /**
+     * The [List] of [Metric]s to measure:
+     *  - [FrameTimingMetric]: Measures the time spent rendering each frame.
+     *  - [TraceSectionMetric]: Measures the time spent in specific trace sections, in our case
+     *  "PublishDate.registerReceiver".
+     */
     override val metrics: List<Metric> =
         listOf(
             FrameTimingMetric(),
             TraceSectionMetric("PublishDate.registerReceiver", TraceSectionMetric.Mode.Sum)
         )
 
+    /**
+     * Sets up the device and application state before each benchmark iteration.
+     *
+     * This function performs the following actions:
+     * 1. **Sets the device's time zone:** Changes the device's time zone to "America/Los_Angeles".
+     *    This ensures consistency across benchmark runs and allows for testing time-zone-specific
+     *    behavior if needed.
+     * 2. **Presses the Home button:** Simulates pressing the device's Home button, returning to
+     *    the home screen. This provides a consistent starting point for each benchmark run,
+     *    ensuring the app starts from a known state.
+     * 3. **Starts the target activity:** Launches the "accelerate_heavy" task activity.
+     *    This is the specific activity that will be benchmarked.
+     * 4. **Waits for the UI to be ready:** Waits for a maximum of 5 seconds for a UI element with
+     *    resource ID "list_of_items" to appear. This ensures that the target activity is fully
+     *    loaded and the relevant UI elements are present before the benchmark begins. It prevents
+     *    the benchmark from starting before the app is in a stable, measurable state.
+     *
+     * This setup ensures consistent and reliable benchmark results by controlling the device and
+     * application state.
+     */
     override fun MacrobenchmarkScope.setupBlock() {
         device.changeTimeZone("America/Los_Angeles")
         pressHome()
@@ -86,12 +112,40 @@ class ChangeTimeZoneBenchmark : AbstractBenchmark(StartupMode.WARM) {
         device.wait(Until.hasObject(By.res("list_of_items")), 5_000)
     }
 
+    /**
+     * Measures the performance of a block of code that changes the device's time zone twice.
+     *
+     * This function simulates a scenario where the device's time zone is changed multiple times
+     * within a short period. It first changes the time zone to "Europe/Warsaw" and then
+     * immediately changes it to "America/Los_Angeles". This can be useful for evaluating the
+     * performance impact of time zone changes on the application or system.
+     *
+     * Note that this function relies on the `device` object within the `MacrobenchmarkScope`
+     * to interact with the device and change its settings.
+     *
+     * The time zone changes are performed sequentially, and the overall performance of both
+     * changes is captured by the macrobenchmark.
+     *
+     * @see MacrobenchmarkScope
+     * @see androidx.test.uiautomator.UiDevice.changeTimeZone
+     */
     override fun MacrobenchmarkScope.measureBlock() {
         device.changeTimeZone("Europe/Warsaw")
         device.changeTimeZone("America/Los_Angeles")
     }
 }
 
+/**
+ * Changes the device's timezone to the specified zone ID.
+ *
+ * This function utilizes the Android shell command `service call alarm 3 s16 <zoneId>` to modify
+ * the device's timezone. It also wraps the operation within a `Trace` section to enable performance
+ * analysis and debugging. A brief sleep is introduced to ensure the system has time to apply the
+ * timezone change.
+ *
+ * @param zoneId The desired timezone ID, represented as a string (e.g., "America/Los_Angeles",
+ * "Europe/Paris", "GMT"). See IANA Time Zone Database for valid time zone identifiers.
+ */
 fun UiDevice.changeTimeZone(zoneId: String) {
     // We add here a trace section, so that we can easily find in the trace where the timezone change occurs
     Trace.beginAsyncSection("change timezone", 0)
