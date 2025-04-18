@@ -49,9 +49,9 @@ class BaselineProfileGenerator {
     /**
      * This rule allows to generate Baseline Profiles.
      *
-     * The [BaselineProfileRule] provides methods to interact with the Baseline Profile generation
-     * process. It's crucial for generating and managing baseline profiles which are essential for
-     * improving application startup and runtime performance.
+     * The [BaselineProfileRule] class provides methods to interact with the Baseline Profile
+     * generation process. It's crucial for generating and managing baseline profiles which are
+     * essential for improving application startup and runtime performance.
      *
      * Use this rule in instrumented tests to:
      *

@@ -35,8 +35,9 @@ import org.junit.runner.RunWith
  * [AccelerateHeavyScreenBenchmark] measures the performance of the "heavy" screen within the app,
 ` * (`AccelerateHeavyScreen`) simulating user interactions like scrolling and loading content.
  *
- * This benchmark specifically targets a screen identified as "accelerate_heavy", containing a
- * complex list view or a screen with many elements that could impact rendering performance.
+ * This benchmark specifically targets a screen identified as "accelerate_heavy" by its
+ * `TaskScreen.id`, containing a complex screen with many elements that could impact rendering
+ * performance.
  *
  * It utilizes different metrics to capture frame timings and the duration of specific code
  * sections, providing detailed insights into the performance bottlenecks.
@@ -45,8 +46,8 @@ import org.junit.runner.RunWith
  *  - **Compilation Mode:** Runs with `CompilationMode.Full()` which ensures that the app is fully
  *  compiled before the benchmark, simulating a real user scenario after app installation and usage.
  *  - **Startup Mode:** Uses `StartupMode.COLD`, meaning the app is fully restarted for each test run.
- *  - **Metrics:** Tracks `FrameTimingMetric` to measure rendering performance and
- *  `TraceSectionMetric` to measure the time spent in specific code sections:
+ *  - **Metrics:** Tracks [FrameTimingMetric] to measure rendering performance and
+ *  [TraceSectionMetric] to measure the time spent in specific code sections:
  *      - "ImagePlaceholder": Time spent loading or rendering image placeholders.
  *      - "PublishDate.registerReceiver": Time spent in the `registerReceiver` related to
  *      publishing date.
@@ -81,7 +82,7 @@ class AccelerateHeavyScreenBenchmark : AbstractBenchmark(StartupMode.COLD) {
      * full compilation and optimize the code or build process accordingly.
      *
      * The [benchmark] method, which is part of [AbstractBenchmark], provides tools to measure and
-     * report detailed performance metrics. The `CompilationMode.Full()` option specifies that the
+     * report detailed performance metrics. The [CompilationMode.Full] option specifies that the
      * application's code should be compiled entirely ahead of time.
      */
     @Test

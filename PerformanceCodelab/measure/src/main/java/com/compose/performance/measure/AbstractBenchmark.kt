@@ -61,7 +61,8 @@ abstract class AbstractBenchmark(
     val rule: MacrobenchmarkRule = MacrobenchmarkRule()
 
     /**
-     * Represents a metric, which can be a count, a gauge, or a timer, for example.
+     * Our [List] of [Metric]s that we wish to measure, which can include counts, gauges, or timers,
+     * for example.
      */
     abstract val metrics: List<Metric>
 
@@ -92,7 +93,7 @@ abstract class AbstractBenchmark(
     /**
      * Measures the time it takes to execute a block of code within the benchmark.
      *
-     * This function is intended to be used within a `MacrobenchmarkScope` to measure the
+     * This function is intended to be used within a [MacrobenchmarkScope] to measure the
      * performance of a specific block of code in your app. It allows for precise
      * measurement of the execution time of critical sections, providing valuable insights
      * into performance bottlenecks.
@@ -101,8 +102,8 @@ abstract class AbstractBenchmark(
      * - **Overhead:** Be aware that calling `measureBlock` itself does introduce some minimal
      *   overhead.  For extremely short code blocks, this overhead might be significant relative
      *   to the measured block.
-     * - **Context:** `measureBlock` must be called within the context of a `MacrobenchmarkScope`,
-     *   typically inside the lambda of `measureRepeated`.
+     * - **Context:** `measureBlock` must be called within the context of a [MacrobenchmarkScope],
+     *   typically inside the lambda of [MacrobenchmarkRule.measureRepeated].
      * - **Metrics:** This function measures the wall-clock time of the code block. If you need
      *   other metrics, like frame timings or memory allocations, you should use different
      *   metrics in conjunction with this like `StartupTiming` or `FrameTimingMetric`.
@@ -120,7 +121,7 @@ abstract class AbstractBenchmark(
      * Runs a macrobenchmark test with the specified compilation mode. It calls the
      * [MacrobenchmarkRule.measureRepeated] method of our [rule] with the arguments:
      * - `packageName`: The package name of the app under test.
-     * - `metrics`: The metrics to measure.
+     * - `metrics`: The [List] of [Metric]'s to measure.
      * - `compilationMode`: The compilation mode to use.
      * - `startupMode`: The startup mode to use.
      * - `iterations`: The number of iterations to run the benchmark.
