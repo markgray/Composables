@@ -108,7 +108,7 @@ private fun SnackCollectionList(
     var filtersVisible by rememberSaveable { mutableStateOf(false) }
     Box(modifier) {
         LazyColumn(
-            modifier = Modifier.testTag("snack_list"),
+            modifier = Modifier.testTag(tag = "snack_list"),
         ) {
             item {
                 Spacer(
