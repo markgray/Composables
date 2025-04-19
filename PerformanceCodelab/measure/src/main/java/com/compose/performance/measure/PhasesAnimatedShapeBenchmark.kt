@@ -67,7 +67,7 @@ class PhasesAnimatedShapeBenchmark : AbstractBenchmark() {
      * portion of it is pre-compiled using Full Compilation (AOT). It evaluates the performance
      * characteristics when the code is not subject to Just-In-Time (JIT) compilation during runtime.
      *
-     * The animation being tested likely involves:
+     * The animation being tested involves:
      * - Multiple phases: distinct stages or steps in the animation sequence.
      * - Shape transformations: changes in the geometry or form of the animated objects.
      * - Complex composition: combination of different animation elements.

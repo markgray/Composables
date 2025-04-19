@@ -49,8 +49,8 @@ class PhasesComposeLogoBenchmark : AbstractBenchmark() {
     /**
      * Runs a macrobenchmark test with the [CompilationMode.Full] compilation mode. It calls the
      * [AbstractBenchmark.benchmark] method with its `compilationMode` argument [CompilationMode.Full]
-     * and it executes our overridden [measureBlock] and [setupBlock] methods using the
-     * overridden [List] of [Metric] property [metrics] as the data to collect.
+     * and [AbstractBenchmark.benchmark] then executes our overridden [measureBlock] and [setupBlock]
+     * methods using our overridden [List] of [Metric] property [metrics] as the data to collect.
      */
     @Test
     fun phasesComposeLogoCompilationFull(): Unit = benchmark(CompilationMode.Full())

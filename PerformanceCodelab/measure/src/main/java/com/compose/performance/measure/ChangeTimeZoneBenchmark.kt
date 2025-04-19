@@ -139,7 +139,7 @@ class ChangeTimeZoneBenchmark : AbstractBenchmark(StartupMode.WARM) {
  * Changes the device's timezone to the specified zone ID.
  *
  * This function utilizes the Android shell command `service call alarm 3 s16 <zoneId>` to modify
- * the device's timezone. It also wraps the operation within a `Trace` section to enable performance
+ * the device's timezone. It also wraps the operation within a [Trace] section to enable performance
  * analysis and debugging. A brief sleep is introduced to ensure the system has time to apply the
  * timezone change.
  *

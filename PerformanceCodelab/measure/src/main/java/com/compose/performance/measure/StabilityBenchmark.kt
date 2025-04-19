@@ -63,8 +63,8 @@ class StabilityBenchmark : AbstractBenchmark(StartupMode.WARM) {
     /**
      * Runs a macrobenchmark test with the [CompilationMode.Full] compilation mode. It calls the
      * [AbstractBenchmark.benchmark] method with its `compilationMode` argument [CompilationMode.Full]
-     * and it executes our overridden [measureBlock] and [setupBlock] methods using the
-     * overridden [List] of [Metric] property [metrics] as the data to collect.
+     * and [AbstractBenchmark.benchmark] executes our overridden [measureBlock] and [setupBlock]
+     * methods using our overridden [List] of [Metric] property [metrics] as the data to collect.
      */
     @Test
     fun stabilityCompilationFull(): Unit = benchmark(CompilationMode.Full())
@@ -127,7 +127,7 @@ class StabilityBenchmark : AbstractBenchmark(StartupMode.WARM) {
         // Actual code to measure
         val fab: UiObject2 = device.findObject(By.res("fab"))
 
-        repeat(3) {
+        repeat(times = 3) {
             fab.click()
             Thread.sleep(300)
         }
