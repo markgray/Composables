@@ -16,23 +16,27 @@ import org.junit.runner.RunWith
 /**
  * This test class generates a basic startup baseline profile for the target package.
  *
- * We recommend you start with this but add important user flows to the profile to improve their performance.
- * Refer to the [baseline profile documentation](https://d.android.com/topic/performance/baselineprofiles)
+ * We recommend you start with this but add important user flows to the profile to improve their
+ * performance. Refer to the
+ * [baseline profile documentation](https://d.android.com/topic/performance/baselineprofiles)
  * for more information.
  *
- * You can run the generator with the "Generate Baseline Profile" run configuration in Android Studio or
- * the equivalent `generateBaselineProfile` gradle task:
+ * You can run the generator with the "Generate Baseline Profile" run configuration in Android
+ * Studio or the equivalent `generateBaselineProfile` gradle task:
  * ```
  * ./gradlew :app:generateReleaseBaselineProfile
  * ```
  * The run configuration runs the Gradle task and applies filtering to run only the generators.
  *
- * Check [documentation](https://d.android.com/topic/performance/benchmarking/macrobenchmark-instrumentation-args)
+ * Check
+ * [documentation](https://d.android.com/topic/performance/benchmarking/macrobenchmark-instrumentation-args)
  * for more information about available instrumentation arguments.
  *
- * After you run the generator, you can verify the improvements running the [StartupBenchmarks] benchmark.
+ * After you run the generator, you can verify the improvements running the [StartupBenchmarks]
+ * benchmark.
  *
- * When using this class to generate a baseline profile, only API 33+ or rooted API 28+ are supported.
+ * When using this class to generate a baseline profile, only API 33+ or rooted API 28+ are
+ * supported.
  *
  * The minimum required version of androidx.benchmark to generate a baseline profile is 1.2.0.
  */
@@ -41,7 +45,7 @@ import org.junit.runner.RunWith
 class BaselineProfileGenerator {
 
     /**
-     * This rule allows to generate Baseline Profiles.
+     * This rule allows one to generate Baseline Profiles.
      *
      * The [BaselineProfileRule] provides methods to interact with the Baseline Profile generation
      * process. It's crucial for generating and managing baseline profiles which are essential for
@@ -141,10 +145,13 @@ class BaselineProfileGenerator {
      * This ensures that the content is not only present in the UI but also has had time to fully
      * render its elements, preventing tests from interacting with incomplete or partially loaded
      * data.
+     *
+     * Note: both "snack_list" and "snack_collection" are set on the Composable by a
+     * `Modifier.testTag`
      */
     fun MacrobenchmarkScope.waitForAsyncContent() {
         device.wait(Until.hasObject(By.res("snack_list")), 5_000)
-        val contentList = device.findObject(By.res("snack_list"))
+        val contentList: UiObject2 = device.findObject(By.res("snack_list"))
         // Wait until a snack collection item within the list is rendered.
         contentList.wait(Until.hasObject(By.res("snack_collection")), 5_000)
     }
@@ -166,6 +173,8 @@ class BaselineProfileGenerator {
      *
      * This function is designed for use within a Macrobenchmark to measure the performance of
      * scrolling the snack list view.
+     *
+     * Note: "snack_list" is set on the Composable by a `Modifier.testTag`
      *
      * @receiver The [MacrobenchmarkScope] within which this journey is being executed.
      */
@@ -206,10 +215,10 @@ class BaselineProfileGenerator {
      * @receiver MacrobenchmarkScope The scope in which the benchmark is executed.
      */
     fun MacrobenchmarkScope.goToSnackDetailJourney() {
-        val snackList = device.findObject(By.res("snack_list"))
-        val snacks = snackList.findObjects(By.res("snack_item"))
+        val snackList: UiObject2 = device.findObject(By.res("snack_list"))
+        val snacks: List<UiObject2> = snackList.findObjects(By.res("snack_item"))
         // Select snack from the list based on running iteration.
-        val index = (iteration ?: 0) % snacks.size
+        val index: Int = (iteration ?: 0) % snacks.size
         snacks[index].click()
         // Wait until the screen is gone = the detail is shown.
         device.wait(Until.gone(By.res("snack_list")), 5_000)
