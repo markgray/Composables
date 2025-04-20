@@ -25,12 +25,46 @@ import kotlinx.coroutines.withContext
  * A fake repo for searching.
  */
 object SearchRepo {
+    /**
+     * Retrieves the list of available search category collections.
+     *
+     * This function returns a list of [SearchCategoryCollection] objects, representing
+     * the different categories that can be used for searching. Each
+     * [SearchCategoryCollection] contains information about a specific
+     * category, such as its name, ID, and potentially other related data.
+     *
+     * @return A [List] of [SearchCategoryCollection] objects. Returns an empty list if no
+     * categories are available.
+     */
     fun getCategories(): List<SearchCategoryCollection> = searchCategoryCollections
+
+    /**
+     * Retrieves a list of search suggestion groups.
+     *
+     * This function returns the currently available search suggestions,
+     * categorized into groups. Each group represents a different type
+     * of suggestion, such as recent searches, popular searches, or
+     * suggestions based on the current query.
+     *
+     * @return A list of [SearchSuggestionGroup] objects, each containing a group of related search
+     * suggestions. The list may be empty if no suggestions are currently available.
+     */
     fun getSuggestions(): List<SearchSuggestionGroup> = searchSuggestions
 
+    /**
+     * Searches for snacks whose names contain the given query string.
+     *
+     * This function performs a case-insensitive search within the list of available snacks.
+     * It simulates an I/O delay using `delay` and executes the filtering operation on the
+     * `Dispatchers.Default` coroutine dispatcher to avoid blocking the main thread.
+     *
+     * @param query The string to search for within snack names.
+     * @return A list of [Snack] objects whose names contain the query string, or an empty list if
+     * no matches are found.
+     */
     suspend fun search(query: String): List<Snack> = withContext(Dispatchers.Default) {
-        delay(200L) // simulate an I/O delay
-        snacks.filter { it.name.contains(query, ignoreCase = true) }
+        delay(timeMillis = 200L) // simulate an I/O delay
+        snacks.filter { snack: Snack -> snack.name.contains(other = query, ignoreCase = true) }
     }
 }
 
