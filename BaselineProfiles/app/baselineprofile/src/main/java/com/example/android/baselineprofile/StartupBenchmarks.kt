@@ -74,8 +74,8 @@ class StartupBenchmarks {
      * This method runs Macrobenchmark tests that measure the performance of app startup
      * with baseline profiles.
      *
-     * Itj just calls our [benchmark] method with its `compilationMode` argument
-     * [CompilationMode.Partial] with its `baselineProfileMode` argument
+     * It just calls our [benchmark] method with its `compilationMode` argument an
+     * [CompilationMode.Partial] instance with its `baselineProfileMode` argument
      * [BaselineProfileMode.Require] (Requires the BaselineProfile methods/classes from the target
      * app to be pre-compiled).
      */
@@ -93,7 +93,7 @@ class StartupBenchmarks {
      *
      * The arguments that it passes to [MacrobenchmarkRule.measureRepeated] are:
      *  - `packageName`: The package name of the application being benchmarked which it reads from
-     *  the instrumentation arguments.
+     *  the instrumentation arguments using the key "targetAppId".
      *  - `metrics`: A list of metrics to measure during the benchmark. In this case, it's a single
      *  metric, [StartupTimingMetric].
      *  - `compilationMode`: The compilation mode to use for the benchmark, is our [CompilationMode]

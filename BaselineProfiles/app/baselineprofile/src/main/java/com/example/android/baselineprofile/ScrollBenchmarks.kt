@@ -152,7 +152,7 @@ class ScrollBenchmarks {
      * has completed.
      *
      * The primary purpose of this journey is to simulate user interaction with a scrollable
-     * list, specifically the snack list in the target application. This can be used within
+     * list, specifically the "snack_list" in the target application. This can be used within
      * a macrobenchmark to measure performance metrics related to scrolling and UI rendering.
      *
      * **Steps:**
