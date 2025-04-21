@@ -18,6 +18,16 @@ package com.example.baselineprofiles_codelab.model
 
 import androidx.compose.runtime.Immutable
 
+/**
+ * Represents a snack item with its details.
+ *
+ * @property id The unique identifier for the snack.
+ * @property name The name of the snack.
+ * @property imageUrl The URL of the image representing the snack.
+ * @property price The price of the snack (e.g., in cents).
+ * @property tagline A short description or slogan associated with the snack. Defaults to an empty string.
+ * @property tags A set of tags associated with the snack (e.g., "vegetarian", "spicy"). Defaults to an empty set.
+ */
 @Immutable
 data class Snack(
     val id: Long,
@@ -28,11 +38,19 @@ data class Snack(
     val tags: Set<String> = emptySet()
 )
 
-/**
+/*
  * Static data
  */
 
-val snacks = listOf(
+/**
+ * A list of available snacks.
+ *
+ * This list contains a variety of Snack objects, each representing a different type of snack
+ * with its unique properties such as id, name, tagline, image URL, and price.
+ * The snacks range from sweet treats like cupcakes and donuts to savory options like chips and
+ * cheese, and healthy choices like apples and almonds.
+ */
+val snacks: List<Snack> = listOf(
     Snack(
         id = 1L,
         name = "Cupcake",

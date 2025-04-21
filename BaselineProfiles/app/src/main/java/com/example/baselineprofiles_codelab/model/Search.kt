@@ -68,6 +68,22 @@ object SearchRepo {
     }
 }
 
+/**
+ * Represents a collection of search categories.
+ *
+ * This data class encapsulates a group of related [SearchCategory] objects,
+ * providing a structure to organize and manage them. Each collection has a unique
+ * identifier, a descriptive name, and a list of its member categories.
+ *
+ * @property id A unique identifier for this search category collection. This is typically a
+ * database primary key or a unique generated ID.
+ * @property name A user-friendly name describing this collection of search categories.
+ * Examples include "Popular Categories," "Electronics," or "Trending Searches."
+ * @property categories A list of [SearchCategory] objects that belong to this collection.
+ * This list defines the specific search categories within this group.
+ *
+ * @see SearchCategory
+ */
 @Immutable
 data class SearchCategoryCollection(
     val id: Long,
@@ -75,12 +91,47 @@ data class SearchCategoryCollection(
     val categories: List<SearchCategory>
 )
 
+/**
+ * Represents a category used for searching.
+ *
+ * This data class encapsulates the information needed to display and identify a search category.
+ * It includes the category's name and an associated image URL.
+ *
+ * @property name The name of the search category. This is typically a user-friendly string
+ * used for display purposes. Must not be empty.
+ * @property imageUrl The URL pointing to an image associated with this search category.
+ * This image can be used as a visual representation of the category. Must not be empty.
+ *
+ * @[Immutable] Indicates that instances of this class are immutable, meaning their
+ * properties cannot be changed after creation. This is beneficial for performance
+ * and predictability, especially within UI frameworks like Compose.
+ */
 @Immutable
 data class SearchCategory(
     val name: String,
     val imageUrl: String
 )
 
+/**
+ * Represents a group of search suggestions.
+ *
+ * This data class encapsulates a collection of suggestions that are logically grouped together,
+ * typically for display in a search suggestion UI. Each group has a unique identifier, a
+ * user-friendly name, and a list of suggested search terms.
+ *
+ * @property id A unique identifier for this suggestion group. This ID should be unique across
+ * all suggestion groups.
+ * @property name The display name of the suggestion group. This name is typically shown in the UI
+ * to indicate the category or type of the suggestions within the group (e.g., "Recent Searches",
+ * "Popular Products", "Trending Topics").
+ * @property suggestions A list of suggested search terms belonging to this group. Each element
+ * in this list is a String representing a single suggestion. The order of the suggestions may
+ * be significant, representing relevance or priority.
+ *
+ * @[Immutable] Indicates that this class is immutable. All fields are read-only and cannot be
+ * modified after the object is created. This is crucial for data classes that are used in
+ * reactive UI frameworks like Jetpack Compose.
+ */
 @Immutable
 data class SearchSuggestionGroup(
     val id: Long,
@@ -88,10 +139,33 @@ data class SearchSuggestionGroup(
     val suggestions: List<String>
 )
 
-/**
+/*
  * Static data
  */
 
+/**
+ * A list of [SearchCategoryCollection] representing different groupings of search categories.
+ *
+ * This list defines the collections that will be used to display and organize
+ * search categories in the user interface. Each [SearchCategoryCollection] contains
+ * a unique ID, a name that describes the collection, and a list of [SearchCategory]
+ * objects within that collection.
+ *
+ * Each [SearchCategory] represents a specific search term that the user can select.
+ * The `name` field of a [SearchCategory] is displayed to the user and the `imageUrl`
+ * field is used for visual representation of the category.
+ *
+ * Currently, there are two predefined collections:
+ *
+ * 1. **Categories:** This collection groups products into broad food categories like
+ * "Chips & crackers", "Fruit snacks", etc.
+ * 2. **Lifestyles:** This collection groups products based on dietary lifestyles like
+ * "Organic", "Gluten Free", "Vegan", etc.
+ *
+ * This data structure enables a flexible and organized way to present and manage different search
+ * categories within the application. Adding more collections or categories is as simple as adding
+ * new elements to the [searchCategoryCollections] list.
+ */
 private val searchCategoryCollections = listOf(
     SearchCategoryCollection(
         id = 0L,
@@ -147,6 +221,16 @@ private val searchCategoryCollections = listOf(
     )
 )
 
+/**
+ * A list of search suggestion groups, each containing a set of suggested search terms.
+ *
+ * This list is used to populate the search suggestion UI, providing users with
+ * quick access to common or recent searches.
+ *
+ * The list is composed of [SearchSuggestionGroup] objects, each representing a
+ * logical grouping of suggestions. Each group has a unique ID, a name (e.g., "Recent searches"),
+ * and a list of string suggestions.
+ */
 private val searchSuggestions = listOf(
     SearchSuggestionGroup(
         id = 0L,
