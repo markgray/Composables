@@ -51,6 +51,24 @@ import com.example.baselineprofiles_codelab.R
 import com.example.baselineprofiles_codelab.model.Filter
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 
+/**
+ * A horizontal bar displaying a list of filter chips and a "Filters" [IconButton].
+ *
+ * This composable displays a row of [FilterChip] components, each representing a
+ * filter that can be applied. It also includes a button that, when clicked,
+ * triggers the [onShowFilters] callback to display a filter selection UI that shows
+ * a list of additional available filters.
+ *
+ * Our root composable is a [LazyRow] whose arguments are:
+ *  - `verticalAlignment`: [Alignment.CenterVertically], which aligns the items vertically.
+ *  - `horizontalArrangement`: [Arrangement.spacedBy], which creates a space of 8.dp between the items.
+ *  - `contentPadding`: [PaddingValues], which adds 12.dp of padding to the start and end of the content.
+ *  - `modifier`: [Modifier.heightIn], which sets the height of the row to be at least 56.dp.
+ *
+ * @param filters The list of [Filter] objects to display as chips.
+ * @param onShowFilters Callback function triggered when the "Filters" [IconButton] is clicked.
+ * This callback opens a filter selection UI.
+ */
 @Composable
 fun FilterBar(
     filters: List<Filter>,
@@ -59,7 +77,7 @@ fun FilterBar(
 
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
         contentPadding = PaddingValues(start = 12.dp, end = 8.dp),
         modifier = Modifier.heightIn(min = 56.dp)
     ) {
@@ -68,7 +86,7 @@ fun FilterBar(
                 Icon(
                     imageVector = Icons.Rounded.FilterList,
                     tint = JetsnackTheme.colors.brand,
-                    contentDescription = stringResource(R.string.label_filters),
+                    contentDescription = stringResource(id = R.string.label_filters),
                     modifier = Modifier.diagonalGradientBorder(
                         colors = JetsnackTheme.colors.interactiveSecondary,
                         shape = CircleShape
@@ -76,7 +94,7 @@ fun FilterBar(
                 )
             }
         }
-        items(filters) { filter ->
+        items(items = filters) { filter: Filter ->
             FilterChip(filter = filter, shape = MaterialTheme.shapes.small)
         }
     }
@@ -88,38 +106,39 @@ fun FilterChip(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.small
 ) {
-    val (selected, setSelected) = filter.enabled
-    val backgroundColor by animateColorAsState(
+    val (selected: Boolean, setSelected: (Boolean) -> Unit) = filter.enabled
+    val backgroundColor: Color by animateColorAsState(
         if (selected) JetsnackTheme.colors.brandSecondary else JetsnackTheme.colors.uiBackground
     )
-    val border = Modifier.fadeInDiagonalGradientBorder(
+    val border: Modifier = Modifier.fadeInDiagonalGradientBorder(
         showBorder = !selected,
         colors = JetsnackTheme.colors.interactiveSecondary,
         shape = shape
     )
-    val textColor by animateColorAsState(
+    val textColor: Color by animateColorAsState(
         if (selected) Color.Black else JetsnackTheme.colors.textSecondary
     )
 
     JetsnackSurface(
-        modifier = modifier.height(28.dp),
+        modifier = modifier.height(height = 28.dp),
         color = backgroundColor,
         contentColor = textColor,
         shape = shape,
         elevation = 2.dp
     ) {
-        val interactionSource = remember { MutableInteractionSource() }
+        val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 
-        val pressed by interactionSource.collectIsPressedAsState()
-        val backgroundPressed =
+        val pressed: Boolean by interactionSource.collectIsPressedAsState()
+        @Suppress("RedundantValueArgument")
+        val backgroundPressed: Modifier =
             if (pressed) {
                 Modifier.offsetGradientBackground(
-                    JetsnackTheme.colors.interactiveSecondary,
-                    200f,
-                    0f
+                    colors = JetsnackTheme.colors.interactiveSecondary,
+                    width = 200f,
+                    offset = 0f
                 )
             } else {
-                Modifier.background(Color.Transparent)
+                Modifier.background(color = Color.Transparent)
             }
         Box(
             modifier = Modifier
@@ -129,8 +148,8 @@ fun FilterChip(
                     interactionSource = interactionSource,
                     indication = null
                 )
-                .then(backgroundPressed)
-                .then(border),
+                .then(other = backgroundPressed)
+                .then(other = border),
         ) {
             Text(
                 text = filter.name,
@@ -145,9 +164,13 @@ fun FilterChip(
     }
 }
 
-@Preview("default")
-@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("large font", fontScale = 2f)
+/**
+ * Three previews of a disabled [FilterChip] with different configurations.
+ */
+@Suppress("RedundantValueArgument")
+@Preview(name = "default")
+@Preview(name = "dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "large font", fontScale = 2f)
 @Composable
 private fun FilterDisabledPreview() {
     JetsnackTheme {
@@ -155,6 +178,9 @@ private fun FilterDisabledPreview() {
     }
 }
 
+/**
+ * Three previews of an enabled [FilterChip] with different configurations.
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)

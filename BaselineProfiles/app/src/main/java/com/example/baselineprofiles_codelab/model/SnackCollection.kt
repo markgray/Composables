@@ -198,6 +198,16 @@ object SnackRepo {
  * Static data
  */
 
+/**
+ * A curated collection of tasty snacks hand-picked for Android users.
+ * This collection features a selection of the first 13 snacks from the [snacks] list,
+ * representing a highlight reel of delightful treats. Its arguments are:
+ *  - `id`: A unique identifier for this collection, which is `1L`.
+ *  - `name`: The name of this collection, which is "Android's picks".
+ *  - `type`: The type of this collection, which is [CollectionType.Highlight].
+ *  - `snacks`: The list of snacks included in this collection, derived from the
+ *  first 13 elements of the [snacks] list.
+ */
 private val tastyTreats = SnackCollection(
     id = 1L,
     name = "Android's picks",
@@ -205,37 +215,102 @@ private val tastyTreats = SnackCollection(
     snacks = snacks.subList(0, 13)
 )
 
+/**
+ * A [SnackCollection] representing snacks that are popular on the Jetsnack platform.
+ *
+ * This collection includes a curated subset of snacks deemed popular, as determined by
+ * factors like user preference, sales trends, or editorial selection. Its arguments are:
+ *  - `id`: A unique identifier for this collection, which is `2L`.
+ *  - `name`: The name of this collection, which is "Popular on Jetsnack".
+ *  - `snacks`: The list of snacks included in this collection, derived from the
+ *  sublist of the [snacks] list starting from index 14 and ending at index 18.
+ */
 private val popular = SnackCollection(
     id = 2L,
     name = "Popular on Jetsnack",
     snacks = snacks.subList(14, 19)
 )
 
+/**
+ * A predefined list of "tasty treats" specifically curated as Work From Home (WFH) favorites.
+ * This list is a copy of the `tastyTreats` list, but with a modified ID and name to represent
+ * its distinct purpose. Its arguments are:
+ *  - `id`: A unique identifier for this collection, which is `3L`.
+ *  
+ */
 private val wfhFavs = tastyTreats.copy(
     id = 3L,
     name = "WFH favourites"
 )
 
+/**
+ * Represents a newly added item, derived from the 'popular' item with a modified ID and name.
+ * This item is intended to represent a recently added entry in the list.
+ *
+ * - `id`: Set to 4L to uniquely identify this newly added item.
+ * - `name`: Changed to "Newly Added" to clearly indicate its status.
+ *
+ * It's created by copying the 'popular' item and altering the necessary fields.
+ */
 private val newlyAdded = popular.copy(
     id = 4L,
     name = "Newly Added"
 )
 
+/**
+ * A special `TastyTreat` available exclusively through the Jetsnack app.
+ *
+ * This treat is unique and not available through any other channels. Its arguments are:
+ *  - `id`: A unique identifier for this treat, which is `5L`.
+ *  - `name`: The name of this treat, which is "Only on Jetsnack".
+ *
+ * It's created by copying the 'tastyTreats' item and altering the necessary fields.
+ */
 private val exclusive = tastyTreats.copy(
     id = 5L,
     name = "Only on Jetsnack"
 )
 
+/**
+ * Represents a list of items that customers frequently purchase alongside the items
+ * they are currently viewing or have in their cart. This is often used to suggest
+ * complementary products or popular pairings. Its arguments are:
+ *  - `id`: A unique identifier for this collection, which is `6L`.
+ *  - `name`: The name of this collection, which is "Customers also bought".
+ *
+ * It's created by copying the 'tastyTreats' item and altering the necessary fields.
+ */
 private val also = tastyTreats.copy(
     id = 6L,
     name = "Customers also bought"
 )
 
+/**
+ * A `TastyTreat` object representing a suggested item "inspired" by the user's shopping cart.
+ * This treat is intended to be a recommendation, possibly based on items
+ * already present in the cart or general purchase history. It has a specific ID (7L)
+ * and a name that indicates its purpose as a cart-related suggestion. Its arguments are:
+ *  - `id`: A unique identifier for this treat, which is `7L`.
+ *  - `name`: The name of this treat, which is "Inspired by your cart".
+ *
+ *  It uses the base `tastyTreats` as a template and overrides the id and name properties.
+ */
 private val inspiredByCart = tastyTreats.copy(
     id = 7L,
     name = "Inspired by your cart"
 )
 
+/**
+ * A list of different snack collections to be displayed.
+ *
+ * Each element in the list represents a distinct collection of snacks,
+ * such as "Tasty Treats", "Popular", "WFH Favs", "Newly Added", and "Exclusive".
+ * The order of the collections in this list determines their order of display.
+ *
+ * The individual collections are defined as separate variables (e.g., [tastyTreats],
+ * [popular], etc.) and are assumed to be lists or other data structures containing the
+ * actual snack data.
+ */
 private val snackCollections = listOf(
     tastyTreats,
     popular,
@@ -244,17 +319,50 @@ private val snackCollections = listOf(
     exclusive
 )
 
+/**
+ * A list of related items.
+ *
+ * This property contains a list of lists, where each inner list represents
+ * a different category of related items.  For example, it might include
+ * items that are similar to the current item ("also"), and items that are
+ * generally well-liked ("popular").
+ *
+ * The order of the inner lists represents the order in which these categories
+ * should be presented to the user.
+ *
+ * The current implementation contains the following categories:
+ * - `also`: Items that are similar or related in some other way.
+ * - `popular`: Items that are generally popular.
+ */
 private val related = listOf(
     also,
     popular
 )
 
+/**
+ * The current shopping cart containing a list of [OrderLine] items.
+ *
+ * This cart represents the items a customer has selected for purchase. Each [OrderLine] in the
+ * cart includes a [Snack] as its [OrderLine.snack] and the desired [OrderLine.count]
+ *
+ * In this example, the cart contains:
+ * - 2 units of 'Gingerbread'
+ * - 3 units of 'Ice Cream Sandwich'
+ * - 1 unit of 'KitKat'
+ */
 private val cart = listOf(
-    OrderLine(snacks[4], 2),
-    OrderLine(snacks[6], 3),
-    OrderLine(snacks[8], 1)
+    OrderLine(snack = snacks[4], count = 2),
+    OrderLine(snack = snacks[6], count = 3),
+    OrderLine(snack = snacks[8], count = 1)
 )
 
+/**
+ * Represents a single line item within an order, specifying the snack and the quantity.
+ *
+ * @property snack The [Snack] that is part of this order line.
+ * @property count The quantity of the specified [snack] in this order line. Must be a
+ * non-negative integer.
+ */
 @Immutable
 data class OrderLine(
     val snack: Snack,

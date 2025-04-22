@@ -88,7 +88,7 @@ fun JetsnackTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) DarkColorPalette else LightColorPalette
+    val colors: JetsnackColors = if (darkTheme) DarkColorPalette else LightColorPalette
 
     ProvideJetsnackColors(colors) {
         MaterialTheme(
