@@ -227,8 +227,8 @@ private val searchCategoryCollections = listOf(
  * This list is used to populate the search suggestion UI, providing users with
  * quick access to common or recent searches.
  *
- * The list is composed of [SearchSuggestionGroup] objects, each representing a
- * logical grouping of suggestions. Each group has a unique ID, a name (e.g., "Recent searches"),
+ * The list is composed of [SearchSuggestionGroup] objects, each representing a logical grouping of
+ * suggestions. Each group has a unique ID, a name (e.g., "Recent searches" or "Popular searches"),
  * and a list of string suggestions.
  */
 private val searchSuggestions = listOf(

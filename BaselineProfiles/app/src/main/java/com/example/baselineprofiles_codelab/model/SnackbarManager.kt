@@ -59,8 +59,8 @@ object SnackbarManager {
      * A [StateFlow] that emits a list of [Message] objects.
      *
      * This property provides a read-only view of the internal [MutableStateFlow] wrapped [List] of
-     * [Message] property [_messages]. Changes to the underlying [List]. Changes to the underlying
-     * [_messages] list will be reflected in the emissions of this [StateFlow].
+     * [Message] property [_messages]. Changes to the underlying [_messages] list will be reflected
+     * in the emissions of this [StateFlow].
      *
      * Subscribers to this [StateFlow] will receive the current list of messages upon subscription
      * and subsequently receive any updates to the list as new emissions.

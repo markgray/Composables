@@ -21,8 +21,8 @@ import androidx.compose.runtime.Immutable
 /**
  * Represents a collection of snacks.
  *
- * A SnackCollection is an immutable data class that holds information about a group of snacks.
- * It contains a unique identifier, a name for the collection, a list of snacks within the collection,
+ * A SnackCollection is an immutable data class that holds information about a group of snacks. It
+ * contains a unique identifier, a name for the collection, a list of snacks within the collection,
  * and a type that describes the nature of the collection.
  *
  * @property id The unique identifier for this snack collection.
@@ -42,7 +42,7 @@ data class SnackCollection(
 )
 
 /**
- * @brief Represents the type of collection.
+ *Represents the type of collection.
  *
  * This enum class defines the different types of collections that can be used.
  * It can be used to distinguish between regular collections and highlighted
