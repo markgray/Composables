@@ -87,7 +87,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     implementation("com.google.android.libraries.maps:maps:3.1.0-beta")
     implementation("com.google.maps.android:maps-v3-ktx:3.4.0")
     implementation("com.android.volley:volley:1.2.1")
@@ -100,9 +100,9 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-layout:1.7.8")
     implementation("androidx.compose.animation:animation:1.7.8")
     implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
-    implementation("com.google.dagger:hilt-android:2.56")
+    implementation("com.google.dagger:hilt-android:2.56.1")
     implementation("io.coil-kt:coil-compose:2.7.0")
-    ksp("com.google.dagger:hilt-compiler:2.56")
+    ksp("com.google.dagger:hilt-compiler:2.56.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
 
@@ -114,9 +114,9 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     androidTestImplementation("androidx.test:rules:1.6.1")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
-    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.8")
-    androidTestImplementation("com.google.dagger:hilt-android:2.56")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.56")
-    kspAndroidTest("com.google.dagger:hilt-compiler:2.56")
+    androidTestImplementation("com.google.dagger:hilt-android:2.56.1")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.56.1")
+    kspAndroidTest("com.google.dagger:hilt-compiler:2.56.1")
 }
