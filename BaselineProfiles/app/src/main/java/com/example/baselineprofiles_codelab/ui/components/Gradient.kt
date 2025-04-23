@@ -27,16 +27,39 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * Applies a diagonal gradient tint to the content of the composable.
+ *
+ * This modifier draws a linear gradient diagonally across the composable's content
+ * and blends it with the content using the specified [blendMode]. The gradient starts
+ * from the top-left corner and ends at the bottom-right corner.
+ *
+ * We use the [drawWithContent] modifier and in its [ContentDrawScope] `onDraw` composable lambda
+ * argument we first call the [ContentDrawScope.drawContent] method to draw the content
+ * of the composable we are decorating. Then we call the [ContentDrawScope.drawRect] method to
+ * draw a  rectangle over that content using as its `brush` argument a [Brush.linearGradient] whose
+ * `colors` argument is our [List] of [Color]`s. parameter `colors` and whose `blendMode` argument
+ * is our [BlendMode] parameter [blendMode].
+ *
+ * @param colors A list of [Color] values that define the gradient. The gradient will
+ * transition smoothly between these colors. Must contain at least two colors.
+ * @param blendMode The [BlendMode] used to combine the gradient with the composable's
+ * existing content. Common options include [BlendMode.SrcAtop], [BlendMode.Multiply],
+ * and [BlendMode.Overlay].
+ *
+ * @return A [Modifier] that applies the diagonal gradient tint.
+ */
 fun Modifier.diagonalGradientTint(
     colors: List<Color>,
     blendMode: BlendMode
-) = drawWithContent {
+): Modifier = drawWithContent {
     drawContent()
     drawRect(
-        brush = Brush.linearGradient(colors),
+        brush = Brush.linearGradient(colors = colors),
         blendMode = blendMode
     )
 }
@@ -45,9 +68,9 @@ fun Modifier.offsetGradientBackground(
     colors: List<Color>,
     width: Float,
     offset: Float = 0f
-) = background(
+): Modifier = background(
     Brush.horizontalGradient(
-        colors,
+        colors = colors,
         startX = -offset,
         endX = width - offset,
         tileMode = TileMode.Mirror
@@ -58,9 +81,9 @@ fun Modifier.diagonalGradientBorder(
     colors: List<Color>,
     borderSize: Dp = 2.dp,
     shape: Shape
-) = this.border(
+): Modifier = this.border(
     width = borderSize,
-    brush = Brush.linearGradient(colors),
+    brush = Brush.linearGradient(colors = colors),
     shape = shape
 )
 
@@ -69,8 +92,8 @@ fun Modifier.fadeInDiagonalGradientBorder(
     colors: List<Color>,
     borderSize: Dp = 2.dp,
     shape: Shape
-) = composed {
-    val animatedColors = List(colors.size) { i ->
+): Modifier = composed {
+    val animatedColors: List<Color> = List(colors.size) { i: Int ->
         animateColorAsState(if (showBorder) colors[i] else colors[i].copy(alpha = 0f)).value
     }
     diagonalGradientBorder(
