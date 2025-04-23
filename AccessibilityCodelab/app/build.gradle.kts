@@ -80,7 +80,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
     implementation("androidx.compose.runtime:runtime:1.7.8")
     implementation("androidx.compose.ui:ui:1.7.8")
