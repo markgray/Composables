@@ -236,7 +236,7 @@ private val popular = SnackCollection(
  * This list is a copy of the `tastyTreats` list, but with a modified ID and name to represent
  * its distinct purpose. Its arguments are:
  *  - `id`: A unique identifier for this collection, which is `3L`.
- *  
+ *  - `name`: Changed to "WFH favourites" to clearly indicate its status.
  */
 private val wfhFavs = tastyTreats.copy(
     id = 3L,
@@ -323,7 +323,7 @@ private val snackCollections = listOf(
  * A list of related items.
  *
  * This property contains a list of lists, where each inner list represents
- * a different category of related items.  For example, it might include
+ * a different category of related items. For example, it might include
  * items that are similar to the current item ("also"), and items that are
  * generally well-liked ("popular").
  *

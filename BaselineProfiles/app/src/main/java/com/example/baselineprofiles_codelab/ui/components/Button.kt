@@ -60,43 +60,45 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
  * Our root Composable for this button is a [JetsnackSurface] whose arquments are:
  *  - shape: is our [Shape] parameter [shape]
  *  - color: is [Color.Transparent]
- *  - contentColor: is [contentColor] if our [Boolean] parameter [enabled] is true,
- *  otherwise [disabledContentColor]
+ *  - contentColor: is our [Color] parameter [contentColor] if our [Boolean] parameter [enabled] is
+ *  true, otherwise it is our [Color] parameter [disabledContentColor].
  *  - border: is our [BorderStroke] parameter [border]
  *  - modifier: is our [Modifier] parameter [modifier] with a [Modifier.clip] whose `shape` is our
  *  [Shape] parameter [shape] chained to that, followed by a [Modifier.background] whose `brush` is
  *  a [Brush.horizontalGradient] whose `colors` are our [List] of [Color] parameter
  *  [backgroundGradient] if our [Boolean] parameter [enabled] is true, otherwise its our [List] of
  *  [Color] parameter [disabledBackgroundGradient], and at the end of the chain we have a
- *  [Modifier.clickable] whose `onClick` is our lambda [onClick], `enabled` is our [Boolean]
- *  parameter [enabled], `role` is [Role.Button], `interactionSource` is our
+ *  [Modifier.clickable] whose `onClick` argument is our lambda parameter [onClick], `enabled` is
+ *  our [Boolean] parameter [enabled], `role` is [Role.Button], `interactionSource` is our
  *  [MutableInteractionSource] parameter [interactionSource] and `indication` is null.
  *
  * In the `content` composable lambda argument of the [JetsnackSurface] we use [ProvideTextStyle]
  * to provide the [Typography.button] of our custom [MaterialTheme.typography] as the local
  * [TextStyle] of a [Row] with the following arguments:
- *  - modifier: is a [Modifier.defaultMinSize] whose `minWidth` is the [ButtonDefaults.MinWidth]
- *  and `minHeight` is the [ButtonDefaults.MinHeight], with a [Modifier.indication] whose
+ *  - modifier: is a [Modifier.defaultMinSize] whose `minWidth` is [ButtonDefaults.MinWidth]
+ *  and `minHeight` is [ButtonDefaults.MinHeight], chained with a [Modifier.indication] whose
  *  `interactionSource` is our [MutableInteractionSource] parameter [interactionSource] and
  *  `indication` is the [ripple] function, and at the end of the chain we have a
- *  [Modifier.padding] whose `paddingValues` is our [PaddingValues] parameter [contentPadding].
+ *  [Modifier.padding] whose `paddingValues` argument is our [PaddingValues] parameter
+ *  [contentPadding].
  *  - horizontalArrangement: is [Arrangement.Center]
  *  - verticalAlignment: is [Alignment.CenterVertically]
  *  - content: is our composabe lambda parameter [content].
  *
  * @param onClick The callback to be invoked when the button is clicked.
  * @param modifier The [Modifier] to be applied to the button.
- * @param enabled Controls the enabled state of the button. When `false`, the button will be grayed out and not clickable.
+ * @param enabled Controls the enabled state of the button. When `false`, the button will be grayed
+ * out and not clickable.
  * @param interactionSource The [MutableInteractionSource] representing the stream of [Interaction]s
- * for this button. You can create and pass in your own remembered [MutableInteractionSource] if yo
- * u want to observe the button's interactions.
+ * for this button. You can create and pass in your own remembered [MutableInteractionSource] if you
+ * want to observe the button's interactions.
  * @param shape The shape of the button's border and background. Defaults to [ButtonShape].
  * @param border The border of the button. Defaults to null.
  * @param backgroundGradient The [List] of [Color] gradient colors of the button's background.
  * Defaults to the [JetsnackColors.interactivePrimary] of our custom [JetsnackTheme.colors].
  * @param disabledBackgroundGradient The [List] of [Color] gradient colors of the button's
- * background when it's disabled.
- * Defaults to the [JetsnackColors.interactiveSecondary] of our custom [JetsnackTheme.colors].
+ * background when it's disabled. Defaults to the [JetsnackColors.interactiveSecondary] of our
+ * custom [JetsnackTheme.colors].
  * @param contentColor The content color of the button's content. Defaults to the
  * [JetsnackColors.textInteractive] of our custom [JetsnackTheme.colors].
  * @param disabledContentColor The content color of the button's content when it's disabled.
