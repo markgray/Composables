@@ -79,9 +79,9 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
  * in whose [LazyItemScope] `content` composable lambda argument we compose an [IconButton] whose
  * `onClick` argument is our [onShowFilters] lambda parameter. In the `content` composable lambda
  * argument of the [IconButton] we compose an [Icon] whose arguments are:
- *  - `imageVector`: [Icons.Rounded.FilterList], which is an icon representing the filter
+ *  - `imageVector`: [Icons.Rounded.FilterList], which is an icon representing the additional filter
  *  selection UI.
- *  - `tint`: the color of the icon. We use [JetsnackColors.brand] of our custom
+ *  - `tint`: the [Color] of the icon. We use [JetsnackColors.brand] of our custom
  *  [JetsnackTheme.colors].
  *  - `contentDescription`: a string resource describing the icon, is the [String] with resource ID
  *  `R.string.label_filters` ("Filters").
@@ -154,7 +154,8 @@ fun FilterBar(
  * we use the [animateColorAsState] composable method to animate the color change).
  *
  * Then our root composable is a [JetsnackSurface] whose arguments are:
- *  - `modifier`: [Modifier.height], which sets the height of the surface to 28.dp.
+ *  - `modifier`: chained to our [Modifier] parameter [modifier] is a [Modifier.height], which sets
+ *  the `height` of the surface to 28.dp.
  *  - `color`: our animated [State] wrapped [Color] variable `backgroundColor` (which is animated
  *  between [JetsnackColors.brandSecondary] and [JetsnackColors.uiBackground] based on the value
  *  of `selected`).
@@ -163,22 +164,23 @@ fun FilterBar(
  *  - `shape`: our [Shape] parameter [shape].
  *  - `elevation`: 2.dp.
  *
- * In `content` composable lambda argument we initialize and remember our [MutableInteractionSource]
- * variable `interactionSource` to a new instance, and initialize our [State] wrapped [Boolean]
- * variable `pressed` using the [InteractionSource.collectIsPressedAsState] method of
- * `interactionSource`. Next we initialize our [Modifier] variable `backgroundPressed` to be a
- * [Modifier.offsetGradientBackground] whose `colors` argument is the [JetsnackColors.interactiveSecondary]
- * of our custom [JetsnackTheme.colors], `width` argument is 200.dp, and `offset` argument is 0.dp
- * if `pressed` is `true`, to a [Modifier.background] whose `color` argument is [Color.Transparent]
- * if `pressed` is `false`. Then we compose a [Box] whose `modifier` argument is a [Modifier.toggleable]
- * whose `value` argument is `selected`, `onValueChange` argument is `setSelected`, whose `interactionSource`
- * argument is `interactionSource`, and whose `indication` argument is `null`, and chained to that using
- * [Modifier.then] is the `backgroundPressed` variable, followed by our `border` variable.
+ * In the `content` composable lambda argument of the [JetsnackSurface] we initialize and remember
+ * our [MutableInteractionSource] variable `interactionSource` to a new instance, and initialize our
+ * [State] wrapped [Boolean] variable `pressed` using the [InteractionSource.collectIsPressedAsState]
+ * method of `interactionSource`. Next we initialize our [Modifier] variable `backgroundPressed` to
+ * be a [Modifier.offsetGradientBackground] whose `colors` argument is the
+ * [JetsnackColors.interactiveSecondary] of our custom [JetsnackTheme.colors], `width` argument is
+ * 200.dp, and `offset` argument is 0.dp if `pressed` is `true`, or to a [Modifier.background] whose
+ * `color` argument is [Color.Transparent] if `pressed` is `false`. Then we compose a [Box] whose
+ * `modifier` argument is a [Modifier.toggleable] whose `value` argument is `selected`, `onValueChange`
+ * argument is `setSelected`, whose `interactionSource` argument is `interactionSource`, and whose
+ * `indication` argument is `null`, and chained to that using [Modifier.then] is the `backgroundPressed`
+ * [Modifier] variable, followed by our `border` [Modifier] variable.
  *
  * In the [BoxScope] `content` composable lambda argument of the [Box] we compose a [Text] whose
  * arguments are:
- *  - `text`: the [String] name of our [Filter] parameter [filter].
- *  - `style`: the [Typography.caption] of our custom [MaterialTheme.typography].
+ *  - `text`: the [Filter.name] property of our [Filter] parameter [filter].
+ *  - `style`: the [Typography.caption] textstyle of our custom [MaterialTheme.typography].
  *  - `maxLines`: 1.
  *  - `modifier`: a [Modifier.padding] whose `horizontal` argument is 20.dp, and whose `vertical`
  *  argument is 6.dp.
