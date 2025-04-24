@@ -37,8 +37,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.baselineprofiles_codelab.ui.theme.JetsnackColors
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 
+/**
+ * A custom `IconButton` with a gradient tint and border, designed for the Jetsnack app theme.
+ *
+ * This composable creates an icon button with a visually appealing gradient tint that changes
+ * dynamically based on the button's pressed state. It also includes a diagonal gradient border
+ * for added visual flair.
+ *
+ * @param imageVector The [ImageVector] to be displayed within the icon button.
+ * @param onClick The callback to be invoked when the button is clicked.
+ * @param contentDescription The content description of the icon, used for accessibility.
+ * @param modifier Modifier to be applied to the button.
+ * @param colors A [List] of [Color] values used to create the gradient tint. Defaults to
+ * the [JetsnackColors.interactiveSecondary] of our custom [JetsnackTheme.colors].
+ */
 @Composable
 fun JetsnackGradientTintedIconButton(
     imageVector: ImageVector,
@@ -47,22 +62,40 @@ fun JetsnackGradientTintedIconButton(
     modifier: Modifier = Modifier,
     colors: List<Color> = JetsnackTheme.colors.interactiveSecondary
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
+    /**
+     * The remembered [MutableInteractionSource] is used to track the interaction state of the
+     * [Modifier.clickable] that is applied to this button to make it clickable.
+     */
+    val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 
     // This should use a layer + srcIn but needs investigation
-    val border = Modifier.fadeInDiagonalGradientBorder(
+    /**
+     * The [Modifier.fadeInDiagonalGradientBorder] is a custom [Modifier] that applies an animated
+     * diagonal border to this button.
+     */
+    val border: Modifier = Modifier.fadeInDiagonalGradientBorder(
         showBorder = true,
         colors = JetsnackTheme.colors.interactiveSecondary,
         shape = CircleShape
     )
-    val pressed by interactionSource.collectIsPressedAsState()
-    val background = if (pressed) {
-        Modifier.offsetGradientBackground(colors, 200f, 0f)
+
+    /**
+     * Subscribes to our [MutableInteractionSource] variable `interactionSource` and returns a
+     * [State] wrapped [Boolean] representing whether the button is currently pressed or not.
+     */
+    val pressed: Boolean by interactionSource.collectIsPressedAsState()
+
+    /**
+     *
+     */
+    @Suppress("RedundantValueArgument")
+    val background: Modifier = if (pressed) {
+        Modifier.offsetGradientBackground(colors = colors, width = 200f, offset = 0f)
     } else {
-        Modifier.background(JetsnackTheme.colors.uiBackground)
+        Modifier.background(color = JetsnackTheme.colors.uiBackground)
     }
-    val blendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
-    val modifierColor = if (pressed) {
+    val blendMode: BlendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
+    val modifierColor: Modifier = if (pressed) {
         Modifier.diagonalGradientTint(
             colors = listOf(
                 JetsnackTheme.colors.textSecondary,
@@ -83,9 +116,9 @@ fun JetsnackGradientTintedIconButton(
                 interactionSource = interactionSource,
                 indication = null
             )
-            .clip(CircleShape)
-            .then(border)
-            .then(background),
+            .clip(shape = CircleShape)
+            .then(other = border)
+            .then(other = background),
         color = Color.Transparent
     ) {
         Icon(
@@ -96,6 +129,9 @@ fun JetsnackGradientTintedIconButton(
     }
 }
 
+/**
+ * Two previews of the [JetsnackGradientTintedIconButton] composable for different configurations.
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -105,7 +141,7 @@ private fun GradientTintedIconButtonPreview() {
             imageVector = Icons.Default.Add,
             onClick = {},
             contentDescription = "Demo",
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(all = 4.dp)
         )
     }
 }

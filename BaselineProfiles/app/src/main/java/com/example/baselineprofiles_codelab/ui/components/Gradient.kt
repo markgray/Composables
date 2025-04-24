@@ -19,6 +19,8 @@ package com.example.baselineprofiles_codelab.ui.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
@@ -64,6 +66,22 @@ fun Modifier.diagonalGradientTint(
     )
 }
 
+/**
+ * Applies a horizontal gradient background to the composable with an adjustable offset.
+ *
+ * This modifier creates a horizontal gradient using the provided list of colors and applies it
+ * as a background. The gradient can be shifted horizontally using the `offset` parameter,
+ * creating a scrolling or moving effect. The gradient is mirrored to create a seamless
+ * repeating effect.
+ *
+ * @param colors The list of [Color]s to use for the gradient. The gradient will transition
+ * linearly between these colors.
+ * @param width The total width of the gradient in DP. This determines how much space the
+ * gradient spans before repeating.
+ * @param offset The horizontal offset of the gradient in DP. A positive value shifts the
+ * gradient to the right, while a negative value shifts it to the left. Defaults to 0f (no offset).
+ * @return A [Modifier] with the specified horizontal gradient background applied.
+ */
 fun Modifier.offsetGradientBackground(
     colors: List<Color>,
     width: Float,
@@ -77,6 +95,20 @@ fun Modifier.offsetGradientBackground(
     )
 )
 
+/**
+ * Applies a diagonal gradient border to the composable.
+ *
+ * This modifier draws a border around the composable with a linear gradient
+ * that transitions through the provided colors. The gradient direction is
+ * implicitly diagonal from the top-left to bottom-right.
+ *
+ * @param colors The list of colors to use in the gradient. The gradient will transition
+ * between these colors in the order they are provided.
+ * @param borderSize The thickness of the border. Defaults to 2.dp.
+ * @param shape The shape of the border. This can be any [Shape] such as
+ * [RoundedCornerShape] or [CircleShape]. The border will conform to the provided shape.
+ * @return A [Modifier] that applies the diagonal gradient border to the composable.
+ */
 fun Modifier.diagonalGradientBorder(
     colors: List<Color>,
     borderSize: Dp = 2.dp,
@@ -87,13 +119,43 @@ fun Modifier.diagonalGradientBorder(
     shape = shape
 )
 
+/**
+ * Adds a diagonally animated gradient border to the composable.
+ *
+ * This modifier applies a gradient border that fades in or out based on the [showBorder] parameter.
+ * When [showBorder] is true, the border is fully visible, and when it's false, the border fades to
+ * transparent.
+ *
+ * The animation is applied to the colors of the gradient, creating a smooth transition between the
+ * visible and invisible states.
+ *
+ * Our root composable is a [Modifier.composed] modifier, and in its [Modifier] `factory` composable
+ * lambda argument we initalize our animated [State] wrapped [List] of [Color] variable
+ * `animatedColors` with a [MutableList] whose size is equal to the size of our [List] of [Color]
+ * parameter [colors] and in the `init` lambda argument we call the [animateColorAsState] composable
+ * for each of the colors in our [List] of [Color] parameter [colors] appending the `i`th
+ * [Color] in [colors] if our [Boolean] parameter [showBorder] is true or appending a copy of
+ * that [Color] with an alpha of 0f if our [Boolean] parameter [showBorder] is false.
+ *
+ * Then we return a [Modifier.diagonalGradientBorder] whose `colors` argument is our animated [State]
+ * wrapped [List] of [Color] variable `animatedColors`, whose `borderSize` argument is our [Dp]
+ * parameter [borderSize], and whose `shape` argument is our [Shape] parameter [shape].
+ *
+ * @param showBorder [Boolean] indicating whether the border should be visible (true) or
+ * transparent (false).
+ * @param colors List of [Color] values defining the gradient's color stops.
+ * Must contain at least two colors.
+ * @param borderSize The thickness of the border in [Dp]. Defaults to 2.dp.
+ * @param shape The shape of the border.
+ * @return A [Modifier] that applies the animated diagonal gradient border.
+ */
 fun Modifier.fadeInDiagonalGradientBorder(
     showBorder: Boolean,
     colors: List<Color>,
     borderSize: Dp = 2.dp,
     shape: Shape
 ): Modifier = composed {
-    val animatedColors: List<Color> = List(colors.size) { i: Int ->
+    val animatedColors: List<Color> = List(size = colors.size) { i: Int ->
         animateColorAsState(if (showBorder) colors[i] else colors[i].copy(alpha = 0f)).value
     }
     diagonalGradientBorder(
