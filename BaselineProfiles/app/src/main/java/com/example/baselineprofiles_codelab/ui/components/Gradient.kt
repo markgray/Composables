@@ -69,16 +69,16 @@ fun Modifier.diagonalGradientTint(
 /**
  * Applies a horizontal gradient background to the composable with an adjustable offset.
  *
- * This modifier creates a horizontal gradient using the provided list of colors and applies it
- * as a background. The gradient can be shifted horizontally using the `offset` parameter,
- * creating a scrolling or moving effect. The gradient is mirrored to create a seamless
- * repeating effect.
+ * This modifier creates a horizontal gradient using the [List] of [Color] in parameter [colors] and
+ * applies it as a background. The gradient can be shifted horizontally using the `offset` parameter,
+ * creating a scrolling or moving effect (if our [Float] parameter [offset] is animated). The
+ * gradient is mirrored to create a seamless repeating effect.
  *
- * @param colors The list of [Color]s to use for the gradient. The gradient will transition
+ * @param colors The [List] of [Color]s to use for the gradient. The gradient will transition
  * linearly between these colors.
- * @param width The total width of the gradient in DP. This determines how much space the
+ * @param width The total width of the gradient in pixels. This determines how much space the
  * gradient spans before repeating.
- * @param offset The horizontal offset of the gradient in DP. A positive value shifts the
+ * @param offset The horizontal offset of the gradient in pixels. A positive value shifts the
  * gradient to the right, while a negative value shifts it to the left. Defaults to 0f (no offset).
  * @return A [Modifier] with the specified horizontal gradient background applied.
  */

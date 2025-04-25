@@ -144,12 +144,12 @@ private fun HighlightedSnacks(
     ) {
         itemsIndexed(snacks) { index, snack ->
             HighlightSnackItem(
-                snack,
-                onSnackClick,
-                index,
-                gradient,
-                gradientWidth,
-                scroll.value
+                snack = snack,
+                onSnackClick = onSnackClick,
+                index = index,
+                gradient = gradient,
+                gradientWidth = gradientWidth,
+                scroll = scroll.value
             )
         }
     }
