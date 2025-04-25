@@ -59,21 +59,22 @@ import com.example.baselineprofiles_codelab.ui.components.FilterChip
 import com.example.baselineprofiles_codelab.ui.components.JetsnackScaffold
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.runtime.mutableFloatStateOf
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun FilterScreen(
     onDismiss: () -> Unit
 ) {
-    var sortState by remember { mutableStateOf(SnackRepo.getSortDefault()) }
-    var maxCalories by remember { mutableStateOf(0f) }
-    val defaultFilter = SnackRepo.getSortDefault()
+    var sortState: String by remember { mutableStateOf(SnackRepo.getSortDefault()) }
+    var maxCalories: Float by remember { mutableFloatStateOf(0f) }
+    val defaultFilter: String = SnackRepo.getSortDefault()
 
     Dialog(onDismissRequest = onDismiss) {
 
-        val priceFilters = remember { SnackRepo.getPriceFilters() }
-        val categoryFilters = remember { SnackRepo.getCategoryFilters() }
-        val lifeStyleFilters = remember { SnackRepo.getLifeStyleFilters() }
+        val priceFilters: List<Filter> = remember { SnackRepo.getPriceFilters() }
+        val categoryFilters: List<Filter> = remember { SnackRepo.getCategoryFilters() }
+        val lifeStyleFilters: List<Filter> = remember { SnackRepo.getLifeStyleFilters() }
         JetsnackScaffold(
             topBar = {
                 TopAppBar(
@@ -119,12 +120,12 @@ fun FilterScreen(
             Column(
                 Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(state = rememberScrollState())
                     .padding(horizontal = 24.dp, vertical = 16.dp),
             ) {
                 SortFiltersSection(
                     sortState = sortState,
-                    onFilterChange = { filter ->
+                    onFilterChange = { filter: Filter ->
                         sortState = filter.name
                     }
                 )
@@ -139,7 +140,7 @@ fun FilterScreen(
 
                 MaxCalories(
                     sliderPosition = maxCalories,
-                    onValueChanged = { newValue ->
+                    onValueChanged = { newValue: Float ->
                         maxCalories = newValue
                     }
                 )

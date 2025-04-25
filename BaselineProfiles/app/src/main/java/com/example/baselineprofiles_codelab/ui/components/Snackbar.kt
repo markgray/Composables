@@ -17,19 +17,36 @@
 package com.example.baselineprofiles_codelab.ui.components
 
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Shapes
 import androidx.compose.material.Snackbar
 import androidx.compose.material.SnackbarData
+import androidx.compose.material.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.baselineprofiles_codelab.ui.theme.JetsnackColors
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 
 /**
- * An alternative to [androidx.compose.material.Snackbar] utilizing
- * [com.example.baselineprofiles_codelab.ui.theme.JetsnackColors]
+ * A customized Snackbar composable based on Material Design's Snackbar. This function provides a
+ * themed Snackbar with pre-defined colors and shapes specific to the Jetsnack application.
+ *
+ * @param snackbarData The data that defines the content of this Snackbar. Typically created and
+ * managed by a [SnackbarHost].
+ * @param modifier Optional [Modifier] for this Snackbar.
+ * @param actionOnNewLine Whether or not the action should be put on a new line.
+ * @param shape The shape of the snackbar. Defaults to [Shapes.small] of our custom
+ * [MaterialTheme.shapes].
+ * @param backgroundColor The background color of this Snackbar. Defaults to the
+ * [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors].
+ * @param contentColor The color of the text in the Snackbar. Defaults to the
+ * [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors].
+ * @param actionColor The color of the action text in the Snackbar. Defaults to the
+ * [JetsnackColors.brand] of our custom [JetsnackTheme.colors].
+ * @param elevation The elevation of this Snackbar. Defaults to 6.dp.
  */
 @Composable
 fun JetsnackSnackbar(

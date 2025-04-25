@@ -16,6 +16,7 @@
 
 package com.example.baselineprofiles_codelab.ui
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.SnackbarHost
@@ -66,7 +67,7 @@ fun JetsnackMain() {
                 )
             },
             scaffoldState = appState.scaffoldState
-        ) { innerPaddingModifier ->
+        ) { innerPaddingModifier: PaddingValues ->
             NavHost(
                 navController = appState.navController,
                 startDestination = MainDestinations.HOME_ROUTE,

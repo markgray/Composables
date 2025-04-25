@@ -19,6 +19,7 @@ package com.example.baselineprofiles_codelab.ui.components
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.padding
@@ -46,6 +47,44 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
  * This composable creates an icon button with a visually appealing gradient tint that changes
  * dynamically based on the button's pressed state. It also includes a diagonal gradient border
  * for added visual flair.
+ *
+ * First we initalize and remember our [MutableInteractionSource] variable `interactionSource` to
+ * a new [MutableInteractionSource] instance. Then we initialize our [Modifier] variable `border`
+ * to a custom [Modifier.fadeInDiagonalGradientBorder] that will be used to apply a border using
+ * the [JetsnackColors.interactiveSecondary] of our custom [JetsnackTheme.colors] as its gradient
+ * colors using the [CircleShape] shape and our [BlendMode] variable `blendMode` as its [BlendMode].
+ *
+ * We initialize our [State] wrapped [Boolean] variable `pressed` by subscribing to our
+ * [MutableInteractionSource] variable `interactionSource` using its
+ * [InteractionSource.collectIsPressedAsState] method.
+ *
+ * We initialize our [Modifier] variable `background` to either a [Modifier.offsetGradientBackground]
+ * whose `colors` argument is our [List] of [Color]'s parameter [colors] if `pressed` is true, or
+ * or a [Modifier.background] whose `color` argument is the [JetsnackColors.uiBackground] of our
+ * custom [JetsnackTheme.colors] if `pressed` is false.
+ *
+ * We initialize our [BlendMode] variable `blendMode` to either a [BlendMode.Darken] if we are in
+ * dark theme, or a [BlendMode.Plus] if we are in light theme.
+ *
+ * We initialize our [Modifier] variable `modifierColor` to either a [Modifier.diagonalGradientTint]
+ * that uses two copies of the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors]
+ * if `pressed` is true, or a [Modifier.diagonalGradientTint] that uses our [List] of [Color]'s
+ * parameter [colors] if `pressed` is false.
+ *
+ * Then our root composable is a [Surface] whose arguments are:
+ *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.clickable] whose
+ *  `onClick` argument is our [onClick] lambda parameter, whose `interactionSource` argument is
+ *  our [MutableInteractionSource] variable `interactionSource`, and whose `indication` argument
+ *  is null. This is followed by a chain to a [Modifier.clip] whose `shape` argument is [CircleShape],
+ *  then there is a chain to our [Modifier] variable `border` and a chain to our [Modifier] variable
+ *  `background`.
+ *  - `color`: [Color.Transparent]
+ *
+ * In the `content` composable lambda argument of our [Surface] we compose an [Icon] whose
+ * arguments are:
+ *  - `imageVector`: our [ImageVector] parameter [imageVector]
+ *  - `contentDescription`: our [String] parameter [contentDescription]
+ *  - `modifier`: our [Modifier] variable `modifierColor`
  *
  * @param imageVector The [ImageVector] to be displayed within the icon button.
  * @param onClick The callback to be invoked when the button is clicked.
@@ -86,7 +125,10 @@ fun JetsnackGradientTintedIconButton(
     val pressed: Boolean by interactionSource.collectIsPressedAsState()
 
     /**
-     *
+     * The [Modifier.offsetGradientBackground] is a custom [Modifier] that applies an offset
+     * gradient background to this button if our button is currently pressed, otherwise it applies
+     * a solid [Modifier.background] using the [JetsnackColors.uiBackground] of our custom
+     * [JetsnackTheme.colors].
      */
     @Suppress("RedundantValueArgument")
     val background: Modifier = if (pressed) {
@@ -94,7 +136,19 @@ fun JetsnackGradientTintedIconButton(
     } else {
         Modifier.background(color = JetsnackTheme.colors.uiBackground)
     }
+
+    /**
+     * The [BlendMode] to use for our [Modifier.diagonalGradientTint] variable `modifierColor` is a
+     * [BlendMode.Darken] if we are in dark theme, otherwise it is a [BlendMode.Plus].
+     */
     val blendMode: BlendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
+
+    /**
+     * The [Modifier.diagonalGradientTint] is a custom [Modifier] that applies a diagonal gradient
+     * tint to this button using two [Color]'s or [JetsnackColors.textSecondary] if `pressed` is
+     * true, otherwise it applies a solid [Modifier.diagonalGradientTint] using the our [List] of
+     * [Color]'s `colors` variable.
+     */
     val modifierColor: Modifier = if (pressed) {
         Modifier.diagonalGradientTint(
             colors = listOf(

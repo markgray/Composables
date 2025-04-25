@@ -64,6 +64,9 @@ import com.example.baselineprofiles_codelab.model.snacks
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import com.example.baselineprofiles_codelab.ui.utils.mirroringIcon
 
+/**
+ * TODO: Continue here.
+ */
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
 
