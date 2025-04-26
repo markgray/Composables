@@ -22,8 +22,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +34,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -41,6 +45,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
@@ -48,6 +53,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -62,22 +68,96 @@ import com.example.baselineprofiles_codelab.model.CollectionType
 import com.example.baselineprofiles_codelab.model.Snack
 import com.example.baselineprofiles_codelab.model.SnackCollection
 import com.example.baselineprofiles_codelab.model.snacks
+import com.example.baselineprofiles_codelab.ui.theme.JetsnackColors
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import com.example.baselineprofiles_codelab.ui.utils.mirroringIcon
 
 /**
- * TODO: Continue here.
+ * The width of the highlight card in the UI.
+ * This value determines the horizontal space allocated to each highlight card.
+ * It's set to 170 density-independent pixels (dp) by default.
  */
 private val HighlightCardWidth: Dp = 170.dp
+
+/**
+ * The default padding applied to highlight cards.
+ *
+ * This padding is used to provide visual breathing room around content
+ * within a highlight card, ensuring that the content doesn't touch the
+ * card's edges and improving readability and aesthetics.
+ *
+ * The value is set to 16.dp, which is a commonly used padding size in
+ * Material Design and other design systems. You can adjust this value
+ * if needed for specific layout requirements.
+ */
 private val HighlightCardPadding: Dp = 16.dp
 
-// The Cards show a gradient which spans 3 cards and scrolls with parallax.
+/**
+ * The width of the gradient effect used for highlighting the cards.
+ * The Cards show a gradient which spans 3 cards and scrolls with parallax.
+ *
+ * This value is dynamically calculated based on the current screen density,
+ * the width of a single highlight card, and the padding around it.
+ * It's designed to create a gradient that smoothly transitions across roughly three card widths.
+ *
+ * @see HighlightCardWidth
+ * @see HighlightCardPadding
+ */
 private val gradientWidth: Float
     @Composable
     get() = with(LocalDensity.current) {
         (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
 
+/**
+ * Displays its [SnackCollection] parameter [snackCollection] and all its [SnackCollection.snacks].
+ *
+ * Our root Composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier].
+ * In its [ColumnScope] `content` composable lambda argument we first display a [Row] with two elements:
+ *
+ * A [Text] whose arguments are:
+ *  - `text` the [SnackCollection.name] of our [SnackCollection] parameter [snackCollection]
+ *  - `style` is the [Typography.h6] of our custom [MaterialTheme.typography]
+ *  - `color` is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors]
+ *  - `maxLines` is 1
+ *  - `overflow` is [TextOverflow.Ellipsis]
+ *  - `modifier` is a [RowScope.weight] whose `weight` is set to 1f, with a [Modifier.wrapContentWidth]
+ *  whose `align` is set to [Alignment.Start] chained to that
+ *
+ * An [IconButton] whose `onClick` lambda argument is a lambda that does nothing, and whose `modifier`
+ * argument is a [RowScope.align] whose `alignment` is set to [Alignment.CenterVertically]. In its
+ * `content` composable lambda argument we display an [Icon] whose arguments are:
+ *  - `imageVector` is the [ImageVector] returned by [mirroringIcon] when is `ltrIcon` argument is
+ *  [Icons.AutoMirrored.Outlined.ArrowForward], and its `rtlIcon` argument is
+ *  [Icons.AutoMirrored.Outlined.ArrowBack].
+ *  - `tint` is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors]
+ *  - `contentDescription` is `null`
+ *
+ * Next in the [Column] is our [Boolean] parameter [highlight] is `true` and the
+ * [SnackCollection.type] of our [SnackCollection] parameter [snackCollection] is equal to
+ * [CollectionType.Highlight] we compose a [HighlightedSnacks] whose arguments are:
+ *  - `index` is our [Int] parameter [index]
+ *  - `snacks` is the [List] of [Snack]s in the [SnackCollection.snacks] property of our
+ *  [SnackCollection] parameter [snackCollection].
+ *  - `onSnackClick` is our lambda parameter [onSnackClick]
+ *
+ * Otherwise we compose a [Snacks] whose arguments are:
+ *  - `snacks` is the [List] of [Snack]s in the [SnackCollection.snacks] property of our
+ *  [SnackCollection] parameter [snackCollection].
+ *  - `onSnackClick` is our lambda parameter [onSnackClick]
+ *
+ * @param snackCollection the [SnackCollection] whose [List] of [Snack] field [SnackCollection.snacks]
+ * we should display.
+ * @param onSnackClick the lambda that each of the [JetsnackCard] displaying a [Snack] from our
+ * [snackCollection] should call with the [Snack.id] of the clicked [Snack].
+ * @param modifier the [Modifier] to be applied to this layout node.
+ * @param index the position of this [SnackCollection] in a [List] of [SnackCollection] that are
+ * being displayed. We use it to select the [List] of [Color] to use as the gradient of any
+ * [HighlightSnackItem] from our [SnackCollection] parameter [snackCollection] that we display.
+ * @param highlight if `true` and the [SnackCollection.type] of our [SnackCollection] parameter
+ * [snackCollection] is [CollectionType.Highlight], we use a [HighlightedSnacks] to display the
+ * [List] of [Snack] in [SnackCollection.snacks] otherwise we use a [Snacks].
+ */
 @Composable
 fun SnackCollection(
     snackCollection: SnackCollection,
@@ -129,6 +209,42 @@ fun SnackCollection(
     }
 }
 
+/**
+ * Displays a horizontal list of highlighted snacks using a [LazyRow].
+ *
+ * This composable takes a list of [Snack] items and displays them in a horizontally scrolling
+ * row. Each snack is displayed using the [HighlightSnackItem] composable, and a gradient effect
+ * is applied to visually highlight the items. The gradient alternates colors based on the index
+ * of the `HighlightedSnacks` composable to create visual distinction.
+ *
+ * We start by initializing and remembering our [ScrollState] variable `scroll` with a new instance
+ * whose initial value is `0`. We initialize our [List] of [Color] variable `gradient` with
+ * [JetsnackColors.gradient6_1] if [index] is even or with [JetsnackColors.gradient6_2] if it is
+ * odd. We initialize our [Float] variable `gradientWidth` pixel value for the current [LocalDensity]
+ * of six times the [HighlightCardWidth] plus the [HighlightCardPadding] value.
+ *
+ * Our root Composable is a [LazyRow] whose `modifier` argument is our [Modifier] parameter [modifier],
+ * whose `horizontalArrangement` argument is a [Arrangement.spacedBy] whose `space` argument is 16.dp,
+ * and whose `contentPadding` argument is a [PaddingValues] whose `start` and `end` arguments are both
+ * `24.dp`. In its [LazyListScope] `content` composable lambda argument we use the
+ * [LazyListScope.itemsIndexed] method to iterate over our [List] of [Snack] parameter [snacks]
+ * and in its [LazyItemScope] `itemContent` composable lambda argument we capture in [Int] passed
+ * the lambda in our `index` variable and the [Snack] passed the lambda in our `snack` variable,
+ * then compose for every [Snack] in our [List] a [HighlightSnackItem] whose arguments are:
+ *  - `snack` is our [Snack] variable `snack`
+ *  - `onSnackClick` is our lambda parameter [onSnackClick]
+ *  - `index` is our [Int] variable `index`
+ *  - `gradient` is oue [List] of [Color] variable `gradient`
+ *  - `gradientWidth` is our [Float] variable `gradientWidth`
+ *  - `scroll` is the [ScrollState.value] of our [ScrollState] variable `scroll`
+ *
+ * @param index The index of this [HighlightedSnacks] within a potential parent list. This is
+ * used to alternate the gradient colors.
+ * @param snacks The list of [Snack] items to display.
+ * @param onSnackClick A lambda function to be called when a snack is clicked. It receives the
+ * [Snack.id] of the clicked snack.
+ * @param modifier [Modifier] for styling and layout customization.
+ */
 @Composable
 private fun HighlightedSnacks(
     index: Int,
@@ -136,12 +252,27 @@ private fun HighlightedSnacks(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    /**
+     * A [ScrollState] that will be used to control and observe the scrolling position of the
+     * [LazyRow] displaying our [List] of [Snack] parameter [snacks].
+     */
     val scroll: ScrollState = rememberScrollState(initial = 0)
+
+    /**
+     * [List] of [Color] used as the gradient the [HighlightSnackItem] composed from our [snacks],
+     * it alternates between [JetsnackColors.gradient6_1] of our custom [JetsnackTheme.colors] for
+     * even indices and [JetsnackColors.gradient6_2] of our custom [JetsnackTheme.colors] for
+     * odd indices.
+     */
     val gradient: List<Color> = when ((index / 2) % 2) {
         0 -> JetsnackTheme.colors.gradient6_1
         else -> JetsnackTheme.colors.gradient6_2
     }
-    // The Cards show a gradient which spans 3 cards and scrolls with parallax.
+
+    /**
+     * The width of the gradient effect used for highlighting the cards.
+     * The Cards show a gradient which spans 3 cards and scrolls with parallax.
+     */
     val gradientWidth: Float = with(LocalDensity.current) {
         (6 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
@@ -163,6 +294,19 @@ private fun HighlightedSnacks(
     }
 }
 
+/**
+ * Displays a horizontal row of snack items.
+ *
+ * This composable function renders a horizontally scrolling list of [Snack] items.
+ * Each snack item is clickable, triggering the `onSnackClick` callback with the
+ * ID of the clicked snack.
+ * TODO: CONTINUE HERE
+ *
+ * @param snacks The list of [Snack] objects to display.
+ * @param onSnackClick A lambda function that is invoked when a snack item is clicked.
+ * It receives the [Snack.id] of the clicked snack as a parameter.
+ * @param modifier [Modifier] for styling and layout customization of the LazyRow.
+ */
 @Composable
 private fun Snacks(
     snacks: List<Snack>,
