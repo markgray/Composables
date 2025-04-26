@@ -55,9 +55,9 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
  *
  * Our root composable is a [Row] whose `modifier` argument is our [Modifier] parameter [modifier].
  * In its [RowScope] `content` composable lambda argument we first compose a
- * [CompositionLocalProvider] whose [ProvidedValue] provides the [LocalContentAlpha] value to be
- * [ContentAlpha.medium] to its `content` composable lambda argument which is a [Text] whose
- * arguments are:
+ * [CompositionLocalProvider] whose [ProvidedValue] `value` argument provides the [LocalContentAlpha]
+ * value to be [ContentAlpha.medium] to its `content` composable lambda argument which is a [Text]
+ * whose arguments are:
  *  - `text` is the string resource with id `R.string.quantity` ("Qty")
  *  - `style` is the [Typography.subtitle1] from our custom [MaterialTheme.typography]
  *  - `color` is the [JetsnackColors.textSecondary] from our custom [JetsnackTheme.colors]

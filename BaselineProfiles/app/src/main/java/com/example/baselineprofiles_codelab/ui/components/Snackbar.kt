@@ -36,8 +36,9 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
  *
  * @param snackbarData The data that defines the content of this Snackbar. Typically created and
  * managed by a [SnackbarHost].
- * @param modifier Optional [Modifier] for this Snackbar.
- * @param actionOnNewLine Whether or not the action should be put on a new line.
+ * @param modifier Optional [Modifier] for this Snackbar, defaults to the empty, default, or starter
+ * [Modifier] that contains no elements.
+ * @param actionOnNewLine Whether or not the action should be put on a new line, defaults to `false`
  * @param shape The shape of the snackbar. Defaults to [Shapes.small] of our custom
  * [MaterialTheme.shapes].
  * @param backgroundColor The background color of this Snackbar. Defaults to the

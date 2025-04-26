@@ -17,6 +17,7 @@
 package com.example.baselineprofiles_codelab.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -67,11 +68,11 @@ import com.example.baselineprofiles_codelab.ui.utils.mirroringIcon
 /**
  * TODO: Continue here.
  */
-private val HighlightCardWidth = 170.dp
-private val HighlightCardPadding = 16.dp
+private val HighlightCardWidth: Dp = 170.dp
+private val HighlightCardPadding: Dp = 16.dp
 
 // The Cards show a gradient which spans 3 cards and scrolls with parallax.
-private val gradientWidth
+private val gradientWidth: Float
     @Composable
     get() = with(LocalDensity.current) {
         (3 * (HighlightCardWidth + HighlightCardPadding).toPx())
@@ -99,12 +100,12 @@ fun SnackCollection(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth(Alignment.Start)
+                    .weight(weight = 1f)
+                    .wrapContentWidth(align = Alignment.Start)
             )
             IconButton(
                 onClick = { /* todo */ },
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(alignment = Alignment.CenterVertically)
             ) {
                 Icon(
                     imageVector = mirroringIcon(
@@ -117,9 +118,13 @@ fun SnackCollection(
             }
         }
         if (highlight && snackCollection.type == CollectionType.Highlight) {
-            HighlightedSnacks(index, snackCollection.snacks, onSnackClick)
+            HighlightedSnacks(
+                index = index,
+                snacks = snackCollection.snacks,
+                onSnackClick = onSnackClick
+            )
         } else {
-            Snacks(snackCollection.snacks, onSnackClick)
+            Snacks(snacks = snackCollection.snacks, onSnackClick = onSnackClick)
         }
     }
 }
@@ -131,21 +136,21 @@ private fun HighlightedSnacks(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scroll = rememberScrollState(0)
-    val gradient = when ((index / 2) % 2) {
+    val scroll: ScrollState = rememberScrollState(initial = 0)
+    val gradient: List<Color> = when ((index / 2) % 2) {
         0 -> JetsnackTheme.colors.gradient6_1
         else -> JetsnackTheme.colors.gradient6_2
     }
     // The Cards show a gradient which spans 3 cards and scrolls with parallax.
-    val gradientWidth = with(LocalDensity.current) {
+    val gradientWidth: Float = with(LocalDensity.current) {
         (6 * (HighlightCardWidth + HighlightCardPadding).toPx())
     }
     LazyRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
         contentPadding = PaddingValues(start = 24.dp, end = 24.dp)
     ) {
-        itemsIndexed(snacks) { index, snack ->
+        itemsIndexed(items = snacks) { index: Int, snack: Snack ->
             HighlightSnackItem(
                 snack = snack,
                 onSnackClick = onSnackClick,
@@ -168,8 +173,8 @@ private fun Snacks(
         modifier = modifier,
         contentPadding = PaddingValues(start = 12.dp, end = 12.dp)
     ) {
-        items(snacks) { snack ->
-            SnackItem(snack, onSnackClick)
+        items(items = snacks) { snack: Snack ->
+            SnackItem(snack = snack, onSnackClick = onSnackClick)
         }
     }
 }
@@ -183,7 +188,7 @@ fun SnackItem(
     JetsnackSurface(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier
-            .testTag("snack_item")
+            .testTag(tag = "snack_item")
             .padding(
                 start = 4.dp,
                 end = 4.dp,
@@ -200,7 +205,7 @@ fun SnackItem(
                 imageUrl = snack.imageUrl,
                 elevation = 4.dp,
                 contentDescription = null,
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(size = 120.dp)
             )
             Text(
                 text = snack.name,
@@ -222,12 +227,12 @@ private fun HighlightSnackItem(
     scroll: Int,
     modifier: Modifier = Modifier
 ) {
-    val left = index * with(LocalDensity.current) {
+    val left: Float = index * with(LocalDensity.current) {
         (HighlightCardWidth + HighlightCardPadding).toPx()
     }
     JetsnackCard(
         modifier = modifier
-            .testTag("snack_item")
+            .testTag(tag = "snack_item")
             .size(
                 width = 170.dp,
                 height = 250.dp
@@ -241,25 +246,29 @@ private fun HighlightSnackItem(
         ) {
             Box(
                 modifier = Modifier
-                    .height(160.dp)
+                    .height(height = 160.dp)
                     .fillMaxWidth()
             ) {
-                val gradientOffset = left - (scroll / 3f)
+                val gradientOffset: Float = left - (scroll / 3f)
                 Box(
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(height = 100.dp)
                         .fillMaxWidth()
-                        .offsetGradientBackground(gradient, gradientWidth, gradientOffset)
+                        .offsetGradientBackground(
+                            colors = gradient,
+                            width = gradientWidth,
+                            offset = gradientOffset
+                        )
                 )
                 SnackImage(
                     imageUrl = snack.imageUrl,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(120.dp)
-                        .align(Alignment.BottomCenter)
+                        .size(size = 120.dp)
+                        .align(alignment = Alignment.BottomCenter)
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(height = 8.dp))
             Text(
                 text = snack.name,
                 maxLines = 1,
@@ -268,7 +277,7 @@ private fun HighlightSnackItem(
                 color = JetsnackTheme.colors.textSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(height = 4.dp))
             Text(
                 text = snack.tagline,
                 style = MaterialTheme.typography.body1,
@@ -293,9 +302,9 @@ fun SnackImage(
         modifier = modifier
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(true)
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(data = imageUrl)
+                .crossfade(enable = true)
                 .build(),
             contentDescription = contentDescription,
             modifier = Modifier.fillMaxSize(),
@@ -304,6 +313,12 @@ fun SnackImage(
     }
 }
 
+/**
+ * Three previews of [HighlightSnackItem]:
+ *  - "default" default arguments
+ *  - "dark theme" [UI_MODE_NIGHT_YES]
+ *  - "large font" fontScale = 2f
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)

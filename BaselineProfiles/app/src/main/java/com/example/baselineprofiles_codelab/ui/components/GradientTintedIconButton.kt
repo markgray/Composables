@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +53,7 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
  * a new [MutableInteractionSource] instance. Then we initialize our [Modifier] variable `border`
  * to a custom [Modifier.fadeInDiagonalGradientBorder] that will be used to apply a border using
  * the [JetsnackColors.interactiveSecondary] of our custom [JetsnackTheme.colors] as its gradient
- * colors using the [CircleShape] shape and our [BlendMode] variable `blendMode` as its [BlendMode].
+ * colors and use [CircleShape] as its shape.
  *
  * We initialize our [State] wrapped [Boolean] variable `pressed` by subscribing to our
  * [MutableInteractionSource] variable `interactionSource` using its
@@ -68,17 +69,17 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
  *
  * We initialize our [Modifier] variable `modifierColor` to either a [Modifier.diagonalGradientTint]
  * that uses two copies of the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors]
- * if `pressed` is true, or a [Modifier.diagonalGradientTint] that uses our [List] of [Color]'s
- * parameter [colors] if `pressed` is false.
+ * as its `colors` argument if `pressed` is `true`, or a [Modifier.diagonalGradientTint] that uses
+ * our [List] of [Color]'s parameter [colors] if `pressed` is `false`.
  *
  * Then our root composable is a [Surface] whose arguments are:
  *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.clickable] whose
  *  `onClick` argument is our [onClick] lambda parameter, whose `interactionSource` argument is
  *  our [MutableInteractionSource] variable `interactionSource`, and whose `indication` argument
- *  is null. This is followed by a chain to a [Modifier.clip] whose `shape` argument is [CircleShape],
- *  then there is a chain to our [Modifier] variable `border` and a chain to our [Modifier] variable
- *  `background`.
- *  - `color`: [Color.Transparent]
+ *  is `null`. This is followed by a chain to a [Modifier.clip] whose `shape` argument is
+ *  [CircleShape], then there is a chain to our [Modifier] variable `border` and a chain to our
+ *  [Modifier] variable `background`.
+ *  - `color`: background color is [Color.Transparent]
  *
  * In the `content` composable lambda argument of our [Surface] we compose an [Icon] whose
  * arguments are:
@@ -110,7 +111,11 @@ fun JetsnackGradientTintedIconButton(
     // This should use a layer + srcIn but needs investigation
     /**
      * The [Modifier.fadeInDiagonalGradientBorder] is a custom [Modifier] that applies an animated
-     * diagonal border to this button.
+     * diagonal border to this button. The arguments are:
+     *  - `showBorder`: is `true` indicating that the border should be visible.
+     *  - `colors`: [List] of [Color] values defining the gradient's color stops
+     *  - shape`: The shape of the border is [CircleShape], a Circular [Shape] with all the corners
+     *  sized as the 50 percent of the shape size
      */
     val border: Modifier = Modifier.fadeInDiagonalGradientBorder(
         showBorder = true,
@@ -144,10 +149,10 @@ fun JetsnackGradientTintedIconButton(
     val blendMode: BlendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
 
     /**
-     * The [Modifier.diagonalGradientTint] is a custom [Modifier] that applies a diagonal gradient
-     * tint to this button using two [Color]'s or [JetsnackColors.textSecondary] if `pressed` is
-     * true, otherwise it applies a solid [Modifier.diagonalGradientTint] using the our [List] of
-     * [Color]'s `colors` variable.
+     * This [Modifier.diagonalGradientTint] is a custom [Modifier] that applies a diagonal gradient
+     * tint to this button using two copies of [JetsnackColors.textSecondary] as its `colors`
+     * argument if `pressed` is true, otherwise it applies a [Modifier.diagonalGradientTint] that
+     * uses the our [List] of [Color]'s `colors` variable as its `colors` argument.
      */
     val modifierColor: Modifier = if (pressed) {
         Modifier.diagonalGradientTint(
