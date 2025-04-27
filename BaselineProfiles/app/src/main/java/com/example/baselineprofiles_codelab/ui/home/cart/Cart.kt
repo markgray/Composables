@@ -17,6 +17,7 @@
 package com.example.baselineprofiles_codelab.ui.home.cart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Resources
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -58,6 +59,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LastBaseline
@@ -86,14 +88,17 @@ import com.example.baselineprofiles_codelab.ui.theme.AlphaNearOpaque
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import com.example.baselineprofiles_codelab.ui.utils.formatPrice
 
+/**
+ * TODO: Continue here
+ */
 @Composable
 fun Cart(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
 ) {
-    val orderLines by viewModel.orderLines.collectAsState()
-    val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
+    val orderLines: List<OrderLine> by viewModel.orderLines.collectAsState()
+    val inspiredByCart: SnackCollection = remember { SnackRepo.getInspiredByCart() }
     Cart(
         orderLines = orderLines,
         removeSnack = viewModel::removeSnack,
@@ -124,10 +129,10 @@ fun Cart(
                 decreaseItemCount = decreaseItemCount,
                 inspiredByCart = inspiredByCart,
                 onSnackClick = onSnackClick,
-                modifier = Modifier.align(Alignment.TopCenter)
+                modifier = Modifier.align(alignment = Alignment.TopCenter)
             )
-            DestinationBar(modifier = Modifier.align(Alignment.TopCenter))
-            CheckoutBar(modifier = Modifier.align(Alignment.BottomCenter))
+            DestinationBar(modifier = Modifier.align(alignment = Alignment.TopCenter))
+            CheckoutBar(modifier = Modifier.align(alignment = Alignment.BottomCenter))
         }
     }
 }
@@ -143,18 +148,18 @@ private fun CartContent(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val resources = LocalContext.current.resources
-    val snackCountFormattedString = remember(orderLines.size, resources) {
+    val resources: Resources = LocalContext.current.resources
+    val snackCountFormattedString: String = remember(orderLines.size, resources) {
         resources.getQuantityString(
             R.plurals.cart_order_count,
             orderLines.size, orderLines.size
         )
     }
-    LazyColumn(modifier) {
+    LazyColumn(modifier = modifier) {
         item {
             Spacer(
                 Modifier.windowInsetsTopHeight(
-                    WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
+                    insets = WindowInsets.statusBars.add(insets = WindowInsets(top = 56.dp))
                 )
             )
             Text(
@@ -169,12 +174,12 @@ private fun CartContent(
                     .wrapContentHeight()
             )
         }
-        items(orderLines) { orderLine ->
+        items(items = orderLines) { orderLine: OrderLine ->
             SwipeDismissItem(
-                background = { offsetX ->
+                background = { offsetX: Dp ->
                     /*Background color changes from light gray to red when the
                     swipe to delete with exceeds 160.dp*/
-                    val backgroundColor = if (offsetX < -160.dp) {
+                    val backgroundColor: Color = if (offsetX < (-160).dp) {
                         JetsnackTheme.colors.error
                     } else {
                         JetsnackTheme.colors.uiFloated
@@ -183,26 +188,26 @@ private fun CartContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight()
-                            .background(backgroundColor),
+                            .background(color = backgroundColor),
                         horizontalAlignment = Alignment.End,
                         verticalArrangement = Arrangement.Center
                     ) {
                         // Set 4.dp padding only if offset is bigger than 160.dp
                         val padding: Dp by animateDpAsState(
-                            if (offsetX > -160.dp) 4.dp else 0.dp
+                            if (offsetX > (-160).dp) 4.dp else 0.dp
                         )
                         Box(
                             Modifier
-                                .width(offsetX * -1)
-                                .padding(padding)
+                                .width(width = offsetX * -1)
+                                .padding(all = padding)
                         ) {
                             // Height equals to width removing padding
-                            val height = (offsetX + 8.dp) * -1
+                            val height: Dp = (offsetX + 8.dp) * -1
                             Surface(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(height)
-                                    .align(Alignment.Center),
+                                    .height(height = height)
+                                    .align(alignment = Alignment.Center),
                                 shape = CircleShape,
                                 color = JetsnackTheme.colors.error
                             ) {
@@ -211,16 +216,16 @@ private fun CartContent(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     // Icon must be visible while in this width range
-                                    if (offsetX < -40.dp && offsetX > -152.dp) {
+                                    if (offsetX < (-40).dp && offsetX > (-152).dp) {
                                         // Icon alpha decreases as it is about to disappear
                                         val iconAlpha: Float by animateFloatAsState(
-                                            if (offsetX < -120.dp) 0.5f else 1f
+                                            if (offsetX < (-120).dp) 0.5f else 1f
                                         )
 
                                         Icon(
                                             imageVector = Icons.Filled.DeleteForever,
                                             modifier = Modifier
-                                                .size(16.dp)
+                                                .size(size = 16.dp)
                                                 .graphicsLayer(alpha = iconAlpha),
                                             tint = JetsnackTheme.colors.uiBackground,
                                             contentDescription = null,
@@ -228,10 +233,10 @@ private fun CartContent(
                                     }
                                     /*Text opacity increases as the text is supposed to appear in
                                     the screen*/
-                                    val textAlpha by animateFloatAsState(
-                                        if (offsetX > -144.dp) 0.5f else 1f
+                                    val textAlpha: Float by animateFloatAsState(
+                                        if (offsetX > (-144).dp) 0.5f else 1f
                                     )
-                                    if (offsetX < -120.dp) {
+                                    if (offsetX < (-120).dp) {
                                         Text(
                                             text = stringResource(id = R.string.remove_item),
                                             style = MaterialTheme.typography.subtitle1,
@@ -260,7 +265,7 @@ private fun CartContent(
         }
         item {
             SummaryItem(
-                subtotal = orderLines.map { it.snack.price * it.count }.sum(),
+                subtotal = orderLines.sumOf { it.snack.price * it.count },
                 shippingCosts = 369
             )
         }
@@ -270,7 +275,7 @@ private fun CartContent(
                 onSnackClick = onSnackClick,
                 highlight = false
             )
-            Spacer(Modifier.height(56.dp))
+            Spacer(modifier = Modifier.height(height = 56.dp))
         }
     }
 }
@@ -289,7 +294,7 @@ fun CartItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onSnackClick(snack.id) }
-            .background(JetsnackTheme.colors.uiBackground)
+            .background(color = JetsnackTheme.colors.uiBackground)
             .padding(horizontal = 24.dp)
 
     ) {
@@ -299,18 +304,18 @@ fun CartItem(
             imageUrl = snack.imageUrl,
             contentDescription = null,
             modifier = Modifier
-                .size(100.dp)
-                .constrainAs(image) {
-                    top.linkTo(parent.top, margin = 16.dp)
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
-                    start.linkTo(parent.start)
+                .size(size = 100.dp)
+                .constrainAs(ref = image) {
+                    top.linkTo(anchor = parent.top, margin = 16.dp)
+                    bottom.linkTo(anchor = parent.bottom, margin = 16.dp)
+                    start.linkTo(anchor = parent.start)
                 }
         )
         Text(
             text = snack.name,
             style = MaterialTheme.typography.subtitle1,
             color = JetsnackTheme.colors.textSecondary,
-            modifier = Modifier.constrainAs(name) {
+            modifier = Modifier.constrainAs(ref = name) {
                 linkTo(
                     start = image.end,
                     startMargin = 16.dp,
@@ -323,23 +328,23 @@ fun CartItem(
         IconButton(
             onClick = { removeSnack(snack.id) },
             modifier = Modifier
-                .constrainAs(remove) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
+                .constrainAs(ref = remove) {
+                    top.linkTo(anchor = parent.top)
+                    end.linkTo(anchor = parent.end)
                 }
                 .padding(top = 12.dp)
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
                 tint = JetsnackTheme.colors.iconSecondary,
-                contentDescription = stringResource(R.string.label_remove)
+                contentDescription = stringResource(id = R.string.label_remove)
             )
         }
         Text(
             text = snack.tagline,
             style = MaterialTheme.typography.body1,
             color = JetsnackTheme.colors.textHelp,
-            modifier = Modifier.constrainAs(tag) {
+            modifier = Modifier.constrainAs(ref = tag) {
                 linkTo(
                     start = image.end,
                     startMargin = 16.dp,
@@ -351,16 +356,16 @@ fun CartItem(
         )
         Spacer(
             Modifier
-                .height(8.dp)
-                .constrainAs(priceSpacer) {
+                .height(height = 8.dp)
+                .constrainAs(ref = priceSpacer) {
                     linkTo(top = tag.bottom, bottom = price.top)
                 }
         )
         Text(
-            text = formatPrice(snack.price),
+            text = formatPrice(price = snack.price),
             style = MaterialTheme.typography.subtitle1,
             color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier.constrainAs(price) {
+            modifier = Modifier.constrainAs(ref = price) {
                 linkTo(
                     start = image.end,
                     end = quantity.start,
@@ -374,15 +379,15 @@ fun CartItem(
             count = orderLine.count,
             decreaseItemCount = { decreaseItemCount(snack.id) },
             increaseItemCount = { increaseItemCount(snack.id) },
-            modifier = Modifier.constrainAs(quantity) {
-                baseline.linkTo(price.baseline)
-                end.linkTo(parent.end)
+            modifier = Modifier.constrainAs(ref = quantity) {
+                baseline.linkTo(anchor = price.baseline)
+                end.linkTo(anchor = parent.end)
             }
         )
         JetsnackDivider(
-            Modifier.constrainAs(divider) {
+            Modifier.constrainAs(ref = divider) {
                 linkTo(start = parent.start, end = parent.end)
-                top.linkTo(parent.bottom)
+                top.linkTo(anchor = parent.bottom)
             }
         )
     }
@@ -396,7 +401,7 @@ fun SummaryItem(
 ) {
     Column(modifier) {
         Text(
-            text = stringResource(R.string.cart_summary_header),
+            text = stringResource(id = R.string.cart_summary_header),
             style = MaterialTheme.typography.h6,
             color = JetsnackTheme.colors.brand,
             maxLines = 1,
@@ -408,50 +413,50 @@ fun SummaryItem(
         )
         Row(modifier = Modifier.padding(horizontal = 24.dp)) {
             Text(
-                text = stringResource(R.string.cart_subtotal_label),
+                text = stringResource(id = R.string.cart_subtotal_label),
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth(Alignment.Start)
-                    .alignBy(LastBaseline)
+                    .weight(weight = 1f)
+                    .wrapContentWidth(align = Alignment.Start)
+                    .alignBy(alignmentLine = LastBaseline)
             )
             Text(
-                text = formatPrice(subtotal),
+                text = formatPrice(price = subtotal),
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.alignBy(LastBaseline)
+                modifier = Modifier.alignBy(alignmentLine = LastBaseline)
             )
         }
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.cart_shipping_label),
+                text = stringResource(id = R.string.cart_shipping_label),
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth(Alignment.Start)
-                    .alignBy(LastBaseline)
+                    .weight(weight = 1f)
+                    .wrapContentWidth(align = Alignment.Start)
+                    .alignBy(alignmentLine = LastBaseline)
             )
             Text(
-                text = formatPrice(shippingCosts),
+                text = formatPrice(price = shippingCosts),
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.alignBy(LastBaseline)
+                modifier = Modifier.alignBy(alignmentLine = LastBaseline)
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(height = 8.dp))
         JetsnackDivider()
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.cart_total_label),
+                text = stringResource(id = R.string.cart_total_label),
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(weight = 1f)
                     .padding(end = 16.dp)
-                    .wrapContentWidth(Alignment.End)
-                    .alignBy(LastBaseline)
+                    .wrapContentWidth(align = Alignment.End)
+                    .alignBy(alignmentLine = LastBaseline)
             )
             Text(
-                text = formatPrice(subtotal + shippingCosts),
+                text = formatPrice(price = subtotal + shippingCosts),
                 style = MaterialTheme.typography.subtitle1,
-                modifier = Modifier.alignBy(LastBaseline)
+                modifier = Modifier.alignBy(alignmentLine = LastBaseline)
             )
         }
         JetsnackDivider()
@@ -462,19 +467,19 @@ fun SummaryItem(
 private fun CheckoutBar(modifier: Modifier = Modifier) {
     Column(
         modifier.background(
-            JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque)
+            color = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque)
         )
     ) {
 
         JetsnackDivider()
         Row {
-            Spacer(Modifier.weight(1f))
+            Spacer(Modifier.weight(weight = 1f))
             JetsnackButton(
                 onClick = { /* todo */ },
                 shape = RectangleShape,
                 modifier = Modifier
                     .padding(horizontal = 12.dp, vertical = 8.dp)
-                    .weight(1f)
+                    .weight(weight = 1f)
             ) {
                 Text(
                     text = stringResource(id = R.string.cart_checkout),

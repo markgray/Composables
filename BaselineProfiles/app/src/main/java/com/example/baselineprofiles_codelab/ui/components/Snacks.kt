@@ -21,6 +21,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,6 +45,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Shapes
 import androidx.compose.material.Text
 import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
@@ -303,7 +305,16 @@ private fun HighlightedSnacks(
  * This composable function renders a horizontally scrolling list of [Snack] items.
  * Each snack item is clickable, triggering the `onSnackClick` callback with the
  * ID of the clicked snack.
- * TODO: CONTINUE HERE
+ *
+ * The root Composable is a [LazyRow] whose `modifier` argument is our [Modifier] parameter [modifier],
+ * whose `contentPadding` argument is a [PaddingValues] whose `start` and `end` arguments are both
+ * `12.dp`. In its [LazyListScope] `content` composable lambda argument we use the
+ * [LazyListScope.items] method to iterate over our [List] of [Snack] parameter [snacks] and in
+ * its [LazyItemScope] `itemContent` composable lambda argument we capture the [Snack] passed
+ * the lambda in our `snack` variable, then compose for every [Snack] in our [List] a
+ * [SnackItem] whose arguments are:
+ *  - `snack` is our [Snack] variable `snack`
+ *  - `onSnackClick` is our lambda parameter [onSnackClick]
  *
  * @param snacks The list of [Snack] objects to display.
  * @param onSnackClick A lambda function that is invoked when a snack item is clicked.
@@ -326,6 +337,37 @@ private fun Snacks(
     }
 }
 
+/**
+ * Displays a single snack item in a card format.
+ *
+ * Our root Composable is a [JetsnackCard] whose `shape` argument is the [Shapes.medium] of our custom
+ * [MaterialTheme.shapes], and whose `modifier` argument chains to our [Modifier] parameter [modifier]
+ * a [Modifier.testTag] whose `tag` argument is `"snack_item"`, followed by a [Modifier.padding]
+ * that adds `4.dp` to the start, `4.dp` to the `end`, and `8.dp` to the `bottom` of the content.
+ * In the composable `content` lambda argument we compose a [Column] whose `horizontalAlignment`
+ * argument is [Alignment.CenterHorizontally], and whose `modifier` argument is a [Modifier.clickable]
+ * whose `onClick` argument is a lambda that calls our lambda parameter [onSnackClick] with the
+ * [Snack.id] of the clicked [Snack], with a [Modifier.padding] that adds `8.dp` to all sides of the
+ * content chained to that. In the [ColumnScope] `content` composable lambda argument we compose two
+ * composables:
+ *
+ * A [SnackImage] whose arguments are:
+ *  - `imageUrl` is the [Snack.imageUrl] property of our [Snack] parameter [snack]
+ *  - `elevation` is `4.dp`.
+ *  - `contentDescription` is `null`
+ *  - `modifier` is a [Modifier.size] whose `size` is `120.dp`
+ *
+ * A [Text] whose arguments are:
+ *  - `text` is the [Snack.name] property of our [Snack] parameter [snack]
+ *  - `style` is the [Typography.subtitle1] of our custom [MaterialTheme.typography]
+ *  - `color` is the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors]
+ *  - `modifier` is a [Modifier.padding] whose `top` is `8.dp`
+ *
+ * @param snack The [Snack] object containing the details of the snack.
+ * @param onSnackClick Callback invoked when the snack item is clicked. It is provided the [Snack.id]
+ * of the clicked snack as its parameter.
+ * @param modifier [Modifier] to apply to the snack item container.
+ */
 @Composable
 fun SnackItem(
     snack: Snack,
@@ -346,7 +388,7 @@ fun SnackItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .clickable(onClick = { onSnackClick(snack.id) })
-                .padding(8.dp)
+                .padding(all = 8.dp)
         ) {
             SnackImage(
                 imageUrl = snack.imageUrl,
@@ -364,6 +406,70 @@ fun SnackItem(
     }
 }
 
+/**
+ * Displays a snack item in a highlighted card format.
+ *
+ * This composable renders a single snack item within a card, showcasing the snack's image,
+ * name, and tagline. It also applies a gradient background that shifts based on the scroll
+ * position, creating a dynamic visual effect. The card is clickable, allowing users to
+ * navigate to the snack's detail page.
+ *
+ * We start by initializing our [Float] variable `left` with the pixel value for the current
+ * [LocalDensity] of the quantity [HighlightCardWidth] plus [HighlightCardPadding].
+ *
+ * Our root Composable is a [JetsnackCard] whose `modifier` argument is our [Modifier] parameter
+ * [modifier] chained to a [Modifier.testTag] whose `tag` argument is `"snack_item"`, followed by a
+ * [Modifier.size] whose `width` is `170.dp` and `height` is `250.dp`, and a [Modifier.padding]
+ * In the composable `content` lambda argument of the [JetsnackCard] we compose a [Column] whose
+ * `modifier` argument is a [Modifier.clickable] whose `onClick` argument is a lambda that calls
+ * our lambda parameter [onSnackClick] with the [Snack.id] of the clicked [Snack], with a
+ * [Modifier.fillMaxSize] chained to that. In the [ColumnScope] `content` composable lambda
+ * argument we compose the following composables:
+ *
+ * A [Box] whose `modifier` argument is a [Modifier.height] whose `height` is `160.dp`, with a
+ * [Modifier.fillMaxWidth] chained to that. In its [BoxScope] `content` composable lambda we
+ * initialize our [Float] variable `gradientOffset` with the pixel value for the current
+ * [LocalDensity] of the quantity `left` minus the scroll position divided by 3 (this will be the
+ * horizontal offset of the gradient). We then compose a [Box] to be the background with its
+ * `modifier` argument a [Modifier.height] whose `height` is `100.dp`, with a [Modifier.fillMaxWidth]
+ * chained to that, and a [Modifier.offsetGradientBackground] whose `colors` argument is our
+ * [List] of [Color] parameter [gradient], whose `width` argument is our [Float] variable
+ * `gradientWidth`, and whose `offset` argument is our [Float] variable `gradientOffset`. On top
+ * of this we compose a [SnackImage] whose arguments are:
+ *  - `imageUrl` is the [Snack.imageUrl] property of our [Snack] parameter [snack]
+ *  - `contentDescription` is `null`
+ *  - `modifier` is a [Modifier.size] whose `size` is `120.dp` with a [BoxScope.align] whose
+ *  `alignment` is [Alignment.BottomCenter]
+ *
+ * Next in the [Column] we compose a [Spacer] whose `modifier` argument is a [Modifier.height] whose
+ * `height` is `8.dp`.
+ *
+ * Next in the [Column] we compose a [Text] whose arguments are:
+ *  - `text` is the [Snack.name] property of our [Snack] parameter [snack]
+ *  - `maxLines` is `1`
+ *  - `overflow` is [TextOverflow.Ellipsis]
+ *  - `style` is the [Typography.h6] of our custom [MaterialTheme.typography]
+ *  - `color` is the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors]
+ *  - `modifier` is a [Modifier.padding] whose `horizontal` argument is `16.dp`.
+ *
+ * Next in the [Column] we compose a [Spacer] whose `modifier` argument is a [Modifier.height]
+ * whose `height` is `4.dp`.
+ *
+ * Finally in the [Column] we compose a [Text] whose arguments are:
+ *  - `text` is the [Snack.tagline] property of our [Snack] parameter [snack]
+ *  - `style` is the [Typography.body1] of our custom [MaterialTheme.typography]
+ *  - `color` is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors]
+ *  
+ *
+ * @param snack The [Snack] data to display.
+ * @param onSnackClick Callback invoked when the snack item is clicked. It is provided the [Snack.id]
+ * of the clicked [Snack] as its parameter.
+ * @param index The index of the snack item within a list, used for positioning calculations.
+ * @param gradient The list of colors defining the gradient background.
+ * @param gradientWidth The width of the gradient effect.
+ * @param scroll The current scroll position of the list.
+ * @param modifier [Modifier] to apply to the card container.
+ */
 @Composable
 private fun HighlightSnackItem(
     snack: Snack,
@@ -396,6 +502,9 @@ private fun HighlightSnackItem(
                     .height(height = 160.dp)
                     .fillMaxWidth()
             ) {
+                /**
+                 * The horizontal offset of the gradient for the current scroll position in pixels.
+                 */
                 val gradientOffset: Float = left - (scroll / 3f)
                 Box(
                     modifier = Modifier
@@ -435,6 +544,32 @@ private fun HighlightSnackItem(
     }
 }
 
+/**
+ * A composable function that displays an image from a given URL within a circular surface.
+ *
+ * The image is loaded asynchronously using Coil's AsyncImage, and it's displayed within
+ * a [JetsnackSurface] which provides a background with a specific color, elevation, and shape.
+ *
+ * Our root Composable is a [JetsnackSurface] whose `color` argument is [Color.LightGray], whose
+ * `elevation` argument is our [Dp] parameter [elevation], whose `shape` argument is
+ * [CircleShape], and whose `modifier` argument is our [Modifier] parameter [modifier].
+ *
+ * In the `content` composable lambda argument we compose an [AsyncImage] whose `model` argument
+ * is built using an [ImageRequest.Builder] whose `context` argument is the current [LocalContext].
+ * To this [ImageRequest.Builder] we chain a [ImageRequest.Builder.data] whose `data` argument
+ * is our [String] parameter [imageUrl]. We then chain a [ImageRequest.Builder.crossfade] with
+ * its `enable` argument set to `true`, and finally chain a [ImageRequest.Builder.build] to
+ * create our [ImageRequest]. The `contentDescription` argument is our [String] parameter
+ * [contentDescription]. The `modifier` argument is a [Modifier.fillMaxSize], and its `contentScale`
+ * argument is [ContentScale.Crop].
+ *
+ * @param imageUrl The URL of the image to be displayed.
+ * @param contentDescription A description of the image for accessibility purposes.
+ * Should be `null` if the image is decorative.
+ * @param modifier [Modifier] to be applied to the [JetsnackSurface] containing the image.
+ * @param elevation The elevation of the `JetsnackSurface`, controlling the shadow effect.
+ * Defaults to `0.dp`, meaning no shadow.
+ */
 @Composable
 fun SnackImage(
     imageUrl: String,

@@ -79,7 +79,10 @@ fun JetsnackCard(
 }
 
 /**
- * Three previews of the [JetsnackCard] composable.
+ * Three previews of the [JetsnackCard] composable:
+ *  - "default" preview with light theme
+ *  - "dark theme" preview with dark theme
+ *  - "large font" preview with font scale set to 2.0
  */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
