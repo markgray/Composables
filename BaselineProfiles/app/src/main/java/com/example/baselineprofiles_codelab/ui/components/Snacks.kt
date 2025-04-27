@@ -113,7 +113,10 @@ private val gradientWidth: Float
  * Displays its [SnackCollection] parameter [snackCollection] and all its [SnackCollection.snacks].
  *
  * Our root Composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier].
- * In its [ColumnScope] `content` composable lambda argument we first display a [Row] with two elements:
+ * In its [ColumnScope] `content` composable lambda argument we first display a [Row] whose
+ * `verticalAlignment` argument is [Alignment.CenterVertically], and whose `modifier` argument is a
+ * [Modifier.heightIn] whose `min` is `56.dp`, with a [Modifier.padding] whose `start` is `24.dp`.
+ * In the [RowScope] `content` composable lambda argument of the [Row] we compose two elements:
  *
  * A [Text] whose arguments are:
  *  - `text` the [SnackCollection.name] of our [SnackCollection] parameter [snackCollection]
@@ -133,7 +136,7 @@ private val gradientWidth: Float
  *  - `tint` is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors]
  *  - `contentDescription` is `null`
  *
- * Next in the [Column] is our [Boolean] parameter [highlight] is `true` and the
+ * Next in the [Column] if our [Boolean] parameter [highlight] is `true` and the
  * [SnackCollection.type] of our [SnackCollection] parameter [snackCollection] is equal to
  * [CollectionType.Highlight] we compose a [HighlightedSnacks] whose arguments are:
  *  - `index` is our [Int] parameter [index]
@@ -215,13 +218,13 @@ fun SnackCollection(
  * This composable takes a list of [Snack] items and displays them in a horizontally scrolling
  * row. Each snack is displayed using the [HighlightSnackItem] composable, and a gradient effect
  * is applied to visually highlight the items. The gradient alternates colors based on the index
- * of the `HighlightedSnacks` composable to create visual distinction.
+ * of the [HighlightedSnacks] composable to create visual distinction.
  *
  * We start by initializing and remembering our [ScrollState] variable `scroll` with a new instance
  * whose initial value is `0`. We initialize our [List] of [Color] variable `gradient` with
  * [JetsnackColors.gradient6_1] if [index] is even or with [JetsnackColors.gradient6_2] if it is
- * odd. We initialize our [Float] variable `gradientWidth` pixel value for the current [LocalDensity]
- * of six times the [HighlightCardWidth] plus the [HighlightCardPadding] value.
+ * odd. We initialize our [Float] variable `gradientWidth` to the pixel value for the current
+ * [LocalDensity] of six times the quantity [HighlightCardWidth] plus [HighlightCardPadding].
  *
  * Our root Composable is a [LazyRow] whose `modifier` argument is our [Modifier] parameter [modifier],
  * whose `horizontalArrangement` argument is a [Arrangement.spacedBy] whose `space` argument is 16.dp,
@@ -238,8 +241,8 @@ fun SnackCollection(
  *  - `gradientWidth` is our [Float] variable `gradientWidth`
  *  - `scroll` is the [ScrollState.value] of our [ScrollState] variable `scroll`
  *
- * @param index The index of this [HighlightedSnacks] within a potential parent list. This is
- * used to alternate the gradient colors.
+ * @param index The index of this [HighlightedSnacks] within its parent list. This is used to
+ * alternate the gradient colors.
  * @param snacks The list of [Snack] items to display.
  * @param onSnackClick A lambda function to be called when a snack is clicked. It receives the
  * [Snack.id] of the clicked snack.
@@ -259,7 +262,7 @@ private fun HighlightedSnacks(
     val scroll: ScrollState = rememberScrollState(initial = 0)
 
     /**
-     * [List] of [Color] used as the gradient the [HighlightSnackItem] composed from our [snacks],
+     * [List] of [Color] used as the gradient of the [HighlightSnackItem] composed from our [snacks],
      * it alternates between [JetsnackColors.gradient6_1] of our custom [JetsnackTheme.colors] for
      * even indices and [JetsnackColors.gradient6_2] of our custom [JetsnackTheme.colors] for
      * odd indices.
