@@ -50,14 +50,15 @@ import kotlin.math.ln
  *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.shadow] whose `elevation`
  *  argument is our [Dp] parameter [elevation], whose `shape` argument is our [Shape] parameter
  *  [shape] and whose `clip` argument is set to `false`, followed by a chain to a [Modifier.zIndex]
- *  whose `zIndex` argument is the float [Dp.value] of our [Dp] parameter [elevation], then is
+ *  whose `zIndex` argument is the float [Dp.value] of our [Dp] parameter [elevation], then if
  *  our [BorderStroke] parameter [border] is not `null` a chain to a [Modifier.border] whose
  *  `border` argument is our [BorderStroke] parameter [border] and whose `shape` argument is our
  *  [Shape] parameter [shape] otherwise an empty [Modifier] is chained, and then we chain a
  *  [Modifier.background] whose `color` argument is the [Color] returned by the
  *  [getBackgroundColorForElevation] function for the `color` argument [color] and the
  *  `elevation` argument [elevation] and whose `shape` argument is our [Shape] parameter
- *  [shape], and at the end of the chain is a [Modifier.clip] whose `shape` argument is our [Shape].
+ *  [shape], and at the end of the chain is a [Modifier.clip] whose `shape` argument is our [Shape]
+ *  parameter [shape].
  *
  * In the [BoxScope] `content` composable lambda argument of the [Box] we compose a
  * [CompositionLocalProvider] whose [ProvidedValue] `value` argument provides our [Color] parameter
@@ -145,11 +146,6 @@ private fun Color.withElevation(elevation: Dp): Color {
     return foreground.compositeOver(background = this)
 }
 
-/*
- * @return
- * the resultant color.
- */
-
 /**
  * Calculates an alpha-modified [Color.White] to overlay on top of a color based on the provided
  * elevation.
@@ -162,13 +158,13 @@ private fun Color.withElevation(elevation: Dp): Color {
  * `alpha = ((4.5f * ln(elevation.value + 1)) + 2f) / 100f`
  *
  * Where:
- *  - `elevation` is the elevation in Dp.
+ *  - `elevation` is the elevation in [Dp].
  *  - `ln` is the natural logarithm.
- *  - `elevation.value` converts the Dp to a float value
- *  - `alpha` is the calculated alpha value, ranging from 0.0f (fully transparent)
- *  to 1.0f (fully opaque).
+ *  - `elevation.value` converts the [Dp] to a float value
+ *  - `alpha` is the calculated alpha value, ranging from `0.0f` (fully transparent)
+ *  to `1.0f` (fully opaque).
  *
- * @param elevation The elevation value in Dp. This value influences the opacity of the foreground.
+ * @param elevation The elevation value in [Dp]. This value influences the opacity of the foreground.
  * @return The calculated foreground color with an alpha value determined by the elevation.
  * The base color is always white.
  */

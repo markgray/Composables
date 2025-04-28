@@ -311,7 +311,7 @@ private fun HighlightedSnacks(
  * `12.dp`. In its [LazyListScope] `content` composable lambda argument we use the
  * [LazyListScope.items] method to iterate over our [List] of [Snack] parameter [snacks] and in
  * its [LazyItemScope] `itemContent` composable lambda argument we capture the [Snack] passed
- * the lambda in our `snack` variable, then compose for every [Snack] in our [List] a
+ * the lambda in our `snack` variable, then compose for every [Snack] in our [List] of [Snack] a
  * [SnackItem] whose arguments are:
  *  - `snack` is our [Snack] variable `snack`
  *  - `onSnackClick` is our lambda parameter [onSnackClick]
@@ -419,7 +419,9 @@ fun SnackItem(
  *
  * Our root Composable is a [JetsnackCard] whose `modifier` argument is our [Modifier] parameter
  * [modifier] chained to a [Modifier.testTag] whose `tag` argument is `"snack_item"`, followed by a
- * [Modifier.size] whose `width` is `170.dp` and `height` is `250.dp`, and a [Modifier.padding]
+ * [Modifier.size] whose `width` is `170.dp` and `height` is `250.dp`, and a [Modifier.padding] that
+ * adds `16.dp` to the `bottom`.
+ *
  * In the composable `content` lambda argument of the [JetsnackCard] we compose a [Column] whose
  * `modifier` argument is a [Modifier.clickable] whose `onClick` argument is a lambda that calls
  * our lambda parameter [onSnackClick] with the [Snack.id] of the clicked [Snack], with a
@@ -459,7 +461,7 @@ fun SnackItem(
  *  - `text` is the [Snack.tagline] property of our [Snack] parameter [snack]
  *  - `style` is the [Typography.body1] of our custom [MaterialTheme.typography]
  *  - `color` is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors]
- *  
+ *  - `modifier` is a [Modifier.padding] that adds `16.dp` to each `horizontal` side.
  *
  * @param snack The [Snack] data to display.
  * @param onSnackClick Callback invoked when the snack item is clicked. It is provided the [Snack.id]
@@ -559,7 +561,7 @@ private fun HighlightSnackItem(
  * To this [ImageRequest.Builder] we chain a [ImageRequest.Builder.data] whose `data` argument
  * is our [String] parameter [imageUrl]. We then chain a [ImageRequest.Builder.crossfade] with
  * its `enable` argument set to `true`, and finally chain a [ImageRequest.Builder.build] to
- * create our [ImageRequest]. The `contentDescription` argument is our [String] parameter
+ * create the [ImageRequest]. The `contentDescription` argument is our [String] parameter
  * [contentDescription]. The `modifier` argument is a [Modifier.fillMaxSize], and its `contentScale`
  * argument is [ContentScale.Crop].
  *
