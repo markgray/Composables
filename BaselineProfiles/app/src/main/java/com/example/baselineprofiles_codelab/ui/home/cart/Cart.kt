@@ -25,6 +25,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,6 +44,8 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -50,6 +53,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeleteForever
@@ -62,19 +66,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
+import androidx.constraintlayout.compose.ConstrainScope
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.baselineprofiles_codelab.R
 import com.example.baselineprofiles_codelab.model.OrderLine
+import com.example.baselineprofiles_codelab.model.Snack
 import com.example.baselineprofiles_codelab.model.SnackCollection
 import com.example.baselineprofiles_codelab.model.SnackRepo
 import com.example.baselineprofiles_codelab.ui.components.JetsnackButton
@@ -85,11 +95,31 @@ import com.example.baselineprofiles_codelab.ui.components.SnackCollection
 import com.example.baselineprofiles_codelab.ui.components.SnackImage
 import com.example.baselineprofiles_codelab.ui.home.DestinationBar
 import com.example.baselineprofiles_codelab.ui.theme.AlphaNearOpaque
+import com.example.baselineprofiles_codelab.ui.theme.JetsnackColors
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import com.example.baselineprofiles_codelab.ui.utils.formatPrice
+import kotlinx.coroutines.flow.StateFlow
 
 /**
- * TODO: Continue here
+ * Stateful composable that Displays the contents of our cart, by calling its Stateless override.
+ *
+ * We start by initializing our [State] wrapped [List] of [OrderLine] variable `orderLines` by using
+ * the [StateFlow.collectAsState] method of the [StateFlow] of [List] of [OrderLine] property
+ * [CartViewModel.orderLines] of our [CartViewModel] parameter [viewModel]. Then we initialize and
+ * remember our [SnackCollection] variable `inspiredByCart` to the [SnackCollection] returned by
+ * the [SnackRepo.getInspiredByCart] method. Our root composable function is the stateless `Cart`
+ * override whose arguments are;
+ *  - `orderLines`: Our [State] wrapped [List] of [OrderLine] variable `orderLines`.
+ *  - `removeSnack`: A function reference to the [CartViewModel.removeSnack] method.
+ *  - `increaseItemCount`: A function reference to the [CartViewModel.increaseSnackCount] method.
+ *  - `decreaseItemCount`: A function reference to the [CartViewModel.decreaseSnackCount] method.
+ *  - `inspiredByCart`: Our [SnackCollection] variable `inspiredByCart`.
+ *  - `onSnackClick`: Our lambda parameter [onSnackClick].
+ *  - `modifier`: Our [Modifier] parameter [modifier].
+ *
+ * @param onSnackClick function to be called with the [Snack.id] when a [Snack] is clicked.
+ * @param modifier [Modifier] to be applied to the layout.
+ * @param viewModel the [CartViewModel] for this cart.
  */
 @Composable
 fun Cart(
@@ -97,7 +127,14 @@ fun Cart(
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
 ) {
+    /**
+     * The [State] wrapped [List] of [OrderLine] that are in our cart.
+     */
     val orderLines: List<OrderLine> by viewModel.orderLines.collectAsState()
+
+    /**
+     * The [SnackCollection] of snacks that are inspired by the contents of the cart.
+     */
     val inspiredByCart: SnackCollection = remember { SnackRepo.getInspiredByCart() }
     Cart(
         orderLines = orderLines,
@@ -110,6 +147,43 @@ fun Cart(
     )
 }
 
+/**
+ * Stateless composable override that displays the contents of our cart, which is called by its
+ * Stateful override.
+ *
+ * Our root composable is a [JetsnackSurface] whose `modifier` argument chains to our [Modifier]
+ * parameter [modifier] a [Modifier.fillMaxSize] to fill the entire screen. In the `content`
+ * composable lambda argument of the [JetsnackSurface] we compose a [Box], and inside the [Box] we
+ * compose three composables:
+ *
+ * A [CartContent] whose arguments are:
+ *  - `orderLines`: Our [State] wrapped [List] of [OrderLine] parameter [orderLines].
+ *  - `removeSnack`: Our lambda parameter [removeSnack].
+ *  - `increaseItemCount`: Our lambda parameter [increaseItemCount].
+ *  - `decreaseItemCount`: Our lambda parameter [decreaseItemCount].
+ *  - `inspiredByCart`: Our [SnackCollection] parameter [inspiredByCart].
+ *  - `onSnackClick`: Our lambda parameter [onSnackClick].
+ *  - `modifier`: The [Modifier] extension function [BoxScope.align] with the its `alignment`
+ *  argument set to [Alignment.TopCenter].
+ *
+ * A [DestinationBar] whose `modifier` is a [BoxScope.align] with the its `alignment` argument
+ * set to [Alignment.TopCenter].
+ *
+ * A [CheckoutBar] whose `modifier` is a [BoxScope.align] with the its `alignment` argument set
+ * to [Alignment.BottomCenter].
+ *
+ * @param orderLines the [List] of [OrderLine] that are in our cart.
+ * @param removeSnack function to be called with the [Snack.id] when a [Snack] is removed from the
+ * cart.
+ * @param increaseItemCount function to be called with the [Snack.id] when a [Snack] count is
+ * increased.
+ * @param decreaseItemCount function to be called with the [Snack.id] when a [Snack] count is
+ * decreased.
+ * @param inspiredByCart the [SnackCollection] of snacks that are inspired by the contents of the
+ * cart.
+ * @param onSnackClick function to be called with the [Snack.id] when a [Snack] is clicked.
+ * @param modifier [Modifier] to be applied to the layout.
+ */
 @Composable
 fun Cart(
     orderLines: List<OrderLine>,
@@ -137,6 +211,76 @@ fun Cart(
     }
 }
 
+/**
+ * Displays the content of the shopping cart.
+ *
+ * This composable function renders the list of items in the cart,
+ * along with controls to remove items, increase/decrease quantity,
+ * a summary of the order, and a "Inspired by your cart" section.
+ *
+ * We start by initializing our [Resources] variable `resources` to the `current` [LocalContext]
+ * resources. Then we initialize and remember our [String] variable `snackCountFormattedString`
+ * to the formatted string of the number of items in our cart created by the
+ * [Resources.getQuantityString] method from the format string `R.plurals.cart_order_count` and the
+ * [List.size] of our [List] of [OrderLine] parameter [orderLines].
+ *
+ * Our root composable function is a [LazyColumn] whose `modifier` argument chains to our [Modifier]
+ * parameter [modifier]. In its [LazyListScope] `content` composable lambda argument we first
+ * compose a [LazyListScope.item] in whose [LazyItemScope] `content` composable lambda argument we
+ * compose a [Spacer] whose `modifier` argument is a [Modifier.windowInsetsTopHeight] with the
+ * `insets` argument set to [WindowInsets.Companion.statusBars] with a [WindowInsets.add] chained
+ * to it to add an additional [WindowInsets] `top` of 56.dp. Below this in the `item` we compose a
+ * [Text] whose arguments are:
+ *  - `text`: The formatted string of the number of items in our cart with "Order" prepended.
+ *  - `style`: The [TextStyle] of the text is the [Typography.h6] of our custom
+ *  [MaterialTheme.typography].
+ *  - `color`: The [Color] of the text is the [JetsnackColors.brand] of our custom
+ *  [JetsnackTheme.colors].
+ *  - `maxLines`: The number of lines of text to display is `1`.
+ *  - `overflow`: The text overflow is [TextOverflow.Ellipsis].
+ *  - `modifier`: The [Modifier] of the text is a [Modifier.heightIn] whose `min` is `56.dp`, with a
+ *  [Modifier.padding] chained to that that adds `24.dp` to each `horizontal` side and `4.dp` to
+ *  each `vertical` side, with a [Modifier.wrapContentHeight] chained to that.
+ *
+ * Next in the [LazyColumn] we compose a [LazyListScope.items] whose `items` argument is our
+ * [List] of [OrderLine] parameter [orderLines] and in whose [LazyItemScope] `itemContent` composable
+ * lambda argument accepts each [OrderLine] passed the lambda in our variable `orderLine` then compose
+ * a [SwipeDismissItem] whose `background` is a lambda that accepts the [Dp] passed the lambda in
+ * variable `offsetX` and then composes a complex composable that animates the dismissing of the
+ * [SwipeDismissItem] (see the code as i am too lazy to describe it). In the `content` composable
+ * lambda argument we compose a [CartItem] whose arguments are:
+ *  - `orderLine`: Our [OrderLine] variable `orderLine`.
+ *  - `removeSnack`: Our lambda parameter [removeSnack].
+ *  - `increaseItemCount`: Our lambda parameter [increaseItemCount].
+ *  - `decreaseItemCount`: Our lambda parameter [decreaseItemCount].
+ *  - `onSnackClick`: Our lambda parameter [onSnackClick].
+ *
+ * Next in the [LazyColumn] we compose a [LazyListScope.item] in whose [LazyItemScope] `content`
+ * composable lambda argument we compose a [SummaryItem] whose arguments are:
+ *  - `subtotal`: The subtotal of the [Snack.price] of all of items in our cart.
+ *  - `shippingCosts`: The shipping costs of our cart is a constant of `369`.
+ *
+ * Finally in the [LazyColumn] we compose a [LazyListScope.item] in whose [LazyItemScope] `content`
+ * composable lambda argument we compose a [SnackCollection] whose arguments are:
+ *  - `snackCollection`: Our [SnackCollection] variable `inspiredByCart`.
+ *  - `onSnackClick`: Our lambda parameter [onSnackClick].
+ *  - `highlight`: Our boolean parameter `highlight` is set to `false`.
+ *
+ * Below the [SnackCollection] in its [[LazyListScope.item]] we compose a [Spacer] whse `modifier`
+ * is a [Modifier.height] whose `height` is set to `56.dp`
+ *
+ * @param orderLines the [List] of [OrderLine] that are in our cart.
+ * @param removeSnack function to be called with the [Snack.id] when a [Snack] is removed from the
+ * cart.
+ * @param increaseItemCount function to be called with the [Snack.id] when a [Snack] count is
+ * increased.
+ * @param decreaseItemCount function to be called with the [Snack.id] when a [Snack] count is
+ * decreased.
+ * @param inspiredByCart the [SnackCollection] of snacks that are inspired by the contents of the
+ * cart.
+ * @param onSnackClick function to be called with the [Snack.id] when a [Snack] is clicked.
+ * @param modifier [Modifier] to be applied to the layout.
+ */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CartContent(
@@ -148,7 +292,14 @@ private fun CartContent(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    /**
+     * The [Resources] used to provide string resources to the app.
+     */
     val resources: Resources = LocalContext.current.resources
+
+    /**
+     * The formatted [String] of the number of items in our cart.
+     */
     val snackCountFormattedString: String = remember(orderLines.size, resources) {
         resources.getQuantityString(
             R.plurals.cart_order_count,
@@ -280,6 +431,131 @@ private fun CartContent(
     }
 }
 
+/**
+ * A composable function that displays a single item in the cart.
+ *
+ * This composable represents a row in the cart, showing details of a specific snack,
+ * its quantity, and offering actions to remove or adjust the quantity of the snack.
+ *
+ * We start by initializing our [Snack] variable `snack` to the [OrderLine.snack] of our [OrderLine]
+ * parameter [orderLine].
+ *
+ * Our root composable function is a [ConstraintLayout] whose `modifier` argument chains to our
+ * [Modifier] parameter [modifier] a [Modifier.fillMaxWidth] to fill the width of the parent,
+ * with a [Modifier.clickable] chained to that that calls our lambda parameter [onSnackClick],
+ * with the [Snack.id] of our [Snack] variable `snack`, with a [Modifier.background] chained to
+ * that that sets the [Color] of the background to the [JetsnackColors.uiBackground] of our custom
+ * [JetsnackTheme.colors], with a [Modifier.padding] chained to that that adds `24.dp` to each
+ * `horizontal` side. In the [ConstraintLayoutScope] `content` composable lambda argument we start
+ * by initializing our [ConstrainedLayoutReference] variables `divider`, `image`, `name`, `tag`,
+ * `priceSpacer`, `price`, `remove`, and `quantity` using the [ConstraintLayoutScope.createRefs]
+ * method of the [ConstraintLayout]. Then we call the [ConstraintLayoutScope.createVerticalChain]
+ * method of the [ConstraintLayout] with the `chainStyle` argument set to [ChainStyle.Packed]
+ * to chain the [ConstrainedLayoutReference] variables `name`, `tag`, `priceSpacer`, and `price`.
+ *
+ * The composables in the [ConstraintLayout] are:
+ *
+ * A [SnackImage] whose arguments are:
+ *  - `imageUrl`: The [String] of the [Snack.imageUrl] of our [Snack] variable `snack`.
+ *  - `contentDescription`: The `null` [String].
+ *  - `modifier`: The [Modifier] of the [SnackImage] is a [Modifier.size] whose `size` is set to
+ *  `100.dp`, with a [ConstraintLayoutScope.constrainAs] chained to that that sets the
+ *  [ConstrainedLayoutReference] `ref` to the [ConstrainedLayoutReference] variable `image` and
+ *  in its [ConstrainScope] `constrainBlock` lambda argument we link the `top` to the parent `top`
+ *  with a margin of `16.dp`, the `bottom` to the parent `bottom` with a margin of `16.dp`, and
+ *  the `start` to the parent `start`.
+ *
+ * A [Text] whose arguments are:
+ *  - `text`: The [String] of the [Snack.name] of our [Snack] variable `snack`.
+ *  - `style`: The [TextStyle] of the text is the [Typography.subtitle1] of our custom
+ *  [MaterialTheme.typography].
+ *  - `color`: The [Color] of the text is the [JetsnackColors.textSecondary] of our custom
+ *  [JetsnackTheme.colors].
+ *  - `modifier`: The [Modifier] of the text is a [ConstraintLayoutScope.constrainAs] that sets the
+ *  [ConstrainedLayoutReference] `ref` to the [ConstrainedLayoutReference] variable `name` and
+ *  in its [ConstrainScope] `constrainBlock` lambda argument use the [ConstrainScope.linkTo] method
+ *  to link the `start` to the [ConstrainedLayoutReference.end] of the [ConstrainedLayoutReference]
+ *  variable `image` with a `startMargin` of `16.dp`, the `end` to [ConstrainedLayoutReference.start]
+ *  of the [ConstrainedLayoutReference] variable `remove` with a `endMargin` of `16.dp`, and a
+ *  `bias` of `0f`.
+ *
+ * An [IconButton] whose `onClick` argument is a lambda that calls our lambda parameter [removeSnack]
+ * with the [Snack.id] of our [Snack] variable `snack`, whose `modifier` argument is a
+ * [ConstraintLayoutScope.constrainAs] that sets the [ConstrainedLayoutReference] `ref` to the
+ * [ConstrainedLayoutReference] variable `remove` and in its [ConstrainScope] `constrainBlock`
+ * lambda argument we link the `top` to the parent `top` and the `end` to the parent `end`, with a
+ * [Modifier.padding] chained to that that adds `12.dp` to the `top`. In the `content` composable
+ * lambda argument we compose an [Icon] whose arguments are:
+ *  - `imageVector`: The [ImageVector] drawn by [Icons.Filled.Close].
+ *  - `tint`: The [Color] of the icon is the [JetsnackColors.iconSecondary] of our custom
+ *  [JetsnackTheme.colors].
+ *  - `contentDescription`: The [String] with resource ID `R.string.label_remove` ("Remove item").
+ *
+ * A [Text] whose arguments are:
+ *  - `text`: The [Snack.tagline] of our [Snack] variable `snack`.
+ *  - `style`: The [TextStyle] of the text is the [Typography.body1] of our custom
+ *  [MaterialTheme.typography].
+ *  - `color`: The [Color] of the text is the [JetsnackColors.textHelp] of our custom
+ *  [JetsnackTheme.colors].
+ *  - `modifier`: The [Modifier] of the text is a [ConstraintLayoutScope.constrainAs] that sets
+ *  the [ConstrainedLayoutReference] `ref` to the [ConstrainedLayoutReference] variable `tag` and
+ *  in its [ConstrainScope] `constrainBlock` lambda argument use the [ConstrainScope.linkTo] method
+ *  to link the `start` to the [ConstrainedLayoutReference.end] of the [ConstrainedLayoutReference]
+ *  variable `image` with a `startMargin` of `16.dp`, the `end` to [ConstrainedLayoutReference.end]
+ *  of our `parent` with a `endMargin` of `16.dp`, and a `bias` of `0f`.
+ *
+ * A [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is set to `8.dp`, with
+ * a [ConstraintLayoutScope.constrainAs] chained to that that sets the [ConstrainedLayoutReference]
+ * `ref` to the [ConstrainedLayoutReference] variable `priceSpacer` and in its [ConstrainScope]
+ * `constrainBlock` lambda argument use [ConstrainScope.linkTo] to link the `top` to the
+ * [ConstrainedLayoutReference.bottom] of the [ConstrainedLayoutReference] variable `tag` and the
+ * `bottom` to the [ConstrainedLayoutReference.top] of the [ConstrainedLayoutReference] variable
+ * `price`
+ *
+ * A [Text] whose arguments are:
+ *  - `text`: The [String] of the formatted price of our [Snack.price] of our [Snack] variable `snack`
+ *  returned by the [formatPrice] method.
+ *  - `style`: The [TextStyle] of the text is the [Typography.subtitle1] of our custom
+ *  [MaterialTheme.typography].
+ *  - `color`: The [Color] of the text is the [JetsnackColors.textPrimary] of our custom
+ *  [JetsnackTheme.colors].
+ *  - `modifier`: The [Modifier] of the text is a [ConstraintLayoutScope.constrainAs] that sets
+ *  the [ConstrainedLayoutReference] `ref` to the [ConstrainedLayoutReference] variable `price`
+ *  and in its [ConstrainScope] `constrainBlock` lambda argument use the [ConstrainScope.linkTo]
+ *  method to link the `start` to the [ConstrainedLayoutReference.end] of the [ConstrainedLayoutReference]
+ *  variable `image`, the `end` to [ConstrainedLayoutReference.start] of the [ConstrainedLayoutReference]
+ *  variable `quantity`, with a `startMargin` of `16.dp`, an `endMargin` of `16.dp`, and a `bias`
+ *  of `0f`.
+ *
+ * A [QuantitySelector] whose arguments are:
+ *  - `count`: The [Int] of the [OrderLine.count] of our [OrderLine] parameter [orderLine].
+ *  - `decreaseItemCount`: A lambda function that calls our lambda parameter [decreaseItemCount] with
+ *  the [Snack.id] of our [Snack] variable `snack`.
+ *  - `increaseItemCount`: A lambda function that calls our lambda parameter [increaseItemCount] with
+ *  the [Snack.id] of our [Snack] variable `snack`.
+ *  - `modifier`: The [Modifier] of the [QuantitySelector] is a [ConstraintLayoutScope.constrainAs]
+ *  that sets the [ConstrainedLayoutReference] `ref` to the [ConstrainedLayoutReference] variable
+ *  `quantity` and in its [ConstrainScope] `constrainBlock` lambda argument we link the `baseline`
+ *  to the [ConstrainedLayoutReference.baseline] of the [ConstrainedLayoutReference] variable `price`,
+ *  and the `end` to the [ConstrainedLayoutReference.end] of our `parent`.
+ *
+ * Finally in the [ConstraintLayout] we compose a [JetsnackDivider] whose `modifier` argument is
+ * a [ConstraintLayoutScope.constrainAs] that sets the [ConstrainedLayoutReference] `ref` to the
+ * [ConstrainedLayoutReference] variable `divider` and in its [ConstrainScope] `constrainBlock`
+ * lambda argument we use the [ConstrainScope.linkTo] method to link the `start` to the parent `start`
+ * and the `end` to the parent `end`, then link the `top` to the parent `bottom`.
+ *
+ * @param orderLine The [OrderLine] representing the snack and its quantity in the cart.
+ * @param removeSnack A lambda function to be called when the user wants to remove the snack from
+ * the cart. It receives the [Snack.id] of the snack to be removed.
+ * @param increaseItemCount A lambda function to be called when the user wants to increase the
+ * quantity of the snack. It receives the [Snack.id] of the snack to be increased.
+ * @param decreaseItemCount A lambda function to be called when the user wants to decrease the
+ * quantity of the snack. It receives the [Snack.id] of the snack to be decreased.
+ * @param onSnackClick A lambda function to be called when the user clicks on the snack. It
+ * receives the [Snack.id] of the snack clicked.
+ * @param modifier The [Modifier] to be applied to the layout.
+ */
 @Composable
 fun CartItem(
     orderLine: OrderLine,
@@ -289,7 +565,10 @@ fun CartItem(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val snack = orderLine.snack
+    /**
+     * The [Snack] of the [OrderLine] parameter [orderLine].
+     */
+    val snack: Snack = orderLine.snack
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
@@ -298,6 +577,9 @@ fun CartItem(
             .padding(horizontal = 24.dp)
 
     ) {
+        /**
+         * The [ConstrainedLayoutReference]'s of the [ConstraintLayout] composable.
+         */
         val (divider, image, name, tag, priceSpacer, price, remove, quantity) = createRefs()
         createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
         SnackImage(
@@ -393,13 +675,16 @@ fun CartItem(
     }
 }
 
+/**
+ * A composable function that displays the summary of the cart. TODO: Continue here.
+ */
 @Composable
 fun SummaryItem(
     subtotal: Long,
     shippingCosts: Long,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier) {
+    Column(modifier = modifier) {
         Text(
             text = stringResource(id = R.string.cart_summary_header),
             style = MaterialTheme.typography.h6,
