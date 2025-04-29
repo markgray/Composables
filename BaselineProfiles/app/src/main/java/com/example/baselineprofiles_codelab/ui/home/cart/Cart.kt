@@ -27,7 +27,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
@@ -64,6 +66,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -677,7 +680,92 @@ fun CartItem(
 }
 
 /**
- * A composable function that displays the summary of the cart. TODO: Continue here.
+ * A composable function that displays the summary of the cart.
+ *
+ * Our root composable function is a [Column] whose `modifier` argument is our [Modifier] parameter
+ * [modifier]. In the [ColumnScope] `content` composable lambda argument we compose:
+ *
+ * A [Text] whose arguments are:
+ *  - `text`: The [String] with resource ID `R.string.cart_summary_header` ("Summary").
+ *  - `style`: The [TextStyle] of the text is the [Typography.h6] of our custom
+ *  [MaterialTheme.typography].
+ *  - `color`: The [Color] of the text is the [JetsnackColors.brand] of our custom
+ *  [JetsnackTheme.colors].
+ *  - `maxLines`: The number of lines of text to display is `1`.
+ *  - `overflow`: The text overflow is [TextOverflow.Ellipsis].
+ *  - `modifier`: The [Modifier] of the text is a [Modifier.padding] that adds `24.dp` to each
+ *  `horizontal` side, with a [Modifier.heightIn] chained to that that sets the `min` to `56.dp`,
+ *  and a [Modifier.wrapContentHeight] chained to that.
+ *
+ * A [Row] whose `modifier` argument is a [Modifier.padding] that adds `24.dp` to each `horizontal`
+ * side. In the [RowScope] `content` composable lambda argument we compose:
+ *
+ * **First** A [Text] whose arguments are:
+ *  - `text`: The [String] with resource ID `R.string.cart_subtotal_label` ("Subtotal").
+ *  - `style`: The [TextStyle] of the text is the [Typography.body1] of our custom
+ *  [MaterialTheme.typography].
+ *  - `modifier`: The [Modifier] of the text is a [RowScope.weight] whose `weight` is set to
+ *  `1f`, with a [Modifier.wrapContentWidth] chained to that that sets the `align` to [Alignment.Start]
+ *  and a [RowScope.alignBy] chained to that that sets the `alignmentLine` to [LastBaseline].
+ *
+ * **Second** A [Text] whose arguments are:
+ *  - `text`: The formatted `price` of our [Long] parameter [subtotal] returned by the [formatPrice]
+ *  method.
+ *  - `style`: The [TextStyle] of the text is the [Typography.body1] of our custom
+ *  [MaterialTheme.typography].
+ *  - `modifier`: The [Modifier] of the text is a [RowScope.alignBy] that sets the `alignmentLine`
+ *  to [LastBaseline].
+ *
+ * Below that [Row] in the [Column] we compose another [Row] whose `modifier` argument is a
+ * [Modifier.padding] that adds `24.dp` to each `horizontal` side, and 8.dp to each `vertical` side.
+ * In the [RowScope] `content` composable lambda argument we compose:
+ *
+ * **First** A [Text] whose arguments are:
+ *  - `text`: The [String] with resource ID `R.string.cart_shipping_label` ("Shipping & Handling").
+ *  - `style`: The [TextStyle] of the text is the [Typography.body1] of our custom
+ *  [MaterialTheme.typography].
+ *  - `modifier`: The [Modifier] of the text is a [RowScope.weight] whose `weight` is set to
+ *  `1f`, with a [Modifier.wrapContentWidth] chained to that that sets the `align` to [Alignment.Start]
+ *  and a [RowScope.alignBy] chained to that that sets the `alignmentLine` to [LastBaseline].
+ *
+ * **Second** A [Text] whose arguments are:
+ *  - `text`: The formatted `price` of our [Long] parameter [shippingCosts] returned by the
+ *  [formatPrice] method.
+ *  - `style`: The [TextStyle] of the text is the [Typography.body1] of our custom
+ *  [MaterialTheme.typography].
+ *  - `modifier`: The [Modifier] of the text is a [RowScope.alignBy] that sets the `alignmentLine`
+ *  to [LastBaseline].
+ *
+ * A [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is set to `8.dp`.
+ *
+ * A [JetsnackDivider].
+ *
+ * A [Row] whose `modifier` argument is a [Modifier.padding] that adds `24.dp` to each `horizontal`
+ * side, and 8.dp to each `vertical` side. In the [RowScope] `content` composable lambda argument
+ * we compose:
+ *
+ * **First** A [Text] whose arguments are:
+ *  - `text`: is the [String] with resource ID `R.string.cart_total_label` ("Total").
+ *  - `style`: The [TextStyle] of the text is the [Typography.body1] of our custom
+ *  [MaterialTheme.typography].
+ *  - `modifier`: The [Modifier] of the text is a [RowScope.weight] whose `weight` is set to
+ *  `1f`, with a [Modifier.padding] chained to that that adds `16.dp` to the `end`, with a
+ *  [Modifier.wrapContentWidth] chained to that that sets the `align` to [Alignment.End], and
+ *  a [RowScope.alignBy] chained to that that sets the `alignmentLine` to [LastBaseline].
+ *
+ * **Second** A [Text] whose arguments are:
+ *  - `text`: The formatted `price` of our [Long] parameter [subtotal] plus our [Long] parameter
+ *  [shippingCosts] returned by the [formatPrice] method.
+ *  - `style`: The [TextStyle] of the text is the [Typography.subtitle1] of our custom
+ *  [MaterialTheme.typography].
+ *  - `modifier`: The [Modifier] of the text is a [RowScope.alignBy] that sets the `alignmentLine`
+ *  to [LastBaseline].
+ *
+ * A [JetsnackDivider].
+ *
+ * @param subtotal The subtotal of the cart.
+ * @param shippingCosts The shipping costs of the cart.
+ * @param modifier The [Modifier] to be applied to the layout.
  */
 @Composable
 fun SummaryItem(
@@ -749,17 +837,50 @@ fun SummaryItem(
     }
 }
 
+/**
+ * A composable function that displays the checkout bar at the bottom of the cart screen.
+ * This bar includes a divider and a checkout button.
+ *
+ * Our root composable function is a [Column] whose `modifier` argument chains to our [Modifier]
+ * parameter [modifier] a [Modifier.background] whose [Color] is the [JetsnackColors.uiBackground]
+ * of our custom [JetsnackTheme.colors].
+ *
+ * In the [ColumnScope] `content` composable lambda argument we compose:
+ *
+ * A [JetsnackDivider].
+ *
+ * A [Row] in whose [RowScope] `content` composable lambda argument we compose:
+ *
+ * **First** A [Spacer] whose `modifier` argument is a [RowScope.weight] whose `weight` is set
+ * to `1f`.
+ *
+ * **Second** A [JetsnackButton] whose arguments are:
+ *  - `onClick`: A lambda function that is empty and does nothing at the moment.
+ *  - `shape`: The [Shape] of the button is a [RectangleShape].
+ *  - `modifier`: The [Modifier] of the button is a [Modifier.padding] that adds `12.dp` to
+ *  each `horizontal` side and `8.dp` to each `vertical` side, with a [RowScope.weight] chained
+ *  to that that sets the `weight` to `1f`.
+ *
+ * In the [RowScope] `content` composable lambda argument of the [IconButton] we compose a [Text]
+ * whose arguments are:
+ *  - `text`: The [String] with resource ID `R.string.cart_checkout` ("Checkout").
+ *  - `modifier`: The [Modifier] of the text is a [Modifier.fillMaxWidth].
+ *  - `textAlign`: The [TextAlign] of the text is [TextAlign.Left].
+ *
+ *
+ * @param modifier Modifier to be applied to the layout. Defaults to an empty Modifier.
+ */
 @Composable
 private fun CheckoutBar(modifier: Modifier = Modifier) {
     Column(
-        modifier.background(
+        modifier = modifier.background(
             color = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque)
         )
     ) {
 
         JetsnackDivider()
         Row {
-            Spacer(Modifier.weight(weight = 1f))
+            Spacer(modifier = Modifier.weight(weight = 1f))
             JetsnackButton(
                 onClick = { /* todo */ },
                 shape = RectangleShape,
@@ -778,6 +899,12 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Three preview composables for the [Cart] screen:
+ *  - "default": The default preview.
+ *  - "dark theme": The dark theme preview.
+ *  - "large font": The large font preview.
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)

@@ -23,6 +23,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.rememberDismissState
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.Dp
 @Composable
 /**
  * Holds the Swipe to dismiss composable, its animation and the current state
+ * TODO: CONTINUE HERE.
  */
 fun SwipeDismissItem(
     modifier: Modifier = Modifier,
@@ -44,12 +46,20 @@ fun SwipeDismissItem(
     background: @Composable (offset: Dp) -> Unit,
     content: @Composable (isDismissed: Boolean) -> Unit,
 ) {
-    // Hold the current state from the Swipe to Dismiss composable
-    val dismissState = rememberDismissState()
-    // Boolean value used for hiding the item if the current state is dismissed
-    val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
-    // Returns the swiped value in dp
-    val offset = with(LocalDensity.current) { dismissState.offset.value.toDp() }
+    /**
+     * Hold the current state from the Swipe to Dismiss composable
+     */
+    val dismissState: DismissState = rememberDismissState()
+
+    /**
+     * Boolean value used for hiding the item if the current state is dismissed
+     */
+    val isDismissed: Boolean = dismissState.isDismissed(DismissDirection.EndToStart)
+
+    /**
+     * Returns the swiped value in dp
+     */
+    val offset: Dp = with(LocalDensity.current) { dismissState.offset.value.toDp() }
 
     AnimatedVisibility(
         modifier = modifier,
