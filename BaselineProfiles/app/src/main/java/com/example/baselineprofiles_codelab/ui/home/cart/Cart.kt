@@ -332,7 +332,7 @@ private fun CartContent(
             SwipeDismissItem(
                 background = { offsetX: Dp ->
                     /*Background color changes from light gray to red when the
-                    swipe to delete with exceeds 160.dp*/
+                    swipe to delete `offsetX` exceeds 160.dp*/
                     val backgroundColor: Color = if (offsetX < (-160).dp) {
                         JetsnackTheme.colors.error
                     } else {

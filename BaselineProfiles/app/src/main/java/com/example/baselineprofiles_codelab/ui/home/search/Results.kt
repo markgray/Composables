@@ -46,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import com.example.baselineprofiles_codelab.R
 import com.example.baselineprofiles_codelab.model.Filter
 import com.example.baselineprofiles_codelab.model.Snack
@@ -58,6 +59,24 @@ import com.example.baselineprofiles_codelab.ui.components.SnackImage
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import com.example.baselineprofiles_codelab.ui.utils.formatPrice
 
+/**
+ * Displays the search results for snacks based on the given [searchResults] and [filters].
+ *
+ * This composable function displays a list of search results, including:
+ *  - A [FilterBar] to show the active filters.
+ *  - A text indicating the number of search results found.
+ *  - A [LazyColumn] to display the list of [Snack] items, each rendered by the
+ *  [SearchResult] composable.
+ *  - Each snack Item has a click Listener implemented via [onSnackClick]
+ *  - Dividers between snack items to improve readability.
+ *
+ * TODO: Continue here
+ *
+ * @param searchResults The list of [Snack] objects representing the search results.
+ * @param filters The list of [Filter] objects applied to the search results.
+ * @param onSnackClick A callback function that is invoked when a snack item is clicked.
+ * It receives the [Snack.id] of the clicked snack as its argument.
+ */
 @Composable
 fun SearchResults(
     searchResults: List<Snack>,
@@ -65,7 +84,7 @@ fun SearchResults(
     onSnackClick: (Long) -> Unit
 ) {
     Column {
-        FilterBar(filters, onShowFilters = {})
+        FilterBar(filters = filters, onShowFilters = {})
         Text(
             text = stringResource(R.string.search_count, searchResults.size),
             style = MaterialTheme.typography.h6,
@@ -73,8 +92,8 @@ fun SearchResults(
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
         )
         LazyColumn {
-            itemsIndexed(searchResults) { index, snack ->
-                SearchResult(snack, onSnackClick, index != 0)
+            itemsIndexed(items = searchResults) { index: Int, snack: Snack ->
+                SearchResult(snack = snack, onSnackClick = onSnackClick, showDivider = index != 0)
             }
         }
     }
@@ -93,13 +112,19 @@ private fun SearchResult(
             .clickable { onSnackClick(snack.id) }
             .padding(horizontal = 24.dp)
     ) {
-        val (divider, image, name, tag, priceSpacer, price, add) = createRefs()
+        val (divider: ConstrainedLayoutReference,
+            image: ConstrainedLayoutReference,
+            name: ConstrainedLayoutReference,
+            tag: ConstrainedLayoutReference,
+            priceSpacer: ConstrainedLayoutReference,
+            price: ConstrainedLayoutReference,
+            add: ConstrainedLayoutReference) = createRefs()
         createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
         if (showDivider) {
             JetsnackDivider(
-                Modifier.constrainAs(divider) {
+                Modifier.constrainAs(ref = divider) {
                     linkTo(start = parent.start, end = parent.end)
-                    top.linkTo(parent.top)
+                    top.linkTo(anchor = parent.top)
                 }
             )
         }
@@ -107,22 +132,22 @@ private fun SearchResult(
             imageUrl = snack.imageUrl,
             contentDescription = null,
             modifier = Modifier
-                .size(100.dp)
-                .constrainAs(image) {
+                .size(size = 100.dp)
+                .constrainAs(ref = image) {
                     linkTo(
                         top = parent.top,
                         topMargin = 16.dp,
                         bottom = parent.bottom,
                         bottomMargin = 16.dp
                     )
-                    start.linkTo(parent.start)
+                    start.linkTo(anchor = parent.start)
                 }
         )
         Text(
             text = snack.name,
             style = MaterialTheme.typography.subtitle1,
             color = JetsnackTheme.colors.textSecondary,
-            modifier = Modifier.constrainAs(name) {
+            modifier = Modifier.constrainAs(ref = name) {
                 linkTo(
                     start = image.end,
                     startMargin = 16.dp,
@@ -136,7 +161,7 @@ private fun SearchResult(
             text = snack.tagline,
             style = MaterialTheme.typography.body1,
             color = JetsnackTheme.colors.textHelp,
-            modifier = Modifier.constrainAs(tag) {
+            modifier = Modifier.constrainAs(ref = tag) {
                 linkTo(
                     start = image.end,
                     startMargin = 16.dp,
@@ -148,16 +173,16 @@ private fun SearchResult(
         )
         Spacer(
             Modifier
-                .height(8.dp)
-                .constrainAs(priceSpacer) {
+                .height(height = 8.dp)
+                .constrainAs(ref = priceSpacer) {
                     linkTo(top = tag.bottom, bottom = price.top)
                 }
         )
         Text(
-            text = formatPrice(snack.price),
+            text = formatPrice(price = snack.price),
             style = MaterialTheme.typography.subtitle1,
             color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier.constrainAs(price) {
+            modifier = Modifier.constrainAs(ref = price) {
                 linkTo(
                     start = image.end,
                     startMargin = 16.dp,
@@ -170,17 +195,17 @@ private fun SearchResult(
         JetsnackButton(
             onClick = { /* todo */ },
             shape = CircleShape,
-            contentPadding = PaddingValues(0.dp),
+            contentPadding = PaddingValues(all = 0.dp),
             modifier = Modifier
-                .size(36.dp)
-                .constrainAs(add) {
+                .size(size = 36.dp)
+                .constrainAs(ref = add) {
                     linkTo(top = parent.top, bottom = parent.bottom)
-                    end.linkTo(parent.end)
+                    end.linkTo(anchor = parent.end)
                 }
         ) {
             Icon(
                 imageVector = Icons.Outlined.Add,
-                contentDescription = stringResource(R.string.label_add)
+                contentDescription = stringResource(id = R.string.label_add)
             )
         }
     }
@@ -196,22 +221,22 @@ fun NoResults(
         modifier = modifier
             .fillMaxSize()
             .wrapContentSize()
-            .padding(24.dp)
+            .padding(all = 24.dp)
     ) {
         Image(
-            painterResource(R.drawable.empty_state_search),
+            painterResource(id = R.drawable.empty_state_search),
             contentDescription = null
         )
-        Spacer(Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(height = 24.dp))
         Text(
             text = stringResource(R.string.search_no_matches, query),
             style = MaterialTheme.typography.subtitle1,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
         Text(
-            text = stringResource(R.string.search_no_matches_retry),
+            text = stringResource(id = R.string.search_no_matches_retry),
             style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
@@ -219,6 +244,12 @@ fun NoResults(
     }
 }
 
+/**
+ * Three previews of a [SearchResult] are provided here to show different device settings:
+ *  - "default": Light mode
+ *  - "dark theme": Dark mode
+ *  - "large font": Large font size
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)

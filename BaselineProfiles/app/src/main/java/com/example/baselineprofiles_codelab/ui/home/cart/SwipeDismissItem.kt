@@ -17,6 +17,7 @@
 package com.example.baselineprofiles_codelab.ui.home.cart
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -32,12 +33,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 
+/**
+ * A composable that provides a swipe-to-dismiss functionality for its Composable lambda parameter
+ * [content]. It wraps a [SwipeToDismiss] composable, holding its animation and the current state,
+ * and passes the information needed by [SwipeToDismiss] to allow the user to dismiss the item.
+ *
+ * We start by initializing and remembering our [DismissState] variable `dismissState` to a new
+ * instance. We initialize our [Boolean] variable `isDismissed` to the value of the
+ * [DismissState.isDismissed] property of `dismissState` for the `direction`
+ * [DismissDirection.EndToStart]. We initialize our [Dp] variable `offset` to the value of the
+ * [DismissState.offset] property of `dismissState` converted to [Dp] using the
+ * current [LocalDensity].
+ *
+ * Then our root composable is a [AnimatedVisibility] whose `modifier` argument is our [Modifier]
+ * parameter [modifier], whose `visible` argument is the negation of `isDismissed`, whose `enter`
+ * argument is our [EnterTransition] parameter [enter], and whose `exit` argument is our
+ * [ExitTransition] parameter [exit]. In its [AnimatedVisibilityScope] `content` composable lambd
+ * argument we compose a [SwipeToDismiss] whose arguments are:
+ *  - `modifier` is our [Modifier] parameter [modifier]
+ *  - `state` is our [DismissState] variable `dismissState`
+ *  - `directions` is our [Set] of [DismissDirection] parameter [directions]
+ *  - `background` is a a lambda that calls our lambda parameter [background] with the [Dp]
+ *  variable `offset` as its argument.
+ *  - `dismissContent` is a lambda that calls our lambda parameter [content] with the [Boolean]
+ *  variable `isDismissed` as its argument.
+ *
+ * @param modifier [Modifier] to be applied to the [SwipeDismissItem].
+ * @param directions A set of [DismissDirection]s in which the item can be swiped to be dismissed.
+ * Defaults to only [DismissDirection.EndToStart] (swipe from right to left).
+ * @param enter The [EnterTransition] to be used when the item is shown. Defaults to [expandVertically].
+ * @param exit The [ExitTransition] to be used when the item is dismissed. Defaults to [shrinkVertically].
+ * @param background A composable that will be shown in the background when the item is being swiped.
+ * It receives the current swipe offset in [Dp] as its argument. This can be used to create a dynamic
+ * background based on the swipe progress.
+ * @param content A composable that represents the main content of the item. It receives a boolean
+ * `isDismissed` indicating whether the item is currently dismissed. This can be used to change the
+ * item state when dismissed.
+ */
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
-/**
- * Holds the Swipe to dismiss composable, its animation and the current state
- * TODO: CONTINUE HERE.
- */
 fun SwipeDismissItem(
     modifier: Modifier = Modifier,
     directions: Set<DismissDirection> = setOf(DismissDirection.EndToStart),
@@ -54,7 +88,7 @@ fun SwipeDismissItem(
     /**
      * Boolean value used for hiding the item if the current state is dismissed
      */
-    val isDismissed: Boolean = dismissState.isDismissed(DismissDirection.EndToStart)
+    val isDismissed: Boolean = dismissState.isDismissed(direction = DismissDirection.EndToStart)
 
     /**
      * Returns the swiped value in dp
