@@ -44,7 +44,7 @@ class CartViewModel(
 ) : ViewModel() {
 
     /**
-     * [MutableStateFlow] of [List] [OrderLine] representing the list of order lines in the
+     * [MutableStateFlow] of [List] of [OrderLine] representing the list of ordered items in the
      * shopping cart. It is observed by the UI layer to trigger state updates using our publicly
      * accessible [orderLines] flow. It is initialized with the current state of the cart from
      * [SnackRepo] property [snackRepository].
@@ -73,15 +73,16 @@ class CartViewModel(
      * Increases the count of a specific snack in the order.
      *
      * This function attempts to increase the count of the snack identified by [snackId] in the
-     * current order. It first checks if a random failure should occur using `shouldRandomlyFail()`.
-     *  - If `shouldRandomlyFail()` returns `false`, it searches for the [OrderLine] in our
+     * current order. It first checks if a random failure should occur using [shouldRandomlyFail].
+     *  - If [shouldRandomlyFail] returns `false`, it searches for the [OrderLine] in our
      *  [MutableStateFlow] wrapped [List] of [OrderLine] property [_orderLines] whose
      *  [OrderLine.snack] has a [Snack.id] that matches our [Long] parameter [snackId] and
-     *  initializes the [Int] variable `currentCount` with the value of its [OrderLine.count],
-     *  and then calls `updateSnackCount()` with [snackId] as its `snackId` argument and
+     *  initializes the [Int] variable `currentCount` with the value of its [OrderLine.count].
+     *  Then it calls `updateSnackCount()` with [snackId] as its `snackId` argument and
      *  `currentCount + 1` as its `count` argument.
-     *  - If `shouldRandomlyFail()` returns `true`, it simulates an error and displays an error
-     *  message to the user using the `snackbarManager`.
+     *  - If [shouldRandomlyFail] returns `true`, it simulates an error and displays an error
+     *  message to the user using the [SnackbarManager.showMessage] method of our [SnackbarManager]
+     *  property [snackbarManager].
      *
      * @param snackId The ID of the snack to increase the count of.
      */
@@ -102,15 +103,16 @@ class CartViewModel(
      * If the snack's current count is 1, it will be removed from the order.
      * If the snack's current count is greater than 1, its count will be decremented by 1.
      *
-     * If `shouldRandomlyFail()` returns true, it will simulate a failure and display an error
-     * message to the user using the `snackbarManager`.
+     * If [shouldRandomlyFail] returns true, it will simulate a failure and display an error
+     * message to the user using the [SnackbarManager.showMessage] method of our [SnackbarManager]
+     * property [snackbarManager].
      *
-     * If `shouldRandomlyFail()` returns `false`, it searches for the [OrderLine] in our
+     * If [shouldRandomlyFail] returns `false`, it searches for the [OrderLine] in our
      * [MutableStateFlow] wrapped [List] of [OrderLine] property [_orderLines] whose
      * [OrderLine.snack] has a [Snack.id] that matches our [Long] parameter [snackId] and
      * initializes the [Int] variable `currentCount` with the value of its [OrderLine.count].
-     * If `currentCount` is 1, it will call `removeSnack()` with [snackId] as its argument.
-     * Otherwise, it will call `updateSnackCount()` with [snackId] as its `snackId` argument
+     * If `currentCount` is 1, it will call [removeSnack] with [snackId] as its argument.
+     * Otherwise, it will call [updateSnackCount] with [snackId] as its `snackId` argument
      * and `currentCount - 1` as its `count` argument.
      *
      * @param snackId The ID of the snack to decrease the count of.
@@ -152,12 +154,13 @@ class CartViewModel(
     /**
      * Updates the count of a specific snack in the order.
      *
-     * This function iterates through the list of `OrderLine` objects and finds the one
-     * associated with the provided `snackId`. If a match is found, it creates a new `OrderLine`
-     * with the updated `count` while keeping other properties the same. If no match is found
-     * (i.e., the snack is not in the order), the list remains unchanged.
+     * This function iterates through the [OrderLine] objects in our [MutableStateFlow] of [List] of
+     * [OrderLine] property [_orderLines] and finds the one whose [OrderLine.snack] has an [Snack.id]
+     * equal to our [Long] parameter [snackId]. If a match is found, it creates a new [OrderLine]
+     * with the updated [OrderLine.count] while keeping other properties the same. If no match is
+     * found (i.e., the snack is not in the order), the list remains unchanged.
      *
-     * The updated list of `OrderLine` objects is then emitted through the `_orderLines`
+     * The updated list of [OrderLine] objects is then emitted through the [_orderLines]
      * MutableStateFlow, triggering updates for any observers.
      *
      * @param snackId The ID of the snack to update.

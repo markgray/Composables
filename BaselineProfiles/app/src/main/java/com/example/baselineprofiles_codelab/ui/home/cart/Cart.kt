@@ -742,7 +742,7 @@ fun CartItem(
  *
  * A [Row] whose `modifier` argument is a [Modifier.padding] that adds `24.dp` to each `horizontal`
  * side, and 8.dp to each `vertical` side. In the [RowScope] `content` composable lambda argument
- * we compose:
+ * of the [Row] we compose:
  *
  * **First** A [Text] whose arguments are:
  *  - `text`: is the [String] with resource ID `R.string.cart_total_label` ("Total").
@@ -866,7 +866,7 @@ fun SummaryItem(
  *  - `text`: The [String] with resource ID `R.string.cart_checkout` ("Checkout").
  *  - `modifier`: The [Modifier] of the text is a [Modifier.fillMaxWidth].
  *  - `textAlign`: The [TextAlign] of the text is [TextAlign.Left].
- *
+ *  - `maxLines` is `1`.
  *
  * @param modifier Modifier to be applied to the layout. Defaults to an empty Modifier.
  */
