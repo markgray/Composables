@@ -59,9 +59,9 @@ import kotlin.math.max
 /**
  * Displays a list of search category collections in a scrollable vertical list.
  *
- * This composable renders a [LazyColumn] to efficiently display a potentially large list of
+ * This composable uses a [LazyColumn] to efficiently display a potentially large list of
  * [SearchCategoryCollection] items. Each collection is rendered using a [SearchCategoryCollection]
- * composable. After the list a [Spacer] of `8dp` height is added.
+ * composable. After the [LazyColumn] a [Spacer] of `8dp` height is added.
  *
  * @param categories A list of [SearchCategoryCollection] objects to be displayed. Each object
  * represents a collection of search categories.
@@ -101,13 +101,13 @@ fun SearchCategories(
  *
  * **Second** a [VerticalGrid] whose `modifier` argument is a [Modifier.padding] that adds 16.dp
  * to each horizontal side of the content. In its `content` composable lambda argument we first
- * initialize our [List] of [Color] variabe `gradient` with the appropriate gradient based on
+ * initialize our [List] of [Color] variable `gradient` with the appropriate gradient based on
  * whether our [Int] parameter [index] is even or odd, if it is even we use the
  * [JetsnackColors.gradient2_2] of our custom [JetsnackTheme.colors], if it is odd we use
  * [JetsnackColors.gradient2_3]. Then we use the [Iterable.forEach] method of the
  * [SearchCategoryCollection.categories] of our [SearchCategoryCollection] parameter [collection]
  * to iterate through the [SearchCategory] items capturing the current [SearchCategory] in our
- * variable `category` and compose a [SearchCategory] whose argruments are:
+ * variable `category` and composing a [SearchCategory] whose argruments are:
  *  - `category`: is the current [SearchCategory] in variable `category`
  *  - `gradient`: is the [List] of [Color] variable `gradient`
  *  - `modifier`: is a [Modifier.padding] that adds 8.dp to all sides of the content.
@@ -154,24 +154,25 @@ private fun SearchCategoryCollection(
 }
 
 /**
- * Minimum height for a [SnackImage] in our [SearchCategory] composable
+ * Minimum height for a [SnackImage] in our [SearchCategory] composable is `134.dp`.
  */
 private val MinImageSize = 134.dp
 
 /**
- * Shape of our [SearchCategory] composable
+ * Shape of our [SearchCategory] composable is a [RoundedCornerShape] whose `size` is `10.dp`
  */
 private val CategoryShape = RoundedCornerShape(size = 10.dp)
 
 /**
  * Proportion of width used to determine the width of the [Text] in our [SearchCategory] composable
+ * us `0.55f`
  */
 private const val CategoryTextProportion = 0.55f
 
 /**
  * Displays a single search category. Our root Composable is a [Layout] whose `modifier` argument
  * chains to our [Modifier] parameter [modifier] a [Modifier.aspectRatio] whose `ratio` argument is
- * 1.45f, with a [Modifier.shadow] chained to that whose `elevation` argument is 3.dp and whose
+ * 1.45f, with a [Modifier.shadow] chained to that whose `elevation` argument is `3.dp` and whose
  * `shape` argument is [CategoryShape], with a [Modifier.clip] chained to that whose `shape` argument
  * is [CategoryShape], with a [Modifier.background] chained to that whose `brush` argument is a
  *  [Brush.horizontalGradient] whose `colors` argument is our [List] of [Color] parameter [gradient],
@@ -182,27 +183,26 @@ private const val CategoryTextProportion = 0.55f
  *   [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.textSecondary]
  *   of our custom [JetsnackTheme.colors], and whose [Modifier] `modifier` argument is a
  *   [Modifier.padding] that adds 4.dp to all sides, with a [Modifier.padding] that adds 8.dp to the
- *   `start`.
+ *   `start` chained to that.
  *   - a [SnackImage] whose `imageRes` argument is the resource ID [SearchCategory.imageUrl] of our
  *   [SearchCategory] parameter [category], whose `content` description argument is `null`, and whose
- *   `modifier` argument is a [Modifier.fillMaxSize] that allows it to measure at its desired size
- *   `modifier` argument is a [Modifier.fillMaxSize] that allows it to measure at its desired size
+ *   `modifier` argument is a [Modifier.fillMaxSize] that allows it to measure at its desired size.
  *
  * The arguments passed to the [MeasureScope] lambda argument of the [Layout] Composable are a
  * [List] of [Measurable] passed in the variable `measurables` and a [Constraints] passed in the
  * variable `constraints`. In that lambda we initialize our [Int] variable `val textWidth` to the
  * `maxWidth` of our [Constraints] times [CategoryTextProportion]. We initialize our [Placeable]
- * variable `val textPlaceable` by using the [Measurable.measure] of the 0 index [Measurable] in the
- * `measurables` list to measure the [Text] using our [Int] variable `textWidth` as the
+ * variable `val textPlaceable` by using the [Measurable.measure] method of the 0 index [Measurable]
+ * in the `measurables` list to measure the [Text] using our [Int] variable `textWidth` as the
  * [Constraints.fixedWidth] of the [Placeable]. We initialize our [Int] variable `imageSize` to the
  * [max] of [MinImageSize] and the [Constraints.maxHeight] of the [Constraints] variable `constraints`.
- * We initialize our [Placeable] variable `val imagePlaceable` by using the [Measurable.measure] of
- * the index `1` [Measurable] in the [List] of [Measurable] variable `measurables` to measure the
- * [SnackImage] using our [Int] variable `imageSize` as the [Constraints.fixed] size of the [Placeable]
- * produced. We then call the [MeasureScope.layout] method with its `width` argument set to the
- * [Constraints.maxWidth] of the [Constraints] variable `constraints`, and its `height` argument set
- * to the [Constraints.minHeight] of the [Constraints] variable `constraints`. In the `placementBlock`
- * ambda argument we have call:
+ * We initialize our [Placeable] variable `val imagePlaceable` by using the [Measurable.measure]
+ * method of the index `1` [Measurable] in the [List] of [Measurable] variable `measurables` to
+ * measure the [SnackImage] using our [Int] variable `imageSize` as the [Constraints.fixed] size of
+ * the [Placeable] produced. We then call the [MeasureScope.layout] method with its `width` argument
+ * set to the [Constraints.maxWidth] of the [Constraints] variable `constraints`, and its `height`
+ * argument set to the [Constraints.minHeight] of the [Constraints] variable `constraints`. In the
+ * `placementBlock` lambda argument we call:
  *  - the [Placeable.PlacementScope.placeRelative] extension method of [Placeable] variable
  *  `textPlaceable` with its `x` argument set to 0, and its `y` argument set to the
  *  [Constraints.maxHeight] of the [Constraints] variable `constraints` minus the [Placeable.height]

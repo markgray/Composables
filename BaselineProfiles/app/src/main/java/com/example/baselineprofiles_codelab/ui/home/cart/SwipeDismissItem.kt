@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.Dp
  * Then our root composable is a [AnimatedVisibility] whose `modifier` argument is our [Modifier]
  * parameter [modifier], whose `visible` argument is the negation of `isDismissed`, whose `enter`
  * argument is our [EnterTransition] parameter [enter], and whose `exit` argument is our
- * [ExitTransition] parameter [exit]. In its [AnimatedVisibilityScope] `content` composable lambd
+ * [ExitTransition] parameter [exit]. In its [AnimatedVisibilityScope] `content` composable lambda
  * argument we compose a [SwipeToDismiss] whose arguments are:
  *  - `modifier` is our [Modifier] parameter [modifier]
  *  - `state` is our [DismissState] variable `dismissState`
