@@ -47,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -64,6 +65,24 @@ import com.example.baselineprofiles_codelab.ui.components.JetsnackSurface
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import com.example.baselineprofiles_codelab.ui.utils.mirroringBackIcon
 
+/**
+ * A composable function that displays the search screen.
+ *
+ * This function handles the overall search flow, including:
+ *  - Displaying the search bar.
+ *  - Managing the search query and focus state.
+ *  - Triggering the search when the query changes.
+ *  - Displaying different content based on the search state, such as categories, suggestions,
+ *  results, or no results.
+ *
+ * TODO: Continue Here.
+ *
+ * @param onSnackClick A lambda function that is invoked when a snack item is clicked in the search
+ *  It receives the [Snack.id] of the clicked snack as its argument.
+ * @param modifier The modifier to be applied to the root layout of the search screen.
+ * @param state The [SearchState] object that holds the current state of the search screen,
+ * including the search query, focus, search results, and display mode.
+ */
 @Composable
 fun Search(
     onSnackClick: (Long) -> Unit,
@@ -83,23 +102,25 @@ fun Search(
             )
             JetsnackDivider()
 
-            LaunchedEffect(state.query.text) {
+            LaunchedEffect(key1 = state.query.text) {
                 state.searching = true
-                state.searchResults = SearchRepo.search(state.query.text)
+                state.searchResults = SearchRepo.search(query = state.query.text)
                 state.searching = false
             }
             when (state.searchDisplay) {
                 SearchDisplay.Categories -> SearchCategories(state.categories)
                 SearchDisplay.Suggestions -> SearchSuggestions(
                     suggestions = state.suggestions,
-                    onSuggestionSelect = { suggestion -> state.query = TextFieldValue(suggestion) }
+                    onSuggestionSelect = { suggestion: String ->
+                        state.query = TextFieldValue(suggestion)
+                    }
                 )
                 SearchDisplay.Results -> SearchResults(
-                    state.searchResults,
-                    state.filters,
-                    onSnackClick
+                    searchResults = state.searchResults,
+                    filters = state.filters,
+                    onSnackClick = onSnackClick
                 )
-                SearchDisplay.NoResults -> NoResults(state.query.text)
+                SearchDisplay.NoResults -> NoResults(query = state.query.text)
             }
         }
     }
@@ -142,13 +163,13 @@ class SearchState(
     filters: List<Filter>,
     searchResults: List<Snack>
 ) {
-    var query by mutableStateOf(query)
-    var focused by mutableStateOf(focused)
-    var searching by mutableStateOf(searching)
-    var categories by mutableStateOf(categories)
-    var suggestions by mutableStateOf(suggestions)
-    var filters by mutableStateOf(filters)
-    var searchResults by mutableStateOf(searchResults)
+    var query: TextFieldValue by mutableStateOf(query)
+    var focused: Boolean by mutableStateOf(focused)
+    var searching: Boolean by mutableStateOf(searching)
+    var categories: List<SearchCategoryCollection> by mutableStateOf(categories)
+    var suggestions: List<SearchSuggestionGroup> by mutableStateOf(suggestions)
+    var filters: List<Filter> by mutableStateOf(filters)
+    var searchResults: List<Snack> by mutableStateOf(searchResults)
     val searchDisplay: SearchDisplay
         get() = when {
             !focused && query.text.isEmpty() -> SearchDisplay.Categories
@@ -174,7 +195,7 @@ private fun SearchBar(
         shape = MaterialTheme.shapes.small,
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(height = 56.dp)
             .padding(horizontal = 24.dp, vertical = 8.dp)
     ) {
         Box(Modifier.fillMaxSize()) {
@@ -192,7 +213,7 @@ private fun SearchBar(
                         Icon(
                             imageVector = mirroringBackIcon(),
                             tint = JetsnackTheme.colors.iconPrimary,
-                            contentDescription = stringResource(R.string.label_back)
+                            contentDescription = stringResource(id = R.string.label_back)
                         )
                     }
                 }
@@ -201,8 +222,8 @@ private fun SearchBar(
                     onValueChange = onQueryChange,
                     modifier = Modifier
                         .weight(1f)
-                        .onFocusChanged {
-                            onSearchFocusChange(it.isFocused)
+                        .onFocusChanged { state: FocusState ->
+                            onSearchFocusChange(state.isFocused)
                         }
                 )
                 if (searching) {
@@ -210,10 +231,10 @@ private fun SearchBar(
                         color = JetsnackTheme.colors.iconPrimary,
                         modifier = Modifier
                             .padding(horizontal = 6.dp)
-                            .size(36.dp)
+                            .size(size = 36.dp)
                     )
                 } else {
-                    Spacer(Modifier.width(IconSize)) // balance arrow icon
+                    Spacer(modifier = Modifier.width(width = IconSize)) // balance arrow icon
                 }
             }
         }
@@ -233,16 +254,22 @@ private fun SearchHint() {
         Icon(
             imageVector = Icons.Outlined.Search,
             tint = JetsnackTheme.colors.textHelp,
-            contentDescription = stringResource(R.string.label_search)
+            contentDescription = stringResource(id = R.string.label_search)
         )
-        Spacer(Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(width = 8.dp))
         Text(
-            text = stringResource(R.string.search_jetsnack),
+            text = stringResource(id = R.string.search_jetsnack),
             color = JetsnackTheme.colors.textHelp
         )
     }
 }
 
+/**
+ * Three Previews of the SearchBar Composable:
+ *  - "default" preview with light theme
+ *  - "dark theme" preview with dark theme
+ *  - "large font" preview with `fontScale` set to `2f`
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
