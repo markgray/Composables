@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -38,17 +40,45 @@ import com.example.baselineprofiles_codelab.model.SearchSuggestionGroup
 import com.example.baselineprofiles_codelab.ui.components.JetsnackSurface
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 
+/**
+ * A composable function that displays a list of search suggestions.
+ *
+ * Our root composable is a [LazyColumn], and in its [LazyListScope] `content` composable lambda
+ * argument we use the [Iterable.forEach] method of our [List] of [SearchSuggestionGroup] parameter
+ * [suggestions] to loop over each [SearchSuggestionGroup] capturing the [SearchSuggestionGroup] in
+ * our variable `suggestionGroup`. In the `action` lambda argument we first call the
+ * [LazyListScope.item] method to compose a [SuggestionHeader] composable with its `name` argument
+ * the [SearchSuggestionGroup.name] of the current [SearchSuggestionGroup] in our variable
+ * `suggestionGroup`.
+ *
+ * Next we call the [LazyListScope.items] method with its `items` argument the
+ * [SearchSuggestionGroup.suggestions] property of the current [SearchSuggestionGroup] in our
+ * variable `suggestionGroup`. In its [LazyItemScope] `itemContent` lambda argument we capture th
+ * e [String] passed the lambda in our variable `suggestion` then compose a [Suggestion] composable
+ * with its `suggestion` argument the current [String] in our variable `suggestion` and its
+ * `onSuggestionSelect` argument our [onSuggestionSelect] lambda parameter, and its `modifier`
+ * argument a [LazyItemScope.fillParentMaxWidth].
+ *
+ * Finally we call the [LazyListScope.item] method to compose a [Spacer] composable with its
+ * `modifier` argument a [Modifier.height] of 4.dp.
+ *
+ * @param suggestions A list of [SearchSuggestionGroup] objects representing the search suggestions
+ * to be displayed.
+ * @param onSuggestionSelect A lambda function that should be invoked with one of the [String]'s in
+ * the [List] of [String] property of [SearchSuggestionGroup.suggestions] when the [Suggestion]
+ * displaying the [String] is clicked.
+ */
 @Composable
 fun SearchSuggestions(
     suggestions: List<SearchSuggestionGroup>,
     onSuggestionSelect: (String) -> Unit
 ) {
     LazyColumn {
-        suggestions.forEach { suggestionGroup ->
+        suggestions.forEach { suggestionGroup: SearchSuggestionGroup ->
             item {
-                SuggestionHeader(suggestionGroup.name)
+                SuggestionHeader(name = suggestionGroup.name)
             }
-            items(suggestionGroup.suggestions) { suggestion ->
+            items(items = suggestionGroup.suggestions) { suggestion: String ->
                 Suggestion(
                     suggestion = suggestion,
                     onSuggestionSelect = onSuggestionSelect,
@@ -56,12 +86,23 @@ fun SearchSuggestions(
                 )
             }
             item {
-                Spacer(Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(height = 4.dp))
             }
         }
     }
 }
 
+/**
+ * Displays a header for a suggestion section.
+ *
+ * This composable displays a text header with a specific style and layout,
+ * typically used to introduce a section of suggested items or actions.
+ *
+ * TODO: Continue here.
+ *
+ * @param name The text to display as the header.
+ * @param modifier The [Modifier] to be applied to the header.
+ */
 @Composable
 private fun SuggestionHeader(
     name: String,
@@ -91,10 +132,16 @@ private fun Suggestion(
             .heightIn(min = 48.dp)
             .clickable { onSuggestionSelect(suggestion) }
             .padding(start = 24.dp)
-            .wrapContentSize(Alignment.CenterStart)
+            .wrapContentSize(align = Alignment.CenterStart)
     )
 }
 
+/**
+ * Three previews of the [SearchSuggestions] composable:
+ *  -"default" light theme
+ *  -"dark theme" dark theme
+ *  -"large font" large font size
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)

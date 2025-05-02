@@ -35,6 +35,6 @@ fun mirroringIcon(ltrIcon: ImageVector, rtlIcon: ImageVector): ImageVector =
  * Returns the correct back navigation icon based on the current layout direction.
  */
 @Composable
-fun mirroringBackIcon() = mirroringIcon(
+fun mirroringBackIcon(): ImageVector = mirroringIcon(
     ltrIcon = Icons.AutoMirrored.Outlined.ArrowBack, rtlIcon = Icons.AutoMirrored.Outlined.ArrowForward
 )
