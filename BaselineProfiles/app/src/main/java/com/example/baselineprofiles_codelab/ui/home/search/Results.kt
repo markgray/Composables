@@ -89,20 +89,21 @@ import com.example.baselineprofiles_codelab.ui.utils.formatPrice
  *
  * **Second** A [Text] composable, whose arguments are:
  *  - `text`: is the [String] formatted using the format [String] whose resource ID is
- *  `R.string.search_count` from the [List.size] of our [List] of [Snack] parameter [searchResults]
+ *  `R.string.search_count` ("%1d items") from the [List.size] of our [List] of [Snack] parameter
+ *  [searchResults].
  *  - `style`: [TextStyle] is the [Typography.h6] of our custom [MaterialTheme.typography].
  *  - `color`: [Color] is the [JetsnackColors.textPrimary] of our custom [JetsnackTheme.colors].
  *  - `modifier`: is a [Modifier.padding] that adds `24.dp` to each `horizontal` size, and `4.dp` to
  *  each `vertical` size.
  *
  * **Third** A [LazyColumn] in whose [LazyListScope] `content` composable lambda argument we use
- * the [LazyListScope.itemsIndexed] to iterate over our [List] of [Snack] parameter [searchResults],
- * and in its [LazyItemScope] `itemContent` Composable lambda argument we capture the [Int] passed
- * the lamba in variable `index` and the [Snack] passed in variable `snack` then compose a
- * [SearchResult] whose arguments are:
+ * the [LazyListScope.itemsIndexed] method to iterate over our [List] of [Snack] parameter
+ * [searchResults], and in its [LazyItemScope] `itemContent` Composable lambda argument we capture
+ * the [Int] passed the lamba in variable `index` and the [Snack] passed in variable `snack` then
+ * compose a [SearchResult] whose arguments are:
  *  - `snack`: is the [Snack] variable `snack`
- *  - `onSnackClick`: isour [onSnackClick] taking [Long] parameter [onSnackClick]
- *  - `showDivider`: is `true` if `index` not equal to `0`
+ *  - `onSnackClick`: is our [onSnackClick] taking [Long] parameter [onSnackClick]
+ *  - `showDivider`: is `true` if `index` is not equal to `0`
  *
  * @param searchResults The list of [Snack] objects representing the search results.
  * @param filters The list of [Filter] objects applied to the search results.
@@ -136,17 +137,19 @@ fun SearchResults(
  *
  * This composable shows the snack's image, name, tagline, and price,
  * along with an "Add" button to add it to the cart. It also optionally
- * includes a divider at the top of the item.
+ * includes a divider at the top of the item if its [Boolean] parameter
+ * [showDivider] is `true`.
  *
  * Our root composable is a [ConstraintLayout] whose `modifier` argument is a [Modifier.fillMaxWidth]
  * with a [Modifier.clickable] chained to that whose `onClick` argument is a lambda that calls our
  * [onSnackClick] lambda parameter with the [Snack.id] of our [Snack] parameter [snack], and with a
- * [Modifier.padding] that adds `24.dp` to each `horizontal` side. In its [ConstraintLayoutScope]
- * `content` composable lambda argument we first initalize our [ConstrainedLayoutReference] variables
- * `divider`, `image`, `name`, `tag`, `priceSpacer`, `price`, and `add` to the instances returned
- * by the [ConstraintLayoutScope.createRefs] method of our [ConstraintLayout] composable, then call
- * the [ConstraintLayoutScope.createVerticalChain] method to create a vertical chain between the
- * references `name`, `tag`, `priceSpacer`, and `price` with a `chainStyle` of [ChainStyle.Packed].
+ * [Modifier.padding] that adds `24.dp` to each `horizontal` side chained to that. In its
+ * [ConstraintLayoutScope] `content` composable lambda argument we first initalize our
+ * [ConstrainedLayoutReference] variables `divider`, `image`, `name`, `tag`, `priceSpacer`, `price`,
+ * and `add` to the instances returned by the [ConstraintLayoutScope.createRefs] method of our
+ * [ConstraintLayout] composable, then call the [ConstraintLayoutScope.createVerticalChain] method
+ * to create a vertical chain between the references `name`, `tag`, `priceSpacer`, and `price` with
+ * a `chainStyle` of [ChainStyle.Packed].
  *
  * If our [Boolean] parameter [showDivider] is `true`, we compose a [JetsnackDivider] composable
  * with its `modifier` argument a [ConstraintLayoutScope.constrainAs] that sets its `ref` to
@@ -339,11 +342,11 @@ private fun SearchResult(
  *  - `horizontalAlignment`: is [Alignment.CenterHorizontally]
  *  - `modifier`: is a [Modifier.fillMaxSize] that fills the entire available space in the parent,
  *  with a [Modifier.wrapContentSize] chained to that, and with a [Modifier.padding] that adds
- *  `24.dp` to each `all` sides.
+ *  `24.dp` to each `all` sides chained to that.
  *
  * In the [ColumnScope] `content` composable lambda argument of the [Column] we compose:
  *
- * **First** A [Image] whose arguments are:
+ * **First** An [Image] whose arguments are:
  *  - `painter`: is a [painterResource] that loads the drawable with resource ID
  *  `R.drawable.empty_state_search`
  *  - `contentDescription`: is `null`
