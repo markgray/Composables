@@ -89,7 +89,7 @@ import kotlinx.coroutines.CoroutineScope
  * composable lambda argument we compose:
  *
  * **First** a [Spacer] whose `modifier` argument is a [Modifier.statusBarsPadding] to add
- * status bar height padding.
+ * status bar height padding to the [Column].
  *
  * **Second** a [SearchBar] whose arguments are:
  *  - `query`: the [SearchState.query] property of our [SearchState] parameter [state].
@@ -168,11 +168,13 @@ fun Search(
                         state.query = TextFieldValue(text = suggestion)
                     }
                 )
+
                 SearchDisplay.Results -> SearchResults(
                     searchResults = state.searchResults,
                     filters = state.filters,
                     onSnackClick = onSnackClick
                 )
+
                 SearchDisplay.NoResults -> NoResults(query = state.query.text)
             }
         }
@@ -202,13 +204,13 @@ enum class SearchDisplay {
     Results,
 
     /**
-     *
+     * We should display a [NoResults] composable.
      */
     NoResults
 }
 
 /**
- * Remembers and creates a [SearchState] instance.
+ * Creates and Remembers a [SearchState] instance.
  *
  * This composable function is designed to provide a stable [SearchState] object
  * throughout recompositions. It leverages the `remember` function to ensure that
@@ -217,9 +219,9 @@ enum class SearchDisplay {
  *
  * @param query The current query text in the search field, represented as a [TextFieldValue].
  * Defaults to an empty query.
- * @param focused A boolean indicating whether the search field is currently focused.
+ * @param focused A [Boolean] indicating whether the search field is currently focused.
  * Defaults to `false`.
- * @param searching A boolean indicating whether a search is currently in progress.
+ * @param searching A [Boolean] indicating whether a search is currently in progress.
  * Defaults to `false`.
  * @param categories A list of [SearchCategoryCollection] representing available search categories.
  * Defaults to the categories retrieved from [SearchRepo.getCategories].
@@ -316,8 +318,8 @@ class SearchState(
  *
  * In the `content` composable lambda argument of the [JetsnackSurface] we compose a [Box] whose
  * `modifier` argument is a [Modifier.fillMaxSize]. In the [BoxScope] `content` composable lambda
- * argument of the [Box] we first check if the [TextFieldValue.text] of [TextFieldValue] paramete
- * [query] text is empty. If it is, we compose a [SearchHint] composable.
+ * argument of the [Box] we first check if the [TextFieldValue.text] of [TextFieldValue] parameter
+ * [query] is empty. If it is, we compose a [SearchHint] composable.
  *
  * Then we compose a [Row] whose `verticalAlignment` argument is [Alignment.CenterVertically], and
  * whose `modifier` argument is a [Modifier.fillMaxSize], with a [Modifier.wrapContentHeight] chained
@@ -351,7 +353,7 @@ class SearchState(
  *
  * @param query The current text value in the search bar.
  * @param onQueryChange Callback invoked when the text in the search bar changes.
- * @param searchFocused A boolean indicating whether the search bar is currently focused.
+ * @param searchFocused A [Boolean] indicating whether the search bar is currently focused.
  * @param onSearchFocusChange Callback invoked when the focus state of the search bar changes.
  * @param onClearQuery Callback invoked when the clear/back button is clicked.
  * @param searching A boolean indicating whether a search is currently in progress.

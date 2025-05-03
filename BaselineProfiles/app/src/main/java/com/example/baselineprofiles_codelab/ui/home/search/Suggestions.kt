@@ -53,8 +53,8 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
  *
  * Next we call the [LazyListScope.items] method with its `items` argument the
  * [SearchSuggestionGroup.suggestions] property of the current [SearchSuggestionGroup] in our
- * variable `suggestionGroup`. In its [LazyItemScope] `itemContent` lambda argument we capture th
- * e [String] passed the lambda in our variable `suggestion` then compose a [Suggestion] composable
+ * variable `suggestionGroup`. In its [LazyItemScope] `itemContent` lambda argument we capture the
+ * [String] passed the lambda in our variable `suggestion` then compose a [Suggestion] composable
  * with its `suggestion` argument the current [String] in our variable `suggestion` and its
  * `onSuggestionSelect` argument our [onSuggestionSelect] lambda parameter, and its `modifier`
  * argument a [LazyItemScope.fillParentMaxWidth].
