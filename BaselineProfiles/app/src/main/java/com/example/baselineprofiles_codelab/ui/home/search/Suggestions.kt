@@ -28,16 +28,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.baselineprofiles_codelab.model.SearchRepo
 import com.example.baselineprofiles_codelab.model.SearchSuggestionGroup
 import com.example.baselineprofiles_codelab.ui.components.JetsnackSurface
+import com.example.baselineprofiles_codelab.ui.theme.JetsnackColors
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 
 /**
@@ -98,7 +102,15 @@ fun SearchSuggestions(
  * This composable displays a text header with a specific style and layout,
  * typically used to introduce a section of suggested items or actions.
  *
- * TODO: Continue here.
+ * Our root composable is a [Text] composable whose arguments are:
+ *  - `text`: The text to display as the header is our [String] parameter [name]
+ *  - `style`: The [TextStyle] to apply to the text is the [Typography.h6] of our custom
+ *  [MaterialTheme.typography].
+ *  - `color`: The [Color] to apply to the text is the [JetsnackColors.textPrimary] of our custom
+ *  [JetsnackTheme.colors]
+ *  - `modifier`: The [Modifier] to apply to the header chains a [Modifier.heightIn] of 56.dp to our
+ *  [Modifier] parameter [modifier], with a [Modifier.padding] of 24.dp chained to that, and a
+ *  [Modifier.wrapContentHeight] chained to that.
  *
  * @param name The text to display as the header.
  * @param modifier The [Modifier] to be applied to the header.
@@ -119,6 +131,30 @@ private fun SuggestionHeader(
     )
 }
 
+/**
+ * A composable function that displays a suggestion in a clickable [Text].
+ *
+ * This function renders a single suggestion item within a list of suggestions.
+ * It displays the suggestion text using the MaterialTheme's subtitle1 style.
+ * When the suggestion is clicked, it invokes the `onSuggestionSelect` callback,
+ * passing the selected suggestion as a parameter.
+ *
+ * Our root composable is a [Text] composable whose arguments are:
+ *  - `text`: The text to display as the suggestion is our [String] parameter [suggestion]
+ *  - `style`: The [TextStyle] to apply to the text is the [Typography.subtitle1] of our custom
+ *  [MaterialTheme.typography]
+ *  - `modifier`: The [Modifier] to apply to the [Text] chains a [Modifier.heightIn] `min` of 48.dp
+ *  to our [Modifier] parameter [modifier], with a [Modifier.clickable] chained to that
+ *  whose `onClick` lambda argument is a lambda that calls our [onSuggestionSelect] lambda
+ *  parameter with the [String] in our [suggestion] parameter, with a [Modifier.padding] that
+ *  adds 24.dp padding to the start of the text chained to that, and with a [Modifier.wrapContentSize]
+ *  whose `align` argument is [Alignment.CenterStart] chained to that.
+ *
+ * @param suggestion The text string to be displayed as the suggestion.
+ * @param onSuggestionSelect A lambda function that is called when the suggestion is clicked.
+ * It receives the selected suggestion string as a parameter.
+ * @param modifier [Modifier] for styling and layout customization of the suggestion.
+ */
 @Composable
 private fun Suggestion(
     suggestion: String,

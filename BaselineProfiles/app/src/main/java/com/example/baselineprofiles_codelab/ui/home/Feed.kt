@@ -58,6 +58,17 @@ import com.example.baselineprofiles_codelab.ui.components.SnackCollection
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import kotlinx.coroutines.delay
 
+/**
+ * Displays the main feed of snack collections.
+ *
+ * This composable Simulates loading data asynchronously and displays it in a list. It also provides
+ * filter options.
+ *
+ * TODO: Continue Here.
+ *
+ * @param onSnackClick A lambda that is invoked when a snack item is clicked. It receives the snack's ID as a parameter.
+ * @param modifier Modifier for styling and layout of the feed.
+ */
 @Composable
 fun Feed(
     onSnackClick: (Long) -> Unit,
@@ -66,20 +77,20 @@ fun Feed(
     // Simulate loading data asynchronously.
     // In real world application, you shouldn't have this kind of logic in your UI code,
     // but you should move it to appropriate layer.
-    var snackCollections by remember { mutableStateOf(listOf<SnackCollection>()) }
-    LaunchedEffect(Unit) {
-        trace("Snacks loading") {
-            delay(300)
+    var snackCollections: List<SnackCollection> by remember { mutableStateOf(listOf<SnackCollection>()) }
+    LaunchedEffect(key1 = Unit) {
+        trace(sectionName = "Snacks loading") {
+            delay(timeMillis = 300)
             snackCollections = SnackRepo.getSnacks()
         }
     }
 
-    val filters = remember { SnackRepo.getFilters() }
+    val filters: List<Filter> = remember { SnackRepo.getFilters() }
     Feed(
-        snackCollections,
-        filters,
-        onSnackClick,
-        modifier
+        snackCollections = snackCollections,
+        filters = filters,
+        onSnackClick = onSnackClick,
+        modifier = modifier
     )
 }
 
@@ -92,7 +103,11 @@ private fun Feed(
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
         Box {
-            SnackCollectionList(snackCollections, filters, onSnackClick)
+            SnackCollectionList(
+                snackCollections = snackCollections,
+                filters = filters,
+                onSnackClick = onSnackClick
+            )
             DestinationBar()
         }
     }
@@ -105,18 +120,18 @@ private fun SnackCollectionList(
     onSnackClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var filtersVisible by rememberSaveable { mutableStateOf(false) }
-    Box(modifier) {
+    var filtersVisible: Boolean by rememberSaveable { mutableStateOf(false) }
+    Box(modifier = modifier) {
         LazyColumn(
             modifier = Modifier.testTag(tag = "snack_list"),
         ) {
             item {
                 Spacer(
-                    Modifier.windowInsetsTopHeight(
+                    modifier = Modifier.windowInsetsTopHeight(
                         WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
                     )
                 )
-                FilterBar(filters, onShowFilters = { filtersVisible = true })
+                FilterBar(filters = filters, onShowFilters = { filtersVisible = true })
             }
 
             if (snackCollections.isEmpty()) {
@@ -124,14 +139,16 @@ private fun SnackCollectionList(
                     Box(
                         modifier = Modifier
                             .fillParentMaxWidth()
-                            .fillParentMaxHeight(0.75f),
+                            .fillParentMaxHeight(fraction = 0.75f),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(color = JetsnackTheme.colors.brand)
                     }
                 }
             } else {
-                itemsIndexed(snackCollections) { index, snackCollection ->
+                itemsIndexed(snackCollections) {
+                    index: Int,
+                    snackCollection: SnackCollection ->
                     if (index > 0) {
                         JetsnackDivider(thickness = 2.dp)
                     }
@@ -140,7 +157,7 @@ private fun SnackCollectionList(
                         snackCollection = snackCollection,
                         onSnackClick = onSnackClick,
                         index = index,
-                        modifier = Modifier.testTag("snack_collection")
+                        modifier = Modifier.testTag(tag = "snack_collection")
                     )
                 }
             }
@@ -162,6 +179,12 @@ private fun SnackCollectionList(
     ReportDrawnWhen { snackCollections.isNotEmpty() }
 }
 
+/**
+ * Three previews of the [Feed] with different configurations:
+ *  - "default": light theme
+ *  - "dark theme": dark theme
+ *  - "large font": large font size
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
