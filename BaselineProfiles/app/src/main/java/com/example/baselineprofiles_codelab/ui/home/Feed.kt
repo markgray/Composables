@@ -19,6 +19,7 @@ package com.example.baselineprofiles_codelab.ui.home
 import android.content.res.Configuration
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -26,6 +27,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
@@ -33,6 +35,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -44,18 +48,22 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.trace
 import com.example.baselineprofiles_codelab.model.Filter
+import com.example.baselineprofiles_codelab.model.Snack
 import com.example.baselineprofiles_codelab.model.SnackCollection
 import com.example.baselineprofiles_codelab.model.SnackRepo
 import com.example.baselineprofiles_codelab.ui.components.FilterBar
 import com.example.baselineprofiles_codelab.ui.components.JetsnackDivider
 import com.example.baselineprofiles_codelab.ui.components.JetsnackSurface
 import com.example.baselineprofiles_codelab.ui.components.SnackCollection
+import com.example.baselineprofiles_codelab.ui.theme.JetsnackColors
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 
 /**
@@ -64,10 +72,25 @@ import kotlinx.coroutines.delay
  * This composable Simulates loading data asynchronously and displays it in a list. It also provides
  * filter options.
  *
- * TODO: Continue Here.
+ * We start by initializing and remembering our [List] of [SnackCollection] variable `snackCollections`
+ * to a new instance. Then we compose a [LaunchedEffect] whose `key1` argument is [Unit] (to guarantee
+ * that it only runs once). In its [CoroutineScope] `block` lambda argument we use [trace] to name
+ * this `sectionName` "Snacks loading" and in its `block` lambda argument we delay for 300ms, then we
+ * set `snackCollections` to the [List] of [SnackCollection] returned by [SnackRepo.getSnacks] (we do
+ * this to simulate asynchronous data loading).
  *
- * @param onSnackClick A lambda that is invoked when a snack item is clicked. It receives the snack's ID as a parameter.
- * @param modifier Modifier for styling and layout of the feed.
+ * Next we initialize and remember our [List] of [Filter] variable `filters` to the [List] of [Filter]
+ * returned by [SnackRepo.getFilters].
+ *
+ * Our root composable is the stateless override of this [Feed] composable whose arguments are:
+ *  - `snackCollections`: Our [List] of [SnackCollection] variable `snackCollections`.
+ *  - `filters`: Our [List] of [Filter] variable `filters`.
+ *  - `onSnackClick`: Our lambda parameter [onSnackClick]
+ *  - `modifier`: Our [Modifier] parameter [modifier]
+ *
+ * @param onSnackClick A lambda that is invoked when a snack item is clicked. It receives the
+ * [Snack.id] as its argument.
+ * @param modifier [Modifier] for styling and layout of the feed.
  */
 @Composable
 fun Feed(
@@ -94,6 +117,28 @@ fun Feed(
     )
 }
 
+/**
+ * Displays the main feed screen, showing a list of snack collections and filters.
+ *
+ * Our root composable is a [JetsnackSurface] whose `modifier` argument chains to our [Modifier]
+ * parameter [modifier] a [Modifier.fillMaxSize]. In its `content` lambda argument we compose a
+ * [Box] in whose [BoxScope] `content` lambda argument we compose:
+ *
+ * **First** A [SnackCollection] whose arguments are:
+ *  - `snackCollections`: Our [List] of [SnackCollection] parameter [snackCollections].
+ *  - `filters`: Our [List] of [Filter] parameter [filters].
+ *  - `onSnackClick`: Our lambda parameter [onSnackClick]
+ *
+ * **Second** A [DestinationBar] is then displayed on top of the [SnackCollectionList].
+ *
+ * @param snackCollections The list of [SnackCollection] to display. Each collection
+ * represents a group of snacks (e.g., "Favorites," "Trending").
+ * @param filters The list of [Filter] to display for filtering snacks.
+ * These filters allow users to narrow down the displayed snack collections.
+ * @param onSnackClick A callback function invoked when a snack is clicked.
+ * It receives the [Snack.id] of the clicked snack as its argument.
+ * @param modifier [Modifier] to apply to the feed surface.
+ */
 @Composable
 private fun Feed(
     snackCollections: List<SnackCollection>,
@@ -113,6 +158,63 @@ private fun Feed(
     }
 }
 
+/**
+ * Displays a list of [SnackCollection]s.
+ *
+ * We start by initializing and `rememberSaveable` our [Boolean] variable `filtersVisible` to `false`.
+ * Then our root composable is a [Box] whose `modifier` argument is our [Modifier] parameter [modifier].
+ * In its [BoxScope] `content` lambda argument we compose a [LazyColumn] whose `modifier` argument
+ * is a [Modifier.testTag] with a value of "snack_list". In the [LazyListScope] `content` lambda
+ * argument of the [LazyColumn] we compose:
+ *
+ * **First** A [LazyListScope.item] whose [LazyItemScope] `content` lambda argument contains a
+ * [Spacer] whose `modifier` argument is a [Modifier.windowInsetsTopHeight] with a value of
+ * [WindowInsets.Companion.statusBars] (to avoid the status bar) plus a [WindowInsets] that adds an
+ * additional top padding of `56.dp` (the height of the [DestinationBar]). Then we compose a
+ * [FilterBar] whose arguments are:
+ *  - `filters`: Our [List] of [Filter] parameter [filters].
+ *  - `onShowFilters`: A lambda that sets our [Boolean] variable `filtersVisible` to `true`.
+ *
+ * **Second** If our [List] of [SnackCollection] parameter [snackCollections] is empty we compose
+ * a [LazyListScope.item] whose [LazyItemScope] `content` lambda argument contains a
+ * [Box] whose `modifier` argument is a [LazyItemScope.fillParentMaxWidth] with a
+ * [LazyItemScope.fillParentMaxHeight] whose `fraction` is `0.75f`, and whose `contentAlignment`
+ * argument is [Alignment.Center]. In its [BoxScope] `content` lambda argument we compose a
+ * [CircularProgressIndicator] whose [Color] `color` argument is the [JetsnackColors.brand] of our
+ * custom [JetsnackTheme.colors]
+ *
+ * If our [List] of [SnackCollection] parameter [snackCollections] is not empty we compose a
+ * [LazyListScope.itemsIndexed] whose `items` argument is our [List] of [SnackCollection] parameter
+ * [snackCollections]. In its [LazyItemScope] `itemContent` lambda argument we capture the [Int]
+ * passed the lambda in variable `index` and the [SnackCollection] passed the lambda in variable
+ * `snackCollection`. The if `index` is greater than `0` we compose a [JetsnackDivider] whose
+ * `thickness` argument is `2.dp`. Then we compose a [SnackCollection] whose arguments are:
+ *  - `snackCollection`: Our [SnackCollection] variable `snackCollection`.
+ *  - `onSnackClick`: Our lambda parameter [onSnackClick]
+ *  - `index`: Our [Int] variable `index`.
+ *  - `modifier`: Our [Modifier.testTag] with a `tag` of "snack_collection".
+ *
+ * **Third** We then compose an [AnimatedVisibility] to appear on top of the [Box] when our [Boolean]
+ * variable `filtersVisible` is `true`. Its `visible` argument is our [Boolean] variable
+ * `filtersVisible`, its `enter` argument is a [slideInVertically] plus a [expandVertically]
+ * whose `expandFrom` argument is [Alignment.Top] plus a [fadeIn] whose `initialAlpha` argument is
+ * `0.3f`, and its `exit` argument is a [slideOutVertically] plus a [shrinkVertically] plus a
+ * [fadeOut]. In its [AnimatedVisibilityScope] `content` lambda argument we compose a [FilterScreen]
+ * whose `onDismiss` argument is a lambda that sets our [Boolean] variable `filtersVisible` to
+ * `false`.
+ *
+ * **Fourth** We then compose a [ReportDrawnWhen] whose `predicate` argument is a lambda that returns
+ * `true` if our [List] of [SnackCollection] parameter [snackCollections] is not empty which adds
+ * the `predicate` as a condition for when the UI is usable by user (`Activity.reportFullyDrawn`
+ * will not be called before this condition is met).
+ *
+ * @param snackCollections The list of [SnackCollection] to display.
+ * @param filters The list of [Filter] to display for filtering snacks.
+ * These filters allow users to narrow down the displayed snack collections.
+ * @param onSnackClick A callback function invoked when a snack is clicked.
+ * It receives the [Snack.id] of the clicked snack as its argument.
+ * @param modifier [Modifier] to apply our root composable.
+ */
 @Composable
 private fun SnackCollectionList(
     snackCollections: List<SnackCollection>,
@@ -146,7 +248,7 @@ private fun SnackCollectionList(
                     }
                 }
             } else {
-                itemsIndexed(snackCollections) {
+                itemsIndexed(items = snackCollections) {
                     index: Int,
                     snackCollection: SnackCollection ->
                     if (index > 0) {
