@@ -48,6 +48,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -62,7 +63,9 @@ import com.example.baselineprofiles_codelab.ui.components.FilterChip
 import com.example.baselineprofiles_codelab.ui.components.JetsnackScaffold
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
@@ -240,7 +243,17 @@ fun FilterScreen(
  * Each chip is displayed with its associated label and can be interacted with. The section
  * is also given a title to help organize the filtering options.
  *
- * TODO: Continue here.
+ * We start by composing a [FilterTitle] whose `text` argument is our [String] parameter [title].
+ * Then we comopose a [FlowRow] whose `horizontalArrangement` argument is [Arrangement.Center],
+ * and whose `modifier` argument is a [Modifier.fillMaxWidth], with a [Modifier.padding] chained to
+ * that that adds `12.dp` to the `top` and `16.dp` to the `bottom`, and at the end of the chain
+ * is a [Modifier.padding] that adds `4.dp` to each `horizontal` side. In its [FlowRowScope]
+ * `content` lambda we use the [Iterable.forEach] method of our [List] of [Filter] parameter
+ * [filters] to loop over each [Filter] and its the `action` lambda argument we capture the
+ * [Filter] passed the lambda in variable `filter` and compose a [FilterChip] whose arguments are:]
+ *  - `filter`: Our [Filter] variable `filter`.
+ *  - `modifier`: A [Modifier.padding] that adds `4.dp` to the `end` and `8.dp` to the `bottom` of
+ *  the [FilterChip].
  *
  * @param title The title of the filter section. This will be displayed above the filter chips.
  * @param filters A list of [Filter] objects to be displayed as chips. Each [Filter] should
@@ -266,6 +279,25 @@ fun FilterChipSection(title: String, filters: List<Filter>) {
     }
 }
 
+/**
+ * A composable function that displays a section for sorting filters.
+ *
+ * This section includes a title indicating it's for sorting and a set of
+ * sort filter options. It uses a [SortFilters] composable to handle the
+ * actual filter selection.
+ *
+ * We start by composing a [FilterTitle] whose `text` argument is the [String] with resource ID
+ * `R.string.sort` ("Sort"). Then we compose a [Column] whose `modifier` argument is a
+ * [Modifier.padding] that adds `24.dp` to the `bottom` of the [Column]. In its [ColumnScope]
+ * `content` lambda argument we compose a [SortFilters] whose arguments are:
+ *  - `sortState`: Our [String] parameter [sortState].
+ *  - `onChanged`: Our lambda that accepts a [Filter] object parameter [onFilterChange].
+ *
+ * @param sortState A string representing the currently selected sort option.
+ * This is used to highlight the currently active filter.
+ * @param onFilterChange A lambda function that's invoked when the user selects a new sort option.
+ * It receives a [Filter] object representing the chosen sort filter.
+ */
 @Composable
 fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
     FilterTitle(text = stringResource(id = R.string.sort))
@@ -277,6 +309,32 @@ fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
     }
 }
 
+/**
+ * Displays a list of sort filter options as selectable buttons.
+ *
+ * This composable takes a list of [Filter] objects, the current sort state, and a callback function.
+ * It iterates through the provided filters and displays each one as a [SortOption] button.
+ * The [SortOption] will be marked as selected if its name matches the current [sortState].
+ * When a user clicks on a [SortOption], the [onChanged] lambda parameter is called with the
+ * [Filter] the [SortOption] represents.
+ *
+ * We use the [Iterable.forEach] method of our [List] of [Filter] parameter [sortFilters] to
+ * loop over each [Filter] and in its the `action` lambda argument we capture the [Filter]
+ * passed the lambda in variable `filter` and compose a [SortOption] whose arguments are:
+ *  - `text`: The [Filter.name] of the [Filter] variable `filter`.
+ *  - `icon`: The [Filter.icon] of the [Filter] variable `filter`.
+ *  - `selected`: `true` if the [Filter.name] of the [Filter] variable `filter` matches
+ *  our [Boolean] parameter [sortState].
+ *  - `onClickOption`: A lambda that calls our lambda parameter [onChanged] with the [Filter]
+ *  variable `filter`.
+ *
+ * @param sortFilters The [List] of [Filter] objects representing the available sort options.
+ * Defaults to the sort filters obtained from [SnackRepo.getSortFilters].
+ * @param sortState The name of the currently selected sort filter (e.g., "Price: Low to High").
+ * Used to determine which [SortOption] should be marked as selected.
+ * @param onChanged A callback function that is called when a `SortOption` is clicked.
+ * It receives the selected [Filter] object as its argument.
+ */
 @Composable
 fun SortFilters(
     sortFilters: List<Filter> = SnackRepo.getSortFilters(),
@@ -296,6 +354,40 @@ fun SortFilters(
     }
 }
 
+/**
+ * A composable function that displays a slider to select the maximum calorie limit.
+ *
+ * This function renders a title "Max Calories", a subtext "per serving", and a slider
+ * that allows the user to select a maximum calorie value between 0 and 300. The slider's
+ * position represents the currently selected maximum calorie limit.
+ *
+ * First we compose a [FlowRow] in whose [FlowRowScope] `content` lambda argument we compose
+ * a [FilterTitle] whose `text` argument is the [String] with resource ID `R.string.max_calories`
+ * ("Max Calories"). Then we compose a [Text] whose `text` argument is the [String] with
+ * resource ID `R.string.per_serving` ("per serving") and whose [TextStyle] `style` argument
+ * is the [Typography.body2] of our custom [MaterialTheme.typography], whose [Color] `color`
+ * argument is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors], and whose
+ * `modifier` argument is a [Modifier.padding] that adds `5.dp` to the `top` and `10.dp` to
+ * the `start`.
+ *
+ * Next we compose a [Slider] whose arguments are:
+ *  - `value`: The current position of the slider, representing the selected maximum calorie
+ *  value is our [Float] parameter [sliderPosition].
+ *  - `onValueChange`: A lambda that accepts the [Float] passed the lambda in variable `newValue`
+ *  and calls our lambda parameter [onValueChanged] with the [Float] variable `newValue`.
+ *  - `valueRange`: The range of values the slider can be in, from 0f to 300f.
+ *  - `steps`: The number of steps between the `valueRange.start` and `valueRange.endInclusive`
+ *  is `5`.
+ *  - `modifier`: Is a [Modifier.fillMaxWidth].
+ *  - `colors`: A [SliderDefaults.colors] whose `thumbColor` is the [JetsnackColors.brand] of
+ *  our custom [JetsnackTheme.colors], and whose `activeTrackColor` is the [JetsnackColors.brand]
+ *  of our custom [JetsnackTheme.colors].
+ *
+ * @param sliderPosition The current position of the slider, representing the selected maximum
+ * calorie value. This value should be between 0f and 300f.
+ * @param onValueChanged A callback function that is invoked when the slider's value changes.
+ * It is called with the new slider position as a [Float].
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
@@ -324,6 +416,21 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
     )
 }
 
+/**
+ * Displays a title text used in filter sections.
+ *
+ * This composable function displays a given text as a title, styled according to the Jetsnack
+ * theme's brand color and h6 typography. It's designed to be used as a header for sections 
+ * containing filter options or similar content. It also includes a bottom padding for visual
+ * separation from its surrounding content.
+ *
+ * Our root composable is a [Text] whose `text` argument is our [String] parameter [text], whose
+ * [TextStyle] `style` argument is the [Typography.h6] of our custom [MaterialTheme.typography],
+ * whose [Color] `color` argument is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors],
+ * and whose `modifier` argument is a [Modifier.padding] that adds `bottom` padding of `8.dp`.
+ *
+ * @param text The title text to be displayed.
+ */
 @Composable
 fun FilterTitle(text: String) {
     Text(
@@ -333,6 +440,36 @@ fun FilterTitle(text: String) {
         modifier = Modifier.padding(bottom = 8.dp)
     )
 }
+/**
+ * A composable function representing a sort option in a list.
+ *
+ * This composable displays a row with a text label, an optional icon, and a checkmark if selected.
+ * It is used to present a single sorting option to the user, allowing them to select it.
+ *
+ * Our root composable is a [Row] whose `modifier` argument is a [Modifier.padding] that adds
+ * `14.dp` to the `top` of the [Row]. In its [RowScope] `content` lambda argument we compose:
+ *
+ * **First** If our [ImageVector] parameter [icon] is not `null`, we compose an [Icon] whose
+ * `imageVector` argument is our [ImageVector] variable `icon`, and whose `contentDescription`
+ * argument is `null`.
+ *
+ * **Second** We compose a [Text] whose arguments are:
+ *  - `text`: Our [String] parameter [text].
+ *  - `style`: [TextStyle] is the [Typography.subtitle1] of our custom [MaterialTheme.typography].
+ *  - `modifier`: A [Modifier.padding] that adds `start` padding of `10.dp` to the [Text] with a
+ *  [RowScope.weight] whose `weight` is `1f` chained to that.
+ *
+ * **Third** If our [Boolean] parameter [selected] is `true`, we compose a [Icon] whose arguments
+ * are:
+ *  - `imageVector`: The [ImageVector] drawn by [Icons.Filled.Done]
+ *  - `contentDescription`: `null`
+ *  - `tint`: [Color] is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors].
+ *
+ * @param text The text label to display for the sort option.
+ * @param icon An optional [ImageVector] to display next to the text. If null, no icon is shown.
+ * @param onClickOption A lambda function to be called when the sort option is clicked.
+ * @param selected A [Boolean] indicating whether the sort option is currently selected.
+ */
 @Composable
 fun SortOption(
     text: String,
