@@ -43,7 +43,7 @@ jdkDesugar = "2.1.5"
 junit = "4.13.2"
 kotlin = "2.1.20"
 kotlinx_immutable = "1.10.2"
-ksp = "2.1.20-2.0.0"
+ksp = "2.1.20-2.0.1"
 maps-compose = "3.1.1"
 material = "1.12.0"
 # @keep
@@ -53,11 +53,11 @@ play-services-wearable = "19.0.0"
 robolectric = "4.14.1"
 roborazzi = "1.40.1"
 rome = "2.1.0"
-room = "2.7.0"
+room = "2.7.1"
 secrets = "2.0.1"
 # @keep
 targetSdk = "35"
-version-catalog-update = "0.8.5"
+version-catalog-update = "1.0.0"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
