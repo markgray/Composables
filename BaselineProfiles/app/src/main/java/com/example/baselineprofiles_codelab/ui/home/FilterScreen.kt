@@ -89,11 +89,14 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackColors
  * [Filter] variable `lifeStyleFilters` with the value returned by [SnackRepo.getLifeStyleFilters].
  *
  * Then we compose a [JetsnackScaffold] with its `topBar` argument a [TopAppBar] whose arguments are:
- *  - `navigationIcon` a [IconButton] whose `onClick` argument is a lambda parameter `onDismiss`
+ *  - `navigationIcon` a [IconButton] whose `onClick` argument is our lambda parameter `onDismiss`,
+ *  and whose `content` composable lambda argument composes an [Icon] whose `imageVector` arugment
+ *  is the [ImageVector] drawn by [Icons.Filled.Close], and whose `contentDescription` argument is
+ *  the [String] with resource ID `R.string.close` ("Close").
  *  - `title` a [Text] whose `text` argument is a string resource with id `R.string.label_filters``
- *  whose `modifier` argument is a [Modifier.fillMaxWidth], whose `textAlign` argument is
- *  [TextAlign.Center], and whose [TextStyle] `style` argument is the [Typography.h6] of our custom
- *  [MaterialTheme.typography].
+ *  ("Filters") whose `modifier` argument is a [Modifier.fillMaxWidth], whose `textAlign` argument
+ *  is [TextAlign.Center], and whose [TextStyle] `style` argument is the [Typography.h6] of our
+ *  custom [MaterialTheme.typography].
  *  - `actions` a lambda in which we initialize our [Boolean] variable `resetEnabled` to `true` if
  *  our [String] variable `sortState` is not equal to our [String] variable `defaultFilter`. Then we
  *  compose a [IconButton] whose `onClick` argument is an empty lambda and whose `enabled` argument

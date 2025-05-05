@@ -118,7 +118,8 @@ fun Feed(
 }
 
 /**
- * Displays the main feed screen, showing a list of snack collections and filters.
+ * Stateless override of [Feed] which is called by the Stateful override. Displays the main feed
+ * screen, showing a list of snack collections and filters.
  *
  * Our root composable is a [JetsnackSurface] whose `modifier` argument chains to our [Modifier]
  * parameter [modifier] a [Modifier.fillMaxSize]. In its `content` lambda argument we compose a
@@ -187,8 +188,9 @@ private fun Feed(
  * [LazyListScope.itemsIndexed] whose `items` argument is our [List] of [SnackCollection] parameter
  * [snackCollections]. In its [LazyItemScope] `itemContent` lambda argument we capture the [Int]
  * passed the lambda in variable `index` and the [SnackCollection] passed the lambda in variable
- * `snackCollection`. The if `index` is greater than `0` we compose a [JetsnackDivider] whose
- * `thickness` argument is `2.dp`. Then we compose a [SnackCollection] whose arguments are:
+ * `snackCollection`. Then if `index` is greater than `0` we compose a [JetsnackDivider] whose
+ * `thickness` argument is `2.dp`. In any case we then compose a [SnackCollection] whose
+ * arguments are:
  *  - `snackCollection`: Our [SnackCollection] variable `snackCollection`.
  *  - `onSnackClick`: Our lambda parameter [onSnackClick]
  *  - `index`: Our [Int] variable `index`.
@@ -204,7 +206,7 @@ private fun Feed(
  * `false`.
  *
  * **Fourth** We then compose a [ReportDrawnWhen] whose `predicate` argument is a lambda that returns
- * `true` if our [List] of [SnackCollection] parameter [snackCollections] is not empty which adds
+ * `true` if our [List] of [SnackCollection] parameter [snackCollections] is not empty. This adds
  * the `predicate` as a condition for when the UI is usable by user (`Activity.reportFullyDrawn`
  * will not be called before this condition is met).
  *
