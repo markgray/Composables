@@ -94,18 +94,18 @@ import java.util.Locale
  *  - `route` = the [HomeSections.route] of [HomeSections.FEED] composes a [Feed] whose `onSnackClick`
  *  lambda argument calls our [onSnackSelected] lambda parameter passing it the [Long] that the
  *  `onSnackClick` lambda is called with and the [NavBackStackEntry] passed the `content` Composable
- *  of the [composable] method, and whose [Modifier] `modifier` argument is our [Modifier] parameter
- *  [modifier].
+ *  lambda argument of the [composable] method, and whose [Modifier] `modifier` argument is our
+ *  [Modifier] parameter [modifier].
  *  - `route` = the [HomeSections.route] of [HomeSections.SEARCH] composes a [Search] whose
  *  `onSnackClick` lambda argument calls our [onSnackSelected] lambda parameter passing it the
  *  [Long] that the `onSnackClick` lambda is called with and the [NavBackStackEntry] passed the
- *  `content` Composable of the [composable] method, and whose [Modifier] `modifier` argument is our
- *  [Modifier] parameter [modifier].
+ *  `content` Composable lambda argument of the [composable] method, and whose [Modifier] `modifier`
+ *  argument is our [Modifier] parameter [modifier].
  *  - `route` = the [HomeSections.route] of [HomeSections.CART] composes a [Cart] whose `onSnackClick`
  *  lambda argument calls our [onSnackSelected] lambda parameter passing it the [Long] that the
  *  `onSnackClick` lambda is called with and the [NavBackStackEntry] passed the content Composable
- *  of the [composable] method, and whose [Modifier] `modifier` argument is our [Modifier] parameter
- *  [modifier].
+ *  lambda argument of the [composable] method, and whose [Modifier] `modifier` argument is our
+ *  [Modifier] parameter [modifier].
  *  - `route` = the [HomeSections.route] of [HomeSections.PROFILE] composes a [Profile] whose
  *  [Modifier] `modifier` argument is our [Modifier] parameter [modifier].
  *

@@ -249,8 +249,8 @@ fun FilterScreen(
  * that that adds `12.dp` to the `top` and `16.dp` to the `bottom`, and at the end of the chain
  * is a [Modifier.padding] that adds `4.dp` to each `horizontal` side. In its [FlowRowScope]
  * `content` lambda we use the [Iterable.forEach] method of our [List] of [Filter] parameter
- * [filters] to loop over each [Filter] and its the `action` lambda argument we capture the
- * [Filter] passed the lambda in variable `filter` and compose a [FilterChip] whose arguments are:]
+ * [filters] to loop over each [Filter] and in its the `action` lambda argument we capture the
+ * [Filter] passed the lambda in variable `filter` and compose a [FilterChip] whose arguments are:
  *  - `filter`: Our [Filter] variable `filter`.
  *  - `modifier`: A [Modifier.padding] that adds `4.dp` to the `end` and `8.dp` to the `bottom` of
  *  the [FilterChip].
@@ -316,7 +316,7 @@ fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
  * It iterates through the provided filters and displays each one as a [SortOption] button.
  * The [SortOption] will be marked as selected if its name matches the current [sortState].
  * When a user clicks on a [SortOption], the [onChanged] lambda parameter is called with the
- * [Filter] the [SortOption] represents.
+ * [Filter] that the [SortOption] represents.
  *
  * We use the [Iterable.forEach] method of our [List] of [Filter] parameter [sortFilters] to
  * loop over each [Filter] and in its the `action` lambda argument we capture the [Filter]
@@ -447,7 +447,10 @@ fun FilterTitle(text: String) {
  * It is used to present a single sorting option to the user, allowing them to select it.
  *
  * Our root composable is a [Row] whose `modifier` argument is a [Modifier.padding] that adds
- * `14.dp` to the `top` of the [Row]. In its [RowScope] `content` lambda argument we compose:
+ * `14.dp` to the `top` of the [Row], with a [Modifier.selectable] chained to thqt whose `selected`
+ * argument is our [Boolean] pararmeter [selected] and whose `onClick` lambda argument is a lambda
+ * that calls our lambda parameter [onClickOption]. In its [RowScope] `content` lambda argument we
+ * compose:
  *
  * **First** If our [ImageVector] parameter [icon] is not `null`, we compose an [Icon] whose
  * `imageVector` argument is our [ImageVector] variable `icon`, and whose `contentDescription`
@@ -459,7 +462,7 @@ fun FilterTitle(text: String) {
  *  - `modifier`: A [Modifier.padding] that adds `start` padding of `10.dp` to the [Text] with a
  *  [RowScope.weight] whose `weight` is `1f` chained to that.
  *
- * **Third** If our [Boolean] parameter [selected] is `true`, we compose a [Icon] whose arguments
+ * **Third** If our [Boolean] parameter [selected] is `true`, we compose an [Icon] whose arguments
  * are:
  *  - `imageVector`: The [ImageVector] drawn by [Icons.Filled.Done]
  *  - `contentDescription`: `null`
