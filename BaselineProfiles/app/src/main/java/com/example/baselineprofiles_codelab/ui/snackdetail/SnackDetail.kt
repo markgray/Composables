@@ -45,6 +45,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -73,6 +75,7 @@ import com.example.baselineprofiles_codelab.ui.components.JetsnackSurface
 import com.example.baselineprofiles_codelab.ui.components.QuantitySelector
 import com.example.baselineprofiles_codelab.ui.components.SnackCollection
 import com.example.baselineprofiles_codelab.ui.components.SnackImage
+import com.example.baselineprofiles_codelab.ui.home.JetsnackBottomBar
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import com.example.baselineprofiles_codelab.ui.theme.Neutral8
 import com.example.baselineprofiles_codelab.ui.utils.formatPrice
@@ -80,33 +83,90 @@ import com.example.baselineprofiles_codelab.ui.utils.mirroringBackIcon
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * The height of the [CartBottomBar] (the [JetsnackBottomBar] uses `BottomNavHeight` which is equal
+ * as it needs to be for the shared transition to work properly). (`56.dp`)
+ */
 private val BottomBarHeight = 56.dp
+
+/**
+ * The height of the [Title] Composable. (`128.dp`)
+ */
 private val TitleHeight = 128.dp
+
+/**
+ * The height of a [Spacer] in the [Body] Composable that compensates for part of the Gradient in
+ * [Spacer] at the top of the [Header] (I think?) (`180.dp`)
+ */
 private val GradientScroll = 180.dp
+
+/**
+ * The height of a [Spacer] in the [Body] Composable that compensates for the [Image] (`115.dp`)
+ */
 private val ImageOverlap = 115.dp
+
+/**
+ * The minimum offset from the top of the screen of the [Title] Composable when the
+ * [CollapsingImageLayout] is collapsed (I think?) (`56.dp`)
+ */
 private val MinTitleOffset = 56.dp
+
+/**
+ * The minimum offset from the top of the screen of the [Image] Composable when the
+ * [CollapsingImageLayout] is collapsed (I think?) (`12.dp`)
+ */
 private val MinImageOffset = 12.dp
+
+/**
+ * The maximum offset from the top of the screen of the [Title] Composable when the
+ * [CollapsingImageLayout] is expanded (`351.dp`)
+ */
 private val MaxTitleOffset = ImageOverlap + MinTitleOffset + GradientScroll
+
+/**
+ * The maximum size of the [Image] Composable when the [CollapsingImageLayout] is expanded. (`351.dp`)
+ */
 private val ExpandedImageSize = 300.dp
+
+/**
+ * The minimum size of the [Image] Composable when the [CollapsingImageLayout] is collapsed. (`150.dp`)
+ */
 private val CollapsedImageSize = 150.dp
+
+/**
+ * The [Modifier.padding] for the `horizontal` edges of the many of our composables. (`24.dp`)
+ */
 private val HzPadding = Modifier.padding(horizontal = 24.dp)
 
+/**
+ * Displays the detailed view of a specific snack.
+ *
+ * TODO: Continue here.
+ *
+ * This composable fetches and displays information about a snack, including its
+ * image, title, and related snacks. It also provides navigation back to the
+ * previous screen and a bottom bar for adding the snack to the cart.
+ *
+ * @param snackId The unique identifier of the snack to display.
+ * @param upPress A callback function invoked when the "up" navigation button is pressed.
+ */
 @Composable
 fun SnackDetail(
     snackId: Long,
     upPress: () -> Unit
 ) {
-    val snack = remember(snackId) { SnackRepo.getSnack(snackId) }
-    val related = remember(snackId) { SnackRepo.getRelated(snackId) }
+    val snack: Snack = remember(key1 = snackId) { SnackRepo.getSnack(snackId) }
+    val related: List<SnackCollection> =
+        remember(key1 = snackId) { SnackRepo.getRelated(snackId = snackId) }
 
-    Box(Modifier.fillMaxSize()) {
-        val scroll = rememberScrollState(0)
+    Box(modifier = Modifier.fillMaxSize()) {
+        val scroll: ScrollState = rememberScrollState(0)
         Header()
-        Body(related, scroll)
-        Title(snack) { scroll.value }
-        Image(snack.imageUrl) { scroll.value }
-        Up(upPress)
-        CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
+        Body(related = related, scroll = scroll)
+        Title(snack = snack) { scroll.value }
+        Image(imageUrl = snack.imageUrl) { scroll.value }
+        Up(upPress = upPress)
+        CartBottomBar(modifier = Modifier.align(alignment = Alignment.BottomCenter))
     }
 }
 
@@ -114,9 +174,9 @@ fun SnackDetail(
 private fun Header() {
     Spacer(
         modifier = Modifier
-            .height(280.dp)
+            .height(height = 280.dp)
             .fillMaxWidth()
-            .background(Brush.horizontalGradient(JetsnackTheme.colors.tornado1))
+            .background(brush = Brush.horizontalGradient(colors = JetsnackTheme.colors.tornado1))
     )
 }
 
@@ -127,7 +187,7 @@ private fun Up(upPress: () -> Unit) {
         modifier = Modifier
             .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 10.dp)
-            .size(36.dp)
+            .size(size = 36.dp)
             .background(
                 color = Neutral8.copy(alpha = 0.32f),
                 shape = CircleShape
@@ -136,7 +196,7 @@ private fun Up(upPress: () -> Unit) {
         Icon(
             imageVector = mirroringBackIcon(),
             tint = JetsnackTheme.colors.iconInteractive,
-            contentDescription = stringResource(R.string.label_back)
+            contentDescription = stringResource(id = R.string.label_back)
         )
     }
 }
@@ -151,35 +211,35 @@ private fun Body(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .height(MinTitleOffset)
+                .height(height = MinTitleOffset)
         )
         Column(
-            modifier = Modifier.verticalScroll(scroll)
+            modifier = Modifier.verticalScroll(state = scroll)
         ) {
-            Spacer(Modifier.height(GradientScroll))
-            JetsnackSurface(Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.height(height = GradientScroll))
+            JetsnackSurface(modifier = Modifier.fillMaxWidth()) {
                 Column {
-                    Spacer(Modifier.height(ImageOverlap))
-                    Spacer(Modifier.height(TitleHeight))
+                    Spacer(modifier = Modifier.height(height = ImageOverlap))
+                    Spacer(modifier = Modifier.height(height = TitleHeight))
 
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(height = 16.dp))
                     Text(
-                        text = stringResource(R.string.detail_header),
+                        text = stringResource(id = R.string.detail_header),
                         style = MaterialTheme.typography.overline,
                         color = JetsnackTheme.colors.textHelp,
                         modifier = HzPadding
                     )
-                    Spacer(Modifier.height(16.dp))
-                    var seeMore by remember { mutableStateOf(true) }
+                    Spacer(modifier = Modifier.height(height = 16.dp))
+                    var seeMore: Boolean by remember { mutableStateOf(true) }
                     Text(
-                        text = stringResource(R.string.detail_placeholder),
+                        text = stringResource(id = R.string.detail_placeholder),
                         style = MaterialTheme.typography.body1,
                         color = JetsnackTheme.colors.textHelp,
                         maxLines = if (seeMore) 5 else Int.MAX_VALUE,
                         overflow = TextOverflow.Ellipsis,
                         modifier = HzPadding
                     )
-                    val textButton = if (seeMore) {
+                    val textButton: String = if (seeMore) {
                         stringResource(id = R.string.see_more)
                     } else {
                         stringResource(id = R.string.see_less)
@@ -190,32 +250,32 @@ private fun Body(
                         textAlign = TextAlign.Center,
                         color = JetsnackTheme.colors.textLink,
                         modifier = Modifier
-                            .heightIn(20.dp)
+                            .heightIn(min = 20.dp)
                             .fillMaxWidth()
                             .padding(top = 15.dp)
                             .clickable {
                                 seeMore = !seeMore
                             }
                     )
-                    Spacer(Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(height = 40.dp))
                     Text(
-                        text = stringResource(R.string.ingredients),
+                        text = stringResource(id = R.string.ingredients),
                         style = MaterialTheme.typography.overline,
                         color = JetsnackTheme.colors.textHelp,
                         modifier = HzPadding
                     )
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(height = 4.dp))
                     Text(
-                        text = stringResource(R.string.ingredients_list),
+                        text = stringResource(id = R.string.ingredients_list),
                         style = MaterialTheme.typography.body1,
                         color = JetsnackTheme.colors.textHelp,
                         modifier = HzPadding
                     )
 
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(height = 16.dp))
                     JetsnackDivider()
 
-                    related.forEach { snackCollection ->
+                    related.forEach { snackCollection: SnackCollection ->
                         key(snackCollection.id) {
                             SnackCollection(
                                 snackCollection = snackCollection,
@@ -229,7 +289,7 @@ private fun Body(
                         modifier = Modifier
                             .padding(bottom = BottomBarHeight)
                             .navigationBarsPadding()
-                            .height(8.dp)
+                            .height(height = 8.dp)
                     )
                 }
             }
@@ -239,8 +299,8 @@ private fun Body(
 
 @Composable
 private fun Title(snack: Snack, scrollProvider: () -> Int) {
-    val maxOffset = with(LocalDensity.current) { MaxTitleOffset.toPx() }
-    val minOffset = with(LocalDensity.current) { MinTitleOffset.toPx() }
+    val maxOffset: Float = with(LocalDensity.current) { MaxTitleOffset.toPx() }
+    val minOffset: Float = with(LocalDensity.current) { MinTitleOffset.toPx() }
 
     Column(
         verticalArrangement = Arrangement.Bottom,
@@ -248,13 +308,13 @@ private fun Title(snack: Snack, scrollProvider: () -> Int) {
             .heightIn(min = TitleHeight)
             .statusBarsPadding()
             .offset {
-                val scroll = scrollProvider()
-                val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
+                val scroll: Int = scrollProvider()
+                val offset: Float = (maxOffset - scroll).coerceAtLeast(minOffset)
                 IntOffset(x = 0, y = offset.toInt())
             }
             .background(color = JetsnackTheme.colors.uiBackground)
     ) {
-        Spacer(Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
         Text(
             text = snack.name,
             style = MaterialTheme.typography.h4,
@@ -268,15 +328,15 @@ private fun Title(snack: Snack, scrollProvider: () -> Int) {
             color = JetsnackTheme.colors.textHelp,
             modifier = HzPadding
         )
-        Spacer(Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(height = 4.dp))
         Text(
-            text = formatPrice(snack.price),
+            text = formatPrice(price = snack.price),
             style = MaterialTheme.typography.h6,
             color = JetsnackTheme.colors.textPrimary,
             modifier = HzPadding
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(height = 8.dp))
         JetsnackDivider()
     }
 }
@@ -286,14 +346,14 @@ private fun Image(
     imageUrl: String,
     scrollProvider: () -> Int
 ) {
-    val collapseRange = with(LocalDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
-    val collapseFractionProvider = {
+    val collapseRange: Float = with(LocalDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
+    val collapseFractionProvider: () -> Float = {
         (scrollProvider() / collapseRange).coerceIn(0f, 1f)
     }
 
     CollapsingImageLayout(
         collapseFractionProvider = collapseFractionProvider,
-        modifier = HzPadding.then(Modifier.statusBarsPadding())
+        modifier = HzPadding.then(other = Modifier.statusBarsPadding())
     ) {
         SnackImage(
             imageUrl = imageUrl,
@@ -313,17 +373,18 @@ private fun CollapsingImageLayout(
         modifier = modifier,
         content = content
     ) { measurables, constraints ->
-        check(measurables.size == 1)
+        check(value = measurables.size == 1)
 
-        val collapseFraction = collapseFractionProvider()
+        val collapseFraction: Float = collapseFractionProvider()
 
-        val imageMaxSize = min(ExpandedImageSize.roundToPx(), constraints.maxWidth)
-        val imageMinSize = max(CollapsedImageSize.roundToPx(), constraints.minWidth)
-        val imageWidth = lerp(imageMaxSize, imageMinSize, collapseFraction)
-        val imagePlaceable = measurables[0].measure(Constraints.fixed(imageWidth, imageWidth))
+        val imageMaxSize: Int = min(ExpandedImageSize.roundToPx(), constraints.maxWidth)
+        val imageMinSize: Int = max(CollapsedImageSize.roundToPx(), constraints.minWidth)
+        val imageWidth: Int = lerp(imageMaxSize, imageMinSize, collapseFraction)
+        val imagePlaceable: Placeable = measurables[0]
+            .measure(constraints = Constraints.fixed(width = imageWidth, height = imageWidth))
 
-        val imageY = lerp(MinTitleOffset, MinImageOffset, collapseFraction).roundToPx()
-        val imageX = lerp(
+        val imageY: Int = lerp(MinTitleOffset, MinImageOffset, collapseFraction).roundToPx()
+        val imageX: Int = lerp(
             (constraints.maxWidth - imageWidth) / 2, // centered when expanded
             constraints.maxWidth - imageWidth, // right aligned when collapsed
             collapseFraction
@@ -332,22 +393,22 @@ private fun CollapsingImageLayout(
             width = constraints.maxWidth,
             height = imageY + imageWidth
         ) {
-            imagePlaceable.placeRelative(imageX, imageY)
+            imagePlaceable.placeRelative(x = imageX, y = imageY)
         }
     }
 }
 
 @Composable
 private fun CartBottomBar(modifier: Modifier = Modifier) {
-    val (count, updateCount) = remember { mutableStateOf(1) }
-    JetsnackSurface(modifier) {
+    val (count: Int, updateCount: (Int) -> Unit) = remember { mutableIntStateOf(1) }
+    JetsnackSurface(modifier = modifier) {
         Column {
             JetsnackDivider()
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .navigationBarsPadding()
-                    .then(HzPadding)
+                    .then(other = HzPadding)
                     .heightIn(min = BottomBarHeight)
             ) {
                 QuantitySelector(
@@ -355,13 +416,13 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                     decreaseItemCount = { if (count > 0) updateCount(count - 1) },
                     increaseItemCount = { updateCount(count + 1) }
                 )
-                Spacer(Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(width = 16.dp))
                 JetsnackButton(
                     onClick = { /* todo */ },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(weight = 1f)
                 ) {
                     Text(
-                        text = stringResource(R.string.add_to_cart),
+                        text = stringResource(id = R.string.add_to_cart),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         maxLines = 1
@@ -372,6 +433,12 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Three Previews of our [SnackDetail] Composable using different configurations:
+ *  - "default" - light theme
+ *  - "dark theme" - dark theme
+ *  - "large font" - large font size
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
