@@ -22,6 +22,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -52,6 +53,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalDensity
@@ -76,6 +79,7 @@ import com.example.baselineprofiles_codelab.ui.components.QuantitySelector
 import com.example.baselineprofiles_codelab.ui.components.SnackCollection
 import com.example.baselineprofiles_codelab.ui.components.SnackImage
 import com.example.baselineprofiles_codelab.ui.home.JetsnackBottomBar
+import com.example.baselineprofiles_codelab.ui.theme.JetsnackColors
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import com.example.baselineprofiles_codelab.ui.theme.Neutral8
 import com.example.baselineprofiles_codelab.ui.utils.formatPrice
@@ -141,11 +145,42 @@ private val HzPadding = Modifier.padding(horizontal = 24.dp)
 /**
  * Displays the detailed view of a specific snack.
  *
- * TODO: Continue here.
- *
  * This composable fetches and displays information about a snack, including its
  * image, title, and related snacks. It also provides navigation back to the
  * previous screen and a bottom bar for adding the snack to the cart.
+ *
+ * We start initializing and remembering (using our [Long] parameter [snackId] as the `key1` of the
+ * [remember] function) our [Snack] variable `snack` to the [Snack] that the [SnackRepo.getSnack]
+ * method returns for our [Long] parameter [snackId]. Then we initialize and remember our [List] of
+ * [SnackCollection] variable `related` to the value returned by the [SnackRepo.getRelated] method
+ * for our [Long] parameter [snackId] (again using [snackId] as the `key1` of the [remember]
+ * function.
+ *
+ * Our root composable is a [Box] whose `modifier` argument is [Modifier.fillMaxSize]. In its
+ * [BoxScope] `content` composable lambda argument we:
+ *
+ * **First** initialize and remember our [ScrollState] variable `scroll` to the value returned by
+ * the [rememberScrollState] function for an `initial` value of `0`.
+ *
+ * **Second** We compose a [Header] Composable.
+ *
+ * **Third** We compose a [Body] Composable with its `related` argument our [List] of
+ * [SnackCollection] variable `related` and its `scroll` argument our [ScrollState] variable
+ * `scroll`.
+ *
+ * **Fourth** We compose a [Title] Composable with its `snack` argument our [Snack] variable
+ * `snack` and its `scrollProvider` argument a lambda function that returns the current `value` of
+ * our [ScrollState] variable `scroll`.
+ *
+ * **Fifth** We compose an [Image] Composable with its `imageUrl` argument the value of the
+ * [Snack.imageUrl] property of our [Snack] variable `snack` and its `scrollProvider` argument a
+ * lambda function that returns the current `value` of our [ScrollState] variable `scroll`.
+ *
+ * **Sixth** We compose a [Up] Composable with its `upPress` argument our lambda function parameter
+ * [upPress].
+ *
+ * **Seventh** We compose a [CartBottomBar] Composable whose `modifier` argument is [BoxScope.align]
+ * with its `alignment` argument [Alignment.BottomCenter].
  *
  * @param snackId The unique identifier of the snack to display.
  * @param upPress A callback function invoked when the "up" navigation button is pressed.
@@ -155,12 +190,12 @@ fun SnackDetail(
     snackId: Long,
     upPress: () -> Unit
 ) {
-    val snack: Snack = remember(key1 = snackId) { SnackRepo.getSnack(snackId) }
+    val snack: Snack = remember(key1 = snackId) { SnackRepo.getSnack(snackId = snackId) }
     val related: List<SnackCollection> =
         remember(key1 = snackId) { SnackRepo.getRelated(snackId = snackId) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        val scroll: ScrollState = rememberScrollState(0)
+        val scroll: ScrollState = rememberScrollState(initial = 0)
         Header()
         Body(related = related, scroll = scroll)
         Title(snack = snack) { scroll.value }
@@ -170,6 +205,19 @@ fun SnackDetail(
     }
 }
 
+/**
+ * Displays a header area with a horizontal gradient background.
+ *
+ * This composable is used to create a visually distinct header section
+ * at the top of the [SnackDetail] screen. It fills the width of the screen
+ * and has a fixed height of 280.dp. The background uses a horizontal gradient
+ * defined by the [JetsnackColors.tornado1] of our custom [JetsnackTheme.colors].
+ *
+ * Our root composable is a [Spacer] whose `modifier` argument is a [Modifier.height] of `280.dp`
+ * with a [Modifier.fillMaxWidth] chained to it, and a [Modifier.background] chained to that with
+ * its `brush` argument set to a [Brush.horizontalGradient] with its `colors` argument set to the
+ * [List] of [Color] defined by [JetsnackColors.tornado1] of our custom [JetsnackTheme.colors]. 
+ */
 @Composable
 private fun Header() {
     Spacer(
@@ -180,6 +228,31 @@ private fun Header() {
     )
 }
 
+/**
+ * Displays an "Up" navigation button.
+ *
+ * This composable displays a circular button with a back arrow icon,
+ * typically used for navigating back to the previous screen.
+ * It positions itself in the top-left corner of the screen,
+ * applying status bar padding and a subtle background color for
+ * better visibility.
+ *
+ * Our root composable is a [IconButton] whose `onClick` argument is our lambda parameter [upPress],
+ * whose `modifier` argument is a [Modifier.statusBarsPadding] to add padding to accommodate the
+ * status bars insets, chained to a [Modifier.padding] that adds `16.dp` to each horizontal side and
+ * `10.dp` to each vertical side, a [Modifier.size] of `36.dp` chained to that and a
+ * [Modifier.background] chained to that with its `shape` argument set to a [CircleShape] and its
+ * `color` argument set to a copy of [Neutral8] with its `alpha` argument set to `0.32f`.
+ *
+ * In the `content` composable lambda argument of the [IconButton] we compose an [Icon] whose
+ * arguments are:
+ *  - `imageVector` set to the [ImageVector] drawn by [mirroringBackIcon]
+ *  - `tint` is the [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors]
+ *  - `contentDescription` is a the [String] with resource ID `R.string.label_back` ("Back").
+ *
+ * @param upPress A callback function invoked when the button is pressed,
+ * typically used for handling the navigation back action.
+ */
 @Composable
 private fun Up(upPress: () -> Unit) {
     IconButton(
@@ -201,6 +274,15 @@ private fun Up(upPress: () -> Unit) {
     }
 }
 
+/**
+ * This Composable is responsible for displaying all the information "known" about the [Snack] that
+ * the [SnackDetail] is displaying.
+ *
+ * TODO: Continue here.
+ *
+ * @param related The list of related [SnackCollection] objects to display.
+ * @param scroll The [ScrollState] used to manage the scrolling of the content.
+ */
 @Composable
 private fun Body(
     related: List<SnackCollection>,
