@@ -32,7 +32,7 @@ android {
     // This code creates the gradle managed device used to generate baseline profiles.
     // To use GMD please invoke generation through the command line:
     // ./gradlew :app:generateBaselineProfile
-    testOptions.managedDevices.devices {
+    testOptions.managedDevices.allDevices {
         @Suppress("UnstableApiUsage")
         create<ManagedVirtualDevice>("pixel6Api34") {
             device = "Pixel 6"
