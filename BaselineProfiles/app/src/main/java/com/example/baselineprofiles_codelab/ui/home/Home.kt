@@ -225,7 +225,7 @@ enum class HomeSections(
  *  [HomeSections.route] of our [HomeSections] variable `section`.
  *  - `animSpec`: is our [SpringSpec] variable `springSpec`.
  *  - `modifier`: is a [BottomNavigationItemPadding] with a [Modifier.clip] whose `shape` argument
- *  is the [RoundedCornerShape] of [BottomNavIndicatorShape].
+ *  is the [RoundedCornerShape] of [BottomNavIndicatorShape] chained to it.
  *
  * Then we loop around for the next [HomeSections] in our [Array] of [HomeSections] parameter [tabs].
  *
@@ -334,7 +334,7 @@ fun JetsnackBottomBar(
  * lambda argument composes our Composable lambda parameter [content] followed by a [Box] whose
  * `modifier` argument is a [Modifier.layoutId] whose `layoutId` argument is the [String] "indicator",
  * and whose `content` argument is our [BoxScope] Composable lambda parameter [indicator]. In the
- * [MeasurePolicy] `measurePolicy` [MeasureScope] lambda argument we accept the [List] of [Measurable]
+ * [MeasureScope] `measurePolicy` [MeasurePolicy] lambda argument we accept the [List] of [Measurable]
  * passed the lambda in our `measurables` variable and the [Constraints] passed the lambda in our
  * variable `constraints` ([Layout] produces the [List] of [Measurable] from the Composables that
  * it finds in its `content` argument, in our case the four [JetsnackBottomNavigationItem] in our
@@ -480,7 +480,7 @@ private fun JetsnackBottomNavLayout(
  * Our root Composable is a [Box] whose `modifier` argument chains to our [Modifier] parameter
  * [modifier] a [Modifier.selectable] whose `selected` argument is our [Boolean] parameter [selected]
  * and whose `onClick` argument is a our lambda parameter [onSelected]. It its [BoxScope] `content`
- * composable lambda argument we initialize our animated [Float] variable `animationProgress` to tje
+ * composable lambda argument we initialize our animated [Float] variable `animationProgress` to the
  * animation returned by the [animateFloatAsState] method with its `targetValue` argument set to
  * `1f` if [selected] is `true` or `0f` if it is `false` and its `animationSpec` argument set to
  * our [AnimationSpec] of [Float] parameter [animSpec]. Then we compose a [JetsnackBottomNavItemLayout]
@@ -541,7 +541,7 @@ fun JetsnackBottomNavigationItem(
  *  [BoxScope] `content` Composable lambda argument is our [BoxScope] Composable lambda parameter
  *  [text].
  *
- * In the [MeasurePolicy] `measurePolicy` [MeasureScope] lambda argument we capture the [List] of
+ * In the [MeasureScope] `measurePolicy` [MeasurePolicy] lambda argument we capture the [List] of
  * [Measurable] passed the lambda in our `measurables` variable and the [Constraints] passed the
  * lambda in our `constraints` variable. Then we initialize our [Placeable] variable `val iconPlaceable`
  * to the [Measurable.measure] of the first [Measurable] in `measurables` whose [Measurable.layoutId]

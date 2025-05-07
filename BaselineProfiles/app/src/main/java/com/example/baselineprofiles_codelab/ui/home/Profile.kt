@@ -48,10 +48,10 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
  * section is currently a work in progress and encouraging them to grab a beverage while they wait.
  *
  * Our root composable is a [Column] whose `horizontalAlignment` argument is set to
- * [Alignment.CenterHorizontally] and whose `modifier` argument is our [Modifier] parameter, with
- * a [Modifier.fillMaxSize] chained to it, a [Modifier.wrapContentSize] chained to that, and
- * a [Modifier.padding] chained to that which add `24.dp` to `all` sides. In it [ColumnScope]
- * `content` composable lambda argument we compose:
+ * [Alignment.CenterHorizontally] and whose `modifier` argument is our [Modifier] parameter
+ * [modifier], with a [Modifier.fillMaxSize] chained to it, a [Modifier.wrapContentSize] chained
+ * to that, and a [Modifier.padding] chained to that which add `24.dp` to `all` sides. In its
+ * [ColumnScope] `content` composable lambda argument we compose:
  *
  * **First** An [Image] whose `painter` argument is a [painterResource] whose `id` argument is
  * `R.drawable.empty_state_search`, and whose `contentDescription` argument is `null`.
