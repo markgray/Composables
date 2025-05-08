@@ -149,8 +149,8 @@ private val HzPadding = Modifier.padding(horizontal = 24.dp)
  * image, title, and related snacks. It also provides navigation back to the
  * previous screen and a bottom bar for adding the snack to the cart.
  *
- * We start initializing and remembering (using our [Long] parameter [snackId] as the `key1` of the
- * [remember] function) our [Snack] variable `snack` to the [Snack] that the [SnackRepo.getSnack]
+ * We start by initializing and remembering (using our [Long] parameter [snackId] as the `key1` of
+ * the [remember] function) our [Snack] variable `snack` to the [Snack] that the [SnackRepo.getSnack]
  * method returns for our [Long] parameter [snackId]. Then we initialize and remember our [List] of
  * [SnackCollection] variable `related` to the value returned by the [SnackRepo.getRelated] method
  * for our [Long] parameter [snackId] (again using [snackId] as the `key1` of the [remember]
@@ -176,8 +176,7 @@ private val HzPadding = Modifier.padding(horizontal = 24.dp)
  * [Snack.imageUrl] property of our [Snack] variable `snack` and its `scrollProvider` argument a
  * lambda function that returns the current `value` of our [ScrollState] variable `scroll`.
  *
- * **Sixth** We compose a [Up] Composable with its `upPress` argument our lambda function parameter
- * [upPress].
+ * **Sixth** We compose a [Up] Composable with its `upPress` argument our lambda parameter [upPress].
  *
  * **Seventh** We compose a [CartBottomBar] Composable whose `modifier` argument is [BoxScope.align]
  * with its `alignment` argument [Alignment.BottomCenter].
@@ -215,8 +214,8 @@ fun SnackDetail(
  *
  * Our root composable is a [Spacer] whose `modifier` argument is a [Modifier.height] of `280.dp`
  * with a [Modifier.fillMaxWidth] chained to it, and a [Modifier.background] chained to that with
- * its `brush` argument set to a [Brush.horizontalGradient] with its `colors` argument set to the
- * [List] of [Color] defined by [JetsnackColors.tornado1] of our custom [JetsnackTheme.colors]. 
+ * its `brush` argument is a [Brush.horizontalGradient] with its `colors` argument the [List] of
+ * [Color] in [JetsnackColors.tornado1] of our custom [JetsnackTheme.colors].
  */
 @Composable
 private fun Header() {
@@ -231,11 +230,9 @@ private fun Header() {
 /**
  * Displays an "Up" navigation button.
  *
- * This composable displays a circular button with a back arrow icon,
- * typically used for navigating back to the previous screen.
- * It positions itself in the top-left corner of the screen,
- * applying status bar padding and a subtle background color for
- * better visibility.
+ * This composable displays a circular button with a back arrow icon, that can be used to navigate
+ * back to the previous screen. It positions itself in the top-left corner of the screen, applying
+ * status bar padding and a subtle background color for better visibility.
  *
  * Our root composable is a [IconButton] whose `onClick` argument is our lambda parameter [upPress],
  * whose `modifier` argument is a [Modifier.statusBarsPadding] to add padding to accommodate the
@@ -246,12 +243,12 @@ private fun Header() {
  *
  * In the `content` composable lambda argument of the [IconButton] we compose an [Icon] whose
  * arguments are:
- *  - `imageVector` set to the [ImageVector] drawn by [mirroringBackIcon]
- *  - `tint` is the [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors]
- *  - `contentDescription` is a the [String] with resource ID `R.string.label_back` ("Back").
+ *  - `imageVector`: is the [ImageVector] drawn by [mirroringBackIcon]
+ *  - `tint`: [Color] is the [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors]
+ *  - `contentDescription`: is the [String] with resource ID `R.string.label_back` ("Back").
  *
- * @param upPress A callback function invoked when the button is pressed,
- * typically used for handling the navigation back action.
+ * @param upPress A callback function invoked when the button is pressed, used for handling the
+ * navigation back action.
  */
 @Composable
 private fun Up(upPress: () -> Unit) {
@@ -276,7 +273,7 @@ private fun Up(upPress: () -> Unit) {
 
 /**
  * This Composable is responsible for displaying all the information "known" about the [Snack] that
- * the [SnackDetail] is displaying.
+ * the [SnackDetail] is displaying (this information is the same for all [Snack]'s).
  *
  * TODO: Continue here.
  *
