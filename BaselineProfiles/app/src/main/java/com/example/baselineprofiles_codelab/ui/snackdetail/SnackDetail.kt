@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +44,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -61,6 +64,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
@@ -275,7 +279,98 @@ private fun Up(upPress: () -> Unit) {
  * This Composable is responsible for displaying all the information "known" about the [Snack] that
  * the [SnackDetail] is displaying (this information is the same for all [Snack]'s).
  *
- * TODO: Continue here.
+ * Our root composable is a [Column] in whose [ColumnScope] `content` lambda argument we compose
+ * a [Spacer] whose `modifier` argument is a [Modifier.fillMaxWidth], chained to a
+ * [Modifier.statusBarsPadding] that adds padding to accommodate the status bars insets, chained to
+ * a [Modifier.height] whose `height` is [MinTitleOffset] (`56.dp`), followed by another [Column]
+ * whose `modifier` argument is a [Modifier.verticalScroll] whose `state` argument is our
+ * [ScrollState] parameter [scroll].
+ *
+ * In the inner [Column] `content` lambda argument we compose a [Spacer] whose `modifier` argument
+ * is a [Modifier.height] whose `height` is [GradientScroll] (`180.dp`), followed by a
+ * [JetsnackSurface] whose `modifier` argument is a [Modifier.fillMaxWidth]. Inside the
+ * [JetsnackSurface] we compose yet another [Column] in whose [ColumnScope] `content` lambda argument
+ * we compose:
+ *
+ * **First** a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is
+ * [ImageOverlap] (`115.dp`), followed by a [Spacer] whose `modifier` argument is a [Modifier.height]
+ * whose `height` is [TitleHeight] (`128.dp`), followed by a [Spacer] whose `modifier` argument is
+ * a [Modifier.height] whose `height` is `16.dp`.
+ *
+ * **Second** a [Text] whose arguments are:
+ *  - `text`: is the [String] with resource ID `R.string.detail_header` ("Details")
+ *  - `style`: [TextStyle] is the [Typography.overline] of our custom [MaterialTheme.typography].
+ *  - `color`: [Color] is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors].
+ *  - `modifier`: is our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to
+ *  each horizontal side).
+ *
+ * **Third** a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`.
+ *
+ * **Fourth** we initialize and remember our [MutableState] wrapped [Boolean] variable `seeMore` to
+ * an initial value of `true`.
+ *
+ * **Fifth** we compose a [Text] whose arguments are:
+ *  - `text`: is the [String] with resource ID `R.string.detail_placeholder` (nonsense)
+ *  - `style`: [TextStyle] is the [Typography.body1] of our custom [MaterialTheme.typography].
+ *  - `color`: [Color] is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors].
+ *  - `maxLines`: if our [MutableState] wrapped [Boolean] variable `seeMore` is `true` then its is
+ *  an [Int] equal to `5`, otherwise its value is [Int.MAX_VALUE].
+ *  - `overflow`: [TextOverflow] is [TextOverflow.Ellipsis].
+ *  - `modifier`: is our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to
+ *  each horizontal side).
+ *
+ * **Sixth** we initialize our [String] variable `textButton` to the [String] with resource ID
+ * `R.string.see_more` ("See more") if our [MutableState] wrapped [Boolean] variable `seeMore`
+ * is `true`, otherwise its value is [String] with resource ID `R.string.see_less` ("See less").
+ *
+ * **Seventh** we compose a [Text] whose arguments are:
+ *  - `text`: is our [String] variable `textButton`.
+ *  - `style`: [TextStyle] is the [Typography.button] of our custom [MaterialTheme.typography].
+ *  - `textAlign`: [TextAlign] is [TextAlign.Center].
+ *  - `color`: [Color] is the [JetsnackColors.textLink] of our custom [JetsnackTheme.colors].
+ *  - `modifier`: is a [Modifier.heightIn] whose `min` argument `20.dp`, chained to a
+ *  [Modifier.fillMaxWidth], chained to a [Modifier.padding] whose `top` argument is `15.dp`,
+ *  and at the end of the chain is a [Modifier.clickable] whose `onClick` argument is a lambda
+ *  that sets our [MutableState] wrapped [Boolean] variable `seeMore` to its opposite value.
+ *
+ * **Eighth** we compose a [Spacer] whose `modifier` argument is a [Modifier.height] whose
+ * `height` is `40.dp`.
+ *
+ * **Ninth** we compose a [Text] whose arguments are:
+ *  - `text`: is the [String] with resource ID `R.string.ingredients` ("Ingredients")
+ *  - `style`: [TextStyle] is the [Typography.overline] of our custom [MaterialTheme.typography].
+ *  - `color`: [Color] is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors].
+ *  - `modifier`: is our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to
+ *  each horizontal side).
+ *
+ * **Tenth** we compose a [Spacer] whose `modifier` argument is a [Modifier.height] whose
+ * `height` is `4.dp`.
+ *
+ * **Eleventh** we compose a [Text] whose arguments are:
+ *  - `text`: is the [String] with resource ID `R.string.ingredients_list` (a bunch of ingredients).
+ *  - `style`: [TextStyle] is the [Typography.body1] of our custom [MaterialTheme.typography].
+ *  - `color`: [Color] is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors].
+ *  - `modifier`: is our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to
+ *  each horizontal side).
+ *
+ * **Twelfth** we compose a [Spacer] whose `modifier` argument is a [Modifier.height] whose
+ * `height` is `16.dp`, followed by a [JetsnackDivider].
+ *
+ * **Thirteenth** we use the [Iterable.forEach] method of our [List] of [SnackCollection] parameter
+ * [related] to loop through each [SnackCollection] in the [List] and in the `action` lambda argument
+ * we capture the [SnackCollection] passed the lambda in variable `snackCollection` and compose a
+ * [key] whose `key` argument is the [SnackCollection.id] of the [SnackCollection] variable
+ * `snackCollection` (this is utility composable that is used to "group" or "key" the contents of
+ * its `block` lambda argument). Inside the [key] `block` composable lambda argument we compose a
+ * [SnackCollection] whose arguments are:
+ *  - `snackCollection`: is the [SnackCollection] variable `snackCollection`.
+ *  - `onSnackClick`: is a do-nothing lambda.
+ *  - `highlight`: is `false`.
+ *
+ * **Fourteenth** we compose a [Spacer] whose `modifier` argument is a [Modifier.padding] that adds
+ * [BottomBarHeight] padding to the `bottom`, with a [Modifier.navigationBarsPadding] chained to that
+ * which adds padding to accommodate the navigation bars insets, chained to a [Modifier.height]
+ * whose `height` is `8.dp`.
  *
  * @param related The list of related [SnackCollection] objects to display.
  * @param scroll The [ScrollState] used to manage the scrolling of the content.
@@ -376,6 +471,19 @@ private fun Body(
     }
 }
 
+/**
+ * Displays the title area of a snack detail screen.
+ *
+ * This composable shows the snack's name, tagline, and price. It is designed to stick to the top
+ * of the screen while scrolling, collapsing as the user scrolls down. The position of this
+ * composable is dynamically calculated based on the scroll state provided by [scrollProvider].
+ * It also provides padding for the status bar and uses the custom [JetsnackTheme] for styling.
+ *
+ * TODO: Continue here.
+ *
+ * @param snack The [Snack] object to display.
+ * @param scrollProvider A lambda function that returns the current scroll state of the screen.
+ */
 @Composable
 private fun Title(snack: Snack, scrollProvider: () -> Int) {
     val maxOffset: Float = with(LocalDensity.current) { MaxTitleOffset.toPx() }
