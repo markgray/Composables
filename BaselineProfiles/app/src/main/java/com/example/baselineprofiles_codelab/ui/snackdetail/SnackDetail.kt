@@ -286,11 +286,11 @@ private fun Up(upPress: () -> Unit) {
  * whose `modifier` argument is a [Modifier.verticalScroll] whose `state` argument is our
  * [ScrollState] parameter [scroll].
  *
- * In the inner [Column] `content` lambda argument we compose a [Spacer] whose `modifier` argument
- * is a [Modifier.height] whose `height` is [GradientScroll] (`180.dp`), followed by a
+ * In the inner [Column] `content` composable lambda argument we compose a [Spacer] whose `modifier`
+ * argument is a [Modifier.height] whose `height` is [GradientScroll] (`180.dp`), followed by a
  * [JetsnackSurface] whose `modifier` argument is a [Modifier.fillMaxWidth]. Inside the
- * [JetsnackSurface] we compose yet another [Column] in whose [ColumnScope] `content` lambda argument
- * we compose:
+ * [JetsnackSurface] `content` composable lambda argument we compose yet another [Column] in whose
+ * [ColumnScope] `content` lambda argument we compose:
  *
  * **First** a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is
  * [ImageOverlap] (`115.dp`), followed by a [Spacer] whose `modifier` argument is a [Modifier.height]
@@ -310,7 +310,7 @@ private fun Up(upPress: () -> Unit) {
  * an initial value of `true`.
  *
  * **Fifth** we compose a [Text] whose arguments are:
- *  - `text`: is the [String] with resource ID `R.string.detail_placeholder` (nonsense)
+ *  - `text`: is the [String] with resource ID `R.string.detail_placeholder` (nonsense words)
  *  - `style`: [TextStyle] is the [Typography.body1] of our custom [MaterialTheme.typography].
  *  - `color`: [Color] is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors].
  *  - `maxLines`: if our [MutableState] wrapped [Boolean] variable `seeMore` is `true` then its is
@@ -321,7 +321,7 @@ private fun Up(upPress: () -> Unit) {
  *
  * **Sixth** we initialize our [String] variable `textButton` to the [String] with resource ID
  * `R.string.see_more` ("See more") if our [MutableState] wrapped [Boolean] variable `seeMore`
- * is `true`, otherwise its value is [String] with resource ID `R.string.see_less` ("See less").
+ * is `true`, otherwise its value is the [String] with resource ID `R.string.see_less` ("See less").
  *
  * **Seventh** we compose a [Text] whose arguments are:
  *  - `text`: is our [String] variable `textButton`.
@@ -360,8 +360,8 @@ private fun Up(upPress: () -> Unit) {
  * [related] to loop through each [SnackCollection] in the [List] and in the `action` lambda argument
  * we capture the [SnackCollection] passed the lambda in variable `snackCollection` and compose a
  * [key] whose `key` argument is the [SnackCollection.id] of the [SnackCollection] variable
- * `snackCollection` (this is utility composable that is used to "group" or "key" the contents of
- * its `block` lambda argument). Inside the [key] `block` composable lambda argument we compose a
+ * `snackCollection` (this utility composable is used to "group" or "key" the contents of its
+ * `block` lambda argument). Inside the [key] `block` composable lambda argument we compose a
  * [SnackCollection] whose arguments are:
  *  - `snackCollection`: is the [SnackCollection] variable `snackCollection`.
  *  - `onSnackClick`: is a do-nothing lambda.
