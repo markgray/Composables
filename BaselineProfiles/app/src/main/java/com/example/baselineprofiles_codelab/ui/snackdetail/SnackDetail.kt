@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,6 +47,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -59,6 +61,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasurePolicy
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -68,6 +73,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
@@ -479,7 +485,52 @@ private fun Body(
  * composable is dynamically calculated based on the scroll state provided by [scrollProvider].
  * It also provides padding for the status bar and uses the custom [JetsnackTheme] for styling.
  *
- * TODO: Continue here.
+ * We start by initializing our [Float] variable `maxOffset` to the pixel value of [MaxTitleOffset]
+ * (`351.dp`) for the current [LocalDensity], and our [Float] variable `minOffset` to the pixel
+ * value of [MinTitleOffset] (`56.dp`) for the current [LocalDensity].
+ *
+ * Our root composable is a [Column] whose `verticalArrangement` argument is [Arrangement.Bottom]
+ * and whose `modifier` argument is a [Modifier.heightIn] whose `min` argument is [TitleHeight],
+ * chained to a [Modifier.statusBarsPadding] that adds padding to accommodate the status bars
+ * insets, chained to a [Modifier.offset] whose `offset` argument is a lambda function that
+ * initializes its [Int] variable `scroll` to the value returned by our [scrollProvider] lambda
+ * parameter, initializes its [Float] variable `offset` to the `maxOffset` minus `scroll` coerced
+ * to a [Float] to be at least `minOffset`, and returns an [IntOffset] whose `x` argument is `0`,
+ * and whose `y` argument is `offset`, and at the end of the chain is a [Modifier.background] whose
+ * `color` argument is the [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors].
+ *
+ * In the [ColumnScope] `content` composable lambda argument of the [Column] we compose:
+ *
+ * **First* a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`
+ *
+ * **Second** a [Text] whose arguments are:
+ *  - `text`: is the [Snack.id] of our [Snack] parameter [snack]
+ *  - `style`: [TextStyle] is the [Typography.h4] of our custom [MaterialTheme.typography].
+ *  - `color`: [Color] is the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors].
+ *  - `modifier`: is our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to
+ *  each horizontal side).
+ *
+ * **Third** a [Text] whose arguments are:
+ *  - `text`: is the [Snack.tagline] of our [Snack] parameter [snack]
+ *  - `style`: [TextStyle] is the [Typography.subtitle2] of our custom [MaterialTheme.typography].
+ *  - `fontSize`: [TextUnit] is  `20.sp`.
+ *  - `color`: [Color] is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors].
+ *  - `modifier`: is our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to
+ *  each horizontal side).
+ *
+ * **Fourth** a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `4.dp`
+ * 
+ * **Fifth** a [Text] whose arguments are:
+ *  - `text`: is the value returned by the [formatPrice] method for the [Snack.price] of our [Snack]
+ *  parameter [snack].
+ *  - `style`: [TextStyle] is the [Typography.h6] of our custom [MaterialTheme.typography].
+ *  - `color`: [Color] is the [JetsnackColors.textPrimary] of our custom [JetsnackTheme.colors].
+ *  - `modifier`: is our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to
+ *  each horizontal side).
+ *
+ * **Sixth** a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `8.dp`
+ *
+ * **Seventh** a [JetsnackDivider].
  *
  * @param snack The [Snack] object to display.
  * @param scrollProvider A lambda function that returns the current scroll state of the screen.
@@ -528,6 +579,32 @@ private fun Title(snack: Snack, scrollProvider: () -> Int) {
     }
 }
 
+/**
+ * Displays the image of a snack with a collapsing effect.
+ *
+ * This composable displays a snack image that scales and moves as the user scrolls,
+ * simulating a collapsing effect into the top right corner. The size and position
+ * of the image are determined by the scroll state provided by [scrollProvider] and
+ * the [CollapsingImageLayout] which handles the layout transformation.
+ *
+ * We initialize a [Float] `collapseRange` to the difference between [MaxTitleOffset] and
+ * [MinTitleOffset] converted to pixels using the current [LocalDensity]. This represents the
+ * scroll distance over which the image collapses. We then initialize a lambda returning
+ * [Float] variable `collapseFractionProvider` to a lambda that calculates the collapse fraction
+ * (a value between 0f and 1f) based on the current scroll position (provided by [scrollProvider])
+ * and the `collapseRange`, coercing the result to be within the 0f..1f range.
+ *
+ * We then compose a [CollapsingImageLayout] with its `collapseFractionProvider` argument
+ * our lambda returning [Float] variable `collapseFractionProvider`, and its `modifier` argument
+ * our [Modifier] constant [HzPadding] with [Modifier.statusBarsPadding] chained to it. Inside the
+ * `content` composable lambda argument of the [CollapsingImageLayout] we compose a [SnackImage]
+ * whose `imageUrl` argument is our [String] parameter [imageUrl], whose `contentDescription`
+ * argument is `null`, and whose `modifier` argument is [Modifier.fillMaxSize].
+ *
+ * @param imageUrl The URL of the image to display.
+ * @param scrollProvider A lambda function that returns the current scroll state (in pixels)
+ * of the screen. This value is used to calculate the collapse fraction.
+ */
 @Composable
 private fun Image(
     imageUrl: String,
@@ -550,6 +627,50 @@ private fun Image(
     }
 }
 
+/**
+ * This Composable is used to animate the "Collapsing" of the [SnackImage] that is composed in our
+ * `content` Composable lambda argument based on the value returned by our [collapseFractionProvider]
+ * lambda parameter. Our root Composable is a [Layout] whose [Modifier] `modifier` argument is our
+ * [Modifier] parameter [modifier] and whose `content` lambda argument is our [content] Composable
+ * lambda parameter. In the [MeasurePolicy] `measurePolicy` [MeasureScope] lambda argument we accept
+ * the [List] of [Measurable] passed the lambda in our variable `measurables` and the [Constraints]
+ * passed the lambda in our variable `constraints`. We use [check] to make sure that the [List.size]
+ * of `measurables` is `1` (throwing [IllegalStateException] if it is not). Then we initialize our
+ * [Float] variable `val collapseFraction` to the value returned by our [collapseFractionProvider]
+ * lambda parameter. Then we initialize our [Int] variable `val imageMaxSize` to the minimum of
+ * the pixel value of [ExpandedImageSize] and the [Constraints.maxWidth] of our [Constraints] variable
+ * `constraints`. We initialize our [Int] variable `val imageMinSize` to the maximum of the pixel
+ * value of [CollapsedImageSize] and the [Constraints.minWidth] of our [Constraints] variable
+ * `constraints`. Then we initialize our [Int] variable `val imageWidth` to the value returned by
+ * [lerp] whose `start` argument is `imageMaxSize`, whose `stop` argument is `imageMinSize` with the
+ * `fraction` argument our [Float] variable `collapseFraction` linearly interpolating between them.
+ *
+ * We initialize our [Placeable] variable `val imagePlaceable` to the value returned by the
+ * [Measurable.measure] method of the [Measurable] in the `0` index of our [List] of [Measurable]
+ * variable `measurables` with its [Constraints] `constraints` argument a [Constraints.fixed] whose
+ * `width` and `height` arguments are `imageWidth`. We initialize our [Int] variable `val imageY` to
+ * the value returned by [lerp] whose `start` argument is [MinTitleOffset] and whose `stop` argument
+ * is [MinTitleOffset] with the `fraction` argument our [Float] variable `collapseFraction` linearly
+ * interpolating between them. We initialize our [Int] variable `val imageX` to the value returned by
+ * [lerp] for the `start` argument the [Constraints.maxWidth] of our [Constraints] variable
+ * `constraints` minus `imageWidth` all divided by `2` (this centers our [Placeable] when expanded),
+ * for the `stop` argument the [Constraints.maxWidth] of our [Constraints] variable `constraints`
+ * minus `imageWidth` (right aligns when collapsed), and the `fraction` argument our [Float] variable
+ * `collapseFraction` interpolating between them.
+ *
+ * Finally we call the [MeasureScope.layout] method with its `width` argument set to the
+ * [Constraints.maxWidth] of our [Constraints] variable `constraints` and the `height` argument
+ * `imageY` plus `imageWidth`. In the [Placeable.PlacementScope] `placementBlock` lambda argument
+ * we use the [Placeable.PlacementScope.placeRelative] extension method of the [Placeable] variable
+ * `imagePlaceable` to place it at `x` argument `imageX` and `y` argument `imageY`.
+ *
+ * @param collapseFractionProvider a lambda that returns a [Float] value between `0f` and `1f` that
+ * represents where we currently are in the collapsing animation.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [Image] passes us the [HzPadding] horizontal padding [Modifier] with a
+ * [Modifier.statusBarsPadding] chained to that to add padding to accommodate the status bars insets.
+ * @param content the Composable lambda whose size we are to animate.
+ */
 @Composable
 private fun CollapsingImageLayout(
     collapseFractionProvider: () -> Float,
@@ -559,7 +680,7 @@ private fun CollapsingImageLayout(
     Layout(
         modifier = modifier,
         content = content
-    ) { measurables, constraints ->
+    ) { measurables: List<Measurable>, constraints: Constraints ->
         check(value = measurables.size == 1)
 
         val collapseFraction: Float = collapseFractionProvider()
@@ -570,11 +691,15 @@ private fun CollapsingImageLayout(
         val imagePlaceable: Placeable = measurables[0]
             .measure(constraints = Constraints.fixed(width = imageWidth, height = imageWidth))
 
-        val imageY: Int = lerp(MinTitleOffset, MinImageOffset, collapseFraction).roundToPx()
+        val imageY: Int = lerp(
+            start = MinTitleOffset,
+            stop = MinImageOffset,
+            fraction = collapseFraction
+        ).roundToPx()
         val imageX: Int = lerp(
-            (constraints.maxWidth - imageWidth) / 2, // centered when expanded
-            constraints.maxWidth - imageWidth, // right aligned when collapsed
-            collapseFraction
+            start = (constraints.maxWidth - imageWidth) / 2, // centered when expanded
+            stop = constraints.maxWidth - imageWidth, // right aligned when collapsed
+            fraction = collapseFraction
         )
         layout(
             width = constraints.maxWidth,
@@ -585,6 +710,48 @@ private fun CollapsingImageLayout(
     }
 }
 
+/**
+ * This Composable renders the bottom bar of the snack detail screen, which includes a
+ * [QuantitySelector] the user can use to select the number of items to add to the cart,
+ * and a [JetsnackButton] to add the snack to the cart.
+ *
+ * We start by initializing and remembering our [MutableIntState] wrapped [Int] variables `count`
+ * and `updateCount` using destructuring declaration to the value of the [MutableIntState] wrapped
+ * wrapped [Int] and a lambda that updates the [MutableIntState] wrapped [Int] variable (the initial
+ * value is `1`).
+ *
+ * Our root composable is a [JetsnackSurface] whose `modifier` argument is our [Modifier] parameter
+ * [modifier]. Inside the [JetsnackSurface] `content` composable lambda argument we compose a [Row]
+ * whose `verticalAlignment` argument is [Alignment.CenterVertically] and whose `modifier` argument
+ * is a [Modifier.navigationBarsPadding] to add padding to accommodate the navigation bars insets,
+ * chained to our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to each
+ * horizontal side), chained to a [Modifier.heightIn] whose `min` argument is [BottomBarHeight]
+ * (`56.dp`).
+ *
+ * In the [RowScope] `content` composable lambda argument of the [Row] we compose:
+ *
+ * **First** a [QuantitySelector] whose arguments are:
+ *  - `count`: is our [MutableIntState] wrapped [Int] variable `count`.
+ *  - `decreaseItemCount`: is a lambda that sets our [MutableIntState] wrapped [Int] variable
+ *  `count` to its current value minus `1` using our lambda variable `updateCount`.
+ *  - `increaseItemCount`: is a lambda that sets our [MutableIntState] wrapped [Int] variable
+ *  `count` to its current value plus `1` using our lambda variable `updateCount`.
+ *
+ * **Second** a [Spacer] whose `modifier` argument is a [Modifier.width] whose `width` is `16.dp`.
+ *
+ * **Third** a [JetsnackButton] whose arguments are:
+ *  - `onClick`: is a lambda that does nothing.
+ *  - `modifier`: is a [RowScope.weight] whose `weight` is `1f`.
+ *
+ * In the [RowScope] `content` composable lambda argument of the [JetsnackButton] we compose a
+ * [Text] whose arguments are:
+ *  - `text`: is the [String] with resource ID `R.string.add_to_cart` ("Add to cart").
+ *  - `modifier`: is a [Modifier.fillMaxWidth].
+ *  - `textAlign`: is [TextAlign.Center].
+ *  - `maxLines`: is `1`.
+ *
+ * @param modifier The [Modifier] to apply to this composable.
+ */
 @Composable
 private fun CartBottomBar(modifier: Modifier = Modifier) {
     val (count: Int, updateCount: (Int) -> Unit) = remember { mutableIntStateOf(1) }

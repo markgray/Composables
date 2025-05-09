@@ -19,6 +19,14 @@ package com.example.baselineprofiles_codelab.ui.utils
 import java.math.BigDecimal
 import java.text.NumberFormat
 
+/**
+ * Formats a price in cents into a currency string using the default locale.
+ *
+ * For example, 1234 becomes "$12.34" (depending on the default locale and currency).
+ *
+ * @param price The price in cents.
+ * @return A formatted currency string.
+ */
 fun formatPrice(price: Long): String {
     return NumberFormat.getCurrencyInstance().format(
         BigDecimal(price).movePointLeft(2)

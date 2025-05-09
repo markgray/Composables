@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport", "LocalVariableName", "PropertyName")
+
 package com.example.baselineprofiles_codelab.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -140,61 +142,61 @@ class JetsnackColors(
     notificationBadge: Color = error,
     isDark: Boolean
 ) {
-    var gradient6_1 by mutableStateOf(gradient6_1)
+    var gradient6_1: List<Color> by mutableStateOf(gradient6_1)
         private set
-    var gradient6_2 by mutableStateOf(gradient6_2)
+    var gradient6_2: List<Color> by mutableStateOf(gradient6_2)
         private set
-    var gradient3_1 by mutableStateOf(gradient3_1)
+    var gradient3_1: List<Color> by mutableStateOf(gradient3_1)
         private set
-    var gradient3_2 by mutableStateOf(gradient3_2)
+    var gradient3_2: List<Color> by mutableStateOf(gradient3_2)
         private set
-    var gradient2_1 by mutableStateOf(gradient2_1)
+    var gradient2_1: List<Color> by mutableStateOf(gradient2_1)
         private set
-    var gradient2_2 by mutableStateOf(gradient2_2)
+    var gradient2_2: List<Color> by mutableStateOf(gradient2_2)
         private set
-    var gradient2_3 by mutableStateOf(gradient2_3)
+    var gradient2_3: List<Color> by mutableStateOf(gradient2_3)
         private set
-    var brand by mutableStateOf(brand)
+    var brand: Color by mutableStateOf(brand)
         private set
-    var brandSecondary by mutableStateOf(brandSecondary)
+    var brandSecondary: Color by mutableStateOf(brandSecondary)
         private set
-    var uiBackground by mutableStateOf(uiBackground)
+    var uiBackground: Color by mutableStateOf(uiBackground)
         private set
-    var uiBorder by mutableStateOf(uiBorder)
+    var uiBorder: Color by mutableStateOf(uiBorder)
         private set
-    var uiFloated by mutableStateOf(uiFloated)
+    var uiFloated: Color by mutableStateOf(uiFloated)
         private set
-    var interactivePrimary by mutableStateOf(interactivePrimary)
+    var interactivePrimary: List<Color> by mutableStateOf(interactivePrimary)
         private set
-    var interactiveSecondary by mutableStateOf(interactiveSecondary)
+    var interactiveSecondary: List<Color> by mutableStateOf(interactiveSecondary)
         private set
-    var interactiveMask by mutableStateOf(interactiveMask)
+    var interactiveMask: List<Color> by mutableStateOf(interactiveMask)
         private set
-    var textPrimary by mutableStateOf(textPrimary)
+    var textPrimary: Color by mutableStateOf(textPrimary)
         private set
-    var textSecondary by mutableStateOf(textSecondary)
+    var textSecondary: Color by mutableStateOf(textSecondary)
         private set
-    var textHelp by mutableStateOf(textHelp)
+    var textHelp: Color by mutableStateOf(textHelp)
         private set
-    var textInteractive by mutableStateOf(textInteractive)
+    var textInteractive: Color by mutableStateOf(textInteractive)
         private set
-    var tornado1 by mutableStateOf(tornado1)
+    var tornado1: List<Color> by mutableStateOf(tornado1)
         private set
-    var textLink by mutableStateOf(textLink)
+    var textLink: Color by mutableStateOf(textLink)
         private set
-    var iconPrimary by mutableStateOf(iconPrimary)
+    var iconPrimary: Color by mutableStateOf(iconPrimary)
         private set
-    var iconSecondary by mutableStateOf(iconSecondary)
+    var iconSecondary: Color by mutableStateOf(iconSecondary)
         private set
-    var iconInteractive by mutableStateOf(iconInteractive)
+    var iconInteractive: Color by mutableStateOf(iconInteractive)
         private set
-    var iconInteractiveInactive by mutableStateOf(iconInteractiveInactive)
+    var iconInteractiveInactive: Color by mutableStateOf(iconInteractiveInactive)
         private set
-    var error by mutableStateOf(error)
+    var error: Color by mutableStateOf(error)
         private set
-    var notificationBadge by mutableStateOf(notificationBadge)
+    var notificationBadge: Color by mutableStateOf(notificationBadge)
         private set
-    var isDark by mutableStateOf(isDark)
+    var isDark: Boolean by mutableStateOf(isDark)
         private set
 
     fun update(other: JetsnackColors) {
@@ -285,7 +287,7 @@ private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
 fun debugColors(
     darkTheme: Boolean,
     debugColor: Color = Color.Magenta
-) = Colors(
+): Colors = Colors(
     primary = debugColor,
     primaryVariant = debugColor,
     secondary = debugColor,

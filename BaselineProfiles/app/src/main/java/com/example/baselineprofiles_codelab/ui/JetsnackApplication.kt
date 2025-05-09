@@ -21,14 +21,29 @@ import androidx.compose.ui.util.trace
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
+/**
+ * Custom [Application] class for the Jetsnack app.
+ * This class demonstrates how to include startup tracing in the application's initialization.
+ */
 class JetsnackApplication : Application() {
 
+    /**
+     * Called when the application is starting, before any activity, service, or receiver
+     * objects have been created.
+     * This method is used to perform application-level initialization, such as calling
+     * the superclass's `onCreate` and initializing the custom library with tracing.
+     */
     override fun onCreate() {
         super.onCreate()
 
         initializeLibrary()
     }
 
+    /**
+     * Initializes a custom library for the application.
+     * This function includes startup tracing using `trace` to mark the initialization process.
+     * It simulates a blocking initialization task using `runBlocking` and `delay`.
+     */
     private fun initializeLibrary() {
         trace("Custom library init") {
             runBlocking {

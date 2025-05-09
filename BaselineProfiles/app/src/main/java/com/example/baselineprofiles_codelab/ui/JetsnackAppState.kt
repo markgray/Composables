@@ -40,11 +40,13 @@ import kotlinx.coroutines.launch
 
 /**
  * Destinations used in the [JetsnackMain].
+ *
+ * TODO: Continue here.
  */
 object MainDestinations {
-    const val HOME_ROUTE = "home"
-    const val SNACK_DETAIL_ROUTE = "snack"
-    const val SNACK_ID_KEY = "snackId"
+    const val HOME_ROUTE: String = "home"
+    const val SNACK_DETAIL_ROUTE: String = "snack"
+    const val SNACK_ID_KEY: String = "snackId"
 }
 
 /**
@@ -57,7 +59,7 @@ fun rememberJetsnackAppState(
     snackbarManager: SnackbarManager = SnackbarManager,
     resources: Resources = resources(),
     coroutineScope: CoroutineScope = rememberCoroutineScope()
-) =
+): JetsnackAppState =
     remember(scaffoldState, navController, snackbarManager, resources, coroutineScope) {
         JetsnackAppState(scaffoldState, navController, snackbarManager, resources, coroutineScope)
     }
@@ -95,7 +97,7 @@ class JetsnackAppState(
     // BottomBar state source of truth
     // ----------------------------------------------------------
 
-    val bottomBarTabs = HomeSections.values()
+    val bottomBarTabs: Array<HomeSections> = HomeSections.entries.toTypedArray()
     private val bottomBarRoutes = bottomBarTabs.map { it.route }
 
     // Reading this attribute will cause recompositions when the bottom bar needs shown, or not.

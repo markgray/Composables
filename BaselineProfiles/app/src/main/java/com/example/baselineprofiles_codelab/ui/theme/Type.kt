@@ -36,7 +36,7 @@ private val Karla = FontFamily(
     Font(R.font.karla_bold, FontWeight.Bold)
 )
 
-val Typography = Typography(
+val Typography: Typography = Typography(
     h1 = TextStyle(
         fontFamily = Montserrat,
         fontSize = 96.sp,
