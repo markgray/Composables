@@ -319,7 +319,7 @@ private fun Up(upPress: () -> Unit) {
  *  - `text`: is the [String] with resource ID `R.string.detail_placeholder` (nonsense words)
  *  - `style`: [TextStyle] is the [Typography.body1] of our custom [MaterialTheme.typography].
  *  - `color`: [Color] is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors].
- *  - `maxLines`: if our [MutableState] wrapped [Boolean] variable `seeMore` is `true` then its is
+ *  - `maxLines`: if our [MutableState] wrapped [Boolean] variable `seeMore` is `true` then it is
  *  an [Int] equal to `5`, otherwise its value is [Int.MAX_VALUE].
  *  - `overflow`: [TextOverflow] is [TextOverflow.Ellipsis].
  *  - `modifier`: is our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to
@@ -350,7 +350,7 @@ private fun Up(upPress: () -> Unit) {
  *  each horizontal side).
  *
  * **Tenth** we compose a [Spacer] whose `modifier` argument is a [Modifier.height] whose
- * `height` is `4.dp`.
+ * `height` is `40.dp`.
  *
  * **Eleventh** we compose a [Text] whose arguments are:
  *  - `text`: is the [String] with resource ID `R.string.ingredients_list` (a bunch of ingredients).
@@ -374,9 +374,9 @@ private fun Up(upPress: () -> Unit) {
  *  - `highlight`: is `false`.
  *
  * **Fourteenth** we compose a [Spacer] whose `modifier` argument is a [Modifier.padding] that adds
- * [BottomBarHeight] padding to the `bottom`, with a [Modifier.navigationBarsPadding] chained to that
- * which adds padding to accommodate the navigation bars insets, chained to a [Modifier.height]
- * whose `height` is `8.dp`.
+ * [BottomBarHeight] padding (`56.dp`) to the `bottom`, with a [Modifier.navigationBarsPadding]
+ * chained to that which adds padding to accommodate the navigation bars insets, chained to a
+ * [Modifier.height] whose `height` is `8.dp`.
  *
  * @param related The list of related [SnackCollection] objects to display.
  * @param scroll The [ScrollState] used to manage the scrolling of the content.
@@ -504,7 +504,7 @@ private fun Body(
  * **First* a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`
  *
  * **Second** a [Text] whose arguments are:
- *  - `text`: is the [Snack.id] of our [Snack] parameter [snack]
+ *  - `text`: is the [Snack.name] of our [Snack] parameter [snack]
  *  - `style`: [TextStyle] is the [Typography.h4] of our custom [MaterialTheme.typography].
  *  - `color`: [Color] is the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors].
  *  - `modifier`: is our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to
@@ -521,8 +521,8 @@ private fun Body(
  * **Fourth** a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `4.dp`
  * 
  * **Fifth** a [Text] whose arguments are:
- *  - `text`: is the value returned by the [formatPrice] method for the [Snack.price] of our [Snack]
- *  parameter [snack].
+ *  - `text`: is the [String] returned by the [formatPrice] method for the [Snack.price] of our
+ *  [Snack] parameter [snack].
  *  - `style`: [TextStyle] is the [Typography.h6] of our custom [MaterialTheme.typography].
  *  - `color`: [Color] is the [JetsnackColors.textPrimary] of our custom [JetsnackTheme.colors].
  *  - `modifier`: is our [Modifier] constant [HzPadding] (a [Modifier.padding] that adds `24.dp` to
@@ -632,7 +632,7 @@ private fun Image(
  * `content` Composable lambda argument based on the value returned by our [collapseFractionProvider]
  * lambda parameter. Our root Composable is a [Layout] whose [Modifier] `modifier` argument is our
  * [Modifier] parameter [modifier] and whose `content` lambda argument is our [content] Composable
- * lambda parameter. In the [MeasurePolicy] `measurePolicy` [MeasureScope] lambda argument we accept
+ * lambda parameter. In the [MeasureScope] `measurePolicy` [MeasurePolicy] lambda argument we accept
  * the [List] of [Measurable] passed the lambda in our variable `measurables` and the [Constraints]
  * passed the lambda in our variable `constraints`. We use [check] to make sure that the [List.size]
  * of `measurables` is `1` (throwing [IllegalStateException] if it is not). Then we initialize our
@@ -646,15 +646,15 @@ private fun Image(
  * `fraction` argument our [Float] variable `collapseFraction` linearly interpolating between them.
  *
  * We initialize our [Placeable] variable `val imagePlaceable` to the value returned by the
- * [Measurable.measure] method of the [Measurable] in the `0` index of our [List] of [Measurable]
+ * [Measurable.measure] method of the [Measurable] at the `0` index of our [List] of [Measurable]
  * variable `measurables` with its [Constraints] `constraints` argument a [Constraints.fixed] whose
  * `width` and `height` arguments are `imageWidth`. We initialize our [Int] variable `val imageY` to
- * the value returned by [lerp] whose `start` argument is [MinTitleOffset] and whose `stop` argument
- * is [MinTitleOffset] with the `fraction` argument our [Float] variable `collapseFraction` linearly
+ * the value returned by [lerp] for a `start` argument of [MinTitleOffset] and a `stop` argument
+ * of [MinTitleOffset] with the `fraction` argument our [Float] variable `collapseFraction` linearly
  * interpolating between them. We initialize our [Int] variable `val imageX` to the value returned by
- * [lerp] for the `start` argument the [Constraints.maxWidth] of our [Constraints] variable
+ * [lerp] for the `start` argument of [Constraints.maxWidth] of our [Constraints] variable
  * `constraints` minus `imageWidth` all divided by `2` (this centers our [Placeable] when expanded),
- * for the `stop` argument the [Constraints.maxWidth] of our [Constraints] variable `constraints`
+ * for the `stop` argument of [Constraints.maxWidth] of our [Constraints] variable `constraints`
  * minus `imageWidth` (right aligns when collapsed), and the `fraction` argument our [Float] variable
  * `collapseFraction` interpolating between them.
  *
@@ -716,9 +716,9 @@ private fun CollapsingImageLayout(
  * and a [JetsnackButton] to add the snack to the cart.
  *
  * We start by initializing and remembering our [MutableIntState] wrapped [Int] variables `count`
- * and `updateCount` using destructuring declaration to the value of the [MutableIntState] wrapped
- * wrapped [Int] and a lambda that updates the [MutableIntState] wrapped [Int] variable (the initial
- * value is `1`).
+ * and lambda variable `updateCount` using a destructuring declaration to the value of a
+ * [MutableIntState] wrapped wrapped [Int] and a lambda that updates the [MutableIntState] wrapped
+ * [Int] variable (the initial value is `1`).
  *
  * Our root composable is a [JetsnackSurface] whose `modifier` argument is our [Modifier] parameter
  * [modifier]. Inside the [JetsnackSurface] `content` composable lambda argument we compose a [Row]

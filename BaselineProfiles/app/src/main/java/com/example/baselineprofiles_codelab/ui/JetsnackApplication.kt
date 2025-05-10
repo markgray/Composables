@@ -45,9 +45,9 @@ class JetsnackApplication : Application() {
      * It simulates a blocking initialization task using `runBlocking` and `delay`.
      */
     private fun initializeLibrary() {
-        trace("Custom library init") {
+        trace(sectionName = "Custom library init") {
             runBlocking {
-                delay(50)
+                delay(timeMillis = 50)
             }
         }
     }
