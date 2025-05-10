@@ -19,7 +19,9 @@ package com.example.baselineprofiles_codelab.ui
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.SnackbarData
 import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -40,6 +42,12 @@ import com.example.baselineprofiles_codelab.ui.home.addHomeGraph
 import com.example.baselineprofiles_codelab.ui.snackdetail.SnackDetail
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 
+/**
+ * This is the main composable for the Jetsnack app, defining the overall structure
+ * including the bottom bar, snackbar, and navigation.
+ *
+ * TODO: Continue here.
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun JetsnackMain() {
@@ -59,11 +67,13 @@ fun JetsnackMain() {
                     )
                 }
             },
-            snackbarHost = {
+            snackbarHost = { snackbarHostState: SnackbarHostState ->
                 SnackbarHost(
-                    hostState = it,
+                    hostState = snackbarHostState,
                     modifier = Modifier.systemBarsPadding(),
-                    snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
+                    snackbar = { snackbarData: SnackbarData ->
+                        JetsnackSnackbar(snackbarData = snackbarData)
+                    }
                 )
             },
             scaffoldState = appState.scaffoldState
