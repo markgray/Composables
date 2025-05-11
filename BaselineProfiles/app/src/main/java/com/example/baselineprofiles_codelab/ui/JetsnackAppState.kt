@@ -59,7 +59,7 @@ object MainDestinations {
 /**
  * Remembers and creates an instance of [JetsnackAppState].
  *
- * @param scaffoldState State of the [JetsnackScaffold].
+ * @param scaffoldState [ScaffoldState] of the [JetsnackScaffold].
  * @param navController [NavHostController] associated with the [NavHost] used in [JetsnackMain]
  * @param snackbarManager [SnackbarManager] used by the [JetsnackScaffold], defaults to the
  * singleton instance [SnackbarManager].
@@ -96,7 +96,7 @@ fun rememberJetsnackAppState(
  * for the [String] whose resource ID is the [Message.messageId] of `message`. Then we call the
  * [SnackbarHostState.showSnackbar] method of the [ScaffoldState.snackbarHostState] of the
  * [ScaffoldState] property [scaffoldState] to show the snackbar with its `message` the result of
- * converting `test` to a [String]. After that we call the [SnackbarManager.setMessageShown] method
+ * converting `text` to a [String]. After that we call the [SnackbarManager.setMessageShown] method
  * of the [SnackbarManager] property [snackbarManager] to notify the [SnackbarManager] that the
  * message with the [Message.id] of `message` has been shown.
  *
@@ -149,8 +149,8 @@ class JetsnackAppState(
 
     /**
      * Whether the bottom bar should be shown. Reading this attribute will cause recompositions when
-     * the bottom bar needs shown, or not. Not all routes need to show the bottom bar, only those
-     * in [bottomBarRoutes].
+     * the bottom bar needs to be shown, or not shown. Not all routes need to show the bottom bar,
+     * only those in [bottomBarRoutes].
      */
     val shouldShowBottomBar: Boolean
         @Composable get() = navController
@@ -178,15 +178,16 @@ class JetsnackAppState(
     }
 
     /**
-     * Navigate one the bottom bar routes. If the destination [route] is equal to the current route
-     * we return having done nothing. Otherwise we call the [NavHostController.navigate] method of
-     * our [NavHostController] property [navController] passing the [route] as the destination. In
-     * the [NavOptionsBuilder] `builder` lambda argument we set the [NavOptionsBuilder.launchSingleTop]
-     * flag to `true` to avoid building up a large stack of destinations on the back stack as you
-     * select items, and set the [NavOptionsBuilder.restoreState] flag to `true` to restore the state
-     * of the previously selected destination, and call the [NavOptionsBuilder.popUpTo] method to
-     * pop up to the start destination of the graph and save state. This makes going back
-     * to the start destination happen when pressing back in any other bottom tab.
+     * Navigate to one the bottom bar routes. If the destination [route] is equal to the current
+     * route we return having done nothing. Otherwise we call the [NavHostController.navigate]
+     * method of our [NavHostController] property [navController] passing the [route] as the
+     * destination `route`. In the [NavOptionsBuilder] `builder` lambda argument we set the
+     * [NavOptionsBuilder.launchSingleTop] flag to `true` to avoid building up a large stack of
+     * destinations on the back stack as you select items, and set the [NavOptionsBuilder.restoreState]
+     * flag to `true` to restore the state of the previously selected destination, and call the
+     * [NavOptionsBuilder.popUpTo] method to pop up to the start destination of the graph and save
+     * state. This makes going back to the start destination happen when pressing back in any bottom
+     * tab navigated to using this method.
      *
      * @param route The route of the destination to navigate to.
      */
