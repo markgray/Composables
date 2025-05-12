@@ -61,11 +61,11 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
  *  - `modifier`: is a [Modifier.semantics] in whose [SemanticsPropertyReceiver] `properties` lambda
  *  argument we set the [SemanticsPropertyReceiver.testTagsAsResourceId] property to `true` (this
  *  Allows us to use testTag() for UiAutomator resource-id).
- *  - `bottomBar`: if the [JetsnackAppState.shouldShowBottomBar] property of `appState` is `true` we
- *  compose a [JetsnackBottomBar] whose `tabs` argument is the [JetsnackAppState.bottomBarTabs]
- *  property of `appState`, `currentRoute` argument is the [JetsnackAppState.currentRoute] property
- *  of `appState`, and `navigateToRoute` argument is the [JetsnackAppState.navigateToBottomBarRoute]
- *  function reference of `appState`.
+ *  - `bottomBar`: is a lambda in which if the [JetsnackAppState.shouldShowBottomBar] property of
+ *  `appState` is `true` we compose a [JetsnackBottomBar] whose `tabs` argument is the
+ *  [JetsnackAppState.bottomBarTabs] property of `appState`, `currentRoute` argument is the
+ *  [JetsnackAppState.currentRoute] property of `appState`, and `navigateToRoute` argument is the
+ *  [JetsnackAppState.navigateToBottomBarRoute] function reference of `appState`.
  *  - `snackbarHost`: is a lambda which accepts the [SnackbarHostState] passed the lambda in variable
  *  `snackbarHostState` and composes a [SnackbarHost] whose `hostState` argument is `snackbarHostState`,
  *  whose `modifier` argument is [Modifier.systemBarsPadding] to add padding to accommodate the
@@ -143,26 +143,26 @@ fun JetsnackMain() {
  *  which takes a snack ID as a long argument. The [SnackDetail] composable is displayed for this
  *  destination, and the provided [upPress] lambda is used to handle back navigation.
  *
- * First we call [NavGraphBuilder.navigation] whose `route` argument is [MainDestinations.HOME_ROUTE]
- * and whose `startDestination` argument is the [HomeSections.route] of [HomeSections.FEED]. In its
- * [NavGraphBuilder] `builder` composable lambda argument we call [addHomeGraph] whose `onSnackSelected`
- * argument is our lambda parameter [onSnackSelected].
+ * First we call the [NavGraphBuilder.navigation] method with its `route` argument
+ * [MainDestinations.HOME_ROUTE] and with its `startDestination` argument is the [HomeSections.route]
+ * of [HomeSections.FEED]. In its [NavGraphBuilder] `builder` composable lambda argument we call
+ * [addHomeGraph] with its `onSnackSelected` argument our lambda parameter [onSnackSelected].
  *
- * Then we call [NavGraphBuilder.composable] whose `route` argument is the string formed by
- * concatenating the [MainDestinations.SNACK_DETAIL_ROUTE] string with the
- * [MainDestinations.SNACK_ID_KEY], and whose `arguments` argument is a [List] of [navArgument]
- * whose `name` argument is [MainDestinations.SNACK_ID_KEY] and whose [NavArgumentBuilder.type]
- * is [NavType.LongType]. In the [AnimatedContentScope] lambda argument we accept the
- * [NavBackStackEntry] passed the lambda in variable `backStackEntry` initalize our [Bundle] variable
- * `arguments` to the [NavBackStackEntry.arguments] property of `backStackEntry`, and initialize
- * our [Long] variable `snackId` to the value returned by the [Bundle.getLong] method for the
- * key [MainDestinations.SNACK_ID_KEY] of `arguments`. Then we compose a [SnackDetail] composable
- * whose `snackId` argument is `snackId` and whose `upPress` argument is our [upPress] lambda
- * parameter.
+ * Then we call the [NavGraphBuilder.composable] method with its `route` argument is the string
+ * formed by concatenating the [MainDestinations.SNACK_DETAIL_ROUTE] string with the string
+ * [MainDestinations.SNACK_ID_KEY], and with its `arguments` argument a [List] of a single
+ * [navArgument] whose `name` argument is [MainDestinations.SNACK_ID_KEY] and whose
+ * [NavArgumentBuilder.type] is [NavType.LongType]. In its [AnimatedContentScope] lambda argument we
+ * accept the [NavBackStackEntry] passed the lambda in variable `backStackEntry`, initalize our
+ * [Bundle] variable `arguments` to the [NavBackStackEntry.arguments] property of `backStackEntry`,
+ * and initialize our [Long] variable `snackId` to the value returned by the [Bundle.getLong] method
+ * for the key [MainDestinations.SNACK_ID_KEY] of `arguments`. Then we compose a [SnackDetail]
+ * composable whose `snackId` argument is `snackId` and whose `upPress` argument is our [upPress]
+ * lambda parameter.
  *
- * @param onSnackSelected Lambda function invoked when a snack is selected, providing the snack ID
- * and the [NavBackStackEntry]. This is used to navigate to the snack detail screen to display the
- * [Snack] whose [Snack.id] is equal to the [Long] argument `snackId`.
+ * @param onSnackSelected Lambda function to be invoked when a snack is selected, providing it the
+ * snack ID and the [NavBackStackEntry]. This is used to navigate to the snack detail screen to
+ * display the [Snack] whose [Snack.id] is equal to the [Long] argument `snackId`.
  * @param upPress Lambda function invoked when the "up" action is triggered (e.g., back button
  * on the snack detail screen).
  */
