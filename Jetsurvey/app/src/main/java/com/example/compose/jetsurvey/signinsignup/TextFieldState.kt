@@ -18,6 +18,7 @@ package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.setValue
 
@@ -26,6 +27,7 @@ open class TextFieldState(
     private val errorFor: (String) -> String = { "" }
 ) {
     var text: String by mutableStateOf("")
+
     // was the TextField ever focused
     var isFocusedDirty: Boolean by mutableStateOf(false)
     var isFocused: Boolean by mutableStateOf(false)
@@ -46,7 +48,7 @@ open class TextFieldState(
         }
     }
 
-    fun showErrors() = !isValid && displayErrors
+    fun showErrors(): Boolean = !isValid && displayErrors
 
     open fun getError(): String? {
         return if (showErrors()) {
@@ -57,12 +59,24 @@ open class TextFieldState(
     }
 }
 
-fun textFieldStateSaver(state: TextFieldState) = listSaver<TextFieldState, Any>(
-    save = { listOf(it.text, it.isFocusedDirty) },
-    restore = {
-        state.apply {
-            text = it[0] as String
-            isFocusedDirty = it[1] as Boolean
+/**
+ * Custom Saver for [TextFieldState].
+ *
+ * This saver is used to save and restore the state of a [TextFieldState] instance
+ * across configuration changes or process death. It saves the `text` and `isFocusedDirty`
+ * properties of the [TextFieldState].
+ *
+ * @param state The [TextFieldState] instance to save and restore. This is used as the
+ * target object to restore the saved values into.
+ * @return A [Saver] that can save and restore a [TextFieldState].
+ */
+fun textFieldStateSaver(state: TextFieldState): Saver<TextFieldState, Any> =
+    listSaver<TextFieldState, Any>(
+        save = { listOf(it.text, it.isFocusedDirty) },
+        restore = {
+            state.apply {
+                text = it[0] as String
+                isFocusedDirty = it[1] as Boolean
+            }
         }
-    }
-)
+    )

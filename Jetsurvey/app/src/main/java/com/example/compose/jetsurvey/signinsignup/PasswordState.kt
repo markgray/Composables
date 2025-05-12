@@ -16,11 +16,18 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
+/**
+ * State for the password text field, using password validation. It is a subclass of [TextFieldState]
+ * with its `validator` our [isPasswordValid] method, and its `errorFor` our [passwordValidationError]
+ * method.
+ *
+ * TODO: CONTINUE HERE.
+ */
 class PasswordState :
     TextFieldState(validator = ::isPasswordValid, errorFor = ::passwordValidationError)
 
 class ConfirmPasswordState(private val passwordState: PasswordState) : TextFieldState() {
-    override val isValid
+    override val isValid: Boolean
         get() = passwordAndConfirmationValid(passwordState.text, text)
 
     override fun getError(): String? {
@@ -40,7 +47,7 @@ private fun isPasswordValid(password: String): Boolean {
     return password.length > 3
 }
 
-@Suppress("UNUSED_PARAMETER")
+@Suppress("UNUSED_PARAMETER", "unused")
 private fun passwordValidationError(password: String): String {
     return "Invalid password"
 }

@@ -16,11 +16,19 @@
 
 package com.example.compose.jetsurvey.signinsignup
 
+import androidx.compose.runtime.saveable.Saver
 import java.util.regex.Pattern
 
-// Consider an email valid if there's some text before and after a "@"
-private const val EMAIL_VALIDATION_REGEX = "^(.+)@(.+)\$"
+/**
+ * Consider an email valid if there's some text before and after a "@"
+ */
+private const val EMAIL_VALIDATION_REGEX = "^(.+)@(.+)$"
 
+/**
+ * State for the email text field.
+ *
+ * @param email initial value for the text field.
+ */
 class EmailState(val email: String? = null) :
     TextFieldState(validator = ::isEmailValid, errorFor = ::emailValidationError) {
     init {
@@ -31,14 +39,30 @@ class EmailState(val email: String? = null) :
 }
 
 /**
- * Returns an error to be displayed or null if no error was found
+ * Returns an error to be displayed or null if no error was found.
+ *
+ * @param email [String] to flag as an invalid email.
+ * @return [String] error message.
  */
 private fun emailValidationError(email: String): String {
     return "Invalid email: $email"
 }
 
+/**
+ * Returns true if the email is valid, false otherwise. A valid email is considered to be any string
+ * that matches the [EMAIL_VALIDATION_REGEX], ie. any [String] that contains an "@" separating two
+ * [String]s.
+ *
+ * @param email The email string to validate.
+ * @return True if the email is valid, false otherwise.
+ */
 private fun isEmailValid(email: String): Boolean {
     return Pattern.matches(EMAIL_VALIDATION_REGEX, email)
 }
 
-val EmailStateSaver = textFieldStateSaver(EmailState())
+/**
+ * The EmailStateSaver object. A [Saver] is used to save and restore the state of this subclass of
+ * [TextFieldState] across configuration changes or process death. It saves the text and
+ * [TextFieldState.isFocusedDirty] properties of the [TextFieldState].
+ */
+val EmailStateSaver: Saver<TextFieldState, Any> = textFieldStateSaver(state = EmailState())
