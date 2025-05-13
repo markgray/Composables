@@ -18,8 +18,8 @@ package com.example.compose.jetsurvey.signinsignup
 
 /**
  * State for the password text field, using password validation. It is a subclass of [TextFieldState]
- * with its `validator` our [isPasswordValid] method, and its `errorFor` our [passwordValidationError]
- * method.
+ * with its [TextFieldState.validator] method our [isPasswordValid] method, and its
+ * [TextFieldState.errorFor] method our [passwordValidationError] method.
  *
  * TODO: CONTINUE HERE.
  */

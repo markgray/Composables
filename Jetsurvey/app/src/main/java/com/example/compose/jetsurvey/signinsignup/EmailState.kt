@@ -25,7 +25,9 @@ import java.util.regex.Pattern
 private const val EMAIL_VALIDATION_REGEX = "^(.+)@(.+)$"
 
 /**
- * State for the email text field.
+ * State for the email text field. It is a subclass of [TextFieldState] with its
+ * [TextFieldState.validator] method our [isEmailValid] method, and its [TextFieldState.errorFor]
+ * method our [emailValidationError] method.
  *
  * @param email initial value for the text field.
  */
@@ -39,7 +41,7 @@ class EmailState(val email: String? = null) :
 }
 
 /**
- * Returns an error to be displayed or null if no error was found.
+ * Returns an error message to be displayed when an error is found.
  *
  * @param email [String] to flag as an invalid email.
  * @return [String] error message.
@@ -49,20 +51,20 @@ private fun emailValidationError(email: String): String {
 }
 
 /**
- * Returns true if the email is valid, false otherwise. A valid email is considered to be any string
- * that matches the [EMAIL_VALIDATION_REGEX], ie. any [String] that contains an "@" separating two
- * [String]s.
+ * Returns `true` if the email is valid, `false` otherwise. A valid email is considered to be any
+ * [String] that matches the [EMAIL_VALIDATION_REGEX] regular expression, ie. any [String] that
+ * contains an "@" separating two [String]s containing one or more characters.
  *
  * @param email The email string to validate.
- * @return True if the email is valid, false otherwise.
+ * @return `true` if the email is valid, `false` otherwise.
  */
 private fun isEmailValid(email: String): Boolean {
     return Pattern.matches(EMAIL_VALIDATION_REGEX, email)
 }
 
 /**
- * The EmailStateSaver object. A [Saver] is used to save and restore the state of this subclass of
- * [TextFieldState] across configuration changes or process death. It saves the text and
- * [TextFieldState.isFocusedDirty] properties of the [TextFieldState].
+ * This EmailStateSaver object is a [Saver] that is used to save and restore the state of this
+ * subclass of [TextFieldState] across configuration changes or process death. It saves the text
+ * and [TextFieldState.isFocusedDirty] properties of the [TextFieldState].
  */
 val EmailStateSaver: Saver<TextFieldState, Any> = textFieldStateSaver(state = EmailState())
