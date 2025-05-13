@@ -19,7 +19,11 @@ package com.example.compose.jetsurvey.signinsignup
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +34,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -50,8 +55,62 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.util.supportWideScreen
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Sign in screen. We start by initializing and remembering our [SnackbarHostState] variable
+ * `snackbarHostState` to a new instance, initializing and remembering our [CoroutineScope]
+ * variable `scope` to a new instance, initializing our [String] variable `snackbarErrorText`
+ * with the [String] whose resource ID is `R.string.feature_not_available` ("Feature not available")
+ * and initializing our [String] variable `snackbarActionLabel` with the [String] whose resource
+ * ID is `R.string.dismiss` ("Dismiss").
+ *
+ * Then we compose the [Scaffold] composable with the following arguments:
+ *  - `topBar`: The top app bar of the screen, which is a [SignInSignUpTopAppBar] composable whose
+ *  `topAppBarText` argument is the [String] whose resource ID is `R.string.sign_in` ("Sign in")`,
+ *  and whose `onNavUp` argument our [onNavUp] lambda parameter.
+ *  - `content`: The content of the screen is a composable lambda that accepts the [PaddingValues]
+ *  passed the lambda in variable `contentPadding`.
+ *
+ * We then compose the [SignInSignUpScreen] composable in the `content` argument of the [Scaffold]
+ * with the following arguments:
+ *  - `modifier`: is a [Modifier.supportWideScreen].
+ *  - `contentPadding`: is the [PaddingValues] passed in variable `contentPadding`.
+ *  - `onSignInAsGuest`: is our [onSignInAsGuest] lambda parameter.
+ *
+ * In the `content` composable lambda argument of the [SignInSignUpScreen] we compose a [Column]
+ * whose `modifier` argument is a [Modifier.fillMaxWidth]. In the [ColumnScope] `content` composable
+ * lambda argument of the [Column] we compose:
+ *
+ * **First** a [SignInContent] composable whose `email` argument is our [String] parameter [email],
+ * and whose `onSignInSubmitted` argument is our [onSignInSubmitted] lambda parameter.
+ *
+ * **Second** a [Spacer] whose `modifier` argument is a [Modifier.height] with a `height` of 16.dp.
+ *
+ * **Third** a [TextButton] whose `onClick` argument is a lambda that uses our [CoroutineScope]
+ * variable `scope` to launch a coroutine in which it calls the [SnackbarHostState.showSnackbar]
+ * method of our [SnackbarHostState] variable `snackbarHostState` with the following arguments:
+ *  - `message`: is our [String] variable `snackbarErrorText` ("Feature not available")
+ *  - `actionLabel`: is our [String] variable `snackbarActionLabel` ("Dismiss")
+ *
+ * The `modifier` argument of the [TextButton] is a [Modifier.fillMaxWidth], and in the [RowScope]
+ * `content` composable lambda argument of the [TextButton] we compose a [Text] whose `text` is
+ * the [String] whose resource ID is `R.string.forgot_password` ("Forgot password?")
+ *
+ * Below that we compose a [Box] whose `modifier` argument is a [Modifier.fillMaxSize].
+ * In the [BoxScope] `content` composable lambda argument of the [Box] we compose a [ErrorSnackbar]
+ * composable whose `snackbarHostState` argument is our [SnackbarHostState] variable `snackbarHostState`,
+ * and whose `onDismiss` argument is a lambda that calls the [SnackbarData.dismiss] method of the
+ * [SnackbarHostState.currentSnackbarData] property of our [SnackbarHostState] variable
+ * `snackbarHostState`. The `modifier` argument of the [ErrorSnackbar] is a [BoxScope.align] whose
+ * `alignment` is [Alignment.BottomCenter]. TODO: CONTINUE HERE
+ *
+ * @param email Email to pre-fill the email field with.
+ * @param onSignInSubmitted Callback to be invoked when the sign in form is submitted.
+ * @param onSignInAsGuest Callback to be invoked when the "Sign in as guest" button is clicked.
+ * @param onNavUp Callback to be invoked when the "Up" button in the top app bar is clicked.
+ */
 @Composable
 fun SignInScreen(
     email: String?,
@@ -60,11 +119,11 @@ fun SignInScreen(
     onNavUp: () -> Unit,
 ) {
 
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+    val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+    val scope: CoroutineScope = rememberCoroutineScope()
 
-    val snackbarErrorText = stringResource(id = R.string.feature_not_available)
-    val snackbarActionLabel = stringResource(id = R.string.dismiss)
+    val snackbarErrorText: String = stringResource(id = R.string.feature_not_available)
+    val snackbarActionLabel: String = stringResource(id = R.string.dismiss)
 
     Scaffold(
         topBar = {
@@ -73,7 +132,7 @@ fun SignInScreen(
                 onNavUp = onNavUp,
             )
         },
-        content = { contentPadding ->
+        content = { contentPadding: PaddingValues ->
             SignInSignUpScreen(
                 modifier = Modifier.supportWideScreen(),
                 contentPadding = contentPadding,
@@ -84,7 +143,7 @@ fun SignInScreen(
                         email = email,
                         onSignInSubmitted = onSignInSubmitted,
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(height = 16.dp))
                     TextButton(
                         onClick = {
                             scope.launch {
@@ -107,7 +166,7 @@ fun SignInScreen(
         ErrorSnackbar(
             snackbarHostState = snackbarHostState,
             onDismiss = { snackbarHostState.currentSnackbarData?.dismiss() },
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(alignment = Alignment.BottomCenter)
         )
     }
 }
@@ -118,17 +177,20 @@ fun SignInContent(
     onSignInSubmitted: (email: String, password: String) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        val focusRequester = remember { FocusRequester() }
-        val emailState by rememberSaveable(stateSaver = EmailStateSaver) {
+        val focusRequester: FocusRequester = remember { FocusRequester() }
+        val emailState: TextFieldState by rememberSaveable(
+            inputs = arrayOf(email),
+            stateSaver = EmailStateSaver
+        ) {
             mutableStateOf(EmailState(email))
         }
-        Email(emailState, onImeAction = { focusRequester.requestFocus() })
+        Email(emailState = emailState, onImeAction = { focusRequester.requestFocus() })
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
 
-        val passwordState = remember { PasswordState() }
+        val passwordState: PasswordState = remember { PasswordState() }
 
-        val onSubmit = {
+        val onSubmit: () -> Unit = {
             if (emailState.isValid && passwordState.isValid) {
                 onSignInSubmitted(emailState.text, passwordState.text)
             }
@@ -136,10 +198,10 @@ fun SignInContent(
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
-            modifier = Modifier.focusRequester(focusRequester),
+            modifier = Modifier.focusRequester(focusRequester = focusRequester),
             onImeAction = { onSubmit() }
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
         Button(
             onClick = { onSubmit() },
             modifier = Modifier
@@ -162,9 +224,9 @@ fun ErrorSnackbar(
 ) {
     SnackbarHost(
         hostState = snackbarHostState,
-        snackbar = { data ->
+        snackbar = { data: SnackbarData ->
             Snackbar(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(all = 16.dp),
                 content = {
                     Text(
                         text = data.visuals.message,
@@ -185,10 +247,15 @@ fun ErrorSnackbar(
         },
         modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight(Alignment.Bottom)
+            .wrapContentHeight(align = Alignment.Bottom)
     )
 }
 
+/**
+ * Two previews of [SignInScreen]:
+ *  - One with the light theme
+ *  - One with the dark theme
+ */
 @Preview(name = "Sign in light theme", uiMode = UI_MODE_NIGHT_NO)
 @Preview(name = "Sign in dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Composable
