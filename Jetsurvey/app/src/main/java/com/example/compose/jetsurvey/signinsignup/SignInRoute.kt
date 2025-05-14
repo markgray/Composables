@@ -29,9 +29,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
  *   - `onNavUp`: The lambda to execute when navigating up.
  *
  * @param email The pre-filled email address for the sign-in form, if any.
- * @param onSignInSubmitted The action to perform when the sign-in form is submitted successfully.
- * @param onSignInAsGuest The action to perform when the "Sign In as Guest" button is clicked.
- * @param onNavUp The action to perform when navigating up.
+ * @param onSignInSubmitted The action to perform when the sign-in form is submitted successfully,
+ * is a lambda which accepts the first [String] passed it in variable `email` and the second [String]
+ * passed it in variable `password` then calls the [SignInViewModel.signIn] method of [SignInViewModel]
+ * variable `signInViewModel` with its `email` argument the `email` variable, its `password` argument
+ * the `password`  variable, and its `onSignInComplete` argument our [onSignInSubmitted] lambda
+ * parameter.
+ * @param onSignInAsGuest The action to perform when the "Sign In as Guest" button is clicked, is a
+ * lambda that calls the [SignInViewModel.signInAsGuest] method of [SignInViewModel] variable
+ * `signInViewModel` with its `onSignInComplete` argument our [onSignInAsGuest] lambda parameter.
+ * @param onNavUp The action to perform when navigating up is our [onNavUp] lambda parameter.
  */
 @Composable
 fun SignInRoute(

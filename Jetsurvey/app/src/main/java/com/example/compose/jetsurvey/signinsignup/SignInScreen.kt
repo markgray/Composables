@@ -66,12 +66,12 @@ import kotlinx.coroutines.launch
  * and initializing our [String] variable `snackbarActionLabel` with the [String] whose resource
  * ID is `R.string.dismiss` ("Dismiss").
  *
- * Then we compose the [Scaffold] composable with the following arguments:
+ * Then we compose a [Scaffold] composable with the following arguments:
  *  - `topBar`: The top app bar of the screen, which is a [SignInSignUpTopAppBar] composable whose
  *  `topAppBarText` argument is the [String] whose resource ID is `R.string.sign_in` ("Sign in")`,
- *  and whose `onNavUp` argument our [onNavUp] lambda parameter.
- *  - `content`: The content of the screen is a composable lambda that accepts the [PaddingValues]
- *  passed the lambda in variable `contentPadding`.
+ *  and whose `onNavUp` argument is our [onNavUp] lambda parameter.
+ *  - `content`: The content composable lambda argument of the [Scaffold] is a composable lambda that
+ *  accepts the [PaddingValues] passed the lambda in variable `contentPadding`.
  *
  * We then compose the [SignInSignUpScreen] composable in the `content` argument of the [Scaffold]
  * with the following arguments:
