@@ -55,6 +55,7 @@ import coil.request.ImageRequest
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.QuestionWrapper
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
+import androidx.core.net.toUri
 
 @Composable
 fun PhotoQuestion(
@@ -70,12 +71,12 @@ fun PhotoQuestion(
     } else {
         Icons.Filled.AddAPhoto
     }
-    var newImageUri: Uri? = null
+    var newImageUri: Uri? = getNewImageUri()
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
-        onResult = { success ->
-            if (success) {
+        onResult = { success: Boolean ->
+            if (success) { // TODO: Figure out why the photo is not showing up
                 onPhotoTaken(newImageUri!!)
             }
         }
@@ -89,7 +90,7 @@ fun PhotoQuestion(
         OutlinedButton(
             onClick = {
                 newImageUri = getNewImageUri()
-                cameraLauncher.launch(newImageUri!!)
+                cameraLauncher.launch(newImageUri)
             },
             shape = MaterialTheme.shapes.small,
             contentPadding = PaddingValues()
@@ -164,7 +165,7 @@ fun PhotoQuestionPreview() {
         Surface {
             PhotoQuestion(
                 titleResourceId = R.string.selfie_skills,
-                imageUri = Uri.parse("https://example.bogus/wow"),
+                imageUri = "https://example.bogus/wow".toUri(),
                 getNewImageUri = { Uri.EMPTY },
                 onPhotoTaken = {},
                 modifier = Modifier.padding(16.dp),

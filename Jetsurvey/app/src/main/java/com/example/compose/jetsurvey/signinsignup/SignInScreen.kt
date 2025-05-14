@@ -31,25 +31,31 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
@@ -98,13 +104,13 @@ import kotlinx.coroutines.launch
  * `content` composable lambda argument of the [TextButton] we compose a [Text] whose `text` is
  * the [String] whose resource ID is `R.string.forgot_password` ("Forgot password?")
  *
- * Below that we compose a [Box] whose `modifier` argument is a [Modifier.fillMaxSize].
+ * Below the [Scaffold] we compose a [Box] whose `modifier` argument is a [Modifier.fillMaxSize].
  * In the [BoxScope] `content` composable lambda argument of the [Box] we compose a [ErrorSnackbar]
  * composable whose `snackbarHostState` argument is our [SnackbarHostState] variable `snackbarHostState`,
  * and whose `onDismiss` argument is a lambda that calls the [SnackbarData.dismiss] method of the
  * [SnackbarHostState.currentSnackbarData] property of our [SnackbarHostState] variable
  * `snackbarHostState`. The `modifier` argument of the [ErrorSnackbar] is a [BoxScope.align] whose
- * `alignment` is [Alignment.BottomCenter]. TODO: CONTINUE HERE
+ * `alignment` is [Alignment.BottomCenter]. TODO: Need to figure out how this Box is used
  *
  * @param email Email to pre-fill the email field with.
  * @param onSignInSubmitted Callback to be invoked when the sign in form is submitted.
@@ -171,6 +177,45 @@ fun SignInScreen(
     }
 }
 
+/**
+ * Sign in content. Our root composable is a [Column] whose `modifier` argument is a
+ * [Modifier.fillMaxWidth]. In its [ColumnScope] `content` composable lambda argument we start by
+ * initializing and remembering our [FocusRequester] variable `focusRequester` to a new instance,
+ * amd initializing and remembering our [TextFieldState] variable `emailState` to a new instance
+ * whose `inputs` argument is an array of our [String] parameter [email], and whose `stateSaver`
+ * argument is our [EmailStateSaver] singleton and in its `init` block we return a [MutableState]
+ * wrapped [EmailState] whose `email` argument is our [String] parameter [email].
+ *
+ * Next we compose an [Email] composable whose `emailState` argument is our [TextFieldState] variable
+ * `emailState`, and whose `onImeAction` argument is a lambda that calls the [FocusRequester.requestFocus]
+ * method of our [FocusRequester] variable `focusRequester`. And below that we comopse a [Spacer]
+ * whose `modifier` argument is a [Modifier.height] with a `height` of 16.dp.
+ *
+ * We then initialize and remember our [PasswordState] variable `passwordState` to a new instance,
+ * and initialize our lambda variable `onSubmit` with a lambda that checks if the [EmailState.isValid]
+ * property of our [TextFieldState] variable `emailState` is `true` and if the [PasswordState.isValid]
+ * property of our [PasswordState] variable `passwordState` is `true`, and if so it calls our
+ * [onSignInSubmitted] lambda parameter with the [EmailState.text] of our [TextFieldState] variable
+ * `emailState` and the [PasswordState.text] of our [PasswordState] variable `passwordState`.
+ *
+ * Next we compose a [Password] composable whose `label` argument is the [String] whose resource ID
+ * is `R.string.password` ("Password"), `passwordState` argument is our [PasswordState] variable
+ * `passwordState`, `modifier` argument is a [Modifier.focusRequester] whose `focusRequester`
+ * argument is our [FocusRequester] variable `focusRequester`, and whose `onImeAction` argument
+ * is a lambda that calls our lambda variable `onSubmit`. And below that we compose a [Spacer]
+ * whose `modifier` argument is a [Modifier.height] with a `height` of 16.dp.
+ *
+ * We then compose a [Button] composable whose `onClick` argument is a lambda that calls our
+ * lambda variable `onSubmit`, whose `modifier` argument is a [Modifier.fillMaxWidth] chained to a
+ * [Modifier.padding] whose that adds `16.dp` to each `vertical` side and the `enabled` argument of
+ * the [Button] is `true` if the [EmailState.isValid] property of our [TextFieldState] variable
+ * `emailState` is `true` and if the [PasswordState.isValid] property of our [PasswordState] variable
+ * `passwordState` is `true`. In its [RowScope] `content` composable lambda argument we compose
+ * a [Text] whose `text` argument is the [String] whose resource ID is `R.string.sign_in` ("Sign in").
+ *
+ * @param email Email to pre-fill the email field with.
+ * @param onSignInSubmitted Callback to be invoked when the sign in form is submitted.
+ */
 @Composable
 fun SignInContent(
     email: String?,
@@ -182,7 +227,7 @@ fun SignInContent(
             inputs = arrayOf(email),
             stateSaver = EmailStateSaver
         ) {
-            mutableStateOf(EmailState(email))
+            mutableStateOf(value = EmailState(email = email))
         }
         Email(emailState = emailState, onImeAction = { focusRequester.requestFocus() })
 
@@ -216,6 +261,29 @@ fun SignInContent(
     }
 }
 
+/**
+ * Shows an error snackbar. Our root composable is a [SnackbarHost] whose `hostState` argument is
+ * our [SnackbarHostState] parameter [snackbarHostState], whose `snackbar` argument is a lambda that
+ * accepts the [SnackbarData] passed the lambda in variable `data` and composes a [Snackbar] composable
+ * whose arguments are:
+ *  - `modifier`: is a [Modifier.padding] whose `all` argument is `16.dp`.
+ *  - `content`: is a lambda that composes a [Text] composable whose `text` argument is the
+ *  [SnackbarVisuals.message] of the  [SnackbarData.visuals] of the [SnackbarData] passed in
+ *  variable `data`, and whose [TextStyle] `style` is the [Typography.bodyMedium] of our custom
+ *  [MaterialTheme.typography].
+ *  - `action`: is a lambda which if the [SnackbarVisuals.actionLabel] of the [SnackbarData.visuals]
+ *  of the [SnackbarData] passed in variable `data` is not `null` composes a [TextButton] composable
+ *  whose `onClick` argument our [onDismiss] lambda parameter, and whose [RowScope] `content`
+ *  composable lambda argument is a [Text] whose `text` is the [String] whose resource ID is
+ *  `R.string.dismiss` ("Dismiss"), and whose [Color] `color` argument is the
+ *  [ColorScheme.inversePrimary] of our custom [MaterialTheme.colorScheme].
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.wrapContentHeight] whose
+ *  `align` argument is [Alignment.Bottom].
+ *
+ * @param snackbarHostState The state object that is used to manage the queue of Snackbars.
+ * @param modifier Modifier to be applied to the SnackbarHost.
+ * @param onDismiss Callback to be invoked when the dismiss action is clicked.
+ */
 @Composable
 fun ErrorSnackbar(
     snackbarHostState: SnackbarHostState,

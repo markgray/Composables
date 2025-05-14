@@ -62,6 +62,15 @@ import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 
+/**
+ * Sign in or Sign up screen content.
+ * TODO: Continue here.
+ *
+ * @param onSignInAsGuest (event) to be triggered when sign in as guest is clicked
+ * @param modifier modifier for this screen
+ * @param contentPadding padding for the content
+ * @param content (slot) the main content for this screen
+ */
 @Composable
 fun SignInSignUpScreen(
     onSignInAsGuest: () -> Unit,
@@ -236,7 +245,7 @@ fun Password(
 }
 
 /**
- * To be removed when [TextField]s support error
+ * To be removed when `TextField`s support error
  */
 @Composable
 fun TextFieldError(textError: String) {
