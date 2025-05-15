@@ -181,15 +181,16 @@ fun SignInScreen(
  * Sign in content. Our root composable is a [Column] whose `modifier` argument is a
  * [Modifier.fillMaxWidth]. In its [ColumnScope] `content` composable lambda argument we start by
  * initializing and remembering our [FocusRequester] variable `focusRequester` to a new instance,
- * amd initializing and remembering our [TextFieldState] variable `emailState` to a new instance
+ * and initializing and remembering our [TextFieldState] variable `emailState` to a new instance
  * whose `inputs` argument is an array of our [String] parameter [email], and whose `stateSaver`
  * argument is our [EmailStateSaver] singleton and in its `init` block we return a [MutableState]
  * wrapped [EmailState] whose `email` argument is our [String] parameter [email].
  *
  * Next we compose an [Email] composable whose `emailState` argument is our [TextFieldState] variable
- * `emailState`, and whose `onImeAction` argument is a lambda that calls the [FocusRequester.requestFocus]
- * method of our [FocusRequester] variable `focusRequester`. And below that we comopse a [Spacer]
- * whose `modifier` argument is a [Modifier.height] with a `height` of 16.dp.
+ * `emailState`, and whose `onImeAction` argument is a lambda that calls the
+ * [FocusRequester.requestFocus] method of our [FocusRequester] variable `focusRequester`. And below
+ * that we comopse a [Spacer] whose `modifier` argument is a [Modifier.height] with a `height` of
+ * 16.dp.
  *
  * We then initialize and remember our [PasswordState] variable `passwordState` to a new instance,
  * and initialize our lambda variable `onSubmit` with a lambda that checks if the [EmailState.isValid]
@@ -207,11 +208,12 @@ fun SignInScreen(
  *
  * We then compose a [Button] composable whose `onClick` argument is a lambda that calls our
  * lambda variable `onSubmit`, whose `modifier` argument is a [Modifier.fillMaxWidth] chained to a
- * [Modifier.padding] whose that adds `16.dp` to each `vertical` side and the `enabled` argument of
+ * [Modifier.padding] that adds `16.dp` to each `vertical` side, and the `enabled` argument of
  * the [Button] is `true` if the [EmailState.isValid] property of our [TextFieldState] variable
- * `emailState` is `true` and if the [PasswordState.isValid] property of our [PasswordState] variable
- * `passwordState` is `true`. In its [RowScope] `content` composable lambda argument we compose
- * a [Text] whose `text` argument is the [String] whose resource ID is `R.string.sign_in` ("Sign in").
+ * `emailState` is `true` and if the [PasswordState.isValid] property of our [PasswordState]
+ * variable `passwordState` is `true`. In its [RowScope] `content` composable lambda argument we
+ * compose a [Text] whose `text` argument is the [String] whose resource ID is `R.string.sign_in`
+ * ("Sign in").
  *
  * @param email Email to pre-fill the email field with.
  * @param onSignInSubmitted Callback to be invoked when the sign in form is submitted.
@@ -264,9 +266,9 @@ fun SignInContent(
 /**
  * Shows an error snackbar. Our root composable is a [SnackbarHost] whose `hostState` argument is
  * our [SnackbarHostState] parameter [snackbarHostState], whose `snackbar` argument is a lambda that
- * accepts the [SnackbarData] passed the lambda in variable `data` and composes a [Snackbar] composable
- * whose arguments are:
- *  - `modifier`: is a [Modifier.padding] whose `all` argument is `16.dp`.
+ * accepts the [SnackbarData] passed the lambda in variable `data` and composes a [Snackbar]
+ * composable whose arguments are:
+ *  - `modifier`: is a [Modifier.padding] that adds `16.dp` to `all` sides.
  *  - `content`: is a lambda that composes a [Text] composable whose `text` argument is the
  *  [SnackbarVisuals.message] of the  [SnackbarData.visuals] of the [SnackbarData] passed in
  *  variable `data`, and whose [TextStyle] `style` is the [Typography.bodyMedium] of our custom
@@ -274,7 +276,7 @@ fun SignInContent(
  *  - `action`: is a lambda which if the [SnackbarVisuals.actionLabel] of the [SnackbarData.visuals]
  *  of the [SnackbarData] passed in variable `data` is not `null` composes a [TextButton] composable
  *  whose `onClick` argument our [onDismiss] lambda parameter, and whose [RowScope] `content`
- *  composable lambda argument is a [Text] whose `text` is the [String] whose resource ID is
+ *  composable lambda argument is a [Text] whose `text` is the [String] with resource ID
  *  `R.string.dismiss` ("Dismiss"), and whose [Color] `color` argument is the
  *  [ColorScheme.inversePrimary] of our custom [MaterialTheme.colorScheme].
  *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.wrapContentHeight] whose
