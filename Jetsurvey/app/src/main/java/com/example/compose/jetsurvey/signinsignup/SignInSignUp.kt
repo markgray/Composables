@@ -17,6 +17,7 @@
 package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,8 @@ import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -36,6 +39,7 @@ import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,13 +48,18 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -63,8 +72,23 @@ import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 
 /**
- * Sign in or Sign up screen content.
- * TODO: Continue here.
+ * Sign in or Sign up screen content. Our root composable is a [LazyColumn] whose `modifier` argument
+ * is our [Modifier] parameter `modifier`, and whose `contentPadding` argument is our [PaddingValues]
+ * parameter [contentPadding]. In the [LazyListScope] `content` composable lambda argument we compose
+ * an [LazyListScope.item], and in its [LazyItemScope] `content` composable lambda argument we compose
+ * the following:
+ *
+ * **First** a [Spacer] whose `modifier` argument is a [Modifier.height] with a `height` of 44.dp.
+ *
+ * **Second** a [Box] whose `modifier` argument is a [Modifier.fillMaxWidth], chained to a
+ * [Modifier.padding] that adds `44.dp` to each `horizontal` side. In the [BoxScope] `content`
+ * composable lambda argument we compose our [content] lambda parameter.
+ *
+ * **Third** a [Spacer] whose `modifier` argument is a [Modifier.height] with a `height` of 16.dp.
+ *
+ * **Fourth** a [OrSignInAsGuest] composable whose `onSignInAsGuest` argument is our [onSignInAsGuest]
+ * lambda parameter, and whose `modifier` argument is a [Modifier.fillMaxWidth], chained to a
+ * [Modifier.padding] that adds `20.dp` to each `horizontal` side.
  *
  * @param onSignInAsGuest (event) to be triggered when sign in as guest is clicked
  * @param modifier modifier for this screen
@@ -83,7 +107,7 @@ fun SignInSignUpScreen(
         contentPadding = contentPadding
     ) {
         item {
-            Spacer(modifier = Modifier.height(44.dp))
+            Spacer(modifier = Modifier.height(height = 44.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -91,7 +115,7 @@ fun SignInSignUpScreen(
             ) {
                 content()
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(height = 16.dp))
             OrSignInAsGuest(
                 onSignInAsGuest = onSignInAsGuest,
                 modifier = Modifier
@@ -102,6 +126,26 @@ fun SignInSignUpScreen(
     }
 }
 
+/**
+ * A [CenterAlignedTopAppBar] with a title, a navigation icon, and an action. Our root composable is
+ * a [CenterAlignedTopAppBar] whose `title` argument is a lambda that composes a [Text] whose `text`
+ * argument is our [String] parameter [topAppBarText], and whose `modifier` argument is a
+ * [Modifier.fillMaxSize], chained to a [Modifier.wrapContentSize] that aligns the [Text] to the 
+ * [Alignment.Center] of the [CenterAlignedTopAppBar]. The `navigationIcon` argument is a lambda that
+ * composes an [IconButton] whose `onClick` argument is a lambda that calls our [onNavUp] lambda
+ * parameter, and in the [IconButton]'s `content` composable lambda argument we compose an [Icon]
+ * whose arguments are:
+ *  - `imageVector`: is the [ImageVector] drawn by [Icons.Filled.ChevronLeft]
+ *  - `contentDescription`: is the [String] with resource ID `R.string.back` ("Back").
+ *  - `tint`: [Color] is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme].
+ *
+ * The `actions` argument of the [CenterAlignedTopAppBar] is a lambda that composes a [Spacer]
+ * whose `modifier` argument is a [Modifier.width] with a `width` of `68.dp`. (to balance the
+ * navigation icon.
+ *
+ * @param topAppBarText The text to display in the title of the top app bar.
+ * @param onNavUp The callback to be invoked when the navigation icon is clicked.
+ */
 @OptIn(ExperimentalMaterial3Api::class) // CenterAlignedTopAppBar is experimental in m3
 @Composable
 fun SignInSignUpTopAppBar(
@@ -114,7 +158,7 @@ fun SignInSignUpTopAppBar(
                 text = topAppBarText,
                 modifier = Modifier
                     .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
+                    .wrapContentSize(align = Alignment.Center)
             )
         },
         navigationIcon = {
@@ -128,11 +172,41 @@ fun SignInSignUpTopAppBar(
         },
         // We need to balance the navigation icon, so we add a spacer.
         actions = {
-            Spacer(modifier = Modifier.width(68.dp))
+            Spacer(modifier = Modifier.width(width = 68.dp))
         },
     )
 }
 
+/**
+ * This composable is an [OutlinedTextField] configured for use as an email address input field. Its
+ * `value` is the [TextFieldState.text] property of our [TextFieldState] parameter [emailState], and
+ * its `onValueChange` lambda argument sets the [TextFieldState.text] property of [emailState] to the
+ * new value. Its `label` argument is a lambda which composes a [Text] displaying the string with
+ * resource ID `R.string.email` ("Email") and its `style` argument is the [Typography.bodyMedium] of
+ * our custom  [MaterialTheme.typography]. The `modifier` argument of the [OutlinedTextField] is a
+ * [Modifier.fillMaxWidth] to make the [OutlinedTextField] take up its entire incoming width
+ * constraint, with an [Modifier.onFocusChanged] chained to it whose lambda argument accepts the
+ * [FocusState] passed the lambda in variable `focusState` and calls the [TextFieldState.onFocusChange]
+ * method of [emailState] with the `isFocused` property of the [FocusState] passed the lambda as its
+ * argument. If the field is NOT focused it calls the [TextFieldState.enableShowErrors] method of
+ * [emailState]. Its `textStyle` argument is the [Typography.bodyMedium] of our custom
+ * [MaterialTheme.typography]. Its `isError` argument is the [TextFieldState.showErrors] method of
+ * [emailState]. Its `keyboardOptions` argument is a copy of [KeyboardOptions.Default] whose
+ * `imeAction` is our [ImeAction] parameter [imeAction] and whose `keyboardType` is [KeyboardType.Email].
+ * Its `keyboardActions` argument is a [KeyboardActions] whose `onDone` lambda argument is a lambda
+ * that calls our [onImeAction] parameter. Its `singleLine` argument is `true` so that the text will
+ * not wrap on multiple lines.
+ *
+ * Below this [OutlinedTextField] is an if statement which if the [TextFieldState.getError] method of
+ * [emailState] returns a non-null [String] will compose a [TextFieldError] whose `textError` argument
+ * is that [String].
+ *
+ * @param emailState the [TextFieldState] that holds the current text in the [OutlinedTextField] and
+ * any errors that it may have. We use the default `remember { EmailState() }` to create and remember
+ * a default [EmailState] if none is passed our caller.
+ * @param imeAction the [ImeAction] to be used for the keyboard.
+ * @param onImeAction lambda called when the [ImeAction] is "Done".
+ */
 @Composable
 fun Email(
     emailState: TextFieldState = remember { EmailState() },
@@ -152,8 +226,8 @@ fun Email(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .onFocusChanged { focusState ->
-                emailState.onFocusChange(focusState.isFocused)
+            .onFocusChanged { focusState: FocusState ->
+                emailState.onFocusChange(focused = focusState.isFocused)
                 if (!focusState.isFocused) {
                     emailState.enableShowErrors()
                 }
@@ -172,9 +246,32 @@ fun Email(
         singleLine = true
     )
 
-    emailState.getError()?.let { error -> TextFieldError(textError = error) }
+    emailState.getError()?.let { error: String -> TextFieldError(textError = error) }
 }
 
+/**
+ * TODO: Continue here.
+ * This composable is an [OutlinedTextField] configured for use as a password input field.
+ * It displays an icon which allows the user to toggle the visibility of the password.
+ * Its `value` is the [TextFieldState.text] property of our [TextFieldState] parameter [passwordState],
+ * and its `onValueChange` lambda argument sets the [TextFieldState.text] property of [passwordState]
+ * to the new value and calls its [TextFieldState.enableShowErrors] method. Its `modifier` argument
+ * is our [Modifier] parameter [modifier] with a [Modifier.fillMaxWidth] chained to it to make the
+ * [OutlinedTextField] occupy its entire incoming width constraint, with an [Modifier.onFocusChanged]
+ * chained to it whose lambda argument accepts the [FocusState] passed the lambda in variable `focusState`
+ * and calls the [TextFieldState.onFocusChange] method of [passwordState] with the `isFocused` property
+ * of the [FocusState] passed the lambda as its argument. If the field is NOT focused it calls the
+ * [TextFieldState.enableShowErrors] method of [passwordState]. Its `textStyle` argument is the
+ * [Typography.bodyMedium] of our custom [MaterialTheme.typography]. Its `label` argument is a
+ * lambda that composes a [Text] whose `text` is our [String] parameter [label], and whose `style`
+ * is the [Typography.bodyMedium] of our custom [MaterialTheme.typography]. The `trailingIcon` argument
+ * is a lambda that composes an [IconButton] whose `onClick` argument is a lambda which toggles the
+ * value of our [MutableState] of [Boolean] variable `showPassword` (our flag which controls whether
+ * the password text is visible or hidden with asterisks). The `content` of the [IconButton] is an
+ * [Icon]:
+ *  - If `showPassword` is `true` the `imageVector` of the [Icon] is [Icons.Filled.Visibility] (eyeball)
+ *  and its `contentDescription` is the string with resource ID [R.string.hide_password] ("Hide password").
+ */
 @Composable
 fun Password(
     label: String,
@@ -183,17 +280,17 @@ fun Password(
     imeAction: ImeAction = ImeAction.Done,
     onImeAction: () -> Unit = {}
 ) {
-    val showPassword = rememberSaveable { mutableStateOf(false) }
+    val showPassword: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
     OutlinedTextField(
         value = passwordState.text,
-        onValueChange = {
-            passwordState.text = it
+        onValueChange = { newPassword: String ->
+            passwordState.text = newPassword
             passwordState.enableShowErrors()
         },
         modifier = modifier
             .fillMaxWidth()
-            .onFocusChanged { focusState ->
-                passwordState.onFocusChange(focusState.isFocused)
+            .onFocusChanged { focusState: FocusState ->
+                passwordState.onFocusChange(focused = focusState.isFocused)
                 if (!focusState.isFocused) {
                     passwordState.enableShowErrors()
                 }
@@ -229,7 +326,7 @@ fun Password(
         },
         isError = passwordState.showErrors(),
         supportingText = {
-            passwordState.getError()?.let { error -> TextFieldError(textError = error) }
+            passwordState.getError()?.let { error: String -> TextFieldError(textError = error) }
         },
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = imeAction,
@@ -250,7 +347,7 @@ fun Password(
 @Composable
 fun TextFieldError(textError: String) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(width = 16.dp))
         Text(
             text = textError,
             modifier = Modifier.fillMaxWidth(),
@@ -285,6 +382,9 @@ fun OrSignInAsGuest(
     }
 }
 
+/**
+ * Preview of the [SignInSignUpScreen].
+ */
 @Preview
 @Composable
 fun SignInSignUpScreenPreview() {
