@@ -46,6 +46,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
@@ -81,7 +82,7 @@ import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
  * **First** a [Spacer] whose `modifier` argument is a [Modifier.height] with a `height` of 44.dp.
  *
  * **Second** a [Box] whose `modifier` argument is a [Modifier.fillMaxWidth], chained to a
- * [Modifier.padding] that adds `44.dp` to each `horizontal` side. In the [BoxScope] `content`
+ * [Modifier.padding] that adds `20.dp` to each `horizontal` side. In the [BoxScope] `content`
  * composable lambda argument we compose our [content] lambda parameter.
  *
  * **Third** a [Spacer] whose `modifier` argument is a [Modifier.height] with a `height` of 16.dp.
@@ -92,7 +93,8 @@ import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
  *
  * @param onSignInAsGuest (event) to be triggered when sign in as guest is clicked
  * @param modifier modifier for this screen
- * @param contentPadding padding for the content
+ * @param contentPadding padding for the content, this is the [PaddingValues] that the [Scaffold]
+ * passes its `content` composable lambda argument which we are composed in.
  * @param content (slot) the main content for this screen
  */
 @Composable
@@ -179,23 +181,23 @@ fun SignInSignUpTopAppBar(
 
 /**
  * This composable is an [OutlinedTextField] configured for use as an email address input field. Its
- * `value` is the [TextFieldState.text] property of our [TextFieldState] parameter [emailState], and
- * its `onValueChange` lambda argument sets the [TextFieldState.text] property of [emailState] to the
- * new value. Its `label` argument is a lambda which composes a [Text] displaying the string with
- * resource ID `R.string.email` ("Email") and its `style` argument is the [Typography.bodyMedium] of
- * our custom  [MaterialTheme.typography]. The `modifier` argument of the [OutlinedTextField] is a
- * [Modifier.fillMaxWidth] to make the [OutlinedTextField] take up its entire incoming width
- * constraint, with an [Modifier.onFocusChanged] chained to it whose lambda argument accepts the
- * [FocusState] passed the lambda in variable `focusState` and calls the [TextFieldState.onFocusChange]
- * method of [emailState] with the `isFocused` property of the [FocusState] passed the lambda as its
- * argument. If the field is NOT focused it calls the [TextFieldState.enableShowErrors] method of
- * [emailState]. Its `textStyle` argument is the [Typography.bodyMedium] of our custom
- * [MaterialTheme.typography]. Its `isError` argument is the [TextFieldState.showErrors] method of
- * [emailState]. Its `keyboardOptions` argument is a copy of [KeyboardOptions.Default] whose
- * `imeAction` is our [ImeAction] parameter [imeAction] and whose `keyboardType` is [KeyboardType.Email].
- * Its `keyboardActions` argument is a [KeyboardActions] whose `onDone` lambda argument is a lambda
- * that calls our [onImeAction] parameter. Its `singleLine` argument is `true` so that the text will
- * not wrap on multiple lines.
+ * `value` argument is the [TextFieldState.text] property of our [TextFieldState] parameter
+ * [emailState], and its `onValueChange` lambda argument sets the [TextFieldState.text] property of
+ * [emailState] to the new value. Its `label` argument is a lambda which composes a [Text] displaying
+ * the string with resource ID `R.string.email` ("Email") and its `style` argument is the
+ * [Typography.bodyMedium] of our custom  [MaterialTheme.typography]. The `modifier` argument of the
+ * [OutlinedTextField] is a [Modifier.fillMaxWidth] to make the [OutlinedTextField] take up its entire
+ * incoming width constraint, with an [Modifier.onFocusChanged] chained to it whose lambda argument
+ * accepts the [FocusState] passed the lambda in variable `focusState` and calls the
+ * [TextFieldState.onFocusChange] method of [emailState] with the `isFocused` property of the
+ * [FocusState] passed the lambda as its argument. If the field is NOT focused it calls the
+ * [TextFieldState.enableShowErrors] method of [emailState]. Its `textStyle` argument is the
+ * [Typography.bodyMedium] of our custom [MaterialTheme.typography]. Its `isError` argument is the
+ * [TextFieldState.showErrors] method of [emailState]. Its `keyboardOptions` argument is a copy of
+ * [KeyboardOptions.Default] whose `imeAction` is our [ImeAction] parameter [imeAction] and whose
+ * `keyboardType` is [KeyboardType.Email]. Its `keyboardActions` argument is a [KeyboardActions]
+ * whose `onDone` lambda argument is a lambda that calls our [onImeAction] parameter. Its
+ * `singleLine` argument is `true` so that the text will not wrap on multiple lines.
  *
  * Below this [OutlinedTextField] is an if statement which if the [TextFieldState.getError] method of
  * [emailState] returns a non-null [String] will compose a [TextFieldError] whose `textError` argument
@@ -203,7 +205,7 @@ fun SignInSignUpTopAppBar(
  *
  * @param emailState the [TextFieldState] that holds the current text in the [OutlinedTextField] and
  * any errors that it may have. We use the default `remember { EmailState() }` to create and remember
- * a default [EmailState] if none is passed our caller.
+ * a default [EmailState] if none is passed by our caller.
  * @param imeAction the [ImeAction] to be used for the keyboard.
  * @param onImeAction lambda called when the [ImeAction] is "Done".
  */
@@ -250,27 +252,35 @@ fun Email(
 }
 
 /**
- * TODO: Continue here.
  * This composable is an [OutlinedTextField] configured for use as a password input field.
  * It displays an icon which allows the user to toggle the visibility of the password.
- * Its `value` is the [TextFieldState.text] property of our [TextFieldState] parameter [passwordState],
- * and its `onValueChange` lambda argument sets the [TextFieldState.text] property of [passwordState]
+ * We start by initializing and remembering our [MutableState] wrapped variable `showPassword` to
+ * an initial value of `false`. Then our root composable is an [OutlinedTextField] whose `value`
+ * argument is the [TextFieldState.text] property of our [TextFieldState] parameter [passwordState],
+ * whose `onValueChange` lambda argument sets the [TextFieldState.text] property of [passwordState]
  * to the new value and calls its [TextFieldState.enableShowErrors] method. Its `modifier` argument
  * is our [Modifier] parameter [modifier] with a [Modifier.fillMaxWidth] chained to it to make the
- * [OutlinedTextField] occupy its entire incoming width constraint, with an [Modifier.onFocusChanged]
- * chained to it whose lambda argument accepts the [FocusState] passed the lambda in variable `focusState`
- * and calls the [TextFieldState.onFocusChange] method of [passwordState] with the `isFocused` property
- * of the [FocusState] passed the lambda as its argument. If the field is NOT focused it calls the
- * [TextFieldState.enableShowErrors] method of [passwordState]. Its `textStyle` argument is the
- * [Typography.bodyMedium] of our custom [MaterialTheme.typography]. Its `label` argument is a
- * lambda that composes a [Text] whose `text` is our [String] parameter [label], and whose `style`
- * is the [Typography.bodyMedium] of our custom [MaterialTheme.typography]. The `trailingIcon` argument
- * is a lambda that composes an [IconButton] whose `onClick` argument is a lambda which toggles the
- * value of our [MutableState] of [Boolean] variable `showPassword` (our flag which controls whether
- * the password text is visible or hidden with asterisks). The `content` of the [IconButton] is an
- * [Icon]:
- *  - If `showPassword` is `true` the `imageVector` of the [Icon] is [Icons.Filled.Visibility] (eyeball)
- *  and its `contentDescription` is the string with resource ID [R.string.hide_password] ("Hide password").
+ * [OutlinedTextField] occupy its entire incoming width constraint, with a [Modifier.onFocusChanged]
+ * chained to that whose `onFocusChanged` lambda argument accepts the [FocusState] passed the lambda
+ * in variable `focusState` and calls the [TextFieldState.onFocusChange] method of [passwordState]
+ * with the `isFocused` property of the [FocusState] passed the lambda as its argument. If the field
+ * is NOT focused it calls the [TextFieldState.enableShowErrors] method of [passwordState]. Its
+ * `textStyle` argument is the [Typography.bodyMedium] of our custom [MaterialTheme.typography]. Its
+ * `label` argument is a lambda that composes a [Text] whose `text` is our [String] parameter
+ * [label], and whose `style` argument is the [Typography.bodyMedium] of our custom
+ * [MaterialTheme.typography]. The `trailingIcon` argument is a lambda that composes an [IconButton]
+ * whose `onClick` argument is a lambda which toggles the value of our [MutableState] of [Boolean]
+ * variable `showPassword` (our flag which controls whether the password text is visible or hidden
+ * with asterisks). The `content` of the [IconButton] is an [Icon] which depends on the the current
+ * vqlue of our [MutableState] wrapped [Boolean] variable `showPassword`:
+ *  - If `showPassword` is `true` the `imageVector` of the [Icon] is [Icons.Filled.Visibility]
+ *  (eyeball) and its `contentDescription` is the string with resource ID `R.string.hide_password`
+ *  ("Hide password").
+ *  - If `showPassword` is `false` the `imageVector` of the [Icon] is [Icons.Filled.VisibilityOff]
+ *  and its `contentDescription` is the string with resource ID `R.string.show_password`
+ *  ("Show password")
+ *
+ * The `visualTransformation` argument is TODO: Continue Here.
  */
 @Composable
 fun Password(
