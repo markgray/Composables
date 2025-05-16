@@ -19,6 +19,26 @@ package com.example.compose.jetsurvey.signinsignup
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+/**
+ * Displays the sign up screen and manages UI state. We start by initializing our [SignUpViewModel]
+ * variable `signUpViewModel` with a [SignUpViewModelFactory]. Then our root composable is a
+ * [SignInSignUpScreen] whose arguments are:
+ *  - `email`: is our [String] parameter [email].
+ *  - `onSignUpSubmitted`: is a lambda that accepts the two [String]'s passed the lambda in variables
+ *  `email` and `password`, then calls the [SignUpViewModel.signUp] method of our [SignUpViewModel]
+ *  variable `signUpViewModel` with its `email` argument our `email` variable, its `password`
+ *  argument our `password` variable, and its `onSignUpComplete` argument our [onSignUpSubmitted]
+ *  lambda parameter.
+ *  - `onSignInAsGuest`: is a lambda that calls the [SignUpViewModel.signInAsGuest] method of
+ *  our [SignUpViewModel] variable `signUpViewModel` with its `onSignInComplete` argument our
+ *  [onSignInAsGuest] lambda parameter.
+ *  - `onNavUp`: is a our [onNavUp] lambda parameter.
+ *
+ * @param email (state) email to prepopulate the email field.
+ * @param onSignUpSubmitted (event) submitted with email and password.
+ * @param onSignInAsGuest (event) request to sign in as a guest.
+ * @param onNavUp (event) send when the user clicks the "up" button.
+ */
 @Composable
 fun SignUpRoute(
     email: String?,
@@ -29,11 +49,15 @@ fun SignUpRoute(
     val signUpViewModel: SignUpViewModel = viewModel(factory = SignUpViewModelFactory())
     SignUpScreen(
         email = email,
-        onSignUpSubmitted = { email, password ->
-            signUpViewModel.signUp(email, password, onSignUpSubmitted)
+        onSignUpSubmitted = { email: String, password: String ->
+            signUpViewModel.signUp(
+                email = email,
+                password = password,
+                onSignUpComplete = onSignUpSubmitted
+            )
         },
         onSignInAsGuest = {
-            signUpViewModel.signInAsGuest(onSignInAsGuest)
+            signUpViewModel.signInAsGuest(onSignInComplete = onSignInAsGuest)
         },
         onNavUp = onNavUp,
     )

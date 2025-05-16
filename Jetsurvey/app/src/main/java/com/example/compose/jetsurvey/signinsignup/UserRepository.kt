@@ -34,15 +34,16 @@ sealed class User {
 object UserRepository {
 
     private var _user: User = User.NoUserLoggedIn
+    @Suppress("unused")
     val user: User
         get() = _user
 
-    @Suppress("UNUSED_PARAMETER")
+    @Suppress("UNUSED_PARAMETER", "unused")
     fun signIn(email: String, password: String) {
         _user = User.LoggedInUser(email)
     }
 
-    @Suppress("UNUSED_PARAMETER")
+    @Suppress("UNUSED_PARAMETER", "unused")
     fun signUp(email: String, password: String) {
         _user = User.LoggedInUser(email)
     }

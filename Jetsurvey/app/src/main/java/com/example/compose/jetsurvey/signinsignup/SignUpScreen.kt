@@ -17,6 +17,8 @@
 package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +40,27 @@ import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 import com.example.compose.jetsurvey.util.supportWideScreen
 
+/**
+ * A stateful composable that provides the entire sign up screen. Our root composable is a
+ * [Scaffold] whose arguments are:
+ *  - `topBar`: is a [SignInSignUpTopAppBar] whose `topAppBarText` argument the [String] with resource
+ *  ID `R.string.create_account` ("Create account"), and whose `onNavUp` argument is our [onNavUp]
+ *  lambda parameter.
+ *  - `content`: is a lambda that accepts the [PaddingValues] passed the lambda in variable
+ *  `contentPadding` then composes a [SignInSignUpScreen] whose `onSignInAsGuest` argument is our
+ *  [onSignInAsGuest] lambda parameter, whose `contentPadding` argument is our `contentPadding`
+ *  variable, and whose `modifier` argument is a [Modifier.supportWideScreen] composable extension
+ *  function. In the [SignInSignUpScreen] `cibtebt` composable lambda argument we compose a [Column]
+ *  in whose [ColumnScope] `content` composable lambda argument we compose a [SignUpContent] whose
+ *  `email` argument is our [email] parameter, and whoe `onSignUpSubmitted` argument is our
+ *  [onSignUpSubmitted] lambda parameter.
+ *
+ * @param email (state) The email to be prefilled in the email field.
+ * @param onSignUpSubmitted (event) Event to be emitted when the user clicks the sign up button.
+ * @param onSignInAsGuest (event) Event to be emitted when the user clicks the
+ * "Sign in as guest" button.
+ * @param onNavUp (event) Event to be emitted when the user clicks the up navigation icon.
+ */
 @Composable
 fun SignUpScreen(
     email: String?,
@@ -52,7 +75,7 @@ fun SignUpScreen(
                 onNavUp = onNavUp,
             )
         },
-        content = { contentPadding ->
+        content = { contentPadding: PaddingValues ->
             SignInSignUpScreen(
                 onSignInAsGuest = onSignInAsGuest,
                 contentPadding = contentPadding,
@@ -69,44 +92,53 @@ fun SignUpScreen(
     )
 }
 
+/**
+ * The content of the sign up screen. This composable allows the user to enter an email and
+ * password. TODO: Continue here.
+ *
+ * @param email (state) The email to be prefilled in the email field.
+ * @param onSignUpSubmitted (event) Event to be emitted when the user clicks the sign up button.
+ */
 @Composable
 fun SignUpContent(
     email: String?,
     onSignUpSubmitted: (email: String, password: String) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        val passwordFocusRequest = remember { FocusRequester() }
-        val confirmationPasswordFocusRequest = remember { FocusRequester() }
-        val emailState = remember { EmailState(email) }
-        Email(emailState, onImeAction = { passwordFocusRequest.requestFocus() })
+        val passwordFocusRequest: FocusRequester = remember { FocusRequester() }
+        val confirmationPasswordFocusRequest: FocusRequester = remember { FocusRequester() }
+        val emailState: EmailState = remember { EmailState(email) }
+        Email(emailState = emailState, onImeAction = { passwordFocusRequest.requestFocus() })
 
-        Spacer(modifier = Modifier.height(16.dp))
-        val passwordState = remember { PasswordState() }
+        Spacer(modifier = Modifier.height(height = 16.dp))
+        val passwordState: PasswordState = remember { PasswordState() }
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
             imeAction = ImeAction.Next,
             onImeAction = { confirmationPasswordFocusRequest.requestFocus() },
-            modifier = Modifier.focusRequester(passwordFocusRequest)
+            modifier = Modifier.focusRequester(focusRequester = passwordFocusRequest)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-        val confirmPasswordState = remember { ConfirmPasswordState(passwordState = passwordState) }
+        Spacer(modifier = Modifier.height(height = 16.dp))
+        val confirmPasswordState: ConfirmPasswordState = remember {
+            ConfirmPasswordState(passwordState = passwordState)
+        }
         Password(
             label = stringResource(id = R.string.confirm_password),
             passwordState = confirmPasswordState,
             onImeAction = { onSignUpSubmitted(emailState.text, passwordState.text) },
-            modifier = Modifier.focusRequester(confirmationPasswordFocusRequest)
+            modifier = Modifier.focusRequester(focusRequester = confirmationPasswordFocusRequest)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
         Text(
             text = stringResource(id = R.string.terms_and_conditions),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = stronglyDeemphasizedAlpha)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
         Button(
             onClick = { onSignUpSubmitted(emailState.text, passwordState.text) },
             modifier = Modifier.fillMaxWidth(),
@@ -118,6 +150,9 @@ fun SignUpContent(
     }
 }
 
+/**
+ * Preview of the [SignUpScreen] screen.
+ */
 @Preview(widthDp = 1024)
 @Composable
 fun SignUpPreview() {

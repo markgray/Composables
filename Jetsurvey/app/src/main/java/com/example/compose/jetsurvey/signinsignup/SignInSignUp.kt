@@ -19,8 +19,10 @@ package com.example.compose.jetsurvey.signinsignup
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -280,7 +282,29 @@ fun Email(
  *  and its `contentDescription` is the string with resource ID `R.string.show_password`
  *  ("Show password")
  *
- * The `visualTransformation` argument is TODO: Continue Here.
+ * The `visualTransformation` argument (transforms the visual representation of the input value For
+ * example, you can use [PasswordVisualTransformation] to create a password text field. By default,
+ * no visual transformation is applied.) is a [VisualTransformation] which depends on the current
+ * value of our [MutableState] wrapped [Boolean] variable `showPassword`:
+ *  - If `showPassword` is `true` the `visualTransformation` is [VisualTransformation.None]
+ *  - If `showPassword` is `false` the `visualTransformation` is [PasswordVisualTransformation]
+ *
+ * The `isError` argument of the [OutlinedTextField] is the [TextFieldState.showErrors] method of
+ * [passwordState]. Its `supportingText` argument is a lambda which if the [TextFieldState.getError]
+ * method of [passwordState] returns a non-null [String] will compose a [TextFieldError] whose
+ * `textError` argument is that [String]. The `keyboardOptions` argument is a copy of the
+ * [KeyboardOptions.Default] whose `imeAction` property is our [ImeAction] parameter [imeAction] and
+ * whose `keyboardType` property is [KeyboardType.Password]. Its `keyboardActions` argument is a
+ * [KeyboardActions] whose `onDone` lambda argument is a lambda that calls our [onImeAction]
+ * parameter. Its `singleLine` argument is `true` so that the text will not wrap on multiple lines.
+ *
+ * @param label The label to be displayed inside the text field.
+ * @param passwordState the [TextFieldState] that holds the current text in the [OutlinedTextField]
+ * and any errors that it may have. We use the default `remember { PasswordState() }` to create and
+ * remember a default [PasswordState] if none is passed by our caller.
+ * @param modifier the [Modifier] to be applied to the [OutlinedTextField].
+ * @param imeAction the [ImeAction] to be used for the keyboard.
+ * @param onImeAction lambda called when the [ImeAction] is "Done".
  */
 @Composable
 fun Password(
@@ -352,7 +376,16 @@ fun Password(
 }
 
 /**
- * To be removed when `TextField`s support error
+ * To be removed when [OutlinedTextField]s support error slot.
+ * This composable is a [Row] whose `modifier` argument is a [Modifier.fillMaxWidth] to make it
+ * occupy its entire incoming width constraint. The [RowScope] `content` composable lambda argument
+ * of the [Row] contains:
+ *  - A [Spacer] whose `modifier` argument is a [Modifier.width] that sets its `width` to 16.dp
+ *  - A [Text] whose `text` argument is our [String] parameter [textError], whose `modifier` argument
+ *  is a [Modifier.fillMaxWidth] to make it occupy the rest of the width of the [Row], and whose
+ *  [Color] `color` argument is the [ColorScheme.error] color of our custom [MaterialTheme.colorScheme].
+ *
+ * @param textError the error text to be displayed.
  */
 @Composable
 fun TextFieldError(textError: String) {
@@ -366,6 +399,24 @@ fun TextFieldError(textError: String) {
     }
 }
 
+/**
+ * This composable consists of a [Column] whose `modifier` argument is our [Modifier] parameter
+ * [modifier], and whose `horizontalAlignment` argument is [Alignment.CenterHorizontally] to center
+ * its children. The [ColumnScope] `content` composable lambda argument of the [Column] contains:
+ *  - A [Text] displaying the string with resource ID `R.string.or` ("or") using the `style`
+ *  [Typography.titleSmall] of our custom [MaterialTheme.typography], with its [Color] `color`
+ *  argument a copy of the [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme] with
+ *  its `alpha` set to [stronglyDeemphasizedAlpha] (0.6f), and its `modifier` argument is a
+ *  [Modifier.paddingFromBaseline] that adds 25.dp of padding to its `top`.
+ *  - An [OutlinedButton] whose `onClick` argument is our lambda parameter [onSignInAsGuest], and
+ *  whose `modifier` argument is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] that adds
+ *  20.dp to its `top` and 24.dp to its `bottom`. The [RowScope] `content` composable lambda argument
+ *  of the [OutlinedButton] composes a [Text] displaying the string with resource ID
+ *  `R.string.sign_in_guest` ("Sign in as guest").
+ *
+ * @param onSignInAsGuest (event) Swampy representation of dividing screen sections.
+ * @param modifier [Modifier] to be applied to the [Column].
+ */
 @Composable
 fun OrSignInAsGuest(
     onSignInAsGuest: () -> Unit,
