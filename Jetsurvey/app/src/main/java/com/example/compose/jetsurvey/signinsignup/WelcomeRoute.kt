@@ -19,6 +19,14 @@ package com.example.compose.jetsurvey.signinsignup
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+/**
+ * Route for the Welcome screen.
+ * TODO: Continue here.
+ *
+ * @param onNavigateToSignIn Navigates to the sign in screen.
+ * @param onNavigateToSignUp Navigates to the sign up screen.
+ * @param onSignInAsGuest Signs in as a guest.
+ */
 @Composable
 fun WelcomeRoute(
     onNavigateToSignIn: (email: String) -> Unit,
@@ -28,7 +36,7 @@ fun WelcomeRoute(
     val welcomeViewModel: WelcomeViewModel = viewModel(factory = WelcomeViewModelFactory())
 
     WelcomeScreen(
-        onSignInSignUp = { email ->
+        onSignInSignUp = { email: String ->
             welcomeViewModel.handleContinue(
                 email = email,
                 onNavigateToSignIn = onNavigateToSignIn,
@@ -36,7 +44,7 @@ fun WelcomeRoute(
             )
         },
         onSignInAsGuest = {
-            welcomeViewModel.signInAsGuest(onSignInAsGuest)
+            welcomeViewModel.signInAsGuest(onSignInComplete = onSignInAsGuest)
         },
     )
 }

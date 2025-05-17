@@ -22,25 +22,81 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.setValue
 
+/**
+ * A class that holds the state of a text field, including its current text, focus state,
+ * and validation status.
+ *
+ * @param validator A function that takes the current text of the field and returns `true`
+ * if the text is valid, `false` otherwise. Defaults to a function that always returns `true`.
+ * @param errorFor A function that takes the current text of the field and returns a string
+ * representing the error message to display if the text is invalid. Defaults to a function
+ * that always returns an empty string.
+ */
 open class TextFieldState(
     private val validator: (String) -> Boolean = { true },
     private val errorFor: (String) -> String = { "" }
 ) {
+    /**
+     * The current text content of the text field.
+     *
+     * This property is observable and can be used to update the UI when the text changes.
+     */
     var text: String by mutableStateOf("")
 
-    // was the TextField ever focused
+    /**
+     * Whether the text field has ever been focused.
+     *
+     * This property is useful for determining whether to display validation errors.
+     * For example, you might only want to show errors after the user has interacted
+     * with the field at least once.
+     */
     var isFocusedDirty: Boolean by mutableStateOf(false)
+
+    /**
+     * Whether the text field is currently focused.
+     *
+     * This property is observable and can be used to update the UI when the focus state changes.
+     */
     var isFocused: Boolean by mutableStateOf(false)
+
+    /**
+     * Whether to display validation errors for the text field.
+     *
+     * This property is used in conjunction with [isFocusedDirty] to control when
+     * errors are shown. Errors are typically only displayed after the user has
+     * interacted with the field at least once and [enableShowErrors] has been called.
+     */
     private var displayErrors: Boolean by mutableStateOf(false)
 
+    /**
+     * Whether the current text content of the text field is valid.
+     *
+     * This property is calculated by calling our [validator] lambda property with the current [text].
+     */
     open val isValid: Boolean
         get() = validator(text)
 
+    /**
+     * Updates the focus state of the text field.
+     *
+     * This function is called when the focus state of the text field changes. It updates the
+     * [isFocused] property to reflect the new focus state and sets [isFocusedDirty] to `true`
+     * if the field has been focused at least once.
+     *
+     * @param focused `true` if the text field is now focused, `false` otherwise.
+     */
     fun onFocusChange(focused: Boolean) {
         isFocused = focused
         if (focused) isFocusedDirty = true
     }
 
+    /**
+     * Enables the display of validation errors for the text field.
+     *
+     * This function sets the [displayErrors] property to `true` if the text field
+     * has been focused at least once (i.e., [isFocusedDirty] is `true`). This ensures
+     * that errors are only shown after the user has interacted with the field.
+     */
     fun enableShowErrors() {
         // only show errors if the text was at least once focused
         if (isFocusedDirty) {
@@ -48,8 +104,28 @@ open class TextFieldState(
         }
     }
 
+    /**
+     * Whether validation errors should be displayed for the text field.
+     *
+     * This property returns `true` if the text field is currently invalid (as determined by
+     * the `validator` function) and the `displayErrors` property is `true`.
+     * `displayErrors` is typically set to `true` after the user has interacted with the
+     * field at least once and `enableShowErrors` has been called.
+     *
+     * @return `true` if errors should be shown, `false` otherwise.
+     */
     fun showErrors(): Boolean = !isValid && displayErrors
 
+    /**
+     * Returns the error message to display for the text field, or `null` if no error
+     * should be displayed.
+     *
+     * This function first checks if errors should be shown by calling [showErrors].
+     * If `showErrors` returns `true`, it then calls the [errorFor] function with the
+     * current [text] to get the error message. Otherwise, it returns `null`.
+     *
+     * @return The error message string, or `null` if no error should be displayed.
+     */
     open fun getError(): String? {
         return if (showErrors()) {
             errorFor(text)

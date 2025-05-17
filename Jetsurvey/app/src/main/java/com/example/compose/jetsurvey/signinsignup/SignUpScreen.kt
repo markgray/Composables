@@ -19,22 +19,27 @@ package com.example.compose.jetsurvey.signinsignup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.TextStyle
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
@@ -94,7 +99,50 @@ fun SignUpScreen(
 
 /**
  * The content of the sign up screen. This composable allows the user to enter an email and
- * password. TODO: Continue here.
+ * password. Our root composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth].
+ * In the [ColumnScope] `content` composable lambda argument we start by initializing and remembering
+ * our [FocusRequester] variable `passwordFocusRequest` and our [FocusRequester] variable
+ * `confirmationPasswordFocusRequest` to new instances. Then we initialize and remember our [EmailState]
+ * variable `emailState` to a new instance with its `email` argument our [String] parameter [email].
+ *
+ * We then compose an [Email] composable whose `emailState` argument is our [EmailState] variable
+ * `emailState`, and whose `onImeAction` argument is a lambda that requests the focus for our
+ * [FocusRequester] variable `passwordFocusRequest`. Below that we compose a [Spacer] whose
+ * `modifier` argument is a [Modifier.height] with a `height` of 16.dp.
+ *
+ * We then initialize and remember our [PasswordState] variable `passwordState` to a new instance,
+ * then compose a [Password] composable whose arguments are:
+ *  - `label`: is the [String] with resource ID `R.string.password` ("Password").
+ *  - `passwordState`: is our [PasswordState] variable `passwordState`.
+ *  - `imeAction`: is [ImeAction.Next] (the default).
+ *  - `onImeAction`: is a lambda that requests the focus for our [FocusRequester] variable
+ *  `confirmationPasswordFocusRequest`.
+ *  - `modifier`: is a [Modifier.focusRequester] composable extension function whose `focusRequester`
+ *  argument is our [FocusRequester] variable `passwordFocusRequest`.
+ *
+ * Below the [Password] we compose a [Spacer] whose `modifier` argument is a [Modifier.height]
+ * with a `height` of 16.dp.
+ *
+ * Next we compose a [Text] whose arguments are:
+ *  - `text`: is the [String] with resource ID `R.string.terms_and_conditions` ("By continuing, you
+ *  agree to our Terms of Service. We’ll handle your data according to our Privacy Policy.)
+ *  - `style`: [TextStyle] is the [Typography.bodySmall] of our custom [MaterialTheme.typography].
+ *  - `color`: [Color] is the [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme].
+ *
+ * Below the [Text] we compose a [Spacer] whose `modifier` argument is a [Modifier.height] with
+ * a `height` of 16.dp.
+ *
+ * Finally we compose a [Button] whose arguments are:
+ *  - `onClick`: is a lambda that calls our [onSignUpSubmitted] lambda parameter with the
+ *  [TextFieldState.text] of our [EmailState] variable `emailState` and the [TextFieldState.text]
+ *  of our [PasswordState] variable `passwordState`.
+ *  - `modifier`: is a [Modifier.fillMaxWidth].
+ *  - `enabled`: is `true` if the [TextFieldState.isValid] property of our [EmailState] variable
+ *  `emailState` is `true`, the [TextFieldState.isValid] property of our [PasswordState] variable
+ *  `passwordState` it `true`, and the [TextFieldState.isValid] property of our [ConfirmPasswordState]
+ *  variable `confirmPasswordState` is `true`.
+ *  - in the [RowScope] `content` composable lambda argument we compose a [Text] whose `text`
+ *  argument is the [String] with resource ID `R.string.create_account` ("Create account").
  *
  * @param email (state) The email to be prefilled in the email field.
  * @param onSignUpSubmitted (event) Event to be emitted when the user clicks the sign up button.
@@ -107,7 +155,7 @@ fun SignUpContent(
     Column(modifier = Modifier.fillMaxWidth()) {
         val passwordFocusRequest: FocusRequester = remember { FocusRequester() }
         val confirmationPasswordFocusRequest: FocusRequester = remember { FocusRequester() }
-        val emailState: EmailState = remember { EmailState(email) }
+        val emailState: EmailState = remember { EmailState(email = email) }
         Email(emailState = emailState, onImeAction = { passwordFocusRequest.requestFocus() })
 
         Spacer(modifier = Modifier.height(height = 16.dp))
