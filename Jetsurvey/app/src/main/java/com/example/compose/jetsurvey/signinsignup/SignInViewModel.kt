@@ -64,7 +64,7 @@ class SignInViewModel(private val userRepository: UserRepository) : ViewModel() 
  */
 class SignInViewModelFactory : ViewModelProvider.Factory {
     /**
-     * Creates a new instance of the given `Class`.
+     * Creates a new instance of [SignInViewModel].
      *
      * @param modelClass a `Class` whose instance is requested
      * @return a newly created ViewModel

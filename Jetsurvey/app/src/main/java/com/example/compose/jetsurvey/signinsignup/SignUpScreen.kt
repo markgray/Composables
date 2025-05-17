@@ -50,9 +50,9 @@ import com.example.compose.jetsurvey.util.supportWideScreen
  *  `contentPadding` then composes a [SignInSignUpScreen] whose `onSignInAsGuest` argument is our
  *  [onSignInAsGuest] lambda parameter, whose `contentPadding` argument is our `contentPadding`
  *  variable, and whose `modifier` argument is a [Modifier.supportWideScreen] composable extension
- *  function. In the [SignInSignUpScreen] `cibtebt` composable lambda argument we compose a [Column]
+ *  function. In the [SignInSignUpScreen] `content` composable lambda argument we compose a [Column]
  *  in whose [ColumnScope] `content` composable lambda argument we compose a [SignUpContent] whose
- *  `email` argument is our [email] parameter, and whoe `onSignUpSubmitted` argument is our
+ *  `email` argument is our [email] parameter, and whose `onSignUpSubmitted` argument is our
  *  [onSignUpSubmitted] lambda parameter.
  *
  * @param email (state) The email to be prefilled in the email field.

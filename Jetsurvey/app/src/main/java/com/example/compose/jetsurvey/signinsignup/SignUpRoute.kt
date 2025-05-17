@@ -21,7 +21,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 /**
  * Displays the sign up screen and manages UI state. We start by initializing our [SignUpViewModel]
- * variable `signUpViewModel` with a [SignUpViewModelFactory]. Then our root composable is a
+ * variable `signUpViewModel` to the [SignUpViewModel] with the instance that [viewModel] returns
+ * when it uses [SignUpViewModelFactory] as the `factory`. Our root composable is a
  * [SignInSignUpScreen] whose arguments are:
  *  - `email`: is our [String] parameter [email].
  *  - `onSignUpSubmitted`: is a lambda that accepts the two [String]'s passed the lambda in variables

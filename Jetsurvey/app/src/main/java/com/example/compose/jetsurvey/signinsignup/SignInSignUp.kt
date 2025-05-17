@@ -414,7 +414,8 @@ fun TextFieldError(textError: String) {
  *  of the [OutlinedButton] composes a [Text] displaying the string with resource ID
  *  `R.string.sign_in_guest` ("Sign in as guest").
  *
- * @param onSignInAsGuest (event) Swampy representation of dividing screen sections.
+ * @param onSignInAsGuest lambda to be called to sign in as a guest when the user clicks our
+ * "Sign in as guest" [OutlinedButton].
  * @param modifier [Modifier] to be applied to the [Column].
  */
 @Composable
