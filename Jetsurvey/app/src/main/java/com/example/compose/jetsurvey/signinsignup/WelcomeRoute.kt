@@ -20,8 +20,16 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 /**
- * Route for the Welcome screen.
- * TODO: Continue here.
+ * Route for the Welcome screen. We start by initializing our [WelcomeViewModel] variable
+ * `welcomeViewModel` to the existing [WelcomeViewModel] or newly created one with the owner
+ * provided by `LocalViewModelStoreOwner` using [viewModel] with its `factory` argument our
+ * [WelcomeViewModelFactory] method. Then we comopose a [WelcomeScreen] with the arguments:
+ *  - `onSignInSignUp`: A lambda function that takes an email string as an argument and
+ *  calls the [WelcomeViewModel.handleContinue] method with the provided email as its `email`
+ *  argument, our [onNavigateToSignIn] lambda parameter as its `onNavigateToSignIn` argument, and
+ *  our [onNavigateToSignUp] lambda parameter as its `onNavigateToSignUp` argument.
+ *  - `onSignInAsGuest`: A lambda function that calls the [WelcomeViewModel.signInAsGuest]
+ *  method with our [onSignInAsGuest] lambda parameter as its `onSignInComplete` argument.
  *
  * @param onNavigateToSignIn Navigates to the sign in screen.
  * @param onNavigateToSignUp Navigates to the sign up screen.

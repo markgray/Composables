@@ -44,6 +44,16 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
+/**
+ * Displays a date question.
+ * TODO: CONTINUE HERE.
+ *
+ * @param titleResourceId String resource to display for the title of the question
+ * @param directionsResourceId String resource to display the directions for the question
+ * @param dateInMillis The date to display, in milliseconds, or null if no date has been selected
+ * @param onClick The callback to be invoked when the user clicks on the date picker
+ * @param modifier The modifier to apply to this composable
+ */
 @Composable
 fun DateQuestion(
     @StringRes titleResourceId: Int,
@@ -60,7 +70,7 @@ fun DateQuestion(
         // All times are stored in UTC, so generate the display from UTC also
         val dateFormat = SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault())
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-        val dateString = dateFormat.format(dateInMillis ?: getDefaultDateInMillis())
+        val dateString: String = dateFormat.format(dateInMillis ?: getDefaultDateInMillis())
 
         Button(
             onClick = onClick,
@@ -72,26 +82,34 @@ fun DateQuestion(
             shape = MaterialTheme.shapes.small,
             modifier = Modifier
                 .padding(vertical = 20.dp)
-                .height(54.dp),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)),
+                .height(height = 54.dp),
+            border = BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+            ),
         ) {
             Text(
                 text = dateString,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1.8f)
+                    .weight(weight = 1.8f)
             )
             Icon(
                 imageVector = Icons.Filled.ArrowDropDown,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.2f)
+                    .weight(weight = 0.2f)
             )
         }
     }
 }
 
+/**
+ * Two previews of the [DateQuestion] composable:
+ *  - One with the light theme
+ *  - One with the dark theme
+ */
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable

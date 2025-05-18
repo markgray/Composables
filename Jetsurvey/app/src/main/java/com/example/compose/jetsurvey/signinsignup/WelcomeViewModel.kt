@@ -19,20 +19,40 @@ package com.example.compose.jetsurvey.signinsignup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
+/**
+ * ViewModel for the Welcome screen.
+ *
+ * @param userRepository The repository to handle user-related operations.
+ */
 class WelcomeViewModel(private val userRepository: UserRepository) : ViewModel() {
 
+    /**
+     * Handles the navigation when the user clicks the "Continue" button.
+     *
+     * If the email is known, it navigates to the sign-in screen. Otherwise, it navigates to the
+     * sign-up screen.
+     *
+     * @param email The email address entered by the user.
+     * @param onNavigateToSignIn Callback to navigate to the sign-in screen.
+     * @param onNavigateToSignUp Callback to navigate to the sign-up screen.
+     */
     fun handleContinue(
         email: String,
         onNavigateToSignIn: (email: String) -> Unit,
         onNavigateToSignUp: (email: String) -> Unit,
     ) {
-        if (userRepository.isKnownUserEmail(email)) {
+        if (userRepository.isKnownUserEmail(email = email)) {
             onNavigateToSignIn(email)
         } else {
             onNavigateToSignUp(email)
         }
     }
 
+    /**
+     * Sign in as a guest and show the survey.
+     *
+     * @param onSignInComplete Called when sign in is complete.
+     */
     fun signInAsGuest(
         onSignInComplete: () -> Unit,
     ) {
@@ -45,7 +65,7 @@ class WelcomeViewModelFactory : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(WelcomeViewModel::class.java)) {
-            return WelcomeViewModel(UserRepository) as T
+            return WelcomeViewModel(userRepository = UserRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
