@@ -102,8 +102,9 @@ fun SignUpScreen(
  * password. Our root composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth].
  * In the [ColumnScope] `content` composable lambda argument we start by initializing and remembering
  * our [FocusRequester] variable `passwordFocusRequest` and our [FocusRequester] variable
- * `confirmationPasswordFocusRequest` to new instances. Then we initialize and remember our [EmailState]
- * variable `emailState` to a new instance with its `email` argument our [String] parameter [email].
+ * `confirmationPasswordFocusRequest` to new instances. Then we initialize and remember our
+ * [EmailState] variable `emailState` to a new instance with its `email` argument our [String]
+ * parameter [email].
  *
  * We then compose an [Email] composable whose `emailState` argument is our [EmailState] variable
  * `emailState`, and whose `onImeAction` argument is a lambda that requests the focus for our
@@ -123,6 +124,20 @@ fun SignUpScreen(
  * Below the [Password] we compose a [Spacer] whose `modifier` argument is a [Modifier.height]
  * with a `height` of 16.dp.
  *
+ * We then initialize and remember our [ConfirmPasswordState] variable `confirmPasswordState` to
+ * a new instance whose `passwordState` argument is our [PasswordState] variable `passwordState`,
+ * then compose another [Password] whose arguments are:
+ *  - `label`: is the [String] with resource ID `R.string.confirm_password` ("Confirm password").
+ *  - `passwordState`: is our [PasswordState] variable `confirmPasswordState`.
+ *  - `onImeAction`: is a lambda that calls our [onSignUpSubmitted] lambda parameter with the
+ *  [EmailState.text] of [EmailState] variable `emailState` as the email address, and the
+ *  [PasswordState.text] of [PasswordState] variable `passwordState` as the password.
+ *  - `modifier`: is a [Modifier.focusRequester] composable extension function whose `focusRequester`
+ *  argument is our [FocusRequester] variable `confirmationPasswordFocusRequest`.
+ *
+ * Below the [Password] we compose a [Spacer] whose `modifier` argument is a [Modifier.height]
+ * with a `height` of 16.dp.
+ *
  * Next we compose a [Text] whose arguments are:
  *  - `text`: is the [String] with resource ID `R.string.terms_and_conditions` ("By continuing, you
  *  agree to our Terms of Service. We’ll handle your data according to our Privacy Policy.)
@@ -134,17 +149,17 @@ fun SignUpScreen(
  *
  * Finally we compose a [Button] whose arguments are:
  *  - `onClick`: is a lambda that calls our [onSignUpSubmitted] lambda parameter with the
- *  [TextFieldState.text] of our [EmailState] variable `emailState` and the [TextFieldState.text]
+ *  [EmailState.text] of our [EmailState] variable `emailState` and the [PasswordState.text]
  *  of our [PasswordState] variable `passwordState`.
  *  - `modifier`: is a [Modifier.fillMaxWidth].
- *  - `enabled`: is `true` if the [TextFieldState.isValid] property of our [EmailState] variable
- *  `emailState` is `true`, the [TextFieldState.isValid] property of our [PasswordState] variable
- *  `passwordState` it `true`, and the [TextFieldState.isValid] property of our [ConfirmPasswordState]
- *  variable `confirmPasswordState` is `true`.
+ *  - `enabled`: is `true` if the [EmailState.isValid] property of our [EmailState] variable
+ *  `emailState` is `true`, the [PasswordState.isValid] property of our [PasswordState] variable
+ *  `passwordState` it `true`, and the [ConfirmPasswordState.isValid] property of our
+ *  [ConfirmPasswordState] variable `confirmPasswordState` is `true`.
  *  - in the [RowScope] `content` composable lambda argument we compose a [Text] whose `text`
  *  argument is the [String] with resource ID `R.string.create_account` ("Create account").
  *
- * @param email (state) The email to be prefilled in the email field.
+ * @param email (state) The email address to be prefilled in the email address field.
  * @param onSignUpSubmitted (event) Event to be emitted when the user clicks the sign up button.
  */
 @Composable
@@ -159,6 +174,7 @@ fun SignUpContent(
         Email(emailState = emailState, onImeAction = { passwordFocusRequest.requestFocus() })
 
         Spacer(modifier = Modifier.height(height = 16.dp))
+
         val passwordState: PasswordState = remember { PasswordState() }
         Password(
             label = stringResource(id = R.string.password),
@@ -169,6 +185,7 @@ fun SignUpContent(
         )
 
         Spacer(modifier = Modifier.height(height = 16.dp))
+
         val confirmPasswordState: ConfirmPasswordState = remember {
             ConfirmPasswordState(passwordState = passwordState)
         }
@@ -180,6 +197,7 @@ fun SignUpContent(
         )
 
         Spacer(modifier = Modifier.height(height = 16.dp))
+
         Text(
             text = stringResource(id = R.string.terms_and_conditions),
             style = MaterialTheme.typography.bodySmall,
@@ -187,6 +205,7 @@ fun SignUpContent(
         )
 
         Spacer(modifier = Modifier.height(height = 16.dp))
+
         Button(
             onClick = { onSignUpSubmitted(emailState.text, passwordState.text) },
             modifier = Modifier.fillMaxWidth(),

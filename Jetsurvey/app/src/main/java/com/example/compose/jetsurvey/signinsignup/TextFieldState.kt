@@ -24,7 +24,9 @@ import androidx.compose.runtime.setValue
 
 /**
  * A class that holds the state of a text field, including its current text, focus state,
- * and validation status.
+ * and validation status. Includes a [Saver] that saves the [TextFieldState.text] and
+ * [TextFieldState.isFocusedDirty] properties in a [listSaver] to enable subclasses to be
+ * saved across configuration changes.
  *
  * @param validator A function that takes the current text of the field and returns `true`
  * if the text is valid, `false` otherwise. Defaults to a function that always returns `true`.
@@ -69,9 +71,8 @@ open class TextFieldState(
     private var displayErrors: Boolean by mutableStateOf(false)
 
     /**
-     * Whether the current text content of the text field is valid.
-     *
-     * This property is calculated by calling our [validator] lambda property with the current [text].
+     * Whether the current text content of the text field is valid. This property is calculated by
+     * calling our [validator] lambda property with the current [text].
      */
     open val isValid: Boolean
         get() = validator(text)

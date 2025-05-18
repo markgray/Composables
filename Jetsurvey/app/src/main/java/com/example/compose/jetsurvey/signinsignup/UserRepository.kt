@@ -34,7 +34,7 @@ sealed class User {
 }
 
 /**
- * Repository that holds the logged in user.
+ * Singleton Repository that holds the logged in user.
  *
  * In a production app, this class would also handle the communication with the backend for
  * sign in and sign up.
@@ -45,15 +45,14 @@ object UserRepository {
      * This property holds the current state of the user. It is initialized to [User.NoUserLoggedIn],
      * indicating that no user is logged in when the repository is first created.
      * The state of this property can be changed by calling the [signIn], [signUp], or [signInAsGuest]
-     * methods.
-     * The current user state can be observed via the public [user] property.
+     * methods. The current user state can be observed via the public [user] property.
      */
     private var _user: User = User.NoUserLoggedIn
 
     /**
-     * Public property to observe the current user state.
-     * It returns the current value of the private [_user] property.
-     * This allows other parts of the application to react to changes in the user's login status.
+     * Public property to observe the current user state. It returns the current value of the
+     * private [_user] property. This allows other parts of the application to react to changes
+     * in the user's login status.
      */
     @Suppress("unused")
     val user: User
