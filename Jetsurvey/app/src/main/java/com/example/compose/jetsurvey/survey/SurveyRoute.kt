@@ -25,6 +25,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -65,7 +66,7 @@ fun SurveyRoute(
         onPreviousPressed = { viewModel.onPreviousPressed() },
         onNextPressed = { viewModel.onNextPressed() },
         onDonePressed = { viewModel.onDonePressed(onSurveyComplete) }
-    ) { paddingValues ->
+    ) { paddingValues: PaddingValues ->
 
         val modifier = Modifier.padding(paddingValues)
 

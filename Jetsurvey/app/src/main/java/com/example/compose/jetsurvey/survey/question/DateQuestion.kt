@@ -19,6 +19,7 @@ package com.example.compose.jetsurvey.survey.question
 import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,12 +27,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
@@ -45,8 +49,51 @@ import java.util.Locale
 import java.util.TimeZone
 
 /**
- * Displays a date question.
- * TODO: CONTINUE HERE.
+ * Displays a date question. Our root composable is a [QuestionWrapper] whose arguments are:
+ *  - `titleResourceId`: is our [Int] parameter [titleResourceId] which is the resource ID for the
+ *  string to display for the title of the question.
+ *  - `directionsResourceId`: is our [Int] parameter [directionsResourceId] which is the resource
+ *  ID for the string to display for the directions of the question.
+ *  - `dateInMillis`: is our [Long] parameter [dateInMillis] which is the date to display, in
+ *  milliseconds, or `null` if no date has been selected.
+ *  - `onClick`: is our lambda parameter [onClick] which is invoked when the user clicks on the
+ *  date picker.
+ *  - `modifier`: is our [Modifier] parameter [modifier].
+ *
+ * Inside of the `content` composable lambda argument of the [QuestionWrapper] we start by
+ * initializing our [SimpleDateFormat] variable `dateFormat` with an instance that uses our
+ * [simpleDateFormatPattern] as the format pattern for the [Locale.getDefault] locale. We then
+ * set the [SimpleDateFormat.timeZone] to the [TimeZone.getTimeZone] for the UTC time zone.
+ *
+ * We initialize our [String] variable `dateString` with the result of calling the
+ * [SimpleDateFormat.format] method of our variable `dateFormat` with our [Long] parameter
+ * [dateInMillis], and if [dateInMillis] is `null`, we call the [getDefaultDateInMillis] method
+ * to get the default date in milliseconds.
+ *
+ * Then we compose a [Button] whose arguments are:
+ *  - `onClick`: is our lambda parameter [onClick].
+ *  - `colors`: is the [ButtonDefaults.buttonColors] with its `containerColor` set to the
+ *  [ColorScheme.surface] of our custom [MaterialTheme.colorScheme] and its `contentColor` set to
+ *  a copy of the [ColorScheme.onSurface] with its alpha set to [slightlyDeemphasizedAlpha].
+ *  - `shape`: is the [Shapes.small] of our custom [MaterialTheme.shapes].
+ *  - `modifier`: is a [Modifier.padding] that adds `20.dp` padding to the vertical sides, chained
+ *  to a [Modifier.height] of `54.dp`.
+ *  - `border`: is a [BorderStroke] with its `width` set to `1.dp` and its `color` set to a copy of
+ *  the [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme] with its alpha set to
+ *  `0.12f`.
+ *
+ * In the [RowScope] `content` composable lambda argument of the [Button] we compose:
+ *
+ * **First** a [Text] whose arguments are:
+ *  - `text`: is our [String] variable `dateString`.
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [RowScope.weight] with a weight of
+ *  `1.8f`.
+ *
+ * **Second** an [Icon] whose arguments are:
+ *  - `imageVector`: is the [ImageVector] drawn by [Icons.Filled.ArrowDropDown].
+ *  - `contentDescription`: is `null`.
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [RowScope.weight] with a weight of
+ *  `0.2f`.
  *
  * @param titleResourceId String resource to display for the title of the question
  * @param directionsResourceId String resource to display the directions for the question
