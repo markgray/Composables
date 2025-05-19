@@ -130,14 +130,14 @@ fun WelcomeScreen(
  *
  * In the [ColumnScope] `content` composable lambda argument of the [Column] we first compose a
  * [Logo] whose `modifier` argument is a [ColumnScope.align] whose `alignment` argument is
- * [Alignment.CenterHorizontally] with a [Modifier.padding] whose `horizontal` padding is 76.dp.
+ * [Alignment.CenterHorizontally] with a [Modifier.padding] whose `horizontal` padding is `76.dp`.
  *
- * Below the [Logo] is a [Text] displaying the `text` whose arguments are:
+ * Below the [Logo] is a [Text] whose arguments are:
  *  - `text`: the [String] with resource ID `R.string.app_tagline`
  *  ("Better surveys with Jetpack Compose").
  *  - `style`: the [Typography.titleMedium] of our custom [MaterialTheme.typography]
  *  - `textAlign`: is [TextAlign.Center]
- *  - `modifier`: is a [Modifier.padding] whose `top` padding is 24.dp, to which is chained a
+ *  - `modifier`: is a [Modifier.padding] whose `top` padding is `24.dp`, to which is chained a
  *  [Modifier.fillMaxWidth]
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
@@ -170,7 +170,7 @@ private fun Branding(modifier: Modifier = Modifier) {
  * dark theme.
  *
  * We start by initializing our [Int] variable `assetId` to the drawable with resource ID
- * `R.drawable.ic_logo_light` if our [Boolean] parambeter [lightTheme] is `true` of to the
+ * `R.drawable.ic_logo_light` if our [Boolean] parambeter [lightTheme] is `true` or to the
  * drawable with resource ID `R.drawable.ic_logo_dark` otherwise. Then we compose an [Image] whose
  * arguments are:
  *  - `painter`: is the [Painter] created from the drawable with resource ID `assetId`.
@@ -223,15 +223,16 @@ private fun Logo(
  *  - `color`: is a copy of the [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme]
  *  with its `alpha` argument set to [stronglyDeemphasizedAlpha].
  *  - `textAlign`: is [TextAlign.Center]
- *  - `modifier`: is a [Modifier.padding] whose `top` padding is 64.dp, and whose `bottom` padding
- *  is 12.dp.
+ *  - `modifier`: is a [Modifier.padding] whose `top` padding is `64.dp`, and whose `bottom` padding
+ *  is `12.dp`.
  *
  * Next we initialize our lambda variable `onSubmit` to a lambda that calls our [onSignInSignUp]
  * lambda parameter with the [TextFieldState.text] of our [MutableState] wrapped [TextFieldState]
- * if its [TextFieldState.isValid] is `true` of otherwise calls the [TextFieldState.enableShowErrors]
- * of our [MutableState] wrapped [TextFieldState] variable `emailState`.
+ * if its [TextFieldState.isValid] property is `true` or otherwise calls the
+ * [TextFieldState.enableShowErrors] method of our [MutableState] wrapped [TextFieldState] variable
+ * `emailState`.
  *
- * Then we all our [onFocusChange] lambda parameter with the [TextFieldState.isFocused] propetry of
+ * Then we call our [onFocusChange] lambda parameter with the [TextFieldState.isFocused] property of
  * our [MutableState] wrapped [TextFieldState] variable `emailState`.
  *
  * Then we compose an [Email] composable whose arguments are:
@@ -242,11 +243,11 @@ private fun Logo(
  * Below the [Email] we compose a [Button] whose arguments are:
  *  - `onClick`: is our lambda variable `onSubmit`.
  *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] whose `top` padding
- *  is 28.dp, and whose `bottom` padding is 3.dp.
+ *  is `28.dp`, and whose `bottom` padding is `3.dp`.
  *
  * In the [RowScope] `content` composable lambda argument` of the [Button] we compose a [Text]
  * whose arguments are:
- *  - `text`: the [String] with resource ID `R.string.user_continue` ("CONTINUE")
+ *  - `text`: the [String] with resource ID `R.string.user_continue` ("Continue")
  *  - `style`: is the [Typography.titleSmall] of our custom [MaterialTheme.typography].
  *
  * At the bottom of the [Column] we compose an [OrSignInAsGuest] composable whose arguments are:
@@ -267,7 +268,10 @@ private fun SignInCreateAccount(
     onFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val emailState: TextFieldState by rememberSaveable(stateSaver = EmailStateSaver) {
+    val emailState: TextFieldState by rememberSaveable(
+        inputs = arrayOf(EmailStateSaver),
+        stateSaver = EmailStateSaver
+    ) {
         mutableStateOf(EmailState())
     }
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {

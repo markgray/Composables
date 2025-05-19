@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 /**
  * ViewModel for the Welcome screen.
  *
- * @param userRepository The repository to handle user-related operations.
+ * @property userRepository The repository to handle user-related operations.
  */
 class WelcomeViewModel(private val userRepository: UserRepository) : ViewModel() {
 
@@ -49,7 +49,9 @@ class WelcomeViewModel(private val userRepository: UserRepository) : ViewModel()
     }
 
     /**
-     * Sign in as a guest and show the survey.
+     * Sign in as a guest and show the survey. First we call the [UserRepository.signInAsGuest]
+     * method of our [UserRepository] property [userRepository], then we call our [onSignInComplete]
+     * lambda parameter.
      *
      * @param onSignInComplete Called when sign in is complete.
      */
@@ -61,7 +63,18 @@ class WelcomeViewModel(private val userRepository: UserRepository) : ViewModel()
     }
 }
 
+/**
+ * The [ViewModelProvider.Factory] for our [WelcomeViewModel] viewmodel.
+ */
 class WelcomeViewModelFactory : ViewModelProvider.Factory {
+    /**
+     * If our [Class] of [T] parameter [modelClass] is assignable from a [WelcomeViewModel] object
+     * we return a new instance of [WelcomeViewModel] whose `userRepository` property is the
+     * singleton [UserRepository], otherwise we throw an [IllegalArgumentException] "Unknown
+     * ViewModel class".
+     *
+     * @return a new instance of [WelcomeViewModel].
+     */
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(WelcomeViewModel::class.java)) {
