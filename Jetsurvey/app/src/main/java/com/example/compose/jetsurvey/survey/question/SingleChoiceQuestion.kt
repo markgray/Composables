@@ -21,7 +21,9 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,10 +31,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +46,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -49,6 +56,29 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.survey.QuestionWrapper
 
+/**
+ * Displays a single choice question with a list of possible answers. Our root composable is a
+ * [QuestionWrapper] whose `titleResourceId` argument is our [Int] parameter [titleResourceId],
+ * whose `directionsResourceId` argument is our [Int] parameter [directionsResourceId], and whose
+ * `modifier` argument is our [Modifier] parameter [modifier]. Inside the `content` composable
+ * we use the [Iterable.forEach] method to loop through our [List] of [Superhero] parameter
+ * [possibleAnswers] capturing each [Superhero] in variable `hero`. We initialize our [Boolean]
+ * varialbe `selected` with `true` if our [Superhero] variable `hero` is the same as our
+ * [Superhero] parameter [selectedAnswer], or `false` otherwise. We then compose a
+ * [RadioButtonWithImageRow] whose arguments are:
+ *  - `modifier`: is a [Modifier.padding] that adds `8.dp` padding to each `vertical` side.
+ *  - `text`: is the [String] whose resource ID is the [Superhero.stringResourceId] of `hero`.
+ *  - `imageResourceId`: is the [Superhero.imageResourceId] proerty of `hero`.
+ *  - `selected`: is our [Boolean] variable `selected`.
+ *  - `onOptionSelected`: is a lambda that calls our [onOptionSelected] lambda parameter with `hero`.
+ *
+ * @param titleResourceId The string resource ID for the question title.
+ * @param directionsResourceId The string resource ID for the question directions.
+ * @param possibleAnswers A list of [Superhero] objects representing the possible answers.
+ * @param selectedAnswer The currently selected [Superhero] answer, or null if no answer is selected.
+ * @param onOptionSelected A callback function that is invoked when an answer is selected.
+ * @param modifier The modifier to be applied to the composable.
+ */
 @Composable
 fun SingleChoiceQuestion(
     @StringRes titleResourceId: Int,
@@ -63,19 +93,65 @@ fun SingleChoiceQuestion(
         directionsResourceId = directionsResourceId,
         modifier = modifier.selectableGroup(),
     ) {
-        possibleAnswers.forEach {
-            val selected = it == selectedAnswer
+        possibleAnswers.forEach { hero: Superhero ->
+            val selected: Boolean = hero == selectedAnswer
             RadioButtonWithImageRow(
                 modifier = Modifier.padding(vertical = 8.dp),
-                text = stringResource(id = it.stringResourceId),
-                imageResourceId = it.imageResourceId,
+                text = stringResource(id = hero.stringResourceId),
+                imageResourceId = hero.imageResourceId,
                 selected = selected,
-                onOptionSelected = { onOptionSelected(it) }
+                onOptionSelected = { onOptionSelected(hero) }
             )
         }
     }
 }
 
+/**
+ * Composable that displays a radio button with an image and text. Our root composable is a [Surface]
+ * whose argument are:
+ *  - `shape`: is the [Shapes.small] of our custom [MaterialTheme.shapes].
+ *  - `color`: is the [ColorScheme.primaryContainer] of our custom [MaterialTheme.colorScheme] if
+ *  our [Boolean] parameter [selected] is `true`, or the [ColorScheme.surface] of our custom
+ *  [MaterialTheme.colorScheme] if it is `false`.
+ *  - `border`: is a [BorderStroke] whose `width` is `1.dp`, and whose [Color] `color` is the
+ *  [ColorScheme.primary] of our custom [MaterialTheme.colorScheme] if our [Boolean] parameter
+ *  [selected] is `true`, or the [ColorScheme.outline] of our custom [MaterialTheme.colorScheme]
+ *  if it is `false`.
+ *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.clip] whose `shape`
+ *  is the [Shapes.small] of our custom [MaterialTheme.shapes], and chains a [Modifier.selectable]
+ *  to that whose `selected` argument is our [Boolean] parameter [selected], `onClick` argument is
+ *  our [onOptionSelected] lambda parameter, and whose `role` argument is [Role.RadioButton].
+ *
+ * In the `content` composable lambda argument of the [Surface] we compose a [Row] whose `modifier`
+ * argument is a [Modifier.fillMaxWidth], chained to a [Modifier.padding] that adds `16.dp` to `all`
+ * sides. In the [RowScope] `content` composable lambda argument of the [Row] we compose:
+ *
+ * **First** an [Image] whose arguments are:
+ *  - `painter`: is the [Painter] returned by [painterResource] for resource ID [imageResourceId].
+ *  - `contentDescription`: is `null`.
+ *  - `modifier`: is a [Modifier.size] with a size of `56.dp`, chained to a [Modifier.clip] whose
+ *  `shape` is the [Shapes.extraSmall] of our custom [MaterialTheme.shapes], and chained to a
+ *  [Modifier.padding] that adds `0.dp` to the `start` side, and `8.dp` to the `end` side.
+ *
+ * **Second** a [Spacer] whose `modifier` argument is a [Modifier.width] with a width of `8.dp`.
+ *
+ * **Third** a [Text] whose arguments are:
+ *  - `text`: is our [String] parameter [text].
+ *  - `modifier`: is a [RowScope.weight] with a weight of `1f`.
+ *  - `style`: is the [Typography.bodyLarge] of our custom [MaterialTheme.typography].
+ *
+ * **Fourth** a [Box] whose `modifier` argument is a [Modifier.padding] that adds `8.dp` to `all`
+ * sides. In the [BoxScope] `content` composable lambda argument of the [Box] we compose a
+ * [RadioButton] whose arguments are:
+ *  - `selected`: is our [Boolean] parameter [selected].
+ *  - `onClick`: is `null`.
+ *
+ * @param text The text to display.
+ * @param imageResourceId The drawable resource ID for the image to display.
+ * @param selected Whether the radio button is selected.
+ * @param onOptionSelected Callback that is invoked when the radio button is selected.
+ * @param modifier Modifier to be applied to the composable.
+ */
 @Composable
 fun RadioButtonWithImageRow(
     text: String,
@@ -100,9 +176,9 @@ fun RadioButtonWithImageRow(
             }
         ),
         modifier = modifier
-            .clip(MaterialTheme.shapes.small)
+            .clip(shape = MaterialTheme.shapes.small)
             .selectable(
-                selected,
+                selected = selected,
                 onClick = onOptionSelected,
                 role = Role.RadioButton
             )
@@ -110,36 +186,43 @@ fun RadioButtonWithImageRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(all = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = painterResource(id = imageResourceId),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(56.dp)
-                    .clip(MaterialTheme.shapes.extraSmall)
+                    .size(size = 56.dp)
+                    .clip(shape = MaterialTheme.shapes.extraSmall)
                     .padding(start = 0.dp, end = 8.dp)
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(width = 8.dp))
 
-            Text(text, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-            Box(Modifier.padding(8.dp)) {
-                RadioButton(selected, onClick = null)
+            Text(
+                text = text,
+                modifier = Modifier.weight(weight = 1f),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Box(modifier = Modifier.padding(all = 8.dp)) {
+                RadioButton(selected = selected, onClick = null)
             }
         }
     }
 }
 
+/**
+ * Preview of the [SingleChoiceQuestion] composable
+ */
 @Preview
 @Composable
 fun SingleChoiceQuestionPreview() {
     val possibleAnswers = listOf(
-        Superhero(R.string.spark, R.drawable.spark),
-        Superhero(R.string.lenz, R.drawable.lenz),
-        Superhero(R.string.bugchaos, R.drawable.bug_of_chaos),
+        Superhero(stringResourceId = R.string.spark, imageResourceId = R.drawable.spark),
+        Superhero(stringResourceId = R.string.lenz, imageResourceId = R.drawable.lenz),
+        Superhero(stringResourceId = R.string.bugchaos, imageResourceId = R.drawable.bug_of_chaos),
     )
-    var selectedAnswer by remember { mutableStateOf<Superhero?>(null) }
+    var selectedAnswer: Superhero? by remember { mutableStateOf<Superhero?>(null) }
 
     SingleChoiceQuestion(
         titleResourceId = R.string.pick_superhero,
@@ -150,4 +233,10 @@ fun SingleChoiceQuestionPreview() {
     )
 }
 
+/**
+ * A class that represents a superhero.
+ *
+ * @param stringResourceId The string resource ID for the superhero's name.
+ * @param imageResourceId The drawable resource ID for the superhero's image.
+ */
 data class Superhero(@StringRes val stringResourceId: Int, @DrawableRes val imageResourceId: Int)

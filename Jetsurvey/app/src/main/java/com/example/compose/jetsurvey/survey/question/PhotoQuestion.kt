@@ -25,8 +25,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,7 +49,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -85,7 +89,40 @@ import androidx.core.net.toUri
  *  method of our [ManagedActivityResultLauncher] variable `cameraLauncher` with the [Uri] variable
  *  `newImageUri` as its `input` argument.
  *  - `shape`: is the [Shapes.small] of our custom [MaterialTheme.shapes].
- *  TODO: Continue here.
+ *  - `contentPadding`: is new instance of [PaddingValues], defaulting to `0.dp` on all sides.
+ *
+ * In the [RowScope] `content` composable lambda argument of the [OutlinedButton] we compose a
+ * [Column] in whose [ColumnScope] `content` composable lambda argument if [Boolean] variable
+ * `hasPhoto` is `true` we compose an [AsyncImage] whose arguments are:
+ *  - `model`: uses a new instance of [ImageRequest.Builder] to `build` an [ImageRequest] whose
+ *  [ImageRequest.data] is our [Uri] parameter [imageUri], amd whose [ImageRequest.Builder.crossfade]
+ *  is `true`.
+ *  - `contentDescription`: is `null`.
+ *  - `modifier`: is a [Modifier.fillMaxWidth], chained to a [Modifier.heightIn] with a minimum height
+ *  of `96.dp`, and chained to a [Modifier.aspectRatio] with a ratio of `4/3f`.
+ *
+ * If our [Boolean] variable `hasPhoto` is `false` we compose a [PhotoDefaultImage] whose arguments
+ * are:
+ *  - `modifier`: is a [Modifier.padding] that adds `86.dp` padding to each `horizontal` side and
+ *  `74.dp` padding to each `vertical` side.
+ *
+ * Below the photos we compose a [Row] whose arguments are:
+ *  - `modifier`: is a [Modifier.fillMaxWidth], chained to a [Modifier.wrapContentSize] with an
+ *  alignment of [Alignment.BottomCenter], and chained to a [Modifier.padding] that adds `26.dp`
+ *  to each `vertical` side.
+ *  - `verticalAlignment`: is [Alignment.CenterVertically].
+ *
+ * In the [RowScope] `content` composable lambda argument of the [Row] we compose:
+ *
+ * **First** an [Icon] whose arguments are:
+ *  - `imageVector`: is our [ImageVector] variable `iconResource`.
+ *  - `contentDescription`: is `null`.
+ *
+ * **Second** a [Spacer] whose `modifier` argument is a [Modifier.width] with a width of `8.dp`.
+ *
+ * **Third** a [Text] whose `text` argument is the string resource whose resource ID is
+ * `R.string.retake_photo` ("RETAKE PHOTO") if our [Boolean] variable `hasPhoto` is `true`, or
+ * `R.string.add_photo` ("ADD PHOTO") if it is `false`.
  *
  * @param titleResourceId The resource ID of the question title.
  * @param imageUri The URI of the currently selected image, or null if no image is selected.
@@ -178,6 +215,25 @@ fun PhotoQuestion(
     }
 }
 
+/**
+ * Displays a default image when no photo is selected.
+ *
+ * This composable function displays a placeholder image when no photo has been
+ * taken or selected by the user. It adapts to the current theme (light or dark)
+ * by choosing an appropriate image resource.
+ *
+ * We start by initializing our [Int] variable `assetId` with the resource ID
+ * `R.drawable.ic_selfie_light` if [lightTheme] is `true`, or the resource ID
+ * `R.drawable.ic_selfie_dark` if it is `false`. Then we compose an [Image] whose arguments are:
+ *  - `painter`: is the [Painter] returned by [painterResource] for resource ID `assetId`.
+ *  - `modifier`: is our [Modifier] parameter [modifier].
+ *  - `contentDescription`: is `null`.
+ *
+ * @param modifier The modifier to apply to this composable.
+ * @param lightTheme Whether the current theme is light or dark. This determines which version of
+ * the placeholder image to display. Default is `true` if the [Color.luminance] of the current
+ * [LocalContentColor] is less than 0.5, otherwise it is `false`.
+ */
 @Composable
 private fun PhotoDefaultImage(
     modifier: Modifier = Modifier,
