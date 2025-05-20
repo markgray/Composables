@@ -54,21 +54,18 @@ import java.util.TimeZone
  *  string to display for the title of the question.
  *  - `directionsResourceId`: is our [Int] parameter [directionsResourceId] which is the resource
  *  ID for the string to display for the directions of the question.
- *  - `dateInMillis`: is our [Long] parameter [dateInMillis] which is the date to display, in
- *  milliseconds, or `null` if no date has been selected.
- *  - `onClick`: is our lambda parameter [onClick] which is invoked when the user clicks on the
- *  date picker.
  *  - `modifier`: is our [Modifier] parameter [modifier].
  *
  * Inside of the `content` composable lambda argument of the [QuestionWrapper] we start by
  * initializing our [SimpleDateFormat] variable `dateFormat` with an instance that uses our
- * [simpleDateFormatPattern] as the format pattern for the [Locale.getDefault] locale. We then
- * set the [SimpleDateFormat.timeZone] to the [TimeZone.getTimeZone] for the UTC time zone.
+ * [simpleDateFormatPattern] (the constant [String] "EEE, MMM d")  as the format pattern for the
+ * [Locale.getDefault] locale. We then set the [SimpleDateFormat.timeZone] to the
+ * [TimeZone.getTimeZone] for the UTC time zone.
  *
  * We initialize our [String] variable `dateString` with the result of calling the
  * [SimpleDateFormat.format] method of our variable `dateFormat` with our [Long] parameter
- * [dateInMillis], and if [dateInMillis] is `null`, we call the [getDefaultDateInMillis] method
- * to get the default date in milliseconds.
+ * [dateInMillis] if [dateInMillis] is not `null`, and if [dateInMillis] is `null`, we call
+ * the [getDefaultDateInMillis] method to get the default date in milliseconds.
  *
  * Then we compose a [Button] whose arguments are:
  *  - `onClick`: is our lambda parameter [onClick].
@@ -96,8 +93,8 @@ import java.util.TimeZone
  *  `0.2f`.
  *
  * @param titleResourceId String resource to display for the title of the question
- * @param directionsResourceId String resource to display the directions for the question
- * @param dateInMillis The date to display, in milliseconds, or null if no date has been selected
+ * @param directionsResourceId String resource to display fir the directions of the question
+ * @param dateInMillis The date to display, in milliseconds, or `null` if no date has been selected
  * @param onClick The callback to be invoked when the user clicks on the date picker
  * @param modifier The modifier to apply to this composable
  */

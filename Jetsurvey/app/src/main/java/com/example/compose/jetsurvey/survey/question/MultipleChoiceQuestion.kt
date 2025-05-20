@@ -61,7 +61,7 @@ import com.example.compose.jetsurvey.survey.QuestionWrapper
  *  - `modifier`: is a [Modifier.padding] that adds `8.dp` padding to the vertical sides.
  *  - `text`: is the [String] whose resource ID is our [Int] variable `answerStringResId`.
  *  - `selected`: is our [Boolean] variable `selected`.
- *  - `onOptionSelected`: is a lmabda that calls our lambda parameter [onOptionSelected] with the
+ *  - `onOptionSelected`: is a lambda that calls our lambda parameter [onOptionSelected] with the
  *  inverse of our [Boolean] variable `selected` and our [Int] variable `answerStringResId`.
  *
  * @param titleResourceId The string resource ID for the question title.
@@ -108,7 +108,7 @@ fun MultipleChoiceQuestion(
  *  [ColorScheme.primary] of our custom [MaterialTheme.colorScheme] if `selected` is `true`, or the
  *  [ColorScheme.outline] of our custom [MaterialTheme.colorScheme] if it is `false`.
  *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.clip] whose `shape` is
- *  the [Shapes.small] of our custom [MaterialTheme.shapes], and with a [Modifier.clickable] whose
+ *  the [Shapes.small] of our custom [MaterialTheme.shapes], with a [Modifier.clickable] whose
  *  `onClick` is our lambda parameter [onOptionSelected] chained to that.
  *
  * In the `content` composable lambda argument of the [Surface] we compose a [Row] whose arguments
