@@ -106,10 +106,10 @@ import androidx.core.net.toUri
  *  - `modifier`: is a [Modifier.padding] that adds `86.dp` padding to each `horizontal` side and
  *  `74.dp` padding to each `vertical` side.
  *
- * Below the photos we compose a [Row] whose arguments are:
+ * Below the photo area we compose a [Row] whose arguments are:
  *  - `modifier`: is a [Modifier.fillMaxWidth], chained to a [Modifier.wrapContentSize] with an
- *  alignment of [Alignment.BottomCenter], and chained to a [Modifier.padding] that adds `26.dp`
- *  to each `vertical` side.
+ *  alignment of [Alignment.BottomCenter], and that is chained to a [Modifier.padding] that adds
+ *  `26.dp` to each `vertical` side.
  *  - `verticalAlignment`: is [Alignment.CenterVertically].
  *
  * In the [RowScope] `content` composable lambda argument of the [Row] we compose:
@@ -125,7 +125,7 @@ import androidx.core.net.toUri
  * `R.string.add_photo` ("ADD PHOTO") if it is `false`.
  *
  * @param titleResourceId The resource ID of the question title.
- * @param imageUri The URI of the currently selected image, or null if no image is selected.
+ * @param imageUri The URI of the currently selected image, or `null` if no image is selected.
  * @param getNewImageUri A function that returns a new URI for storing a captured photo.
  * @param onPhotoTaken A callback that is invoked when a photo is taken or selected.
  * It provides the URI of the captured or selected photo.

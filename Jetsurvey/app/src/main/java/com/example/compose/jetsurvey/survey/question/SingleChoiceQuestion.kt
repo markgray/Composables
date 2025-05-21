@@ -61,14 +61,14 @@ import com.example.compose.jetsurvey.survey.QuestionWrapper
  * [QuestionWrapper] whose `titleResourceId` argument is our [Int] parameter [titleResourceId],
  * whose `directionsResourceId` argument is our [Int] parameter [directionsResourceId], and whose
  * `modifier` argument is our [Modifier] parameter [modifier]. Inside the `content` composable
- * we use the [Iterable.forEach] method to loop through our [List] of [Superhero] parameter
- * [possibleAnswers] capturing each [Superhero] in variable `hero`. We initialize our [Boolean]
- * varialbe `selected` with `true` if our [Superhero] variable `hero` is the same as our
- * [Superhero] parameter [selectedAnswer], or `false` otherwise. We then compose a
- * [RadioButtonWithImageRow] whose arguments are:
+ * lambda argument of the [QuestionWrapper] we use the [Iterable.forEach] method of the [List] of
+ * [Superhero] parameter [possibleAnswers] to loop through the [List] capturing each [Superhero] in
+ * variable `hero`. We initialize our [Boolean] variable `selected` with `true` if our [Superhero]
+ * variable `hero` is the same as our [Superhero] parameter [selectedAnswer], or `false` otherwise.
+ * We then compose a [RadioButtonWithImageRow] whose arguments are:
  *  - `modifier`: is a [Modifier.padding] that adds `8.dp` padding to each `vertical` side.
  *  - `text`: is the [String] whose resource ID is the [Superhero.stringResourceId] of `hero`.
- *  - `imageResourceId`: is the [Superhero.imageResourceId] proerty of `hero`.
+ *  - `imageResourceId`: is the [Superhero.imageResourceId] property of `hero`.
  *  - `selected`: is our [Boolean] variable `selected`.
  *  - `onOptionSelected`: is a lambda that calls our [onOptionSelected] lambda parameter with `hero`.
  *
@@ -119,8 +119,9 @@ fun SingleChoiceQuestion(
  *  if it is `false`.
  *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.clip] whose `shape`
  *  is the [Shapes.small] of our custom [MaterialTheme.shapes], and chains a [Modifier.selectable]
- *  to that whose `selected` argument is our [Boolean] parameter [selected], `onClick` argument is
- *  our [onOptionSelected] lambda parameter, and whose `role` argument is [Role.RadioButton].
+ *  to that whose `selected` argument is our [Boolean] parameter [selected], whose `onClick`
+ *  argument is our [onOptionSelected] lambda parameter, and whose `role` argument is
+ *  [Role.RadioButton].
  *
  * In the `content` composable lambda argument of the [Surface] we compose a [Row] whose `modifier`
  * argument is a [Modifier.fillMaxWidth], chained to a [Modifier.padding] that adds `16.dp` to `all`
@@ -130,8 +131,8 @@ fun SingleChoiceQuestion(
  *  - `painter`: is the [Painter] returned by [painterResource] for resource ID [imageResourceId].
  *  - `contentDescription`: is `null`.
  *  - `modifier`: is a [Modifier.size] with a size of `56.dp`, chained to a [Modifier.clip] whose
- *  `shape` is the [Shapes.extraSmall] of our custom [MaterialTheme.shapes], and chained to a
- *  [Modifier.padding] that adds `0.dp` to the `start` side, and `8.dp` to the `end` side.
+ *  `shape` is the [Shapes.extraSmall] of our custom [MaterialTheme.shapes], and that is chained
+ *  to a [Modifier.padding] that adds `0.dp` to the `start` side, and `8.dp` to the `end` side.
  *
  * **Second** a [Spacer] whose `modifier` argument is a [Modifier.width] with a width of `8.dp`.
  *
