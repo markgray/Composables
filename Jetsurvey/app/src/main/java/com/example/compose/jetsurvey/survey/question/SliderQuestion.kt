@@ -18,14 +18,19 @@ package com.example.compose.jetsurvey.survey.question
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +46,46 @@ import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 /**
  * Slider question, a question that consists of a slider allowing an answer in a given range.
- * TODO: Continue here.
+ *
+ * We start by initializing and remembering our [MutableFloatState] variable `sliderPosition` with
+ * our [Float] parameter [value] as its initial value if it is not `null` or the middle of our
+ * [ClosedFloatingPointRange] parameter [valueRange] if it is `null`.
+ *
+ * Our root composable is a [QuestionWrapper] whose `titleResourceId` argument is our [Int] parameter
+ * [titleResourceId], and whose `modifier` argument is our [Modifier] parameter [modifier]. Inside
+ * its `content` composable lambda argument we compose two [Row]'s (these are inside the scrollable
+ * [Column] of the [QuestionWrapper]).
+ *
+ * **First Row** In the [RowScope] `content` composable lambda argument we compose a [Slider] whose
+ * arguments are:
+ *  - `value`: is our [MutableState] wrapped [Float] variable `sliderPosition`.
+ *  - `onValueChange`: is a lambda that accepts the [Float] passed the lambda in variable `position`
+ *  then sets `sliderPostition` to `position` and calls our [onValueChange] lambda parameter with
+ *  `position`.
+ *  - `valueRange`: is our [ClosedFloatingPointRange] parameter [valueRange].
+ *  - `steps`: is our [Int] parameter [steps].
+ *  - `modifier`: is a [Modifier.padding] that adds `16.dp` to the `horizontal` sides, with a
+ *  [Modifier.fillMaxWidth] chained to that which causes it to fill the entire width of the [Row].
+ *
+ * **Second Row** In the [RowScope] `content` composable lambda argument we compose threes [Text]s:
+ *
+ * **First** a [Text] whose arguments are:
+ *  - `text`: is the [String] whose resource ID is our [Int] parameter [startTextResource].
+ *  - `style`: is the [Typography.bodySmall] of our custom [MaterialTheme.typography].
+ *  - `textAlign`: is [TextAlign.Start].
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [RowScope.weight] with a weight of `1.8f`
+ *
+ * **Second** a [Text] whose arguments are:
+ *  - `text`: is the [String] whose resource ID is our [Int] parameter [neutralTextResource].
+ *  - `style`: is the [Typography.bodySmall] of our custom [MaterialTheme.typography].
+ *  - `textAlign`: is [TextAlign.Center].
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [RowScope.weight] with a weight of `1.8f`
+ *
+ * **Third** a [Text] whose arguments are:
+ *  - `text`: is the [String] whose resource ID is our [Int] parameter [endTextResource].
+ *  - `style`: is the [Typography.bodySmall] of our custom [MaterialTheme.typography].
+ *  - `textAlign`: is [TextAlign.End].
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [RowScope.weight] with a weight of `1.8f`
  *
  * @param titleResourceId String resource to be used for the question's title
  * @param value Current value of the answer. If `null`, the slider will be positioned in the middle.

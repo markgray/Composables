@@ -35,10 +35,18 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 
+/**
+ * The duration of the slide animation in milliseconds when transitioning between questions.
+ */
 private const val CONTENT_ANIMATION_DURATION = 300
 
 /**
- * Displays a [SurveyQuestionsScreen] tied to the passed [SurveyViewModel]
+ * Displays the [SurveyQuestionsScreen] and handles the survey state.
+ * TODO: Continue here.
+ *
+ * @param onSurveyComplete Called when the survey is completed.
+ * @param onNavUp Called when the user presses the back button or the close button and the survey
+ * is not completed.
  */
 @Composable
 fun SurveyRoute(
@@ -46,10 +54,10 @@ fun SurveyRoute(
     onNavUp: () -> Unit,
 ) {
     val viewModel: SurveyViewModel = viewModel(
-        factory = SurveyViewModelFactory(PhotoUriManager(LocalContext.current))
+        factory = SurveyViewModelFactory(photoUriManager = PhotoUriManager(LocalContext.current))
     )
 
-    val surveyScreenData = viewModel.surveyScreenData ?: return
+    val surveyScreenData: SurveyScreenData = viewModel.surveyScreenData ?: return
 
     BackHandler {
         if (!viewModel.onBackPressed()) {
@@ -68,17 +76,18 @@ fun SurveyRoute(
         onDonePressed = { viewModel.onDonePressed(onSurveyComplete) }
     ) { paddingValues: PaddingValues ->
 
-        val modifier = Modifier.padding(paddingValues)
+        val modifier = Modifier.padding(paddingValues = paddingValues)
 
         AnimatedContent(
             targetState = surveyScreenData,
             transitionSpec = {
                 val animationSpec: TweenSpec<IntOffset> = tween(CONTENT_ANIMATION_DURATION)
 
-                val direction = getTransitionDirection(
-                    initialIndex = initialState.questionIndex,
-                    targetIndex = targetState.questionIndex,
-                )
+                val direction: AnimatedContentTransitionScope.SlideDirection =
+                    getTransitionDirection(
+                        initialIndex = initialState.questionIndex,
+                        targetIndex = targetState.questionIndex,
+                    )
 
                 slideIntoContainer(
                     towards = direction,
@@ -89,7 +98,7 @@ fun SurveyRoute(
                 )
             },
             label = "surveyScreenDataAnimation"
-        ) { targetState ->
+        ) { targetState: SurveyScreenData ->
 
             when (targetState.surveyQuestion) {
                 SurveyQuestion.FREE_TIME -> {
@@ -107,7 +116,7 @@ fun SurveyRoute(
                 )
 
                 SurveyQuestion.LAST_TAKEAWAY -> {
-                    val supportFragmentManager =
+                    val supportFragmentManager: FragmentManager =
                         LocalContext.current.findActivity().supportFragmentManager
                     TakeawayQuestion(
                         dateInMillis = viewModel.takeawayResponse,
@@ -162,13 +171,13 @@ private fun showTakeawayDatePicker(
     supportFragmentManager: FragmentManager,
     onDateSelected: (date: Long) -> Unit,
 ) {
-    val picker = MaterialDatePicker.Builder.datePicker()
+    val picker: MaterialDatePicker<Long?> = MaterialDatePicker.Builder.datePicker()
         .setSelection(date)
         .build()
     picker.show(supportFragmentManager, picker.toString())
     picker.addOnPositiveButtonClickListener {
-        picker.selection?.let {
-            onDateSelected(it)
+        picker.selection?.let { newDate: Long ->
+            onDateSelected(newDate)
         }
     }
 }
