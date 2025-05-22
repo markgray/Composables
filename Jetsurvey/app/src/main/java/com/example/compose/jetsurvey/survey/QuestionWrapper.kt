@@ -41,7 +41,7 @@ import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 /**
  * A scrollable container with the question's title, direction, and dynamic content.
  *
- * Our root composable is a [Column] whose `modifier` argument chains [Modifier.padding] to our
+ * Our root composable is a [Column] whose `modifier` argument chains a [Modifier.padding] to our
  * [Modifier] parameter` [modifier] that adds `16.dp` to the `horizontal` sides, with a
  * [Modifier.verticalScroll] chained to that which allows it to scroll vertically. Inside its
  * [ColumnScope] `content` composable lambda argument we compose:
@@ -93,12 +93,13 @@ fun QuestionWrapper(
  * Displays the title of a question. Our root composable is a [Text] whose arguments are:
  *  - `text`: is the [String] whose resource ID is our [Int] parameter [title].
  *  - `style`: is the [Typography.titleMedium] of our custom [MaterialTheme.typography].
- *  - `color`: is the [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme]
+ *  - `color`: is a copy of the [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme]
+ *  with its `alpha` property set to [slightlyDeemphasizedAlpha] (`0.87f`)
  *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.fillMaxWidth] chained to
  *  a [Modifier.background] whose `color` argument is the [ColorScheme.inverseOnSurface] of our
  *  custom [MaterialTheme.colorScheme] and whose `shape` argument is the [Shapes.small] of our
- *  custom [MaterialTheme.shapes], with a [Modifier.padding] of that adds `24.dp` to the `vertical`
- *  sides and `16.dp` to the `horizontal` sides.
+ *  custom [MaterialTheme.shapes], with a [Modifier.padding] at the end of the chain that adds
+ *  `24.dp` to the `vertical` sides and `16.dp` to the `horizontal` sides.
  *
  * @param title The string resource id of the question's title.
  * @param modifier A [Modifier] to be applied to the layout.

@@ -53,8 +53,8 @@ import com.example.compose.jetsurvey.theme.JetsurveyTheme
  *
  * Our root composable is a [QuestionWrapper] whose `titleResourceId` argument is our [Int] parameter
  * [titleResourceId], and whose `modifier` argument is our [Modifier] parameter [modifier]. Inside
- * its `content` composable lambda argument we compose two [Row]'s (these are inside the scrollable
- * [Column] of the [QuestionWrapper]).
+ * its `content` composable lambda argument we compose two [Row]'s (these are to be composed inside
+ * the scrollable [Column] of the [QuestionWrapper]).
  *
  * **First Row** In the [RowScope] `content` composable lambda argument we compose a [Slider] whose
  * arguments are:

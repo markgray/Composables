@@ -78,7 +78,7 @@ fun FreeTimeQuestion(
  *  - `possibleAnswers`: is a [List] of [Superhero]s whose elements are the possible answers.
  *  - `selectedAnswer`: is our [Superhero] parameter [selectedAnswer].
  *  - `onOptionSelected`: is our [onOptionSelected] lambda parameter.
- *
+ *  - `modifier`: is our [Modifier] parameter [modifier].
  *
  * @param selectedAnswer The currently selected superhero.
  * @param onOptionSelected Callback for when a superhero is selected.
