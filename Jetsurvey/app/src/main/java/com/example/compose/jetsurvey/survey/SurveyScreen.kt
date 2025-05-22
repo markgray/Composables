@@ -56,6 +56,19 @@ import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
 import com.example.compose.jetsurvey.util.supportWideScreen
 
+/**
+ * Displays a survey question screen with a top app bar, content area, and bottom navigation bar.
+ * TODO: Continue here.
+ *
+ * @param surveyScreenData Data related to the current survey screen, including question index and count.
+ * @param isNextEnabled Whether the "Next" button should be enabled.
+ * @param onClosePressed Callback invoked when the close button in the top app bar is pressed.
+ * @param onPreviousPressed Callback invoked when the "Previous" button is pressed.
+ * @param onNextPressed Callback invoked when the "Next" button is pressed.
+ * @param onDonePressed Callback invoked when the "Done" button is pressed.
+ * @param content A composable function that defines the content of the survey question. It receives
+ * the [PaddingValues] that [Scaffold] passes to its `content` composable lambda argument.
+ */
 @Composable
 fun SurveyQuestionsScreen(
     surveyScreenData: SurveyScreenData,
@@ -98,12 +111,12 @@ fun SurveyResultScreen(
 
     Surface(modifier = Modifier.supportWideScreen()) {
         Scaffold(
-            content = { innerPadding ->
-                val modifier = Modifier.padding(innerPadding)
+            content = { innerPadding: PaddingValues ->
+                val modifier = Modifier.padding(paddingValues = innerPadding)
                 SurveyResult(
-                    title = stringResource(R.string.survey_result_title),
-                    subtitle = stringResource(R.string.survey_result_subtitle),
-                    description = stringResource(R.string.survey_result_description),
+                    title = stringResource(id = R.string.survey_result_title),
+                    subtitle = stringResource(id = R.string.survey_result_subtitle),
+                    description = stringResource(id = R.string.survey_result_description),
                     modifier = modifier
                 )
             },
@@ -130,7 +143,7 @@ private fun SurveyResult(
 ) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
         item {
-            Spacer(modifier = Modifier.height(44.dp))
+            Spacer(modifier = Modifier.height(height = 44.dp))
             Text(
                 text = title,
                 style = MaterialTheme.typography.displaySmall,
@@ -139,7 +152,7 @@ private fun SurveyResult(
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier.padding(all = 20.dp)
             )
             Text(
                 text = description,
@@ -189,27 +202,28 @@ fun SurveyTopAppBar(
             actions = {
                 IconButton(
                     onClick = onClosePressed,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(all = 4.dp)
                 ) {
                     Icon(
                         Icons.Filled.Close,
                         contentDescription = stringResource(id = R.string.close),
-                        tint = MaterialTheme.colorScheme.onSurface.copy(stronglyDeemphasizedAlpha)
+                        tint = MaterialTheme.colorScheme.onSurface
+                            .copy(alpha = stronglyDeemphasizedAlpha)
                     )
                 }
             }
         )
 
-        val animatedProgress by animateFloatAsState(
+        val animatedProgress: Float by animateFloatAsState(
             targetValue = (questionIndex + 1) / totalQuestionsCount.toFloat(),
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
         )
         LinearProgressIndicator(
-            progress = animatedProgress,
+            progress = { animatedProgress },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
-            trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+            trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
         )
     }
 }
@@ -230,25 +244,25 @@ fun SurveyBottomBar(
                 // Since we're not using a Material component but we implement our own bottom bar,
                 // we will also need to implement our own edge-to-edge support. Similar to the
                 // NavigationBar, we add the horizontal and bottom padding if it hasn't been consumed yet.
-                .windowInsetsPadding(WindowInsets.systemBars.only(Horizontal + Bottom))
+                .windowInsetsPadding(insets = WindowInsets.systemBars.only(Horizontal + Bottom))
                 .padding(horizontal = 16.dp, vertical = 20.dp)
         ) {
             if (shouldShowPreviousButton) {
                 OutlinedButton(
                     modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
+                        .weight(weight = 1f)
+                        .height(height = 48.dp),
                     onClick = onPreviousPressed
                 ) {
                     Text(text = stringResource(id = R.string.previous))
                 }
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(width = 16.dp))
             }
             if (shouldShowDoneButton) {
                 Button(
                     modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
+                        .weight(weight = 1f)
+                        .height(height = 48.dp),
                     onClick = onDonePressed,
                     enabled = isNextButtonEnabled,
                 ) {
@@ -257,8 +271,8 @@ fun SurveyBottomBar(
             } else {
                 Button(
                     modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
+                        .weight(weight = 1f)
+                        .height(height = 48.dp),
                     onClick = onNextPressed,
                     enabled = isNextButtonEnabled,
                 ) {

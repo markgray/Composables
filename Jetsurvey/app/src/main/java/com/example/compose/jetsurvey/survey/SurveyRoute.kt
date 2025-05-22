@@ -21,7 +21,9 @@ import android.content.ContextWrapper
 import androidx.activity.compose.BackHandler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
@@ -42,7 +44,97 @@ private const val CONTENT_ANIMATION_DURATION = 300
 
 /**
  * Displays the [SurveyQuestionsScreen] and handles the survey state.
- * TODO: Continue here.
+ *
+ * We start by initializing our [SurveyViewModel] variable `viweModel` to the instance returned by
+ * [viewModel] using as its `factory` argument our [SurveyViewModelFactory] to create a new instance
+ * if it doesn't already exist. We initialize our [SurveyScreenData] variable `surveyScreenData` to
+ * the [SurveyViewModel.surveyScreenData] property of our [SurveyViewModel] variable `viewModel` and
+ * return if it is `null`.
+ *
+ * We compose a [BackHandler] whose `onBack` lambda argument checks if the
+ * [SurveyViewModel.onBackPressed] method of our [SurveyViewModel] variable `viewModel` returns
+ * `false` which indicates that the ViewModel did not handle the back press to move backward by
+ * one question so we should call our [onNavUp] lambda argument instead.
+ *
+ * Our root composable is a [SurveyQuestionsScreen] whose arguments are:
+ *  - `surveyScreenData`: is our [SurveyScreenData] variable `surveyScreenData`.
+ *  - `isNextEnabled`: is the [SurveyViewModel.isNextEnabled] property of our [SurveyViewModel]
+ *  variable `viewModel`.
+ *  - `onClosePressed`: is a lambda that calls our [onNavUp] lambda argument.
+ *  - `onPreviousPressed`: is a lambda that calls the [SurveyViewModel.onPreviousPressed] method
+ *  of our [SurveyViewModel] variable `viewModel`.
+ *  - `onNextPressed`: is a lambda that calls the [SurveyViewModel.onNextPressed] method of our
+ *  [SurveyViewModel] variable `viewModel`.
+ *  - `onDonePressed`: is a lambda that calls the [SurveyViewModel.onDonePressed] method of our
+ *  [SurveyViewModel] variable `viewModel` with its `onSurveyComplete` argument our [onSurveyComplete]
+ *  lambda parameter.
+ *
+ * In the `content` composable lambda argument of the [SurveyQuestionsScreen] composable we accept
+ * the [PaddingValues] passed the lambda in variable `paddingValues` and initialize our [Modifier]
+ * variable to a [Modifier.padding] whose `paddingValues` argument is `paddingValues`. Then we
+ * compose an [AnimatedContent] whose arguments are:
+ *  - `targetState`: is our [SurveyScreenData] variable `surveyScreenData`.
+ *  - `transitionSpec`: is an [AnimatedContentTransitionScope] of [SurveyScreenData] lambda in which
+ *  we initialize our [TweenSpec] of [IntOffset] variable `animationSpec` to a [tween] whose
+ *  `durationMillis` is [CONTENT_ANIMATION_DURATION] (`300`), then we initialize our
+ *  [AnimatedContentTransitionScope.SlideDirection] variable `direction` to the value returned by
+ *  [getTransitionDirection] for an `initialIndex` of the `initialState` of
+ *  [SurveyScreenData.questionIndex] and a `targetIndex` of the `targetState` of
+ *  [SurveyScreenData.questionIndex]. Finally it returns an
+ *  [AnimatedContentTransitionScope.slideIntoContainer] whose `towards` argument is `direction`
+ *  and whose `animationSpec` argument is `animationSpec` to which we then use the
+ *  [EnterTransition.togetherWith] extension function to add a
+ *  [AnimatedContentTransitionScope.slideOutOfContainer] whose `towards` argument is `direction`
+ *  and whose `animationSpec` argument is `animationSpec`.
+ *  - `label`: is a string literal with the value `"surveyScreenDataAnimation"`.
+ *
+ * In the [AnimatedContentScope] `content` lambda argument of the [AnimatedContent] we accept the
+ * [SurveyScreenData] passed the lambda in variable `targetState` and then use a `when` statement
+ * to branch on the vaule of the [SurveyScreenData.surveyQuestion] property of
+ * [SurveyScreenData] variable `targetState`:
+ *
+ * [SurveyQuestion.FREE_TIME] -> we compose a [FreeTimeQuestion] whose arguments are:
+ *  - `selectedAnswers`: is the [SurveyViewModel.freeTimeResponse] property of our [SurveyViewModel]
+ *  variable `viewModel`.
+ *  - `onOptionSelected`: is a function reference to the [SurveyViewModel.onFreeTimeResponse] method
+ *  of our [SurveyViewModel] variable `viewModel`.
+ *  - `modifier`: is our [Modifier] variable `modifier`.
+ *
+ * [SurveyQuestion.SUPERHERO] -> we compose a [SuperheroQuestion] whose arguments are:
+ *  - `selectedAnswer`: is the [SurveyViewModel.superheroResponse] property of our [SurveyViewModel]
+ *  variable `viewModel`.
+ *  - `onOptionSelected`: is a function reference to the [SurveyViewModel.onSuperheroResponse] method
+ *  of our [SurveyViewModel] variable `viewModel`.
+ *  - `modifier`: is our [Modifier] variable `modifier`.
+ *
+ * [SurveyQuestion.LAST_TAKEAWAY] -> we initialize our [FragmentManager] variable `supportFragmentManager`
+ * to the `supportFragmentManager` of our current [LocalContext] then we compose a [TakeawayQuestion]
+ * whose arguments are:
+ *  - `dateInMillis`: is the [SurveyViewModel.takeawayResponse] property of our [SurveyViewModel]
+ *  variable `viewModel`.
+ *  - `onClick`: is a lambda that calls the [showTakeawayDatePicker] method with its `date` argument
+ *  the value of the [SurveyViewModel.takeawayResponse] property of our [SurveyViewModel] variable
+ *  `viewModel`, its `supportFragmentManager` argument our [FragmentManager] variable
+ *  `supportFragmentManager`, and its `onDateSelected` argument function reference to the
+ *  [SurveyViewModel.onTakeawayResponse] method of our [SurveyViewModel] variable `viewModel`.
+ *  - `modifier`: is our [Modifier] variable `modifier`.
+ *
+ * [SurveyQuestion.FEELING_ABOUT_SELFIES] -> we compose a [FeelingAboutSelfiesQuestion] whose arguments
+ * are:
+ *  - `value`: is the [SurveyViewModel.feelingAboutSelfiesResponse] property of our [SurveyViewModel]
+ *  variable `viewModel`.
+ *  - `onValueChange`: is a function reference to the [SurveyViewModel.onFeelingAboutSelfiesResponse]
+ *  method of our [SurveyViewModel] variable `viewModel`.
+ *  - `modifier`: is our [Modifier] variable `modifier`.
+ *
+ * [SurveyQuestion.TAKE_SELFIE] -> we compose a [TakeSelfieQuestion] whose arguments are:
+ *  - `imageUri`: is the [SurveyViewModel.selfieUri] property of our [SurveyViewModel] variable
+ *  `viewModel`.
+ *  - `getNewImageUri`: is a function reference to the [SurveyViewModel.getNewSelfieUri] method of
+ *  our [SurveyViewModel] variable `viewModel`.
+ *  - `onPhotoTaken`: is a function reference to the [SurveyViewModel.onSelfieResponse] method of
+ *  our [SurveyViewModel] variable `viewModel`.
+ *  - `modifier`: is our [Modifier] variable `modifier`.
  *
  * @param onSurveyComplete Called when the survey is completed.
  * @param onNavUp Called when the user presses the back button or the close button and the survey
@@ -81,7 +173,8 @@ fun SurveyRoute(
         AnimatedContent(
             targetState = surveyScreenData,
             transitionSpec = {
-                val animationSpec: TweenSpec<IntOffset> = tween(CONTENT_ANIMATION_DURATION)
+                val animationSpec: TweenSpec<IntOffset> =
+                    tween(durationMillis = CONTENT_ANIMATION_DURATION)
 
                 val direction: AnimatedContentTransitionScope.SlideDirection =
                     getTransitionDirection(
@@ -149,6 +242,19 @@ fun SurveyRoute(
     }
 }
 
+/**
+ * Determines the direction of the transition based on the initial and target question indices.
+ *
+ * If our [Int] parameter [targetIndex] target question index is greater than
+ * [Int] parameter [initialIndex] initial question index, then the transition
+ * is a [AnimatedContentTransitionScope.SlideDirection.Left], if however we are
+ * going back to the previous question in the set, then the transition is a
+ * [AnimatedContentTransitionScope.SlideDirection.Right].
+ *
+ * @param initialIndex The index of the question being transitioned from.
+ * @param targetIndex The index of the question being transitioned to.
+ * @return The direction of the transition.
+ */
 private fun getTransitionDirection(
     initialIndex: Int,
     targetIndex: Int
@@ -166,6 +272,22 @@ private fun getTransitionDirection(
     }
 }
 
+/**
+ * Displays a [MaterialDatePicker] to allow the user to select the date of their last takeaway.
+ * We initialize our [MaterialDatePicker] of [Long] variable `val picker` by building a
+ * [MaterialDatePicker.Builder.datePicker] whose selection is set to our [date] parameter.
+ * We then show `picker` using our [supportFragmentManager] parameter as the [FragmentManager]
+ * and the string value of `picker` as the `tag`. We add an `OnPositiveButtonClickListener` to
+ * `picker` whose lambda will retrieve the [MaterialDatePicker.getSelection] of `picker` (the
+ * selected date in milliseconds since the Epoch) and if it is not `null` call our [onDateSelected]
+ * lambda parameter with it.
+ *
+ * @param date the initial date to select in the picker, or `null` for no initial selection.
+ * This is expressed as the number of milliseconds from the epoch.
+ * @param supportFragmentManager the [FragmentManager] to use to display the picker.
+ * @param onDateSelected a lambda that will be called with the selected date in milliseconds since
+ * the Epoch when the user clicks the positive button.
+ */
 private fun showTakeawayDatePicker(
     date: Long?,
     supportFragmentManager: FragmentManager,
@@ -182,6 +304,18 @@ private fun showTakeawayDatePicker(
     }
 }
 
+/**
+ * Recursively searches for the [AppCompatActivity] associated with this [Context]. This method
+ * uses tail recursion to traverse the context hierarchy until it finds an [AppCompatActivity].
+ * It starts with the current context and checks if it's an instance of [AppCompatActivity].
+ * If it is, that instance is returned. If the current context is a [ContextWrapper], the method
+ * recursively calls itself with the base context of the wrapper. If the context is neither an
+ * [AppCompatActivity] nor a [ContextWrapper], it means an activity could not be found, and an
+ * [IllegalArgumentException] is thrown.
+ *
+ * @return The [AppCompatActivity] associated with this [Context].
+ * @throws IllegalArgumentException if an [AppCompatActivity] cannot be found.
+ */
 private tailrec fun Context.findActivity(): AppCompatActivity =
     when (this) {
         is AppCompatActivity -> this
