@@ -17,18 +17,33 @@
 package com.example.compose.jetsurvey.survey
 
 import android.net.Uri
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.compose.jetsurvey.survey.question.Superhero
 
-const val simpleDateFormatPattern = "EEE, MMM d"
+/**
+ * Date format pattern used to display dates in the survey.
+ *
+ * For example, "Mon, Aug 31"
+ */
+const val simpleDateFormatPattern: String = "EEE, MMM d"
 
+/**
+ * ViewModel for the survey. Manages the survey questions, UI state and actions.
+ *
+ * @property photoUriManager Manages the URI for the selfie photo.
+ */
 class SurveyViewModel(
     private val photoUriManager: PhotoUriManager
 ) : ViewModel() {
 
+    /**
+     * The order in which the survey questions are presented.
+     */
     private val questionOrder: List<SurveyQuestion> = listOf(
         SurveyQuestion.FREE_TIME,
         SurveyQuestion.SUPERHERO,
@@ -37,42 +52,116 @@ class SurveyViewModel(
         SurveyQuestion.TAKE_SELFIE,
     )
 
+    /**
+     * Index of the current question in the [questionOrder].
+     */
     private var questionIndex = 0
 
     // ----- Responses exposed as State -----
 
-    private val _freeTimeResponse = mutableStateListOf<Int>()
+
+    /**
+     * A list of answer IDs for the free time question.
+     *
+     * For example, if the user selected "Reading" and "Exercising", this list would contain
+     * the IDs for those two answers.
+     */
+    private val _freeTimeResponse: SnapshotStateList<Int> = mutableStateListOf<Int>()
+
+    /**
+     * Public read-only access to our [_freeTimeResponse] property.
+     */
     val freeTimeResponse: List<Int>
         get() = _freeTimeResponse
 
-    private val _superheroResponse = mutableStateOf<Superhero?>(null)
+    /**
+     * The superhero selected by the user.
+     *
+     * Null if the user has not yet selected a superhero.
+     */
+    private val _superheroResponse: MutableState<Superhero?> = mutableStateOf<Superhero?>(null)
+
+    /**
+     * Public read-only access to our [_superheroResponse] property.
+     */
     val superheroResponse: Superhero?
         get() = _superheroResponse.value
 
-    private val _takeawayResponse = mutableStateOf<Long?>(null)
+    /**
+     * The timestamp of the last takeaway, in milliseconds.
+     *
+     * Null if the user has not yet selected a takeaway date.
+     */
+    private val _takeawayResponse: MutableState<Long?> = mutableStateOf<Long?>(null)
+
+    /**
+     * Public read-only access to our [_takeawayResponse] property.
+     */
     val takeawayResponse: Long?
         get() = _takeawayResponse.value
 
-    private val _feelingAboutSelfiesResponse = mutableStateOf<Float?>(null)
+    /**
+     * The user's response to the "How do you feel about selfies?" question.
+     *
+     * This is a float value between 0.0 and 1.0, where 0.0 means "Strongly dislike" and 1.0 means
+     * "Strongly like".
+     *
+     * Null if the user has not yet answered the question.
+     */
+    private val _feelingAboutSelfiesResponse: MutableState<Float?> = mutableStateOf<Float?>(null)
+
+    /**
+     * Public read-only access to our [_feelingAboutSelfiesResponse] property.
+     */
     val feelingAboutSelfiesResponse: Float?
         get() = _feelingAboutSelfiesResponse.value
 
-    private val _selfieUri = mutableStateOf<Uri?>(null)
-    val selfieUri
+    /**
+     * The URI of the selfie photo.
+     *
+     * Null if the user has not yet taken a selfie.
+     */
+    private val _selfieUri: MutableState<Uri?> = mutableStateOf<Uri?>(null)
+
+    /**
+     * Public read-only access to our [_selfieUri] property.
+     */
+    val selfieUri: Uri?
         get() = _selfieUri.value
 
     // ----- Survey status exposed as State -----
 
-    private val _surveyScreenData = mutableStateOf(createSurveyScreenData())
+    /**
+     * The current state of the survey screen, including the current question, question index,
+     * total number of questions, and whether the "Previous" and "Done" buttons should be shown.
+     */
+    private val _surveyScreenData: MutableState<SurveyScreenData> =
+        mutableStateOf(createSurveyScreenData())
+
+    /**
+     * Public read-only access to our [_surveyScreenData] property.
+     */
     val surveyScreenData: SurveyScreenData?
         get() = _surveyScreenData.value
 
-    private val _isNextEnabled = mutableStateOf(false)
+    /**
+     * Whether the "Next" button should be enabled. This is `true` if the current question has been
+     * answered, and `false` otherwise.
+     */
+    private val _isNextEnabled: MutableState<Boolean> = mutableStateOf(false)
+
+    /**
+     * Public read-only access to our [_isNextEnabled] property.
+     */
     val isNextEnabled: Boolean
         get() = _isNextEnabled.value
 
     /**
-     * Returns true if the ViewModel handled the back press (i.e., it went back one question)
+     * Returns `false` if the [questionIndex] is 0 (the ViewModel can not go back), other wise it
+     * calls [changeQuestion] with the previous question index to go back one question and returns
+     * `true`.
+     *
+     * @return `false` if the [questionIndex] is 0, otherwise `true`.
      */
     fun onBackPressed(): Boolean {
         if (questionIndex == 0) {
@@ -82,6 +171,11 @@ class SurveyViewModel(
         return true
     }
 
+    /**
+     * Navigates to the previous question in the survey.
+     *
+     * @throws IllegalStateException if called when on the first question.
+     */
     fun onPreviousPressed() {
         if (questionIndex == 0) {
             throw IllegalStateException("onPreviousPressed when on question 0")
@@ -89,21 +183,53 @@ class SurveyViewModel(
         changeQuestion(questionIndex - 1)
     }
 
+    /**
+     * Called when the "Next" button is pressed.
+     *
+     * Moves to the next question in the survey.
+     */
     fun onNextPressed() {
         changeQuestion(questionIndex + 1)
     }
 
+    /**
+     * Changes the current question to the question at the given index. We set our [questionIndex]
+     * property to our [Int] parameter [newQuestionIndex] and call [getIsNextEnabled] to determine
+     * whether the "Next" button should be enabled and set [_isNextEnabled] to the result. Then we
+     * call [createSurveyScreenData] to create a new [SurveyScreenData] object and set
+     * [_surveyScreenData] to the result.
+     *
+     * @param newQuestionIndex The index of the question to change to.
+     */
     private fun changeQuestion(newQuestionIndex: Int) {
         questionIndex = newQuestionIndex
         _isNextEnabled.value = getIsNextEnabled()
         _surveyScreenData.value = createSurveyScreenData()
     }
 
+    /**
+     * Called when the "Done" button is pressed.
+     *
+     * This function should validate that the requirements of the survey are complete and then call
+     * [onSurveyComplete]. Currently it just calls [onSurveyComplete].
+     *
+     * @param onSurveyComplete A lambda to call when the survey is complete.
+     */
     fun onDonePressed(onSurveyComplete: () -> Unit) {
         // Here is where you could validate that the requirements of the survey are complete
         onSurveyComplete()
     }
 
+    /**
+     * Updates the free time response based on user selection.
+     * If [selected] is true, the [answer] is added to the list of selected answers.
+     * If [selected] is false, the [answer] is removed from the list of selected answers.
+     * After updating the list, it checks if the "Next" button should be enabled.
+     * TODO: Continue here.
+     *
+     * @param selected True if the answer was selected, false otherwise.
+     * @param answer The ID of the answer that was selected or deselected.
+     */
     fun onFreeTimeResponse(selected: Boolean, answer: Int) {
         if (selected) {
             _freeTimeResponse.add(answer)
@@ -133,7 +259,7 @@ class SurveyViewModel(
         _isNextEnabled.value = getIsNextEnabled()
     }
 
-    fun getNewSelfieUri() = photoUriManager.buildNewUri()
+    fun getNewSelfieUri(): Uri = photoUriManager.buildNewUri()
 
     private fun getIsNextEnabled(): Boolean {
         return when (questionOrder[questionIndex]) {
