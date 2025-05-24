@@ -22,9 +22,25 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-const val stronglyDeemphasizedAlpha = 0.6f
-const val slightlyDeemphasizedAlpha = 0.87f
+/**
+ * A alpha value for content that is strongly de-emphasized.
+ *
+ * This is the same value as `ContentAlpha.disabled` in M2.
+ */
+const val stronglyDeemphasizedAlpha: Float = 0.6f
 
+/**
+ * The alpha value for elements that are slightly deemphasized.
+ *
+ * This is used to make elements appear less prominent without making them fully transparent.
+ */
+const val slightlyDeemphasizedAlpha: Float = 0.87f
+
+/**
+ * The [lightColorScheme] for the Jetsurvey theme.
+ *
+ * This color scheme is used when the system is not in dark mode.
+ */
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
@@ -55,6 +71,10 @@ private val LightColors = lightColorScheme(
     surfaceTint = md_theme_light_surfaceTint,
 )
 
+/**
+ * A [darkColorScheme] that is used when the user has selected the dark theme.
+ * This is the dark theme for the Jetsurvey app.
+ */
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
@@ -85,6 +105,15 @@ private val DarkColors = darkColorScheme(
     surfaceTint = md_theme_dark_surfaceTint,
 )
 
+/**
+ * Default theme for the Jetsurvey app.
+ *
+ * This theme defines the color palette, typography, and shapes used throughout the app.
+ * It supports both light and dark modes, automatically switching based on the system settings.
+ *
+ * @param useDarkTheme Whether to use the dark theme. Defaults to the system setting.
+ * @param content The content to display within the theme.
+ */
 @Composable
 fun JetsurveyTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),

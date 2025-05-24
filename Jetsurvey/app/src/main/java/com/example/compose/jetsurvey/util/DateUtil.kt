@@ -19,13 +19,21 @@ package com.example.compose.jetsurvey.util
 import java.util.Calendar
 
 /**
- * Returns the start of today in milliseconds
+ * Returns the start of today in milliseconds. We start by initializing our [Calendar] variable `cal`
+ * to a new instance, initialize our [Int] variables `year`, `month`, and `date` to the current
+ * [Calendar.YEAR], [Calendar.MONTH], and [Calendar.DATE]. We then call the [Calendar.clear] method
+ * of `cal` to clear all fields of `cal`, then call the [Calendar.set] method to set the [Calendar.YEAR],
+ * [Calendar.MONTH], and [Calendar.DATE] fields of `cal` to the current [Calendar.YEAR],
+ * [Calendar.MONTH], and [Calendar.DATE]. Finally, we call the [Calendar.timeInMillis] method to
+ * return the number of milliseconds since January 1, 1970, 00:00:00 GMT represented by this calendar.
+ *
+ * @return The start of today in milliseconds.
  */
 fun getDefaultDateInMillis(): Long {
-    val cal = Calendar.getInstance()
-    val year = cal.get(Calendar.YEAR)
-    val month = cal.get(Calendar.MONTH)
-    val date = cal.get(Calendar.DATE)
+    val cal: Calendar = Calendar.getInstance()
+    val year: Int = cal.get(Calendar.YEAR)
+    val month: Int = cal.get(Calendar.MONTH)
+    val date: Int = cal.get(Calendar.DATE)
     cal.clear()
     cal.set(year, month, date)
     return cal.timeInMillis

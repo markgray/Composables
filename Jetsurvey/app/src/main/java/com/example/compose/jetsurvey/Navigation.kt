@@ -32,14 +32,54 @@ import com.example.compose.jetsurvey.signinsignup.WelcomeRoute
 import com.example.compose.jetsurvey.survey.SurveyResultScreen
 import com.example.compose.jetsurvey.survey.SurveyRoute
 
+/**
+ * Destinations used as the routes for the Jetsurvey App.
+ */
 object Destinations {
-    const val WELCOME_ROUTE = "welcome"
-    const val SIGN_UP_ROUTE = "signup/{email}"
-    const val SIGN_IN_ROUTE = "signin/{email}"
-    const val SURVEY_ROUTE = "survey"
-    const val SURVEY_RESULTS_ROUTE = "surveyresults"
+    /**
+     * Route for the [WelcomeRoute] welcome screen.
+     */
+    const val WELCOME_ROUTE: String = "welcome"
+
+    /**
+     * Route for the [SignInRoute] sign in screen.
+     *
+     * This route expects an email address to be passed as an argument.
+     * The email address can be pre-filled from the welcome screen.
+     */
+    const val SIGN_IN_ROUTE: String = "signin/{email}"
+
+    /**
+     * Route for the [SignUpRoute] sign up screen.
+     *
+     * This route expects an email address to be passed as an argument.
+     * The email address can be pre-filled in the welcome screen.
+     */
+    const val SIGN_UP_ROUTE: String = "signup/{email}"
+
+    /**
+     * Route for the [SurveyRoute] survey screen.
+     */
+    const val SURVEY_ROUTE: String = "survey"
+
+    /**
+     * Route for the [SurveyResultScreen] survey results screen.
+     */
+    const val SURVEY_RESULTS_ROUTE: String = "surveyresults"
 }
 
+/**
+ * Provides the navigation graph for the Jetsurvey app.
+ *
+ * This composable function defines the navigation flow of the app, including the different screens
+ * and how they are connected. It uses a [NavHostController] to manage the navigation state and a
+ * [NavHost] to display the appropriate screen based on the current route.
+ *
+ * TODO: Continue here.
+ *
+ * @param navController The [NavHostController] to use for navigation. Defaults to a new
+ * [NavHostController] created by [rememberNavController].
+ */
 @Composable
 fun JetsurveyNavHost(
     navController: NavHostController = rememberNavController(),
@@ -48,60 +88,60 @@ fun JetsurveyNavHost(
         navController = navController,
         startDestination = WELCOME_ROUTE,
     ) {
-        composable(WELCOME_ROUTE) {
+        composable(route = WELCOME_ROUTE) {
             WelcomeRoute(
                 onNavigateToSignIn = {
-                    navController.navigate("signin/$it")
+                    navController.navigate(route = "signin/$it")
                 },
                 onNavigateToSignUp = {
-                    navController.navigate("signup/$it")
+                    navController.navigate(route = "signup/$it")
                 },
                 onSignInAsGuest = {
-                    navController.navigate(SURVEY_ROUTE)
+                    navController.navigate(route = SURVEY_ROUTE)
                 },
             )
         }
 
-        composable(SIGN_IN_ROUTE) {
-            val startingEmail = it.arguments?.getString("email")
+        composable(route = SIGN_IN_ROUTE) {
+            val startingEmail: String? = it.arguments?.getString("email")
             SignInRoute(
                 email = startingEmail,
                 onSignInSubmitted = {
-                    navController.navigate(SURVEY_ROUTE)
+                    navController.navigate(route = SURVEY_ROUTE)
                 },
                 onSignInAsGuest = {
-                    navController.navigate(SURVEY_ROUTE)
+                    navController.navigate(route = SURVEY_ROUTE)
                 },
                 onNavUp = navController::navigateUp,
             )
         }
 
-        composable(SIGN_UP_ROUTE) {
-            val startingEmail = it.arguments?.getString("email")
+        composable(route = SIGN_UP_ROUTE) {
+            val startingEmail: String? = it.arguments?.getString("email")
             SignUpRoute(
                 email = startingEmail,
                 onSignUpSubmitted = {
-                    navController.navigate(SURVEY_ROUTE)
+                    navController.navigate(route = SURVEY_ROUTE)
                 },
                 onSignInAsGuest = {
-                    navController.navigate(SURVEY_ROUTE)
+                    navController.navigate(route = SURVEY_ROUTE)
                 },
                 onNavUp = navController::navigateUp,
             )
         }
 
-        composable(SURVEY_ROUTE) {
+        composable(route = SURVEY_ROUTE) {
             SurveyRoute(
                 onSurveyComplete = {
-                    navController.navigate(SURVEY_RESULTS_ROUTE)
+                    navController.navigate(route = SURVEY_RESULTS_ROUTE)
                 },
                 onNavUp = navController::navigateUp,
             )
         }
 
-        composable(SURVEY_RESULTS_ROUTE) {
+        composable(route = SURVEY_RESULTS_ROUTE) {
             SurveyResultScreen {
-                navController.popBackStack(WELCOME_ROUTE, false)
+                navController.popBackStack(route = WELCOME_ROUTE, inclusive = false)
             }
         }
     }

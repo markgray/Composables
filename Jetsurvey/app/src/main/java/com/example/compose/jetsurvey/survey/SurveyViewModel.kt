@@ -225,8 +225,8 @@ class SurveyViewModel(
      * Updates the free time response based on user selection.
      * If [selected] is true, the [answer] is added to the list of selected answers.
      * If [selected] is false, the [answer] is removed from the list of selected answers.
-     * After updating the list, it checks if the "Next" button should be enabled.
-     * TODO: Continue here.
+     * After updating the list, it checks if the "Next" button should be enabled by calling
+     * our [getIsNextEnabled] function and sets the value of [_isNextEnabled] accordingly.
      *
      * @param selected True if the answer was selected, false otherwise.
      * @param answer The ID of the answer that was selected or deselected.
@@ -240,28 +240,87 @@ class SurveyViewModel(
         _isNextEnabled.value = getIsNextEnabled()
     }
 
+    /**
+     * Updates the superhero response and checks if the "Next" button should be enabled.
+     * We set the value of our [MutableState] of [Superhero] field [_superheroResponse]
+     * to our [Superhero] parameter [superhero], and set the value of our [MutableState]
+     * of [Boolean] field [_isNextEnabled] to the value returned by our [getIsNextEnabled]
+     * method (which returns `true` if the value of [_superheroResponse] is not `null`
+     * when the current [SurveyQuestion] is [SurveyQuestion.SUPERHERO]).
+     *
+     * @param superhero The superhero selected by the user.
+     */
     fun onSuperheroResponse(superhero: Superhero) {
         _superheroResponse.value = superhero
         _isNextEnabled.value = getIsNextEnabled()
     }
 
+    /**
+     * Updates the takeaway response with the given timestamp and updates the "Next" button state.
+     * We set the value of our [MutableState] of [Long] field [_takeawayResponse] to our [Long]
+     * parameter [timestamp], and set the value of our [MutableState] of [Boolean] field
+     * [_isNextEnabled] to the value returned by our [getIsNextEnabled] method (which returns `true`
+     * if the value of [_takeawayResponse] is not `null` when the current [SurveyQuestion] is
+     * [SurveyQuestion.LAST_TAKEAWAY]).
+     *
+     * @param timestamp The timestamp of the takeaway, in milliseconds.
+     */
     fun onTakeawayResponse(timestamp: Long) {
         _takeawayResponse.value = timestamp
         _isNextEnabled.value = getIsNextEnabled()
     }
 
+    /**
+     * Updates the user's response to the "How do you feel about selfies?" question and checks if the
+     * "Next" button should be enabled. We set the value of our [MutableState] of [Float] field
+     * [_feelingAboutSelfiesResponse] to our [Float] parameter [feeling], and set the value of our
+     * [MutableState] of [Boolean] field [_isNextEnabled] to the value returned by our
+     * [getIsNextEnabled] method (which returns `true` if the value of [_feelingAboutSelfiesResponse]
+     * is not `null` when the current [SurveyQuestion] is [SurveyQuestion.FEELING_ABOUT_SELFIES]).
+     *
+     * @param feeling The user's response to the "How do you feel about selfies?" question. This is a
+     * float value between 0.0 and 1.0, where 0.0 means "Strongly dislike" and 1.0 means "Strongly like".
+     */
     fun onFeelingAboutSelfiesResponse(feeling: Float) {
         _feelingAboutSelfiesResponse.value = feeling
         _isNextEnabled.value = getIsNextEnabled()
     }
 
+    /**
+     * Updates the selfie URI and checks if the "Next" button should be enabled.
+     * We set the value of our [MutableState] of [Uri] field [_selfieUri] to our [Uri] parameter
+     * [uri], and set the value of our [MutableState] of [Boolean] field [_isNextEnabled] to the
+     * value returned by our [getIsNextEnabled] method (which returns `true` if the value of
+     * [_selfieUri] is not `null` when the current [SurveyQuestion] is [SurveyQuestion.TAKE_SELFIE]).
+     *
+     * @param uri The URI of the selfie photo.
+     */
     fun onSelfieResponse(uri: Uri) {
         _selfieUri.value = uri
         _isNextEnabled.value = getIsNextEnabled()
     }
 
+    /**
+     * Returns a new [Uri] for the selfie photo. This Uri is used by the camera app to store the photo.
+     * We just call the [PhotoUriManager.buildNewUri] method of our [photoUriManager] field and return
+     * the [Uri] it returns.
+     *
+     * @return A new [Uri] for the selfie photo.
+     */
     fun getNewSelfieUri(): Uri = photoUriManager.buildNewUri()
 
+    /**
+     * Returns `true` if the current question has been answered, and `false` otherwise.
+     * The current question is fetched from the [questionOrder] list using the [questionIndex].
+     * The answer status is determined by checking the corresponding response property:
+     * - [SurveyQuestion.FREE_TIME]: `true` if [_freeTimeResponse] is not empty.
+     * - [SurveyQuestion.SUPERHERO]: `true` if [_superheroResponse] is not `null`.
+     * - [SurveyQuestion.LAST_TAKEAWAY]: `true` if [_takeawayResponse] is not `null`.
+     * - [SurveyQuestion.FEELING_ABOUT_SELFIES]: `true` if [_feelingAboutSelfiesResponse] is not `null`.
+     * - [SurveyQuestion.TAKE_SELFIE]: `true` if [_selfieUri] is not `null`.
+     *
+     * @return `true` if the current question has been answered, `false` otherwise.
+     */
     private fun getIsNextEnabled(): Boolean {
         return when (questionOrder[questionIndex]) {
             SurveyQuestion.FREE_TIME -> _freeTimeResponse.isNotEmpty()
@@ -272,6 +331,18 @@ class SurveyViewModel(
         }
     }
 
+    /**
+     * Creates a [SurveyScreenData] object based on the current state of the survey. This function
+     * uses the current [questionIndex] as the [SurveyScreenData.questionIndex] property, the total
+     * number of questions in [questionOrder] as the [SurveyScreenData.questionCount] property and
+     * the current question from [questionOrder] as the [SurveyScreenData.surveyQuestion] property
+     * to construct the [SurveyScreenData]. In addition the
+     * [SurveyScreenData.shouldShowPreviousButton] property is `true` if the current question is not
+     * the first question, and the [SurveyScreenData.shouldShowDoneButton] property is `true` if the
+     * current question is the last question.
+     *
+     * @return A [SurveyScreenData] object representing the current state of the survey screen.
+     */
     private fun createSurveyScreenData(): SurveyScreenData {
         return SurveyScreenData(
             questionIndex = questionIndex,
@@ -283,9 +354,21 @@ class SurveyViewModel(
     }
 }
 
+/**
+ * Factory for creating a [SurveyViewModel] with a constructor that takes a [PhotoUriManager].
+ *
+ * @property photoUriManager Manages the URI for the selfie photo.
+ */
 class SurveyViewModelFactory(
     private val photoUriManager: PhotoUriManager
 ) : ViewModelProvider.Factory {
+    /**
+     * Creates a new instance of [SurveyViewModel]
+     *
+     * @param modelClass a `Class` whose instance is requested (if it is not [SurveyViewModel] an
+     * [IllegalArgumentException] is thrown).
+     * @return a newly created [SurveyViewModel]
+     */
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SurveyViewModel::class.java)) {
@@ -295,6 +378,13 @@ class SurveyViewModelFactory(
     }
 }
 
+/**
+ * Represents the different questions in the survey.
+ *
+ * Each enum constant corresponds to a specific question in the survey.
+ * This enum is used to determine which question to display to the user
+ * and to store the user's responses to each question.
+ */
 enum class SurveyQuestion {
     FREE_TIME,
     SUPERHERO,
@@ -303,6 +393,19 @@ enum class SurveyQuestion {
     TAKE_SELFIE,
 }
 
+/**
+ * Data class representing the state of the survey screen.
+ *
+ * This class holds information about the current question being displayed,
+ * the total number of questions in the survey, and the visibility of
+ * the "Previous" and "Done" buttons.
+ *
+ * @property questionIndex The index of the current question.
+ * @property questionCount The total number of questions in the survey.
+ * @property shouldShowPreviousButton Whether the "Previous" button should be shown.
+ * @property shouldShowDoneButton Whether the "Done" button should be shown.
+ * @property surveyQuestion The current [SurveyQuestion] being displayed.
+ */
 data class SurveyScreenData(
     val questionIndex: Int,
     val questionCount: Int,

@@ -24,7 +24,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.compose.jetsurvey.R
 
-val MontserratFontFamily = FontFamily(
+/**
+ * The Montserrat font family.
+ *
+ * This font family contains the following font weights:
+ * - [FontWeight.Normal] (R.font.montserrat_regular)
+ * - [FontWeight.Medium] (R.font.montserrat_medium)
+ * - [FontWeight.SemiBold] (R.font.montserrat_semibold)
+ */
+val MontserratFontFamily: FontFamily = FontFamily(
     listOf(
         Font(R.font.montserrat_regular),
         Font(R.font.montserrat_medium, FontWeight.Medium),
@@ -32,7 +40,14 @@ val MontserratFontFamily = FontFamily(
     )
 )
 
-val Typography = Typography(
+/**
+ * The [Typography] for the JetSurvey theme.
+ *
+ * This typography uses the [MontserratFontFamily] for all text styles.
+ *
+ * @see MontserratFontFamily
+ */
+val Typography: Typography = Typography(
     // Display Large - Montserrat 57/64 . -0.25px
     displayLarge = TextStyle(
         fontFamily = MontserratFontFamily,
