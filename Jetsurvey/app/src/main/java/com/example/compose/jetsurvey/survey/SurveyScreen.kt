@@ -57,8 +57,10 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.stronglyDeemphasizedAlpha
@@ -86,10 +88,10 @@ import com.example.compose.jetsurvey.util.supportWideScreen
  *
  * @param surveyScreenData Data related to the current survey screen, including question index and count.
  * @param isNextEnabled Whether the "Next" button should be enabled.
- * @param onClosePressed Callback invoked when the close button in the top app bar is pressed.
- * @param onPreviousPressed Callback invoked when the "Previous" button is pressed.
- * @param onNextPressed Callback invoked when the "Next" button is pressed.
- * @param onDonePressed Callback invoked when the "Done" button is pressed.
+ * @param onClosePressed Callback to be invoked when the close button in the top app bar is pressed.
+ * @param onPreviousPressed Callback to be invoked when the "Previous" button is pressed.
+ * @param onNextPressed Callback to be invoked when the "Next" button is pressed.
+ * @param onDonePressed Callback to be invoked when the "Done" button is pressed.
  * @param content A composable function that defines the content of the survey question. It receives
  * the [PaddingValues] that [Scaffold] passes to its `content` composable lambda argument.
  */
@@ -136,17 +138,17 @@ fun SurveyQuestionsScreen(
  *  - `content`: is a lambda that accepts the [PaddingValues] passed the lambda in variable
  *  `innerPadding` then initializes its [Modifier] variable `modifier` to a [Modifier.padding]
  *  whose `paddingValues` argument is `innerPadding`. Then it composes a [SurveyResult]
- *  whose `title` argument is the string resource with id `R.string.survey_result_title`
- *  ("Compose"), whose `subtitle` argument is the string resource with id
+ *  whose `title` argument is the [String] with resource ID `R.string.survey_result_title`
+ *  ("Compose"), whose `subtitle` argument is the [String] with resource ID
  *  `R.string.survey_result_subtitle` ("Congratulations, you are Compose"), whose `description`
- *  argument is the string resource with id `R.string.survey_result_description` ("You are a curious
- *  developer, always willing to..."), and whose `modifier` argument is our [Modifier] parameter
- *  `modifier`.
+ *  argument is the [String] with resource ID `R.string.survey_result_description` ("You are a
+ *  curious developer, always willing to..."), and whose `modifier` argument is our [Modifier]
+ *  parameter `modifier`.
  *  - `bottomBar`: is an [OutlinedButton] whose `onClick` argument our lambda parameter [onDonePressed],
  *  whose `modifier` argument is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] that adds
  *  `20.dp` to each `horizontal` side and `24.dp` to each `vertical` side. In its [RowScope] `content`
- *  composable lambda argument we compose a [Text] whose `text` argument is the string resource with
- *  Id `R.string.done` ("Done").
+ *  composable lambda argument we compose a [Text] whose `text` argument is the [String] with resource
+ *  ID `R.string.done` ("Done").
  *
  * @param onDonePressed Callback to be called when the "Done" button is pressed.
  */
@@ -187,30 +189,30 @@ fun SurveyResultScreen(
  * its [String] parameters [title], [subtitle], and [description].
  *
  * Our root composable is a [LazyColumn] whose `modifier` argument is a [Modifier.fillMaxSize].
- * In its [LazyListScope] `content` Composable lambda argument we compose a [LazyListScope.item],and
- * in its [LazyItemScope] Composable lambda argument we compose:
+ * In its [LazyListScope] `content` Composable lambda argument we compose a [LazyListScope.item],
+ * and in the [LazyItemScope] Composable lambda argument of the [LazyListScope.item] we compose:
  *
  * **First** a [Spacer] whose `modifier` argument is a [Modifier.height] of `44.dp`.
  *
  * **Second** a [Text] whose arguments are:
  *  - `text`: is our [String] parameter [title].
  *  - `style`: is the [Typography.displaySmall] of our custom [MaterialTheme.typography].
- *  - `modifier`: is a [Modifier.padding] whose `horizontal` argument is `20.dp`.
+ *  - `modifier`: is a [Modifier.padding] that adds `20.dp` to both `horizontal` sides.
  *
  * **Third** a [Text] whose arguments are:
  *  - `text`: is our [String] parameter [subtitle].
  *  - `style`: is the [Typography.titleMedium] of our custom [MaterialTheme.typography].
- *  - `modifier`: is a [Modifier.padding] whose `all` argument is `20.dp`.
+ *  - `modifier`: is a [Modifier.padding] that adds `20.dp` to `all` sides
  *
  * **Fourth** a [Text] whose arguments are:
  *  - `text`: is our [String] parameter [description].
  *  - `style`: is the [Typography.bodyLarge] of our custom [MaterialTheme.typography].
- *  - `modifier`: is a [Modifier.padding] whose `horizontal` argument is `20.dp`.
+ *  - `modifier`: is a [Modifier.padding] that adds `20.dp` to both `horizontal` sides.
  *
  * @param title The title of the survey result.
  * @param subtitle The subtitle of the survey result.
  * @param description The description of the survey result.
- * @param modifier A [Modifier] that will be applied to the [LazyColumn].
+ * @param modifier A [Modifier] that our caller can use to modify our appearance and/or behavior.
  */
 @Composable
 private fun SurveyResult(
@@ -247,13 +249,15 @@ private fun SurveyResult(
  * It is used as the `title` of the [CenterAlignedTopAppBar] used by [SurveyTopAppBar].
  * It consists of a [Row] holding two [Text] widgets. The first [Text] displays the value of the
  * [Int] parameter [questionIndex] plus 1 (to convert from 0-based to 1-based) as its `text`,
- * with its `style` argument [Typography.labelMedium] of our custom [MaterialTheme.typography], and
- * its `color` a copy of the [ColorScheme.onSurface] color of our custom [MaterialTheme.colorScheme]
- * with its `alpha` forced to [stronglyDeemphasizedAlpha] (0.6f). The second [Text] displays the
- * string constructed using the format string with resource ID `R.string.question_count` (" of %1$d")
- * and [totalQuestionsCount] as the argument, with its `style` argument [Typography.labelMedium] of
- * our custom [MaterialTheme.typography], and its `color` a copy of the [ColorScheme.onSurface] color
- * of our custom [MaterialTheme.colorScheme] with its `alpha` forced to 0.38f.
+ * with its [TextStyle] `style` argument the [Typography.labelMedium] of our custom
+ * [MaterialTheme.typography], and its [Color] `color` argument a copy of the [ColorScheme.onSurface]
+ * [Color] of our custom [MaterialTheme.colorScheme] with its `alpha` forced to
+ * [stronglyDeemphasizedAlpha] (0.6f). The second [Text] displays the string constructed using the
+ * format [String] with resource ID `R.string.question_count` (" of %1$d") and [totalQuestionsCount]
+ * as the value to be formatted, with its [TextStyle] `style` argument the [Typography.labelMedium]
+ * of our custom [MaterialTheme.typography], and its [Color] `color` argument a copy of the
+ * [ColorScheme.onSurface] color of our custom [MaterialTheme.colorScheme] with its `alpha` forced
+ * to 0.38f.
  *
  * @param questionIndex The index of the current question (0-based).
  * @param totalQuestionsCount The total number of questions in the survey.
@@ -294,21 +298,22 @@ private fun TopAppBarTitle(
  *  parameter [onClosePressed], and whose `modifier` argument is a [Modifier.padding] that adds
  *  `4.dp` to `all` sides. The `content` Composable lambda argument of the [IconButton] is an [Icon]
  *  whose `imageVector` argument is the [ImageVector] drawn by [Icons.Filled.Close] (an "X"), whose
- *  `contentDescription` is the string resource with ID `R.string.close` ("Close"), and whose `tint`
- *  is a copy of the [ColorScheme.onSurface] color of our custom [MaterialTheme.colorScheme] with
- *  its `alpha` forced to [stronglyDeemphasizedAlpha] (0.6f).
+ *  `contentDescription` is the [String] with resource ID `R.string.close` ("Close"), and whose
+ *  [Color] `tint` argument is a copy of the [ColorScheme.onSurface] color of our custom
+ *  [MaterialTheme.colorScheme] with its `alpha` forced to [stronglyDeemphasizedAlpha] (0.6f).
  *
  * We then initialize our [State] wrapped animated [Float] variable `animatedProgress` to the value
  * returned by [animateFloatAsState] whose `targetValue` argument is the value of our [Int] parameter
  * [questionIndex] plus 1 divided by our [Int] parameter [totalQuestionsCount] cast to a [Float], and
  * whose `animationSpec` argument is the default [ProgressIndicatorDefaults.ProgressAnimationSpec].
  *
- * WE then compose a [LinearProgressIndicator] which has its `progress` argument set a lambda that
+ * We then compose a [LinearProgressIndicator] which has its `progress` argument a lambda that
  * returns the value of our [State] wrapped animated [Float] variable `animatedProgress`. The
  * `modifier` argument of the [LinearProgressIndicator] is a [Modifier.fillMaxWidth] that causes it
  * to fill the entire incoming width constraint, chained to a [Modifier.padding] that adds `20.dp`
- * to the `horizontal` sides. Its `trackColor` is a copy of the [ColorScheme.onSurface] color of our
- * custom [MaterialTheme.colorScheme] with its `alpha` forced to 0.12f
+ * to the `horizontal` sides. Its [Color] `trackColor` argument is a copy of the
+ * [ColorScheme.onSurface] color of our custom [MaterialTheme.colorScheme] with its `alpha`
+ * forced to 0.12f
  *
  * @param questionIndex The index of the current question (0-based).
  */

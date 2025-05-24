@@ -51,10 +51,10 @@ private const val CONTENT_ANIMATION_DURATION = 300
  * the [SurveyViewModel.surveyScreenData] property of our [SurveyViewModel] variable `viewModel` and
  * return if it is `null`.
  *
- * We compose a [BackHandler] whose `onBack` lambda argument checks if the
- * [SurveyViewModel.onBackPressed] method of our [SurveyViewModel] variable `viewModel` returns
- * `false` which indicates that the ViewModel did not handle the back press to move backward by
- * one question so we should call our [onNavUp] lambda argument instead.
+ * We compose a [BackHandler] that adds its `onBack` lambda argument to the `OnBackPressedDispatcher`
+ * in which it checks if the [SurveyViewModel.onBackPressed] method of our [SurveyViewModel] variable
+ * `viewModel` returns `false` which indicates that the ViewModel did not handle the back press to
+ * move backward by one question so we should call our [onNavUp] lambda argument instead.
  *
  * Our root composable is a [SurveyQuestionsScreen] whose arguments are:
  *  - `surveyScreenData`: is our [SurveyScreenData] variable `surveyScreenData`.
@@ -119,15 +119,15 @@ private const val CONTENT_ANIMATION_DURATION = 300
  *  [SurveyViewModel.onTakeawayResponse] method of our [SurveyViewModel] variable `viewModel`.
  *  - `modifier`: is our [Modifier] variable `modifier`.
  *
- * [SurveyQuestion.FEELING_ABOUT_SELFIES] -> we compose a [FeelingAboutSelfiesQuestion] whose arguments
- * are:
+ * [SurveyQuestion.FEELING_ABOUT_SELFIES] -> we compose a [FeelingAboutSelfiesQuestion] composable
+ * whose arguments are:
  *  - `value`: is the [SurveyViewModel.feelingAboutSelfiesResponse] property of our [SurveyViewModel]
  *  variable `viewModel`.
  *  - `onValueChange`: is a function reference to the [SurveyViewModel.onFeelingAboutSelfiesResponse]
  *  method of our [SurveyViewModel] variable `viewModel`.
  *  - `modifier`: is our [Modifier] variable `modifier`.
  *
- * [SurveyQuestion.TAKE_SELFIE] -> we compose a [TakeSelfieQuestion] whose arguments are:
+ * [SurveyQuestion.TAKE_SELFIE] -> we compose a [TakeSelfieQuestion] composable whose arguments are:
  *  - `imageUri`: is the [SurveyViewModel.selfieUri] property of our [SurveyViewModel] variable
  *  `viewModel`.
  *  - `getNewImageUri`: is a function reference to the [SurveyViewModel.getNewSelfieUri] method of
@@ -245,10 +245,10 @@ fun SurveyRoute(
 /**
  * Determines the direction of the transition based on the initial and target question indices.
  *
- * If our [Int] parameter [targetIndex] target question index is greater than
+ * If our [Int] parameter [targetIndex] target question index is greater than our
  * [Int] parameter [initialIndex] initial question index, then the transition
- * is a [AnimatedContentTransitionScope.SlideDirection.Left], if however we are
- * going back to the previous question in the set, then the transition is a
+ * is an [AnimatedContentTransitionScope.SlideDirection.Left], if however we are
+ * going back to the previous question in the set, then the transition is an
  * [AnimatedContentTransitionScope.SlideDirection.Right].
  *
  * @param initialIndex The index of the question being transitioned from.

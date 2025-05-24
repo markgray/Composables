@@ -53,7 +53,7 @@ class SurveyViewModel(
     )
 
     /**
-     * Index of the current question in the [questionOrder].
+     * Index of the current question in the [List] of [SurveyQuestion] property [questionOrder].
      */
     private var questionIndex = 0
 
@@ -69,7 +69,7 @@ class SurveyViewModel(
     private val _freeTimeResponse: SnapshotStateList<Int> = mutableStateListOf<Int>()
 
     /**
-     * Public read-only access to our [_freeTimeResponse] property.
+     * Public read-only access to our [SnapshotStateList] of [Int] property  [_freeTimeResponse].
      */
     val freeTimeResponse: List<Int>
         get() = _freeTimeResponse
@@ -82,7 +82,7 @@ class SurveyViewModel(
     private val _superheroResponse: MutableState<Superhero?> = mutableStateOf<Superhero?>(null)
 
     /**
-     * Public read-only access to our [_superheroResponse] property.
+     * Public read-only access to our [MutableState] of [Superhero] property [_superheroResponse].
      */
     val superheroResponse: Superhero?
         get() = _superheroResponse.value
@@ -95,7 +95,7 @@ class SurveyViewModel(
     private val _takeawayResponse: MutableState<Long?> = mutableStateOf<Long?>(null)
 
     /**
-     * Public read-only access to our [_takeawayResponse] property.
+     * Public read-only access to our [MutableState] of [Long] property [_takeawayResponse].
      */
     val takeawayResponse: Long?
         get() = _takeawayResponse.value
@@ -111,7 +111,7 @@ class SurveyViewModel(
     private val _feelingAboutSelfiesResponse: MutableState<Float?> = mutableStateOf<Float?>(null)
 
     /**
-     * Public read-only access to our [_feelingAboutSelfiesResponse] property.
+     * Public read-only access to our [MutableState] of [Float] property [_feelingAboutSelfiesResponse].
      */
     val feelingAboutSelfiesResponse: Float?
         get() = _feelingAboutSelfiesResponse.value
@@ -124,7 +124,7 @@ class SurveyViewModel(
     private val _selfieUri: MutableState<Uri?> = mutableStateOf<Uri?>(null)
 
     /**
-     * Public read-only access to our [_selfieUri] property.
+     * Public read-only access to our [MutableState] of [Uri] property [_selfieUri].
      */
     val selfieUri: Uri?
         get() = _selfieUri.value
@@ -139,7 +139,7 @@ class SurveyViewModel(
         mutableStateOf(createSurveyScreenData())
 
     /**
-     * Public read-only access to our [_surveyScreenData] property.
+     * Public read-only access to our [MutableState] of [SurveyScreenData] property [_surveyScreenData].
      */
     val surveyScreenData: SurveyScreenData?
         get() = _surveyScreenData.value
@@ -151,13 +151,13 @@ class SurveyViewModel(
     private val _isNextEnabled: MutableState<Boolean> = mutableStateOf(false)
 
     /**
-     * Public read-only access to our [_isNextEnabled] property.
+     * Public read-only access to our [MutableState] of [Boolean] property [_isNextEnabled].
      */
     val isNextEnabled: Boolean
         get() = _isNextEnabled.value
 
     /**
-     * Returns `false` if the [questionIndex] is 0 (the ViewModel can not go back), other wise it
+     * Returns `false` if the [questionIndex] is 0 (the ViewModel can not go back), otherwise it
      * calls [changeQuestion] with the previous question index to go back one question and returns
      * `true`.
      *
@@ -172,7 +172,8 @@ class SurveyViewModel(
     }
 
     /**
-     * Navigates to the previous question in the survey.
+     * Navigates to the previous question in the survey if it can. If already on the first (`0`)
+     * question it throws [IllegalStateException]
      *
      * @throws IllegalStateException if called when on the first question.
      */
