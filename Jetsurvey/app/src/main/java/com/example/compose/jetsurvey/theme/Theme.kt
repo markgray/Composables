@@ -72,8 +72,8 @@ private val LightColors = lightColorScheme(
 )
 
 /**
- * A [darkColorScheme] that is used when the user has selected the dark theme.
- * This is the dark theme for the Jetsurvey app.
+ * The [darkColorScheme] that is used for the Jetsurvey app
+ * when the user has selected the dark theme.
  */
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
