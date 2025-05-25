@@ -82,7 +82,7 @@ fun SearchCourses(
                         bottom = 8.dp
                     )
                     .wrapContentWidth(Alignment.Start)
-                    .animateItemPlacement()
+                    .animateItem()
             )
         }
     }

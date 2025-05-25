@@ -3,55 +3,55 @@
 # Do not add a dependency to an individual sample, edit the global version instead.
 #####
 [versions]
-accompanist = "0.34.0"
+accompanist = "0.37.0"
 androidGradlePlugin = "8.10.0"
-androidx-activity-compose = "1.9.0"
-androidx-appcompat = "1.6.1"
-androidx-benchmark = "1.2.0"
-androidx-benchmark-junit4 = "1.2.1"
-androidx-compose-bom = "2024.05.00"
-androidx-constraintlayout = "1.0.1"
-androidx-corektx = "1.13.1"
-androidx-glance = "1.0.0"
-androidx-lifecycle-compose = "2.7.0"
-androidx-lifecycle-runtime-compose = "2.7.0"
-androidx-navigation = "2.7.7"
+androidx-activity-compose = "1.10.1"
+androidx-appcompat = "1.7.0"
+androidx-benchmark = "1.3.4"
+androidx-benchmark-junit4 = "1.3.4"
+androidx-compose-bom = "2025.05.01"
+androidx-constraintlayout = "1.1.1"
+androidx-corektx = "1.16.0"
+androidx-glance = "1.1.1"
+androidx-lifecycle-compose = "2.9.0"
+androidx-lifecycle-runtime-compose = "2.9.0"
+androidx-navigation = "2.9.0"
 androidx-palette = "1.0.0"
-androidx-test = "1.5.0"
-androidx-test-espresso = "3.5.1"
-androidx-test-ext-junit = "1.1.5"
-androidx-test-ext-truth = "1.5.0"
-androidx-window = "1.3.0-beta02"
-androidxHiltNavigationCompose = "1.1.0"
-androix-test-uiautomator = "2.2.0"
-coil = "2.4.0"
+androidx-test = "1.6.1"
+androidx-test-espresso = "3.6.1"
+androidx-test-ext-junit = "1.2.1"
+androidx-test-ext-truth = "1.6.0"
+androidx-window = "1.4.0"
+androidxHiltNavigationCompose = "1.2.0"
+androix-test-uiautomator = "2.3.0"
+coil = "2.7.0"
 # @keep
 compileSdk = "35"
 compose-compiler = "2.1.21"
-coroutines = "1.8.0"
-google-maps = "18.2.0"
-gradle-versions = "0.51.0"
-hilt = "2.48.1"
-hiltExt = "1.1.0"
+coroutines = "1.10.2"
+google-maps = "19.2.0"
+gradle-versions = "0.52.0"
+hilt = "2.56.2"
+hiltExt = "1.2.0"
 # @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
-jdkDesugar = "1.2.2"
+jdkDesugar = "2.1.5"
 junit = "4.13.2"
 # @pin Update in conjuction with Compose Compiler
 kotlin = "2.1.21"
 kotlinx_immutable = "0.3.5"
 ksp = "2.1.21-2.0.1"
 maps-compose = "3.1.1"
-material = "1.11.0"
+material = "1.12.0"
 # @keep
 minSdk = "21"
-okhttp = "4.11.0"
-robolectric = "4.12.1"
+okhttp = "4.12.0"
+robolectric = "4.14.1"
 rome = "1.18.0"
-room = "2.6.0"
+room = "2.7.1"
 secrets = "2.0.1"
 # @keep
 targetSdk = "35"
-version-catalog-update = "0.8.4"
+version-catalog-update = "1.0.0"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
@@ -90,8 +90,8 @@ androidx-glance = { module = "androidx.glance:glance", version.ref = "androidx-g
 androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "androidx-glance" }
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "androidx-glance" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
-androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
-androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha04"
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle-compose" }
+androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.9.0"
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime-compose" }
 androidx-lifecycle-viewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle-compose" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
@@ -108,7 +108,7 @@ androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core",
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
 androidx-test-ext-truth = { module = "androidx.test.ext:truth", version.ref = "androidx-test-ext-truth" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
-androidx-test-runner = "androidx.test:runner:1.5.2"
+androidx-test-runner = "androidx.test:runner:1.6.2"
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androix-test-uiautomator" }
 androidx-window = { module = "androidx.window:window", version.ref = "androidx-window" }
 coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
@@ -134,6 +134,7 @@ rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
