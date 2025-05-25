@@ -17,6 +17,8 @@
 package com.example.compose.jetsurvey
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -75,7 +77,53 @@ object Destinations {
  * and how they are connected. It uses a [NavHostController] to manage the navigation state and a
  * [NavHost] to display the appropriate screen based on the current route.
  *
- * TODO: Continue here.
+ * Our root composable is a [NavHost] whose `navController` argument is our [NavHostController]
+ * parameter [navController], and whose `startDestination` argument is [WELCOME_ROUTE]. In the
+ * [NavGraphBuilder] `builder` lambda argument we use the [NavGraphBuilder.composable] method to
+ * add five routes for destinations in our navigation graph:
+ *
+ * [WELCOME_ROUTE] -> we compose a [WelcomeRoute] screen whose arguments are:
+ *  - `onNavigateToSignIn`: a lambda that accepts the [String] passed the lambda in variable `email`
+ *  then calls the [NavHostController.navigate] method to navigate to the [SIGN_IN_ROUTE] route
+ *  using the `route` formed by concatenating the [String] "signin/" and the [String] `email`.
+ *  - `onNavigateToSignUp`: a lambda that accepts the [String] passed the lambda in variable
+ *  `startingEmail` then calls the [NavHostController.navigate] method to navigate to the
+ *  [SIGN_UP_ROUTE] route using the `route` formed by concatenating the [String] "signup/" and
+ *  the [String] `startingEmail`.
+ *  - `onSignInAsGuest`: a lambda that calls the [NavHostController.navigate] method to navigate
+ *  to the [SURVEY_ROUTE] route.
+ *
+ * [SIGN_IN_ROUTE] -> we start by initializing our [String] variable `startingEmail` to the [String]
+ * stored in the [NavBackStackEntry.arguments] of the [NavBackStackEntry] that triggered this
+ * composable under the key "email". We then compose a [SignInRoute] screen whose arguments are:
+ *  - `email`: the [String] variable `startingEmail`.
+ *  - `onSignInSubmitted`: a lambda that calls the [NavHostController.navigate] method to navigate
+ *  to the [SURVEY_ROUTE] route.
+ *  - `onSignInAsGuest`: a lambda that calls the [NavHostController.navigate] method to navigate
+ *  to the [SURVEY_ROUTE] route.
+ *  - `onNavUp`: a lambda that calls the [NavHostController.navigateUp] method to navigate up
+ *  the navigation stack.
+ *
+ * [SIGN_UP_ROUTE] -> we start by initializing our [String] variable `startingEmail` to the [String]
+ * stored in the [NavBackStackEntry.arguments] of the [NavBackStackEntry] that triggered this
+ * composable under the key "email". We then compose a [SignUpRoute] screen whose arguments are:
+ *  - `email`: the [String] variable `startingEmail`.
+ *  - `onSignUpSubmitted`: a lambda that calls the [NavHostController.navigate] method to navigate
+ *  to the [SURVEY_ROUTE] route.
+ *  - `onSignInAsGuest`: a lambda that calls the [NavHostController.navigate] method to navigate
+ *  to the [SURVEY_ROUTE] route.
+ *  - `onNavUp`: a lambda that calls the [NavHostController.navigateUp] method to navigate up
+ *  the navigation stack.
+ *
+ * [SURVEY_ROUTE] -> we compose a [SurveyRoute] screen whose arguments are:
+ *  - `onSurveyComplete`: a lambda that calls the [NavHostController.navigate] method to navigate
+ *  to the [SURVEY_RESULTS_ROUTE] route.
+ *  - `onNavUp`: a lambda that calls the [NavHostController.navigateUp] method to navigate up
+ *  the navigation stack.
+ *
+ * [SURVEY_RESULTS_ROUTE] -> we compose a [SurveyResultScreen] screen whose arguments are:
+ *  - `onDonePressed`: a lambda that calls the [NavHostController.popBackStack] method to navigate
+ *  back to the [WELCOME_ROUTE] route.
  *
  * @param navController The [NavHostController] to use for navigation. Defaults to a new
  * [NavHostController] created by [rememberNavController].
@@ -90,11 +138,11 @@ fun JetsurveyNavHost(
     ) {
         composable(route = WELCOME_ROUTE) {
             WelcomeRoute(
-                onNavigateToSignIn = {
-                    navController.navigate(route = "signin/$it")
+                onNavigateToSignIn = { email: String ->
+                    navController.navigate(route = "signin/$email")
                 },
-                onNavigateToSignUp = {
-                    navController.navigate(route = "signup/$it")
+                onNavigateToSignUp = { startingEmail: String ->
+                    navController.navigate(route = "signup/$startingEmail")
                 },
                 onSignInAsGuest = {
                     navController.navigate(route = SURVEY_ROUTE)
@@ -102,8 +150,8 @@ fun JetsurveyNavHost(
             )
         }
 
-        composable(route = SIGN_IN_ROUTE) {
-            val startingEmail: String? = it.arguments?.getString("email")
+        composable(route = SIGN_IN_ROUTE) { navBack: NavBackStackEntry ->
+            val startingEmail: String? = navBack.arguments?.getString("email")
             SignInRoute(
                 email = startingEmail,
                 onSignInSubmitted = {
@@ -116,8 +164,8 @@ fun JetsurveyNavHost(
             )
         }
 
-        composable(route = SIGN_UP_ROUTE) {
-            val startingEmail: String? = it.arguments?.getString("email")
+        composable(route = SIGN_UP_ROUTE) { navBack: NavBackStackEntry ->
+            val startingEmail: String? = navBack.arguments?.getString("email")
             SignUpRoute(
                 email = startingEmail,
                 onSignUpSubmitted = {

@@ -23,18 +23,32 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * Unit test for [SurveyViewModel].
+ */
 @RunWith(AndroidJUnit4::class)
 class SurveyViewModelTest {
 
+    /**
+     * The [SurveyViewModel] that is the subject of our tests. We initialize it to a new instance
+     * of [SurveyViewModel] in our [setUp] method (which is annotated with [Before] so that it is
+     * run before every test).
+     */
     private lateinit var viewModel: SurveyViewModel
 
+    /**
+     * Initializes [SurveyViewModel] for testing.
+     */
     @Before
     fun setUp() {
         viewModel = SurveyViewModel(
-            PhotoUriManager(ApplicationProvider.getApplicationContext())
+            PhotoUriManager(appContext = ApplicationProvider.getApplicationContext())
         )
     }
 
+    /**
+     * Test the [SurveyViewModel.onFreeTimeResponse] method.
+     */
     @Test
     fun onFreeTimeResponse() {
         val answerOne = 0
@@ -45,18 +59,18 @@ class SurveyViewModelTest {
         Truth.assertThat(viewModel.isNextEnabled).isFalse()
 
         // Add two arbitrary values
-        viewModel.onFreeTimeResponse(true, answerOne)
-        viewModel.onFreeTimeResponse(true, answerTwo)
+        viewModel.onFreeTimeResponse(selected = true, answer = answerOne)
+        viewModel.onFreeTimeResponse(selected = true, answer = answerTwo)
         Truth.assertThat(viewModel.freeTimeResponse).containsExactly(answerOne, answerTwo)
         Truth.assertThat(viewModel.isNextEnabled).isTrue()
 
         // Remove one value
-        viewModel.onFreeTimeResponse(false, answerTwo)
+        viewModel.onFreeTimeResponse(selected = false, answer = answerTwo)
         Truth.assertThat(viewModel.freeTimeResponse).containsExactly(answerOne)
         Truth.assertThat(viewModel.isNextEnabled).isTrue()
 
         // Remove the last value
-        viewModel.onFreeTimeResponse(false, answerOne)
+        viewModel.onFreeTimeResponse(selected = false, answer = answerOne)
         Truth.assertThat(viewModel.freeTimeResponse).isEmpty()
         Truth.assertThat(viewModel.isNextEnabled).isFalse()
     }
