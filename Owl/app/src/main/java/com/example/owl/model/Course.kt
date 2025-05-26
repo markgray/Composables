@@ -18,6 +18,20 @@ package com.example.owl.model
 
 import androidx.compose.runtime.Immutable
 
+/**
+ * Defines a course including its name, subject, and instructor.
+ *
+ * @param id The unique ID of the course.
+ * @param name The name of the course.
+ * @param subject The subject of the course.
+ * @param thumbUrl The URL of the thumbnail image for the course.
+ * @param thumbContentDesc The content description for the thumbnail image.
+ * @param description A detailed description of the course (optional, default is empty string).
+ * @param steps The total number of steps in the course.
+ * @param step The current step the user is on.
+ * @param instructor The URL of the instructor's avatar image (default is an URL formed by
+ * concatenating "https://i.pravatar.cc/112?" and the [Course.id]).
+ */
 @Immutable // Tell Compose runtime that this object will not change so it can perform optimizations
 data class Course(
     val id: Long,
@@ -32,13 +46,31 @@ data class Course(
 )
 
 /**
- * A fake repo
+ * A repository for [Course]s.
+ *
+ * This is a fake implementation. In a real app, this would be backed by a database and/or network
+ * requests.
  */
 object CourseRepo {
+    /**
+     * Returns the course with the given ID.
+     *
+     * @param courseId The ID of the course to return.
+     * @return The [Course] with the given ID.
+     */
     fun getCourse(courseId: Long): Course = courses.find { it.id == courseId }!!
+
+    /**
+     * Returns a list of sample courses.
+     *
+     * @return A list of [Course]s.
+     */
     fun getRelated(@Suppress("UNUSED_PARAMETER", "unused") courseId: Long): List<Course> = courses
 }
 
+/**
+ * A [List] of all the [Course]s.
+ */
 val courses: List<Course> = listOf(
     Course(
         id = 0,

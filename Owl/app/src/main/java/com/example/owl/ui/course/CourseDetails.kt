@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.example.owl.ui.course
 
 import androidx.activity.compose.BackHandler
@@ -23,7 +25,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation.Vertical
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -58,6 +62,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.SwipeableState
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.contentColorFor
@@ -84,6 +89,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.owl.R
 import com.example.owl.model.Course
@@ -99,12 +106,36 @@ import com.example.owl.ui.theme.pink500
 import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.lerp
 import com.example.owl.ui.utils.scrim
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Locale
 
+/**
+ * The size of the FAB in [Dp]. It is used by the calculations of how the FAB should transition
+ * into the full screen sheet of lessons, and where the FAB should be located in the closed
+ * state.
+ */
 private val FabSize = 56.dp
+
+/**
+ * The alpha of the sheet when it is expanded.
+ */
 private const val ExpandedSheetAlpha = 0.96f
 
+/**
+ * This component shows the details of a [Course] when called with the [Course.id] of the [Course].
+ *
+ * We start by initializing and remembering our [Course] variable `course` to the [Course] that the
+ * [CourseRepo.getCourse] method returns when its [courseId] argument is our [Long] parameter
+ * [courseId]. The we compose the [CourseDetails] overload whose arguments are:
+ *  - `course`: is our [Course] parameter `course`.
+ *  - `selectCourse`: is our lambda parameter [selectCourse].
+ *  - `upPress`: is our lambda parameter [upPress].
+ *
+ * @param courseId the ID of the [Course] that we want to show the details of.
+ * @param selectCourse (event) request to navigate to a course.
+ * @param upPress (event) request to navigate up.
+ */
 @Composable
 fun CourseDetails(
     courseId: Long,
@@ -112,11 +143,71 @@ fun CourseDetails(
     upPress: () -> Unit
 ) {
     // Simplified for the sample
-    val course = remember(courseId) { CourseRepo.getCourse(courseId) }
+    val course: Course = remember(key1 = courseId) { CourseRepo.getCourse(courseId = courseId) }
     // TODO: Show error if course not found.
-    CourseDetails(course, selectCourse, upPress)
+    CourseDetails(course = course, selectCourse = selectCourse, upPress = upPress)
 }
 
+/**
+ * This is the main screen for displaying the details of a [Course]. It is composed of a
+ * [CourseDescription] a [LessonsSheet] that can be swiped up by the user, a back [BackHandler]
+ * that will close the [LessonsSheet] if it is open, or navigate up if it is closed, and a
+ * [Box] that acts as a swipeable container for the [LessonsSheet]. The [Box] uses
+ * [Modifier.swipeable] to control the [SwipeableState] variable `sheetState` which can be
+ * either [SheetState.Closed] or [SheetState.Open]. The `openFraction` of the sheet (how much
+ * of it is visible) is calculated based on the `offset` of `sheetState` and the `dragRange`
+ * that the sheet can be dragged.
+ *
+ * Our root composable is a [BoxWithConstraints] wrapped in our [PinkTheme] custom [MaterialTheme].
+ * In the [BoxWithConstraintsScope] `content` composable lambda argument, we start by initializing
+ * and remembering our [SwipeableState] of [SheetState] variable `sheetState` to an initial value
+ * of [SheetState.Closed]. We then initialize our [Float] variable `fabSize` to the pixel value of
+ * our [Dp] constant [FabSize]. We then initialize our [Float] variable `dragRange` to the
+ * [Constraints.maxHeight] of our [BoxWithConstraintsScope] `constraints` minus `fabSize`.
+ * We initialize and remember our [CoroutineScope] variable `scope` to the instance returned by
+ * [rememberCoroutineScope].
+ *
+ * Next we compose a [BackHandler] whose arguments are:
+ *  - `enabled`: to `true` if `sheetState` is [SheetState.Open] and `false` otherwise.
+ *  - `onBack`: is a lambda that calls the [CoroutineScope.launch] method of `scope` to launch a
+ *  coroutine that calls the [SwipeableState.animateTo] method of `sheetState` to animate to the
+ *  `targetValue` of [SheetState.Closed].
+ *
+ * Then our root composable is a [Box] whose `modifier` argument is a [Modifier.swipeable] whose
+ * arguments are:
+ *  - `state`: is our [SwipeableState] variable `sheetState`.
+ *  - `anchors`: is a [mapOf] `0f` to [SheetState.Closed] and `-dragRange` to [SheetState.Open].
+ *  - `thresholds`: is a lambda that returns a [FractionalThreshold] whose `fraction` argument is
+ *  `0.5f`.
+ *  - `orientation`: is [Vertical].
+ *
+ * In the [BoxScope] `content` composable lambda argument of the [Box], we start by initializing our
+ * [Float] variable `openFraction` to `0f` if `sheetState.offset.value` is [Float.NaN] or minus
+ * `sheetState.offset.value` divided by `dragRange` or `0f` if `sheetState.offset.value` is not and
+ * coerce the result between `0f` and `1f`.
+ *
+ * Then we compose a [CourseDescription] whose arguments are:
+ *  - `course`: is our [Course] parameter [course].
+ *  - `selectCourse`: is our lambda parameter [selectCourse].
+ *  - `upPress`: is our lambda parameter [upPress].
+ *
+ * On top of that in the [BoxScope] `content` composable lambda argument, we compose a [LessonsSheet]
+ * whose arguments are:
+ *  - `course`: is our [Course] parameter [course].
+ *  - `openFraction`: is our [Float] variable `openFraction`.
+ *  - `width`: is the [Constraints.maxWidth] of our [BoxWithConstraintsScope] `constraints`.
+ *  - `height`: is the [Constraints.maxHeight] of our [BoxWithConstraintsScope] `constraints`.
+ *
+ * In the `updateSheet` lambda argument of the [LessonsSheet], we accept the [SheetState] passed the
+ * lambda in variable `state` and call the [CoroutineScope.launch] method of `scope` to launch a
+ * coroutine that calls the [SwipeableState.animateTo] method of `sheetState` to animate to the
+ * `targetValue` of `state`.
+ *
+ * @param course the [Course] whose details we are to display.
+ * @param selectCourse a lambda that takes the ID of a [Course] as its Long parameter that the
+ * [CourseDescription] can call to navigate to a related course.
+ * @param upPress a lambda that the [CourseDescription] can call to navigate up from this screen.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CourseDetails(
@@ -127,16 +218,16 @@ fun CourseDetails(
     PinkTheme {
         BoxWithConstraints {
             // TODO: Material's Swipeable has been replaced by Foundation's AnchoredDraggable
-            val sheetState = rememberSwipeableState(SheetState.Closed)
-            val fabSize = with(LocalDensity.current) { FabSize.toPx() }
-            val dragRange = constraints.maxHeight - fabSize
-            val scope = rememberCoroutineScope()
+            val sheetState: SwipeableState<SheetState> = rememberSwipeableState(SheetState.Closed)
+            val fabSize: Float = with(LocalDensity.current) { FabSize.toPx() }
+            val dragRange: Float = constraints.maxHeight - fabSize
+            val scope: CoroutineScope = rememberCoroutineScope()
 
             BackHandler(
                 enabled = sheetState.currentValue == SheetState.Open,
                 onBack = {
                     scope.launch {
-                        sheetState.animateTo(SheetState.Closed)
+                        sheetState.animateTo(targetValue = SheetState.Closed)
                     }
                 }
             )
@@ -145,30 +236,30 @@ fun CourseDetails(
                 // The Lessons sheet is initially closed and appears as a FAB. Make it openable by
                 // swiping or clicking the FAB.
                 // TODO: Material's Swipeable has been replaced by Foundation's AnchoredDraggable
-                Modifier.swipeable(
+                modifier = Modifier.swipeable(
                     state = sheetState,
                     anchors = mapOf(
                         0f to SheetState.Closed,
                         -dragRange to SheetState.Open
                     ),
-                    thresholds = { _, _ -> FractionalThreshold(0.5f) },
+                    thresholds = { _, _ -> FractionalThreshold(fraction = 0.5f) },
                     orientation = Vertical
                 )
             ) {
-                val openFraction = if (sheetState.offset.value.isNaN()) {
+                val openFraction: Float = if (sheetState.offset.value.isNaN()) {
                     0f
                 } else {
                     -sheetState.offset.value / dragRange
-                }.coerceIn(0f, 1f)
-                CourseDescription(course, selectCourse, upPress)
+                }.coerceIn(minimumValue = 0f, maximumValue = 1f)
+                CourseDescription(course = course, selectCourse = selectCourse, upPress = upPress)
                 LessonsSheet(
-                    course,
-                    openFraction,
-                    this@BoxWithConstraints.constraints.maxWidth.toFloat(),
-                    this@BoxWithConstraints.constraints.maxHeight.toFloat()
-                ) { state ->
+                    course = course,
+                    openFraction = openFraction,
+                    width = this@BoxWithConstraints.constraints.maxWidth.toFloat(),
+                    height = this@BoxWithConstraints.constraints.maxHeight.toFloat()
+                ) { state: SheetState ->
                     scope.launch {
-                        sheetState.animateTo(state)
+                        sheetState.animateTo(targetValue = state)
                     }
                 }
             }
@@ -176,6 +267,15 @@ fun CourseDetails(
     }
 }
 
+/**
+ * This is the Course Description screen. It contains a header, a body, and a list of related
+ * courses.
+ * TODO: Continue here.
+ *
+ * @param course The [Course] to display.
+ * @param selectCourse (event) A course has been selected from the related courses.
+ * @param upPress (event) The user has pressed the "up" button.
+ */
 @Composable
 private fun CourseDescription(
     course: Course,
@@ -184,9 +284,9 @@ private fun CourseDescription(
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
-            item { CourseDescriptionHeader(course, upPress) }
-            item { CourseDescriptionBody(course) }
-            item { RelatedCourses(course.id, selectCourse) }
+            item { CourseDescriptionHeader(course = course, upPress = upPress) }
+            item { CourseDescriptionBody(course = course) }
+            item { RelatedCourses(courseId = course.id, selectCourse = selectCourse) }
         }
     }
 }
@@ -203,7 +303,7 @@ private fun CourseDescriptionHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .scrim(colors = listOf(Color(0x80000000), Color(0x33000000)))
-                .aspectRatio(4f / 3f)
+                .aspectRatio(ratio = 4f / 3f)
         )
         TopAppBar(
             backgroundColor = Color.Transparent,
@@ -214,7 +314,7 @@ private fun CourseDescriptionHeader(
             IconButton(onClick = upPress) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = stringResource(R.string.label_back)
+                    contentDescription = stringResource(id = R.string.label_back)
                 )
             }
             Image(
@@ -222,16 +322,16 @@ private fun CourseDescriptionHeader(
                 contentDescription = null,
                 modifier = Modifier
                     .padding(bottom = 4.dp)
-                    .size(24.dp)
-                    .align(Alignment.CenterVertically)
+                    .size(size = 24.dp)
+                    .align(alignment = Alignment.CenterVertically)
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(weight = 1f))
         }
         OutlinedAvatar(
             url = course.instructor,
             modifier = Modifier
-                .size(40.dp)
-                .align(Alignment.BottomCenter)
+                .size(size = 40.dp)
+                .align(alignment = Alignment.BottomCenter)
                 .offset(y = 20.dp) // overlap bottom of image
         )
     }
@@ -240,7 +340,7 @@ private fun CourseDescriptionHeader(
 @Composable
 private fun CourseDescriptionBody(course: Course) {
     Text(
-        text = course.subject.uppercase(Locale.getDefault()),
+        text = course.subject.uppercase(locale = Locale.getDefault()),
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.body2,
         textAlign = TextAlign.Center,
@@ -261,7 +361,7 @@ private fun CourseDescriptionBody(course: Course) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     )
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(height = 16.dp))
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
             text = stringResource(id = R.string.course_desc),
@@ -269,17 +369,17 @@ private fun CourseDescriptionBody(course: Course) {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(all = 16.dp)
         )
     }
-    Divider(modifier = Modifier.padding(16.dp))
+    Divider(modifier = Modifier.padding(all = 16.dp))
     Text(
         text = stringResource(id = R.string.what_you_ll_need),
         style = MaterialTheme.typography.h6,
         textAlign = TextAlign.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(all = 16.dp)
     )
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(
@@ -304,7 +404,8 @@ private fun RelatedCourses(
     courseId: Long,
     selectCourse: (Long) -> Unit
 ) {
-    val relatedCourses = remember(courseId) { CourseRepo.getRelated(courseId) }
+    val relatedCourses: List<Course> =
+        remember(courseId) { CourseRepo.getRelated(courseId = courseId) }
     BlueTheme {
         Surface(
             color = MaterialTheme.colors.primarySurface,
@@ -332,14 +433,14 @@ private fun RelatedCourses(
                     items(
                         items = relatedCourses,
                         key = { it.id }
-                    ) { related ->
+                    ) { related: Course ->
                         CourseListItem(
                             course = related,
                             onClick = { selectCourse(related.id) },
                             titleStyle = MaterialTheme.typography.body2,
                             modifier = Modifier
                                 .padding(end = 8.dp)
-                                .size(288.dp, 80.dp),
+                                .size(width = 288.dp, height = 80.dp),
                             iconSize = 14.dp
                         )
                     }
@@ -358,11 +459,27 @@ private fun LessonsSheet(
     updateSheet: (SheetState) -> Unit
 ) {
     // Use the fraction that the sheet is open to drive the transformation from FAB -> Sheet
-    val fabSize = with(LocalDensity.current) { FabSize.toPx() }
-    val fabSheetHeight = fabSize + WindowInsets.systemBars.getBottom(LocalDensity.current)
-    val offsetX = lerp(width - fabSize, 0f, 0f, 0.15f, openFraction)
-    val offsetY = lerp(height - fabSheetHeight, 0f, openFraction)
-    val tlCorner = lerp(fabSize, 0f, 0f, 0.15f, openFraction)
+    val fabSize: Float = with(LocalDensity.current) { FabSize.toPx() }
+    val fabSheetHeight: Float = fabSize + WindowInsets.systemBars.getBottom(LocalDensity.current)
+    val offsetX: Float = lerp(
+        startValue = width - fabSize,
+        endValue = 0f,
+        startFraction = 0f,
+        endFraction = 0.15f,
+        fraction = openFraction
+    )
+    val offsetY: Float = lerp(
+        startValue = height - fabSheetHeight,
+        endValue = 0f,
+        fraction = openFraction
+    )
+    val tlCorner: Float = lerp(
+        startValue = fabSize,
+        endValue = 0f,
+        startFraction = 0f,
+        endFraction = 0.15f,
+        fraction = openFraction
+    )
     val surfaceColor = lerp(
         startColor = pink500,
         endColor = MaterialTheme.colors.primarySurface.copy(alpha = ExpandedSheetAlpha),
@@ -379,7 +496,12 @@ private fun LessonsSheet(
             translationY = offsetY
         }
     ) {
-        Lessons(course, openFraction, surfaceColor, updateSheet)
+        Lessons(
+            course = course,
+            openFraction = openFraction,
+            surfaceColor = surfaceColor,
+            updateSheet = updateSheet
+        )
     }
 }
 
@@ -390,20 +512,26 @@ private fun Lessons(
     surfaceColor: Color = MaterialTheme.colors.surface,
     updateSheet: (SheetState) -> Unit
 ) {
-    val lessons: List<Lesson> = remember(course.id) { LessonsRepo.getLessons(course.id) }
+    val lessons: List<Lesson> = remember(course.id) { LessonsRepo.getLessons(courseId = course.id) }
 
     Box(modifier = Modifier.fillMaxWidth()) {
         // When sheet open, show a list of the lessons
-        val lessonsAlpha = lerp(0f, 1f, 0.2f, 0.8f, openFraction)
+        val lessonsAlpha: Float = lerp(
+            startValue = 0f,
+            endValue = 1f,
+            startFraction = 0.2f,
+            endFraction = 0.8f,
+            fraction = openFraction
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .graphicsLayer { alpha = lessonsAlpha }
                 .statusBarsPadding()
         ) {
-            val scroll = rememberLazyListState()
-            val appBarElevation by animateDpAsState(if (scroll.isScrolled) 4.dp else 0.dp)
-            val appBarColor = if (appBarElevation > 0.dp) surfaceColor else Color.Transparent
+            val scroll: LazyListState = rememberLazyListState()
+            val appBarElevation: Dp by animateDpAsState(if (scroll.isScrolled) 4.dp else 0.dp)
+            val appBarColor: Color = if (appBarElevation > 0.dp) surfaceColor else Color.Transparent
             TopAppBar(
                 backgroundColor = appBarColor,
                 elevation = appBarElevation
@@ -414,17 +542,17 @@ private fun Lessons(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
-                        .padding(16.dp)
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
+                        .padding(all = 16.dp)
+                        .weight(weight = 1f)
+                        .align(alignment = Alignment.CenterVertically)
                 )
                 IconButton(
                     onClick = { updateSheet(SheetState.Closed) },
-                    modifier = Modifier.align(Alignment.CenterVertically)
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.ExpandMore,
-                        contentDescription = stringResource(R.string.label_collapse_lessons)
+                        contentDescription = stringResource(id = R.string.label_collapse_lessons)
                     )
                 }
             }
@@ -437,29 +565,35 @@ private fun Lessons(
                 items(
                     items = lessons,
                     key = { it.title }
-                ) { lesson ->
-                    Lesson(lesson)
+                ) { lesson: Lesson ->
+                    Lesson(lesson = lesson)
                     Divider(startIndent = 128.dp)
                 }
             }
         }
 
         // When sheet closed, show the FAB
-        val fabAlpha = lerp(1f, 0f, 0f, 0.15f, openFraction)
+        val fabAlpha: Float = lerp(
+            startValue = 1f,
+            endValue = 0f,
+            startFraction = 0f,
+            endFraction = 0.15f,
+            fraction = openFraction
+        )
         Box(
             modifier = Modifier
-                .size(FabSize)
+                .size(size = FabSize)
                 .padding(start = 16.dp, top = 8.dp) // visually center contents
                 .graphicsLayer { alpha = fabAlpha }
         ) {
             IconButton(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(alignment = Alignment.Center),
                 onClick = { updateSheet(SheetState.Open) }
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Rounded.PlaylistPlay,
                     tint = MaterialTheme.colors.onPrimary,
-                    contentDescription = stringResource(R.string.label_expand_lessons)
+                    contentDescription = stringResource(id = R.string.label_expand_lessons)
                 )
             }
         }
@@ -476,11 +610,11 @@ private fun Lesson(lesson: Lesson) {
         NetworkImage(
             url = lesson.imageUrl,
             contentDescription = null,
-            modifier = Modifier.size(112.dp, 64.dp)
+            modifier = Modifier.size(width = 112.dp, height = 64.dp)
         )
         Column(
             modifier = Modifier
-                .weight(1f)
+                .weight(weight = 1f)
                 .padding(start = 16.dp)
         ) {
             Text(
@@ -497,7 +631,7 @@ private fun Lesson(lesson: Lesson) {
                     Icon(
                         imageVector = Icons.Rounded.PlayCircleOutline,
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(size = 16.dp)
                     )
                     Text(
                         modifier = Modifier.padding(start = 4.dp),
@@ -520,6 +654,9 @@ private enum class SheetState { Open, Closed }
 private val LazyListState.isScrolled: Boolean
     get() = firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0
 
+/**
+ * Preview of [CourseDetails]
+ */
 @Preview(name = "Course Details")
 @Composable
 private fun CourseDetailsPreview() {
@@ -531,31 +668,46 @@ private fun CourseDetailsPreview() {
     )
 }
 
+/**
+ * Preview of [Lessons] in the "Closed" state
+ */
 @Preview(name = "Lessons Sheet — Closed")
 @Composable
 private fun LessonsSheetClosedPreview() {
-    LessonsSheetPreview(0f)
+    LessonsSheetPreview(openFraction = 0f)
 }
 
+/**
+ * Preview of [Lessons] in the "Open" state
+ */
 @Preview(name = "Lessons Sheet — Open")
 @Composable
 private fun LessonsSheetOpenPreview() {
-    LessonsSheetPreview(1f)
+    LessonsSheetPreview(openFraction = 1f)
 }
 
+/**
+ * Preview of [Lessons] in the "Open" state, in dark theme
+ */
 @Preview(name = "Lessons Sheet — Open – Dark")
 @Composable
 private fun LessonsSheetOpenDarkPreview() {
-    LessonsSheetPreview(1f, true)
+    LessonsSheetPreview(openFraction = 1f, darkTheme = true)
 }
 
+/**
+ * Preview of [Lessons]
+ *
+ * @param openFraction The fraction that the sheet is open.
+ * @param darkTheme Whether the theme is dark.
+ */
 @Composable
 private fun LessonsSheetPreview(
     openFraction: Float,
     darkTheme: Boolean = false
 ) {
-    PinkTheme(darkTheme) {
-        val color = MaterialTheme.colors.primarySurface
+    PinkTheme(darkTheme = darkTheme) {
+        val color: Color = MaterialTheme.colors.primarySurface
         Surface(color = color) {
             Lessons(
                 course = courses.first(),
@@ -567,10 +719,13 @@ private fun LessonsSheetPreview(
     }
 }
 
+/**
+ * Preview of [RelatedCourses]
+ */
 @Preview(name = "Related")
 @Composable
 private fun RelatedCoursesPreview() {
-    val related = courses.random()
+    val related: Course = courses.random()
     RelatedCourses(
         courseId = related.id,
         selectCourse = { }

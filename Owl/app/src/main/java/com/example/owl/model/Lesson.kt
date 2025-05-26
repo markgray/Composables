@@ -18,6 +18,16 @@ package com.example.owl.model
 
 import androidx.compose.runtime.Immutable
 
+/**
+ * Represents a single lesson in a course.
+ *
+ * @param title The title of the lesson.
+ * @param formattedStepNumber The step number of the lesson, formatted as a string (e.g., "01").
+ * @param length The duration of the lesson, formatted as a string (e.g., "4:14").
+ * @param imageUrl The URL of the image associated with the lesson.
+ * @param imageContentDescription A description of the image for accessibility purposes.
+ * Defaults to an empty string.
+ */
 @Immutable
 data class Lesson(
     val title: String,
@@ -30,11 +40,15 @@ data class Lesson(
 /**
  * A fake repo
  */
+@Suppress("UNUSED_PARAMETER", "unused")
 object LessonsRepo {
-    fun getLessons(@Suppress("UNUSED_PARAMETER") courseId: Long) = lessons
+    fun getLessons(courseId: Long): List<Lesson> = lessons
 }
 
-val lessons = listOf(
+/**
+ * A [List] of [Lesson]s.
+ */
+val lessons: List<Lesson> = listOf(
     Lesson(
         title = "An introduction to the Landscape",
         formattedStepNumber = "01",

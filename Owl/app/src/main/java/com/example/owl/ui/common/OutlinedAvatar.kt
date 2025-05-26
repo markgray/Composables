@@ -34,6 +34,7 @@ package com.example.owl.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -48,6 +49,24 @@ import androidx.compose.ui.unit.dp
 import com.example.owl.ui.theme.BlueTheme
 import com.example.owl.ui.utils.NetworkImage
 
+/**
+ * A circular image with a white outline.
+ *
+ * Our root composable is a [Box] whose `modifier` argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.background] whose `color` argument is our [Color] parameter [outlineColor],
+ * and whose `shape` argument is a [CircleShape]. In its [BoxScope] `content` composable lambda
+ * argument, we compose a [NetworkImage] whose arguments are:
+ *  - `url`: is our [String] parameter [url].
+ *  - `contentDescription`: is `null`.
+ *  - `modifier`: is a [Modifier.padding] that adds our [Dp] parameter [outlineColor] padding to
+ *  `all` sides`, chained to a [Modifier.fillMaxSize] and a [Modifier.clip] whose `shape` argument
+ *  is a [CircleShape].
+ *
+ * @param url The url of the image to display.
+ * @param modifier The modifier to apply to this layout node.
+ * @param outlineSize The size of the outline.
+ * @param outlineColor The color of the outline.
+ */
 @Composable
 fun OutlinedAvatar(
     url: String,
@@ -65,13 +84,16 @@ fun OutlinedAvatar(
             url = url,
             contentDescription = null,
             modifier = Modifier
-                .padding(outlineSize)
+                .padding(all = outlineSize)
                 .fillMaxSize()
-                .clip(CircleShape)
+                .clip(shape = CircleShape)
         )
     }
 }
 
+/**
+ * Preview of [OutlinedAvatar]
+ */
 @Preview(
     name = "Outlined Avatar",
     widthDp = 40,

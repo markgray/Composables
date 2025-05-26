@@ -18,6 +18,13 @@ package com.example.owl.model
 
 import androidx.compose.runtime.Immutable
 
+/**
+ * Represents a topic that can be learned.
+ *
+ * @param name The name of the topic.
+ * @param courses The number of courses available in this topic.
+ * @param imageUrl The URL of the image representing this topic.
+ */
 @Immutable
 data class Topic(
     val name: String,
@@ -25,7 +32,10 @@ data class Topic(
     val imageUrl: String
 )
 
-val topics = listOf(
+/**
+ * A [List] of [Topic]s.
+ */
+val topics: List<Topic> = listOf(
     Topic("Architecture", 58, "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8"),
     Topic("Arts & Crafts", 121, "https://images.unsplash.com/photo-1422246358533-95dcd3d48961"),
     Topic("Business", 78, "https://images.unsplash.com/photo-1507679799987-c73779587ccf"),
