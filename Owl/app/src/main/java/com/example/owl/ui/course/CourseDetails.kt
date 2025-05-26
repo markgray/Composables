@@ -51,6 +51,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
+// TODO: Material's Swipeable has been replaced by Foundation's AnchoredDraggable
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -61,10 +62,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.PlayCircleOutline
-import androidx.compose.material.icons.rounded.PlaylistPlay
 import androidx.compose.material.primarySurface
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
@@ -98,8 +99,8 @@ import com.example.owl.ui.theme.pink500
 import com.example.owl.ui.utils.NetworkImage
 import com.example.owl.ui.utils.lerp
 import com.example.owl.ui.utils.scrim
-import java.util.Locale
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 private val FabSize = 56.dp
 private const val ExpandedSheetAlpha = 0.96f
@@ -125,6 +126,7 @@ fun CourseDetails(
 ) {
     PinkTheme {
         BoxWithConstraints {
+            // TODO: Material's Swipeable has been replaced by Foundation's AnchoredDraggable
             val sheetState = rememberSwipeableState(SheetState.Closed)
             val fabSize = with(LocalDensity.current) { FabSize.toPx() }
             val dragRange = constraints.maxHeight - fabSize
@@ -142,6 +144,7 @@ fun CourseDetails(
             Box(
                 // The Lessons sheet is initially closed and appears as a FAB. Make it openable by
                 // swiping or clicking the FAB.
+                // TODO: Material's Swipeable has been replaced by Foundation's AnchoredDraggable
                 Modifier.swipeable(
                     state = sheetState,
                     anchors = mapOf(
@@ -210,7 +213,7 @@ private fun CourseDescriptionHeader(
         ) {
             IconButton(onClick = upPress) {
                 Icon(
-                    imageVector = Icons.Rounded.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                     contentDescription = stringResource(R.string.label_back)
                 )
             }
@@ -454,7 +457,7 @@ private fun Lessons(
                 onClick = { updateSheet(SheetState.Open) }
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.PlaylistPlay,
+                    imageVector = Icons.AutoMirrored.Rounded.PlaylistPlay,
                     tint = MaterialTheme.colors.onPrimary,
                     contentDescription = stringResource(R.string.label_expand_lessons)
                 )

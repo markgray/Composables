@@ -36,10 +36,10 @@ data class Course(
  */
 object CourseRepo {
     fun getCourse(courseId: Long): Course = courses.find { it.id == courseId }!!
-    fun getRelated(@Suppress("UNUSED_PARAMETER") courseId: Long): List<Course> = courses
+    fun getRelated(@Suppress("UNUSED_PARAMETER", "unused") courseId: Long): List<Course> = courses
 }
 
-val courses = listOf(
+val courses: List<Course> = listOf(
     Course(
         id = 0,
         name = "Basic Blocks and Woodturning",
