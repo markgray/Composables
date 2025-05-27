@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -47,11 +48,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -74,6 +78,7 @@ import androidx.compose.material.icons.rounded.PlayCircleOutline
 import androidx.compose.material.primarySurface
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
+import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -83,11 +88,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
@@ -271,7 +279,23 @@ fun CourseDetails(
 /**
  * This is the Course Description screen. It contains a header, a body, and a list of related
  * courses.
- * TODO: Continue here.
+ *
+ * Our root composable is a [Surface] whose `modifier` argument is [Modifier.fillMaxSize]. In its
+ * `content` composable lambda argument, we compose a [LazyColumn] whose [LazyListScope] `content`
+ * composable lambda argument contains:
+ *
+ * **First**: a [LazyListScope.item] whose [LazyItemScope] `cibtebt` composable lambda argument
+ * composes a [CourseDescriptionHeader] whose arguments are:
+ *  - `course`: is our [Course] parameter [course].
+ *  - `upPress`: is our lambda parameter [upPress].
+ *
+ * **Second**: a [LazyListScope.item] whose [LazyItemScope] `content` composable lambda argument
+ * composes a [CourseDescriptionBody] whose `course` argument is our [Course] parameter [course].
+ *
+ * **Third**: a [LazyListScope.item] whose [LazyItemScope] `content` composable lambda argument
+ * composes a [RelatedCourses] whose arguments are:
+ *  - `courseId`: is the [Course.id] of our [Course] parameter [course].
+ *  - `selectCourse`: is our lambda parameter [selectCourse].
  *
  * @param course The [Course] to display.
  * @param selectCourse (event) A course has been selected from the related courses.
@@ -292,6 +316,54 @@ private fun CourseDescription(
     }
 }
 
+/**
+ * This is the header of the [CourseDescription].
+ *
+ * Our root composable is a [Box]. In the [BoxScope] `content` composable lambda argument of the [Box]
+ * we compose:
+ *
+ * **First**: a [NetworkImage] whose arguments are:
+ *  - `url`: is the [Course.thumbUrl] of our [Course] parameter [course].
+ *  - `contentDescription`: is `null`.
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.scrim] whose `colors` argument
+ *  is a [listOf] `Color(0x80000000)` and `Color(0x33000000)` and that is chained to a
+ *  [Modifier.aspectRatio] whose `ratio` argument is `4f / 3f`.
+ *
+ * **Second**: a [TopAppBar] whose arguments are:
+ *  - `backgroundColor`: is [Color.Transparent].
+ *  - `elevation`: is `0.dp`.
+ *  - `contentColor`: is [Color.White].
+ *  - `modifier`: is a [Modifier.statusBarsPadding].
+ *
+ * In the [RowScope] `content` composable lambda argument of the [TopAppBar], we compose:
+ *
+ * **First**:
+ * An [IconButton] whose `onClick` argument is our lambda parameter [upPress], and whose `content`
+ * composable lambda argument composes an [Icon] whose arguments are:
+ *  - `imageVector`: is the [ImageVector] drawn by [Icons.AutoMirrored.Rounded.ArrowBack].
+ *  - `contentDescription`: is the string resource with id `R.string.label_back`. ("Back")
+ *
+ * **Second**:
+ * An [Image] whose arguments are:
+ *  - `painter`: is the [Painter] that [painterResource] creates for the drawable with resource id
+ *  `R.drawable.ic_logo`.
+ *  - `contentDescription`: is `null`.
+ *  - `modifier`: is a [Modifier.padding] that adds `4.dp` to the `bottom`, chained to a
+ *  [Modifier.size] whose `size` argument is `24.dp`, and that is chained to a [RowScope.align]
+ *  whose `alignment` argument is [Alignment.CenterVertically].
+ *
+ * **Third**:
+ * A [Spacer] whose `modifier` argument is a [RowScope.weight] whose `weight` argument is `1f`.
+ *
+ * On the very top of the composables in the [Box] we compose an [OutlinedAvatar] whose arguments are:
+ *  - `url`: is the [Course.instructor] of our [Course] parameter [course].
+ *  - `modifier`: is a [Modifier.size] whose `size` argument is `40.dp`, chained to a
+ *  [RowScope.align] whose `alignment` argument is [Alignment.BottomCenter], and that is chained to
+ *  a [Modifier.offset] whose `y` argument is `20.dp` (to overlap the bottom of the [Image]).
+ *
+ * @param course The [Course] to display.
+ * @param upPress called when the "up" button is pressed.
+ */
 @Composable
 private fun CourseDescriptionHeader(
     course: Course,
@@ -338,6 +410,63 @@ private fun CourseDescriptionHeader(
     }
 }
 
+/**
+ * Displays the body of the course description.
+ *
+ * This composable function displays the course subject in uppercase, the course name,
+ * a course description, a divider, a "What you'll need" section, and the needs for the course.
+ * All text elements are centered and styled according to the MaterialTheme.
+ *
+ * **First**: We compose a [Text] whose arguments are:
+ *  - `text`: is the [Course.subject] of our [Course] parameter [course] with all characters
+ *  uppercase.
+ *  - `color`: is the [Colors.primary] of our custom [MaterialTheme.colors].
+ *  - `style`: is the [TextStyle] of [Typography.body2] of our custom [MaterialTheme.typography].
+ *  - `textAlign`: is [TextAlign.Center].
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] that adds `16.dp` to
+ *  the `start`, `36.dp` to the `top`, `16.dp` to the `end` and `16.dp` to the `bottom`.
+ *
+ * **Second**: We compose a [Text] whose arguments are:
+ *  - `text`: is the [Course.name] of our [Course] parameter [course].
+ *  - `style`: is the [TextStyle] of [Typography.h4] of our custom [MaterialTheme.typography].
+ *  - `textAlign`: is [TextAlign.Center].
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] that adds `16.dp`
+ *  to the `horizontal` sides.
+ *
+ * **Third**: We compose a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height`
+ * argument is `16.dp`.
+ *
+ * **Fourth**: We compose a [CompositionLocalProvider] that provides [ContentAlpha.medium] for the
+ * [LocalContentAlpha] to its `content` composable lambda argument, a [Text] whose arguments are:
+ *  - `text`: is the string resource with id `R.string.course_desc`. ("This video course introduces
+ *  the photography of...")
+ *  - `style`: is the [TextStyle] of [Typography.body1] of our custom [MaterialTheme.typography].
+ *  - `textAlign`: is [TextAlign.Center].
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] that adds `16.dp`
+ *  to `all` sides.
+ *
+ * **Fifth**: We compose a [Divider] whose `modifier` argument is a [Modifier.padding] that adds
+ * `16.dp` to `all` sides.
+ *
+ * **Sixth**: We compose a [Text] whose arguments are:
+ *  - `text`: is the string resource with id `R.string.what_you_ll_need`. ("What you'll need")
+ *  - `style`: is the [TextStyle] of [Typography.h6] of our custom [MaterialTheme.typography].
+ *  - `textAlign`: is [TextAlign.Center].
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] that adds `16.dp`
+ *  to `all` sides.
+ *
+ * **Seventh**: We compose a [CompositionLocalProvider] that provides [ContentAlpha.medium] for
+ * the [LocalContentAlpha] to its `content` composable lambda argument, a [Text] whose arguments are:
+ *  - `text`: is the string resource with id `R.string.needs` ("• DSLR or manual camera • 24mm wide
+ *  angle lens • Tripod")
+ *  - `style`: is the [TextStyle] of [Typography.body1] of our custom [MaterialTheme.typography].
+ *  - `textAlign`: is [TextAlign.Center].
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] that adds `16.dp`
+ *  padding to the `start`, `16.dp` padding to the `top`, `16.dp` padding to the `end`, and `32.dp`
+ *  to the `bottom`.
+ *
+ * @param course The [Course] object containing the details to be displayed.
+ */
 @Composable
 private fun CourseDescriptionBody(course: Course) {
     Text(
@@ -399,6 +528,26 @@ private fun CourseDescriptionBody(course: Course) {
     }
 }
 
+/**
+ * Displays a list of related courses.
+ *
+ * This composable function fetches a list of courses related to the given `courseId`
+ * and displays them in a horizontal scrolling list. Each item in the list is a
+ * [CourseListItem] that, when clicked, invokes the `selectCourse` callback with the ID
+ * of the selected course.
+ *
+ * The UI is themed with [BlueTheme] and consists of a title "You'll also like"
+ * followed by the [LazyRow] of related courses.
+ *
+ * First we initialize and remember our [List] of [Course] variable `relatedCourses` to the [List]
+ * returned by the [CourseRepo.getRelated] method when called with our [Long] parameter [courseId]
+ * as its `courseId` argument.
+ * TODO: Continue here.
+ *
+ * @param courseId The ID of the current course, used to fetch related courses.
+ * @param selectCourse A lambda function that is invoked when a related course is selected.
+ * It receives the ID of the selected course as a [Long].
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun RelatedCourses(
@@ -406,7 +555,7 @@ private fun RelatedCourses(
     selectCourse: (Long) -> Unit
 ) {
     val relatedCourses: List<Course> =
-        remember(courseId) { CourseRepo.getRelated(courseId = courseId) }
+        remember(key1 = courseId) { CourseRepo.getRelated(courseId = courseId) }
     BlueTheme {
         Surface(
             color = MaterialTheme.colors.primarySurface,
