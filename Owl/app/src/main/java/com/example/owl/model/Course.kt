@@ -53,7 +53,7 @@ data class Course(
  */
 object CourseRepo {
     /**
-     * Returns the course with the given ID.
+     * Returns the [Course] with the given ID.
      *
      * @param courseId The ID of the course to return.
      * @return The [Course] with the given ID.
@@ -61,8 +61,11 @@ object CourseRepo {
     fun getCourse(courseId: Long): Course = courses.find { it.id == courseId }!!
 
     /**
-     * Returns a list of sample courses.
+     * Returns a list of sample courses that are "related" to the [Course] with the [Course.id] of
+     * our [Long] paramaeter [courseId] (in our case it just returns our entire dataset without even
+     * checking whether they are related or not).
      *
+     * @param courseId the [Course.id] of the [Course] whose related [Course]s we are interested in.
      * @return A list of [Course]s.
      */
     fun getRelated(@Suppress("UNUSED_PARAMETER", "unused") courseId: Long): List<Course> = courses

@@ -42,6 +42,15 @@ data class Lesson(
  */
 @Suppress("UNUSED_PARAMETER", "unused")
 object LessonsRepo {
+    /**
+     * Return the [List] of [Lesson] of the [Course] whose [Course.id] is our [Long] parameter
+     * [courseId]. It just returns the entire [List] of [Lesson] property [lessons] without even
+     * checking its [Long] parameter [courseId].
+     *
+     * @param courseId the [Course.id] of the [Course] whose [List] of [Lesson] we should return.
+     * @return the [List] of [Lesson] of the [Course] whose [Course.id] is our [Long] parameter
+     * [courseId]
+     */
     fun getLessons(courseId: Long): List<Lesson> = lessons
 }
 

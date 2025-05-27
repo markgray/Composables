@@ -127,7 +127,7 @@ private const val ExpandedSheetAlpha = 0.96f
  *
  * We start by initializing and remembering our [Course] variable `course` to the [Course] that the
  * [CourseRepo.getCourse] method returns when its [courseId] argument is our [Long] parameter
- * [courseId]. The we compose the [CourseDetails] overload whose arguments are:
+ * [courseId]. Then we compose the [CourseDetails] overload whose arguments are:
  *  - `course`: is our [Course] parameter `course`.
  *  - `selectCourse`: is our lambda parameter [selectCourse].
  *  - `upPress`: is our lambda parameter [upPress].
@@ -150,7 +150,7 @@ fun CourseDetails(
 
 /**
  * This is the main screen for displaying the details of a [Course]. It is composed of a
- * [CourseDescription] a [LessonsSheet] that can be swiped up by the user, a back [BackHandler]
+ * [CourseDescription] a [LessonsSheet] that can be swiped up by the user, a [BackHandler]
  * that will close the [LessonsSheet] if it is open, or navigate up if it is closed, and a
  * [Box] that acts as a swipeable container for the [LessonsSheet]. The [Box] uses
  * [Modifier.swipeable] to control the [SwipeableState] variable `sheetState` which can be
@@ -183,8 +183,8 @@ fun CourseDetails(
  *
  * In the [BoxScope] `content` composable lambda argument of the [Box], we start by initializing our
  * [Float] variable `openFraction` to `0f` if `sheetState.offset.value` is [Float.NaN] or minus
- * `sheetState.offset.value` divided by `dragRange` or `0f` if `sheetState.offset.value` is not and
- * coerce the result between `0f` and `1f`.
+ * `sheetState.offset.value` divided by `dragRange` or `0f` if `sheetState.offset.value` is not
+ * [Float.NaN]. Then we coerce the result to be between `0f` and `1f`.
  *
  * Then we compose a [CourseDescription] whose arguments are:
  *  - `course`: is our [Course] parameter [course].
@@ -205,8 +205,9 @@ fun CourseDetails(
  *
  * @param course the [Course] whose details we are to display.
  * @param selectCourse a lambda that takes the ID of a [Course] as its Long parameter that the
- * [CourseDescription] can call to navigate to a related course.
- * @param upPress a lambda that the [CourseDescription] can call to navigate up from this screen.
+ * [CourseDescription] composable can call to navigate to a related course.
+ * @param upPress a lambda that the [CourseDescription] composable can call to navigate up from
+ * this screen.
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

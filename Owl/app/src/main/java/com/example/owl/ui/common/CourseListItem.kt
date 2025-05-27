@@ -68,7 +68,7 @@ import com.example.owl.ui.utils.NetworkImage
  *  - `modifier`: is a [Modifier.aspectRatio] whose `ratio` argument is `1f`.
  *
  * Next in the [Row] we compose a [Column] whose `modifier` argument is a [Modifier.padding] that
- * adds `16.dp` padding to the `start`, `16.dp` paddin gto the `top`, `16.dp` padding to the `end`,
+ * adds `16.dp` padding to the `start`, `16.dp` paddin to the `top`, `16.dp` padding to the `end`,
  * and `0.dp` padding to the `bottom` of the [Column]. In the [ColumnScope] `content` composable
  * lambda argument of the [Column], we compose a [Text] whose arguments are:
  *  - `text`: is the [Course.name] of our [Course] parameter [course].
