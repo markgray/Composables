@@ -284,7 +284,7 @@ fun CourseDetails(
  * `content` composable lambda argument, we compose a [LazyColumn] whose [LazyListScope] `content`
  * composable lambda argument contains:
  *
- * **First**: a [LazyListScope.item] whose [LazyItemScope] `cibtebt` composable lambda argument
+ * **First**: a [LazyListScope.item] whose [LazyItemScope] `content` composable lambda argument
  * composes a [CourseDescriptionHeader] whose arguments are:
  *  - `course`: is our [Course] parameter [course].
  *  - `upPress`: is our lambda parameter [upPress].
@@ -533,15 +533,15 @@ private fun CourseDescriptionBody(course: Course) {
  *
  * This composable function fetches a list of courses related to the given `courseId`
  * and displays them in a horizontal scrolling list. Each item in the list is a
- * [CourseListItem] that, when clicked, invokes the `selectCourse` callback with the ID
- * of the selected course.
+ * [CourseListItem] that, when clicked, invokes the [selectCourse] callback with the
+ * [Course.id] of the selected course.
  *
  * The UI is themed with [BlueTheme] and consists of a title "You'll also like"
  * followed by the [LazyRow] of related courses.
  *
- * First we initialize and remember our [List] of [Course] variable `relatedCourses` to the [List]
- * returned by the [CourseRepo.getRelated] method when called with our [Long] parameter [courseId]
- * as its `courseId` argument.
+ * First we initialize and remember (with `key1` our [Long] parameter [courseId]) our [List] of
+ * [Course] variable `relatedCourses` to the [List] returned by the [CourseRepo.getRelated] method
+ * when called with our [Long] parameter [courseId] as its `courseId` argument.
  * TODO: Continue here.
  *
  * @param courseId The ID of the current course, used to fetch related courses.
