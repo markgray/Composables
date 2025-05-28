@@ -43,6 +43,24 @@ import com.example.owl.model.courses
 import com.example.owl.model.topics
 import com.example.owl.ui.MainDestinations
 
+/**
+ * Defines the navigation graph for the courses feature.
+ *
+ * This function sets up three composable destinations:
+ * - Featured Courses: Displays a list of featured courses. If onboarding is not complete,
+ *   it navigates to the onboarding screen.
+ * - My Courses: Displays a list of courses the user is enrolled in.
+ * - Search Courses: Allows users to search for courses.
+ *
+ * TODO: Continue here.
+ *
+ * @param onCourseSelected A lambda function that is invoked when a course is selected.
+ * It receives the course ID and the NavBackStackEntry as parameters.
+ * @param onboardingComplete A State object that indicates whether the onboarding process
+ * has been completed.
+ * @param navController The NavHostController used for navigation.
+ * @param modifier A Modifier that can be applied to the composable destinations.
+ */
 fun NavGraphBuilder.courses(
     onCourseSelected: (Long, NavBackStackEntry) -> Unit,
     onboardingComplete: State<Boolean>, // https://issuetracker.google.com/174783110
@@ -112,7 +130,7 @@ enum class CourseTabs(
 }
 
 /**
- * Destinations used in the ([OwlApp]).
+ * Destinations used in [CourseTabs].
  */
 private object CoursesDestinations {
     const val FEATURED_ROUTE = "courses/featured"
