@@ -18,6 +18,7 @@ package com.example.owl.ui.courses
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,15 +34,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.OndemandVideo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintLayoutBaseScope
 import com.example.owl.R
 import com.example.owl.model.Course
 import com.example.owl.model.courses
@@ -52,6 +58,25 @@ import com.example.owl.ui.utils.NetworkImage
 import java.util.Locale
 import kotlin.math.ceil
 
+/**
+ * Display a list of courses. This is the destination for the [CourseTabs.FEATURED] route.
+ *
+ * Our root composable is a [Column] whose `modifier` argument chains to our [Modifier] parmaeter
+ * [modifier] a [Modifier.verticalScroll] to allow it to scroll, and then chains to that a
+ * [Modifier.statusBarsPadding] to add padding to accommodate the status bars insets. In the
+ * [ColumnScope] `content` composable lambda argument we first compose a [CoursesAppBar], then we
+ * compose a [StaggeredVerticalGrid] whose `maxColumnWidth` argument is 220.dp and whose `modifier`
+ * argument is a [Modifier.padding] that adds `4.dp` to `all` sides. In the `content` composable
+ * lambda argument we use the [Iterable.forEach] method of our [List] of [Course] parameter [courses]
+ * to loop through each [Course] capturing the [Course] passed the lambda in variable `course`, the
+ * compose a [FeaturedCourse] whose `course` argument is `course`, and whose `selectCourse` argument
+ * is our lambda parameter [selectCourse].
+ *
+ * @param courses (state) the list of courses to display
+ * @param selectCourse (event) request navigation to Course Details
+ * @param modifier A [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior.
+ */
 @Composable
 fun FeaturedCourses(
     courses: List<Course>,
@@ -60,21 +85,30 @@ fun FeaturedCourses(
 ) {
     Column(
         modifier = modifier
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(state = rememberScrollState())
             .statusBarsPadding()
     ) {
         CoursesAppBar()
         StaggeredVerticalGrid(
             maxColumnWidth = 220.dp,
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(all = 4.dp)
         ) {
-            courses.forEach { course ->
-                FeaturedCourse(course, selectCourse)
+            courses.forEach { course: Course ->
+                FeaturedCourse(course = course, selectCourse = selectCourse)
             }
         }
     }
 }
 
+/**
+ * This composable displays a single [Course].
+ * TODO: Continue here.
+ *
+ * @param course (state) the [Course] to display
+ * @param selectCourse (event) request navigation to Course Details
+ * @param modifier A [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior.
+ */
 @Composable
 fun FeaturedCourse(
     course: Course,
@@ -82,7 +116,7 @@ fun FeaturedCourse(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.padding(4.dp),
+        modifier = modifier.padding(all = 4.dp),
         color = MaterialTheme.colors.surface,
         elevation = OwlTheme.elevations.card,
         shape = MaterialTheme.shapes.medium
@@ -102,13 +136,13 @@ fun FeaturedCourse(
                 url = course.thumbUrl,
                 contentDescription = null,
                 modifier = Modifier
-                    .aspectRatio(4f / 3f)
-                    .constrainAs(image) {
-                        centerHorizontallyTo(parent)
-                        top.linkTo(parent.top)
+                    .aspectRatio(ratio = 4f / 3f)
+                    .constrainAs(ref = image) {
+                        centerHorizontallyTo(other = parent)
+                        top.linkTo(anchor = parent.top)
                     }
             )
-            val outlineColor = LocalElevationOverlay.current?.apply(
+            val outlineColor: Color = LocalElevationOverlay.current?.apply(
                 color = MaterialTheme.colors.surface,
                 elevation = OwlTheme.elevations.card
             ) ?: MaterialTheme.colors.surface
@@ -116,10 +150,10 @@ fun FeaturedCourse(
                 url = course.instructor,
                 outlineColor = outlineColor,
                 modifier = Modifier
-                    .size(38.dp)
-                    .constrainAs(avatar) {
-                        centerHorizontallyTo(parent)
-                        centerAround(image.bottom)
+                    .size(size = 38.dp)
+                    .constrainAs(ref = avatar) {
+                        centerHorizontallyTo(other = parent)
+                        centerAround(anchor = image.bottom)
                     }
             )
             Text(
@@ -127,10 +161,10 @@ fun FeaturedCourse(
                 color = MaterialTheme.colors.primary,
                 style = MaterialTheme.typography.overline,
                 modifier = Modifier
-                    .padding(16.dp)
-                    .constrainAs(subject) {
-                        centerHorizontallyTo(parent)
-                        top.linkTo(avatar.bottom)
+                    .padding(all = 16.dp)
+                    .constrainAs(ref = subject) {
+                        centerHorizontallyTo(other = parent)
+                        top.linkTo(anchor = avatar.bottom)
                     }
             )
             Text(
@@ -139,21 +173,22 @@ fun FeaturedCourse(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
-                    .constrainAs(name) {
-                        centerHorizontallyTo(parent)
-                        top.linkTo(subject.bottom)
+                    .constrainAs(ref = name) {
+                        centerHorizontallyTo(other = parent)
+                        top.linkTo(anchor = subject.bottom)
                     }
             )
-            val center = createGuidelineFromStart(0.5f)
+            val center: ConstraintLayoutBaseScope.VerticalAnchor =
+                createGuidelineFromStart(fraction = 0.5f)
             Icon(
                 imageVector = Icons.Rounded.OndemandVideo,
                 tint = MaterialTheme.colors.primary,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(16.dp)
-                    .constrainAs(icon) {
-                        end.linkTo(center)
-                        centerVerticallyTo(steps)
+                    .size(size = 16.dp)
+                    .constrainAs(ref = icon) {
+                        end.linkTo(anchor = center)
+                        centerVerticallyTo(other = steps)
                     }
             )
             Text(
@@ -166,9 +201,9 @@ fun FeaturedCourse(
                         top = 16.dp,
                         bottom = 16.dp
                     )
-                    .constrainAs(steps) {
-                        start.linkTo(center)
-                        top.linkTo(name.bottom)
+                    .constrainAs(ref = steps) {
+                        start.linkTo(anchor = center)
+                        top.linkTo(anchor = name.bottom)
                     }
             )
         }
@@ -184,30 +219,31 @@ fun StaggeredVerticalGrid(
     Layout(
         content = content,
         modifier = modifier
-    ) { measurables, constraints ->
-        check(constraints.hasBoundedWidth) {
+    ) { measurables: List<Measurable>, constraints: Constraints ->
+        check(value = constraints.hasBoundedWidth) {
             "Unbounded width not supported"
         }
-        val columns = ceil(constraints.maxWidth / maxColumnWidth.toPx()).toInt()
-        val columnWidth = constraints.maxWidth / columns
-        val itemConstraints = constraints.copy(maxWidth = columnWidth)
-        val colHeights = IntArray(columns) { 0 } // track each column's height
-        val placeables = measurables.map { measurable ->
-            val column = shortestColumn(colHeights)
-            val placeable = measurable.measure(itemConstraints)
+        val columns: Int = ceil(constraints.maxWidth / maxColumnWidth.toPx()).toInt()
+        val columnWidth: Int = constraints.maxWidth / columns
+        val itemConstraints: Constraints = constraints.copy(maxWidth = columnWidth)
+        val colHeights = IntArray(columns) // track each column's height
+        val placeables: List<Placeable> = measurables.map { measurable: Measurable ->
+            val column: Int = shortestColumn(colHeights = colHeights)
+            val placeable: Placeable = measurable.measure(constraints = itemConstraints)
             colHeights[column] += placeable.height
             placeable
         }
 
-        val height = colHeights.maxOrNull()?.coerceIn(constraints.minHeight, constraints.maxHeight)
-            ?: constraints.minHeight
+        val height: Int =
+            colHeights.maxOrNull()?.coerceIn(constraints.minHeight, constraints.maxHeight)
+                ?: constraints.minHeight
         layout(
             width = constraints.maxWidth,
             height = height
         ) {
-            val colY = IntArray(columns) { 0 }
-            placeables.forEach { placeable ->
-                val column = shortestColumn(colY)
+            val colY = IntArray(columns)
+            placeables.forEach { placeable: Placeable ->
+                val column: Int = shortestColumn(colY)
                 placeable.place(
                     x = columnWidth * column,
                     y = colY[column]
@@ -221,7 +257,7 @@ fun StaggeredVerticalGrid(
 private fun shortestColumn(colHeights: IntArray): Int {
     var minHeight = Int.MAX_VALUE
     var column = 0
-    colHeights.forEachIndexed { index, height ->
+    colHeights.forEachIndexed { index: Int, height: Int ->
         if (height < minHeight) {
             minHeight = height
             column = index
@@ -230,6 +266,9 @@ private fun shortestColumn(colHeights: IntArray): Int {
     return column
 }
 
+/**
+ * Preview of [FeaturedCourse]
+ */
 @Preview(name = "Featured Course")
 @Composable
 private fun FeaturedCoursePreview() {
@@ -241,6 +280,9 @@ private fun FeaturedCoursePreview() {
     }
 }
 
+/**
+ * Preview of [FeaturedCourses] in Portrait mode
+ */
 @Preview(name = "Featured Courses Portrait")
 @Composable
 private fun FeaturedCoursesPreview() {
@@ -252,6 +294,9 @@ private fun FeaturedCoursesPreview() {
     }
 }
 
+/**
+ * Preview of [FeaturedCourses] in Dark Theme in Portrait mode
+ */
 @Preview(name = "Featured Courses Dark")
 @Composable
 private fun FeaturedCoursesPreviewDark() {
@@ -263,6 +308,9 @@ private fun FeaturedCoursesPreviewDark() {
     }
 }
 
+/**
+ * Preview of [FeaturedCourses] in Landscape mode
+ */
 @Preview(
     name = "Featured Courses Landscape",
     widthDp = 640,
