@@ -82,16 +82,16 @@ android {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
-    implementation("androidx.compose.runtime:runtime:1.8.1")
-    implementation("androidx.compose.ui:ui:1.8.1")
-    implementation("androidx.compose.foundation:foundation-layout:1.8.1")
-    implementation("androidx.compose.material:material:1.8.1")
+    implementation("androidx.compose.runtime:runtime:1.8.2")
+    implementation("androidx.compose.ui:ui:1.8.2")
+    implementation("androidx.compose.foundation:foundation-layout:1.8.2")
+    implementation("androidx.compose.material:material:1.8.2")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("androidx.compose.foundation:foundation:1.8.1")
-    implementation("androidx.compose.animation:animation:1.8.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.1")
-    implementation("androidx.compose.runtime:runtime-livedata:1.8.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.1")
+    implementation("androidx.compose.foundation:foundation:1.8.2")
+    implementation("androidx.compose.animation:animation:1.8.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
 
     implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
     implementation("com.google.accompanist:accompanist-insets:0.30.1")
@@ -110,12 +110,12 @@ dependencies {
 
     androidTestImplementation("androidx.test:rules:1.6.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
-    androidTestImplementation("androidx.compose.ui:ui-test:1.8.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.1")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.8.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
 
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.1")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
 
     // Robolectric dependencies
-    testImplementation("androidx.compose.ui:ui-test-junit4:1.8.1")
+    testImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
     testImplementation("org.robolectric:robolectric:4.14.1")
 }
