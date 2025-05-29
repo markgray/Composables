@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
@@ -354,7 +355,8 @@ fun Greeting(
         ) {
             Text(
                 text = "inversePrimary",
-                modifier = textModifier
+                modifier = textModifier,
+                color = contentColorFor(MaterialTheme.colorScheme.inversePrimary)
             )
         }
         Surface(
@@ -363,7 +365,8 @@ fun Greeting(
         ) {
             Text(
                 text = "surfaceTint",
-                modifier = textModifier
+                modifier = textModifier,
+                color = contentColorFor(MaterialTheme.colorScheme.surfaceTint)
             )
         }
         Surface(
@@ -372,7 +375,8 @@ fun Greeting(
         ) {
             Text(
                 text = "outlineVariant",
-                modifier = textModifier
+                modifier = textModifier,
+                color = contentColorFor(MaterialTheme.colorScheme.outlineVariant)
             )
         }
         Surface(
@@ -381,7 +385,8 @@ fun Greeting(
         ) {
             Text(
                 text = "scrim",
-                modifier = textModifier
+                modifier = textModifier,
+                color = contentColorFor(MaterialTheme.colorScheme.scrim)
             )
         }
     }
