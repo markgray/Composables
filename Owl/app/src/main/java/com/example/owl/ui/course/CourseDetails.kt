@@ -558,12 +558,12 @@ private fun CourseDescriptionBody(course: Course) {
  *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] that adds `16.dp`
  *  to the `horizontal` sides and `24.dp` to the `vertical` sides.
  *
- * **Second**: We compose a [LazyRow] whose `contentPadding` argument is a [PaddingValues] that add
+ * **Second**: We compose a [LazyRow] whose `contentPadding` argument is a [PaddingValues] that adds
  * `16.dp` padding to the `start`, `32.dp` padding to the `bottom`, and `FabSize + 8.dp` padding to
  * the `end`. In the [LazyListScope] `content` composable lambda argument of the [LazyRow] we compose
  * a [LazyListScope.items] whose `items` argument is our [List] of [Course] variable `relatedCourses`,
  * and whose `key` argument is the [Course.id] of each [Course] in the [List]. In the [LazyItemScope]
- * `content` composable lambda argument of the [items] accept the [Course] passed the lambda in
+ * `content` composable lambda argument of the [items] we accept the [Course] passed the lambda in
  * variable `related` and then compose a [CourseListItem] whose arguments are:
  *  - `course`: is the [Course] variable `related`.
  *  - `onClick`: is a lambda that invokes our [selectCourse] lambda parameter with the [Course.id]
@@ -640,7 +640,7 @@ private fun RelatedCourses(
  * to create a smooth animation. When the sheet is closed, it resembles a FAB. As it opens,
  * it expands to fill the screen, and its top-left corner becomes squared.
  *
- * The background color of the sheet also transitions from `pink500` (the FAB color) to
+ * The background color of the sheet also transitions from [pink500] (the FAB color) to
  * the `primarySurface` color of the current theme with a slight transparency.
  *
  * The actual content of the sheet (the list of lessons) is provided by the [Lessons] composable.
@@ -778,18 +778,31 @@ private fun LessonsSheet(
  * [course] as its `courseId` argument.
  *
  * Then our root composable is a [Box] whose `modifier` argument is a [Modifier.fillMaxWidth]. In its
- * [BoxScope] `content` composable lambda argument we start by initializing and remembering our
- * [LazyListState] variable `scroll` to the value returned by the [rememberLazyListState] function.
- * We initialize our animated [Dp] variable `appBarElevation` to the value returned by the
- * [animateDpAsState] function when its `targetValue` lambda argument returns `4,dp` if the
- * [LazyListState.isScrolled] property of [LazyListState] variable `scroll` is true, or `0.dp`
- * otherwise.
+ * [BoxScope] `content` composable lambda argument we start by initializing our animated [Float]
+ * variable `lessonsAlpha` to the Linearly interpolated value the [lerp] function returns for the
+ * following conditions:
+ *  - `startValue`: is 0f
+ *  - `endValue`: is 1f
+ *  - `endFraction`: is 08.f
+ *  - `fraction`: is our [Float] parameter [openFraction]
+ *
+ * Then we compose a [Column] whose `modifier` argument is a [Modifier.fillMaxSize] chained to a
+ * [Modifier.graphicsLayer] whose `alpha` argument is our animated [Float] variable `lessonsAlpha`
+ * (adds a layer atop the [Column] whose `alpha` is animated), and at the end of the chain is a
+ * [Modifier.statusBarsPadding] to add padding to accommodate the status bars insets.
+ *
+ * In the [ColumnScope] `content` composable lambda argument of the [Column] we start by initializing
+ * and remembering our [LazyListState] variable `scroll` to the value returned by the
+ * [rememberLazyListState] function. We initialize our animated [Dp] variable `appBarElevation` to
+ * the value returned by the [animateDpAsState] function when its `targetValue` lambda argument
+ * returns `4,dp` if the [LazyListState.isScrolled] property of [LazyListState] variable `scroll`
+ * is true, or `0.dp` otherwise.
  *
  * We initialize our [Color] variable `appBarColor` to our [Color] parameter [surfaceColor] if
  * `appBarElevation` is greater than 0.dp, or [Color.Transparent] otherwise.
  *
- * We then compose a [TopAppBar] whose `backgroundColor` argument is our [Color] variable `appBarColor`,
- * and its `elevation` argument is our [Dp] variable `appBarElevation`.
+ * We then compose a [TopAppBar] whose `backgroundColor` argument is our [Color] variable
+ * `appBarColor`, and its `elevation` argument is our [Dp] variable `appBarElevation`.
  *
  * In the [RowScope] `content` composable lambda argument of the [TopAppBar] we compose:
  *
@@ -952,7 +965,7 @@ private fun Lessons(
  * The lesson item is clickable, though the click action is currently a placeholder.
  *
  * Our root composable is a [Row] whose `modifier` argument is a [Modifier.clickable] whose
- * `onClick` argument a do nothing lambda, chained to a [Modifier.padding] that adds `16.dp`
+ * `onClick` argument is a do nothing lambda, chained to a [Modifier.padding] that adds `16.dp`
  * padding to the `vertical` sides. In the [RowScope] `content` composable lambda argument of the
  * [Row] we compose:
  *
@@ -974,8 +987,8 @@ private fun Lessons(
  * Below the [Text] we compose a [CompositionLocalProvider] that provides [ContentAlpha.medium] as
  * the [LocalContentAlpha] to a [Row] whose `modifier` argument is a [Modifier.padding] that adds
  * `4.dp` padding to the `top`, and whose `verticalAlignment` argument is [Alignment.CenterVertically].
- * In the [RowScope] `content` composable lambda argument of the [Row] we compose an [Icon] whose
- * arguments are:
+ * In the [RowScope] `content` composable lambda argument of the [Row] first we compose an [Icon]
+ * whose arguments are:
  *  - `imageVector`: is the [ImageVector] drawn by [Icons.Rounded.PlayCircleOutline].
  *  - `contentDescription`: is `null`.
  *  - `modifier`: is a [Modifier.size] whose `size` argument is `16.dp`.
