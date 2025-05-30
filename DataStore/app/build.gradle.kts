@@ -49,10 +49,10 @@ android {
 dependencies {
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.compose.ui:ui:1.8.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.1")
-    implementation("androidx.compose.material:material:1.8.1")
-    implementation("androidx.compose.runtime:runtime-livedata:1.8.1")
+    implementation("androidx.compose.ui:ui:1.8.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.2")
+    implementation("androidx.compose.material:material:1.8.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
 
     // architecture components
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.0")
@@ -60,9 +60,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.0")
 
     // ProtBuf
-    implementation("androidx.datastore:datastore-core:1.1.6")
+    implementation("androidx.datastore:datastore-core:1.1.7")
     implementation("com.google.protobuf:protobuf-javalite:4.26.1")
-    implementation("androidx.datastore:datastore:1.1.6")
+    implementation("androidx.datastore:datastore:1.1.7")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
 
@@ -70,9 +70,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.1")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
 }
 
 protobuf {
