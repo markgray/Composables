@@ -20,11 +20,13 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -62,7 +64,7 @@ import kotlinx.coroutines.CoroutineScope
  * **First**: We use the [NavGraphBuilder.composable] function to add a composable destination for
  * the `route` [CourseTabs.route] of [CourseTabs.FEATURED]. In the [AnimatedContentScope] `content`
  * composable lambda argument we accept the [NavBackStackEntry] passed the lambda in variable `from`
- * and first compose a [LaunchedEffect] whose `key1` argument is the value of [State] wrapped
+ * and first compose a [LaunchedEffect] whose `key1` argument is the value of our [State] wrapped
  * [Boolean] parameter [onboardingComplete] and in the [CoroutineScope] block of the [LaunchedEffect]
  * if the `value` of [onboardingComplete] is `false` we navigate to the
  * [MainDestinations.ONBOARDING_ROUTE]. Then if the `value` of [onboardingComplete] is `true` we
@@ -92,10 +94,12 @@ import kotlinx.coroutines.CoroutineScope
  *
  * @param onCourseSelected A lambda function that is invoked when a course is selected.
  * It receives the course ID and the NavBackStackEntry as parameters.
- * @param onboardingComplete A State object that indicates whether the onboarding process
- * has been completed.
- * @param navController The NavHostController used for navigation.
- * @param modifier A Modifier that can be applied to the composable destinations.
+ * @param onboardingComplete A [State] of [Boolean] that indicates whether the onboarding process
+ * has been completed (`true`) or not (`false`)..
+ * @param navController The [NavHostController] used for navigation.
+ * @param modifier A [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller passes us a [Modifier.padding] that adds the [PaddingValues] that the
+ * [Scaffold] we are composed into passes its `content` composable lambda argument.
  */
 fun NavGraphBuilder.courses(
     onCourseSelected: (Long, NavBackStackEntry) -> Unit,
@@ -134,19 +138,19 @@ fun NavGraphBuilder.courses(
  * Display a simple TopAppBar with the Owl logo and a Profile icon.
  *
  * Our root composable is a [TopAppBar] whose `elevation` argument is `0.dp`, and whose `modifier`
- * argument is [Modifier.height] whose `height` argument is `80.dp`. In the [RowScope] `content`
+ * argument is a [Modifier.height] whose `height` argument is `80.dp`. In its [RowScope] `content`
  * composable lambda argument we compose:
  *
  * **First**: An [Image] whose arguments are:
- *  - `modifier`: A [Modifier.padding] that adds `16.dp` padding to `all` sides of the [Image] chained
- *  to a [RowScope.align] whose `alignment` argument is [Alignment.CenterVertically].
+ *  - `modifier`: A [Modifier.padding] that adds `16.dp` padding to `all` sides of the [Image]
+ *  chained to a [RowScope.align] whose `alignment` argument is [Alignment.CenterVertically].
  *  - `painter`: The [Painter] that [painterResource] creates from the drawable with resource ID
  *  `R.drawable.ic_lockup_white`.
  *  - `contentDescription`: is `null`
  *
  * **Second**: An [IconButton] whose `modifier` argument is a [RowScope.align] whose `alignment`
  * argument is [Alignment.CenterVertically], and whose `onClick` argument is a do-nothing lambda.
- * In the `content` composable lambda argument we compose an [Icon] whose arguments are:
+ * In its `content` composable lambda argument we compose an [Icon] whose arguments are:
  *  - `imageVector`: is the [ImageVector] drawn by [Icons.Filled.AccountCircle]
  *  - `contentDescription`: is the [String] with resource ID `R.string.label_profile` ("Profile")
  */
@@ -179,9 +183,9 @@ fun CoursesAppBar() {
  * An enum class that defines the tabs available in the Courses screen.
  *
  * Each tab has a title, icon, and route associated with it.
- * - `MY_COURSES`: Represents the "My Courses" tab, displaying courses the user is enrolled in.
- * - `FEATURED`: Represents the "Featured" tab, displaying featured courses.
- * - `SEARCH`: Represents the "Search" tab, allowing users to search for courses.
+ *  - `MY_COURSES`: Represents the "My Courses" tab, displaying courses the user is "enrolled" in.
+ *  - `FEATURED`: Represents the "Featured" tab, displaying featured courses.
+ *  - `SEARCH`: Represents the "Search" tab, allowing users to search for courses.
  *
  * @param title The string resource ID for the title of the tab.
  * @param icon The drawable resource ID for the icon of the tab.

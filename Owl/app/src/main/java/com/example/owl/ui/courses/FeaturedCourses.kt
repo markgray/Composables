@@ -67,10 +67,10 @@ import kotlin.math.ceil
  * [ColumnScope] `content` composable lambda argument we first compose a [CoursesAppBar], then we
  * compose a [StaggeredVerticalGrid] whose `maxColumnWidth` argument is 220.dp and whose `modifier`
  * argument is a [Modifier.padding] that adds `4.dp` to `all` sides. In the `content` composable
- * lambda argument we use the [Iterable.forEach] method of our [List] of [Course] parameter [courses]
- * to loop through each [Course] capturing the [Course] passed the lambda in variable `course`, the
- * compose a [FeaturedCourse] whose `course` argument is `course`, and whose `selectCourse` argument
- * is our lambda parameter [selectCourse].
+ * lambda argument of the [StaggeredVerticalGrid] we use the [Iterable.forEach] method of our [List]
+ * of [Course] parameter [courses] to loop through each [Course] capturing the [Course] passed the
+ * lambda in variable `course`, then compose a [FeaturedCourse] whose `course` argument is `course`,
+ * and whose `selectCourse` argument is our lambda parameter [selectCourse].
  *
  * @param courses (state) the list of courses to display
  * @param selectCourse (event) request navigation to Course Details

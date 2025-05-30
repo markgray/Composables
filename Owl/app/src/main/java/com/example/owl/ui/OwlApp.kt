@@ -16,6 +16,7 @@
 
 package com.example.owl.ui
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.navigationBars
@@ -52,7 +53,7 @@ fun OwlApp(finishActivity: () -> Unit) {
         Scaffold(
             backgroundColor = MaterialTheme.colors.primarySurface,
             bottomBar = { OwlBottomBar(navController = navController, tabs) }
-        ) { innerPaddingModifier ->
+        ) { innerPaddingModifier: PaddingValues ->
             NavGraph(
                 finishActivity = finishActivity,
                 navController = navController,
