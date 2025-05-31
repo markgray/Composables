@@ -114,9 +114,9 @@ fun FeaturedCourses(
 /**
  * This composable displays a single [Course].
  *
- * Our root composable is a [Surface] whose `modifier` argument chains to our [Modifier] parmaeter
+ * Our root composable is a [Surface] whose `modifier` argument chains to our [Modifier] parameter
  * [modifier] a [Modifier.padding] that adds `4.dp` to `all` sides, whose `color` argument is
- * the [Colors.surface] of our custom [MaterialTheme.colors], whose `elevation` argument is
+ * the [Colors.surface] of our custom [MaterialTheme.colors], whose `elevation` argument is the
  * [Elevations.card] of our custom [OwlTheme.elevations], and whose `shape` argument is the
  * [Shapes.medium] of our custom [MaterialTheme.shapes].
  *
@@ -129,7 +129,7 @@ fun FeaturedCourses(
  * our [String] variable `featuredString`.
  *
  * In the [ConstraintLayoutScope] `content` composable lambda argument of the [ConstraintLayout] we
- * first initialize using destructuring declaration our [ConstrainedLayoutReference] variables
+ * first initialize using a destructuring declaration our [ConstrainedLayoutReference] variables
  * `image`, `avatar`, `subject`, `name`, `steps`, and `icon` to values returned by the
  * [ConstraintLayoutScope.createRefs] method. We then compose:
  *
@@ -143,9 +143,9 @@ fun FeaturedCourses(
  *  `parent`, and then we use the [ConstrainScope.linkTo] method to link its `top` edge to the `top`
  *  edge of the `parent`.
  *
- * We initialize our [Color] variable `outlineColor` using [ElevationOverlay.apply] method of the
- * `current` [LocalElevationOverlay] to create the background color for the `color` argument
- * [Colors.surface] of our custom [MaterialTheme.colors] and the `elevation` argument of
+ * We initialize our [Color] variable `outlineColor` using the [ElevationOverlay.apply] method of
+ * the `current` [LocalElevationOverlay] to create the background color for the `color` argument
+ * [Colors.surface] of our custom [MaterialTheme.colors] and the `elevation` argument
  * [Elevations.card] of our custom [OwlTheme.elevations] (defaulting to the [Colors.surface]
  * of our custom [MaterialTheme.colors] if this is `null`).
  *
@@ -165,7 +165,7 @@ fun FeaturedCourses(
  *  - `style`: is the [Typography.overline] of our custom [MaterialTheme.typography].
  *  - `modifier`: is a [Modifier.padding] that adds `16.dp` to all sides, chained to a
  *  [ConstraintLayoutScope.constrainAs] whose `ref` argument is our [ConstrainedLayoutReference]
- *  variable `subject`, and in its [ConstrainScope] `constrainBlock` lambda argument we use
+ *  variable `subject`, and in its [ConstrainScope] `constrainBlock` lambda argument we use the
  *  [ConstrainScope.centerHorizontallyTo] method to center the [Text] horizontally to `parent`,
  *  and then we use the [ConstrainScope.linkTo] method to link its `top` edge to the `bottom` edge
  *  of the [ConstrainedLayoutReference] variable `avatar`.
@@ -319,8 +319,8 @@ fun FeaturedCourse(
  *
  * Our root composable is a [Layout] whose `content` argument is our lambda parameter [content],
  * and whose `modifier` argument is our [Modifier] parmaeter [modifier]. In its [MeasureScope]
- * `measurePolicy` lambda argument accept the [List] of [Measurable] passed the lambda in variable
- * `measurables` and the [Constraints] passed the lambda in variable `constraints`.
+ * `measurePolicy` lambda argument we accept the [List] of [Measurable] passed the lambda in
+ * variable `measurables` and the [Constraints] passed the lambda in variable `constraints`.
  *
  * We then [check] that the [Constraints.hasBoundedWidth] of our [Constraints] variable `constraints`
  * is `true`, and throw an [IllegalStateException] if it is not. We initialize our [Int] variable
@@ -355,17 +355,17 @@ fun FeaturedCourse(
  *
  * Finally we call the [MeasureScope.layout] method with its `width` argument the [Constraints.maxWidth]
  * of our [Constraints] variable `constraints`, and its `height` argument our [Int] variable `height`
- * In its [Placeable.PlacementScope] `placeBlock` lambda argument we initialize our [IntArray] variable
- * `colY` to an [IntArray] whose size is our [Int] variable `columns`. We then use the
+ * In its [Placeable.PlacementScope] `placementBlock` lambda argument we initialize our [IntArray]
+ * variable `colY` to an [IntArray] whose size is our [Int] variable `columns`. We then use the
  * [Iterable.forEach] method of our [List] of [Placeable] variable `placeables` to loop through
  * the [Placeable]s capturing the [Placeable] passed the `action` lambda in variable `placeable`,
  * then initialize our [Int] variable `column` to the value returned by the [shortestColumn] method
- * of our [IntArray] variable `colY`, then call the [Placeable.PlacementScope.place] method of our
- * [Placeable] variable `placeable` with its `x` argument the [Int] variable `columnWidth` times
- * `column`, and its `y` argument the value of the [Int] in [IntArray] variable `colY` at our [Int]
- * variable `column`. Finally we increment the [Int] in [IntArray] variable `colY` at our [Int]
- * variable `column` by the [Placeable.height] of our [Placeable] variable `placeable`, and loop
- * around for the next [Placeable].
+ * when its `colHeights` argument is our [IntArray] variable `colY`, then call the
+ * [Placeable.PlacementScope.place] method of our [Placeable] variable `placeable` with its `x`
+ * argument the [Int] variable `columnWidth` times `column`, and its `y` argument the value of the
+ * [Int] in [IntArray] variable `colY` indexed by our [Int] variable `column`. Finally we increment
+ * the [Int] in [IntArray] variable `colY` at our [Int] variable `column` by the [Placeable.height]
+ * of our [Placeable] variable `placeable`, and loop around for the next [Placeable].
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [FeaturedCourses] passes us a [Modifier.padding] that adds `4.dp` to `all`
@@ -406,7 +406,7 @@ fun StaggeredVerticalGrid(
         ) {
             val colY = IntArray(columns)
             placeables.forEach { placeable: Placeable ->
-                val column: Int = shortestColumn(colY)
+                val column: Int = shortestColumn(colHeights = colY)
                 placeable.place(
                     x = columnWidth * column,
                     y = colY[column]
