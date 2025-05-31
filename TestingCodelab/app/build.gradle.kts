@@ -86,19 +86,19 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.fragment:fragment-ktx:1.8.6")
+    implementation("androidx.fragment:fragment-ktx:1.8.7")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.8.1")
-    implementation("androidx.compose.ui:ui:1.8.1")
-    implementation("androidx.compose.foundation:foundation:1.8.1")
-    implementation("androidx.compose.foundation:foundation-layout:1.8.1")
-    implementation("androidx.compose.material:material:1.8.1")
-    implementation("androidx.compose.runtime:runtime-livedata:1.8.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.1")
+    implementation("androidx.compose.runtime:runtime:1.8.2")
+    implementation("androidx.compose.ui:ui:1.8.2")
+    implementation("androidx.compose.foundation:foundation:1.8.2")
+    implementation("androidx.compose.foundation:foundation-layout:1.8.2")
+    implementation("androidx.compose.material:material:1.8.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.2")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.activity:activity-compose:1.10.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
@@ -106,7 +106,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     // Compose testing dependencies
-    androidTestImplementation("androidx.compose.ui:ui-test:1.8.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.1")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.1")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.8.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
 }
