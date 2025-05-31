@@ -16,6 +16,7 @@
 
 package com.example.owl.ui.onboarding
 
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
@@ -24,6 +25,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -61,6 +63,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -76,6 +80,12 @@ import com.example.owl.ui.theme.pink500
 import com.example.owl.ui.utils.NetworkImage
 import kotlin.math.max
 
+/**
+ * The Onboarding screen.
+ * TODO: Continue here.
+ *
+ * @param onboardingComplete A callback to be invoked when the user has completed onboarding.
+ */
 @Composable
 fun Onboarding(onboardingComplete: () -> Unit) {
     YellowTheme {
@@ -89,16 +99,16 @@ fun Onboarding(onboardingComplete: () -> Unit) {
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Explore,
-                        contentDescription = stringResource(R.string.label_continue_to_courses)
+                        contentDescription = stringResource(id = R.string.label_continue_to_courses)
                     )
                 }
             }
-        ) { innerPadding ->
+        ) { innerPadding: PaddingValues ->
             Column(
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(paddingValues = innerPadding)
             ) {
                 Text(
-                    text = stringResource(R.string.choose_topics_that_interest_you),
+                    text = stringResource(id = R.string.choose_topics_that_interest_you),
                     style = MaterialTheme.typography.h4,
                     textAlign = TextAlign.End,
                     modifier = Modifier.padding(
@@ -108,10 +118,10 @@ fun Onboarding(onboardingComplete: () -> Unit) {
                 )
                 TopicsGrid(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(weight = 1f)
                         .wrapContentHeight()
                 )
-                Spacer(Modifier.height(56.dp)) // center grid accounting for FAB
+                Spacer(modifier = Modifier.height(height = 56.dp)) // center grid accounting for FAB
             }
         }
     }
@@ -129,15 +139,15 @@ private fun AppBar() {
         Image(
             painter = painterResource(id = OwlTheme.images.lockupLogo),
             contentDescription = null,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(all = 16.dp)
         )
         IconButton(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(all = 16.dp),
             onClick = { /* todo */ }
         ) {
             Icon(
                 imageVector = Icons.Filled.Settings,
-                contentDescription = stringResource(R.string.label_settings)
+                contentDescription = stringResource(id = R.string.label_settings)
             )
         }
     }
@@ -147,7 +157,7 @@ private fun AppBar() {
 private fun TopicsGrid(modifier: Modifier = Modifier) {
     StaggeredGrid(
         modifier = modifier
-            .horizontalScroll(rememberScrollState())
+            .horizontalScroll(state = rememberScrollState())
             .padding(horizontal = 8.dp)
     ) {
         topics.forEach { topic ->
@@ -173,43 +183,47 @@ private class TopicChipTransition(
 
 @Composable
 private fun topicChipTransition(topicSelected: Boolean): TopicChipTransition {
-    val transition = updateTransition(
+    val transition: Transition<SelectionState> = updateTransition(
         targetState = if (topicSelected) SelectionState.Selected else SelectionState.Unselected
     )
-    val cornerRadius = transition.animateDp { state ->
+    val cornerRadius: State<Dp> = transition.animateDp { state: SelectionState ->
         when (state) {
             SelectionState.Unselected -> 0.dp
             SelectionState.Selected -> 28.dp
         }
     }
-    val selectedAlpha = transition.animateFloat { state ->
+    val selectedAlpha: State<Float> = transition.animateFloat { state: SelectionState ->
         when (state) {
             SelectionState.Unselected -> 0f
             SelectionState.Selected -> 0.8f
         }
     }
-    val checkScale = transition.animateFloat { state ->
+    val checkScale: State<Float> = transition.animateFloat { state: SelectionState ->
         when (state) {
             SelectionState.Unselected -> 0.6f
             SelectionState.Selected -> 1f
         }
     }
-    return remember(transition) {
-        TopicChipTransition(cornerRadius, selectedAlpha, checkScale)
+    return remember(key1 = transition) {
+        TopicChipTransition(
+            cornerRadius = cornerRadius,
+            selectedAlpha = selectedAlpha,
+            checkScale = checkScale
+        )
     }
 }
 
 @Composable
 private fun TopicChip(topic: Topic) {
-    val (selected, onSelected) = remember { mutableStateOf(false) }
-    val topicChipTransitionState = topicChipTransition(selected)
+    val (selected: Boolean, onSelected: (Boolean) -> Unit) = remember { mutableStateOf(false) }
+    val topicChipTransitionState: TopicChipTransition = topicChipTransition(selected)
 
     Surface(
-        modifier = Modifier.padding(4.dp),
+        modifier = Modifier.padding(all = 4.dp),
         elevation = OwlTheme.elevations.card,
         shape = MaterialTheme.shapes.medium.copy(
             topStart = CornerSize(
-                topicChipTransitionState.cornerRadius
+                size = topicChipTransitionState.cornerRadius
             )
         )
     ) {
@@ -220,7 +234,7 @@ private fun TopicChip(topic: Topic) {
                     contentDescription = null,
                     modifier = Modifier
                         .size(width = 72.dp, height = 72.dp)
-                        .aspectRatio(1f)
+                        .aspectRatio(ratio = 1f)
                 )
                 if (topicChipTransitionState.selectedAlpha > 0f) {
                     Surface(
@@ -235,7 +249,7 @@ private fun TopicChip(topic: Topic) {
                             ),
                             modifier = Modifier
                                 .wrapContentSize()
-                                .scale(topicChipTransitionState.checkScale)
+                                .scale(scale = topicChipTransitionState.checkScale)
                         )
                     }
                 }
@@ -254,11 +268,11 @@ private fun TopicChip(topic: Topic) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_grain),
+                            painter = painterResource(id = R.drawable.ic_grain),
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(start = 16.dp)
-                                .size(12.dp)
+                                .size(size = 12.dp)
                         )
                         Text(
                             text = topic.courses.toString(),
@@ -282,15 +296,15 @@ private fun StaggeredGrid(
         content = content,
         modifier = modifier
     ) { measurables, constraints ->
-        val rowWidths = IntArray(rows) { 0 } // Keep track of the width of each row
-        val rowHeights = IntArray(rows) { 0 } // Keep track of the height of each row
+        val rowWidths = IntArray(rows) // Keep track of the width of each row
+        val rowHeights = IntArray(rows) // Keep track of the height of each row
 
         // Don't constrain child views further, measure them with given constraints
-        val placeables = measurables.mapIndexed { index, measurable ->
-            val placeable = measurable.measure(constraints)
+        val placeables: List<Placeable> = measurables.mapIndexed { index: Int, measurable: Measurable ->
+            val placeable: Placeable = measurable.measure(constraints)
 
             // Track the width and max height of each row
-            val row = index % rows
+            val row: Int = index % rows
             rowWidths[row] += placeable.width
             rowHeights[row] = max(rowHeights[row], placeable.height)
 
@@ -298,21 +312,21 @@ private fun StaggeredGrid(
         }
 
         // Grid's width is the widest row
-        val width = rowWidths.maxOrNull()?.coerceIn(constraints.minWidth, constraints.maxWidth)
+        val width: Int = rowWidths.maxOrNull()?.coerceIn(constraints.minWidth, constraints.maxWidth)
             ?: constraints.minWidth
         // Grid's height is the sum of each row
-        val height = rowHeights.sum().coerceIn(constraints.minHeight, constraints.maxHeight)
+        val height: Int = rowHeights.sum().coerceIn(constraints.minHeight, constraints.maxHeight)
 
         // y co-ord of each row
-        val rowY = IntArray(rows) { 0 }
+        val rowY = IntArray(rows)
         for (i in 1 until rows) {
             rowY[i] = rowY[i - 1] + rowHeights[i - 1]
         }
-        layout(width, height) {
+        layout(width = width, height = height) {
             // x co-ord we have placed up to, per row
-            val rowX = IntArray(rows) { 0 }
-            placeables.forEachIndexed { index, placeable ->
-                val row = index % rows
+            val rowX = IntArray(rows)
+            placeables.forEachIndexed { index: Int, placeable: Placeable ->
+                val row: Int = index % rows
                 placeable.place(
                     x = rowX[row],
                     y = rowY[row]
@@ -323,12 +337,18 @@ private fun StaggeredGrid(
     }
 }
 
+/**
+ * Preview of [Onboarding].
+ */
 @Preview(name = "Onboarding")
 @Composable
 private fun OnboardingPreview() {
     Onboarding(onboardingComplete = { })
 }
 
+/**
+ * Preview of [TopicChip].
+ */
 @Preview("Topic Chip")
 @Composable
 private fun TopicChipPreview() {

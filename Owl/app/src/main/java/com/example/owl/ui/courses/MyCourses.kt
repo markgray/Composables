@@ -18,6 +18,7 @@ package com.example.owl.ui.courses
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
@@ -26,6 +27,8 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
@@ -41,7 +44,27 @@ import com.example.owl.ui.theme.BlueTheme
 
 /**
  * Displays a list of courses.
- * TODO: Continue here.
+ *
+ * Our root composable is a [LazyColumn] whose `modifier` argument is our [Modifier] parameter
+ * [modifier]. In the [LazyListScope] `content` composable lambda argument of the [LazyColumn] we
+ * compose:
+ *
+ * **First**: We compose a [LazyListScope.item] whose [LazyItemScope] `content` argument is a [Spacer]
+ * whose `modifier` argument is a [Modifier.windowInsetsTopHeight] whose `insets` argument is
+ * [WindowInsets.Companion.statusBars] (adds space to avoid overlap with the status bar).
+ *
+ * **Second**: We compose a [LazyListScope.item] whose [LazyItemScope] `content` argument is a
+ * [CoursesAppBar].
+ *
+ * **Third**: We compose a [LazyListScope.itemsIndexed] whose `items` argument is our [List] of
+ * [Course] parameter [courses] and whose `key` argument is a lambda that accepts the current
+ * [Course] passed the lambda in variable `course` and returns the [Course.id] of `course`. In
+ * the [LazyItemScope] `content` composable lambda argument of the [LazyListScope.itemsIndexed] we
+ * accept the index of the current [Course] passed the lambda in variable `index` and the [Course]
+ * in variable `course`, then compose a [MyCourse] whose arguments are:
+ *  - `course`: is [Course] variable `course`.
+ *  - `index`: is [Int] variable `index`.
+ *  - `selectCourse`: is our lambda parameter [selectCourse].
  *
  * @param courses The list of courses to display.
  * @param selectCourse A function to be called when a course is selected.
@@ -75,6 +98,25 @@ fun MyCourses(
     }
 }
 
+/**
+ * Displays a single course in the list of courses. The course item is staggered based on its
+ * index in the list, creating a visually interesting layout.
+ *
+ * Our root composable is a [Row] whose `modifier` argument is a [Modifier.padding] that adds `8.dp`
+ * to the `bottom`. In the [RowScope] `content` composable lambda argument we start by initializing
+ * our [Dp] variable `stagger` to `72.dp` if the [Int] parameter [index] is even, or `16.dp` if it
+ * is odd. We then compose a [Spacer] whose `modifier` argument is a [Modifier.width] whose `width`
+ * argument is `stagger`. We then compose a [CourseListItem] whose arguments are:
+ *  - `course`: is our [Course] parameter [course].
+ *  - `onClick`: is a lambda that calls our lambda parameter [selectCourse] with the [Course.id] of
+ *  our [Course] parameter [course].
+ *  - `shape`: is a [RoundedCornerShape] whose `topStart` argument is `24.dp`.
+ *  - `modifier`: is a [Modifier.height] whose `height` argument is `96.dp`.
+ *
+ * @param course The [Course] to display.
+ * @param index The index of the course in the list. This is used to stagger the course item.
+ * @param selectCourse A function to be called when the course is selected.
+ */
 @Composable
 fun MyCourse(
     course: Course,
