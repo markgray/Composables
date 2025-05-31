@@ -75,20 +75,20 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.runtime:runtime:1.8.1")
-    implementation("androidx.compose.ui:ui:1.8.1")
+    implementation("androidx.compose.runtime:runtime:1.8.2")
+    implementation("androidx.compose.ui:ui:1.8.2")
     implementation("androidx.compose.material3:material3:1.3.2")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("androidx.compose.foundation:foundation-layout:1.8.1")
-    implementation("androidx.compose.foundation:foundation:1.8.1")
-    implementation("androidx.compose.animation:animation:1.8.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.1")
-    implementation("androidx.compose.runtime:runtime-livedata:1.8.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.1")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.1")
-    testImplementation("androidx.compose.ui:ui-test-junit4:1.8.1")
-    androidTestImplementation("androidx.compose.ui:ui-test:1.8.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.1")
+    implementation("androidx.compose.foundation:foundation-layout:1.8.2")
+    implementation("androidx.compose.foundation:foundation:1.8.2")
+    implementation("androidx.compose.animation:animation:1.8.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
+    testImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.8.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
