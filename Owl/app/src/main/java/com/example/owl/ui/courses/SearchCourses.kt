@@ -83,7 +83,7 @@ import com.example.owl.ui.theme.BlueTheme
  *
  * **Third**: We compose a [LazyListScope.items] whose `items` argument is our [List] of
  * [Topic] variable `filteredTopics` and whose `key` argument is a lambda that accepts the current
- * [Topic] passed the lambda in variable `topic` and returns the [Topic.name] of `topic`. In the
+ * [Topic] passed the lambda in variable `it` and returns the [Topic.name] of `it`. In the
  * [LazyItemScope] `itemContent` composable lambda argument of the [LazyListScope.items] we accept
  * the current [Topic] passed the lambda in variable `topic` and compose a [Text] whose `text`
  * arguments are:
@@ -171,8 +171,7 @@ private fun getTopics(
  *
  * **Second**: We compose a [BasicTextField] whose arguments are:
  *  - `value`: is our [TextFieldValue] parameter [searchTerm].
- *  - `onValueChange`: is our lambda parameter [updateSearchTerm] that accepts a new
- *  [TextFieldValue] sets [searchTerm] to it.
+ *  - `onValueChange`: is our lambda parameter [updateSearchTerm].
  *  - `textStyle`: is a copy of [Typography.subtitle1] of our custom [MaterialTheme.typography]
  *  with its `color` property set to the current [LocalContentColor].
  *  - `maxLines`: is `1`.

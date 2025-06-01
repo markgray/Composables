@@ -78,7 +78,7 @@ fun MyCourses(
     selectCourse: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier) {
+    LazyColumn(modifier = modifier) {
         item {
             Spacer(modifier = Modifier.windowInsetsTopHeight(insets = WindowInsets.statusBars))
         }
