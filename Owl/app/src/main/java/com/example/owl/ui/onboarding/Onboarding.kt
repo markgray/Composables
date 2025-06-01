@@ -21,12 +21,15 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +42,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material.Colors
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -48,6 +52,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Settings
@@ -55,6 +60,7 @@ import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +68,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.Placeable
@@ -74,6 +82,7 @@ import androidx.compose.ui.unit.dp
 import com.example.owl.R
 import com.example.owl.model.Topic
 import com.example.owl.model.topics
+import com.example.owl.ui.theme.Images
 import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.theme.YellowTheme
 import com.example.owl.ui.theme.pink500
@@ -82,7 +91,36 @@ import kotlin.math.max
 
 /**
  * The Onboarding screen.
- * TODO: Continue here.
+ *
+ * Our root composable is a [Scaffold] wrapped in our [YellowTheme] custom [MaterialTheme] whose
+ * arguments are:
+ *  - `topBar`: is an [AppBar] composable.
+ *  - `backgroundColor`: is the [Colors.primarySurface] of our custom [MaterialTheme.colors].
+ *  - `floatingActionButton`: is a lambda that composes a [FloatingActionButton] whose `onClick`
+ *  argument is our lambda parameter [onboardingComplete], and whose `modifier` argument is
+ *  a new instance or [Modifier]. In its `content` composable lambda argument we compose an
+ *  [Icon] whose `imageVector` argument is the [ImageVector] drawn by [Icons.Rounded.Explore], and
+ *  whose `contentDescription` argument is the [String] with resource ID
+ *  `R.string.label_continue_to_courses` ("Continue to courses").
+ *
+ * In the `content` composable lambda argument of the [Scaffold] we accept the [PaddingValues] passed
+ * the lambda in variable `innerPadding` and compose a [Column] whose `modifier` argument is a
+ * [Modifier.padding] whose `paddingValues` argument is `innerPadding`. In the [ColumnScope] `content`
+ * composable lambda argument of the [Column] we:
+ *
+ * **First**: We compose a [Text] whose arguments are:
+ *  - `text`: is the [String] with resource ID `R.string.choose_topics_that_interest_you` ("Choose
+ *  topics that interest you").
+ *  - `style`: is the [Typography.h4] or our custom [MaterialTheme.typography].
+ *  - `textAlign`: is [TextAlign.End].
+ *  - `modifier`: is a [Modifier.padding] that adds `16.dp` to the `horizontal` sides, and `32.dp`
+ *  to the `vertical` sides.
+ *
+ * **Second**: We compose a [TopicsGrid] whose `modifier` argument is a [ColumnScope.weight] whose
+ * `weight` argument is `1f` chained to a [Modifier.wrapContentHeight].
+ *
+ * **Third**: We compose a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height`
+ * argument is `56.dp`.
  *
  * @param onboardingComplete A callback to be invoked when the user has completed onboarding.
  */
@@ -127,6 +165,30 @@ fun Onboarding(onboardingComplete: () -> Unit) {
     }
 }
 
+/**
+ * Top bar for the onboarding screen.
+ *
+ * Our root composable is a [Row] whose arguments are:
+ *  - `horizontalArrangement`: is [Arrangement.SpaceBetween] to space the children evenly between
+ *  the `start` and `end` sides of the row.
+ *  - `verticalAlignment`: is [Alignment.CenterVertically] to center the children vertically.
+ *  - `modifier`: is a [Modifier.fillMaxWidth] to fill the maximum width its parent allows, chained
+ *  to a [Modifier.statusBarsPadding] to add padding to accommodate the status bars insets.
+ *
+ * In the [RowScope] `content` composable lambda argument we:
+ *
+ * **First**: We compose an [Image] whose arguments are:
+ *  - `painter`: is the [Painter] returned by [painterResource] for the drawable whose resource ID
+ *  is the resource ID returned for [Images.lockupLogo] of [OwlTheme.images] (this can vary by theme)
+ *  - `contentDescription`: is `null`.
+ *  - `modifier`: is a [Modifier.padding] that adds `16.dp` to all sides.
+ *
+ * **Second**: We compose an [IconButton] whose `modifier` argument is a [Modifier.padding] that
+ * adds `16.dp` to all sides, and whose `onClick` argument is a do-nothing lambda. In the `content`
+ * composable lambda argument we compose an [Icon] whose arguments are:
+ *  - `imageVector`: is the [ImageVector] drawn by [Icons.Filled.Settings].
+ *  - `contentDescription`: is the [String] with resource ID `R.string.label_settings` ("Settings").
+ */
 @Composable
 private fun AppBar() {
     Row(
@@ -153,6 +215,21 @@ private fun AppBar() {
     }
 }
 
+/**
+ * Displays a list of [topics] as a horizontally scrollable [StaggeredGrid].
+ *
+ * Our root composable is a [StaggeredGrid] whose `modifier` chains to our [Modifier] parameter
+ * [modifier] a [Modifier.horizontalScroll] whose `state` argument is the remembered [ScrollState]
+ * returned by [rememberScrollState], chained to a [Modifier.padding] that adds `8.dp` to the
+ * `horizontal` sides. In the [StaggeredGrid] `content` composable lambda argument we use the
+ * [Iterable.forEach] method of the global [List] of [Topic]s property [topics] to loop through
+ * each [Topic] capturing the current [Topic] in variable `topic` and compose a [TopicChip] whose
+ * `topic` argument is the current [Topic] passed the `action` lambda in variable `topic`.
+ *
+ * @param modifier a [Modifier] that our caller can use to modify our appearance or behavior. Our
+ * caller passes us a [ColumnScope.weight] whose `weight` argument is `1f` chained to a
+ * [Modifier.wrapContentHeight].
+ */
 @Composable
 private fun TopicsGrid(modifier: Modifier = Modifier) {
     StaggeredGrid(
@@ -160,12 +237,15 @@ private fun TopicsGrid(modifier: Modifier = Modifier) {
             .horizontalScroll(state = rememberScrollState())
             .padding(horizontal = 8.dp)
     ) {
-        topics.forEach { topic ->
+        topics.forEach { topic: Topic ->
             TopicChip(topic = topic)
         }
     }
 }
 
+/**
+ * Represents the two states of a topic chip: selected and unselected.
+ */
 private enum class SelectionState { Unselected, Selected }
 
 /**
@@ -181,6 +261,36 @@ private class TopicChipTransition(
     val checkScale by checkScale
 }
 
+/**
+ * Transition defining the animation for the corner radius, selected alpha, and check scale
+ * of a topic chip. This is used to animate the chip when it is selected or unselected.
+ *
+ * We initialize our [Transition] of [SelectionState] variable `val transition` by calling
+ * [updateTransition] with the `targetState` argument either [SelectionState.Selected] if our
+ * [Boolean] parameter [topicSelected] is `true` or [SelectionState.Unselected] if it is `false`.
+ *
+ * We initialize our [State] wrapped animated [Dp] variable `val cornerRadius` by having `transition`
+ * [Transition.animateDp] between 0.dp if the [SelectionState] is [SelectionState.Unselected] or
+ * 28.dp if it is [SelectionState.Selected].
+ *
+ * We initialize our [State] wrapped animated [Float] variable `val selectedAlpha` by having
+ * `transition` [Transition.animateFloat] between 0f if the [SelectionState] is
+ * [SelectionState.Unselected] or 0.8f if it is [SelectionState.Selected].
+ *
+ * We initialize our [State] wrapped animated [Float] variable `val checkScale` by having `transition`
+ * [Transition.animateFloat] between 0.6f if the [SelectionState] is [SelectionState.Unselected] or
+ * 1f if it is [SelectionState.Selected].
+ *
+ * Finally we return a [TopicChipTransition] that is `remember`ed with `key1` of `transition`
+ * (so that a new [TopicChipTransition] is created whenever `transition` changes) whose arguments are:
+ *  - `cornerRadius` our `cornerRadius` [State] of [Dp] variable.
+ *  - `selectedAlpha` our `selectedAlpha` [State] of [Float] variable.
+ *  - `checkScale` our `checkScale` [State] of [Float] variable.
+ *
+ * @param topicSelected whether the chip is currently selected or not.
+ * @return a [TopicChipTransition] whose properties provide the animated values for corner radius,
+ * selected alpha, and check scale based on the [topicSelected] state.
+ */
 @Composable
 private fun topicChipTransition(topicSelected: Boolean): TopicChipTransition {
     val transition: Transition<SelectionState> = updateTransition(
@@ -213,10 +323,23 @@ private fun topicChipTransition(topicSelected: Boolean): TopicChipTransition {
     }
 }
 
+/**
+ * Display a chip for a [Topic].
+ *
+ * We start by using destructuring to initialize and remember our [MutableState] wrapped [Boolean]
+ * variable `selected` and its setter lambda taking [Boolean] variable `onSelected` to an initial
+ * value of `false`. We initialize our [TopicChipTransition] variable `topicChipTransitionState`
+ * to the value returned by our function [topicChipTransition] whose `topicSelected` argument is
+ *  [MutableState] wrapped [Boolean] variable `selected`.
+ *
+ * TODO: Continue here.
+ *
+ * @param topic the [Topic] to display.
+ */
 @Composable
 private fun TopicChip(topic: Topic) {
     val (selected: Boolean, onSelected: (Boolean) -> Unit) = remember { mutableStateOf(false) }
-    val topicChipTransitionState: TopicChipTransition = topicChipTransition(selected)
+    val topicChipTransitionState: TopicChipTransition = topicChipTransition(topicSelected = selected)
 
     Surface(
         modifier = Modifier.padding(all = 4.dp),
