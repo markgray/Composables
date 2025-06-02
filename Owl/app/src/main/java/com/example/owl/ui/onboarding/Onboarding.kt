@@ -92,13 +92,13 @@ import kotlin.math.max
 /**
  * The Onboarding screen.
  *
- * Our root composable is a [Scaffold] wrapped in our [YellowTheme] custom [MaterialTheme] whose
+ * Our root composable is a [Scaffold] (wrapped in our [YellowTheme] custom [MaterialTheme]) whose
  * arguments are:
  *  - `topBar`: is an [AppBar] composable.
  *  - `backgroundColor`: is the [Colors.primarySurface] of our custom [MaterialTheme.colors].
  *  - `floatingActionButton`: is a lambda that composes a [FloatingActionButton] whose `onClick`
  *  argument is our lambda parameter [onboardingComplete], and whose `modifier` argument is
- *  a new instance or [Modifier]. In its `content` composable lambda argument we compose an
+ *  a new instance of [Modifier]. In its `content` composable lambda argument we compose an
  *  [Icon] whose `imageVector` argument is the [ImageVector] drawn by [Icons.Rounded.Explore], and
  *  whose `contentDescription` argument is the [String] with resource ID
  *  `R.string.label_continue_to_courses` ("Continue to courses").
@@ -111,7 +111,7 @@ import kotlin.math.max
  * **First**: We compose a [Text] whose arguments are:
  *  - `text`: is the [String] with resource ID `R.string.choose_topics_that_interest_you` ("Choose
  *  topics that interest you").
- *  - `style`: is the [Typography.h4] or our custom [MaterialTheme.typography].
+ *  - `style`: is the [Typography.h4] of our custom [MaterialTheme.typography].
  *  - `textAlign`: is [TextAlign.End].
  *  - `modifier`: is a [Modifier.padding] that adds `16.dp` to the `horizontal` sides, and `32.dp`
  *  to the `vertical` sides.
@@ -175,7 +175,7 @@ fun Onboarding(onboardingComplete: () -> Unit) {
  *  - `modifier`: is a [Modifier.fillMaxWidth] to fill the maximum width its parent allows, chained
  *  to a [Modifier.statusBarsPadding] to add padding to accommodate the status bars insets.
  *
- * In the [RowScope] `content` composable lambda argument we:
+ * In the [RowScope] `content` composable lambda argument of the [Row] we:
  *
  * **First**: We compose an [Image] whose arguments are:
  *  - `painter`: is the [Painter] returned by [painterResource] for the drawable whose resource ID
@@ -218,10 +218,10 @@ private fun AppBar() {
 /**
  * Displays a list of [topics] as a horizontally scrollable [StaggeredGrid].
  *
- * Our root composable is a [StaggeredGrid] whose `modifier` chains to our [Modifier] parameter
- * [modifier] a [Modifier.horizontalScroll] whose `state` argument is the remembered [ScrollState]
- * returned by [rememberScrollState], chained to a [Modifier.padding] that adds `8.dp` to the
- * `horizontal` sides. In the [StaggeredGrid] `content` composable lambda argument we use the
+ * Our root composable is a [StaggeredGrid] whose `modifier` argument chains to our [Modifier]
+ * parameter [modifier] a [Modifier.horizontalScroll] whose `state` argument is the remembered
+ * [ScrollState] returned by [rememberScrollState], chained to a [Modifier.padding] that adds `8.dp`
+ * to the `horizontal` sides. In the [StaggeredGrid] `content` composable lambda argument we use the
  * [Iterable.forEach] method of the global [List] of [Topic]s property [topics] to loop through
  * each [Topic] capturing the current [Topic] in variable `topic` and compose a [TopicChip] whose
  * `topic` argument is the current [Topic] passed the `action` lambda in variable `topic`.
@@ -279,7 +279,7 @@ private class TopicChipTransition(
  *
  * We initialize our [State] wrapped animated [Float] variable `val checkScale` by having `transition`
  * [Transition.animateFloat] between 0.6f if the [SelectionState] is [SelectionState.Unselected] or
- * 1f if it is [SelectionState.Selected].
+ * `1f` if it is [SelectionState.Selected].
  *
  * Finally we return a [TopicChipTransition] that is `remember`ed with `key1` of `transition`
  * (so that a new [TopicChipTransition] is created whenever `transition` changes) whose arguments are:
