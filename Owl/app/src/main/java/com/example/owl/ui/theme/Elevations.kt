@@ -23,8 +23,21 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Elevation values that can be themed.
+ * Represents a set of elevation values that can be applied to different UI elements.
+ * This class is designed to be immutable, ensuring that elevation values remain consistent
+ * throughout the application's theme.
+ *
+ * @property card The elevation value to be used for card-like surfaces.
+ * Defaults to `0.dp`, indicating no elevation.
  */
 @Immutable
 data class Elevations(val card: Dp = 0.dp)
 
+/**
+ * CompositionLocal that provides access to the current [Elevations]
+ * for the composition. This allows different parts of the UI to
+ * use the themed elevation values consistently.
+ *
+ * It defaults to a new [Elevations] instance with default values.
+ */
 internal val LocalElevations = staticCompositionLocalOf { Elevations() }

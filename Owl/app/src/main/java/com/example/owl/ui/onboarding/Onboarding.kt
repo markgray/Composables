@@ -25,6 +25,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -50,6 +51,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Shapes
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.Typography
@@ -72,17 +74,21 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.owl.R
 import com.example.owl.model.Topic
 import com.example.owl.model.topics
+import com.example.owl.ui.theme.Elevations
 import com.example.owl.ui.theme.Images
+import com.example.owl.ui.theme.LocalElevations
 import com.example.owl.ui.theme.OwlTheme
 import com.example.owl.ui.theme.YellowTheme
 import com.example.owl.ui.theme.pink500
@@ -330,9 +336,65 @@ private fun topicChipTransition(topicSelected: Boolean): TopicChipTransition {
  * variable `selected` and its setter lambda taking [Boolean] variable `onSelected` to an initial
  * value of `false`. We initialize our [TopicChipTransition] variable `topicChipTransitionState`
  * to the value returned by our function [topicChipTransition] whose `topicSelected` argument is
- *  [MutableState] wrapped [Boolean] variable `selected`.
+ * [MutableState] wrapped [Boolean] variable `selected`.
  *
- * TODO: Continue here.
+ * Our root composable is a [Surface] whose `modifier` argument is a [Modifier.padding] that adds
+ * `4.dp` to all sides, whose `elevation` argument is the [Elevations.card] of [OwlTheme.elevations]
+ * (this property returns the `current` [LocalElevations]), and whose `shape` argument is a copy of
+ * the [Shapes.medium] of our custom [MaterialTheme.shapes] with its `topStart` corner radius a
+ * [CornerSize] whose `cornerRadius` argument is the [State] wrapped amimated [Dp] property of the
+ * [TopicChipTransition] variable `topicChipTransitionState`. In the [Surface] `content` composable
+ * lambda argument we compose a [Row] whose `modifier` argument is a [Modifier.toggleable] whose
+ * `value` argument is [MutableState] wrapped [Boolean] variable `selected` and whose `onValueChange`
+ * argument is our lambda variable `onSelected`. In the [RowScope] `content` composable lambda
+ * argument of the [Row] we first compose a [Box] in whose [BoxScope] `content` composable lambda
+ * argument we:
+ *
+ * **First**: We compose a [NetworkImage] whose arguments are:
+ *  - `url`: is the [Topic.imageUrl] of [Topic] parameter [topic].
+ *  - `contentDescription`: is `null`.
+ *  - `modifier`: is a [Modifier.size] whose `width` argument is `72.dp`, and whose `height` argument
+ *  is `72.dp`, chained to a [Modifier.aspectRatio] whose `ratio` argument is `1f`.
+ *
+ * **Second**: if the [TopicChipTransition.selectedAlpha] of [TopicChipTransition] variable
+ * `topicChipTransitionState` is greater than `0f` we compose a [Surface] whose `color` argument
+ * is a copy of [pink500] with its `alpha` argument set to the [State] wrapped animated [Float]
+ * property [TopicChipTransition.selectedAlpha] of [TopicChipTransition] variable
+ * `topicChipTransitionState`, and whose `modifier` argument is a [BoxScope.matchParentSize].
+ * In the [Surface] `content` composable lambda argument we compose an [Icon] whose arguments are:
+ *  - `imageVector`: is the [ImageVector] drawn by [Icons.Filled.Done].
+ *  - `contentDescription`: is `null`.
+ *  - `tint`: is a copy of the [Colors.onPrimary] of our custom [MaterialTheme.colors] with its
+ *  `alpha` set to the [State] wrapped animated [Float] property [TopicChipTransition.selectedAlpha]
+ *  of [TopicChipTransition] variable `topicChipTransitionState`.
+ *  - `modifier`: is a [Modifier.wrapContentSize] chained to a [Modifier.scale] whose `scale`
+ *  argument is the [State] wrapped animated [Float] property [TopicChipTransition.checkScale] of
+ *  [TopicChipTransition] variable `topicChipTransitionState`.
+ *
+ * Next in the [RowScope] `content` composable lambda argument of the [Row] we compose a [Column] in
+ * whose [ColumnScope] `content` composable lambda argument we:
+ *
+ * **First**: We compose a [Text] whose arguments are:
+ *  - `text`: is the [Topic.name] of [Topic] parameter [topic].
+ *  - `style`: is the [Typography.body1] of our custom [MaterialTheme.typography].
+ *  - `modifier`: is a [Modifier.padding] that adds `16.dp` to the `start`, `16.dp` to the `top`,
+ *  `16.dp` to the `end`, and `8.dp` to the `bottom`.
+ *
+ * **Second**: We compose a [Row] whose `verticalAlignment` argument is [Alignment.CenterVertically].
+ * In the [RowScope] `content` composable lambda argument of the [Row] we compose a
+ * [CompositionLocalProvider] that provides [ContentAlpha.medium] as the [LocalContentAlpha] to its
+ * `content` composable lambda argument which composes an [Icon] whose arguments are:
+ *  - `painter`: is the [Painter] returned by [painterResource] for the drawable whose resource ID
+ *  is `R.drawable.ic_grain` (which is an icon with 8 shaded circles).
+ *  - `contentDescription`: is `null`.
+ *  - `modifier`: is a [Modifier.padding] that adds `16.dp` to the `start` side, chained to a
+ *  [Modifier.size] whose `size` argument is `12.dp`.
+ *
+ * Next in the [RowScope] `content` composable lambda argument of the [Row] we compose a [Text]
+ * whose arguments are:
+ *  - `text`: is the [Topic.courses] of [Topic] parameter [topic] converted to a [String].
+ *  - `style`: is the [Typography.caption] of our custom [MaterialTheme.typography].
+ *  - `modifier`: is a [Modifier.padding] that adds `8.dp` to the `start` side.
  *
  * @param topic the [Topic] to display.
  */
@@ -409,6 +471,61 @@ private fun TopicChip(topic: Topic) {
     }
 }
 
+/**
+ * A composable that places its children in a staggered grid.
+ *
+ * Our root composable is a [Layout] whose `content` argument is our lambda parameter [content],
+ * and whose `modifier` argument is our [Modifier] parameter [modifier]. In its [MeasureScope]
+ * `measurePolicy` lambda argument we accept the [List] of [Measurable] passed the lambda in
+ * variable `measurables` and the [Constraints] passed the lambda in variable `constraints`.
+ *
+ * We initialize our [IntArray] variable `rowWidths` to an [IntArray] of size [rows] (we will use
+ * this to keep track of the width of each row), and our [IntArray] variable `rowHeights` to an
+ * [IntArray] of size [rows] (we will use this to keep track of the height of each row).
+ *
+ * We use the [Iterable.mapIndexed] method of our [List] of [Measurable] variable `measurables` to
+ * loop through each [Measurable] capturing the current [Measurable] in variable `measurable` and
+ * the current [Int] index in variable `index`, then initialize our [Placeable] variable `placeable`
+ * to the value returned by calling the [Measurable.measure] method of the current [Measurable] in
+ * `measurble` with the [Constraints] passed the lambda in variable `constraints` as the `constraints`
+ * argument. We initialize our [Int] variable `row` to the current [Int] value of `index` modulo
+ * our [Int] parameter [rows], then increment the [Int] value of `rowWidths` at the [Int] value of
+ * `row` by the [Placeable.width] of `placeable`, and set the [Int] value of `rowHeights` at
+ * the [Int] value of `row` to the [max] of its current value and the [Placeable.height] of `placeable`.
+ * Finally we return the [Placeable] variable `placeable` to be added to our [List] of [Placeable]
+ * variable `placeables` by the [Iterable.mapIndexed] method.
+ *
+ * We initialize our [Int] variable `width` to the [IntArray.maxOrNull] of our [IntArray] variable
+ * `rowWidths` coercing its value to be between the [Constraints.minWidth] and [Constraints.maxWidth]
+ * of `constraints` defaulting to [Constraints.minWidth] if it is `null`.
+ *
+ * We initialize our [Int] variable `height` to the [IntArray.sum] of our [IntArray] variable
+ * `rowHeights` coercing its value to be between the [Constraints.minHeight] and
+ * [Constraints.maxHeight] of `constraints` defaulting to [Constraints.minHeight] if it is `null`.
+ *
+ * We initalize our [IntArray] variable `rowY` to an [IntArray] of size [rows] (we will use this as
+ * the y-coordinates of each row).
+ *
+ * We loop over `i` from `1` until [Int] parameter [rows] and set the [Int] value of `rowY` at
+ * `i` to the [Int] value of `rowY` at `i - 1` plus the [Int] value of `rowHeights` at `i - 1`.
+ *
+ * Finally we use the [MeasureScope.layout] method of our [Layout] with its `width` argument our
+ * [Int] variable `width` and its `height` argument our [Int] variable `height`. In its
+ * [Placeable.PlacementScope] `placementBlock` lambda argument we initialize our [IntArray] variable
+ * `rowX` to an [IntArray] of size [rows] (we will use this as the x-coordinate we have placed up to
+ * per row). We use the [Iterable.forEachIndexed] method of our [List] of [Placeable] variable
+ * `placeables` to loop through each [Placeable] capturing the current [Placeable] in variable
+ * `placeable` and the current [Int] index in variable `index`. We initialize our [Int] variable
+ * `row` to the current [Int] value of `index` modulo our [Int] parameter [rows]. We use the
+ * [Placeable.PlacementScope.place] method of `placeable` to place its `x` at the [Int] value of
+ * `rowX` at the [Int] value of `row` and its `y` at the [Int] value of `rowY` at the [Int] value
+ * of `row`. We increment the [Int] value of `rowX` at the [Int] value of `row` by the
+ * [Placeable.width] of `placeable`, and loop around for the next [Placeable].
+ *
+ * @param modifier the [Modifier] to apply to this layout.
+ * @param rows the number of rows for the grid.
+ * @param content a function which draws each child being placed in a slot in the grid.
+ */
 @Composable
 private fun StaggeredGrid(
     modifier: Modifier = Modifier,
@@ -418,13 +535,13 @@ private fun StaggeredGrid(
     Layout(
         content = content,
         modifier = modifier
-    ) { measurables, constraints ->
+    ) { measurables: List<Measurable>, constraints: Constraints ->
         val rowWidths = IntArray(rows) // Keep track of the width of each row
         val rowHeights = IntArray(rows) // Keep track of the height of each row
 
         // Don't constrain child views further, measure them with given constraints
         val placeables: List<Placeable> = measurables.mapIndexed { index: Int, measurable: Measurable ->
-            val placeable: Placeable = measurable.measure(constraints)
+            val placeable: Placeable = measurable.measure(constraints = constraints)
 
             // Track the width and max height of each row
             val row: Int = index % rows

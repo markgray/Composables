@@ -20,7 +20,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
 import androidx.compose.ui.unit.dp
 
-val shapes = Shapes(
+/**
+ * Defines the shapes used in the Owl application.
+ *
+ * This object provides a set of predefined shapes that can be used throughout the app's UI.
+ * It includes shapes for small, medium, and large components, each with specific corner rounding.
+ *  - `small`: A circular shape, achieved by setting `percent = 50`.
+ *  - `medium`: A rectangular shape with no corner rounding (`size = 0f`).
+ *  - `large`: A rectangular shape with rounded top-left and bottom-left corners (`16.dp`).
+ */
+val shapes: Shapes = Shapes(
     small = RoundedCornerShape(percent = 50),
     medium = RoundedCornerShape(size = 0f),
     large = RoundedCornerShape(

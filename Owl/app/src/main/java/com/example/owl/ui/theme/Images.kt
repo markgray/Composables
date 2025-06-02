@@ -26,6 +26,12 @@ import androidx.compose.runtime.staticCompositionLocalOf
 @Immutable
 data class Images(@DrawableRes val lockupLogo: Int)
 
+/**
+ * CompositionLocal used to pass [Images] down the tree.
+ *
+ * Setting the value here is typically done as part of [OwlTheme], which will automatically
+ * handle computing the light/dark values.
+ */
 internal val LocalImages = staticCompositionLocalOf<Images> {
     error("No LocalImages specified")
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.example.owl.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -29,6 +31,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.owl.R
 
+/**
+ * Light theme color palette for Yellow theme.
+ * TODO: Continue here.
+ */
 private val YellowThemeLight = lightColors(
     primary = yellow500,
     primaryVariant = yellow400,

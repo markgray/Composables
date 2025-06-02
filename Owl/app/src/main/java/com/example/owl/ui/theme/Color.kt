@@ -21,24 +21,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 
-val yellow200 = Color(0xffffeb46)
-val yellow400 = Color(0xffffc000)
-val yellow500 = Color(0xffffde03)
-val yellowDarkPrimary = Color(0xff242316)
+val yellow200: Color = Color(0xffffeb46)
+val yellow400: Color = Color(0xffffc000)
+val yellow500: Color = Color(0xffffde03)
+val yellowDarkPrimary: Color = Color(0xff242316)
 
-val blue200 = Color(0xff91a4fc)
-val blue700 = Color(0xff0336ff)
-val blue800 = Color(0xff0035c9)
-val blueDarkPrimary = Color(0xff1c1d24)
+val blue200: Color = Color(0xff91a4fc)
+val blue700: Color = Color(0xff0336ff)
+val blue800: Color = Color(0xff0035c9)
+val blueDarkPrimary: Color = Color(0xff1c1d24)
 
-val pink200 = Color(0xffff7597)
-val pink500 = Color(0xffff0266)
-val pink600 = Color(0xffd8004d)
-val pinkDarkPrimary = Color(0xff24191c)
+val pink200: Color = Color(0xffff7597)
+val pink500: Color = Color(0xffff0266)
+val pink600: Color = Color(0xffd8004d)
+val pinkDarkPrimary: Color = Color(0xff24191c)
 
 /**
- * Return the fully opaque color that results from compositing [onSurface] atop [surface] with the
- * given [alpha]. Useful for situations where semi-transparent colors are undesirable.
+ * Calculates a color that represents the layering of the [Colors.onSurface] color with the
+ * given [alpha] on top of the [Colors.surface] color. This is useful for achieving a
+ * semi-transparent effect on surfaces, while ensuring the resulting color is opaque.
+ *
+ * For example, if you want to display text on a surface with a certain level of transparency,
+ * you can use this function to calculate the color that should be used for the text.
+ *
+ * @param alpha The alpha value to use for the [Colors.onSurface] color. This should be a
+ * value between 0.0 and 1.0, where 0.0 is completely transparent and 1.0 is completely
+ * opaque.
+ * @return The resulting opaque color.
  */
 @Composable
 fun Colors.compositedOnSurface(alpha: Float): Color {
