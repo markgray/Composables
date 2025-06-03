@@ -25,13 +25,22 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.owl.R
 
+/**
+ * The default [FontFamily] to be used for all text in the app.
+ * This includes all the weights of the Rubik font.
+ */
 private val fonts = FontFamily(
     Font(R.font.rubik_regular),
     Font(R.font.rubik_medium, FontWeight.W500),
     Font(R.font.rubik_bold, FontWeight.Bold)
 )
 
-val typography = typographyFromDefaults(
+/**
+ * This is the [Typography] that will be used by our app. [typographyFromDefaults] is used to
+ * create a [Typography] using values from the default [Typography] to fill in any values that we
+ * do not specify.
+ */
+val typography: Typography = typographyFromDefaults(
     h1 = TextStyle(
         fontFamily = fonts,
         fontWeight = FontWeight.Bold
@@ -89,6 +98,24 @@ val typography = typographyFromDefaults(
     )
 )
 
+/**
+ * Creates a [Typography] object, overriding the default values with the provided [TextStyle]s.
+ *
+ * @param h1 The [TextStyle] for headlines of level 1.
+ * @param h2 The [TextStyle] for headlines of level 2.
+ * @param h3 The [TextStyle] for headlines of level 3.
+ * @param h4 The [TextStyle] for headlines of level 4.
+ * @param h5 The [TextStyle] for headlines of level 5.
+ * @param h6 The [TextStyle] for headlines of level 6.
+ * @param subtitle1 The [TextStyle] for subtitles of level 1.
+ * @param subtitle2 The [TextStyle] for subtitles of level 2.
+ * @param body1 The [TextStyle] for body text of level 1.
+ * @param body2 The [TextStyle] for body text of level 2.
+ * @param button The [TextStyle] for button text.
+ * @param caption The [TextStyle] for caption text.
+ * @param overline The [TextStyle] for overline text.
+ * @return A [Typography] object with the specified [TextStyle]s merged with the default values.
+ */
 fun typographyFromDefaults(
     h1: TextStyle?,
     h2: TextStyle?,

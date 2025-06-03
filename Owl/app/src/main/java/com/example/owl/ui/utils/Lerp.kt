@@ -21,7 +21,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp as lerpColor
 
 /**
- * Linearly interpolate between two values
+ * Linearly interpolate between two values.
+ *
+ * @param startValue The starting value.
+ * @param endValue The ending value.
+ * @param fraction The fraction to interpolate by, between 0.0 and 1.0 (inclusive).
+ * @return The interpolated value.
  */
 fun lerp(
     startValue: Float,
@@ -33,6 +38,16 @@ fun lerp(
 
 /**
  * Linearly interpolate between two [Float]s when the [fraction] is in a given range.
+ *
+ * When [fraction] is not within the range of [startFraction] to [endFraction], then [startValue]
+ * or [endValue] will be returned respectively.
+ *
+ * @param startValue the starting value
+ * @param endValue the ending value
+ * @param startFraction the fraction at which to start the interpolation
+ * @param endFraction the fraction at which to end the interpolation
+ * @param fraction the current fraction
+ * @return the interpolated value
  */
 fun lerp(
     startValue: Float,
@@ -44,11 +59,25 @@ fun lerp(
     if (fraction < startFraction) return startValue
     if (fraction > endFraction) return endValue
 
-    return lerp(startValue, endValue, (fraction - startFraction) / (endFraction - startFraction))
+    return lerp(
+        startValue = startValue,
+        endValue = endValue,
+        fraction = (fraction - startFraction) / (endFraction - startFraction)
+    )
 }
 
 /**
  * Linearly interpolate between two [Color]s when the [fraction] is in a given range.
+ *
+ * When [fraction] is not within the range of [startFraction] to [endFraction], then [startColor]
+ * or [endColor] will be returned respectively.
+ *
+ * @param startColor the starting color
+ * @param endColor the ending color
+ * @param startFraction the fraction at which to start the interpolation
+ * @param endFraction the fraction at which to end the interpolation
+ * @param fraction the current fraction
+ * @return the interpolated color
  */
 fun lerp(
     startColor: Color,
@@ -61,8 +90,8 @@ fun lerp(
     if (fraction > endFraction) return endColor
 
     return lerpColor(
-        startColor,
-        endColor,
-        (fraction - startFraction) / (endFraction - startFraction)
+        start = startColor,
+        stop = endColor,
+        fraction = (fraction - startFraction) / (endFraction - startFraction)
     )
 }

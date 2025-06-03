@@ -24,12 +24,29 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.content.ContextCompat
 import com.example.owl.R
 
+/**
+ * Main activity for the Owl app.
+ */
 class MainActivity : ComponentActivity() {
 
+    /**
+     * Called when the activity is starting.
+     *
+     * TODO: Continue here.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut
+     * down then this Bundle contains the data it most recently supplied in [onSaveInstanceState].
+     * We do not override [onSaveInstanceState] so it is not used.
+     *
+     * @see onStart
+     * @see onSaveInstanceState
+     * @see onRestoreInstanceState
+     * @see onPostCreate
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(
-                ContextCompat.getColor(this, R.color.immersive_sys_ui)
+                scrim = ContextCompat.getColor(this, R.color.immersive_sys_ui)
             )
         )
         super.onCreate(savedInstanceState)

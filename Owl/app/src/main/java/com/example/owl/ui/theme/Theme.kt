@@ -33,7 +33,6 @@ import com.example.owl.R
 
 /**
  * Light theme color palette for Yellow theme.
- * TODO: Continue here.
  */
 private val YellowThemeLight = lightColors(
     primary = yellow500,
@@ -44,6 +43,9 @@ private val YellowThemeLight = lightColors(
     onSecondary = Color.White
 )
 
+/**
+ * Dark theme color palette for Yellow theme.
+ */
 private val YellowThemeDark = darkColors(
     primary = yellow200,
     secondary = blue200,
@@ -51,6 +53,12 @@ private val YellowThemeDark = darkColors(
     surface = yellowDarkPrimary
 )
 
+/**
+ * Theme that uses yellow as the primary color.
+ *
+ * @param darkTheme Whether the theme should use a dark color scheme (follows system by default).
+ * @param content The composable content of the theme.
+ */
 @Composable
 fun YellowTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -61,9 +69,12 @@ fun YellowTheme(
     } else {
         YellowThemeLight
     }
-    OwlTheme(darkTheme, colors, content)
+    OwlTheme(darkTheme = darkTheme, colors = colors, content = content)
 }
 
+/**
+ * Light theme color palette for Blue theme.
+ */
 private val BlueThemeLight = lightColors(
     primary = blue700,
     onPrimary = Color.White,
@@ -71,12 +82,21 @@ private val BlueThemeLight = lightColors(
     secondary = yellow500
 )
 
+/**
+ * Dark theme color palette for Blue theme.
+ */
 private val BlueThemeDark = darkColors(
     primary = blue200,
     secondary = yellow200,
     surface = blueDarkPrimary
 )
 
+/**
+ * Theme that uses blue as the primary color.
+ *
+ * @param darkTheme Whether the theme should use a dark color scheme (follows system by default).
+ * @param content The composable content of the theme.
+ */
 @Composable
 fun BlueTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -87,9 +107,12 @@ fun BlueTheme(
     } else {
         BlueThemeLight
     }
-    OwlTheme(darkTheme, colors, content)
+    OwlTheme(darkTheme = darkTheme, colors = colors, content = content)
 }
 
+/**
+ * Light theme color palette for Pink theme.
+ */
 private val PinkThemeLight = lightColors(
     primary = pink500,
     secondary = pink500,
@@ -98,12 +121,21 @@ private val PinkThemeLight = lightColors(
     onSecondary = Color.Black
 )
 
+/**
+ * Dark theme color palette for Pink theme.
+ */
 private val PinkThemeDark = darkColors(
     primary = pink200,
     secondary = pink200,
     surface = pinkDarkPrimary
 )
 
+/**
+ * Theme that uses pink as the primary color.
+ *
+ * @param darkTheme Whether the theme should use a dark color scheme (follows system by default).
+ * @param content The composable content of the theme.
+ */
 @Composable
 fun PinkTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -114,25 +146,48 @@ fun PinkTheme(
     } else {
         PinkThemeLight
     }
-    OwlTheme(darkTheme, colors, content)
+    OwlTheme(darkTheme = darkTheme, colors = colors, content = content)
 }
 
+/**
+ * Default [Elevations] for light theme.
+ */
 private val LightElevation = Elevations()
 
+/**
+ * Default [Elevations] for dark themes.
+ */
 private val DarkElevation = Elevations(card = 1.dp)
 
+/**
+ * Default [Images] for light theme.
+ */
 private val LightImages = Images(lockupLogo = R.drawable.ic_lockup_blue)
 
+/**
+ * Default [Images] for for dark themes.
+ */
 private val DarkImages = Images(lockupLogo = R.drawable.ic_lockup_white)
 
+/**
+ * Base theme for Owl.
+ *
+ * This component wraps MaterialTheme, providing baseline values for the color, typography,
+ * and shapes systems. It also provides values for custom theme systems like elevations and images
+ * through [CompositionLocalProvider].
+ *
+ * @param darkTheme Whether the theme should use a dark color scheme.
+ * @param colors The colors to be used in the theme.
+ * @param content The composable content of the theme.
+ */
 @Composable
 private fun OwlTheme(
     darkTheme: Boolean,
     colors: Colors,
     content: @Composable () -> Unit
 ) {
-    val elevation = if (darkTheme) DarkElevation else LightElevation
-    val images = if (darkTheme) DarkImages else LightImages
+    val elevation: Elevations = if (darkTheme) DarkElevation else LightElevation
+    val images: Images = if (darkTheme) DarkImages else LightImages
     CompositionLocalProvider(
         LocalElevations provides elevation,
         LocalImages provides images

@@ -20,11 +20,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 
 /**
- * A [Modifier] which draws a vertical gradient
+ * A [Modifier] which draws a vertical gradient scrim in the foreground.
+ *
+ * We call the [drawWithContent] method and in its [ContentDrawScope] `onDraw` lambda argument we
+ * first call the [ContentDrawScope.drawContent] to draw the background, then we use the
+ * [ContentDrawScope.drawRect] method to draw a vertical gradient scrim using a
+ * [Brush.verticalGradient] whose `colors` argument is our [List] of [Color] parameter [colors].
+ *
+ * @param colors The colors to be used for the gradient, specify at least two. The first color
+ * is the top of the gradient, the last color is the bottom of the gradient.
  */
 fun Modifier.scrim(colors: List<Color>): Modifier = drawWithContent {
     drawContent()
-    drawRect(Brush.verticalGradient(colors))
+    drawRect(brush = Brush.verticalGradient(colors = colors))
 }
