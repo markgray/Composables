@@ -51,5 +51,5 @@ val pinkDarkPrimary: Color = Color(0xff24191c)
  */
 @Composable
 fun Colors.compositedOnSurface(alpha: Float): Color {
-    return onSurface.copy(alpha = alpha).compositeOver(surface)
+    return onSurface.copy(alpha = alpha).compositeOver(background = surface)
 }
