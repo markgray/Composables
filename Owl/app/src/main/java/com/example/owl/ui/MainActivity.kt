@@ -16,6 +16,7 @@
 
 package com.example.owl.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -32,7 +33,12 @@ class MainActivity : ComponentActivity() {
     /**
      * Called when the activity is starting.
      *
-     * TODO: Continue here.
+     * We start by calling the [enableEdgeToEdge] extension function of the [ComponentActivity] to
+     * enable edge-to-edge mode with its `statusBarStyle` parameter set to a [SystemBarStyle.dark]
+     * whose `scrim` parameter is the [Color] whose resource ID is `R.color.immersive_sys_ui`. Then
+     * we call our super's implementation of `onCreate` and then call the [setContent] method to
+     * compose our [OwlApp] composable into this activity's root view with its `finishActivity` a
+     * lambda which calls the [ComponentActivity.finish] method.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
      * down then this Bundle contains the data it most recently supplied in [onSaveInstanceState].
