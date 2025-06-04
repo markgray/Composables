@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp as lerpColor
 
 /**
- * Linearly interpolate between two values.
+ * Linearly interpolate between two [Float] values.
  *
  * @param startValue The starting value.
  * @param endValue The ending value.

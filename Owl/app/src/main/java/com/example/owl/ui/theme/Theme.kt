@@ -165,7 +165,7 @@ private val DarkElevation = Elevations(card = 1.dp)
 private val LightImages = Images(lockupLogo = R.drawable.ic_lockup_blue)
 
 /**
- * Default [Images] for for dark themes.
+ * Default [Images] for dark themes.
  */
 private val DarkImages = Images(lockupLogo = R.drawable.ic_lockup_white)
 
