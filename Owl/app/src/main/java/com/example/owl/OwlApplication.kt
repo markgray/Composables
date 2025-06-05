@@ -22,21 +22,24 @@ import coil.ImageLoaderFactory
 import coil.compose.AsyncImage
 import com.example.owl.ui.utils.UnsplashSizingInterceptor
 
+/**
+ * An [Application] that implements [ImageLoaderFactory] to provide Coil's image loading services.
+ */
 @Suppress("unused")
 class OwlApplication : Application(), ImageLoaderFactory {
 
     /**
-     * Create the singleton [ImageLoader].
-     * This is used by [AsyncImage] to load images in the app.
+     * Create the singleton [ImageLoader]. This is used by [AsyncImage] to load images in the app.
+     * TODO: Continue here.
      */
     override fun newImageLoader(): ImageLoader {
-        return ImageLoader.Builder(this)
+        return ImageLoader.Builder(context = this)
             .components {
-                add(UnsplashSizingInterceptor)
+                add(interceptor = UnsplashSizingInterceptor)
             }
             // Ignore the Unsplash cache headers as they set `Cache-Control:must-revalidate` which
             // requires a network operation even if the image is cached locally.
-            .respectCacheHeaders(false)
+            .respectCacheHeaders(enable = false)
             .build()
     }
 }
