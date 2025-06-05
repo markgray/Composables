@@ -50,13 +50,14 @@ import java.util.Locale
 
 /**
  * This is the main Composable of our app. It uses our [BlueTheme] custom [MaterialTheme] to wrap
- * its children. It initializes and remembers its [Array] of [CourseTabs] variable `val tabs` to all of the
- * entries in the [CourseTabs] enum, and initializes and remembers its [NavHostController] variable
- * `val navController` to a new instance. Its root Composable is a [Scaffold] whose `backgroundColor` argument is the
- * [Colors.primarySurface] color of our custom [MaterialTheme.colors], and whose `bottomBar` argument is an
- * [OwlBottomBar] whose `navController` argument is our `navController` variable and whose `tabs`
- * argument is our `tabs` variable. In its `content` composable lambda argument we accept the [PaddingValues]
- * passed the lambda in variable `innerPaddingModifier` then compose a [NavGraph] whose arguments are:
+ * its children. It initializes and remembers its [Array] of [CourseTabs] variable `val tabs` to all
+ * of the entries in the [CourseTabs] enum, and initializes and remembers its [NavHostController]
+ * variable `val navController` to a new instance. Its root Composable is a [Scaffold] whose
+ * `backgroundColor` argument is the [Colors.primarySurface] color of our custom
+ * [MaterialTheme.colors], and whose `bottomBar` argument is an [OwlBottomBar] whose `navController`
+ * argument is our `navController` variable and whose `tabs` argument is our `tabs` variable. In its
+ * `content` composable lambda argument we accept the [PaddingValues] passed the lambda in variable
+ * `innerPaddingModifier` then compose a [NavGraph] whose arguments are:
  *  - `finishActivity`: is our lambda parameter [finishActivity].
  *  - `navController`: is our [NavHostController] variable `navController`.
  *  - `modifier`: is a [Modifier.padding] that adds [PaddingValues] variable `innerPaddingModifier`

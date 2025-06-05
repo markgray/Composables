@@ -42,7 +42,7 @@ import com.example.owl.ui.courses.courses
 import com.example.owl.ui.onboarding.Onboarding
 
 /**
- * Destinations used in the ([OwlApp]).
+ * The routes for the Destinations used in the ([OwlApp]).
  */
 object MainDestinations {
     const val ONBOARDING_ROUTE: String = "onboarding"
@@ -65,7 +65,7 @@ object MainDestinations {
  * parameter [navController], and its `startDestination` argument our [String] parameter
  * [startDestination]. In its [NavGraphBuilder] `builder` composable lambda argument we:
  *
- * **First**: we use the [NavGraphBuilder.composable] method to add destination for the `route`
+ * **First**: we use the [NavGraphBuilder.composable] method to add a destination with the `route`
  * [MainDestinations.ONBOARDING_ROUTE]. In its [AnimatedContentScope] `content` composable lambda
  * argument we first call the [BackHandler] method to add an [OnBackPressedCallback] lambda that
  * calls our [finishActivity] lambda parameter to finish the activity (Intercepts back in Onboarding
@@ -84,8 +84,8 @@ object MainDestinations {
  *  - `navController`: is our [NavHostController] parameter [navController].
  *  - `modifier`: is our [Modifier] parameter [modifier].
  *
- * **Third**: we use the [NavGraphBuilder.composable] method to add destination for the `route`
- * [MainDestinations.COURSE_DETAIL_ROUTE] and its `arguments` argument a [List] of
+ * **Third**: we use the [NavGraphBuilder.composable] method to add a destination for the `route`
+ * [MainDestinations.COURSE_DETAIL_ROUTE] with its `arguments` argument a [List] of
  * [navArgument] whose `name` argument is [COURSE_DETAIL_ID_KEY] and its `type` argument is
  * [NavType.LongType]. In its [AnimatedContentScope] `content` composable lambda argument we
  * accept the [NavBackStackEntry] passed the lambda in variable `backStackEntry` and then
@@ -168,10 +168,6 @@ fun NavGraph(
         }
     }
 }
-
-/*
- * Models the navigation actions in the app.
- */
 
 /**
  * Models the navigation actions in the app.
