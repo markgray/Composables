@@ -102,16 +102,16 @@ fun OwlApp(finishActivity: () -> Unit) {
  * a [Modifier.windowInsetsBottomHeight] that adds the [WindowInsets.Companion.navigationBars] window
  * insets as well as an additional [WindowInsets] with a `bottom` padding of `56.dp`. In the [RowScope]
  * `content` composable lambda argument we use the [Array.forEach] method to iterate through the
- * [Array] of [CourseTabs] parameter [tabs] of the [CourseTabs] and in the `action` lambda argument
- * we capture the current [CourseTabs] in the variable `tab` then compose a [BottomNavigationItem]
- * whose arguments are:
+ * [Array] of [CourseTabs] parameter [tabs] and in the `action` lambda argument we capture the
+ * current [CourseTabs] in the variable `tab` then compose a [BottomNavigationItem] whose
+ * arguments are:
  *  - `icon`: is a lambda that composes an [Icon] whose `painter` argument is the [Painter] that
- *  [painterResource] creates from the drawable whose resource id is the [CourseTabs.icon] of the
- *  [CourseTabs] variable `tab`, and whose `contentDescription` argument is `null`.
+ *  [painterResource] creates from the drawable whose resource id is the [CourseTabs.icon] property
+ *  of the [CourseTabs] variable `tab`, and whose `contentDescription` argument is `null`.
  *  - `label`: is a lambda that composes a [Text] whose `text` argument is the [String] of the
- *  [CourseTabs.title] of the [CourseTabs] variable `tab` converted to uppercase.
+ *  [CourseTabs.title] property of the [CourseTabs] variable `tab` converted to uppercase.
  *  - `selected`: is a [Boolean] that is true if the [String] variable `currentRoute` is the same as
- *  the [CourseTabs.route] of the [CourseTabs] variable `tab`.
+ *  the [CourseTabs.route] property of the [CourseTabs] variable `tab`.
  *  - `onClick`: is a lambda which if the [String] variable `currentRoute` is not the same as the
  *  [CourseTabs.route] of [CourseTabs] variable `tab` calls the [NavController.navigate] method of
  *  the [NavHostController] parameter [navController] with its `route` argument the [CourseTabs.route]
