@@ -23,7 +23,10 @@ import coil.Coil
 import coil.ComponentRegistry
 import coil.ImageLoader
 import coil.decode.DataSource
+import coil.decode.Decoder
 import coil.disk.DiskCache
+import coil.fetch.Fetcher
+import coil.map.Mapper
 import coil.memory.MemoryCache
 import coil.request.DefaultRequestOptions
 import coil.request.Disposable
@@ -44,27 +47,73 @@ fun installTestImageLoader() {
  * Copied from: https://coil-kt.github.io/coil/image_loaders/
  */
 private class TestImageLoader : ImageLoader {
+
+    /**
+     * The default options that are used to fill in unset [ImageRequest] values.
+     */
     override val defaults = DefaultRequestOptions()
+
+    /**
+     * A map of available [Mapper]s, [Fetcher]s, and [Decoder]s.
+     */
     override val components = ComponentRegistry()
+
+    /**
+     * The [MemoryCache] that will be used to store and fetch bitmaps.
+     */
     override val memoryCache: MemoryCache? get() = null
+
+    /**
+     * This is intentionally null, as we don't want to write to the disk cache in tests.
+     */
     override val diskCache: DiskCache? get() = null
 
+    /**
+     * Enqueue the [request] to be executed.
+     *
+     * @param request The request to execute.
+     * @return A [Disposable] which can be used to cancel or check the status of the request.
+     */
     override fun enqueue(request: ImageRequest): Disposable {
         // Always call onStart before onSuccess.
         request.target?.onStart(request.placeholder)
         val result = ColorDrawable(Color.BLACK)
         request.target?.onSuccess(result)
         return object : Disposable {
+            /**
+             * The [CompletableDeferred] that is completed when the image request finishes.
+             */
             override val job = CompletableDeferred(newResult(request, result))
+
+            /**
+             * Returns `true` if this disposable has been disposed.
+             */
             override val isDisposed get() = true
+
+            /**
+             * Dispose the request to free up any resources that are no longer needed.
+             */
             override fun dispose() {}
         }
     }
 
+    /**
+     * Execute the [request] to be executed.
+     *
+     * @param request The request to execute.
+     * @return A [ImageResult] representing the result of the image request.
+     */
     override suspend fun execute(request: ImageRequest): ImageResult {
         return newResult(request, ColorDrawable(Color.BLACK))
     }
 
+    /**
+     * Create a new [SuccessResult].
+     *
+     * @param request The [ImageRequest] that was executed.
+     * @param drawable The success [Drawable].
+     * @return A new [SuccessResult].
+     */
     private fun newResult(request: ImageRequest, drawable: Drawable): SuccessResult {
         return SuccessResult(
             drawable = drawable,
@@ -73,7 +122,14 @@ private class TestImageLoader : ImageLoader {
         )
     }
 
+    /**
+     * This is not supported in tests.
+     */
     override fun newBuilder() = throw UnsupportedOperationException()
 
+    /**
+     * Shut down this image loader and release any resources that were previously held.
+     * This will also cancel any in-progress requests.
+     */
     override fun shutdown() {}
 }

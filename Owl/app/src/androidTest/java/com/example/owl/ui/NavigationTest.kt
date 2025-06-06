@@ -21,10 +21,12 @@ import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.example.owl.R
 import com.example.owl.model.courses
 import com.example.owl.ui.fakes.installTestImageLoader
@@ -40,8 +42,16 @@ class NavigationTest {
      * Using an empty activity to have control of the content that is set.
      */
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<ComponentActivity>, ComponentActivity> =
+        createAndroidComposeRule<ComponentActivity>()
 
+    /**
+     * Helper function to start the app with a specific nav graph.
+     *
+     * This allows a test to quickly start the app in the screen under test.
+     *
+     * @param startDestination The destination to start the app in.
+     */
     private fun startActivity(startDestination: String? = null) {
         installTestImageLoader()
         composeTestRule.setContent {
@@ -60,6 +70,9 @@ class NavigationTest {
         }
     }
 
+    /**
+     * When the app is opened, the first screen should be the onboarding screen.
+     */
     @Test
     fun firstScreenIsOnboarding() {
         // When the app is open
@@ -69,6 +82,10 @@ class NavigationTest {
         composeTestRule.onNodeWithContentDescription(getOnboardingFabLabel()).assertExists()
     }
 
+    /**
+     * When the app is in the Onboarding screen, and the user clicks on the FAB,
+     * the Courses screen is shown.
+     */
     @Test
     fun onboardingToCourses() {
         // Given the app in the onboarding screen
@@ -85,6 +102,10 @@ class NavigationTest {
         ).assertExists()
     }
 
+    /**
+     * When the app is in the Courses screen, and the user clicks on a course,
+     * the Course Details screen is shown with the correct course.
+     */
     @Test
     fun coursesToDetail() {
         // Given the app in the courses screen
@@ -107,11 +128,15 @@ class NavigationTest {
         ).assertExists()
     }
 
+    /**
+     * Test that navigating to a course detail screen and then pressing back returns to the
+     * courses screen.
+     */
     @Test
     fun coursesToDetailAndBack() {
         coursesToDetail()
         composeTestRule.runOnUiThread {
-            composeTestRule.activity.onBackPressed()
+            composeTestRule.activity.onBackPressedDispatcher.onBackPressed()
         }
 
         // The first course should be shown
@@ -121,14 +146,23 @@ class NavigationTest {
         ).assertExists()
     }
 
+    /**
+     * Helper function to get the string for the onboarding FAB.
+     */
     private fun getOnboardingFabLabel(): String {
         return composeTestRule.activity.resources.getString(R.string.label_continue_to_courses)
     }
 
+    /**
+     * Helper function to get the string for the featured course label.
+     */
     private fun getFeaturedCourseLabel(): String {
         return composeTestRule.activity.resources.getString(R.string.featured)
     }
 
+    /**
+     * Helper function to get the string for the course description.
+     */
     private fun getCourseDesc(): String {
         return composeTestRule.activity.resources.getString(R.string.course_desc)
     }
