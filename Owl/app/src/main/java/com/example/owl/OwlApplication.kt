@@ -34,7 +34,7 @@ class OwlApplication : Application(), ImageLoaderFactory {
      *
      * We create an instance of the [ImageLoader.Builder] with its `context` argument being the
      * [Application] context of the [OwlApplication] then call its [ImageLoader.Builder.components]
-     * methdod and in its [ComponentRegistry.Builder] `builder` lambda argument we call the
+     * method and in its [ComponentRegistry.Builder] `builder` lambda argument we call the
      * [ComponentRegistry.Builder.add] method to add the [UnsplashSizingInterceptor] `interceptor`
      * to have it add query params to Unsplash urls to request sized images. Then we chain a call
      * the [ImageLoader.Builder.respectCacheHeaders] method with its `enable` argument `false` to

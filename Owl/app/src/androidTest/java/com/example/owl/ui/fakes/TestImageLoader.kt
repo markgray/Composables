@@ -71,19 +71,39 @@ private class TestImageLoader : ImageLoader {
     /**
      * Enqueue the [request] to be executed.
      *
+     * We call the [Target] `onStart` method of the [ImageRequest.target] of our [ImageRequest]
+     * parameter [request] with its `placeholder` argument the [ImageRequest.placeholder] property
+     * of our [ImageRequest] parameter [request] (this is called to start the request). Then we
+     * initialize our [ColorDrawable] variable `result` to a new instance whose `color` is
+     * [Color.BLACK]. We call the [Target] `onSuccess` method of the [ImageRequest.target] of our
+     * [ImageRequest] parameter [request] with its `result` argument our [ColorDrawable] variable
+     * `result` (this is called if the request completes successfully).
+     *
+     * Finally we return a [Disposable] `object` whose [Disposable.job] is a [CompletableDeferred]
+     * whose `value` is a [newResult] whose `request` is our [ImageRequest] parameter [request]
+     * and whose `drawable` is our [ColorDrawable] variable `result`. The [Disposable.isDisposed]
+     * property always returns `true` (this disposable has been disposed), and the
+     * [Disposable.dispose] is a do-nothing method (we do not have any resources that need to be
+     * freed up).
+     *
      * @param request The request to execute.
      * @return A [Disposable] which can be used to cancel or check the status of the request.
      */
     override fun enqueue(request: ImageRequest): Disposable {
         // Always call onStart before onSuccess.
-        request.target?.onStart(request.placeholder)
+        request.target?.onStart(placeholder = request.placeholder)
         val result = ColorDrawable(Color.BLACK)
-        request.target?.onSuccess(result)
+        request.target?.onSuccess(result = result)
         return object : Disposable {
             /**
              * The [CompletableDeferred] that is completed when the image request finishes.
              */
-            override val job = CompletableDeferred(newResult(request, result))
+            override val job = CompletableDeferred(
+                value = newResult(
+                    request = request,
+                    drawable = result
+                )
+            )
 
             /**
              * Returns `true` if this disposable has been disposed.
