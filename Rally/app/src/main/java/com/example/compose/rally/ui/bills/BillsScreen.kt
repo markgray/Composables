@@ -24,18 +24,34 @@ import com.example.compose.rally.ui.components.BillRow
 import com.example.compose.rally.ui.components.StatementBody
 
 /**
- * The Bills screen.
+ * The Bills screen. Our root composable is a [StatementBody] whose arguments are:
+ *  - `items`: Our [List] of [Bill] parameter [bills].
+ *  - `amounts`: a lambda that accepts the [Bill] passed the lambda in variable `bill` and
+ *  returns the [Bill.amount] of `bill`.
+ *  - `colors`: a lambda that accepts the [Bill] passed the lambda in variable `bill` and
+ *  returns the [Bill.color] of `bill`.
+ *  - `amountsTotal`: it uses the [Iterable.map] function loop through our [List] of [Bill]
+ *  parameter [bills] and in its `transform` lambda argument accepts each [Bill] in variable
+ *  `bill` producing a [List] of [Float] which is fed to the [Iterable.sum] function which returns
+ *  the sum of the [Float]s in the [List].
+ *
+ * @param bills The list of [Bill]s to display.
  */
 @Composable
 fun BillsBody(bills: List<Bill>) {
     StatementBody(
-        items = bills,
-        amounts = { bill -> bill.amount },
-        colors = { bill -> bill.color },
-        amountsTotal = bills.map { bill -> bill.amount }.sum(),
-        circleLabel = stringResource(R.string.due),
-        rows = { bill ->
-            BillRow(bill.name, bill.due, bill.amount, bill.color)
+        accountsOrBills = bills,
+        amounts = { bill: Bill -> bill.amount },
+        colors = { bill: Bill -> bill.color },
+        amountsTotal = bills.map { bill: Bill -> bill.amount }.sum(),
+        circleLabel = stringResource(id = R.string.due),
+        rows = { bill: Bill ->
+            BillRow(
+                name = bill.name,
+                due = bill.due,
+                amount = bill.amount,
+                color = bill.color
+            )
         }
     )
 }

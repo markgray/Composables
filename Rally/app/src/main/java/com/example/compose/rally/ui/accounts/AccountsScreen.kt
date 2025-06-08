@@ -24,17 +24,33 @@ import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.StatementBody
 
 /**
- * The Accounts screen.
+ * The Accounts screen. Our root composable is a [StatementBody] whose arguments are:
+ *  - `items`: The [List] of [Account]s to display.
+ *  - `amounts`: a lambda that accepts the [Account] passed the lambda in variable `account` and
+ *  returns the [Account.balance] of `account`.
+ *  - `colors`: a lambda that accepts the [Account] passed the lambda in variable `account` and
+ *  returns the [Account.color] of `account`.
+ *  - `amountsTotal`: it uses the [Iterable.map] function loop through our [List] of [Account]
+ *  parameter [accounts] and in its `transform` lambda argument accepts each [Account] in variable
+ *  `account` producing a [List] of [Float] which is fed to the [Iterable.sum] function which returns
+ *  the sum of the [Float]s in the [List].
+ *  - `circleLabel`: it the [String] with resource ID [R.string.total] ("Total").
+ *  - `rows`: a lambda that accepts the [Account] passed the lambda in variable `account` and composes
+ *  an [AccountRow] whose `name` argument is the [Account.name] of `account`, whose `number` argument
+ *  is the [Account.number] of `account`, whose `amount` argument is the [Account.balance] of `account`,
+ *  and whose `color` argument is the [Account.color] of `account`.
+ *
+ * @param accounts The [List] of [Account] to display.
  */
 @Composable
 fun AccountsBody(accounts: List<Account>) {
     StatementBody(
-        items = accounts,
-        amounts = { account -> account.balance },
-        colors = { account -> account.color },
-        amountsTotal = accounts.map { account -> account.balance }.sum(),
-        circleLabel = stringResource(R.string.total),
-        rows = { account ->
+        accountsOrBills = accounts,
+        amounts = { account: Account -> account.balance },
+        colors = { account: Account -> account.color },
+        amountsTotal = accounts.map { account: Account -> account.balance }.sum(),
+        circleLabel = stringResource(id = R.string.total),
+        rows = { account: Account ->
             AccountRow(
                 name = account.name,
                 number = account.number,

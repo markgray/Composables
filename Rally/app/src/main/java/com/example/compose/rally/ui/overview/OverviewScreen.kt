@@ -34,7 +34,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
 import com.example.compose.rally.RallyScreen
@@ -76,7 +77,7 @@ fun OverviewBody(onScreenChange: (RallyScreen) -> Unit = {}) {
  * The Alerts card within the Rally Overview screen.
  */
 @Composable
-private fun AlertCard() {
+fun AlertCard() {
     var showDialog by remember { mutableStateOf(false) }
     val alertMessage = "Heads up, you've used up 90% of your Shopping budget for this month."
 
@@ -128,6 +129,7 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
     }
 }
 
+@Suppress("SameParameterValue")
 @Composable
 private fun AlertItem(message: String) {
     Row(
@@ -151,7 +153,7 @@ private fun AlertItem(message: String) {
                 .align(Alignment.Top)
                 .clearAndSetSemantics {}
         ) {
-            Icon(Icons.Filled.Sort, contentDescription = null)
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = null)
         }
     }
 }
@@ -209,7 +211,7 @@ private fun <T> OverViewDivider(
  * The Accounts card within the Rally Overview screen.
  */
 @Composable
-private fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
+fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
     val amount = UserData.accounts.map { account -> account.balance }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.accounts),
@@ -234,7 +236,7 @@ private fun AccountsCard(onScreenChange: (RallyScreen) -> Unit) {
  * The Bills card within the Rally Overview screen.
  */
 @Composable
-private fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
+fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
     val amount = UserData.bills.map { bill -> bill.amount }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.bills),
@@ -267,6 +269,6 @@ private fun SeeAllButton(onClick: () -> Unit) {
     }
 }
 
-private val RallyDefaultPadding = 12.dp
+val RallyDefaultPadding: Dp = 12.dp
 
 private const val SHOWN_ITEMS = 3

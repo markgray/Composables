@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,45 +35,53 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Generic component used by the accounts and bills screens to show a chart and a list of items.
+ * TODO: Continue here.
+ *
+ * @param accountsOrBills The list of items to display.
+ * @param colors A lambda that returns the color for a given item.
+ * @param amounts A lambda that returns the amount for a given item.
+ * @param amountsTotal The total amount of all items.
+ * @param circleLabel The label to display in the center of the circle chart.
+ * @param rows A composable that displays a row for a given item.
  */
 @Composable
 fun <T> StatementBody(
-    items: List<T>,
+    accountsOrBills: List<T>,
     colors: (T) -> Color,
     amounts: (T) -> Float,
     amountsTotal: Float,
     circleLabel: String,
     rows: @Composable (T) -> Unit
 ) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        Box(Modifier.padding(16.dp)) {
-            val accountsProportion = items.extractProportions { amounts(it) }
-            val circleColors = items.map { colors(it) }
+    Column(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
+        Box(modifier = Modifier.padding(all = 16.dp)) {
+            val accountsProportion: List<Float> = accountsOrBills.extractProportions { amounts(it) }
+            val circleColors: List<Color> = accountsOrBills.map { colors(it) }
             AnimatedCircle(
-                accountsProportion,
-                circleColors,
-                Modifier
-                    .height(300.dp)
-                    .align(Alignment.Center)
+                proportions = accountsProportion,
+                colors = circleColors,
+                modifier = Modifier
+                    .height(height = 300.dp)
+                    .align(alignment = Alignment.Center)
                     .fillMaxWidth()
             )
-            Column(modifier = Modifier.align(Alignment.Center)) {
+            Column(modifier = Modifier.align(alignment = Alignment.Center)) {
                 Text(
                     text = circleLabel,
                     style = MaterialTheme.typography.body1,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
                 )
                 Text(
-                    text = formatAmount(amountsTotal),
+                    text = formatAmount(amount = amountsTotal),
                     style = MaterialTheme.typography.h2,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
                 )
             }
         }
-        Spacer(Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(height = 10.dp))
         Card {
-            Column(modifier = Modifier.padding(12.dp)) {
-                items.forEach { item ->
+            Column(modifier = Modifier.padding(all = 12.dp)) {
+                accountsOrBills.forEach { item: T ->
                     rows(item)
                 }
             }
