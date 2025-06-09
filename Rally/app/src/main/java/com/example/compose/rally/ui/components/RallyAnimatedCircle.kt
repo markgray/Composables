@@ -19,9 +19,10 @@ package com.example.compose.rally.ui.components
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,10 +35,18 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 
+/**
+ * Used at the start and end of each arc to ensure that there is a gap between arcs
+ */
 private const val DividerLengthInDegrees = 1.8f
 
 /**
  * A donut chart that animates when loaded.
+ * TODO: Continue here.
+ *
+ * @param proportions A list of [Float]s that represent the proportions of the chart.
+ * @param colors A list of [Color]s to be used for the chart segments.
+ * @param modifier A [Modifier] to be applied to the chart.
  */
 @Composable
 fun AnimatedCircle(
@@ -45,13 +54,16 @@ fun AnimatedCircle(
     colors: List<Color>,
     modifier: Modifier = Modifier
 ) {
-    val currentState = remember {
+    val currentState: MutableTransitionState<AnimatedCircleProgress> = remember {
         MutableTransitionState(AnimatedCircleProgress.START)
             .apply { targetState = AnimatedCircleProgress.END }
     }
-    val stroke = with(LocalDensity.current) { Stroke(5.dp.toPx()) }
-    val transition = updateTransition(currentState)
-    val angleOffset by transition.animateFloat(
+    val stroke: Stroke = with(LocalDensity.current) { Stroke(5.dp.toPx()) }
+    val transition: Transition<AnimatedCircleProgress> = rememberTransition<AnimatedCircleProgress>(
+        transitionState = currentState,
+        label = "CircleTransition"
+    )
+    val angleOffset: Float by transition.animateFloat(
         transitionSpec = {
             tween(
                 delayMillis = 500,
@@ -59,14 +71,14 @@ fun AnimatedCircle(
                 easing = LinearOutSlowInEasing
             )
         }
-    ) { progress ->
+    ) { progress: AnimatedCircleProgress ->
         if (progress == AnimatedCircleProgress.START) {
             0f
         } else {
             360f
         }
     }
-    val shift by transition.animateFloat(
+    val shift: Float by transition.animateFloat(
         transitionSpec = {
             tween(
                 delayMillis = 500,
@@ -74,7 +86,7 @@ fun AnimatedCircle(
                 easing = CubicBezierEasing(0f, 0.75f, 0.35f, 0.85f)
             )
         }
-    ) { progress ->
+    ) { progress: AnimatedCircleProgress ->
         if (progress == AnimatedCircleProgress.START) {
             0f
         } else {
@@ -82,17 +94,17 @@ fun AnimatedCircle(
         }
     }
 
-    Canvas(modifier) {
-        val innerRadius = (size.minDimension - stroke.width) / 2
-        val halfSize = size / 2.0f
+    Canvas(modifier = modifier) {
+        val innerRadius: Float = (size.minDimension - stroke.width) / 2
+        val halfSize: Size = size / 2.0f
         val topLeft = Offset(
-            halfSize.width - innerRadius,
-            halfSize.height - innerRadius
+            x = halfSize.width - innerRadius,
+            y = halfSize.height - innerRadius
         )
-        val size = Size(innerRadius * 2, innerRadius * 2)
-        var startAngle = shift - 90f
-        proportions.forEachIndexed { index, proportion ->
-            val sweep = proportion * angleOffset
+        val size = Size(width = innerRadius * 2, height = innerRadius * 2)
+        var startAngle: Float = shift - 90f
+        proportions.forEachIndexed { index: Int, proportion: Float ->
+            val sweep: Float = proportion * angleOffset
             drawArc(
                 color = colors[index],
                 startAngle = startAngle + DividerLengthInDegrees / 2,
@@ -106,4 +118,5 @@ fun AnimatedCircle(
         }
     }
 }
+
 private enum class AnimatedCircleProgress { START, END }
