@@ -25,15 +25,20 @@ import com.example.compose.rally.ui.components.StatementBody
 
 /**
  * The Bills screen. Our root composable is a [StatementBody] whose arguments are:
- *  - `items`: Our [List] of [Bill] parameter [bills].
+ *  - `accountsOrBills`: Our [List] of [Bill] parameter [bills].
  *  - `amounts`: a lambda that accepts the [Bill] passed the lambda in variable `bill` and
  *  returns the [Bill.amount] of `bill`.
  *  - `colors`: a lambda that accepts the [Bill] passed the lambda in variable `bill` and
  *  returns the [Bill.color] of `bill`.
- *  - `amountsTotal`: it uses the [Iterable.map] function loop through our [List] of [Bill]
+ *  - `amountsTotal`: it uses the [Iterable.map] function to loop through our [List] of [Bill]
  *  parameter [bills] and in its `transform` lambda argument accepts each [Bill] in variable
  *  `bill` producing a [List] of [Float] which is fed to the [Iterable.sum] function which returns
  *  the sum of the [Float]s in the [List].
+ *  - `circleLabel`: is the [String] with resource ID `R.string.due` ("Due")
+ *  - `rows`: a lambda that accepts the [Bill] passed the lambda in variable `bill` and composes
+ *  a [BillRow] whose `name` argument is the [Bill.name] of `bill`, whose `due` argument is the
+ *  [Bill.due] of `bill`, whose `amount` argument is the [Bill.amount] of `bill`, and whose
+ *  and whose `color` argument is the [Bill.color] of `bill`
  *
  * @param bills The list of [Bill]s to display.
  */

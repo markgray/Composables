@@ -25,16 +25,16 @@ import com.example.compose.rally.ui.components.StatementBody
 
 /**
  * The Accounts screen. Our root composable is a [StatementBody] whose arguments are:
- *  - `items`: The [List] of [Account]s to display.
+ *  - `accountsOrBills`: The [List] of [Account]s to display.
  *  - `amounts`: a lambda that accepts the [Account] passed the lambda in variable `account` and
  *  returns the [Account.balance] of `account`.
  *  - `colors`: a lambda that accepts the [Account] passed the lambda in variable `account` and
  *  returns the [Account.color] of `account`.
- *  - `amountsTotal`: it uses the [Iterable.map] function loop through our [List] of [Account]
+ *  - `amountsTotal`: it uses the [Iterable.map] function to loop through our [List] of [Account]
  *  parameter [accounts] and in its `transform` lambda argument accepts each [Account] in variable
  *  `account` producing a [List] of [Float] which is fed to the [Iterable.sum] function which returns
  *  the sum of the [Float]s in the [List].
- *  - `circleLabel`: it the [String] with resource ID [R.string.total] ("Total").
+ *  - `circleLabel`: is the [String] with resource ID [R.string.total] ("Total").
  *  - `rows`: a lambda that accepts the [Account] passed the lambda in variable `account` and composes
  *  an [AccountRow] whose `name` argument is the [Account.name] of `account`, whose `number` argument
  *  is the [Account.number] of `account`, whose `amount` argument is the [Account.balance] of `account`,

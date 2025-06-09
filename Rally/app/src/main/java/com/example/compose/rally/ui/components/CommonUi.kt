@@ -146,48 +146,49 @@ fun BillRow(name: String, due: String, amount: Float, color: Color) {
  * Composables that follow it on the screen ([RallyDivider] is just a [Divider] whose `thickness` is
  * 1.dp). The arguments of the [Row] are:
  *  - `modifier` is a [Modifier.height] that sets the preferred height of the content to be exactly
- *  68.dp with a [Modifier.clearAndSetSemantics] chained to it that sets the content description of
+ *  `68.dp` with a [Modifier.clearAndSetSemantics] chained to it that sets the content description of
  *  the semantics node to a [String] constructed from our parameters [title], and [subtitle], and our
  *  variables `dollarSign` and `formattedAmount`.
  *  - `verticalAlignment` is [Alignment.CenterVertically] to have the [Row]'s children center their
  *  content about the center line of the [Row].
  *
- * Inside the `content` lambda of the [Row] we first initialize our [Typography] variable `val typography`
- * to the [MaterialTheme.typography] of our [RallyTheme] custom [MaterialTheme]. Then we compose a
- * [AccountIndicator] into our [Row] with its `color` argument our [Color] parameter [color], and its
- * `modifier` argument an empty, default, or starter [Modifier] that contains no elements. The
- * [AccountIndicator] Composable is just a 4.dp wide by 36.dp high [Spacer] whose background [Color]
- * is the `color` parameter of [AccountIndicator]. Next in our [Row] is a [Spacer] whose `modifier`
- * argument is a [Modifier.width] of 12.dp and this is followed by a [Column] which contains a [Text]
- * displaying our [title] parameter using the [TextStyle] specified for [Typography.body1] by our
- * [RallyTheme] custom [MaterialTheme] (`fontWeight` = [FontWeight.Normal], `fontSize` = 16.sp, and
- * `letterSpacing` = 0.1.em with the default `RobotoCondensed` [FontFamily] using the  [Font] whose
- * resource ID is `R.font.robotocondensed_regular`. Next in the [Column] is a [CompositionLocalProvider]
- * providing [ContentAlpha.medium] as the [LocalContentAlpha] to a [Text] that is wraps which displays
- * our [String] parameter [subtitle] using the [TextStyle] specified for [Typography.subtitle1] by our
- * [RallyTheme] custom [MaterialTheme] (`fontWeight` = [FontWeight.Light], `fontSize` = 14.sp,
- * `lineHeight` = 20.sp, `letterSpacing` = 3.sp with the default `RobotoCondensed` [FontFamily] using
- * the [Font] whose resource ID is `R.font.robotocondensed_light`. After the [Column] in the [Row]
- * is a [Spacer] whose `modifier` argument is a [RowScope] `Modifier.weight` of 1f which will cause
+ * Inside the [RowScope] `content` lambda of the [Row] we first initialize our [Typography] variable
+ * `val typography` to the [MaterialTheme.typography] of our [RallyTheme] custom [MaterialTheme].
+ * Then we compose an [AccountIndicator] into our [Row] with its `color` argument our [Color] parameter
+ * [color], and its `modifier` argument an empty, default, or starter [Modifier] that contains no
+ * elements. The [AccountIndicator] Composable is just a 4.dp wide by 36.dp high [Spacer] whose
+ * background [Color] is the `color` parameter of [AccountIndicator]. Next in our [Row] is a [Spacer]
+ * whose `modifier` argument is a [Modifier.width] of 12.dp and this is followed by a [Column] which
+ * contains a [Text] displaying our [title] parameter using the [TextStyle] specified for
+ * [Typography.body1] by our [RallyTheme] custom [MaterialTheme] (`fontWeight` = [FontWeight.Normal],
+ * `fontSize` = 16.sp, and `letterSpacing` = 0.1.em with the default `RobotoCondensed` [FontFamily]
+ * using the  [Font] whose resource ID is `R.font.robotocondensed_regular`. Next in the [Column] is
+ * a [CompositionLocalProvider] providing [ContentAlpha.medium] as the [LocalContentAlpha] to a [Text]
+ * that it wraps which displays our [String] parameter [subtitle] using the [TextStyle] specified for
+ * [Typography.subtitle1] by our [RallyTheme] custom [MaterialTheme] (`fontWeight` = [FontWeight.Light],
+ * `fontSize` = 14.sp, `lineHeight` = 20.sp, `letterSpacing` = 3.sp with the default `RobotoCondensed`
+ * [FontFamily] using the [Font] whose resource ID is `R.font.robotocondensed_light`. After the [Column]
+ * in the [Row] is a [Spacer] whose `modifier` argument is a [RowScope.weight] of `1f` which will cause
  * it to use all of the space that remains in the [Row]'s incoming horizontal constraints after its
  * siblings have been measured and placed. We follow the [Spacer] with an inner [Row] that is used
  * so that it can have the `horizontalArrangement` argument of [Arrangement.SpaceBetween] which will
  * place children such that they are spaced evenly across the main axis, without free space before
- * the first child or after the last child, and the `content` of this [Row] is a [Text] that displays
- * our `dollarSign` variable using the [TextStyle] specified for [Typography.h6] by our [RallyTheme]
- * custom [MaterialTheme] (`fontWeight` = [FontWeight.Normal], `fontSize` = 18.sp, `lineHeight` = 20.sp,
- * `fontFamily` = `EczarFontFamily`, `letterSpacing` = 3.sp using the [Font] whose resource ID is
- * `R.font.eczar_regular`), this is followed in the inner [Row] by a [Text] that displays our
- * `formattedAmount` variable using the same [TextStyle] with both [Text] having as their `modifier`
- * argument a [RowScope] `Modifier.align` of [Alignment.CenterVertically] which centers their `content`
- * about the centerline of the [Row]. This is followed in the outer [Row] by another [Spacer] that
- * is 16.dp wide, and at the end of the [Row] is a [CompositionLocalProvider] providing
+ * the first child or after the last child, and the [RowScope] `content` of this [Row] is a [Text]
+ * that displays our `dollarSign` variable using the [TextStyle] specified for [Typography.h6] by our
+ * [RallyTheme] custom [MaterialTheme] (`fontWeight` = [FontWeight.Normal], `fontSize` = 18.sp,
+ * `lineHeight` = 20.sp, `fontFamily` = `EczarFontFamily`, `letterSpacing` = 3.sp using the [Font]
+ * whose resource ID is `R.font.eczar_regular`), this is followed in the inner [Row] by a [Text] that
+ * displays our `formattedAmount` variable using the same [TextStyle] with both [Text] having as their
+ * `modifier`
+ * argument a [RowScope.align] of [Alignment.CenterVertically] which centers their `content` about
+ * the centerline of the [Row]. This is followed in the outer [Row] by another [Spacer] that is
+ * `16.dp` wide, and at the end of the [Row] is a [CompositionLocalProvider] providing
  * [ContentAlpha.medium] as the [LocalContentAlpha] to an [Icon] that displays the [ImageVector]
  * that is drawn by [Icons.Filled.ChevronRight], with its `contentDescription` argument `null`, and
  * its `modifier` argument a [Modifier.padding] that adds 12.dp padding to the end of the [Icon],
  * with a [Modifier.size] chained to that which sets the size of the [Icon] to 24.dp
  *
- * Beneath the [Row] described above is a [RallyDivider] which is just a 1.dp `thickness` [Divider]
+ * Beneath the [Row] as described above is a [RallyDivider] which is just a 1.dp `thickness` [Divider]
  * that visually separates this [BaseRow] from any Composables that follow it.
  *
  * @param color the [Color] to use for our [AccountIndicator], this is the [Account.color] property
@@ -227,29 +228,29 @@ private fun BaseRow(
             color = color,
             modifier = Modifier
         )
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(width = 12.dp))
         Column(modifier = Modifier) {
             Text(text = title, style = typography.body1)
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(text = subtitle, style = typography.subtitle1)
             }
         }
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(weight = 1f))
         Row(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = dollarSign,
                 style = typography.h6,
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(alignment = Alignment.CenterVertically)
             )
             Text(
                 text = formattedAmount,
                 style = typography.h6,
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(alignment = Alignment.CenterVertically)
             )
         }
-        Spacer(Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(width = 16.dp))
 
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Icon(
@@ -257,7 +258,7 @@ private fun BaseRow(
                 contentDescription = null,
                 modifier = Modifier
                     .padding(end = 12.dp)
-                    .size(24.dp)
+                    .size(size = 24.dp)
             )
         }
     }
@@ -267,7 +268,7 @@ private fun BaseRow(
 /**
  * A vertical colored line that is used in a [BaseRow] to differentiate accounts. We just use a
  * [Spacer] with its `modifier` argument our [Modifier] argument [modifier] to which is chained
- * a [Modifier.size] whose `width` is 4.dp and whose `height` is 36.dp, followed by chained
+ * a [Modifier.size] whose `width` is 4.dp and whose `height` is 36.dp, followed by a chained
  * [Modifier.background] that sets the background [Color] of the [Spacer] to our [Color] parameter
  * [color].
  *
@@ -316,7 +317,6 @@ fun formatAmount(amount: Float): String {
  * displaying. The pattern produces a [String] with no comma or decimal point separation, and with
  * leading 0's omitted.
  */
-// It is a constant of sorts
 private val AccountDecimalFormat = DecimalFormat("####")
 
 /**
@@ -324,7 +324,6 @@ private val AccountDecimalFormat = DecimalFormat("####")
  * The resulting [String] has comma's separating the whole part into 3 digit groups, and a decimal
  * point separating the whole part from the fractional part (leading and trailing 0's are omitted).
  */
-// It is a constant of sorts
 private val AmountDecimalFormat = DecimalFormat("#,###.##")
 
 /**
