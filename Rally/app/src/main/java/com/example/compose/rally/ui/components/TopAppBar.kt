@@ -61,7 +61,7 @@ import java.util.Locale
  * a [Row] whose `modifier` argument is a [Modifier.selectableGroup]. In its [RowScope] `content`
  * composable lambda argument we use the [Iterable.forEach] method of our [List] of [RallyScreen]
  * parameter [allScreens] to loop over its contents capturing the [RallyScreen] passed the lambda
- * in variable `screen`. We the compose a [RallyTab] for each of our [RallyScreen]s whose arguments
+ * in variable `screen`. We then compose a [RallyTab] for each of our [RallyScreen]s whose arguments
  * are:
  *  - `text`: is the [String] returned by the [RallyScreen.name] property of our [RallyScreen] variable
  *  `screen` converted to uppercase using the [Locale.getDefault] method of [Locale].
@@ -114,7 +114,7 @@ fun RallyTopAppBar(
  * [Int] variable `durationMillis`, whose `easing` argument is [LinearEasing], and whose
  * `delayMillis` argument is [TabFadeInAnimationDelay] (`100`). We initialize our animated [Color]
  * variable `val tabTintColor` to the value returned by the [animateColorAsState] method whose
- * `targetValue` argument is `color` if our [selected] parameter is `true` of a copy of `color`
+ * `targetValue` argument is `color` if our [selected] parameter is `true` or a copy of `color`
  * whose `alpha` argument is [InactiveTabOpacity] (`0.60f`) if it is `false`, and the `animationSpec`
  * argument is our [TweenSpec] variable `animSpec`.
  *
@@ -138,7 +138,7 @@ fun RallyTopAppBar(
  * are:
  *  - `text`: is our [String] parameter [text].
  *  - `color`: is our [Color] variable `tabTintColor`.
- *  - `modifier`: is a [Modifier.clearAndSetSemantics] that clears any semantics applied to it.
+ *  - `modifier`: is a [Modifier.clearAndSetSemantics] that clears any semantics applied to the [Text].
  *
  * @param text The text to display on the tab.
  * @param icon The icon to display on the tab.

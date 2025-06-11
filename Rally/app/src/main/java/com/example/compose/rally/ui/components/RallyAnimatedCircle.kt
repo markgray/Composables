@@ -96,6 +96,9 @@ private const val DividerLengthInDegrees = 1.8f
  *  - `useCenter`: is `false`.
  *  - `style`: is our [Stroke] variable `stroke`.
  *
+ * After drawing the arc we increment `startAngle` by `sweep` and loop around for the next [Float]
+ * in the [List].
+ *
  * @param proportions A list of [Float]s that represent the proportions of the chart.
  * @param colors A list of [Color]s to be used for the chart segments.
  * @param modifier A [Modifier] to be applied to the chart.
