@@ -30,18 +30,27 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.compose.rally.R
 
+/**
+ * The Eczar font family to be used for Rally's typography.
+ */
 private val EczarFontFamily = FontFamily(
-    Font(R.font.eczar_regular),
-    Font(R.font.eczar_semibold, FontWeight.SemiBold)
+    Font(resId = R.font.eczar_regular),
+    Font(resId = R.font.eczar_semibold, weight = FontWeight.SemiBold)
 )
+
+/**
+ * The Roboto Condensed font family to be used for Rally's typography.
+ */
 private val RobotoCondensed = FontFamily(
-    Font(R.font.robotocondensed_regular),
-    Font(R.font.robotocondensed_light, FontWeight.Light),
-    Font(R.font.robotocondensed_bold, FontWeight.Bold)
+    Font(resId = R.font.robotocondensed_regular),
+    Font(resId = R.font.robotocondensed_light, weight = FontWeight.Light),
+    Font(resId = R.font.robotocondensed_bold, weight = FontWeight.Bold)
 )
 
 /**
  * A [MaterialTheme] for Rally.
+ *
+ * @param content the content of the theme.
  */
 @Composable
 fun RallyTheme(content: @Composable () -> Unit) {
@@ -127,6 +136,8 @@ fun RallyTheme(content: @Composable () -> Unit) {
 
 /**
  * A theme overlay used for dialogs.
+ *
+ * @param content the content of the theme.
  */
 @Composable
 fun RallyDialogThemeOverlay(content: @Composable () -> Unit) {

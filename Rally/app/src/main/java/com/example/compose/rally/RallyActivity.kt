@@ -20,6 +20,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -30,36 +31,50 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.compose.rally.ui.components.RallyTopAppBar
 import com.example.compose.rally.ui.theme.RallyTheme
+import kotlin.enums.EnumEntries
 
 /**
  * This Activity recreates part of the Rally Material Study from
  * https://material.io/design/material-studies/rally.html
  */
 class RallyActivity : ComponentActivity() {
+
+    /**
+     * Called when the activity is first created. First we call our super's `onCreate` implementation,
+     * then we set our content to a [RallyApp] composable.
+     *
+     * @param savedInstanceState We so not override [onSaveInstanceState] so do not use this.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState = savedInstanceState)
         setContent {
             RallyApp()
         }
     }
 }
 
+/**
+ * The main Composable function for the Rally app.
+ * TODO: Continue here.
+ */
 @Composable
 fun RallyApp() {
     RallyTheme {
-        val allScreens = RallyScreen.values().toList()
-        var currentScreen by rememberSaveable { mutableStateOf(RallyScreen.Overview) }
+        val allScreens: EnumEntries<RallyScreen> = RallyScreen.entries
+        var currentScreen: RallyScreen by rememberSaveable { mutableStateOf(RallyScreen.Overview) }
         Scaffold(
             topBar = {
                 RallyTopAppBar(
                     allScreens = allScreens,
-                    onTabSelected = { screen -> currentScreen = screen },
+                    onTabSelected = { screen: RallyScreen -> currentScreen = screen },
                     currentScreen = currentScreen
                 )
             }
-        ) { innerPadding ->
-            Box(Modifier.padding(innerPadding)) {
-                currentScreen.content(onScreenChange = { screen -> currentScreen = screen })
+        ) { innerPadding: PaddingValues ->
+            Box(modifier = Modifier.padding(paddingValues = innerPadding)) {
+                currentScreen.content(onScreenChange = { screen: RallyScreen ->
+                    currentScreen = screen
+                })
             }
         }
     }
