@@ -110,7 +110,7 @@ fun OverviewBody(onScreenChange: (RallyScreen) -> Unit = {}) {
  *
  * We start by initializing and remembering our [MutableState] wrapped [Boolean] variable
  * `var showDialog` to `false`. We initialize our [String] constant `val alertMessage` to the
- * "Heads up, you've used up 90% of your Shopping budget for this month."
+ * string "Heads up, you've used up 90% of your Shopping budget for this month."
  *
  * If our [Boolean] variable `showDialog` is `true` we compose a [RallyAlertDialog] whose arguments
  * are:
@@ -212,15 +212,14 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
  * This composable function creates an item for the "Alerts" card.
  *
  * Our root composable is a [Row] whose `modifier` argument is a [Modifier.padding] that adds
- * [RallyDefaultPadding] to `all` sides, chained to a [Modifier.semantics] whose
+ * [RallyDefaultPadding] (`12.dp`) to `all` sides, chained to a [Modifier.semantics] whose
  * [SemanticsPropertyReceiver] `properties` argument is a lambda that sets the `mergeDescendants`
- * to `true` to regard the whole [Row] as one semantics node. In the [RowScope] `content` composable
- * lambda argument of the [Row] we compose:
+ * property to `true` to regard the whole [Row] as one semantics node. In the [RowScope] `content`
+ * composable lambda argument of the [Row] we compose:
  *
  * **First** a [Text] whose arguments are:
  *  - `style`: is the [Typography.body2] of our custom [MaterialTheme.typography].
- *  - `modifier`: is a [RowScope.align] whose `alignment` argument is [Alignment.CenterVertically],
- *  chained to a [RowScope.weight] whose `weight` argument is `1f`.
+ *  - `modifier`: is a [RowScope.weight] whose `weight` argument is `1f`.
  *  - `text`: is our [String] parameter [message].
  *
  * **Second** an [IconButton] whose arguments are:
@@ -391,7 +390,6 @@ private fun <T> OverViewDivider(
  *  `account`.
  *  - `color`: is the [Color] returned by the [Account.color] property of our [Account] variable
  *
- *
  * @param onScreenChange A lambda function that will be executed when the "SEE ALL" button is
  * clicked, it is called with the [RallyScreen] that we want to navigate to.
  */
@@ -471,7 +469,7 @@ fun BillsCard(onScreenChange: (RallyScreen) -> Unit) {
  * to a [Modifier.fillMaxWidth].
  *
  * In the [RowScope] `content` composable lambda argument of the [TextButton] we compose a [Text]
- * whose `text` argument is the [String] whose resource ID is `R.string.see_all` ("See All").
+ * whose `text` argument is the [String] whose resource ID is `R.string.see_all` ("SEE ALL").
  *
  * @param onClick A lambda function that will be executed when the button is clicked.
  */

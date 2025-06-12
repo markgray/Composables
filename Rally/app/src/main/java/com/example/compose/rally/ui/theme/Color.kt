@@ -16,14 +16,16 @@
 
 package com.example.compose.rally.ui.theme
 
+import androidx.compose.material.Colors
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.graphics.Color
 
 /**
- * A green color used for Rally.
+ * A green color used for Rally. Used as the [Colors.primary] of our custom [MaterialTheme].
  */
 val Green500: Color = Color(0xFF1EB980)
 
 /**
- * A dark blue color used for Rally.
+ * A dark blue color used for Rally. Used as the [Colors.surface] of our custom [MaterialTheme].
  */
 val DarkBlue900: Color = Color(0xFF26282F) // TODO: Confirm literal name
