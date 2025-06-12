@@ -38,7 +38,7 @@ fun <T> StatementBody(
     colors: (T) -> Color,
     amounts: (T) -> Float,
     rows: @Composable (T) -> Unit
-    ...
+)
 ```
 
 ```kotlin
@@ -48,8 +48,10 @@ fun AccountsBody(accounts: List<Account>) {
         items = accounts,
         colors = { account -> account.color },
         amounts = { account -> account.balance },
-        rows = { account -> AccountRow(...) }
-        ...
+        rows = { account -> AccountRow(account = account) }
+    )
+}
+
 ```
 
 ### Theming

@@ -30,6 +30,9 @@ import com.example.compose.rally.ui.overview.OverviewBody
 /**
  * Screen state for Rally. Navigation is kept simple until a proper mechanism is available. Back
  * navigation is not supported.
+ *
+ * @param icon icon for the screen
+ * @param body the content for the screen
  */
 enum class RallyScreen(
     val icon: ImageVector,
@@ -37,7 +40,7 @@ enum class RallyScreen(
 ) {
     Overview(
         icon = Icons.Filled.PieChart,
-        body = { onScreenChange -> OverviewBody(onScreenChange) }
+        body = { onScreenChange: (RallyScreen) -> Unit -> OverviewBody(onScreenChange) }
     ),
     Accounts(
         icon = Icons.Filled.AttachMoney,
@@ -48,8 +51,13 @@ enum class RallyScreen(
         body = { BillsBody(UserData.bills) }
     );
 
+    /**
+     * Composes the [RallyScreen.body] of the [RallyScreen].
+     *
+     * @param onScreenChange A lambda that is called when the screen should change.
+     */
     @Composable
-    fun content(onScreenChange: (RallyScreen) -> Unit) {
+    fun ComposeBody(onScreenChange: (RallyScreen) -> Unit) {
         body(onScreenChange)
     }
 }
