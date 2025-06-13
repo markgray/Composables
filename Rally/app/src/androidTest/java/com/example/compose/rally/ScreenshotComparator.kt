@@ -31,7 +31,7 @@ import java.io.FileOutputStream
  * `androidTest/assets`. It's used to showcase the `AnimationClockTestRule` used in
  * [AnimatingCircleTests].
  *
- * Minimum SDK is O. Densities between devices must match.
+ * Minimum SDK is O (Sdk 26). Densities between devices must match.
  *
  * Screenshots are saved on device in `/data/data/{package}/files`.
  *

@@ -62,19 +62,19 @@ class RallyActivity : ComponentActivity() {
  * Wrapped in our [RallyTheme] custom [MaterialTheme] we start by initializing our [EnumEntries]
  * of [RallyScreen] variable `val allScreens` to the [RallyScreen.entries] of the enum. We initialize
  * and [rememberSaveable] our [MutableState] wrapped [RallyScreen] variable `var currentScreen` to
- * an initial value of [RallyScreen.Overview]. Then our root composable is a [Scaffold] whose `topBar`
- * argument is a [RallyTopAppBar] whose `allScreens` argument is `allScreens`, `onTabSelected`
- * argument is a lambda that captures the [RallyScreen] passed the lambda in variable `screen` then
- * sets [MutableState] wrapped [RallyScreen] variable `currentScreen` to the value of `screen`, and
- * whose `currentScreen` argument is `currentScreen`.
+ * an initial value of [RallyScreen.Overview]. Then our root composable is a [Scaffold] whose
+ * `topBar` argument is a [RallyTopAppBar] whose `allScreens` argument is `allScreens`,
+ * `onTabSelected` argument is a lambda that captures the [RallyScreen] passed the lambda in
+ * variable `screen` then sets [MutableState] wrapped [RallyScreen] variable `currentScreen` to
+ * the value of `screen`, and whose `currentScreen` argument is `currentScreen`.
  *
- * In the `content` composable lambda argument we accept the [PaddingValues] passed the lambda in
- * variable `innerPadding` and compose a [Box] whose `modifier` argument is a [Modifier.padding]
- * that sets its padding to the value of `innerPadding`. In the [BoxScope] `content` composable
- * lambda argument of the [Box] we compose the [RallyScreen.ComposeBody] of `currentScreen` with its
- * `onScreenChange` argument set to a lambda that captures the [RallyScreen] passed the lambda in
- * variable `screen` then sets [MutableState] wrapped [RallyScreen] variable `currentScreen` to the
- * value of `screen`.
+ * In the `content` composable lambda argument of the [Scaffold] we accept the [PaddingValues]
+ * passed the lambda in variable `innerPadding` and compose a [Box] whose `modifier` argument is a
+ * [Modifier.padding] that sets its padding to the value of `innerPadding`. In the [BoxScope]
+ * `content` composable lambda argument of the [Box] we compose the [RallyScreen.ComposeBody] of
+ * `currentScreen` with its `onScreenChange` argument set to a lambda that captures the
+ * [RallyScreen] passed the lambda in variable `screen` then sets [MutableState] wrapped
+ * [RallyScreen] variable `currentScreen` to the value of `screen`.
  */
 @Composable
 fun RallyApp() {

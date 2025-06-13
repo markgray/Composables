@@ -55,8 +55,10 @@ class AnimatingCircleTests {
     val composeTestRule: ComposeContentTestRule = createComposeRule()
 
     /**
-     * Tests that the animation is in the correct state when it's idle by disabling autoadvance
-     * and taking a screenshot.
+     * Tests that the animation is in the correct state when it's idle by enabling autoadvance
+     * (the clock should be advanced by the testing framework while awaiting idleness in order to
+     * process any pending work that is driven by this clock), starting the animation, then
+     * comparing a screenshot when it has finished with the "circle_done.png".
      */
     @Test
     fun circleAnimation_idle_screenshot() {
