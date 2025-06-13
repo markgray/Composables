@@ -85,7 +85,7 @@ dependencies {
     implementation("androidx.paging:paging-compose:1.0.0-alpha17")
     //noinspection GradleDependency TODO: Newer version breaks compilation!
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha07")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
     implementation("androidx.activity:activity-compose:1.10.1")
     implementation("androidx.window:window:1.4.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
