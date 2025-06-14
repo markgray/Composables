@@ -27,7 +27,17 @@ import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 
 /**
- * Configure Compose-specific options
+ * Configures Compose-specific options for an Android project.
+ *
+ * This function applies Compose-related settings to the given `commonExtension`,
+ * including enabling Compose in build features, adding Compose dependencies,
+ * configuring test options for Robolectric, and setting up Compose compiler
+ * metrics and reports if enabled via Gradle properties.
+ *
+ * It is used in the [AndroidApplicationComposeConventionPlugin] and the
+ * [AndroidLibraryComposeConventionPlugin]
+ *
+ * @param commonExtension The common Android extension to configure.
  */
 internal fun Project.configureAndroidCompose(
     commonExtension: CommonExtension<*, *, *, *, *, *>,

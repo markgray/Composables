@@ -29,7 +29,18 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 
 /**
- * Configure base Kotlin with Android options
+ * Configures the Kotlin Android settings for the project.
+ *
+ * This function applies common Kotlin Android configurations, including:
+ *  - Setting the `compileSdk` to 35.
+ *  - Setting the `minSdk` in `defaultConfig` to 21.
+ *  - Configuring `compileOptions` to use Java 11 source and target compatibility, and enabling core library desugaring.
+ *  - Applying specific Kotlin configurations using [configureKotlin].
+ *  - Adding the `android.desugarJdkLibs` dependency for core library desugaring.
+ *
+ * Used in [AndroidApplicationConventionPlugin] and [AndroidLibraryConventionPlugin].
+ *
+ * @param commonExtension The [CommonExtension] to configure.
  */
 internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
@@ -58,7 +69,13 @@ internal fun Project.configureKotlinAndroid(
 }
 
 /**
- * Configure base Kotlin options for JVM (non-Android)
+ * Configures the Kotlin JVM settings (non-Android) for the project.
+ *
+ * This function applies common Kotlin JVM configurations, including:
+ *  - Setting the Java source and target compatibility to version 11.
+ *  - Applying specific Kotlin configurations using [configureKotlin].
+ *
+ * Used in [JvmLibraryConventionPlugin].
  */
 internal fun Project.configureKotlinJvm() {
     extensions.configure<JavaPluginExtension> {
@@ -72,7 +89,21 @@ internal fun Project.configureKotlinJvm() {
 }
 
 /**
- * Configure base Kotlin options
+ * Configures base Kotlin options for the project.
+ *
+ * This function applies common Kotlin configurations, including:
+ *  - Setting the JVM target to 11.
+ *  - Treating all Kotlin warnings as non-errors (disabled by default, but can be enabled by setting
+ *  `warningsAsErrors=true` in `gradle.properties`).
+ *  - Enabling experimental coroutines APIs.
+ *  - Enabling consistent data class copy visibility.
+ *
+ * This function is designed to be used with specific Kotlin project extensions like
+ * [KotlinAndroidProjectExtension] or [KotlinJvmProjectExtension].
+ *
+ * Used in [configureKotlinAndroid] and in [configureKotlinJvm].
+ *
+ * @param T The type of Kotlin extension to configure, which must be a subtype of [KotlinBaseExtension].
  */
 private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() = configure<T> {
     // Treat all Kotlin warnings as errors (disabled by default)

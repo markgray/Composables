@@ -22,7 +22,17 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.invoke
 
 /**
- * Configure project for Gradle managed devices
+ * Configures Gradle Managed Devices for the given [CommonExtension].
+ *
+ * This function creates three Gradle Managed Devices:
+ *  - "Pixel 4" with API level 30 and "aosp-atd" system image.
+ *  - "Pixel 6" with API level 31 and "aosp" system image.
+ *  - "Pixel C" with API level 30 and "aosp-atd" system image.
+ *
+ * It also creates a device group named "ci" that includes the "Pixel 4" and "Pixel C" devices.
+ *
+ * @param commonExtension The [CommonExtension] to configure.
+ * @see <https://developer.android.com/studio/test/gradle-managed-devices>
  */
 internal fun configureGradleManagedDevices(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
@@ -57,6 +67,16 @@ internal fun configureGradleManagedDevices(
     }
 }
 
+/**
+ * Configuration for a Gradle Managed Device.
+ *
+ * @property device The name of the device. This should correspond to a device name in the Android SDK.
+ * @property apiLevel The API level of the system image to use for the device.
+ * @property systemImageSource The source of the system image to use for the device. Common values
+ * include "aosp", "google", "aosp-atd", and "google-atd".
+ * @property taskName A unique name for the Gradle task associated with this device configuration.
+ * This is generated automatically based on the device name, API level, and system image source.
+ */
 private data class DeviceConfig(
     val device: String,
     val apiLevel: Int,

@@ -18,6 +18,10 @@ package com.google.samples.apps.nowinandroid
 
 /**
  * This is shared between :app and :benchmarks module to provide configurations type safety.
+ *
+ * It defines the different build types that the Now in Android app can be compiled with.
+ * Each build type has a corresponding [applicationIdSuffix] which is appended to the base
+ * application ID.
  */
 enum class NiaBuildType(val applicationIdSuffix: String? = null) {
     DEBUG(".debug"),

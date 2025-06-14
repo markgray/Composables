@@ -20,11 +20,14 @@ import com.android.build.api.artifact.ScopedArtifact
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.ScopedArtifacts
 import com.android.build.api.variant.SourceDirectories
+import com.android.build.api.variant.Variant
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.configure
@@ -33,8 +36,14 @@ import org.gradle.kotlin.dsl.withType
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import java.io.File
 import java.util.Locale
 
+/**
+ * A list of files to exclude from coverage reports.
+ * This list should be kept up to date with any files that should not be included in coverage
+ * reports, such as generated files, UI files, etc.
+ */
 @Suppress("CanUnescapeDollarLiteral")
 private val coverageExclusions = listOf(
     // Android
@@ -46,18 +55,29 @@ private val coverageExclusions = listOf(
     "**/Hilt_*.class",
 )
 
+/**
+ * Capitalizes the first letter of this String.
+ */
 private fun String.capitalize() = replaceFirstChar {
     if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
 }
 
 /**
+ * Configures JaCoCo Android tasks to generate coverage reports.
+ *
+ * It creates a new Jacoco report task for each variant, which will be used to generate
+ * an aggregate report with data from both unit and instrumented tests.
+ *
+ * This function also configures the `Test` tasks to generate coverage data.
+ *
  * Creates a new task that generates a combined coverage report with data from local and
  * instrumented tests.
  *
- * `create{variant}CombinedCoverageReport`
- *
  * Note that coverage data must exist before running the task. This allows us to run device
  * tests on CI using a different Github Action or an external device farm.
+ *
+ * @param androidComponentsExtension The [AndroidComponentsExtension] from the Android Gradle Plugin,
+ * used to access variants and artifacts.
  */
 internal fun Project.configureJacoco(
     androidComponentsExtension: AndroidComponentsExtension<*, *, *>,
@@ -66,17 +86,17 @@ internal fun Project.configureJacoco(
         toolVersion = libs.findVersion("jacoco").get().toString()
     }
 
-    androidComponentsExtension.onVariants { variant ->
-        val myObjFactory = project.objects
-        val buildDir = layout.buildDirectory.get().asFile
+    androidComponentsExtension.onVariants { variant: Variant ->
+        val myObjFactory: ObjectFactory = project.objects
+        val buildDir: File = layout.buildDirectory.get().asFile
         val allJars: ListProperty<RegularFile> = myObjFactory.listProperty(RegularFile::class.java)
         val allDirectories: ListProperty<Directory> =
             myObjFactory.listProperty(Directory::class.java)
         @Suppress("UnstableApiUsage")
-        val reportTask =
+        val reportTask: TaskProvider<JacocoReport> =
             tasks.register(
-                "create${variant.name.capitalize()}CombinedCoverageReport",
-                JacocoReport::class,
+                name = "create${variant.name.capitalize()}CombinedCoverageReport",
+                type = JacocoReport::class,
             ) {
 
                 classDirectories.setFrom(
@@ -113,12 +133,12 @@ internal fun Project.configureJacoco(
             }
 
 
-        variant.artifacts.forScope(ScopedArtifacts.Scope.PROJECT)
-            .use(reportTask)
+        variant.artifacts.forScope(scope = ScopedArtifacts.Scope.PROJECT)
+            .use(taskProvider = reportTask)
             .toGet(
-                ScopedArtifact.CLASSES,
-                { _ -> allJars },
-                { _ -> allDirectories },
+                type = ScopedArtifact.CLASSES,
+                inputJars = { _ -> allJars },
+                inputDirectories = { _ -> allDirectories },
             )
     }
 

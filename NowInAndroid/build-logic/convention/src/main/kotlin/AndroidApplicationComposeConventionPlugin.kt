@@ -21,14 +21,27 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.getByType
 
+/**
+ * A convention plugin for configuring Jetpack Compose in an Android application.
+ *
+ * This plugin applies the "com.android.application" and "org.jetbrains.kotlin.plugin.compose"
+ * plugins and then configures Android Compose using the [configureAndroidCompose] extension
+ * function.
+ */
 class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
+    /**
+     * Configures the Android Application project with Compose.
+     * TODO: Continue here.
+     *
+     * @param target The project to apply the configuration to.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.android.application")
             apply(plugin = "org.jetbrains.kotlin.plugin.compose")
 
-            val extension = extensions.getByType<ApplicationExtension>()
-            configureAndroidCompose(extension)
+            val extension: ApplicationExtension = extensions.getByType<ApplicationExtension>()
+            configureAndroidCompose(commonExtension = extension)
         }
     }
 
