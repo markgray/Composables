@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.google.samples.apps.nowinandroid
 
 import com.android.build.api.dsl.CommonExtension
@@ -54,6 +56,7 @@ internal fun Project.configureAndroidCompose(
     extensions.configure<ComposeCompilerGradlePluginExtension> {
         fun Provider<String>.onlyIfTrue() = flatMap { provider { it.takeIf(String::toBoolean) } }
         fun Provider<*>.relativeToRootProject(dir: String) = map {
+            @Suppress("UnstableApiUsage")
             isolated.rootProject.projectDirectory
                 .dir("build")
                 .dir(projectDir.toRelativeString(rootDir))
@@ -67,6 +70,7 @@ internal fun Project.configureAndroidCompose(
             .relativeToRootProject("compose-reports")
             .let(reportsDestination::set)
 
+        @Suppress("UnstableApiUsage")
         stabilityConfigurationFiles
             .add(isolated.rootProject.projectDirectory.file("compose_compiler_config.conf"))
     }

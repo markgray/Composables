@@ -35,6 +35,7 @@ import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import java.util.Locale
 
+@Suppress("CanUnescapeDollarLiteral")
 private val coverageExclusions = listOf(
     // Android
     "**/R.class",
@@ -71,6 +72,7 @@ internal fun Project.configureJacoco(
         val allJars: ListProperty<RegularFile> = myObjFactory.listProperty(RegularFile::class.java)
         val allDirectories: ListProperty<Directory> =
             myObjFactory.listProperty(Directory::class.java)
+        @Suppress("UnstableApiUsage")
         val reportTask =
             tasks.register(
                 "create${variant.name.capitalize()}CombinedCoverageReport",

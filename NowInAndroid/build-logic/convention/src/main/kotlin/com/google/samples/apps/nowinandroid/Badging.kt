@@ -118,6 +118,7 @@ fun Project.configureBadgingTasks(
         // Registers a new task to verify the app bundle.
         val capitalizedVariantName = variant.name.capitalized()
         val generateBadgingTaskName = "generate${capitalizedVariantName}Badging"
+        @Suppress("UnstableApiUsage")
         val generateBadging =
             tasks.register<GenerateBadgingTask>(generateBadgingTaskName) {
                 apk = variant.artifacts.get(SingleArtifact.APK_FROM_BUNDLE)
