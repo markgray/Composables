@@ -377,6 +377,7 @@ private val FloatArrayConverter: TwoWayConverter<FloatArray, AnimationVector> = 
         }
     },
     convertFromVector = {
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         when (it) {
             is AnimationVector1D -> {
                 floatArrayOf(it.value)
