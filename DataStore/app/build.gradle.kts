@@ -55,15 +55,15 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
 
     // architecture components
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
 
     // ProtBuf
     implementation("androidx.datastore:datastore-core:1.1.7")
     implementation("com.google.protobuf:protobuf-javalite:4.26.1")
     implementation("androidx.datastore:datastore:1.1.7")
-    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.12.0")
 
     // testing
