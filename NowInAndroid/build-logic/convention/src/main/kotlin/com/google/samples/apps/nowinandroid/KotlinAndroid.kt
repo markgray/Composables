@@ -34,7 +34,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
  * This function applies common Kotlin Android configurations, including:
  *  - Setting the `compileSdk` to 35.
  *  - Setting the `minSdk` in `defaultConfig` to 21.
- *  - Configuring `compileOptions` to use Java 11 source and target compatibility, and enabling core library desugaring.
+ *  - Configuring `compileOptions` to use Java 11 source and target compatibility, and enabling core
+ *  library desugaring.
  *  - Applying specific Kotlin configurations using [configureKotlin].
  *  - Adding the `android.desugarJdkLibs` dependency for core library desugaring.
  *
@@ -134,7 +135,7 @@ private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() =
              * The binary signature changes. The error on the declaration is no longer reported.
              * '-Xconsistent-data-class-copy-visibility' compiler flag and ConsistentCopyVisibility annotation are now unnecessary.
              */
-            "-Xconsistent-data-class-copy-visibility"
+            "-Xconsistent-data-class-copy-visibility",
         )
     }
 }

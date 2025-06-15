@@ -92,6 +92,7 @@ internal fun Project.configureJacoco(
         val allJars: ListProperty<RegularFile> = myObjFactory.listProperty(RegularFile::class.java)
         val allDirectories: ListProperty<Directory> =
             myObjFactory.listProperty(Directory::class.java)
+
         @Suppress("UnstableApiUsage")
         val reportTask: TaskProvider<JacocoReport> =
             tasks.register(
@@ -119,7 +120,7 @@ internal fun Project.configureJacoco(
                 sourceDirectories.setFrom(
                     files(
                         variant.sources.java.toFilePaths(),
-                        variant.sources.kotlin.toFilePaths()
+                        variant.sources.kotlin.toFilePaths(),
                     ),
                 )
 

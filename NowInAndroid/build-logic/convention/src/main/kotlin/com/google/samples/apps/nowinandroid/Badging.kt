@@ -103,7 +103,7 @@ abstract class GenerateBadgingTask : DefaultTask() {
  * This task is used to verify that the manifest file has not changed unexpectedly.
  */
 @CacheableTask
-abstract class CheckBadgingTask : DefaultTask() {    
+abstract class CheckBadgingTask : DefaultTask() {
     /**
      * Dummy output directory for the task.
      * This is required for the task to be considered up-to-date.
@@ -169,13 +169,13 @@ private fun String.capitalized() = replaceFirstChar {
 }
 
 /**
- * Configures badging tasks for each variant of the application.
+ * Configures badging tasks for each `variant` of the application.
  *
- * This function registers three tasks for each variant:
- * 1.  `generate[VariantName]Badging`: Generates the badging file from the APK.
- * 2.  `update[VariantName]Badging`: Copies the generated badging file to the project directory,
+ * This function registers three tasks for each `variant`:
+ * 1.  `generate${variant}Badging`: Generates the badging file from the APK.
+ * 2.  `update${variant}Badging`: Copies the generated badging file to the project directory,
  *     effectively updating the "golden" badging file.
- * 3.  `check[VariantName]Badging`: Compares the generated badging file with the golden badging
+ * 3.  `check${variant}Badging`: Compares the generated badging file with the golden badging
  *     file and fails the build if they are different.
  *
  * @param baseExtension The [BaseExtension] from the Android Gradle Plugin, used to access
@@ -191,7 +191,8 @@ fun Project.configureBadgingTasks(
     componentsExtension.onVariants { variant: ApplicationVariant ->
         // Registers a new task to verify the app bundle.
         val capitalizedVariantName: String = variant.name.capitalized()
-        val generateBadgingTaskName: String = "generate${capitalizedVariantName}Badging"
+        val generateBadgingTaskName = "generate${capitalizedVariantName}Badging"
+
         @Suppress("UnstableApiUsage")
         val generateBadging: TaskProvider<GenerateBadgingTask> =
             tasks.register<GenerateBadgingTask>(generateBadgingTaskName) {
@@ -205,7 +206,7 @@ fun Project.configureBadgingTasks(
                                 "${baseExtension.buildToolsVersion}/" +
                                 SdkConstants.FN_AAPT2,
                         )
-                    }
+                    },
                 )
                 badging = project.layout.buildDirectory.file(
                     "outputs/apk_from_bundle/${variant.name}/${variant.name}-badging.txt",
