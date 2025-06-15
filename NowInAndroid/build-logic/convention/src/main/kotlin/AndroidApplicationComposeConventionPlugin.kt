@@ -27,13 +27,22 @@ import org.gradle.kotlin.dsl.getByType
  * This plugin applies the "com.android.application" and "org.jetbrains.kotlin.plugin.compose"
  * plugins and then configures Android Compose using the [configureAndroidCompose] extension
  * function.
+ *
+ * A [Plugin] represents an extension to Gradle. A plugin applies some configuration to a target
+ * object. Usually, this target object is a [Project], but plugins can be applied to any type of
+ * objects.
  */
 class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
     /**
      * Configures the Android Application project with Compose.
-     * TODO: Continue here.
+     * We use a [with] statement to apply to our [Project] parameter [target] the `plugin`
+     * "com.android.application" and the `plugin` "org.jetbrains.kotlin.plugin.compose".
+     * We then initialize our [ApplicationExtension] variable `extension` to the
+     * [Project.extensions] of [target] of type [ApplicationExtension] and call our
+     * [configureAndroidCompose] function with our [ApplicationExtension] variable `extension`
+     * as its `commonExtension` parameter.
      *
-     * @param target The project to apply the configuration to.
+     * @param target The [Project] to apply the configuration to.
      */
     override fun apply(target: Project) {
         with(target) {

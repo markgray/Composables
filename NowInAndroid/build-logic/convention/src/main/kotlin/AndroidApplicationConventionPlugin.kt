@@ -27,7 +27,44 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
 
+/**
+ * Gradle plugin for Android applications.
+ *
+ * This plugin applies common configurations and plugins for Android applications, including:
+ *  - `com.android.application` for Android application builds.
+ *  - `org.jetbrains.kotlin.android` for Kotlin support in Android projects.
+ *  - `nowinandroid.android.lint` for custom lint checks.
+ *  - `com.dropbox.dependency-guard` for managing dependencies.
+ *
+ * It also configures:
+ *  - Kotlin Android options.
+ *  - Default target SDK version.
+ *  - Disabling animations in tests.
+ *  - Gradle-managed devices.
+ *  - Tasks for printing APKs and badging.
+ */
 class AndroidApplicationConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the plugin to the given project.
+     *
+     * This function configures the project with the necessary plugins and settings for an Android
+     * application.
+     * It applies the following plugins:
+     *  - `com.android.application`: For building Android applications.
+     *  - `org.jetbrains.kotlin.android`: For Kotlin support in Android projects.
+     *  - `nowinandroid.android.lint`: For custom lint checks.
+     *  - `com.dropbox.dependency-guard`: For managing dependencies.
+     *
+     * It also configures the following:
+     *  - Kotlin Android options using `configureKotlinAndroid`.
+     *  - Sets the default target SDK to 35.
+     *  - Disables animations in tests.
+     *  - Configures Gradle-managed devices using `configureGradleManagedDevices`.
+     *  - Configures tasks for printing APKs using `configurePrintApksTask`.
+     *  - Configures badging tasks using `configureBadgingTasks`.
+     *
+     * @param target The [Project] to apply the [Plugin] to.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.android.application")
@@ -38,7 +75,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = 35
-                @Suppress("UnstableApiUsage")
                 testOptions.animationsDisabled = true
                 configureGradleManagedDevices(this)
             }

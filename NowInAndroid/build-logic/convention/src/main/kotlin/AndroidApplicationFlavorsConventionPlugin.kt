@@ -20,7 +20,19 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
+/**
+ * A convention plugin that configures product flavors for Android applications.
+ */
+@Suppress("unused")
 class AndroidApplicationFlavorsConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the [Plugin] to the given [Project].
+     *
+     * This function configures the Android application extension to include product flavors.
+     * It utilizes the `configureFlavors` extension function to set up the different build variants.
+     *
+     * @param target The [Project] to which the [Plugin] is applied.
+     */
     override fun apply(target: Project) {
         with(target) {
             extensions.configure<ApplicationExtension> {

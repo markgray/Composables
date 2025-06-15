@@ -22,12 +22,36 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.getByType
 
+/**
+ * A Gradle plugin that configures JaCoCo for Android applications.
+ *
+ * This plugin applies the JaCoCo plugin and configures it to generate coverage reports for both
+ * unit and Android tests. It also enables coverage for all build types.
+ *
+ * To use this plugin, apply it to your Android application project's `build.gradle` file:
+ *
+ * ```gradle
+ * plugins {
+ *     id("com.google.samples.apps.nowinandroid.android.application.jacoco")
+ * }
+ * ```
+ */
+@Suppress("unused")
 class AndroidApplicationJacocoConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the JaCoCo plugin and configures it for the given Android application project.
+     *
+     * This method enables JaCoCo for both unit and Android tests and ensures that coverage reports
+     * are generated for all build types.
+     *
+     * @param target The Android application [Project] to configure.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "jacoco")
 
-            val androidExtension = extensions.getByType<ApplicationExtension>()
+            val androidExtension: ApplicationExtension =
+                extensions.getByType<ApplicationExtension>()
 
             androidExtension.buildTypes.configureEach {
                 enableAndroidTestCoverage = true

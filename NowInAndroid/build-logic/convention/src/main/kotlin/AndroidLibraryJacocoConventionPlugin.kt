@@ -22,12 +22,31 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.getByType
 
+/**
+ * A convention plugin that configures Jacoco for Android library projects.
+ *
+ * This plugin applies the Jacoco plugin and enables test coverage for both unit and Android tests
+ * in all build types. It also configures Jacoco using the `configureJacoco` extension function.
+ */
+@Suppress("unused")
 class AndroidLibraryJacocoConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the JaCoCo plugin and configures it for Android library projects.
+     *
+     * This function performs the following actions:
+     * 1. Applies the "jacoco" plugin to the project.
+     * 2. Retrieves the [LibraryExtension] to configure Android-specific settings.
+     * 3. Enables JaCoCo coverage for both Android tests and unit tests for all build types.
+     * 4. Calls the `configureJacoco` extension function to set up JaCoCo tasks and reports
+     *    using the `LibraryAndroidComponentsExtension`.
+     *
+     * @param target The [Project] to which this plugin is applied.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "jacoco")
 
-            val androidExtension = extensions.getByType<LibraryExtension>()
+            val androidExtension: LibraryExtension = extensions.getByType<LibraryExtension>()
 
             androidExtension.buildTypes.configureEach {
                 enableAndroidTestCoverage = true

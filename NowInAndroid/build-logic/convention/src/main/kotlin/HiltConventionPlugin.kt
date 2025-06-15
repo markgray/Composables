@@ -21,7 +21,33 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.dependencies
 
+/**
+ * A convention plugin that configures Hilt for Android and ksp.
+ *
+ * This plugin applies the Hilt Android Gradle plugin and adds the Hilt dependencies
+ * to the `implementation` and `ksp` configurations.
+ *
+ * It also configures Hilt for JVM modules by adding the Hilt core dependency to the
+ * `implementation` configuration.
+ */
+@Suppress("unused")
 class HiltConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the Hilt convention plugin to the [Project] parameter [target].
+     *
+     * This plugin applies the KSP plugin, adds the Hilt compiler as a KSP dependency,
+     * and configures Hilt dependencies based on whether the project is a JVM module or
+     * an Android module.
+     *
+     * For JVM modules (projects with the `org.jetbrains.kotlin.jvm` plugin applied),
+     * it adds the `hilt.core` library as an implementation dependency.
+     *
+     * For Android modules (projects with the `com.android.base` plugin applied),
+     * it applies the `dagger.hilt.android.plugin` and adds the `hilt.android` library
+     * as an implementation dependency.
+     *
+     * @param target The [Project] to which the [Plugin] is applied.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.google.devtools.ksp")

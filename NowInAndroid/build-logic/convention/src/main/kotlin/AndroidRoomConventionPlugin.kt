@@ -23,8 +23,22 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
+/**
+ * A plugin that applies the Android Room plugin and its dependencies to a Gradle project.
+ */
+@Suppress("unused")
 class AndroidRoomConventionPlugin : Plugin<Project> {
 
+    /**
+     * Applies the Room plugin and its dependencies to the [Project] parameter [target].
+     *
+     * It configures the KSP extension to generate Kotlin code for Room and sets up the schema directory
+     * for Room auto migrations.
+     *
+     * Dependencies for Room runtime, Kotlin extensions, and compiler are added.
+     *
+     * @param target The [Project] to which the [Plugin] is applied.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "androidx.room")

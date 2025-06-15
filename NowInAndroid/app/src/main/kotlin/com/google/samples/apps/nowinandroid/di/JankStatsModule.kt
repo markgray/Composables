@@ -26,6 +26,15 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 
+/**
+ * Hilt module that provides singletonpsons related to jank stats.
+ *
+ * It is installed in the [ActivityComponent] because [JankStats] requires an
+ * [Activity].
+ * TODO: Continue here.
+ *
+ * @see JankStats
+ */
 @Module
 @InstallIn(ActivityComponent::class)
 object JankStatsModule {

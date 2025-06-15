@@ -19,12 +19,38 @@ import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import com.google.samples.apps.nowinandroid.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.MinimalExternalModuleDependency
+import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.exclude
 
+/**
+ * Firebase convention plugin for Android applications.
+ */
+@Suppress("unused")
 class AndroidApplicationFirebaseConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the Firebase convention plugin to the given [Project].
+     *
+     * This plugin applies the following plugins:
+     *  - `com.google.gms.google-services`
+     *  - `com.google.firebase.firebase-perf`
+     *  - `com.google.firebase.crashlytics`
+     *
+     * It also adds the following dependencies:
+     *  - `firebase-bom`
+     *  - `firebase-analytics`
+     *  - `firebase-performance` (with exclusions for protobuf-javalite and protolite-well-known-types)
+     *  - `firebase-crashlytics`
+     *
+     * Finally, it disables the Crashlytics mapping file upload for all build types.
+     * This feature should only be enabled if a Firebase backend is available and configured in
+     * `google-services.json`.
+     *
+     * @param target The [Project] to apply the [Plugin] to.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.google.gms.google-services")
@@ -32,7 +58,8 @@ class AndroidApplicationFirebaseConventionPlugin : Plugin<Project> {
             apply(plugin = "com.google.firebase.crashlytics")
 
             dependencies {
-                val bom = libs.findLibrary("firebase-bom").get()
+                val bom: Provider<MinimalExternalModuleDependency?> =
+                    libs.findLibrary("firebase-bom").get()
                 "implementation"(platform(bom))
                 "implementation"(libs.findLibrary("firebase.analytics").get())
                 "implementation"(libs.findLibrary("firebase.performance").get()) {

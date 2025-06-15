@@ -21,7 +21,17 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.dependencies
 
+/**
+ * Convention plugin for setting up a JVM library (e.g. for use in presenters, data modules, etc.).
+ * This plugin applies the Kotlin JVM plugin and configures common dependencies.
+ */
 class JvmLibraryConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the Kotlin JVM plugin, Android Lint plugin, and configures Kotlin JVM settings and
+     * dependencies.
+     *
+     * @param target The [Project] to apply the [Plugin] to.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "org.jetbrains.kotlin.jvm")

@@ -23,7 +23,48 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
+/**
+ * Plugin that applies common configurations for Android feature modules.
+ *
+ * This plugin applies the following plugins:
+ * - `nowinandroid.android.library`
+ * - `nowinandroid.hilt`
+ * - `org.jetbrains.kotlin.plugin.serialization`
+ *
+ * It also configures the following:
+ * - Disables animations in tests.
+ * - Configures Gradle managed devices.
+ * - Adds dependencies for UI, design system, Hilt navigation, Lifecycle, Navigation, Tracing, and Kotlinx Serialization.
+ * - Adds test dependencies for Navigation testing and Lifecycle runtime testing.
+ */
+@Suppress("unused")
 class AndroidFeatureConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the Android Feature convention plugin to the [Project] parameter [target].
+     *
+     * This plugin applies the following plugins:
+     *  - `nowinandroid.android.library`
+     *  - `nowinandroid.hilt`
+     *  - `org.jetbrains.kotlin.plugin.serialization`
+     *
+     * It also configures the Android library extension with the following:
+     *  - Disables animations in tests.
+     *  - Configures Gradle managed devices.
+     *
+     * Finally, it adds the following dependencies:
+     *  - `core:ui`
+     *  - `core:designsystem`
+     *  - `androidx.hilt.navigation.compose`
+     *  - `androidx.lifecycle.runtimeCompose`
+     *  - `androidx.lifecycle.viewModelCompose`
+     *  - `androidx.navigation.compose`
+     *  - `androidx.tracing.ktx`
+     *  - `kotlinx.serialization.json`
+     *  - `androidx.navigation.testing` (testImplementation)
+     *  - `androidx.lifecycle.runtimeTesting` (androidTestImplementation)
+     *
+     * @param target The [Project] to apply the [Plugin] to.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "nowinandroid.android.library")

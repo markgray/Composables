@@ -22,7 +22,21 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 
+/**
+ * Gradle plugin for Android test modules.
+ *
+ * This plugin applies the `com.android.test` and `org.jetbrains.kotlin.android` plugins
+ * and configures the Android test extension with common settings.
+ */
 class AndroidTestConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the Android test convention plugin to the given project.
+     *
+     * This function applies the `com.android.test` and `org.jetbrains.kotlin.android` plugins
+     * and configures the Android test extension with common settings.
+     *
+     * @param target The [Project] to apply the [Plugin] to.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.android.test")

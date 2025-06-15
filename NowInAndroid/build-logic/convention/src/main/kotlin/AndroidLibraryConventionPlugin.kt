@@ -28,7 +28,41 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
+/**
+ * Convention plugin for Android libraries.
+ *
+ * This plugin applies common configurations and dependencies for Android library modules,
+ * including:
+ *  - The `com.android.library` plugin for Android library functionality.
+ *  - The `org.jetbrains.kotlin.android` plugin for Kotlin support in Android.
+ *  - The `nowinandroid.android.lint` plugin for linting.
+ *  - Configuration for Kotlin, target SDK, test runner, and resource prefix.
+ *  - Configuration for flavors and Gradle-managed devices.
+ *  - Task to print APKs.
+ *  - Disabling unnecessary Android tests.
+ *  - Common dependencies for testing and tracing.
+ */
 class AndroidLibraryConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the Android library conventions to the given project.
+     *
+     * This includes:
+     * - Applying the `com.android.library`, `org.jetbrains.kotlin.android`, and `nowinandroid.android.lint` plugins.
+     * - Configuring the Android library extension with:
+     *     - Kotlin Android options.
+     *     - Setting the target SDK to 35.
+     *     - Setting the test instrumentation runner.
+     *     - Disabling animations in tests.
+     *     - Configuring product flavors.
+     *     - Configuring Gradle managed devices.
+     *     - Setting a resource prefix based on the module name.
+     * - Configuring the Android components extension with:
+     *     - A task to print APK information.
+     *     - Disabling unnecessary Android tests.
+     * - Adding common dependencies for testing and tracing.
+     *
+     * @param target The [Project] to apply the conventions to.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.android.library")

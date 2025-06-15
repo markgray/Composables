@@ -21,13 +21,28 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.getByType
 
+/**
+ * A convention plugin for configuring Android libraries with Jetpack Compose.
+ *
+ * This plugin applies the following plugins:
+ *  - `com.android.library`
+ *  - `org.jetbrains.kotlin.plugin.compose`
+ *
+ * It also configures Android Compose for the library using the [configureAndroidCompose] extension function.
+ */
 class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
+    /**
+     * Applies the Android Library and Kotlin Compose plugins to the project.
+     * Also configures Android Compose for the library extension.
+     *
+     * @param target The [Project] to apply the [Plugin] and configuration to.
+     */
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.android.library")
             apply(plugin = "org.jetbrains.kotlin.plugin.compose")
 
-            val extension = extensions.getByType<LibraryExtension>()
+            val extension: LibraryExtension = extensions.getByType<LibraryExtension>()
             configureAndroidCompose(extension)
         }
     }
