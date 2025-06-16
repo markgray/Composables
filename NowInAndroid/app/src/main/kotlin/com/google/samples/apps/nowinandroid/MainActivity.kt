@@ -42,6 +42,7 @@ import com.google.samples.apps.nowinandroid.core.data.util.TimeZoneMonitor
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.ui.LocalTimeZone
 import com.google.samples.apps.nowinandroid.ui.NiaApp
+import com.google.samples.apps.nowinandroid.ui.NiaAppState
 import com.google.samples.apps.nowinandroid.ui.rememberNiaAppState
 import com.google.samples.apps.nowinandroid.util.isSystemInDarkTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -133,7 +134,7 @@ class MainActivity : ComponentActivity() {
         splashScreen.setKeepOnScreenCondition { viewModel.uiState.value.shouldKeepSplashScreen() }
 
         setContent {
-            val appState = rememberNiaAppState(
+            val appState: NiaAppState = rememberNiaAppState(
                 networkMonitor = networkMonitor,
                 userNewsResourceRepository = userNewsResourceRepository,
                 timeZoneMonitor = timeZoneMonitor,
@@ -150,7 +151,7 @@ class MainActivity : ComponentActivity() {
                     androidTheme = themeSettings.androidTheme,
                     disableDynamicTheming = themeSettings.disableDynamicTheming,
                 ) {
-                    NiaApp(appState)
+                    NiaApp(appState = appState)
                 }
             }
         }

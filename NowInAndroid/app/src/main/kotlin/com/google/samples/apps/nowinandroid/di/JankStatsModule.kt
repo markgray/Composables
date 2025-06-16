@@ -32,13 +32,19 @@ import dagger.hilt.android.components.ActivityComponent
  *
  * It is installed in the [ActivityComponent] because [JankStats] requires an
  * [Activity].
- * TODO: Continue here.
  *
  * @see JankStats
  */
 @Module
 @InstallIn(ActivityComponent::class)
 object JankStatsModule {
+    /**
+     * Provides an instance of [OnFrameListener] that logs jank frames for Hilt to inject. This
+     * listener is specifically designed to log "janky" frames in your Android application
+     * ([FrameData.isJank] is true).
+     *
+     * @see [JankStats.OnFrameListener]
+     */
     @Provides
     fun providesOnFrameListener(): OnFrameListener = OnFrameListener { frameData: FrameData ->
         // Make sure to only log janky frames.
@@ -48,9 +54,29 @@ object JankStatsModule {
         }
     }
 
+    /**
+     * Provides the [Window] that comes from the current [Activity] for Hilt to inject. It just
+     * returns the [Activity.getWindow] in of its [Window] parameter [activity].
+     *
+     * @param activity The current [Activity]
+     * @see [Activity.getWindow]
+     */
     @Provides
     fun providesWindow(activity: Activity): Window = activity.window
 
+    /**
+     * Provides an instance of [JankStats] for Hilt to inject. This is created by calling the method
+     * [JankStats.createAndTrack] with our [Window] parameter [window] as its `window` argument,
+     * and our [OnFrameListener] parameter [frameListener] as its `frameListener` argument.
+     * [JankStats.createAndTrack] creates a [JankStats] object, begins tracking jank data for the
+     * `window`, and returns the new [JankStats] object.
+     *
+     * @param window the [Window] whose jank should be tracked, this is provided by our [providesWindow]
+     * method (which just returns the [Window] of the current [Activity]).
+     * @param frameListener an [OnFrameListener] to be added to the new [JankStats] object when it
+     * is created. This is provided by our [providesOnFrameListener] method.
+     * @return a new [JankStats] instance.
+     */
     @Provides
     fun providesJankStats(
         window: Window,

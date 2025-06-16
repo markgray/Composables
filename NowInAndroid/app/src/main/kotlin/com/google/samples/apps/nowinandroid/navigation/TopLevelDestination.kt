@@ -37,8 +37,8 @@ import com.google.samples.apps.nowinandroid.feature.search.R as searchR
  * selected.
  * @param unselectedIcon The icon to be displayed in the navigation UI when this destination is
  * not selected.
- * @param iconTextId Text that to be displayed in the navigation UI.
- * @param titleTextId Text that is displayed on the top app bar.
+ * @param iconTextId resource ID of Text that to be displayed in the navigation UI.
+ * @param titleTextId resource ID of Text that is displayed on the top app bar.
  * @param route The route to use when navigating to this destination.
  * @param baseRoute The highest ancestor of this destination. Defaults to [route], meaning that
  * there is a single destination in that section of the app (no nested destinations).

@@ -16,8 +16,10 @@
 
 package com.google.samples.apps.nowinandroid.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -61,7 +63,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavHostController
 import com.google.samples.apps.nowinandroid.R
+import com.google.samples.apps.nowinandroid.core.data.repository.UserNewsResourceRepository
+import com.google.samples.apps.nowinandroid.core.data.util.NetworkMonitor
+import com.google.samples.apps.nowinandroid.core.data.util.TimeZoneMonitor
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaBackground
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaGradientBackground
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaNavigationSuiteScaffold
@@ -72,18 +78,34 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.LocalGradien
 import com.google.samples.apps.nowinandroid.feature.settings.SettingsDialog
 import com.google.samples.apps.nowinandroid.navigation.NiaNavHost
 import com.google.samples.apps.nowinandroid.navigation.TopLevelDestination
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlin.reflect.KClass
 import com.google.samples.apps.nowinandroid.feature.settings.R as settingsR
 
+/**
+ * Top-level composable that represents screens for the application.
+ * TODO: Continue here.
+ *
+ * @param appState [NiaAppState] that contains the [NetworkMonitor], [UserNewsResourceRepository],
+ * [TimeZoneMonitor] used by the app, as well as the [NavHostController] used and a [CoroutineScope]
+ * that is used as the `scope` parameter when converting [Flow]s to [StateFlow]s inside of
+ * [NiaAppState].
+ * @param modifier [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller, the `onCreate` override of `MainActivity` does not pass us any so the
+ * empty, default, or starter Modifier that contains no elements is used.
+ * @param windowAdaptiveInfo Window size class passed through to the call server (stateful composable).
+ */
 @Composable
 fun NiaApp(
     appState: NiaAppState,
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    val shouldShowGradientBackground =
+    val shouldShowGradientBackground: Boolean =
         appState.currentTopLevelDestination == TopLevelDestination.FOR_YOU
-    var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
+    var showSettingsDialog: Boolean by rememberSaveable { mutableStateOf(false) }
 
     NiaBackground(modifier = modifier) {
         NiaGradientBackground(
@@ -93,12 +115,12 @@ fun NiaApp(
                 GradientColors()
             },
         ) {
-            val snackbarHostState = remember { SnackbarHostState() }
+            val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 
-            val isOffline by appState.isOffline.collectAsStateWithLifecycle()
+            val isOffline: Boolean by appState.isOffline.collectAsStateWithLifecycle()
 
             // If user is not connected to the internet show a snack bar to inform them.
-            val notConnectedMessage = stringResource(R.string.not_connected)
+            val notConnectedMessage: String = stringResource(R.string.not_connected)
             LaunchedEffect(isOffline) {
                 if (isOffline) {
                     snackbarHostState.showSnackbar(
@@ -134,9 +156,9 @@ internal fun NiaApp(
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    val unreadDestinations by appState.topLevelDestinationsWithUnreadResources
+    val unreadDestinations: Set<TopLevelDestination> by appState.topLevelDestinationsWithUnreadResources
         .collectAsStateWithLifecycle()
-    val currentDestination = appState.currentDestination
+    val currentDestination: NavDestination? = appState.currentDestination
 
     if (showSettingsDialog) {
         SettingsDialog(
@@ -146,13 +168,13 @@ internal fun NiaApp(
 
     NiaNavigationSuiteScaffold(
         navigationSuiteItems = {
-            appState.topLevelDestinations.forEach { destination ->
-                val hasUnread = unreadDestinations.contains(destination)
-                val selected = currentDestination
+            appState.topLevelDestinations.forEach { destination: TopLevelDestination ->
+                val hasUnread: Boolean = unreadDestinations.contains(destination)
+                val selected: Boolean = currentDestination
                     .isRouteInHierarchy(destination.baseRoute)
                 item(
                     selected = selected,
-                    onClick = { appState.navigateToTopLevelDestination(destination) },
+                    onClick = { appState.navigateToTopLevelDestination(topLevelDestination = destination) },
                     icon = {
                         Icon(
                             imageVector = destination.unselectedIcon,
@@ -165,10 +187,9 @@ internal fun NiaApp(
                             contentDescription = null,
                         )
                     },
-                    label = { Text(stringResource(destination.iconTextId)) },
-                    modifier =
-                    Modifier
-                        .testTag("NiaNavItem")
+                    label = { Text(text = stringResource(id = destination.iconTextId)) },
+                    modifier = Modifier
+                        .testTag(tag = "NiaNavItem")
                         .then(if (hasUnread) Modifier.notificationDot() else Modifier),
                 )
             }
@@ -181,27 +202,27 @@ internal fun NiaApp(
             },
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            contentWindowInsets = WindowInsets(left = 0, top = 0, right = 0, bottom = 0),
             snackbarHost = {
                 SnackbarHost(
-                    snackbarHostState,
-                    modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
+                    hostState = snackbarHostState,
+                    modifier = Modifier.windowInsetsPadding(insets = WindowInsets.safeDrawing),
                 )
             },
-        ) { padding ->
+        ) { padding: PaddingValues ->
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(padding)
-                    .consumeWindowInsets(padding)
+                    .padding(paddingValues = padding)
+                    .consumeWindowInsets(paddingValues = padding)
                     .windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(
+                        insets = WindowInsets.safeDrawing.only(
                             WindowInsetsSides.Horizontal,
                         ),
                     ),
             ) {
                 // Show the top app bar on top level destinations.
-                val destination = appState.currentTopLevelDestination
+                val destination: TopLevelDestination? = appState.currentTopLevelDestination
                 var shouldShowTopAppBar = false
 
                 if (destination != null) {
@@ -228,15 +249,15 @@ internal fun NiaApp(
                     // Workaround for https://issuetracker.google.com/338478720
                     modifier = Modifier.consumeWindowInsets(
                         if (shouldShowTopAppBar) {
-                            WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
+                            WindowInsets.safeDrawing.only(sides = WindowInsetsSides.Top)
                         } else {
-                            WindowInsets(0, 0, 0, 0)
+                            WindowInsets(left = 0, top = 0, right = 0, bottom = 0)
                         },
                     ),
                 ) {
                     NiaNavHost(
                         appState = appState,
-                        onShowSnackbar = { message, action ->
+                        onShowSnackbar = { message: String, action: String? ->
                             snackbarHostState.showSnackbar(
                                 message = message,
                                 actionLabel = action,
@@ -253,25 +274,27 @@ internal fun NiaApp(
     }
 }
 
+@SuppressLint("UnnecessaryComposedModifier")
 private fun Modifier.notificationDot(): Modifier =
     composed {
-        val tertiaryColor = MaterialTheme.colorScheme.tertiary
+        val tertiaryColor: Color = MaterialTheme.colorScheme.tertiary
         drawWithContent {
             drawContent()
             drawCircle(
-                tertiaryColor,
+                color = tertiaryColor,
                 radius = 5.dp.toPx(),
                 // This is based on the dimensions of the NavigationBar's "indicator pill";
                 // however, its parameters are private, so we must depend on them implicitly
                 // (NavigationBarTokens.ActiveIndicatorWidth = 64.dp)
                 center = center + Offset(
-                    64.dp.toPx() * .45f,
-                    32.dp.toPx() * -.45f - 6.dp.toPx(),
+                    x = 64.dp.toPx() * .45f,
+                    y = 32.dp.toPx() * -.45f - 6.dp.toPx(),
                 ),
             )
         }
     }
 
+@Suppress("NullableBooleanElvis")
 private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
     this?.hierarchy?.any {
         it.hasRoute(route)

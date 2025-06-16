@@ -107,7 +107,7 @@ class NiaAppState(
             }
         }
 
-    val isOffline = networkMonitor.isOnline
+    val isOffline: StateFlow<Boolean> = networkMonitor.isOnline
         .map(Boolean::not)
         .stateIn(
             scope = coroutineScope,
@@ -133,16 +133,16 @@ class NiaAppState(
                 )
             }
             .stateIn(
-                coroutineScope,
-                SharingStarted.WhileSubscribed(5_000),
+                scope = coroutineScope,
+                started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = emptySet(),
             )
 
-    val currentTimeZone = timeZoneMonitor.currentTimeZone
+    val currentTimeZone: StateFlow<TimeZone> = timeZoneMonitor.currentTimeZone
         .stateIn(
-            coroutineScope,
-            SharingStarted.WhileSubscribed(5_000),
-            TimeZone.currentSystemDefault(),
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = TimeZone.currentSystemDefault(),
         )
 
     /**
@@ -168,6 +168,7 @@ class NiaAppState(
                 restoreState = true
             }
 
+            @Suppress("RedundantValueArgument")
             when (topLevelDestination) {
                 FOR_YOU -> navController.navigateToForYou(topLevelNavOptions)
                 BOOKMARKS -> navController.navigateToBookmarks(topLevelNavOptions)
@@ -176,7 +177,7 @@ class NiaAppState(
         }
     }
 
-    fun navigateToSearch() = navController.navigateToSearch()
+    fun navigateToSearch(): Unit = navController.navigateToSearch()
 }
 
 /**

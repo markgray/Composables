@@ -29,9 +29,9 @@ import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.PaneExpansionAnchor
+import androidx.compose.material3.adaptive.layout.PaneExpansionState
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldDestinationItem
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
-import androidx.compose.material3.adaptive.layout.defaultDragHandleSemantics
 import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
 import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
@@ -39,6 +39,7 @@ import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldPredictiveBackHandler
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +47,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,24 +63,57 @@ import com.google.samples.apps.nowinandroid.feature.topic.TopicDetailPlaceholder
 import com.google.samples.apps.nowinandroid.feature.topic.TopicScreen
 import com.google.samples.apps.nowinandroid.feature.topic.TopicViewModel
 import com.google.samples.apps.nowinandroid.feature.topic.navigation.TopicRoute
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlin.math.max
 
-@Serializable internal object TopicPlaceholderRoute
+/**
+ * A placeholder route for when no topic is selected in the detail pane.
+ * This is used to distinguish between the case where no topic is selected and when a specific
+ * topic is selected, allowing for different UI to be displayed in the detail pane.
+ */
+@Serializable
+internal object TopicPlaceholderRoute
 
+/**
+ * Adds the [InterestsListDetailScreen] to the navigation graph.
+ * This screen is a two-pane layout that displays a list of interests on the left and the details
+ * of the selected interest on the right.
+ */
 fun NavGraphBuilder.interestsListDetailScreen() {
     composable<InterestsRoute> {
         InterestsListDetailScreen()
     }
 }
 
+/**
+ * The main screen for displaying a list of interests and the details of a selected interest.
+ * This composable function collects the selected topic ID from the view model and passes it to its
+ * stateless overload.
+ *
+ * We start by initializing our [State] wrapped [String] variable `selectedTopicId` to the value
+ * returned by the [StateFlow.collectAsStateWithLifecycle] method of the
+ * [Interests2PaneViewModel.selectedTopicId] property of our [Interests2PaneViewModel] parameter
+ * [viewModel]. Then we call the stateless `InterestsListDetailScreen` overload with its arguments:
+ *  - `selectedTopicId`: The ID of the selected topic, or `null` if no topic is selected, our
+ *  [State] wrapped [String] variable `selectedTopicId`.
+ *  - `onTopicClick`: A function to be called when a topic is clicked, the
+ *  [Interests2PaneViewModel.onTopicClick] method of our [Interests2PaneViewModel] parameter
+ *  [viewModel]
+ *  - `windowAdaptiveInfo`: Information about the window size and display features, our
+ *  [WindowAdaptiveInfo] parameter [windowAdaptiveInfo].
+ *
+ * @param viewModel The view model for managing the state of the interests screen.
+ * @param windowAdaptiveInfo Information about the window size and display features.
+ */
 @Composable
 internal fun InterestsListDetailScreen(
     viewModel: Interests2PaneViewModel = hiltViewModel(),
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    val selectedTopicId by viewModel.selectedTopicId.collectAsStateWithLifecycle()
+    val selectedTopicId: String? by viewModel.selectedTopicId.collectAsStateWithLifecycle()
     InterestsListDetailScreen(
         selectedTopicId = selectedTopicId,
         onTopicClick = viewModel::onTopicClick,
@@ -83,6 +121,25 @@ internal fun InterestsListDetailScreen(
     )
 }
 
+/**
+ * This is the stateless version of the [InterestsListDetailScreen] composable.
+ *
+ * It uses a [NavigableListDetailPaneScaffold] to display two panes:
+ *  - The list pane displays the [InterestsRoute] composable.
+ *  - The detail pane displays either a [TopicScreen] for the selected topic or a
+ *  [TopicDetailPlaceholder] if no topic is selected.
+ *
+ * The [PaneExpansionState] is used to control the expansion and collapse of the panes, and a
+ * [VerticalDragHandle] is provided to allow the user to resize the panes.
+ *
+ * Back navigation is handled by a [ThreePaneScaffoldPredictiveBackHandler] and a [BackHandler]
+ * to ensure that the panes are collapsed or navigated back as expected.
+ *
+ * @param selectedTopicId The ID of the currently selected topic, or `null` if no topic is selected.
+ * @param onTopicClick A lambda function that is called when a topic is clicked in the list pane.
+ * @param windowAdaptiveInfo Information about the window size and display features, used to
+ * configure the scaffold directive.
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 internal fun InterestsListDetailScreen(
@@ -90,18 +147,30 @@ internal fun InterestsListDetailScreen(
     onTopicClick: (String) -> Unit,
     windowAdaptiveInfo: WindowAdaptiveInfo,
 ) {
-    val listDetailNavigator = rememberListDetailPaneScaffoldNavigator(
-        scaffoldDirective = calculatePaneScaffoldDirective(windowAdaptiveInfo),
-        initialDestinationHistory = listOfNotNull(
-            ThreePaneScaffoldDestinationItem(ListDetailPaneScaffoldRole.List),
-            ThreePaneScaffoldDestinationItem<Nothing>(ListDetailPaneScaffoldRole.Detail).takeIf {
-                selectedTopicId != null
-            },
-        ),
-    )
-    val coroutineScope = rememberCoroutineScope()
+    /**
+     * The [ThreePaneScaffoldNavigator] that manages the navigation between the list and detail
+     * of our [NavigableListDetailPaneScaffold]
+     */
+    val listDetailNavigator: ThreePaneScaffoldNavigator<Nothing> =
+        rememberListDetailPaneScaffoldNavigator(
+            scaffoldDirective = calculatePaneScaffoldDirective(windowAdaptiveInfo = windowAdaptiveInfo),
+            initialDestinationHistory = listOfNotNull(
+                ThreePaneScaffoldDestinationItem(ListDetailPaneScaffoldRole.List),
+                ThreePaneScaffoldDestinationItem<Nothing>(ListDetailPaneScaffoldRole.Detail).takeIf {
+                    selectedTopicId != null
+                },
+            ),
+        )
 
-    val paneExpansionState = rememberPaneExpansionState(
+    /**
+     * The [CoroutineScope] that we use to launch coroutines in the [BackHandler].
+     */
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+
+    /**
+     * The [PaneExpansionState] that we use to control the expansion and collapse of the panes.
+     */
+    val paneExpansionState: PaneExpansionState = rememberPaneExpansionState(
         anchors = listOf(
             PaneExpansionAnchor.Proportion(0f),
             PaneExpansionAnchor.Proportion(0.5f),
@@ -110,55 +179,81 @@ internal fun InterestsListDetailScreen(
     )
 
     ThreePaneScaffoldPredictiveBackHandler(
-        listDetailNavigator,
-        BackNavigationBehavior.PopUntilScaffoldValueChange,
+        navigator = listDetailNavigator,
+        backBehavior = BackNavigationBehavior.PopUntilScaffoldValueChange,
     )
     BackHandler(
-        paneExpansionState.currentAnchor == PaneExpansionAnchor.Proportion(0f) &&
+        enabled = paneExpansionState.currentAnchor == PaneExpansionAnchor.Proportion(0f) &&
             listDetailNavigator.isListPaneVisible() &&
             listDetailNavigator.isDetailPaneVisible(),
     ) {
         coroutineScope.launch {
-            paneExpansionState.animateTo(PaneExpansionAnchor.Proportion(1f))
+            paneExpansionState.animateTo(anchor = PaneExpansionAnchor.Proportion(proportion = 1f))
         }
     }
 
-    var topicRoute by remember {
+    /**
+     * The [MutableState] wrapped [Any] that we use to store the route for the selected topic.
+     */
+    var topicRoute: Any by remember {
         val route = selectedTopicId?.let { TopicRoute(id = it) } ?: TopicPlaceholderRoute
         mutableStateOf(route)
     }
 
+    /**
+     * Handles the click event for a topic in the list pane.
+     *
+     * This function performs the following actions:
+     *  1. Calls the `onTopicClick` lambda passed from the parent composable to update the selected
+     *  topic ID in the view model.
+     *  2. Updates the `topicRoute` state variable to navigate to the selected topic's detail screen.
+     *  3. Launches a coroutine to navigate the `listDetailNavigator` to the detail pane.
+     *  4. If the detail pane is currently fully expanded (covering the list pane), it launches
+     *  another coroutine to animate the pane expansion state to reveal the list pane alongside
+     *  the detail pane (typically a 50/50 split).
+     *
+     * @param topicId The ID of the topic that was clicked.
+     */
     fun onTopicClickShowDetailPane(topicId: String) {
         onTopicClick(topicId)
         topicRoute = TopicRoute(id = topicId)
         coroutineScope.launch {
             listDetailNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
         }
-        if (paneExpansionState.currentAnchor == PaneExpansionAnchor.Proportion(1f)) {
+        if (paneExpansionState.currentAnchor == PaneExpansionAnchor.Proportion(proportion = 1f)) {
             coroutineScope.launch {
-                paneExpansionState.animateTo(PaneExpansionAnchor.Proportion(0f))
+                paneExpansionState.animateTo(anchor = PaneExpansionAnchor.Proportion(proportion = 0f))
             }
         }
     }
 
-    val mutableInteractionSource = remember { MutableInteractionSource() }
-    val minPaneWidth = 300.dp
+    /**
+     * The [MutableInteractionSource] for observing and emitting Interactions for the
+     * [VerticalDragHandle] of our [NavigableListDetailPaneScaffold].
+     */
+    val mutableInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+
+    /**
+     * The minimum width of the list pane.
+     */
+    val minPaneWidth: Dp = 300.dp
 
     NavigableListDetailPaneScaffold(
         navigator = listDetailNavigator,
         listPane = {
             AnimatedPane {
                 Box(
-                    modifier = Modifier.clipToBounds()
-                        .layout { measurable, constraints ->
-                            val width = max(minPaneWidth.roundToPx(), constraints.maxWidth)
-                            val placeable = measurable.measure(
-                                constraints.copy(
+                    modifier = Modifier
+                        .clipToBounds()
+                        .layout { measurable: Measurable, constraints: Constraints ->
+                            val width: Int = max(minPaneWidth.roundToPx(), constraints.maxWidth)
+                            val placeable: Placeable = measurable.measure(
+                                constraints = constraints.copy(
                                     minWidth = minPaneWidth.roundToPx(),
                                     maxWidth = width,
                                 ),
                             )
-                            layout(constraints.maxWidth, placeable.height) {
+                            layout(width = constraints.maxWidth, height = placeable.height) {
                                 placeable.placeRelative(
                                     x = 0,
                                     y = 0,
@@ -176,16 +271,17 @@ internal fun InterestsListDetailScreen(
         detailPane = {
             AnimatedPane {
                 Box(
-                    modifier = Modifier.clipToBounds()
-                        .layout { measurable, constraints ->
-                            val width = max(minPaneWidth.roundToPx(), constraints.maxWidth)
-                            val placeable = measurable.measure(
-                                constraints.copy(
+                    modifier = Modifier
+                        .clipToBounds()
+                        .layout { measurable: Measurable, constraints: Constraints ->
+                            val width: Int = max(minPaneWidth.roundToPx(), constraints.maxWidth)
+                            val placeable: Placeable = measurable.measure(
+                                constraints = constraints.copy(
                                     minWidth = minPaneWidth.roundToPx(),
                                     maxWidth = width,
                                 ),
                             )
-                            layout(constraints.maxWidth, placeable.height) {
+                            layout(width = constraints.maxWidth, height = placeable.height) {
                                 placeable.placeRelative(
                                     x = constraints.maxWidth -
                                         max(constraints.maxWidth, placeable.width),
@@ -194,7 +290,7 @@ internal fun InterestsListDetailScreen(
                             }
                         },
                 ) {
-                    AnimatedContent(topicRoute) { route ->
+                    AnimatedContent(targetState = topicRoute) { route: Any ->
                         when (route) {
                             is TopicRoute -> {
                                 TopicScreen(
@@ -207,11 +303,12 @@ internal fun InterestsListDetailScreen(
                                     onTopicClick = ::onTopicClickShowDetailPane,
                                     viewModel = hiltViewModel<TopicViewModel, TopicViewModel.Factory>(
                                         key = route.id,
-                                    ) { factory ->
-                                        factory.create(route.id)
+                                    ) { factory: TopicViewModel.Factory ->
+                                        factory.create(topicId = route.id)
                                     },
                                 )
                             }
+
                             is TopicPlaceholderRoute -> {
                                 TopicDetailPlaceholder()
                             }
@@ -227,7 +324,6 @@ internal fun InterestsListDetailScreen(
                     state = paneExpansionState,
                     minTouchTargetSize = LocalMinimumInteractiveComponentSize.current,
                     interactionSource = mutableInteractionSource,
-                    semanticsProperties = paneExpansionState.defaultDragHandleSemantics(),
                 ),
                 interactionSource = mutableInteractionSource,
             )
@@ -235,10 +331,24 @@ internal fun InterestsListDetailScreen(
     )
 }
 
+/**
+ * Checks if the list pane is currently visible (expanded) in the scaffold.
+ * This is determined by querying the `scaffoldValue` of the navigator for the
+ * `ListDetailPaneScaffoldRole.List` and checking if its state is [PaneAdaptedValue.Expanded].
+ *
+ * @return `true` if the list pane is visible, `false` otherwise.
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.isListPaneVisible(): Boolean =
     scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
 
+/**
+ * Checks if the detail pane is currently visible (expanded) in the scaffold.
+ * This is determined by querying the `scaffoldValue` of the navigator for the
+ * `ListDetailPaneScaffoldRole.Detail` and checking if its state is [PaneAdaptedValue.Expanded].
+ *
+ * @return `true` if the detail pane is visible, `false` otherwise.
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.isDetailPaneVisible(): Boolean =
     scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded
