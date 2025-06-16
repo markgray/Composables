@@ -27,8 +27,9 @@ import org.gradle.kotlin.dsl.dependencies
  */
 class JvmLibraryConventionPlugin : Plugin<Project> {
     /**
-     * Applies the Kotlin JVM plugin, Android Lint plugin, and configures Kotlin JVM settings and
-     * dependencies.
+     * Applies the Kotlin JVM plugin: "org.jetbrains.kotlin.jvm", Android Lint plugin:
+     * "nowinandroid.android.lint", and configures Kotlin JVM settings and
+     * dependencies: "kotlin.test".
      *
      * @param target The [Project] to apply the [Plugin] to.
      */

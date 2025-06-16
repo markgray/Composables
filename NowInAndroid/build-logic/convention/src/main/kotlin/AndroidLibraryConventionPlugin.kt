@@ -47,19 +47,21 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
      * Applies the Android library conventions to the given project.
      *
      * This includes:
-     * - Applying the `com.android.library`, `org.jetbrains.kotlin.android`, and `nowinandroid.android.lint` plugins.
-     * - Configuring the Android library extension with:
-     *     - Kotlin Android options.
-     *     - Setting the target SDK to 35.
-     *     - Setting the test instrumentation runner.
-     *     - Disabling animations in tests.
-     *     - Configuring product flavors.
-     *     - Configuring Gradle managed devices.
-     *     - Setting a resource prefix based on the module name.
-     * - Configuring the Android components extension with:
-     *     - A task to print APK information.
-     *     - Disabling unnecessary Android tests.
-     * - Adding common dependencies for testing and tracing.
+     *  - Applying the `com.android.library`, `org.jetbrains.kotlin.android`, and
+     *  `nowinandroid.android.lint` plugins.
+     *  - Configuring the Android library extension with:
+     *      - Kotlin Android options.
+     *      - Setting the target SDK to 35.
+     *      - Setting the test instrumentation runner.
+     *      - Disabling animations in tests.
+     *      - Configuring product flavors.
+     *      - Configuring Gradle managed devices.
+     *      - Setting a resource prefix based on the module name.
+     *  - Configuring the Android components extension with:
+     *      - A task to print APK information.
+     *      - Disabling unnecessary Android tests.
+     *  - Adding common dependencies for testing and tracing: "kotlin.test", and
+     *  "androidx.tracing.ktx"
      *
      * @param target The [Project] to apply the conventions to.
      */

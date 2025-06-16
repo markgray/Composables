@@ -32,10 +32,11 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
     /**
      * Applies the Room plugin and its dependencies to the [Project] parameter [target].
      *
-     * It configures the KSP extension to generate Kotlin code for Room and sets up the schema directory
-     * for Room auto migrations.
+     * It configures the KSP extension to generate Kotlin code for Room and sets up the schema
+     * directory for Room auto migrations.
      *
-     * Dependencies for Room runtime, Kotlin extensions, and compiler are added.
+     * Dependencies for Room runtime: "room.runtime", Kotlin extensions: "room.ktx", and compiler:
+     * "room.compiler" are added.
      *
      * @param target The [Project] to which the [Plugin] is applied.
      */

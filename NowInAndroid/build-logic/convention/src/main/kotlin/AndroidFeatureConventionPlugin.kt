@@ -27,15 +27,15 @@ import org.gradle.kotlin.dsl.dependencies
  * Plugin that applies common configurations for Android feature modules.
  *
  * This plugin applies the following plugins:
- * - `nowinandroid.android.library`
- * - `nowinandroid.hilt`
- * - `org.jetbrains.kotlin.plugin.serialization`
+ *  - `nowinandroid.android.library`
+ *  - `nowinandroid.hilt`
+ *  - `org.jetbrains.kotlin.plugin.serialization`
  *
  * It also configures the following:
- * - Disables animations in tests.
- * - Configures Gradle managed devices.
- * - Adds dependencies for UI, design system, Hilt navigation, Lifecycle, Navigation, Tracing, and Kotlinx Serialization.
- * - Adds test dependencies for Navigation testing and Lifecycle runtime testing.
+ *  - Disables animations in tests.
+ *  - Configures Gradle managed devices.
+ *  - Adds dependencies for UI, design system, Hilt navigation, Lifecycle, Navigation, Tracing, and Kotlinx Serialization.
+ *  - Adds test dependencies for Navigation testing and Lifecycle runtime testing.
  */
 @Suppress("unused")
 class AndroidFeatureConventionPlugin : Plugin<Project> {

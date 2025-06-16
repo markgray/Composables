@@ -35,9 +35,10 @@ class HiltConventionPlugin : Plugin<Project> {
     /**
      * Applies the Hilt convention plugin to the [Project] parameter [target].
      *
-     * This plugin applies the KSP plugin, adds the Hilt compiler as a KSP dependency,
-     * and configures Hilt dependencies based on whether the project is a JVM module or
-     * an Android module.
+     * This plugin applies the KSP plugin: "com.google.devtools.ksp", adds the Hilt compiler:
+     * "hilt.compiler" as a KSP dependency, and configures Hilt dependencies based on whether the
+     * project is a JVM module ("org.jetbrains.kotlin.jvm" plugin is in use) or
+     * an Android module ("com.android.base" plugin is in use).
      *
      * For JVM modules (projects with the `org.jetbrains.kotlin.jvm` plugin applied),
      * it adds the `hilt.core` library as an implementation dependency.

@@ -19,6 +19,7 @@ package com.google.samples.apps.nowinandroid.di
 import android.app.Activity
 import android.util.Log
 import android.view.Window
+import androidx.metrics.performance.FrameData
 import androidx.metrics.performance.JankStats
 import androidx.metrics.performance.JankStats.OnFrameListener
 import dagger.Module
@@ -27,7 +28,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 
 /**
- * Hilt module that provides singletonpsons related to jank stats.
+ * Hilt module that provides singletons related to jank stats.
  *
  * It is installed in the [ActivityComponent] because [JankStats] requires an
  * [Activity].
@@ -39,7 +40,7 @@ import dagger.hilt.android.components.ActivityComponent
 @InstallIn(ActivityComponent::class)
 object JankStatsModule {
     @Provides
-    fun providesOnFrameListener(): OnFrameListener = OnFrameListener { frameData ->
+    fun providesOnFrameListener(): OnFrameListener = OnFrameListener { frameData: FrameData ->
         // Make sure to only log janky frames.
         if (frameData.isJank) {
             // We're currently logging this but would better report it to a backend.
@@ -54,5 +55,5 @@ object JankStatsModule {
     fun providesJankStats(
         window: Window,
         frameListener: OnFrameListener,
-    ): JankStats = JankStats.createAndTrack(window, frameListener)
+    ): JankStats = JankStats.createAndTrack(window = window, frameListener = frameListener)
 }

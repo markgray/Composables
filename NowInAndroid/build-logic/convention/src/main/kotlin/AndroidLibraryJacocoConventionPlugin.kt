@@ -34,11 +34,11 @@ class AndroidLibraryJacocoConventionPlugin : Plugin<Project> {
      * Applies the JaCoCo plugin and configures it for Android library projects.
      *
      * This function performs the following actions:
-     * 1. Applies the "jacoco" plugin to the project.
-     * 2. Retrieves the [LibraryExtension] to configure Android-specific settings.
-     * 3. Enables JaCoCo coverage for both Android tests and unit tests for all build types.
-     * 4. Calls the `configureJacoco` extension function to set up JaCoCo tasks and reports
-     *    using the `LibraryAndroidComponentsExtension`.
+     *  1. Applies the "jacoco" plugin to the project.
+     *  2. Retrieves the [LibraryExtension] to configure Android-specific settings.
+     *  3. Enables JaCoCo coverage for both Android tests and unit tests for all build types.
+     *  4. Calls the `configureJacoco` extension function to set up JaCoCo tasks and reports
+     *  using the `LibraryAndroidComponentsExtension`.
      *
      * @param target The [Project] to which this plugin is applied.
      */
