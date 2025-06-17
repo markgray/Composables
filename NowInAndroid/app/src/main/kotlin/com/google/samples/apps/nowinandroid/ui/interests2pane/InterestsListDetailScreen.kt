@@ -122,14 +122,14 @@ internal fun InterestsListDetailScreen(
 }
 
 /**
- * This is the stateless version of the [InterestsListDetailScreen] composable.
+ * This is the stateless overload of the [InterestsListDetailScreen] composable.
  *
  * It uses a [NavigableListDetailPaneScaffold] to display two panes:
  *  - The list pane displays the [InterestsRoute] composable.
  *  - The detail pane displays either a [TopicScreen] for the selected topic or a
  *  [TopicDetailPlaceholder] if no topic is selected.
  *
- * The [PaneExpansionState] is used to control the expansion and collapse of the panes, and a
+ * A [PaneExpansionState] is used to control the expansion and collapse of the panes, and a
  * [VerticalDragHandle] is provided to allow the user to resize the panes.
  *
  * Back navigation is handled by a [ThreePaneScaffoldPredictiveBackHandler] and a [BackHandler]
@@ -207,7 +207,8 @@ internal fun InterestsListDetailScreen(
      *  1. Calls the `onTopicClick` lambda passed from the parent composable to update the selected
      *  topic ID in the view model.
      *  2. Updates the `topicRoute` state variable to navigate to the selected topic's detail screen.
-     *  3. Launches a coroutine to navigate the `listDetailNavigator` to the detail pane.
+     *  3. Launches a coroutine to navigate the [ThreePaneScaffoldNavigator] variable
+     *  `listDetailNavigator` to the detail pane.
      *  4. If the detail pane is currently fully expanded (covering the list pane), it launches
      *  another coroutine to animate the pane expansion state to reveal the list pane alongside
      *  the detail pane (typically a 50/50 split).

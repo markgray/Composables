@@ -49,28 +49,28 @@ import com.google.samples.apps.nowinandroid.ui.interests2pane.interestsListDetai
  * lambda argument of the [NavHost] we call the following:
  *
  * **First**: We add to our graph the [forYouSection] nested graph with its `onTopicClick` argument
- * the [NavHostController.navigateToTopic] function of our [NavHostController] variable
+ * the [NavHostController.navigateToTopic] extension function of our [NavHostController] variable
  * `navController`. In its nested [NavGraphBuilder] `builder` lambda argument we comppose a
  * [topicScreen] screen whose arguments are:
  *  - `showBackButton`: a [Boolean] that is `true`
  *  - `onBackClick`: a lambda that calls the [NavHostController.popBackStack] function of our
  *  [NavHostController] variable `navController`
- *  - `onTopicClick`: a lambda that calls the [NavHostController.navigateToTopic] function of our
- *  [NavHostController] variable `navController`
+ *  - `onTopicClick`: a lambda that calls the [NavHostController.navigateToTopic] extension function
+ *  of our [NavHostController] variable `navController`
  *
  * **Second**: We add to our graph the [bookmarksScreen] screen whose arguments are:
- *  - `onTopicClick`: a lambda that calls the [NavHostController.navigateToInterests] function of
- *  our [NavHostController] variable `navController`
+ *  - `onTopicClick`: a lambda that calls the [NavHostController.navigateToInterests] extension
+ *  function of our [NavHostController] variable `navController`
  *  - `onShowSnackbar`: is our lambda parameter [onShowSnackbar].
  *
  * **Third**: We add to our graph the [searchScreen] screen whose arguments are:
  *  - `onBackClick`: a lambda that calls the [NavHostController.popBackStack] function of our
  *  [NavHostController] variable `navController`
  *  - `onInterestsClick`: a lambda that calls the [NiaAppState.navigateToTopLevelDestination]
- *  function of our [NiaAppState] parameter [appState] with the [TopLevelDestination.INTERESTS]
+ *  extension function of our [NiaAppState] parameter [appState] with  [TopLevelDestination.INTERESTS]
  *  as its `topLevelDestination` argument.
- *  - `onTopicClick`: a lambda that calls the [NavHostController.navigateToInterests] function of
- *  our [NavHostController] variable `navController`
+ *  - `onTopicClick`: a lambda that calls the [NavHostController.navigateToInterests] extension
+ *  function of our [NavHostController] variable `navController`
  *
  * **Fourth**: We add to our graph the [interestsListDetailScreen] screen.
  *

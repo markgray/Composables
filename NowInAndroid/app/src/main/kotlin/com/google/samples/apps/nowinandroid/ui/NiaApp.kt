@@ -39,6 +39,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.Posture
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -64,6 +65,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import androidx.window.core.layout.WindowSizeClass
 import com.google.samples.apps.nowinandroid.R
 import com.google.samples.apps.nowinandroid.core.data.repository.UserNewsResourceRepository
 import com.google.samples.apps.nowinandroid.core.data.util.NetworkMonitor
@@ -95,7 +97,9 @@ import com.google.samples.apps.nowinandroid.feature.settings.R as settingsR
  * @param modifier [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller, the `onCreate` override of `MainActivity` does not pass us any so the
  * empty, default, or starter Modifier that contains no elements is used.
- * @param windowAdaptiveInfo Window size class passed through to the call server (stateful composable).
+ * @param windowAdaptiveInfo the current [WindowAdaptiveInfo] for the context, it contains the
+ * [WindowSizeClass] and the [Posture] to use to decide how the layout is supposed to be adapted
+ * for the device we are running on.
  */
 @Composable
 fun NiaApp(

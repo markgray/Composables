@@ -46,7 +46,7 @@ class Interests2PaneViewModel @Inject constructor(
      * This is used to extract the initial topic ID from the navigation arguments.
      */
     val route: InterestsRoute = savedStateHandle.toRoute<InterestsRoute>()
-    
+
     /**
      * The ID of the currently selected topic. `null` if no topic is selected.
      */

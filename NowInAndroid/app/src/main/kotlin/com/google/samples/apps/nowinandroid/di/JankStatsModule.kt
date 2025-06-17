@@ -41,7 +41,7 @@ object JankStatsModule {
     /**
      * Provides an instance of [OnFrameListener] that logs jank frames for Hilt to inject. This
      * listener is specifically designed to log "janky" frames in your Android application
-     * ([FrameData.isJank] is true).
+     * ([FrameData]s where [FrameData.isJank] is true).
      *
      * @see [JankStats.OnFrameListener]
      */
@@ -55,10 +55,11 @@ object JankStatsModule {
     }
 
     /**
-     * Provides the [Window] that comes from the current [Activity] for Hilt to inject. It just
-     * returns the [Activity.getWindow] in of its [Window] parameter [activity].
+     * Provides the current [Window] of the apps [Activity] for Hilt to inject. It just returns
+     * the [Window] that the [Activity.getWindow] method of its parameter [activity] returns.
      *
      * @param activity The current [Activity]
+     * @return the current [Window] of its [Activity] parameter [activity]
      * @see [Activity.getWindow]
      */
     @Provides
