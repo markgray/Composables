@@ -17,16 +17,20 @@
 package com.google.samples.apps.nowinandroid.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import androidx.tracing.trace
@@ -50,6 +54,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.TimeZone
 
+/**
+ * Remembers and creates an instance of [NiaAppState]
+ * TODO: Continue here.
+ *
+ * @param networkMonitor The [NetworkMonitor] to use.
+ * @param userNewsResourceRepository The [UserNewsResourceRepository] to use.
+ * @param timeZoneMonitor The [TimeZoneMonitor] to use.
+ * @param coroutineScope The [CoroutineScope] to use. Defaults to [rememberCoroutineScope].
+ * @param navController The [NavHostController] to use. Defaults to [rememberNavController].
+ */
 @Composable
 fun rememberNiaAppState(
     networkMonitor: NetworkMonitor,
@@ -58,7 +72,7 @@ fun rememberNiaAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): NiaAppState {
-    NavigationTrackingSideEffect(navController)
+    NavigationTrackingSideEffect(navController = navController)
     return remember(
         navController,
         coroutineScope,
@@ -84,16 +98,17 @@ class NiaAppState(
     userNewsResourceRepository: UserNewsResourceRepository,
     timeZoneMonitor: TimeZoneMonitor,
 ) {
-    private val previousDestination = mutableStateOf<NavDestination?>(null)
+    private val previousDestination: MutableState<NavDestination?> =
+        mutableStateOf<NavDestination?>(null)
 
     val currentDestination: NavDestination?
         @Composable get() {
             // Collect the currentBackStackEntryFlow as a state
-            val currentEntry = navController.currentBackStackEntryFlow
+            val currentEntry: State<NavBackStackEntry?> = navController.currentBackStackEntryFlow
                 .collectAsState(initial = null)
 
             // Fallback to previousDestination if currentEntry is null
-            return currentEntry.value?.destination.also { destination ->
+            return currentEntry.value?.destination.also { destination: NavDestination? ->
                 if (destination != null) {
                     previousDestination.value = destination
                 }
@@ -102,16 +117,16 @@ class NiaAppState(
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable get() {
-            return TopLevelDestination.entries.firstOrNull { topLevelDestination ->
+            return TopLevelDestination.entries.firstOrNull { topLevelDestination: TopLevelDestination ->
                 currentDestination?.hasRoute(route = topLevelDestination.route) == true
             }
         }
 
     val isOffline: StateFlow<Boolean> = networkMonitor.isOnline
-        .map(Boolean::not)
+        .map(transform = Boolean::not)
         .stateIn(
             scope = coroutineScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
             initialValue = false,
         )
 
@@ -134,14 +149,14 @@ class NiaAppState(
             }
             .stateIn(
                 scope = coroutineScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
                 initialValue = emptySet(),
             )
 
     val currentTimeZone: StateFlow<TimeZone> = timeZoneMonitor.currentTimeZone
         .stateIn(
             scope = coroutineScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
             initialValue = TimeZone.currentSystemDefault(),
         )
 
@@ -154,7 +169,7 @@ class NiaAppState(
      */
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         trace("Navigation: ${topLevelDestination.name}") {
-            val topLevelNavOptions = navOptions {
+            val topLevelNavOptions: NavOptions = navOptions {
                 // Pop up to the start destination of the graph to
                 // avoid building up a large stack of destinations
                 // on the back stack as users select items
@@ -190,10 +205,10 @@ private fun NavigationTrackingSideEffect(navController: NavHostController) {
             metricsHolder.state?.putState("Navigation", destination.route.toString())
         }
 
-        navController.addOnDestinationChangedListener(listener)
+        navController.addOnDestinationChangedListener(listener = listener)
 
         onDispose {
-            navController.removeOnDestinationChangedListener(listener)
+            navController.removeOnDestinationChangedListener(listener = listener)
         }
     }
 }

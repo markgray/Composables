@@ -150,6 +150,7 @@ annotation class ThemePreviews
 @ThemePreviews
 @Composable
 fun BackgroundDefault() {
+    @Suppress("RedundantValueArgument")
     NiaTheme(disableDynamicTheming = true) {
         NiaBackground(Modifier.size(100.dp), content = {})
     }
@@ -174,6 +175,7 @@ fun BackgroundAndroid() {
 @ThemePreviews
 @Composable
 fun GradientBackgroundDefault() {
+    @Suppress("RedundantValueArgument")
     NiaTheme(disableDynamicTheming = true) {
         NiaGradientBackground(Modifier.size(100.dp), content = {})
     }
