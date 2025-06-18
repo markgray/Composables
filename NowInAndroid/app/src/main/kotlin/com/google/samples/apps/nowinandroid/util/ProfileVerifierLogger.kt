@@ -20,6 +20,7 @@ import android.util.Log
 import androidx.profileinstaller.ProfileVerifier
 import com.google.samples.apps.nowinandroid.core.network.di.ApplicationScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -55,8 +56,9 @@ class ProfileVerifierLogger @Inject constructor(
         private const val TAG = "ProfileInstaller"
     }
 
-    operator fun invoke() = scope.launch {
-        val status = ProfileVerifier.getCompilationStatusAsync().await()
+    operator fun invoke(): Job = scope.launch {
+        val status: ProfileVerifier.CompilationStatus =
+            ProfileVerifier.getCompilationStatusAsync().await()
         Log.d(TAG, "Status code: ${status.profileInstallResultCode}")
         Log.d(
             TAG,

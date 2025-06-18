@@ -26,8 +26,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -46,13 +48,31 @@ import com.google.samples.apps.nowinandroid.ui.NiaAppState
 import com.google.samples.apps.nowinandroid.ui.rememberNiaAppState
 import com.google.samples.apps.nowinandroid.util.isSystemInDarkTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
 import javax.inject.Inject
 
+/**
+ * Main activity for the Now in Android app.
+ *
+ * This activity serves as the entry point and hosts the main UI of the application.
+ * It handles the initialization of essential components like JankStats for performance
+ * monitoring, network monitoring, and theme settings.
+ *
+ * The activity utilizes Jetpack Compose for building the UI and leverages Hilt for
+ * dependency injection.
+ *
+ * It also manages the splash screen, keeping it visible until the UI state is fully loaded.
+ * The theme of the app (dark/light, dynamic theming) is dynamically updated based on
+ * user preferences and system settings.
+ *
+ * Edge-to-edge display is enabled to provide a more immersive user experience.
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -62,27 +82,50 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var lazyStats: dagger.Lazy<JankStats>
 
+    /**
+     * Inject [NetworkMonitor] which is used to detect if the user is online or not.
+     */
     @Inject
     lateinit var networkMonitor: NetworkMonitor
 
+    /**
+     * Inject [TimeZoneMonitor] which is used to track the user's time zone.
+     */
     @Inject
     lateinit var timeZoneMonitor: TimeZoneMonitor
 
+    /**
+     * Inject [AnalyticsHelper] which is used to log app events.
+     */
     @Inject
     lateinit var analyticsHelper: AnalyticsHelper
 
+    /**
+     * Inject [UserNewsResourceRepository] which is used to track the user's news resources.
+     */
     @Inject
     lateinit var userNewsResourceRepository: UserNewsResourceRepository
 
+    /**
+     * The [ViewModel] that is used to store the UI state in a [StateFlow] of [MainActivityUiState]
+     */
     private val viewModel: MainActivityViewModel by viewModels()
 
+    /**
+     * Called when the activity is first created.
+     * TODO: Continue here.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being
+     * shut down then this Bundle contains the data it most recently supplied in [onSaveInstanceState].
+     * We do not override [onSaveInstanceState] so it is not used.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+        val splashScreen: SplashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
         // We keep this as a mutable state, so that we can track changes inside the composition.
         // This allows us to react to dark/light mode changes.
-        var themeSettings by mutableStateOf(
+        var themeSettings: ThemeSettings by mutableStateOf(
             ThemeSettings(
                 darkTheme = resources.configuration.isSystemInDarkTheme,
                 androidTheme = Loading.shouldUseAndroidTheme,
@@ -96,7 +139,7 @@ class MainActivity : ComponentActivity() {
                 combine(
                     isSystemInDarkTheme(),
                     viewModel.uiState,
-                ) { systemDark, uiState ->
+                ) { systemDark: Boolean, uiState: MainActivityUiState ->
                     ThemeSettings(
                         darkTheme = uiState.shouldUseDarkTheme(systemDark),
                         androidTheme = uiState.shouldUseAndroidTheme,
@@ -140,7 +183,7 @@ class MainActivity : ComponentActivity() {
                 timeZoneMonitor = timeZoneMonitor,
             )
 
-            val currentTimeZone by appState.currentTimeZone.collectAsStateWithLifecycle()
+            val currentTimeZone: TimeZone by appState.currentTimeZone.collectAsStateWithLifecycle()
 
             CompositionLocalProvider(
                 LocalAnalyticsHelper provides analyticsHelper,
@@ -172,13 +215,13 @@ class MainActivity : ComponentActivity() {
  * The default light scrim, as defined by androidx and the platform:
  * https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:activity/activity/src/main/java/androidx/activity/EdgeToEdge.kt;l=35-38;drc=27e7d52e8604a080133e8b842db10c89b4482598
  */
-private val lightScrim = android.graphics.Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
+private val lightScrim: Int = android.graphics.Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
 
 /**
  * The default dark scrim, as defined by androidx and the platform:
  * https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:activity/activity/src/main/java/androidx/activity/EdgeToEdge.kt;l=40-44;drc=27e7d52e8604a080133e8b842db10c89b4482598
  */
-private val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
+private val darkScrim: Int = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
 
 /**
  * Class for the system theme settings.
