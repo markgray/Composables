@@ -94,9 +94,9 @@ import kotlin.reflect.KClass
 import com.google.samples.apps.nowinandroid.feature.settings.R as settingsR
 
 /**
- * Top-level stateful composable that represents screens for the application, it wraps its stateless
+ * Top-level stateful composable that holds the screens for the application, it wraps its stateless
  * overload in a [NiaGradientBackground] which is in turn wrapped in a [NiaBackground], and if
- * it determines that the device is offline will have a [LaunchedEffect] show q snackbar to inform
+ * it determines that the device is offline will have a [LaunchedEffect] show a snackbar to inform
  * the user that they are not connected to the internet.
  *
  * We start by initializing our [Boolean] variable `shouldShowGradientBackground` to `true` if
@@ -107,15 +107,15 @@ import com.google.samples.apps.nowinandroid.feature.settings.R as settingsR
  * Then our root composable is a [NiaBackground] whose `modifier` argument is our [Modifier] parameter
  * [modifier], and in its `content` composable lambda argument we compose a [NiaGradientBackground]
  * whose `gradientColors` argument is the current [LocalGradientColors] if `shouldShowGradientBackground`
- * is `true`, and a default [GradientColors] object if it is `false` (all [Color] arguments are
- * [Color.Unspecified]).
+ * is `true`, and a default [GradientColors] object (all [Color] arguments are [Color.Unspecified])
+ * if it is `false`.
  *
  * In the `content` composable lambda argument of the [NiaGradientBackground] composable we start by
  * initializing and remembering our [SnackbarHostState] variable `val snackbarHostState` to a new
  * instance. Then we initialize our [State] wrapped [Boolean] variable `val isOffline` by calling
  * the [collectAsStateWithLifecycle] method of the [StateFlow] wrapped [Boolean] property
  * [NiaAppState.isOffline] of our [NiaAppState] parameter [appState]. We initialize or [String]
- * variable `val notConnectedMessage` to the [String] with the resource id [R.string.not_connected]
+ * variable `val notConnectedMessage` to the [String] with the resource id `R.string.not_connected`
  * ("You are not connected to the internet"). Then we compose a [LaunchedEffect] whose `key1` argument
  * is `isOffline` and in whose [CoroutineScope] `block` composable lambda argument if `isOffline` is
  * `true` we call the [SnackbarHostState.showSnackbar] method of the [SnackbarHostState] variable
@@ -195,7 +195,7 @@ fun NiaApp(
  * of our [NiaAppState] parameter [appState]. We initialize our [NavDestination] variable
  * `currentDestination` to the [NiaAppState.currentDestination] property of our [NiaAppState]
  * parameter [appState]. If our [Boolean] parameter [showSettingsDialog] is `true` we compose a
- * [SettingsDialog] whose `onDismiss` argument is a lambda calls our lambda parameter
+ * [SettingsDialog] whose `onDismiss` argument is a lambda that calls our lambda parameter
  * [onSettingsDismissed].
  *
  * Finally our root composable is a [NiaNavigationSuiteScaffold] in whose [NiaNavigationSuiteScope]
@@ -213,23 +213,25 @@ fun NiaApp(
  *  of our [NiaAppState] parameter [appState] to navigate to the [TopLevelDestination] variable
  *  `destination`.
  *  - `icon`: is a lambda that composes an [Icon] whose `imageVector` argument is the [ImageVector]
- *  drawn by the [TopLevelDestination.unselectedIcon] of our [TopLevelDestination] variable
- *  `destination`, and whose `contentDescription` argument `null`.
+ *  drawn by the [TopLevelDestination.unselectedIcon] property of our [TopLevelDestination] variable
+ *  `destination`, and whose `contentDescription` argument is `null`.
  *  - `selectedIcon`: is a lambda that composes an [Icon] whose `imageVector` argument is the
- *  [ImageVector] drawn by the [TopLevelDestination.selectedIcon] of our [TopLevelDestination]
- *  variable `destination`, and whose `contentDescription` argument `null`.
+ *  [ImageVector] drawn by the [TopLevelDestination.selectedIcon] property of our
+ *  [TopLevelDestination] variable `destination`, and whose `contentDescription` argument is `null`.
  *  - `label`: is a lambda that composes a [Text] whose `text` argument is the [String] whose
- *  resource id is the [TopLevelDestination.iconTextId] of our [TopLevelDestination] variable
- *  `destination`.
+ *  resource id is the [TopLevelDestination.iconTextId] property of our [TopLevelDestination]
+ *  variable `destination`.
  *  - `modifier`: is a [Modifier.testTag] whose `tag` argument is the string "NiaNavItem", chained
- *  to a [Modifier.notificationDot] is `hasUnread` is `true`, and to the empty [Modifier] if
+ *  to a [Modifier.notificationDot] if `hasUnread` is `true`, and to the empty [Modifier] if
  *  `hasUnread` is `false`.
+ *
+ * We then loop around for the next [TopLevelDestination].
  *
  * The `windowAdaptiveInfo` argument of the [NiaNavigationSuiteScaffold] is our [WindowAdaptiveInfo]
  * parameter [windowAdaptiveInfo], and in its `content` composable lambda argument we compose a
  * [Scaffold] whose arguments are:
- *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.semantics] whose that
- *  sets the `testTagsAsResourceId` property to `true`.
+ *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.semantics] that sets the
+ *  `testTagsAsResourceId` property to `true`.
  *  - `containerColor`: is [Color.Transparent].
  *  - `contentColor`: is the [ColorScheme.onBackground] of our custom [MaterialTheme.colorScheme]
  *  - `contentWindowInsets`: is a [WindowInsets] whose `left`, `top`, `right`, and `bottom` are all 0.
@@ -251,14 +253,14 @@ fun NiaApp(
  * `var shouldShowTopAppBar` to `false`. Then if our [TopLevelDestination] variable `destination` is
  * not `null` we set our [Boolean] variable `shouldShowTopAppBar` to `true` and compose a
  * [NiaTopAppBar] whose arguments are:
- *  - `titleRes`: is the [TopLevelDestination.titleTextId] of our [TopLevelDestination] variable
- *  `destination`.
+ *  - `titleRes`: is the [TopLevelDestination.titleTextId] property of our [TopLevelDestination]
+ *  variable `destination`.
  *  - `navigationIcon`: is the [ImageVector] drawn by [NiaIcons.Search]
  *  - `navigationIconContentDescription`: is the [String] with the resource id
- *  `R.string.search_description` ("Search").
+ *  `settingsR.string.feature_settings_top_app_bar_navigation_icon_description` ("Search").
  *  - `actionIcon`: is the [ImageVector] drawn by [NiaIcons.Settings]
  *  - `actionIconContentDescription`: is the [String] with the resource id
- *  [settingsR.string.feature_settings_top_app_bar_action_icon_description] ("Settings").
+ *  `settingsR.string.feature_settings_top_app_bar_action_icon_description` ("Settings").
  *  - `colors`: is a [TopAppBarDefaults.topAppBarColors] whose `containerColor` argument is
  *  [Color.Transparent].
  *  - `onActionClick`: is a lambda that calls our [onTopAppBarActionClick] lambda parameter.
