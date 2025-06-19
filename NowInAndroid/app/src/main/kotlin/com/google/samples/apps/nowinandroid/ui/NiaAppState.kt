@@ -66,7 +66,7 @@ import kotlinx.datetime.TimeZone
  *
  * We start by calling our method [NavigationTrackingSideEffect] with its `navController` argument
  * our [NavHostController] parameter [navController] in order to set it up for tracking navigation
- * events to be used with JankStats. We then use [remember] with the arguments our parameters
+ * events to be used with JankStats. We then use [remember] with its `keys` arguments our parameters
  * [navController], [coroutineScope], [networkMonitor], [userNewsResourceRepository], and
  * [timeZoneMonitor] to remember a new instance of [NiaAppState] constructed using those same values
  * and return it.
@@ -195,8 +195,7 @@ class NiaAppState(
         )
 
     /**
-     * Map of top level destinations to be used in the TopBar, BottomBar and NavRail. The key is the
-     * route.
+     * [List] of top level destinations to be used in the TopBar, BottomBar and NavRail.
      */
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
 
@@ -247,19 +246,20 @@ class NiaAppState(
 
     /**
      * UI logic for navigating to a top level destination in the app. Top level destinations have
-     * only one copy of the destination of the back stack, and save and restore state whenever you
+     * only one copy of the destination on the back stack, and save and restore state whenever you
      * navigate to and from it.
      *
      * We start by calling the [trace] method with the `name` argument "Navigation: ${topLevelDestination.name}"
-     * to wrap its `block` lambda argument with a trace. In the `block` lambda argument we first the
+     * to wrap its `block` lambda argument with a trace. In the `block` lambda argument we first
      * initialize our [NavOptions] variable `val topLevelNavOptions` to a new instance of [NavOptions]
-     * in whose [NavOptionsBuilder] `optionsBuilder` lambda argument we call the [NavOptionsBuilder.popUpTo]
-     * method to pop up to the start destination of the graph to avoid building up a large stack of
-     * destinations on the back stack as users select items, set the [NavOptionsBuilder.launchSingleTop]
-     * property to `true` to avoid multiple copies of the same destination when reselecting the same
-     * item, and set the [NavOptionsBuilder.restoreState] property to `true` to restore state when
-     * reselecting a previously selected item. We then use a `when` statement to switch on the value
-     * of our [TopLevelDestination] parameter [topLevelDestination]:
+     * in whose [NavOptionsBuilder] `optionsBuilder` lambda argument we call the
+     * [NavOptionsBuilder.popUpTo] method to pop up to the start destination of the graph to avoid
+     * building up a large stack of destinations on the back stack as users select items, set the
+     * [NavOptionsBuilder.launchSingleTop] property to `true` to avoid multiple copies of the same
+     * destination when reselecting the same item, and set the [NavOptionsBuilder.restoreState]
+     * property to `true` to restore state when reselecting a previously selected item. We then use
+     * a `when` statement to switch on the value of our [TopLevelDestination] parameter
+     * [topLevelDestination]:
      *  - If it is [FOR_YOU] we call the [navigateToForYou] method of our [NavHostController]
      *  parameter [navController] with its `navOptions` argument our [NavOptions] variable
      *  `topLevelNavOptions`.
@@ -311,18 +311,18 @@ class NiaAppState(
  * Stores information about navigation events to be used with JankStats. We call our
  * [TrackDisposableJank] method with its `keys` argument our [NavHostController] parameter
  * [navController] and in its [DisposableEffectScope] `reportMetric` lambda argument we
- * initialize capture the [Holder] passed the lambda in variable `metricsHolder` then
- * initialize our [NavController.OnDestinationChangedListener] variable `val listener` to a new
- * instance in whose `onDestinationChanged` lambda argument we call the [PerformanceMetricsState.putState]
+ * capture the [Holder] passed the lambda in variable `metricsHolder` then initialize our
+ * [NavController.OnDestinationChangedListener] variable `val listener` to a new instance in whose
+ * `onDestinationChanged` lambda argument we call the [PerformanceMetricsState.putState]
  * method of the [Holder.state] property of our [Holder] variable `metricsHolder` with the
  * `key` argument "Navigation" and the `value` argument the [NavDestination.route] of the
- * [NavDestination] passed to the lambda. We then call the [NavController.addOnDestinationChangedListener]
- * method of our [NavController] parameter [navController] with the `listener` argument
- * our [NavController.OnDestinationChangedListener] variable `listener`. We call the
- * [DisposableEffectScope.onDispose] method to register a [DisposableEffectResult] that calls the
- * [NavController.removeOnDestinationChangedListener] method of our [NavController] parameter
+ * [NavDestination] passed to the lambda. We then call the
+ * [NavController.addOnDestinationChangedListener] method of our [NavController] parameter
  * [navController] with the `listener` argument our [NavController.OnDestinationChangedListener]
- * variable `listener`.
+ * variable `listener`. We call the [DisposableEffectScope.onDispose] method to register a
+ * [DisposableEffectResult] that calls the [NavController.removeOnDestinationChangedListener] method
+ * of our [NavController] parameter [navController] with the `listener` argument our
+ * [NavController.OnDestinationChangedListener] variable `listener`.
  *
  * @param navController The [NavHostController] whose navigation events are being tracked.
  */
