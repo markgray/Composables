@@ -125,9 +125,9 @@ class MainActivity : ComponentActivity() {
      * [SplashScreen] variable `splashScreen`. Then we call our super's implementation of `onCreate`.
      * We initialize our [MutableState] wrapped [ThemeSettings] variable `var themeSettings` to a
      * new instance of [ThemeSettings] with the `darkTheme` argument the result of calling the
-     * [ComponentActivity.isSystemInDarkTheme] method, and the `androidTheme` argument to the resulrt
-     * of calling the [Loading.shouldUseAndroidTheme] method, and the `disableDynamicTheming` argument
-     * to the result of calling the [Loading.shouldDisableDynamicTheming] method.
+     * [ComponentActivity.isSystemInDarkTheme] method, and the `androidTheme` argument to the
+     * result of calling the [Loading.shouldUseAndroidTheme] method, and the `disableDynamicTheming`
+     * argument to the result of calling the [Loading.shouldDisableDynamicTheming] method.
      *
      * We use the [CoroutineScope] of the [LifecycleOwner.lifecycleScope] property and call its
      * [CoroutineScope.launch] method to launch a coroutine in whose [CoroutineScope] `block` lambda
@@ -135,7 +135,8 @@ class MainActivity : ComponentActivity() {
      * its `state` argument (its [CoroutineScope] `block` lambda will be executed whenever the
      * [Lifecycle] is at least in the [Lifecycle.State.STARTED] state), and in that lambda we use
      * the [combine] function to combine the [Flow] of [Boolean] returned by the [isSystemInDarkTheme]
-     * method and the [StateFlow] of [MainActivityUiState] returned by the [MainActivityViewModel.uiState]
+     * method and the [StateFlow] of [MainActivityUiState] returned by the
+     * [MainActivityViewModel.uiState] property of [MainActivityViewModel] property [viewModel]
      * accepting the [Boolean] in variable `systemDark` and the [MainActivityUiState] in variable
      * `uiState` respectively. We then construct a new instance of [ThemeSettings] with the `darkTheme`
      * argument the result of calling the [MainActivityUiState.shouldUseDarkTheme] method of `uiState`
@@ -150,7 +151,7 @@ class MainActivity : ComponentActivity() {
      * [FlowCollector] lambda we wrap a [trace] whose label is "niaEdgeToEdge" and call the
      * [enableEdgeToEdge] method with the `statusBarStyle` argument the result of calling the
      * [SystemBarStyle.auto] method with the `lightScrim` argument [Color.TRANSPARENT], the `darkScrim`
-     * argument [Color.TRANSPARENT], and the `darkTheme` argument `darkTheme`, the `navigationBarStyle`
+     * argument [Color.TRANSPARENT], and the `darkTheme` argument `darkTheme`. The `navigationBarStyle`
      * argument is [SystemBarStyle.auto] with the `lightScrim` argument [lightScrim], the `darkScrim`
      * argument [darkScrim], and the `detectDarkMode` argument `darkTheme`.
      *
@@ -270,11 +271,10 @@ class MainActivity : ComponentActivity() {
      * access devices (such as the camera), etc.
      *
      * First we call our super's implementation of `onResume`, then we set the
-     * [JankStats.isTrackingEnabled] property of the [JankStats] instance whose `get` method we
-     * call for our [dagger.Lazy] wrapped [JankStats] field [lazyStats] to `true`
-     * (it defaults to `false`).
+     * [JankStats.isTrackingEnabled] property of our [dagger.Lazy] wrapped [JankStats] field
+     * [lazyStats] to `true` (it defaults to `false`).
      *
-     * Keep in mind that onResume is not the best indicator that your activity is visible to the
+     * Keep in mind that [onResume] is not the best indicator that your activity is visible to the
      * user; a system window such as the keyguard may be in front. Use [onWindowFocusChanged]
      * to know for certain that your activity is visible to the user (for example, to resume a game).
      */
