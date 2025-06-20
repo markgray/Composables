@@ -28,16 +28,32 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 /**
- * [Application] class for NiA
+ * [Application] class for NiA. It implements the [ImageLoaderFactory] interface so that Coil will
+ * use its [newImageLoader] method to create a new [ImageLoader] instance which it will use for
+ * all image loading operations.
  */
 @HiltAndroidApp
 class NiaApplication : Application(), ImageLoaderFactory {
+    /**
+     * Lazily inject [ImageLoader] so that it is not initialized until we need it.
+     */
     @Inject
     lateinit var imageLoader: dagger.Lazy<ImageLoader>
 
+    /**
+     * [ProfileVerifierLogger] injected by Hilt
+     */
     @Inject
     lateinit var profileVerifierLogger: ProfileVerifierLogger
 
+    /**
+     * Initializes the application. First we call our super's implementation of `onCreate`, then we
+     * call [setStrictModePolicy] to set a thread policy that detects all potential problems on the
+     * main thread, such as network and disk access. If a problem is found, the offending call will
+     * be logged and the application will be killed. Then we call the [Sync.initialize] method to
+     * initialize Sync; the system responsible for keeping data in the app up to date. Finally we
+     * call the [profileVerifierLogger] method to log the profile verification status.
+     */
     override fun onCreate() {
         super.onCreate()
 
@@ -48,6 +64,9 @@ class NiaApplication : Application(), ImageLoaderFactory {
         profileVerifierLogger()
     }
 
+    /**
+     * Returns a new [ImageLoader].
+     */
     override fun newImageLoader(): ImageLoader = imageLoader.get()
 
     /**

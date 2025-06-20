@@ -22,6 +22,7 @@ import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
@@ -33,6 +34,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoActivityResumedException
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.samples.apps.nowinandroid.MainActivity
 import com.google.samples.apps.nowinandroid.R
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
@@ -62,19 +64,21 @@ class NavigationTest {
      * Manages the components' state and is used to perform injection on your test
      */
     @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
+    val hiltRule: HiltAndroidRule = HiltAndroidRule(this)
 
     /**
      * Grant [android.Manifest.permission.POST_NOTIFICATIONS] permission.
      */
     @get:Rule(order = 1)
-    val postNotificationsPermission = GrantPostNotificationsPermissionRule()
+    val postNotificationsPermission: GrantPostNotificationsPermissionRule =
+        GrantPostNotificationsPermissionRule()
 
     /**
      * Use the primary activity to initialize the app normally.
      */
     @get:Rule(order = 2)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity> =
+        createAndroidComposeRule<MainActivity>()
 
     @Inject
     lateinit var topicsRepository: TopicsRepository
@@ -94,7 +98,7 @@ class NavigationTest {
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
 
     @Before
-    fun setup() = hiltRule.inject()
+    fun setup(): Unit = hiltRule.inject()
 
     @Test
     fun firstScreen_isForYou() {
@@ -259,7 +263,7 @@ class NavigationTest {
 
             // Select the last topic
             val topic = runBlocking {
-                topicsRepository.getTopics().first().sortedBy(Topic::name).last()
+                topicsRepository.getTopics().first().maxByOrNull(Topic::name)!!
             }
             onNodeWithTag("interests:topics").performScrollToNode(hasText(topic.name))
             onNodeWithText(topic.name).performClick()

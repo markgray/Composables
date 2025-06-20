@@ -25,6 +25,7 @@ import com.google.samples.apps.nowinandroid.core.model.data.DarkThemeConfig
 import com.google.samples.apps.nowinandroid.core.model.data.ThemeBrand
 import com.google.samples.apps.nowinandroid.core.model.data.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -41,8 +42,15 @@ class MainActivityViewModel @Inject constructor(
     userDataRepository: UserDataRepository,
 ) : ViewModel() {
     /**
-     * The main activity UI state.
-     * TODO: Continue here.
+     * The main activity UI state. We use the [Flow.map] method of [Flow] of [UserData] property
+     * [UserDataRepository.userData] of our [UserDataRepository] property [userDataRepository] to
+     * loop through its entries capturing each [UserData] in variable `data` and emitting the
+     * [MainActivityUiState] that [Success] returns for the [UserData] in variable `data` and feed
+     * the [Flow] of [MainActivityUiState] to a [StateFlow] of [MainActivityUiState] using the
+     * [Flow.stateIn] method with its `scope` argument the [viewModelScope], its `initialValue`
+     * argument [Loading], and its `started` argument [SharingStarted.WhileSubscribed] with its
+     * `stopTimeoutMillis` argument [5_000] and assign that our [StateFlow] of [MainActivityUiState]
+     * property [uiState].
      */
     val uiState: StateFlow<MainActivityUiState> =
         userDataRepository.userData.map { data: UserData ->
@@ -54,17 +62,44 @@ class MainActivityViewModel @Inject constructor(
         )
 }
 
+/**
+ * Represents the UI state for the main activity.
+ * This sealed interface defines the possible states: Loading and Success.
+ * It also provides utility methods to determine theme-related settings based
+ * on the current state and user data.
+ */
 sealed interface MainActivityUiState {
+    /**
+     * Loading state for the main activity, it is the initial state of [StateFlow] of
+     * [MainActivityUiState] property [MainActivityViewModel.uiState].
+     */
     data object Loading : MainActivityUiState
 
+    /**
+     * Success state for the main activity, it is the final state of [StateFlow] of
+     * [MainActivityUiState] property [MainActivityViewModel.uiState].
+     *
+     * @property userData The [UserData] associated with the success state.
+     */
     data class Success(val userData: UserData) : MainActivityUiState {
+        /**
+         * Dynamic theming should be disabled..
+         */
         override val shouldDisableDynamicTheming: Boolean = !userData.useDynamicColor
 
+        /**
+         * Use [ThemeBrand.ANDROID] when `true` and [ThemeBrand.DEFAULT] otherwise.`
+         */
         override val shouldUseAndroidTheme: Boolean = when (userData.themeBrand) {
             ThemeBrand.DEFAULT -> false
             ThemeBrand.ANDROID -> true
         }
 
+        /**
+         * Returns `true` if dark theme should be used.
+         *
+         * @param isSystemDarkTheme Whether the system is in dark theme mode.
+         */
         override fun shouldUseDarkTheme(isSystemDarkTheme: Boolean): Boolean =
             when (userData.darkThemeConfig) {
                 DarkThemeConfig.FOLLOW_SYSTEM -> isSystemDarkTheme

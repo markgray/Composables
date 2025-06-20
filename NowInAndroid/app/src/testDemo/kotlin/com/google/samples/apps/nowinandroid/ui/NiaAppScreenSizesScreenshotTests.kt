@@ -22,12 +22,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.test.DeviceConfigurationOverride
 import androidx.compose.ui.test.ForcedSize
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.computeWindowSizeClass
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository
@@ -69,13 +72,14 @@ class NiaAppScreenSizesScreenshotTests {
      * Manages the components' state and is used to perform injection on your test
      */
     @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
+    val hiltRule: HiltAndroidRule = HiltAndroidRule(this)
 
     /**
      * Use a test activity to set the content on.
      */
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<HiltComponentActivity>()
+    val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<HiltComponentActivity>, HiltComponentActivity> =
+        createAndroidComposeRule<HiltComponentActivity>()
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
@@ -129,10 +133,11 @@ class NiaAppScreenSizesScreenshotTests {
                         NiaApp(
                             fakeAppState,
                             windowAdaptiveInfo = WindowAdaptiveInfo(
-                                windowSizeClass = WindowSizeClass.compute(
-                                    width.value,
-                                    height.value,
-                                ),
+                                windowSizeClass = WindowSizeClass.Companion.BREAKPOINTS_V1
+                                    .computeWindowSizeClass(
+                                        widthDp = width.value,
+                                        heightDp = height.value,
+                                    ),
                                 windowPosture = Posture(),
                             ),
                         )

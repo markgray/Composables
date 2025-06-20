@@ -29,7 +29,7 @@ import androidx.core.view.children
 /**
  * A [DeviceConfigurationOverride] that overrides the window insets for the contained content.
  */
-@Suppress("ktlint:standard:function-naming")
+@Suppress("ktlint:standard:function-naming", "TestFunctionName")
 fun DeviceConfigurationOverride.Companion.WindowInsets(
     windowInsets: WindowInsetsCompat,
 ): DeviceConfigurationOverride = DeviceConfigurationOverride { contentUnderTest ->

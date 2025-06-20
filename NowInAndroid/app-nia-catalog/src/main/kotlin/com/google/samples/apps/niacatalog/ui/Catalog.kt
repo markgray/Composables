@@ -37,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaButton
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaFilterChip
@@ -54,6 +55,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 
 /**
  * Now in Android component catalog.
+ * TODO: Continue here.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -67,7 +69,7 @@ fun NiaCatalog() {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = contentPadding,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(space = 16.dp),
             ) {
                 item {
                     Text(
@@ -75,9 +77,9 @@ fun NiaCatalog() {
                         style = MaterialTheme.typography.headlineSmall,
                     )
                 }
-                item { Text("Buttons", Modifier.padding(top = 16.dp)) }
+                item { Text(text = "Buttons", modifier = Modifier.padding(top = 16.dp)) }
                 item {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(space = 16.dp)) {
                         NiaButton(onClick = {}) {
                             Text(text = "Enabled")
                         }
@@ -89,9 +91,9 @@ fun NiaCatalog() {
                         }
                     }
                 }
-                item { Text("Disabled buttons", Modifier.padding(top = 16.dp)) }
+                item { Text(text = "Disabled buttons", modifier = Modifier.padding(top = 16.dp)) }
                 item {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(space = 16.dp)) {
                         NiaButton(
                             onClick = {},
                             enabled = false,
@@ -112,9 +114,14 @@ fun NiaCatalog() {
                         }
                     }
                 }
-                item { Text("Buttons with leading icons", Modifier.padding(top = 16.dp)) }
                 item {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Text(
+                        text = "Buttons with leading icons",
+                        modifier = Modifier.padding(top = 16.dp),
+                    )
+                }
+                item {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(space = 16.dp)) {
                         NiaButton(
                             onClick = {},
                             text = { Text(text = "Enabled") },
@@ -138,9 +145,14 @@ fun NiaCatalog() {
                         )
                     }
                 }
-                item { Text("Disabled buttons with leading icons", Modifier.padding(top = 16.dp)) }
                 item {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Text(
+                        text = "Disabled buttons with leading icons",
+                        modifier = Modifier.padding(top = 16.dp),
+                    )
+                }
+                item {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(space = 16.dp)) {
                         NiaButton(
                             onClick = {},
                             enabled = false,
@@ -167,20 +179,20 @@ fun NiaCatalog() {
                         )
                     }
                 }
-                item { Text("Dropdown menus", Modifier.padding(top = 16.dp)) }
-                item { Text("Chips", Modifier.padding(top = 16.dp)) }
+                item { Text(text = "Dropdown menus", modifier = Modifier.padding(top = 16.dp)) }
+                item { Text(text = "Chips", modifier = Modifier.padding(top = 16.dp)) }
                 item {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        var firstChecked by rememberSaveable { mutableStateOf(false) }
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(space = 16.dp)) {
+                        var firstChecked: Boolean by rememberSaveable { mutableStateOf(false) }
                         NiaFilterChip(
                             selected = firstChecked,
-                            onSelectedChange = { checked -> firstChecked = checked },
+                            onSelectedChange = { checked: Boolean -> firstChecked = checked },
                             label = { Text(text = "Enabled") },
                         )
-                        var secondChecked by rememberSaveable { mutableStateOf(true) }
+                        var secondChecked: Boolean by rememberSaveable { mutableStateOf(true) }
                         NiaFilterChip(
                             selected = secondChecked,
-                            onSelectedChange = { checked -> secondChecked = checked },
+                            onSelectedChange = { checked: Boolean -> secondChecked = checked },
                             label = { Text(text = "Enabled") },
                         )
                         NiaFilterChip(
@@ -197,13 +209,13 @@ fun NiaCatalog() {
                         )
                     }
                 }
-                item { Text("Icon buttons", Modifier.padding(top = 16.dp)) }
+                item { Text(text = "Icon buttons", modifier = Modifier.padding(top = 16.dp)) }
                 item {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        var firstChecked by rememberSaveable { mutableStateOf(false) }
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(space = 16.dp)) {
+                        var firstChecked: Boolean by rememberSaveable { mutableStateOf(false) }
                         NiaIconToggleButton(
                             checked = firstChecked,
-                            onCheckedChange = { checked -> firstChecked = checked },
+                            onCheckedChange = { checked: Boolean -> firstChecked = checked },
                             icon = {
                                 Icon(
                                     imageVector = NiaIcons.BookmarkBorder,
@@ -217,10 +229,10 @@ fun NiaCatalog() {
                                 )
                             },
                         )
-                        var secondChecked by rememberSaveable { mutableStateOf(true) }
+                        var secondChecked: Boolean by rememberSaveable { mutableStateOf(true) }
                         NiaIconToggleButton(
                             checked = secondChecked,
-                            onCheckedChange = { checked -> secondChecked = checked },
+                            onCheckedChange = { checked: Boolean -> secondChecked = checked },
                             icon = {
                                 Icon(
                                     imageVector = NiaIcons.BookmarkBorder,
@@ -270,20 +282,20 @@ fun NiaCatalog() {
                         )
                     }
                 }
-                item { Text("View toggle", Modifier.padding(top = 16.dp)) }
+                item { Text(text = "View toggle", modifier = Modifier.padding(top = 16.dp)) }
                 item {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        var firstExpanded by rememberSaveable { mutableStateOf(false) }
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(space = 16.dp)) {
+                        var firstExpanded: Boolean by rememberSaveable { mutableStateOf(false) }
                         NiaViewToggleButton(
                             expanded = firstExpanded,
-                            onExpandedChange = { expanded -> firstExpanded = expanded },
+                            onExpandedChange = { expanded: Boolean -> firstExpanded = expanded },
                             compactText = { Text(text = "Compact view") },
                             expandedText = { Text(text = "Expanded view") },
                         )
-                        var secondExpanded by rememberSaveable { mutableStateOf(true) }
+                        var secondExpanded: Boolean by rememberSaveable { mutableStateOf(true) }
                         NiaViewToggleButton(
                             expanded = secondExpanded,
-                            onExpandedChange = { expanded -> secondExpanded = expanded },
+                            onExpandedChange = { expanded: Boolean -> secondExpanded = expanded },
                             compactText = { Text(text = "Compact view") },
                             expandedText = { Text(text = "Expanded view") },
                         )
@@ -296,9 +308,9 @@ fun NiaCatalog() {
                         )
                     }
                 }
-                item { Text("Tags", Modifier.padding(top = 16.dp)) }
+                item { Text(text = "Tags", modifier = Modifier.padding(top = 16.dp)) }
                 item {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(space = 16.dp)) {
                         NiaTopicTag(
                             followed = true,
                             onClick = {},
@@ -317,12 +329,12 @@ fun NiaCatalog() {
                         )
                     }
                 }
-                item { Text("Tabs", Modifier.padding(top = 16.dp)) }
+                item { Text(text = "Tabs", modifier = Modifier.padding(top = 16.dp)) }
                 item {
-                    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
-                    val titles = listOf("Topics", "People")
+                    var selectedTabIndex: Int by rememberSaveable { mutableIntStateOf(0) }
+                    val titles: List<String> = listOf("Topics", "People")
                     NiaTabRow(selectedTabIndex = selectedTabIndex) {
-                        titles.forEachIndexed { index, title ->
+                        titles.forEachIndexed { index: Int, title: String ->
                             NiaTab(
                                 selected = selectedTabIndex == index,
                                 onClick = { selectedTabIndex = index },
@@ -331,22 +343,22 @@ fun NiaCatalog() {
                         }
                     }
                 }
-                item { Text("Navigation", Modifier.padding(top = 16.dp)) }
+                item { Text(text = "Navigation", modifier = Modifier.padding(top = 16.dp)) }
                 item {
-                    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
-                    val items = listOf("For you", "Saved", "Interests")
-                    val icons = listOf(
+                    var selectedItem: Int by rememberSaveable { mutableIntStateOf(0) }
+                    val items: List<String> = listOf("For you", "Saved", "Interests")
+                    val icons: List<ImageVector> = listOf(
                         NiaIcons.UpcomingBorder,
                         NiaIcons.BookmarksBorder,
                         NiaIcons.Grid3x3,
                     )
-                    val selectedIcons = listOf(
+                    val selectedIcons: List<ImageVector> = listOf(
                         NiaIcons.Upcoming,
                         NiaIcons.Bookmarks,
                         NiaIcons.Grid3x3,
                     )
                     NiaNavigationBar {
-                        items.forEachIndexed { index, item ->
+                        items.forEachIndexed { index: Int, item: String ->
                             NiaNavigationBarItem(
                                 icon = {
                                     Icon(
@@ -360,7 +372,7 @@ fun NiaCatalog() {
                                         contentDescription = item,
                                     )
                                 },
-                                label = { Text(item) },
+                                label = { Text(text = item) },
                                 selected = selectedItem == index,
                                 onClick = { selectedItem = index },
                             )

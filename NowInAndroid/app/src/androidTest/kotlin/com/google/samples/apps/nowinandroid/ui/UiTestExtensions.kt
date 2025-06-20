@@ -20,6 +20,14 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import kotlin.properties.ReadOnlyProperty
 
+/**
+ * A [ReadOnlyProperty] that provides the string resource for the given [resId].
+ * This is useful for accessing string resources in tests, as string resources are not directly
+ * accessible in tests.
+ *
+ * @param resId The resource ID of the string resource.
+ * @return A [ReadOnlyProperty] that provides the string resource.
+ */
 fun AndroidComposeTestRule<*, *>.stringResource(
     @StringRes resId: Int,
 ): ReadOnlyProperty<Any, String> =

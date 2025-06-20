@@ -26,6 +26,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
@@ -56,10 +57,11 @@ private const val COMPACT_WIDTH = "w412dp-h915dp"
 class InterestsListDetailScreenTest {
 
     @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
+    val hiltRule: HiltAndroidRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<HiltComponentActivity>()
+    val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<HiltComponentActivity>, HiltComponentActivity> =
+        createAndroidComposeRule<HiltComponentActivity>()
 
     @Inject
     lateinit var topicsRepository: TopicsRepository

@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.ComposeNavigator
@@ -35,6 +36,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.TimeZone
@@ -55,7 +57,7 @@ import kotlin.test.assertTrue
 class NiaAppStateTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule: ComposeContentTestRule = createComposeRule()
 
     // Create the test dependencies.
     private val networkMonitor = TestNetworkMonitor()
@@ -69,7 +71,7 @@ class NiaAppStateTest {
     private lateinit var state: NiaAppState
 
     @Test
-    fun niaAppState_currentDestination() = runTest {
+    fun niaAppState_currentDestination(): TestResult = runTest {
         var currentDestination: String? = null
 
         composeTestRule.setContent {
@@ -97,7 +99,7 @@ class NiaAppStateTest {
     }
 
     @Test
-    fun niaAppState_destinations() = runTest {
+    fun niaAppState_destinations(): TestResult = runTest {
         composeTestRule.setContent {
             state = rememberNiaAppState(
                 networkMonitor = networkMonitor,
@@ -113,44 +115,46 @@ class NiaAppStateTest {
     }
 
     @Test
-    fun niaAppState_whenNetworkMonitorIsOffline_StateIsOffline() = runTest(UnconfinedTestDispatcher()) {
-        composeTestRule.setContent {
-            state = NiaAppState(
-                navController = NavHostController(LocalContext.current),
-                coroutineScope = backgroundScope,
-                networkMonitor = networkMonitor,
-                userNewsResourceRepository = userNewsResourceRepository,
-                timeZoneMonitor = timeZoneMonitor,
+    fun niaAppState_whenNetworkMonitorIsOffline_StateIsOffline(): TestResult =
+        runTest(UnconfinedTestDispatcher()) {
+            composeTestRule.setContent {
+                state = NiaAppState(
+                    navController = NavHostController(LocalContext.current),
+                    coroutineScope = backgroundScope,
+                    networkMonitor = networkMonitor,
+                    userNewsResourceRepository = userNewsResourceRepository,
+                    timeZoneMonitor = timeZoneMonitor,
+                )
+            }
+
+            backgroundScope.launch { state.isOffline.collect() }
+            networkMonitor.setConnected(false)
+            assertEquals(
+                true,
+                state.isOffline.value,
             )
         }
-
-        backgroundScope.launch { state.isOffline.collect() }
-        networkMonitor.setConnected(false)
-        assertEquals(
-            true,
-            state.isOffline.value,
-        )
-    }
 
     @Test
-    fun niaAppState_differentTZ_withTimeZoneMonitorChange() = runTest(UnconfinedTestDispatcher()) {
-        composeTestRule.setContent {
-            state = NiaAppState(
-                navController = NavHostController(LocalContext.current),
-                coroutineScope = backgroundScope,
-                networkMonitor = networkMonitor,
-                userNewsResourceRepository = userNewsResourceRepository,
-                timeZoneMonitor = timeZoneMonitor,
+    fun niaAppState_differentTZ_withTimeZoneMonitorChange(): TestResult =
+        runTest(UnconfinedTestDispatcher()) {
+            composeTestRule.setContent {
+                state = NiaAppState(
+                    navController = NavHostController(LocalContext.current),
+                    coroutineScope = backgroundScope,
+                    networkMonitor = networkMonitor,
+                    userNewsResourceRepository = userNewsResourceRepository,
+                    timeZoneMonitor = timeZoneMonitor,
+                )
+            }
+            val changedTz = TimeZone.of("Europe/Prague")
+            backgroundScope.launch { state.currentTimeZone.collect() }
+            timeZoneMonitor.setTimeZone(changedTz)
+            assertEquals(
+                changedTz,
+                state.currentTimeZone.value,
             )
         }
-        val changedTz = TimeZone.of("Europe/Prague")
-        backgroundScope.launch { state.currentTimeZone.collect() }
-        timeZoneMonitor.setTimeZone(changedTz)
-        assertEquals(
-            changedTz,
-            state.currentTimeZone.value,
-        )
-    }
 }
 
 @Composable
