@@ -29,14 +29,30 @@ import androidx.core.view.children
 
 /**
  * A [DeviceConfigurationOverride] that overrides the window insets for the contained content.
+ * The WindowInsets function creates a special environment for the composable under test. It wraps
+ * your composable in a custom Android View (AbstractComposeView) that intercepts the standard window
+ * inset mechanism. When the system tries to tell this view about the actual device insets, our
+ * custom view ignores them and instead applies the windowInsets you specified when calling the
+ * function.
  *
- * @param windowInsets
+ * @param windowInsets The window insets to apply to the content.
  */
 @Suppress("ktlint:standard:function-naming", "TestFunctionName")
 fun DeviceConfigurationOverride.Companion.WindowInsets(
     windowInsets: WindowInsetsCompat,
 ): DeviceConfigurationOverride = DeviceConfigurationOverride { contentUnderTest ->
+    /**
+     * The content under test. It uses [rememberUpdatedState] to remember the latest value of
+     * [contentUnderTest]. This is necessary because the [DeviceConfigurationOverride] might be
+     * recomposed, and this insures that the latest value of [contentUnderTest] is used.
+     */
     val currentContentUnderTest: @Composable (() -> Unit) by rememberUpdatedState(contentUnderTest)
+
+    /**
+     * The current window insets. It uses [rememberUpdatedState] to remember the latest value of
+     * [windowInsets]. This is necessary because the [DeviceConfigurationOverride] might be
+     * recomposed, and this insures that the latest value of [windowInsets] is used.
+     */
     val currentWindowInsets: WindowInsetsCompat by rememberUpdatedState(windowInsets)
     AndroidView(
         factory = { context: Context ->

@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.ui
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -28,6 +29,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.createGraph
 import androidx.navigation.testing.TestNavHostController
 import com.google.samples.apps.nowinandroid.core.data.repository.CompositeUserNewsResourceRepository
+import com.google.samples.apps.nowinandroid.core.data.repository.UserNewsResourceRepository
+import com.google.samples.apps.nowinandroid.core.data.util.NetworkMonitor
+import com.google.samples.apps.nowinandroid.core.data.util.TimeZoneMonitor
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestNewsRepository
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestUserDataRepository
 import com.google.samples.apps.nowinandroid.core.testing.util.TestNetworkMonitor
@@ -56,27 +60,48 @@ import kotlin.test.assertTrue
 @HiltAndroidTest
 class NiaAppStateTest {
 
+    /**
+     * The [ComposeContentTestRule] test rule.
+     */
     @get:Rule
     val composeTestRule: ComposeContentTestRule = createComposeRule()
 
     // Create the test dependencies.
+
+    /**
+     * The [NetworkMonitor] used for testing.
+     */
     private val networkMonitor = TestNetworkMonitor()
 
+    /**
+     * The [TimeZoneMonitor] used for testing.
+     */
     private val timeZoneMonitor = TestTimeZoneMonitor()
 
+    /**
+     * The [UserNewsResourceRepository] used for testing.
+     */
     private val userNewsResourceRepository =
         CompositeUserNewsResourceRepository(TestNewsRepository(), TestUserDataRepository())
 
-    // Subject under test.
+    /**
+     * Subject under test.
+     */
     private lateinit var state: NiaAppState
 
+    /**
+     * Test that [NiaAppState.currentDestination] reflects the current destination of the
+     * [NavHostController].
+     *
+     * @return [TestResult] from [runTest].
+     */
     @Test
     fun niaAppState_currentDestination(): TestResult = runTest {
         var currentDestination: String? = null
 
         composeTestRule.setContent {
-            val navController = rememberTestNavController()
-            state = remember(navController) {
+            val navController: TestNavHostController = rememberTestNavController()
+            state = remember(key1 = navController) {
                 NiaAppState(
                     navController = navController,
                     coroutineScope = backgroundScope,
@@ -98,6 +123,11 @@ class NiaAppStateTest {
         assertEquals("b", currentDestination)
     }
 
+    /**
+     * Test that the top level destinations are correct.
+     *
+     * @return [TestResult] from [runTest].
+     */
     @Test
     fun niaAppState_destinations(): TestResult = runTest {
         composeTestRule.setContent {
@@ -114,6 +144,12 @@ class NiaAppStateTest {
         assertTrue(state.topLevelDestinations[2].name.contains("interests", true))
     }
 
+    /**
+     * Test that [NiaAppState.isOffline] is true when the [NetworkMonitor] is offline, and that
+     * the [NiaAppState.isOffline] flow emits a new value when the network monitor changes.
+     *
+     * @return [TestResult] from [runTest].
+     */
     @Test
     fun niaAppState_whenNetworkMonitorIsOffline_StateIsOffline(): TestResult =
         runTest(UnconfinedTestDispatcher()) {
@@ -135,6 +171,11 @@ class NiaAppStateTest {
             )
         }
 
+    /**
+     * Test that [NiaAppState.currentTimeZone] is the [TimeZone.currentSystemDefault] initially, and
+     * that the [NiaAppState.currentTimeZone] flow emits a new value when the time zone monitor
+     * changes.
+     */
     @Test
     fun niaAppState_differentTZ_withTimeZoneMonitorChange(): TestResult =
         runTest(UnconfinedTestDispatcher()) {
@@ -147,9 +188,9 @@ class NiaAppStateTest {
                     timeZoneMonitor = timeZoneMonitor,
                 )
             }
-            val changedTz = TimeZone.of("Europe/Prague")
+            val changedTz: TimeZone = TimeZone.of("Europe/Prague")
             backgroundScope.launch { state.currentTimeZone.collect() }
-            timeZoneMonitor.setTimeZone(changedTz)
+            timeZoneMonitor.setTimeZone(zoneId = changedTz)
             assertEquals(
                 changedTz,
                 state.currentTimeZone.value,
@@ -157,16 +198,26 @@ class NiaAppStateTest {
         }
 }
 
+/**
+ * Remembers a [TestNavHostController] for testing purposes.
+ *
+ * This function creates and remembers a [TestNavHostController] with a predefined graph.
+ * The graph includes three composable destinations: "a", "b", and "c".
+ * The [ComposeNavigator] is added to the navigator provider.
+ * The start destination of the graph is set to "a".
+ *
+ * @return A [TestNavHostController] instance.
+ */
 @Composable
 private fun rememberTestNavController(): TestNavHostController {
-    val context = LocalContext.current
+    val context: Context = LocalContext.current
     return remember {
-        TestNavHostController(context).apply {
-            navigatorProvider.addNavigator(ComposeNavigator())
+        TestNavHostController(context = context).apply {
+            navigatorProvider.addNavigator(navigator = ComposeNavigator())
             graph = createGraph(startDestination = "a") {
-                composable("a") { }
-                composable("b") { }
-                composable("c") { }
+                composable(route = "a") { }
+                composable(route = "b") { }
+                composable(route = "c") { }
             }
         }
     }

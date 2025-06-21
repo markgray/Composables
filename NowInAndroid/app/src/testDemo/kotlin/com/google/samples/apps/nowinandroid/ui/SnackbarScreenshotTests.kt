@@ -42,6 +42,9 @@ import com.google.samples.apps.nowinandroid.core.data.test.repository.FakeUserDa
 import com.google.samples.apps.nowinandroid.core.data.util.NetworkMonitor
 import com.google.samples.apps.nowinandroid.core.data.util.TimeZoneMonitor
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
+import com.google.samples.apps.nowinandroid.core.model.data.Topic
+import com.google.samples.apps.nowinandroid.core.model.data.UserData
+import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
 import com.google.samples.apps.nowinandroid.uitesthiltmanifest.HiltComponentActivity
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -75,33 +78,63 @@ import javax.inject.Inject
 class SnackbarScreenshotTests {
 
     /**
-     * Manages the components' state and is used to perform injection on your test
+     * A [Rule] to enable injecting Hilt dependencies in tests. `order = 0`: Specifies the order in
+     * which rules are executed. [HiltAndroidRule] needs to run before other rules that might depend
+     * on Hilt.
      */
     @get:Rule(order = 0)
     val hiltRule: HiltAndroidRule = HiltAndroidRule(this)
 
     /**
-     * Use a test activity to set the content on.
+     * A [Rule] to create a [AndroidComposeTestRule] that launches the [HiltComponentActivity] for
+     * testing. This rule allows for testing Compose UIs within an Activity context, with Hilt
+     * dependency injection enabled.
      */
     @get:Rule(order = 1)
     val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<HiltComponentActivity>, HiltComponentActivity> =
         createAndroidComposeRule<HiltComponentActivity>()
 
+    /**
+     * Used to observe the current network status. Injected by Hilt.
+     */
     @Inject
     lateinit var networkMonitor: NetworkMonitor
 
+    /**
+     * Used to observe the current time zone. Injected by Hilt.
+     */
     @Inject
     lateinit var timeZoneMonitor: TimeZoneMonitor
 
+    /**
+     * Repository for accessing and managing [UserData]. Injected by Hilt.
+     */
     @Inject
     lateinit var userDataRepository: FakeUserDataRepository
 
+    /**
+     * Repository for accessing and managing [Topic] data. Injected by Hilt.
+     */
     @Inject
     lateinit var topicsRepository: TopicsRepository
 
+    /**
+     * Repository for accessing and managing [UserNewsResource]. Injected by Hilt.
+     */
     @Inject
     lateinit var userNewsResourceRepository: UserNewsResourceRepository
 
+    /**
+     * Sets up the test environment by injecting Hilt dependencies and configuring initial user data.
+     * This function is executed before each test case.
+     * - Injects dependencies using [HiltAndroidRule.inject].
+     * - Configures user data by:
+     *     - Setting `shouldHideOnboarding` to `true` in [UserDataRepository].
+     *     - Setting the first available topic as a followed topic in [UserDataRepository].
+     *
+     * It is run in a [runBlocking] coroutine and blocks the current thread interruptibly until its
+     * completion.
+     */
     @Before
     fun setup() {
         hiltRule.inject()
@@ -116,75 +149,109 @@ class SnackbarScreenshotTests {
         }
     }
 
+    /**
+     * Sets the time zone to UTC for all tests in this class. This ensures that time-dependent
+     * UI elements are rendered consistently across different test environments.
+     */
     @Before
     fun setTimeZone() {
         // Make time zone deterministic in tests
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
     }
 
+    /**
+     * Tests that the Snackbar is not shown on a phone sized screen until the
+     * [SnackbarHostState.showSnackbar] method is called.
+     */
     @Test
     fun phone_noSnackbar() {
         val snackbarHostState = SnackbarHostState()
         testSnackbarScreenshotWithSize(
-            snackbarHostState,
-            400.dp,
-            500.dp,
-            "snackbar_compact_medium_noSnackbar",
+            snackbarHostState = snackbarHostState,
+            width = 400.dp,
+            height = 500.dp,
+            screenshotName = "snackbar_compact_medium_noSnackbar",
             action = { },
         )
     }
 
+    /**
+     * Tests that the Snackbar is shown on a phone sized screen when the
+     * [SnackbarHostState.showSnackbar] method is called.
+     */
     @Test
     fun snackbarShown_phone() {
         val snackbarHostState = SnackbarHostState()
         testSnackbarScreenshotWithSize(
-            snackbarHostState,
-            400.dp,
-            500.dp,
-            "snackbar_compact_medium",
+            snackbarHostState = snackbarHostState,
+            width = 400.dp,
+            height = 500.dp,
+            screenshotName = "snackbar_compact_medium",
         ) {
             snackbarHostState.showSnackbar(
-                "This is a test snackbar message",
+                message = "This is a test snackbar message",
                 actionLabel = "Action Label",
                 duration = Indefinite,
             )
         }
     }
 
+    /**
+     * Tests that the Snackbar is shown on a foldable sized screen when the
+     * [SnackbarHostState.showSnackbar] method is called.
+     */
     @Test
     fun snackbarShown_foldable() {
         val snackbarHostState = SnackbarHostState()
         testSnackbarScreenshotWithSize(
-            snackbarHostState,
-            600.dp,
-            600.dp,
-            "snackbar_medium_medium",
+            snackbarHostState = snackbarHostState,
+            width = 600.dp,
+            height = 600.dp,
+            screenshotName = "snackbar_medium_medium",
         ) {
             snackbarHostState.showSnackbar(
-                "This is a test snackbar message",
+                message = "This is a test snackbar message",
                 actionLabel = "Action Label",
                 duration = Indefinite,
             )
         }
     }
 
+    /**
+     * Tests that the Snackbar is shown on a tablet sized screen when the
+     * [SnackbarHostState.showSnackbar] method is called.
+     */
     @Test
     fun snackbarShown_tablet() {
         val snackbarHostState = SnackbarHostState()
         testSnackbarScreenshotWithSize(
-            snackbarHostState,
-            900.dp,
-            900.dp,
-            "snackbar_expanded_expanded",
+            snackbarHostState = snackbarHostState,
+            width = 900.dp,
+            height = 900.dp,
+            screenshotName = "snackbar_expanded_expanded",
         ) {
             snackbarHostState.showSnackbar(
-                "This is a test snackbar message",
+                message = "This is a test snackbar message",
                 actionLabel = "Action Label",
                 duration = Indefinite,
             )
         }
     }
 
+    /**
+     * Helper function to test the Snackbar UI at a given screen [width] and [height].
+     *
+     * It sets up the [NiaApp] composable, providing the necessary dependencies and configurations.
+     * It then executes the given [action] (e.g., showing a snackbar) and captures a screenshot
+     * of the UI with the specified [screenshotName].
+     *
+     * @param snackbarHostState The [SnackbarHostState] used to control the snackbar.
+     * @param width The width of the screen.
+     * @param height The height of the screen.
+     * @param screenshotName The name of the screenshot file.
+     * @param action A suspend function that defines the action to be performed before taking the
+     * screenshot. This is typically used to show a snackbar.
+     */
     private fun testSnackbarScreenshotWithSize(
         snackbarHostState: SnackbarHostState,
         width: Dp,
@@ -201,11 +268,11 @@ class SnackbarScreenshotTests {
                 scope = rememberCoroutineScope()
 
                 DeviceConfigurationOverride(
-                    DeviceConfigurationOverride.ForcedSize(DpSize(width, height)),
+                    DeviceConfigurationOverride.ForcedSize(size = DpSize(width, height)),
                 ) {
                     BoxWithConstraints {
                         NiaTheme {
-                            val appState = rememberNiaAppState(
+                            val appState: NiaAppState = rememberNiaAppState(
                                 networkMonitor = networkMonitor,
                                 userNewsResourceRepository = userNewsResourceRepository,
                                 timeZoneMonitor = timeZoneMonitor,
@@ -237,7 +304,7 @@ class SnackbarScreenshotTests {
 
         composeTestRule.onRoot()
             .captureRoboImage(
-                "src/testDemo/screenshots/$screenshotName.png",
+                filePath = "src/testDemo/screenshots/$screenshotName.png",
                 roborazziOptions = DefaultRoborazziOptions,
             )
     }

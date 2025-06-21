@@ -69,6 +69,9 @@ import com.google.samples.apps.nowinandroid.core.data.test.repository.FakeUserDa
 import com.google.samples.apps.nowinandroid.core.data.util.NetworkMonitor
 import com.google.samples.apps.nowinandroid.core.data.util.TimeZoneMonitor
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
+import com.google.samples.apps.nowinandroid.core.model.data.Topic
+import com.google.samples.apps.nowinandroid.core.model.data.UserData
+import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
 import com.google.samples.apps.nowinandroid.uitesthiltmanifest.HiltComponentActivity
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -103,33 +106,63 @@ import javax.inject.Inject
 class SnackbarInsetsScreenshotTests {
 
     /**
-     * Manages the components' state and is used to perform injection on your test
+     * A [Rule] to enable injecting Hilt dependencies in tests. `order = 0`: Specifies the order in
+     * which rules are executed. [HiltAndroidRule] needs to run before other rules that might depend
+     * on Hilt.
      */
     @get:Rule(order = 0)
     val hiltRule: HiltAndroidRule = HiltAndroidRule(this)
 
     /**
-     * Use a test activity to set the content on.
+     * A [Rule] to create a [AndroidComposeTestRule] that launches the [HiltComponentActivity] for
+     * testing. This rule allows for testing Compose UIs within an Activity context, with Hilt
+     * dependency injection enabled.
      */
     @get:Rule(order = 1)
     val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<HiltComponentActivity>, HiltComponentActivity> =
         createAndroidComposeRule<HiltComponentActivity>()
 
+    /**
+     * Used to observe the current network status. Injected by Hilt.
+     */
     @Inject
     lateinit var networkMonitor: NetworkMonitor
 
+    /**
+     * Used to observe the current time zone. Injected by Hilt.
+     */
     @Inject
     lateinit var timeZoneMonitor: TimeZoneMonitor
 
+    /**
+     * Repository for accessing and managing [UserData]. Injected by Hilt.
+     */
     @Inject
     lateinit var userDataRepository: FakeUserDataRepository
 
+    /**
+     * Repository for accessing and managing [Topic] data. Injected by Hilt.
+     */
     @Inject
     lateinit var topicsRepository: TopicsRepository
 
+    /**
+     * Repository for accessing and managing [UserNewsResource]. Injected by Hilt.
+     */
     @Inject
     lateinit var userNewsResourceRepository: UserNewsResourceRepository
 
+    /**
+     * Sets up the test environment by injecting dependencies and configuring user data.
+     * This function is executed before each test case.
+     *  - Injects dependencies using [HiltAndroidRule.inject].
+     *  - Configures user data by:
+     *      - Setting `shouldHideOnboarding` to `true` in [FakeUserDataRepository].
+     *      - Setting the first available topic as a followed topic in [FakeUserDataRepository].
+     *
+     * It is run in a [runBlocking] coroutine and blocks the current thread interruptibly until its
+     * completion.
+     */
     @Before
     fun setup() {
         hiltRule.inject()
@@ -144,75 +177,102 @@ class SnackbarInsetsScreenshotTests {
         }
     }
 
+    /**
+     * Sets the time zone to UTC for all tests in this class. This ensures that time-dependent
+     * UI elements are rendered consistently across different test environments.
+     */
     @Before
     fun setTimeZone() {
         // Make time zone deterministic in tests
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
     }
 
+    /**
+     * Tests that the Snackbar is not shown on a phone sized screen until the
+     * [SnackbarHostState.showSnackbar] method is called.
+     */
     @Test
     fun phone_noSnackbar() {
         val snackbarHostState = SnackbarHostState()
         testSnackbarScreenshotWithSize(
-            snackbarHostState,
-            400.dp,
-            500.dp,
-            "insets_snackbar_compact_medium_noSnackbar",
+            snackbarHostState = snackbarHostState,
+            width = 400.dp,
+            height = 500.dp,
+            screenshotName = "insets_snackbar_compact_medium_noSnackbar",
             action = { },
         )
     }
 
+    /**
+     * Tests that the Snackbar is shown correctly on a phone-sized screen when the
+     * [SnackbarHostState.showSnackbar] method is called.
+     */
     @Test
     fun snackbarShown_phone() {
         val snackbarHostState = SnackbarHostState()
         testSnackbarScreenshotWithSize(
-            snackbarHostState,
-            400.dp,
-            500.dp,
-            "insets_snackbar_compact_medium",
+            snackbarHostState = snackbarHostState,
+            width = 400.dp,
+            height = 500.dp,
+            screenshotName = "insets_snackbar_compact_medium",
         ) {
             snackbarHostState.showSnackbar(
-                "This is a test snackbar message",
+                message = "This is a test snackbar message",
                 actionLabel = "Action Label",
                 duration = Indefinite,
             )
         }
     }
 
+    /**
+     * Tests that the Snackbar is correctly displayed on a foldable device.
+     */
     @Test
     fun snackbarShown_foldable() {
         val snackbarHostState = SnackbarHostState()
         testSnackbarScreenshotWithSize(
-            snackbarHostState,
-            600.dp,
-            600.dp,
-            "insets_snackbar_medium_medium",
+            snackbarHostState = snackbarHostState,
+            width = 600.dp,
+            height = 600.dp,
+            screenshotName = "insets_snackbar_medium_medium",
         ) {
             snackbarHostState.showSnackbar(
-                "This is a test snackbar message",
+                message = "This is a test snackbar message",
                 actionLabel = "Action Label",
                 duration = Indefinite,
             )
         }
     }
 
+    /**
+     * Tests that the Snackbar is correctly displayed on a tablet.
+     */
     @Test
     fun snackbarShown_tablet() {
         val snackbarHostState = SnackbarHostState()
         testSnackbarScreenshotWithSize(
-            snackbarHostState,
-            900.dp,
-            900.dp,
-            "insets_snackbar_expanded_expanded",
+            snackbarHostState = snackbarHostState,
+            width = 900.dp,
+            height = 900.dp,
+            screenshotName = "insets_snackbar_expanded_expanded",
         ) {
             snackbarHostState.showSnackbar(
-                "This is a test snackbar message",
+                message = "This is a test snackbar message",
                 actionLabel = "Action Label",
                 duration = Indefinite,
             )
         }
     }
 
+    /**
+     * Test a snackbar screenshot with a given size.
+     *
+     * @param snackbarHostState The snackbar host state.
+     * @param width The width of the device.
+     * @param height The height of the device.
+     * @param screenshotName The name of the screenshot.
+     * @param action The action to perform before taking the screenshot.
+     */
     private fun testSnackbarScreenshotWithSize(
         snackbarHostState: SnackbarHostState,
         width: Dp,
@@ -229,10 +289,10 @@ class SnackbarInsetsScreenshotTests {
                 scope = rememberCoroutineScope()
 
                 DeviceConfigurationOverride(
-                    DeviceConfigurationOverride.ForcedSize(DpSize(width, height)),
+                    DeviceConfigurationOverride.ForcedSize(size = DpSize(width, height)),
                 ) {
                     DeviceConfigurationOverride(
-                        DeviceConfigurationOverride.WindowInsets(
+                        override = DeviceConfigurationOverride.WindowInsets(
                             WindowInsetsCompat.Builder()
                                 .setInsets(
                                     WindowInsetsCompat.Type.statusBars(),
@@ -255,7 +315,7 @@ class SnackbarInsetsScreenshotTests {
                                 .build(),
                         ),
                     ) {
-                        BoxWithConstraints(Modifier.testTag("root")) {
+                        BoxWithConstraints(modifier = Modifier.testTag(tag = "root")) {
                             NiaTheme {
                                 val appState = rememberNiaAppState(
                                     networkMonitor = networkMonitor,
@@ -291,12 +351,21 @@ class SnackbarInsetsScreenshotTests {
 
         composeTestRule.onNodeWithTag("root")
             .captureRoboImage(
-                "src/testDemo/screenshots/$screenshotName.png",
+                filePath = "src/testDemo/screenshots/$screenshotName.png",
                 roborazziOptions = DefaultRoborazziOptions,
             )
     }
 }
 
+/**
+ * A composable function that displays visible window insets for debugging purposes.
+ * It draws rectangles representing the safe drawing insets (status bar, navigation bar, etc.)
+ * on the screen.
+ *
+ * @param modifier The modifier to be applied to the layout.
+ * @param debugColor The color used to draw the debug rectangles.
+ * Defaults to a semi-transparent magenta.
+ */
 @Composable
 fun DebugVisibleWindowInsets(
     modifier: Modifier = Modifier,
@@ -305,39 +374,52 @@ fun DebugVisibleWindowInsets(
     Box(modifier = modifier.fillMaxSize()) {
         Spacer(
             modifier = Modifier
-                .align(Alignment.CenterStart)
+                .align(alignment = Alignment.CenterStart)
                 .fillMaxHeight()
-                .windowInsetsStartWidth(WindowInsets.safeDrawing)
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical))
-                .background(debugColor),
+                .windowInsetsStartWidth(insets = WindowInsets.safeDrawing)
+                .windowInsetsPadding(insets = WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical))
+                .background(color = debugColor),
         )
         Spacer(
             modifier = Modifier
-                .align(Alignment.CenterEnd)
+                .align(alignment = Alignment.CenterEnd)
                 .fillMaxHeight()
-                .windowInsetsEndWidth(WindowInsets.safeDrawing)
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical))
-                .background(debugColor),
+                .windowInsetsEndWidth(insets = WindowInsets.safeDrawing)
+                .windowInsetsPadding(insets = WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical))
+                .background(color = debugColor),
         )
         Spacer(
             modifier = Modifier
-                .align(Alignment.TopCenter)
+                .align(alignment = Alignment.TopCenter)
                 .fillMaxWidth()
-                .windowInsetsTopHeight(WindowInsets.safeDrawing)
-                .background(debugColor),
+                .windowInsetsTopHeight(insets = WindowInsets.safeDrawing)
+                .background(color = debugColor),
         )
         Spacer(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .align(alignment = Alignment.BottomCenter)
                 .fillMaxWidth()
-                .windowInsetsBottomHeight(WindowInsets.safeDrawing)
-                .background(debugColor),
+                .windowInsetsBottomHeight(insets = WindowInsets.safeDrawing)
+                .background(color = debugColor),
         )
     }
 }
 
+/**
+ * Converts a [DpRect] to an [Insets] object using the current [Density].
+ * This is a convenience composable function that retrieves the current density from the
+ * [LocalDensity] composition local.
+ *
+ * @return The [Insets] object representing the [DpRect] in pixels.
+ */
 @Composable
-private fun DpRect.toInsets() = toInsets(LocalDensity.current)
+private fun DpRect.toInsets(): Insets = toInsets(LocalDensity.current)
 
-private fun DpRect.toInsets(density: Density) =
+/**
+ * Converts a [DpRect] to an [Insets] object using the provided [Density].
+ *
+ * @param density The density to use for the conversion.
+ * @return The [Insets] object representing the [DpRect] in pixels.
+ */
+private fun DpRect.toInsets(density: Density): Insets =
     Insets.of(with(density) { toRect() }.roundToIntRect().toAndroidRect())

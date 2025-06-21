@@ -94,14 +94,51 @@ class NavigationTest {
     lateinit var newsRepository: NewsRepository
 
     // The strings used for matching in these tests
+
+    /**
+     * String resource for the `ContentDescription` of the navigate up arrow.
+     */
     private val navigateUp by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_navigate_up)
+
+    /**
+     * String resource for the "For you" destination.
+     */
     private val forYou by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_title)
+
+    /**
+     * String resource for the "Interests" destination.
+     */
     private val interests by composeTestRule.stringResource(FeatureSearchR.string.feature_search_interests)
+
+    /**
+     * The name of a sample topic ("Headlines") that is used for testing.
+     */
     private val sampleTopic = "Headlines"
+
+    /**
+     * String resource for the name of the app that appears in the top bar of the first screen
+     * ("Now in Android").
+     */
     private val appName by composeTestRule.stringResource(R.string.app_name)
+
+    /**
+     * String resource for the "Saved" destination.
+     */
     private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_title)
+
+    /**
+     * String resource for the "Settings" icon.
+     */
     private val settings by composeTestRule.stringResource(SettingsR.string.feature_settings_top_app_bar_action_icon_description)
+
+    /**
+     * String resource for the "Android" brand. Used to check that the settings dialog is shown.
+     */
     private val brand by composeTestRule.stringResource(SettingsR.string.feature_settings_brand_android)
+
+    /**
+     * String resource for the "OK" button in the settings dialog.
+     */
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
 
     /**
@@ -125,7 +162,8 @@ class NavigationTest {
 
     // TODO: implement tests related to navigation & resetting of destinations (b/213307564)
     // Restoring content should be tested with another tab than the For You one, as that will
-    // still succeed even when restoring state is turned off.
+    // still succeed even when restoring state is turned off
+
     /**
      * When navigating between the different top level destinations, we should restore the state
      * of previously visited destinations.
