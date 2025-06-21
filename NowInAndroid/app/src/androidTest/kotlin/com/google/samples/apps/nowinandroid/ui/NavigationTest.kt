@@ -39,6 +39,7 @@ import com.google.samples.apps.nowinandroid.MainActivity
 import com.google.samples.apps.nowinandroid.R
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
+import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.core.rules.GrantPostNotificationsPermissionRule
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -74,15 +75,21 @@ class NavigationTest {
         GrantPostNotificationsPermissionRule()
 
     /**
-     * Use the primary activity to initialize the app normally.
+     * Use the primary activity [MainActivity] to initialize the app normally.
      */
     @get:Rule(order = 2)
     val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity> =
         createAndroidComposeRule<MainActivity>()
 
+    /**
+     * Repository for the available [Topic]s
+     */
     @Inject
     lateinit var topicsRepository: TopicsRepository
 
+    /**
+     * Data layer implementation for [NewsResource]
+     */
     @Inject
     lateinit var newsRepository: NewsRepository
 
@@ -97,14 +104,22 @@ class NavigationTest {
     private val brand by composeTestRule.stringResource(SettingsR.string.feature_settings_brand_android)
     private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_dismiss_dialog_button_text)
 
+    /**
+     * Annotating a public void method with @Before causes that method to be run before the Test
+     * method. We call the [HiltAndroidRule.inject] method of our [HiltAndroidRule] property
+     * [hiltRule] to complete Dagger injection.
+     */
     @Before
     fun setup(): Unit = hiltRule.inject()
 
+    /**
+     * Tests whether the first screen displayed is the "For you" screen (`ForYouScreen`)
+     */
     @Test
     fun firstScreen_isForYou() {
         composeTestRule.apply {
             // VERIFY for you is selected
-            onNodeWithText(forYou).assertIsSelected()
+            onNodeWithText(text = forYou).assertIsSelected()
         }
     }
 
@@ -169,6 +184,9 @@ class NavigationTest {
         }
     }
 
+    /**
+     * Verifies behavior of the top bar.
+     */
     @Test
     fun topLevelDestinations_showTopBarWithTitle() {
         composeTestRule.apply {
@@ -187,6 +205,9 @@ class NavigationTest {
         }
     }
 
+    /**
+     * Verifies that the top level destinations display the "Settings" icon.
+     */
     @Test
     fun topLevelDestinations_showSettingsIcon() {
         composeTestRule.apply {
@@ -200,6 +221,9 @@ class NavigationTest {
         }
     }
 
+    /**
+     * Verifies that when the "Settings" icon is clicked the settings dialog is shown.
+     */
     @Test
     fun whenSettingsIconIsClicked_settingsDialogIsShown() {
         composeTestRule.apply {
@@ -210,6 +234,9 @@ class NavigationTest {
         }
     }
 
+    /**
+     * Verifies that when the settings dialog is dismissed, the previous screen is displayed.
+     */
     @Test
     fun whenSettingsDialogDismissed_previousScreenIsDisplayed() {
         composeTestRule.apply {
@@ -256,6 +283,9 @@ class NavigationTest {
         }
     }
 
+    /**
+     * Verifies that multiple back stacks are handled properly.
+     */
     @Test
     fun navigationBar_multipleBackStackInterests() {
         composeTestRule.apply {
@@ -279,16 +309,19 @@ class NavigationTest {
         }
     }
 
+    /**
+     * Verifies that navigating to a [Topic] from the `ForYouScreen` will show the topic details.
+     */
     @Test
     fun navigatingToTopicFromForYou_showsTopicDetails() {
         composeTestRule.apply {
             // Get the first news resource
-            val newsResource = runBlocking {
+            val newsResource: NewsResource = runBlocking {
                 newsRepository.getNewsResources().first().first()
             }
 
             // Get its first topic and follow it
-            val topic = newsResource.topics.first()
+            val topic: Topic = newsResource.topics.first()
             onNodeWithText(topic.name).performClick()
 
             // Get the news feed and scroll to the news resource

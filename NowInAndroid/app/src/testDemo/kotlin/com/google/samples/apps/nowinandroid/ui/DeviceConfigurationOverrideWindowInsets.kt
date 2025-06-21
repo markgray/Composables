@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.ui
 
+import android.content.Context
 import android.view.WindowInsets
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,21 +29,31 @@ import androidx.core.view.children
 
 /**
  * A [DeviceConfigurationOverride] that overrides the window insets for the contained content.
+ *
+ * @param windowInsets
  */
 @Suppress("ktlint:standard:function-naming", "TestFunctionName")
 fun DeviceConfigurationOverride.Companion.WindowInsets(
     windowInsets: WindowInsetsCompat,
 ): DeviceConfigurationOverride = DeviceConfigurationOverride { contentUnderTest ->
-    val currentContentUnderTest by rememberUpdatedState(contentUnderTest)
-    val currentWindowInsets by rememberUpdatedState(windowInsets)
+    val currentContentUnderTest: @Composable (() -> Unit) by rememberUpdatedState(contentUnderTest)
+    val currentWindowInsets: WindowInsetsCompat by rememberUpdatedState(windowInsets)
     AndroidView(
-        factory = { context ->
+        factory = { context: Context ->
             object : AbstractComposeView(context) {
+                /**
+                 * The Jetpack Compose UI content for this view. Subclasses must implement this
+                 * method to provide content. Initial composition will occur when the view becomes
+                 * attached to a window or when createComposition is called, whichever comes first.
+                 */
                 @Composable
                 override fun Content() {
                     currentContentUnderTest()
                 }
 
+                /**
+                 * Applies [WindowInsets] parameter [insets] to all of its children
+                 */
                 override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
                     children.forEach {
                         it.dispatchApplyWindowInsets(

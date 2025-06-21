@@ -51,7 +51,7 @@ class NiaApplication : Application(), ImageLoaderFactory {
      * call [setStrictModePolicy] to set a thread policy that detects all potential problems on the
      * main thread, such as network and disk access. If a problem is found, the offending call will
      * be logged and the application will be killed. Then we call the [Sync.initialize] method to
-     * initialize Sync; the system responsible for keeping data in the app up to date. Finally we
+     * initialize Sync: the system responsible for keeping data in the app up to date. Finally we
      * call the [profileVerifierLogger] method to log the profile verification status.
      */
     override fun onCreate() {
