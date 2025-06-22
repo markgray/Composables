@@ -113,7 +113,7 @@ class NiaAppScreenSizesScreenshotTests {
     lateinit var topicsRepository: TopicsRepository
 
     /**
-     * Repository for accessing and managing [UserNewsResource]. Injected by Hilt.
+     * Repository for accessing and managing [UserNewsResource] data. Injected by Hilt.
      */
     @Inject
     lateinit var userNewsResourceRepository: UserNewsResourceRepository
@@ -329,6 +329,12 @@ class NiaAppScreenSizesScreenshotTests {
         )
     }
 
+    /**
+     * Tests that the navigation rail is shown when the screen height is expanded.
+     * The test uses a screen size of 900.dp width and 1000,dp height.
+     * It captures a screenshot of the UI and saves it as
+     * "expandedWidth_expandedHeight_showsNavigationRail.png"
+     */
     @Test
     fun expandedWidth_expandedHeight_showsNavigationRail() {
         testNiaAppScreenshotWithSize(

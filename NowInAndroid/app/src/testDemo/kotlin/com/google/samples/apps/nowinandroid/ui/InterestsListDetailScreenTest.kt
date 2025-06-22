@@ -48,8 +48,6 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.test.assertTrue
 import com.google.samples.apps.nowinandroid.feature.topic.R as FeatureTopicR
 
-// TODO: Continue here on i7
-
 /**
  * The screen dimension to use for tests that require a width where both panes are visible.
  * This is an arbitrary dimension chosen from the values defined in
@@ -66,7 +64,7 @@ private const val COMPACT_WIDTH = "w412dp-h915dp"
 
 /**
  * UI tests for [InterestsListDetailScreen]. This test class thoroughly verifies the UI behavior of
- * the InterestsListDetailScreen under different screen width configurations and user interactions
+ * the [InterestsListDetailScreen] under different screen width configurations and user interactions
  * (selecting a topic, pressing the back button). It uses Hilt for dependency injection, Robolectric
  * for running tests on the JVM, and Jetpack Compose testing APIs to interact with and assert the
  * state of the UI.
@@ -100,7 +98,8 @@ class InterestsListDetailScreenTest {
     lateinit var topicsRepository: TopicsRepository
 
     /**
-     * Retrieves a list of [Topic]s from the [TopicsRepository] synchronously.
+     * Retrieves a list of [Topic]s from the [TopicsRepository] synchronously sorted by the
+     * [Topic.name].
      */
     private fun getTopics(): List<Topic> = runBlocking {
         topicsRepository.getTopics().first().sortedBy { it.name }
@@ -211,8 +210,8 @@ class InterestsListDetailScreenTest {
     }
 
     /**
-     * Test for verifying the behavior of InterestsListDetailScreen on a compact width device when a
-     * topic is selected.
+     * Test for verifying the behavior of [InterestsListDetailScreen] on a compact width device when
+     * a topic is selected.
      *
      * This test checks that:
      *  - After selecting a topic, the list pane (identified by [listPaneTag]) is NOT displayed.

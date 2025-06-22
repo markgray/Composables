@@ -107,7 +107,7 @@ class SnackbarScreenshotTests {
     lateinit var timeZoneMonitor: TimeZoneMonitor
 
     /**
-     * Repository for accessing and managing [UserData]. Injected by Hilt.
+     * Repository for accessing and managing [UserData] data. Injected by Hilt.
      */
     @Inject
     lateinit var userDataRepository: FakeUserDataRepository
@@ -119,7 +119,7 @@ class SnackbarScreenshotTests {
     lateinit var topicsRepository: TopicsRepository
 
     /**
-     * Repository for accessing and managing [UserNewsResource]. Injected by Hilt.
+     * Repository for accessing and managing [UserNewsResource] data. Injected by Hilt.
      */
     @Inject
     lateinit var userNewsResourceRepository: UserNewsResourceRepository

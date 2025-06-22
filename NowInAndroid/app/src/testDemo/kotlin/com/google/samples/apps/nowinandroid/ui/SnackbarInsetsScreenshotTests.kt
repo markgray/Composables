@@ -147,7 +147,7 @@ class SnackbarInsetsScreenshotTests {
     lateinit var topicsRepository: TopicsRepository
 
     /**
-     * Repository for accessing and managing [UserNewsResource]. Injected by Hilt.
+     * Repository for accessing and managing [UserNewsResource] data. Injected by Hilt.
      */
     @Inject
     lateinit var userNewsResourceRepository: UserNewsResourceRepository
