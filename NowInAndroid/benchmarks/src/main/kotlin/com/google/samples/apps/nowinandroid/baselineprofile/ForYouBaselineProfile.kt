@@ -26,13 +26,15 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * Baseline Profile of the "For You" screen
+ * Generates a baseline profile of the "For You" screen.
+ * TODO: Continue here.
  */
 class ForYouBaselineProfile {
-    @get:Rule val baselineProfileRule = BaselineProfileRule()
+    @get:Rule
+    val baselineProfileRule: BaselineProfileRule = BaselineProfileRule()
 
     @Test
-    fun generate() =
+    fun generate(): Unit =
         baselineProfileRule.collect(PACKAGE_NAME) {
             startActivityAndAllowNotifications()
 

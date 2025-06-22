@@ -16,6 +16,7 @@
 
 package androidx.test.uiautomator
 
+import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.uiautomator.HasChildrenOp.AT_LEAST
 import androidx.test.uiautomator.HasChildrenOp.AT_MOST
 import androidx.test.uiautomator.HasChildrenOp.EXACTLY
@@ -24,7 +25,13 @@ import androidx.test.uiautomator.HasChildrenOp.EXACTLY
 // because the abstract class has package local method that needs to be implemented.
 
 /**
- * Condition will be satisfied if given element has specified count of children
+ * Returns a [Condition] that is satisfied when the element has the specified number of children.
+ * Used by the [MacrobenchmarkScope] `forYouWaitForContent` extension function that is defined
+ * in the file `ForYouActions.kt` which just uses the default values.
+ *
+ * @param childCount The number of children to check for. Defaults to 1.
+ * @param op The comparison operator to use when checking the child count. Defaults to [AT_LEAST].
+ * @return A [Condition] that is satisfied when the element has the specified number of children.
  */
 fun untilHasChildren(
     childCount: Int = 1,
@@ -37,6 +44,9 @@ fun untilHasChildren(
     }
 }
 
+/**
+ * Enum for specifying the comparison operator to use when checking the child count.
+ */
 enum class HasChildrenOp {
     AT_LEAST,
     EXACTLY,
