@@ -27,12 +27,35 @@ import org.junit.Test
 
 /**
  * Generates a baseline profile of the "For You" screen.
- * TODO: Continue here.
  */
 class ForYouBaselineProfile {
+    /**
+     * This rule provides a way to interact with the app under test and write a
+     * baseline profile to a file. It also comes with running the baseline profile generation
+     * through a [CompilationMode][androidx.benchmark.macro.CompilationMode] that is optimized
+     * for generating profiles.
+     *
+     * So, this rule will do the following:
+     *  1. Kill the app under test.
+     *  2. Clear profile data to ensure clean state.
+     *  3. Terminate the app under test.
+     *  4. Build the baseline profile.
+     *  5. Apply the baseline profile.
+     *  6. Verify the baseline profile.
+     */
     @get:Rule
     val baselineProfileRule: BaselineProfileRule = BaselineProfileRule()
 
+    /**
+     * Generates a baseline profile for the "For You" screen.
+     * This function collects baseline profile data by simulating user interactions on the
+     * "For You" screen.
+     * It includes the following steps:
+     *  1. Starts the activity and allows notifications.
+     *  2. Waits for content to load on the "For You" screen.
+     *  3. Selects topics on the "For You" screen.
+     *  4. Scrolls the feed down and up on the "For You" screen.
+     */
     @Test
     fun generate(): Unit =
         baselineProfileRule.collect(PACKAGE_NAME) {

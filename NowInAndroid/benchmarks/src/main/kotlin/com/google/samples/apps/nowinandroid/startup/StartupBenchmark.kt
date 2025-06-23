@@ -39,22 +39,22 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class StartupBenchmark {
     @get:Rule
-    val benchmarkRule = MacrobenchmarkRule()
+    val benchmarkRule: MacrobenchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun startupWithoutPreCompilation() = startup(CompilationMode.None())
+    fun startupWithoutPreCompilation(): Unit = startup(CompilationMode.None())
 
     @Test
-    fun startupWithPartialCompilationAndDisabledBaselineProfile() = startup(
+    fun startupWithPartialCompilationAndDisabledBaselineProfile(): Unit = startup(
         CompilationMode.Partial(baselineProfileMode = Disable, warmupIterations = 1),
     )
 
     @Test
-    fun startupPrecompiledWithBaselineProfile() =
+    fun startupPrecompiledWithBaselineProfile(): Unit =
         startup(CompilationMode.Partial(baselineProfileMode = Require))
 
     @Test
-    fun startupFullyPrecompiled() = startup(CompilationMode.Full())
+    fun startupFullyPrecompiled(): Unit = startup(CompilationMode.Full())
 
     private fun startup(compilationMode: CompilationMode) = benchmarkRule.measureRepeated(
         packageName = PACKAGE_NAME,

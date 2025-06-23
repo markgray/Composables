@@ -27,7 +27,7 @@ import java.io.ByteArrayOutputStream
 /**
  * Convenience parameter to use proper package name with regards to build type and build flavor.
  */
-val PACKAGE_NAME = buildString {
+val PACKAGE_NAME: String = buildString {
     append("com.google.samples.apps.nowinandroid")
     append(BuildConfig.APP_FLAVOR_SUFFIX)
 }
@@ -56,6 +56,7 @@ fun UiDevice.waitAndFindObject(selector: BySelector, timeout: Long): UiObject2 {
 /**
  * Helper to dump window hierarchy into a string.
  */
+@Suppress("unused")
 fun UiDevice.dumpWindowHierarchy(): String {
     val buffer = ByteArrayOutputStream()
     dumpWindowHierarchy(buffer)

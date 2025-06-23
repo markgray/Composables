@@ -18,11 +18,28 @@ package com.google.samples.apps.nowinandroid.bookmarks
 
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.uiautomator.By
+import androidx.test.uiautomator.BySelector
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiObject2
 import com.google.samples.apps.nowinandroid.waitForObjectOnTopAppBar
 
+/**
+ * Navigates to the "Saved" screen (Bookmarks) from the bottom navigation bar.
+ * It waits until the screen is idle and the "Saved" title is visible in the top app bar.
+ *
+ * We start by initializing our [BySelector] variable `savedSelector` to a new [BySelector] setting
+ * its text value criteria to the [String] "Saved". We initialize our [UiObject2] variable `savedButton`
+ * to the first object to match the [BySelector] variable `savedSelector` selector criteria using the
+ * [UiDevice.findObject] method (or null if no matching objects are found). Next, we click on the
+ * [UiObject2] variable `savedButton` using the [UiObject2.click] method, and then wait for the
+ * device to be idle using the [UiDevice.waitForIdle] method. Finally, we call the
+ * [waitForObjectOnTopAppBar] method with the [BySelector] variable `savedSelector` to wait until
+ * the "Saved" title is visible in the top app bar.
+ *
+ */
 fun MacrobenchmarkScope.goToBookmarksScreen() {
-    val savedSelector = By.text("Saved")
-    val savedButton = device.findObject(savedSelector)
+    val savedSelector: BySelector = By.text("Saved")
+    val savedButton: UiObject2 = device.findObject(savedSelector)
     savedButton.click()
     device.waitForIdle()
     // Wait until saved title are shown on screen

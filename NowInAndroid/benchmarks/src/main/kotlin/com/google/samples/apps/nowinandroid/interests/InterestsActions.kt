@@ -18,10 +18,20 @@ package com.google.samples.apps.nowinandroid.interests
 
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.uiautomator.By
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
 import com.google.samples.apps.nowinandroid.flingElementDownUp
 import com.google.samples.apps.nowinandroid.waitForObjectOnTopAppBar
 
+/**
+ * Navigates to the Interests screen and waits for it to load.
+ *
+ * First we use the [UiDevice.findObject] method to find the [UiObject2] with the text "Interests"
+ * and click on it, we wait for the [UiDevice] to be idle then we wait for the top app bar to be
+ * visible on screen displaying the text "Interests". Finally we wait for the "loadingWheel" to
+ * disappear.
+ */
 fun MacrobenchmarkScope.goToInterestsScreen() {
     device.findObject(By.text("Interests")).click()
     device.waitForIdle()
@@ -32,6 +42,10 @@ fun MacrobenchmarkScope.goToInterestsScreen() {
     device.wait(Until.gone(By.res("loadingWheel")), 5_000)
 }
 
+/**
+ * Scrolls the interests topics list down and up.
+ * TODO: Continue here.
+ */
 fun MacrobenchmarkScope.interestsScrollTopicsDownUp() {
     device.wait(Until.hasObject(By.res("interests:topics")), 5_000)
     val topicsList = device.findObject(By.res("interests:topics"))

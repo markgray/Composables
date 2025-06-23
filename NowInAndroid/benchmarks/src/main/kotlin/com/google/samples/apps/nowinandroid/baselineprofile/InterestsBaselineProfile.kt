@@ -28,10 +28,32 @@ import org.junit.Test
  * Baseline Profile of the "Interests" screen
  */
 class InterestsBaselineProfile {
-    @get:Rule val baselineProfileRule = BaselineProfileRule()
+    /**
+     * This rule provides a way to interact with the app under test and write a
+     * baseline profile to a file. It also comes with running the baseline profile generation
+     * through a [CompilationMode][androidx.benchmark.macro.CompilationMode] that is optimized
+     * for generating profiles.
+     *
+     * So, this rule will do the following:
+     *  1. Kill the app under test.
+     *  2. Clear profile data to ensure clean state.
+     *  3. Terminate the app under test.
+     *  4. Build the baseline profile.
+     *  5. Apply the baseline profile.
+     *  6. Verify the baseline profile.
+     */
+    @get:Rule
+    val baselineProfileRule: BaselineProfileRule = BaselineProfileRule()
 
+    /**
+     * Generates a baseline profile for the "Interests" screen.
+     * This test will:
+     *  1. Start the app and allow notifications.
+     *  2. Navigate to the "Interests" screen.
+     *  3. Scroll down and up through the topics on the "Interests" screen.
+     */
     @Test
-    fun generate() =
+    fun generate(): Unit =
         baselineProfileRule.collect(PACKAGE_NAME) {
             startActivityAndAllowNotifications()
 
