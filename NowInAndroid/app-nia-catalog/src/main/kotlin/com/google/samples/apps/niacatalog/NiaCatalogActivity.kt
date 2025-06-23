@@ -18,6 +18,7 @@ package com.google.samples.apps.niacatalog
 
 import android.os.Bundle
 import android.view.Window
+import androidx.core.view.WindowInsetsCompat
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
@@ -39,8 +40,8 @@ class NiaCatalogActivity : ComponentActivity() {
      *
      * First we call our super's implementation of `onCreate`. Then we call the method
      * [WindowCompat.setDecorFitsSystemWindows] with the current [Window] as its `window` argument
-     * and `false` as its `decorFitsSystemWindows` argument. (If set to false, the framework will
-     * not fit the content view to the insets and will just pass through the WindowInsetsCompat to
+     * and `false` as its `decorFitsSystemWindows` argument. (If set to `false`, the framework will
+     * not fit the content view to the insets and will just pass through the [WindowInsetsCompat] to
      * the content view). Then we call the method [setContent] with the [NiaCatalog] composable as
      * its `content` composable lambda argument.
      *

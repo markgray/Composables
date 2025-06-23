@@ -68,7 +68,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  * whose `left` argument is `16.dp`, `top` argument is `16.dp`, `right` argument is `16.dp`, and
  * `bottom` argument is `16.dp`, to which we chain a [WindowInsets.asPaddingValues] to convert the
  * [WindowInsets] to [PaddingValues]. Then we compose a [LazyColumn] with its `modifier` argument
- * [Modifier.fillMaxSize()], `contentPadding` argument `contentPadding`, and `verticalArrangement`
+ * [Modifier.fillMaxSize], `contentPadding` argument `contentPadding`, and `verticalArrangement`
  * argument [Arrangement.spacedBy] with its `space` argument `16.dp`. In its [LazyListScope] `content`
  * composable lambda argument we:
  *
@@ -84,11 +84,13 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  * we compose a [FlowRow] with its `horizontalArrangement` argument [Arrangement.spacedBy] with its
  * `space` argument `16.dp`. In its [FlowRowScope] `content` composable lambda argument we compose:
  *  1. a [NiaButton] with its `onClick` argument a do-nothing lambda, and in its [RowScope] `content`
- *  composable lambda argument a [Text] with its `text` argument the [String] "Enabled".
+ *  composable lambda argument we compose a [Text] with its `text` argument the [String] "Enabled".
  *  2. a [NiaOutlinedButton] with its `onClick` argument a do-nothing lambda, and in its [RowScope]
- *  `content` composable lambda argument a [Text] with its `text` argument the [String] "Enabled".
+ *  `content` composable lambda argument we compose a [Text] with its `text` argument the [String]
+ *  "Enabled".
  *  3. a [NiaTextButton] with its `onClick` argument a do-nothing lambda, and in its [RowScope]
- *  `content` composable lambda argument a [Text] with its `text` argument the [String] "Enabled".
+ *  `content` composable lambda argument we compose a [Text] with its `text` argument the [String]
+ *  "Enabled".
  *
  * **Fourth**: Compose an [LazyListScope.item] in whose [LazyItemScope] `content` composable lambda
  * argument we compose a [Text] with its `text` argument "Disabled buttons", and its `modifier`
@@ -98,14 +100,14 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  * we compose a [FlowRow] with its `horizontalArrangement` argument [Arrangement.spacedBy] with its
  * `space` argument `16.dp`. In its [FlowRowScope] `content` composable lambda argument we compose:
  *  1. a [NiaButton] with its `onClick` argument a do-nothing lambda, its `enabled` argument set
- *  to `false`, and in its [RowScope] `content` composable lambda argument a [Text] with its
- *  `text` argument the [String] "Disabled".
+ *  to `false`, and in its [RowScope] `content` composable lambda argument we compose a [Text] with
+ *  its `text` argument the [String] "Disabled".
  *  2. a [NiaOutlinedButton] with its `onClick` argument a do-nothing lambda, its `enabled`
- *  argument set to `false`, and in its [RowScope] `content` composable lambda argument a [Text]
- *  with its `text` argument the [String] "Disabled".
+ *  argument set to `false`, and in its [RowScope] `content` composable lambda argument we compose a
+ *  [Text] with its `text` argument the [String] "Disabled".
  *  3. a [NiaTextButton] with its `onClick` argument a do-nothing lambda, its `enabled` argument
- *  set to `false`, and in its [RowScope] `content` composable lambda argument a [Text] with its
- *  `text` argument the [String] "Disabled".
+ *  set to `false`, and in its [RowScope] `content` composable lambda argument we compose a [Text]
+ *  with its `text` argument the [String] "Disabled".
  *
  * **Sixth**: Compose an [LazyListScope.item] in whose [LazyItemScope] `content` composable lambda
  * argument we compose a [Text] with its `text` argument "Buttons with leading icons", and its
@@ -180,12 +182,14 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  * argument a [Modifier.padding] with its `top` argument `16.dp`.
  *
  * **Fourteenth**: Compose an [LazyListScope.item] in whose [LazyItemScope] `content` composable
+ * lambda argument we compose a [FlowRow] with its `horizontalArrangement` argument is an
+ * [Arrangement.spacedBy] whose `space` argument is `16.dp`. In its [FlowRowScope] `content` we
  * we first initialize and [rememberSaveable] our [MutableState] wrapped [Boolean] variable
  * `firstChecked` to `false`, and then compose:
  *  1. a [NiaIconToggleButton] with its `checked` argument set to `firstChecked`, its `onCheckedChange`
  *  argument a lambda whose that sets `firstChecked` to the [Boolean] passed the lambda, its `icon`
  *  argument set to an [Icon] whose `imageVector` argument is the [ImageVector] drawn by
- *  [NiaIcons.BookmarkBorder], and whose `contentDescription` argument is `null`, The `checkedIcon`
+ *  [NiaIcons.BookmarkBorder], and whose `contentDescription` argument is `null`. The `checkedIcon`
  *  argument of the [NiaIconToggleButton] is set to an [Icon] whose `imageVector` argument is the
  *  [ImageVector] drawn by [NiaIcons.Bookmark], and whose `contentDescription` argument is `null`.
  *  2. we initialize and [rememberSaveable] our [MutableState] wrapped [Boolean] variable
@@ -195,8 +199,14 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  *  [NiaIcons.BookmarkBorder], and whose `contentDescription` argument is `null`, The `checkedIcon`
  *  argument of the [NiaIconToggleButton] is set to an [Icon] whose `imageVector` argument is the
  *  [ImageVector] drawn by [NiaIcons.Bookmark], and whose `contentDescription` argument is `null`.
- *  The `enabled` argument of the [NiaIconToggleButton] is set to `false`.
- *  3. a [NiaIconToggleButton] with its `checked` argument set to `true`, its `onCheckedChange`
+ *  3. a [NiaIconToggleButton] with its `checked` argument set to `false`, its `onCheckedChange`
+ *  argument set to a do-nothing lambda, its `icon` argument set to an [Icon] whose `imageVector`
+ *  argument is the [ImageVector] drawn by [NiaIcons.BookmarkBorder], and whose `contentDescription`
+ *  argument is `null`, The `checkedIcon` argument of the [NiaIconToggleButton] is set to an [Icon]
+ *  whose `imageVector` argument is the [ImageVector] drawn by [NiaIcons.Bookmark], and whose
+ *  `contentDescription` argument is `null`. The `enabled` argument of the [NiaIconToggleButton] is
+ *  set to `false`.
+ *  4. a [NiaIconToggleButton] with its `checked` argument set to `true`, its `onCheckedChange`
  *  argument set to a do-nothing lambda, its `icon` argument set to an [Icon] whose `imageVector`
  *  argument is the [ImageVector] drawn by [NiaIcons.BookmarkBorder], and whose `contentDescription`
  *  argument is `null`, The `checkedIcon` argument of the [NiaIconToggleButton] is set to an [Icon]
@@ -209,6 +219,8 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  * argument a [Modifier.padding] with its `top` argument `16.dp`.
  *
  * **Sixteenth**: Compose an [LazyListScope.item] in whose [LazyItemScope] `content` composable
+ * lambda argument we compose a [FlowRow] with its `horizontalArrangement` argument is an
+ * [Arrangement.spacedBy] whose `space` argument is `16.dp`. In its [FlowRowScope] `content`
  * lambda argument we first initialize and [rememberSaveable] our [MutableState] wrapped [Boolean]
  * variable `firstSelected` to `false`, and then compose:
  *  1. a [NiaViewToggleButton] with its `expanded` argument set to `firstExpanded`, its
@@ -233,9 +245,9 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  * a [Modifier.padding] with its `top` argument `16.dp`.
  *
  * **Eighteenth**: Compose an [LazyListScope.item] in whose [LazyItemScope] `content` composable
- * lambda argument we compose a [FlowRow] with its `horizontalArrangement` argument is an
- * [Arrangement.spacedBy] whose `space` argument is `16.dp`. In its [FlowRowScope] `content` we
- * compose:
+ * lambda argument we compose a [FlowRow] with its `horizontalArrangement` argument an
+ * [Arrangement.spacedBy] whose `space` argument is `16.dp`. In its [FlowRowScope] `content`
+ * composable lambda argument we compose:
  *  1. a [NiaTopicTag] with its `followed` argument set to `true`, its `onClick` argument a
  *  do-nothing lambda, and its `text` argument set to a [Text] whose `text` argument is the [String]
  *  "Topic 1" converted to uppercase.
@@ -254,14 +266,14 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  * **Twentieth**: Compose an [LazyListScope.item] in whose [LazyItemScope] `content` composable
  * lambda argument we first initialize and [rememberSaveable] our [MutableState] wrapped [Int]
  * variable `selectedTab` to `0`, and initialize our [List] of [String] variable `tabTitles` to the
- * [List] ("Topics", "People"). Then compose a [NiaTabRow] with its `selectedTabIndex` argument set
- * to `selectedTab`, and in its `tabs` composable lambda argument we use the [Iterable.forEachIndexed]
- * method of [List] of [String] variable `tabTitles` to loop through all of the [String]s in
- * [List] of [String] variable `tabTitles` capturing the index in variable `index` and the [String]
- * in variable `title`. Then we compose a [NiaTab] whose `selected` argument is `true` if `selectedTab`
- * is equal to `index`, and whose `onClick` argument is a lambda whose that sets `selectedTab` to
- * `index`, and whose `text` argument is a [Text] whose `text` argument is the [String] in [String]
- * variable `title`.
+ * [List] ("Topics", "People"). Then we compose a [NiaTabRow] with its `selectedTabIndex` argument
+ * set to `selectedTab`, and in its `tabs` composable lambda argument we use the
+ * [Iterable.forEachIndexed] method of [List] of [String] variable `tabTitles` to loop through all
+ * of the [String]s in [List] of [String] variable `tabTitles` capturing the index in variable `index`
+ * and the [String] in variable `title`. Then we compose a [NiaTab] whose `selected` argument is
+ * `true` if `selectedTab` is equal to `index`, and whose `onClick` argument is a lambda whose that
+ * sets `selectedTab` to `index`, and whose `text` argument is a [Text] whose `text` argument is the
+ * [String] in [String] variable `title`.
  *
  * **Twenty first**: Compose an [LazyListScope.item] in whose [LazyItemScope] `content` composable
  * lambda argument we compose a [Text] with its `text` argument "Navigation", and its `modifier`
