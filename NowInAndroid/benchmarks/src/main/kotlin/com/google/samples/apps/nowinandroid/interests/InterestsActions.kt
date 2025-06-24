@@ -44,7 +44,12 @@ fun MacrobenchmarkScope.goToInterestsScreen() {
 
 /**
  * Scrolls the interests topics list down and up.
- * TODO: Continue here.
+ *
+ * We start by using the [UiDevice.wait] method to wait for the object with the resource name
+ * "interests:topics" to appear on screen. Then we initialize our [UiObject2] variable `topicsList`
+ * to the [UiObject2] that the [UiDevice.findObject] method returns that matches the resource
+ * name criteria of the [String] "interests:topics". Finally we call the [UiDevice.flingElementDownUp]
+ * method of our [UiDevice] to fling the [UiObject2] variable `topicsList` down and up.
  */
 fun MacrobenchmarkScope.interestsScrollTopicsDownUp() {
     device.wait(Until.hasObject(By.res("interests:topics")), 5_000)
@@ -52,10 +57,25 @@ fun MacrobenchmarkScope.interestsScrollTopicsDownUp() {
     device.flingElementDownUp(topicsList)
 }
 
+/**
+ * Waits for the topics to be displayed on screen.
+ *
+ * We wait for the [UiDevice] to find the [UiObject2] that contains the text "Accessibility", waiting
+ * for at most 30 seconds.
+ */
 fun MacrobenchmarkScope.interestsWaitForTopics() {
     device.wait(Until.hasObject(By.text("Accessibility")), 30_000)
 }
 
+/**
+ * Finds the first topic item that is checkable and clicks it.
+ *
+ * We initialize our [UiObject2] variable `topicsList` to the [UiObject2] that the [UiDevice.findObject]
+ * method finds with the resource id "interests:topics" and then we initialize our [UiObject2]
+ * variable `checkable` to the [UiObject2] that the [UiObject2.findObject] method finds that is a
+ * checkable item in `topicsList`. We then click on the `checkable` item and wait for the [UiDevice]
+ * to be idle.
+ */
 fun MacrobenchmarkScope.interestsToggleBookmarked() {
     val topicsList = device.findObject(By.res("interests:topics"))
     val checkable = topicsList.findObject(By.checkable(true))

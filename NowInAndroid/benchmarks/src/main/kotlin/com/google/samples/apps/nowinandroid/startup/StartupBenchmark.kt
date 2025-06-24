@@ -38,12 +38,28 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
 class StartupBenchmark {
+    /**
+     * This rule provides access to the [MacrobenchmarkRule] API for benchmarking. The library
+     * outputs benchmarking results to both the Android Studio console and a JSON file with more
+     * detail. It also provides trace files that you can load and analyze in Android Studio.
+     */
     @get:Rule
     val benchmarkRule: MacrobenchmarkRule = MacrobenchmarkRule()
 
+    /**
+     * Measures the time to start up an app without pre-compilation. It does this by calling our
+     * [startup] method with its `compilationMode` argument [CompilationMode.None].
+     * Run this benchmark to verify your app's performance on library module installations,
+     * or library updates.
+     */
     @Test
-    fun startupWithoutPreCompilation(): Unit = startup(CompilationMode.None())
+    fun startupWithoutPreCompilation(): Unit = startup(compilationMode = CompilationMode.None())
 
+    /**
+     * Measures the time to start up an app with partial compilation and baseline profile disabled.
+     * Run this benchmark to verify your app's performance under these conditions.
+     * TODO: Continue here.
+     */
     @Test
     fun startupWithPartialCompilationAndDisabledBaselineProfile(): Unit = startup(
         CompilationMode.Partial(baselineProfileMode = Disable, warmupIterations = 1),
