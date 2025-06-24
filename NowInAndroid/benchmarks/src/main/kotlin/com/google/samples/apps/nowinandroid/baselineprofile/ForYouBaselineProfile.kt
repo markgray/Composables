@@ -31,9 +31,9 @@ import org.junit.Test
 class ForYouBaselineProfile {
     /**
      * This rule provides a way to interact with the app under test and write a
-     * baseline profile to a file. It also comes with running the baseline profile generation
-     * through a [CompilationMode][androidx.benchmark.macro.CompilationMode] that is optimized
-     * for generating profiles.
+     * baseline profile to a file. It also allows you to run the baseline profile generation
+     * using 3 different [CompilationMode][androidx.benchmark.macro.CompilationMode] that are
+     * optimized for generating profiles.
      *
      * So, this rule will do the following:
      *  1. Kill the app under test.

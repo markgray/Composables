@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.foryou
 
+import android.graphics.Rect
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
@@ -46,7 +47,34 @@ fun MacrobenchmarkScope.forYouWaitForContent() {
 
 /**
  * Selects some topics, which will show the feed content for them.
- * [recheckTopicsIfChecked] Topics may be already checked from the previous iteration.
+ *
+ * We start by initializing our [UiObject2] variable `topics` using the [UiDevice.findObject] method
+ * of our [UiDevice] to the first object whose resource name matches the [String]
+ * "forYou:topicSelection". We initialize our [Int] variable `horizontalMargin` to `10` times the
+ * [Rect.width] of the [Rect] returned by the  [UiObject2.getVisibleBounds] method of `topic` the
+ * quantity divided by `100`. We call the [UiObject2.setGestureMargins] method of `topics` to set
+ * its gesture margins to `left`: `horizontalMargin`, `top`: `0`, `right`: `horizontalMargin`, and
+ * `bottom`: `0`. We initialize our [Int] variables `var index` and `var visited` to `0`, then loop
+ * while `visited` is less then `3`:
+ *  - if the [UiObject2.getChildCount] of `topics` is equal to `0` we call [fail] with the [String]
+ *  ("No topics found, can't generate profile for ForYou page.")
+ *  - we initialize our [UiObject2] variable `topic` to the [UiObject2.getChildCount] at index
+ *  [Int] variable `index` modulo the [UiObject2.getChildCount].
+ *  - we initialize our [UiObject2] variable `topicCheckIcon` by using the [UiObject2.findObject]
+ *  method of `topic` to find a [UiObject2] that is "checkable".
+ *  - if `topicCheckIcon` is equal to `null` we increment `index` and loop around for the next
+ *  child in `topics` (icon may not be visible if it's outside of the screen boundaries)
+ *  - We then use a `when` statement to branch on:
+ *  - if the `topicCheckIcon` is not "checked" we click on `topic` and call [UiDevice.waitForIdle]
+ *  to wait for the [UiDevice] to be idle
+ *  - if `recheckTopicsIfChecked` is `true` we loop twice clicking on `topic` then calling
+ *  [UiDevice.waitForIdle] (topic was checked already and we want to recheck it, so just do it twice)
+ *  - `else` the Topic is checked, but we don't recheck it so we do nothing.
+ *
+ * We then increment both `index` and `visited` and loop around for the next `topic`.
+ *
+ * @param recheckTopicsIfChecked if `true` and the Topic chosen to be checked is already checked,
+ * check it again anyway.
  */
 fun MacrobenchmarkScope.forYouSelectTopics(recheckTopicsIfChecked: Boolean = false) {
     val topics: UiObject2 = device.findObject(By.res("forYou:topicSelection"))
@@ -100,11 +128,15 @@ fun MacrobenchmarkScope.forYouSelectTopics(recheckTopicsIfChecked: Boolean = fal
 }
 
 /**
- * Scrolls the "For You" feed down and up to measure scrolling performance.
+ * Scrolls the "For You" feed down and up to measure scrolling performance. We initialize our
+ * [UiObject2] variable `feedList` to the [UiObject2] that the [UiDevice.findObject] method returns
+ * that matches the resource name criteria of the [String] "forYou:feed". Then we call the
+ * [UiDevice.flingElementDownUp] method of our [UiDevice] to fling the [UiObject2] variable
+ * `feedList` down and up.
  */
 fun MacrobenchmarkScope.forYouScrollFeedDownUp() {
     val feedList: UiObject2 = device.findObject(By.res("forYou:feed"))
-    device.flingElementDownUp(feedList)
+    device.flingElementDownUp(element = feedList)
 }
 
 /**
