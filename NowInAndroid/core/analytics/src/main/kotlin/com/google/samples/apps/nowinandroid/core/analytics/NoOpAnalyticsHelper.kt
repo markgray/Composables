@@ -20,5 +20,10 @@ package com.google.samples.apps.nowinandroid.core.analytics
  * Implementation of AnalyticsHelper which does nothing. Useful for tests and previews.
  */
 class NoOpAnalyticsHelper : AnalyticsHelper {
-    override fun logEvent(event: AnalyticsEvent) = Unit
+    /**
+     * Logs an event. This implementation does nothing.
+     *
+     * @param event The [AnalyticsEvent] to log.
+     */
+    override fun logEvent(event: AnalyticsEvent): Unit = Unit
 }

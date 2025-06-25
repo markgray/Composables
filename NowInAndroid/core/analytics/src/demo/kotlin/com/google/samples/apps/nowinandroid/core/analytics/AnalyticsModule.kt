@@ -21,9 +21,39 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+/**
+ * Hilt module that provides implementations for [AnalyticsHelper].
+ *
+ * It is currently configured to provide a [StubAnalyticsHelper] which only logs analytics events.
+ * This is suitable for builds where analytics are not required to be sent to a real analytics
+ * service.
+ *
+ * To enable a real analytics implementation, you would:
+ *  1. Create a concrete implementation of [AnalyticsHelper].
+ *  2. Update the `@Binds` method in this module to provide your concrete implementation.
+ *
+ * For example:
+ * ```kotlin
+ * @Binds
+ * abstract fun bindsAnalyticsHelper(
+ *     analyticsHelperImpl: FirebaseAnalyticsHelper // Or your custom implementation
+ * ): AnalyticsHelper
+ * ```
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class AnalyticsModule {
+    /**
+     * Binds the [StubAnalyticsHelper] implementation to the [AnalyticsHelper] interface.
+     *
+     * This method is used by Hilt to inject the appropriate analytics helper implementation.
+     * Currently, it provides a [StubAnalyticsHelper], which means analytics events will only be
+     * logged, not sent to any real analytics service.
+     *
+     * @param analyticsHelperImpl The [StubAnalyticsHelper] instance to be provided.
+     * @return An instance of [AnalyticsHelper].
+     */
+    @Suppress("unused")
     @Binds
     abstract fun bindsAnalyticsHelper(analyticsHelperImpl: StubAnalyticsHelper): AnalyticsHelper
 }

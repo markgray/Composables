@@ -14,35 +14,56 @@
  * limitations under the License.
  */
 
+@file:Suppress("TestFunctionName")
+
 package com.google.samples.apps.nowinandroid.core.result
 
 import app.cash.turbine.test
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
+/**
+ * Unit tests for [asResult].
+ */
 class ResultKtTest {
 
+    /**
+     * Tests that the [asResult] extension function correctly catches errors emitted by the flow
+     * and wraps them in a [Result.Error] object.
+     *
+     * The test creates a flow that emits a value and then throws an exception.
+     * It then uses the [asResult] extension function to convert the flow into a flow of [Result] objects.
+     * Finally, it uses the `test` extension function from the Turbine library to assert that the
+     * resulting flow emits the expected [Result] objects in the correct order:
+     *  1. [Result.Loading]
+     *  2. [Result.Success] with the emitted value
+     *  3. [Result.Error] with the thrown exception
+     *
+     * TODO: Continue here.
+     */
     @Test
-    fun Result_catches_errors() = runTest {
+    fun Result_catches_errors(): TestResult = runTest {
         flow {
-            emit(1)
+            emit(value = 1)
             throw Exception("Test Done")
         }
             .asResult()
             .test {
-                assertEquals(Result.Loading, awaitItem())
-                assertEquals(Result.Success(1), awaitItem())
+                assertEquals(expected = Result.Loading, actual = awaitItem())
+                assertEquals(expected = Result.Success(1), actual = awaitItem())
 
-                when (val errorResult = awaitItem()) {
+                when (val errorResult: Result<Int> = awaitItem()) {
                     is Result.Error -> assertEquals(
-                        "Test Done",
-                        errorResult.exception.message,
+                        expected = "Test Done",
+                        actual = errorResult.exception.message,
                     )
+
                     Result.Loading,
                     is Result.Success,
-                    -> throw IllegalStateException(
+                        -> throw IllegalStateException(
                         "The flow should have emitted an Error Result",
                     )
                 }

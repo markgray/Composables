@@ -19,10 +19,23 @@ package com.google.samples.apps.nowinandroid.core.network
 import javax.inject.Qualifier
 import kotlin.annotation.AnnotationRetention.RUNTIME
 
+/**
+ * Qualifier for a [kotlinx.coroutines.CoroutineDispatcher] that is used for a specific purpose.
+ *
+ * This is used to disambiguate between different dispatchers that might be injected.
+ * For example, we might have a dispatcher for I/O operations and another for default operations.
+ *
+ * @property niaDispatcher The type of dispatcher.
+ */
 @Qualifier
 @Retention(RUNTIME)
 annotation class Dispatcher(val niaDispatcher: NiaDispatchers)
 
+/**
+ * Represents the different types of dispatchers used in the application.
+ * This enum is used in conjunction with the [Dispatcher] annotation to specify
+ * the desired CoroutineDispatcher for injection.
+ */
 enum class NiaDispatchers {
     Default,
     IO,

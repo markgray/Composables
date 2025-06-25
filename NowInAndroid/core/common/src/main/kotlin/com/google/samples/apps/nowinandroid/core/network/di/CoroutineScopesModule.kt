@@ -24,21 +24,42 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+/**
+ * Qualifier for a [CoroutineScope] that is tied to the application's lifecycle. This scope is
+ * suitable for long-running tasks that should not be cancelled when a UI component (like an
+ * Activity or Fragment) is destroyed.
+ */
 @Retention(AnnotationRetention.RUNTIME)
 @Qualifier
 annotation class ApplicationScope
 
+/**
+ * Hilt module that provides [CoroutineScope]s.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 internal object CoroutineScopesModule {
+    /**
+     * Provides a [CoroutineScope] that is tied to the application's lifecycle.
+     * This scope is suitable for long-running tasks that should not be cancelled
+     * when a UI component (like an Activity or Fragment) is destroyed.
+     *
+     * The scope uses a [SupervisorJob] which means that if one child coroutine fails,
+     * it does not cancel the other children or the scope itself.
+     *
+     * @param dispatcher The [CoroutineDispatcher] to be used by the scope. This is typically
+     * a dispatcher that is optimized for CPU-bound tasks (e.g., [Dispatchers.Default]).
+     * @return A [CoroutineScope] that is tied to the application's lifecycle.
+     */
     @Provides
     @Singleton
     @ApplicationScope
     fun providesCoroutineScope(
         @Dispatcher(Default) dispatcher: CoroutineDispatcher,
-    ): CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
+    ): CoroutineScope = CoroutineScope(context = SupervisorJob() + dispatcher)
 }

@@ -26,13 +26,24 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
+/**
+ * Hilt module that provides CoroutineDispatchers.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DispatchersModule {
+    /**
+     * Provides a CoroutineDispatcher for IO-bound work.
+     * This dispatcher is optimized for disk and network IO.
+     */
     @Provides
     @Dispatcher(IO)
     fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
+    /**
+     * Provides a CoroutineDispatcher for CPU-bound work.
+     * This dispatcher is optimized for CPU-intensive tasks.
+     */
     @Provides
     @Dispatcher(Default)
     fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default

@@ -19,6 +19,9 @@ package com.google.samples.apps.nowinandroid.startup
 import androidx.benchmark.macro.BaselineProfileMode.Disable
 import androidx.benchmark.macro.BaselineProfileMode.Require
 import androidx.benchmark.macro.CompilationMode
+import androidx.benchmark.macro.MacrobenchmarkScope
+import androidx.benchmark.macro.Metric
+import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.StartupMode.COLD
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -58,20 +61,53 @@ class StartupBenchmark {
     /**
      * Measures the time to start up an app with partial compilation and baseline profile disabled.
      * Run this benchmark to verify your app's performance under these conditions.
-     * TODO: Continue here.
      */
     @Test
     fun startupWithPartialCompilationAndDisabledBaselineProfile(): Unit = startup(
         CompilationMode.Partial(baselineProfileMode = Disable, warmupIterations = 1),
     )
 
+    /**
+     * Measures the time to start up an app with precompiled baseline profile.
+     * Run this benchmark to verify your app's performance with baseline profiles.
+     */
     @Test
     fun startupPrecompiledWithBaselineProfile(): Unit =
         startup(CompilationMode.Partial(baselineProfileMode = Require))
 
+    /**
+     * Measures the time to start up an app with full compilation.
+     * Run this benchmark to verify your app's performance with full compilation.
+     */
     @Test
     fun startupFullyPrecompiled(): Unit = startup(CompilationMode.Full())
 
+    /**
+     * This method measures the time it takes for the app to start up under a given
+     * [CompilationMode]. It uses the [MacrobenchmarkRule.measureRepeated] method to run the
+     * benchmark multiple times and collect metrics.
+     *
+     * We call the [MacrobenchmarkRule.measureRepeated] method of our [MacrobenchmarkRule]
+     * property [benchmarkRule] with the arguments:
+     *  - `packageName`: The package name of our app is the [String] that our global property
+     *  [PACKAGE_NAME] returns
+     *  - `metrics`: A list of metrics to collect from the benchmark. We use the [List] of [Metric]
+     *  property [BaselineProfileMetrics.allMetrics] to get a list of all the metrics relevant to
+     *  startup and baseline profile effectiveness measurement.
+     *  - `compilationMode`: The [CompilationMode] to use for the benchmark is our [CompilationMode]
+     *  parameter [compilationMode].
+     *  - `iterations`: The number of times to run the benchmark is set to 20.
+     *  - `startupMode`: The [StartupMode] to use for the benchmark is [COLD].
+     *  - `setupBlock`: A lambda function that sets up the environment for the benchmark. We call
+     *  the [MacrobenchmarkScope.pressHome] method to press the home button and the [allowNotifications]
+     *  method to allow notifications.
+     *
+     * In the [MacrobenchmarkScope] `measureBlock` lambda argument, we call:
+     *  - [startActivityAndAllowNotifications]: This method starts the activity and allows notifications.
+     *  - [forYouWaitForContent]: This method waits for content to be loaded in the "For You" screen.
+     *
+     * @param compilationMode The [CompilationMode] to use for the benchmark.
+     */
     private fun startup(compilationMode: CompilationMode) = benchmarkRule.measureRepeated(
         packageName = PACKAGE_NAME,
         metrics = BaselineProfileMetrics.allMetrics,

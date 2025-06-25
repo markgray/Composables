@@ -20,6 +20,9 @@ import android.util.Log
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * A tag used for logging.
+ */
 private const val TAG = "StubAnalyticsHelper"
 
 /**
@@ -28,6 +31,11 @@ private const val TAG = "StubAnalyticsHelper"
  */
 @Singleton
 internal class StubAnalyticsHelper @Inject constructor() : AnalyticsHelper {
+    /**
+     * Logs the given [event] to logcat.
+     *
+     * @param event the [AnalyticsEvent] to log
+     */
     override fun logEvent(event: AnalyticsEvent) {
         Log.d(TAG, "Received analytics event: $event")
     }

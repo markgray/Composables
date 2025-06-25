@@ -21,5 +21,10 @@ package com.google.samples.apps.nowinandroid.core.analytics
  * `StubAnalyticsHelper` for implementations.
  */
 interface AnalyticsHelper {
+    /**
+     * Logs an event with the given [event] name and params.
+     *
+     * @param event The [AnalyticsEvent] to log.
+     */
     fun logEvent(event: AnalyticsEvent)
 }
