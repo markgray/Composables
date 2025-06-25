@@ -42,9 +42,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * This benchmark measures the power usage of scrolling through the topic list in the "For You" screen.
- * It includes setup steps to navigate to the "For You" screen, select some topics, and then scrolls
- * the feed up and down multiple times.
+ * This benchmark measures the power usage of scrolling through the topic list in the "For You"
+ * screen. It includes setup steps to navigate to the "For You" screen, select some topics, and
+ * then scrolls the feed up and down multiple times.
  * This benchmark is designed to be run on Android Q (API level 29) and above.
  */
 @OptIn(ExperimentalMetricApi::class)
@@ -68,10 +68,10 @@ class ScrollTopicListPowerMetricsBenchmark {
         .associateWith { PowerCategoryDisplayLevel.TOTAL }
 
     /**
-     * This test measures the performance of scrolling through the topic list in the "For You" screen
-     * with a light theme and partial compilation.
-     * It includes setup steps to navigate to the "For You" screen, select some topics, and then scrolls
-     * the feed up and down multiple times.
+     * This test measures the performance of scrolling through the topic list in the "For You"
+     * screen with a light theme and partial compilation.
+     * It includes setup steps to navigate to the "For You" screen, select some topics, and then
+     * scrolls the feed up and down multiple times.
      * The benchmark then records frame timing and power metrics.
      */
     @Test
@@ -79,10 +79,10 @@ class ScrollTopicListPowerMetricsBenchmark {
         benchmarkStateChangeWithTheme(CompilationMode.Partial(), false)
 
     /**
-     * This test measures the performance of scrolling through the topic list in the "For You" screen
-     * with a dark theme, using partial compilation mode.
-     * It includes setup steps to navigate to the "For You" screen, select some topics, and then scrolls
-     * the feed up and down multiple times.
+     * This test measures the performance of scrolling through the topic list in the "For You"
+     * screen with a dark theme, using partial compilation mode.
+     * It includes setup steps to navigate to the "For You" screen, select some topics, and then
+     * scrolls the feed up and down multiple times.
      */
     @Test
     fun benchmarkStateChangeCompilationDark(): Unit =

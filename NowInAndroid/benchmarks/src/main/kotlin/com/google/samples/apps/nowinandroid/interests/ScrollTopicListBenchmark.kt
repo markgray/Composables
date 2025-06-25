@@ -47,7 +47,7 @@ class ScrollTopicListBenchmark {
 
     /**
      * This benchmark navigates to the interests screen and scrolls the topic list up and down several
-     * times with a baseline profile with a [CompilationMode] of [CompilationMode.Partial].
+     * times using a baseline profile with a [CompilationMode] of [CompilationMode.Partial].
      */
     @Test
     fun benchmarkStateChangeCompilationBaselineProfile(): Unit =

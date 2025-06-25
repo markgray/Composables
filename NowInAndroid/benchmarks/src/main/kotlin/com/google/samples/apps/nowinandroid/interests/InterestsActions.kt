@@ -48,8 +48,8 @@ fun MacrobenchmarkScope.goToInterestsScreen() {
  * We start by using the [UiDevice.wait] method to wait for the object with the resource name
  * "interests:topics" to appear on screen. Then we initialize our [UiObject2] variable `topicsList`
  * to the [UiObject2] that the [UiDevice.findObject] method returns that matches the resource
- * name criteria of the [String] "interests:topics". Finally we call the [UiDevice.flingElementDownUp]
- * method of our [UiDevice] to fling the [UiObject2] variable `topicsList` down and up.
+ * name criteria "interests:topics". Finally we call the [UiDevice.flingElementDownUp] method of
+ * our [UiDevice] to fling the [UiObject2] variable `topicsList` down and up.
  */
 fun MacrobenchmarkScope.interestsScrollTopicsDownUp() {
     device.wait(Until.hasObject(By.res("interests:topics")), 5_000)
