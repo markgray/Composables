@@ -60,6 +60,6 @@ internal object CoroutineScopesModule {
     @Singleton
     @ApplicationScope
     fun providesCoroutineScope(
-        @Dispatcher(Default) dispatcher: CoroutineDispatcher,
+        @Dispatcher(niaDispatcher = Default) dispatcher: CoroutineDispatcher,
     ): CoroutineScope = CoroutineScope(context = SupervisorJob() + dispatcher)
 }

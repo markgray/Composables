@@ -44,7 +44,7 @@ class BaselineProfileMetrics {
         val classInitMetric: TraceSectionMetric = TraceSectionMetric("L%/%;", label = "ClassInit")
 
         /**
-         * Metrics relevant to startup and baseline profile effectiveness measurement.
+         * All Metrics relevant to startup and baseline profile effectiveness measurement.
          */
         @OptIn(ExperimentalMetricApi::class)
         val allMetrics: List<Metric> =

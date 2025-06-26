@@ -37,7 +37,7 @@ object DispatchersModule {
      * This dispatcher is optimized for disk and network IO.
      */
     @Provides
-    @Dispatcher(IO)
+    @Dispatcher(niaDispatcher = IO)
     fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     /**
@@ -45,6 +45,6 @@ object DispatchersModule {
      * This dispatcher is optimized for CPU-intensive tasks.
      */
     @Provides
-    @Dispatcher(Default)
+    @Dispatcher(niaDispatcher = Default)
     fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }

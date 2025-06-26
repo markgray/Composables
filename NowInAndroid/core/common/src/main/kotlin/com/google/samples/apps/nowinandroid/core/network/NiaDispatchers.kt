@@ -28,7 +28,7 @@ import kotlin.annotation.AnnotationRetention.RUNTIME
  * @property niaDispatcher The type of dispatcher.
  */
 @Qualifier
-@Retention(RUNTIME)
+@Retention(value = RUNTIME)
 annotation class Dispatcher(val niaDispatcher: NiaDispatchers)
 
 /**

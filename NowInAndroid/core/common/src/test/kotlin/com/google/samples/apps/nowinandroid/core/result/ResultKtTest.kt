@@ -34,8 +34,8 @@ class ResultKtTest {
      * Tests that the [asResult] extension function correctly catches errors emitted by the flow
      * and wraps them in a [Result.Error] object.
      *
-     * The test creates a flow that emits a value and then throws an exception.
-     * It then uses the [asResult] extension function to convert the flow into a flow of [Result] objects.
+     * The test creates a flow that emits a value and then throws an exception. It then uses the
+     * [asResult] extension function to convert the flow into a flow of [Result] objects.
      * Finally, it uses the `test` extension function from the Turbine library to assert that the
      * resulting flow emits the expected [Result] objects in the correct order:
      *  1. [Result.Loading]

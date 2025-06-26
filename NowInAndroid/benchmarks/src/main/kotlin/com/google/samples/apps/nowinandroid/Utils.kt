@@ -45,8 +45,8 @@ val PACKAGE_NAME: String = buildString {
  * First we call the [UiObject2.setGestureMargin] method of [UiObject2] parameter [element] to set
  * the margin of the gesture to the width of the screen divided by 5. This prevents the gesture from
  * triggering system navigation. Then we call its [UiObject2.fling] method with its `direction`
- * argument [Direction.DOWN] to fling the [UiObject2] down, the we call the [UiDevice.waitForIdle]
- * method to wait for the device to be idle, and finally we call the [UiObject2.fling] method with
+ * argument [Direction.DOWN] to fling the [UiObject2] down, then we call the [UiDevice.waitForIdle]
+ * method to wait for the device to be idle, and finally we call its [UiObject2.fling] method with
  * its `direction` argument [Direction.UP] to fling the [UiObject2] up.
  *
  * @param element The [UiObject2] to fling.
@@ -61,7 +61,7 @@ fun UiDevice.flingElementDownUp(element: UiObject2) {
 }
 
 /**
- * Waits until an object with [selector] if visible on screen and returns the object.
+ * Waits until an object with [selector] is visible on screen and returns the object.
  * If the element is not available in [timeout], throws [AssertionError]
  *
  * @param selector The [BySelector] to find the [UiObject2]

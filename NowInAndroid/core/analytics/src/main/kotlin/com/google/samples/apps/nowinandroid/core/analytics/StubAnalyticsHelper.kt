@@ -21,7 +21,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * A tag used for logging.
+ * The tag used for logging.
  */
 private const val TAG = "StubAnalyticsHelper"
 
