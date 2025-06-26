@@ -41,8 +41,6 @@ class ResultKtTest {
      *  1. [Result.Loading]
      *  2. [Result.Success] with the emitted value
      *  3. [Result.Error] with the thrown exception
-     *
-     * TODO: Continue here.
      */
     @Test
     fun Result_catches_errors(): TestResult = runTest {

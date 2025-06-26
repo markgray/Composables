@@ -22,6 +22,7 @@ import kotlinx.serialization.Serializable
 /**
  * Network representation of [Topic]
  */
+@OptIn(kotlinx.serialization.InternalSerializationApi::class)
 @Serializable
 data class NetworkTopic(
     val id: String,

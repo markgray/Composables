@@ -21,15 +21,19 @@ import androidx.datastore.core.DataStore
 import com.google.samples.apps.nowinandroid.core.model.data.DarkThemeConfig
 import com.google.samples.apps.nowinandroid.core.model.data.ThemeBrand
 import com.google.samples.apps.nowinandroid.core.model.data.UserData
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
+/**
+ * Class that handles saving and retrieving user preferences
+ */
 class NiaPreferencesDataSource @Inject constructor(
     private val userPreferences: DataStore<UserPreferences>,
 ) {
-    val userData = userPreferences.data
+    val userData: Flow<UserData> = userPreferences.data
         .map {
             UserData(
                 bookmarkedNewsResources = it.bookmarkedNewsResourceIdsMap.keys,
@@ -154,7 +158,7 @@ class NiaPreferencesDataSource @Inject constructor(
         }
     }
 
-    suspend fun getChangeListVersions() = userPreferences.data
+    suspend fun getChangeListVersions(): ChangeListVersions = userPreferences.data
         .map {
             ChangeListVersions(
                 topicVersion = it.topicChangeListVersion,

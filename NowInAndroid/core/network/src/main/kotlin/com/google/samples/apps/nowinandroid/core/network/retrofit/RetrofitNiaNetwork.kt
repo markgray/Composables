@@ -63,6 +63,7 @@ private const val NIA_BASE_URL = BuildConfig.BACKEND_URL
 /**
  * Wrapper for data provided from the [NIA_BASE_URL]
  */
+@OptIn(kotlinx.serialization.InternalSerializationApi::class)
 @Serializable
 private data class NetworkResponse<T>(
     val data: T,

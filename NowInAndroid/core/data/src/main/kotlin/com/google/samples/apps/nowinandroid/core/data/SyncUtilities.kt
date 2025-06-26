@@ -33,7 +33,7 @@ interface Synchronizer {
     /**
      * Syntactic sugar to call [Syncable.syncWith] while omitting the synchronizer argument
      */
-    suspend fun Syncable.sync() = this@sync.syncWith(this@Synchronizer)
+    suspend fun Syncable.sync(): Boolean = this@sync.syncWith(this@Synchronizer)
 }
 
 /**
@@ -82,7 +82,7 @@ suspend fun Synchronizer.changeListSync(
     versionUpdater: ChangeListVersions.(Int) -> ChangeListVersions,
     modelDeleter: suspend (List<String>) -> Unit,
     modelUpdater: suspend (List<String>) -> Unit,
-) = suspendRunCatching {
+): Boolean = suspendRunCatching {
     // Fetch the change list since last sync (akin to a git fetch)
     val currentVersion = versionReader(getChangeListVersions())
     val changeList = changeListFetcher(currentVersion)
