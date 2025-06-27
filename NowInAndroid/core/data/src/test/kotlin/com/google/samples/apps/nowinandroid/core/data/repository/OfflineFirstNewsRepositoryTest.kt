@@ -44,6 +44,7 @@ import com.google.samples.apps.nowinandroid.core.network.model.NetworkChangeList
 import com.google.samples.apps.nowinandroid.core.network.model.NetworkNewsResource
 import com.google.samples.apps.nowinandroid.core.notifications.Notifier
 import com.google.samples.apps.nowinandroid.core.testing.notifications.TestNotifier
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.TestScope
@@ -160,21 +161,43 @@ class OfflineFirstNewsRepositoryTest {
      * This test verifies that when the [OfflineFirstNewsRepository.syncWith] method is called,
      * the [OfflineFirstNewsRepository.getNewsResources] stream emits the same list of news resources
      * as the [NewsResourceDao.getNewsResources] stream.
-     * TODO: Continue here.
+     *
+     * We call the [TestScope.runTest] function of our [TestScope] property [testScope] to run its
+     * [TestScope] `testBody` suspend lambda argument which is a lamdba in which we:
+     *  - Sync the [OfflineFirstNewsRepository] property [subject] using the [Synchronizer] property
+     *  [synchronizer].
+     *  - call [assertEquals] to verify that the `expected` argument the [Flow] of [List] of
+     *  [PopulatedNewsResource] returned by [OfflineFirstNewsRepository.getNewsResources] whose
+     *  [Flow.first] is collected then fed to the [Iterable.map] whose `transform` argument is
+     *  the [PopulatedNewsResource.asExternalModel] function which maps the [PopulatedNewsResource]
+     *  to [NewsResource] **matches** the `actual` argument of the [Flow] of [List] of [NewsResource]
+     *  returned by [OfflineFirstNewsRepository.getNewsResources] whose [Flow.first] is collected.
      */
     @Test
     fun offlineFirstNewsRepository_news_resources_stream_is_backed_by_news_resource_dao(): TestResult =
         testScope.runTest {
-            subject.syncWith(synchronizer)
+            subject.syncWith(synchronizer = synchronizer)
             assertEquals(
-                newsResourceDao.getNewsResources()
+                expected = newsResourceDao.getNewsResources()
                     .first()
                     .map(PopulatedNewsResource::asExternalModel),
-                subject.getNewsResources()
+                actual = subject.getNewsResources()
                     .first(),
             )
         }
 
+    /**
+     * Test that the [OfflineFirstNewsRepository.getNewsResources] stream for a particular topic is
+     * backed by the [NewsResourceDao.getNewsResources] stream.
+     *
+     * This test verifies that when the [OfflineFirstNewsRepository.getNewsResources] method is
+     * called with a [NewsResourceQuery] that specifies a `filterTopicIds` set, the returned stream
+     * emits the same list of news resources as the [NewsResourceDao.getNewsResources] stream when
+     * called with the same `filterTopicIds` and `useFilterTopicIds` set to `true`.
+     *
+     * It also verifies that if the `filterTopicIds` in the [NewsResourceQuery] does not match any
+     * topics in the database, the returned stream emits an empty list.
+     */
     @Test
     fun offlineFirstNewsRepository_news_resources_for_topic_is_backed_by_news_resource_dao(): TestResult =
         testScope.runTest {
@@ -204,49 +227,81 @@ class OfflineFirstNewsRepositoryTest {
             )
         }
 
+    /**
+     * Test that when [OfflineFirstNewsRepository.syncWith] is called, the data from the network
+     * is pulled and saved into the database.
+     *
+     * This test verifies the following:
+     *  - The news resources in the database match the news resources from the network after sync.
+     *  - The version of the news resources in the database is updated to the latest version from
+     *  the network after sync.
+     *  - The notifier is not called because the user has not onboarded yet.
+     *
+     * We call the [TestScope.runTest] function of our [TestScope] property [testScope] to run its
+     * [TestScope] `testBody` suspend lambda argument which is a lamdba in which we:
+     *  - call the [NiaPreferencesDataSource.setShouldHideOnboarding] function of our
+     *  [NiaPreferencesDataSource] property [niaPreferencesDataSource] to set the
+     *  `shouldHideOnboarding` property to `false` to indicate that the user has not onboarded yet.
+     *  - call the [OfflineFirstNewsRepository.syncWith] function of our [OfflineFirstNewsRepository]
+     *  property [subject] to sync the data from the network into the database using our
+     *  [Synchronizer] property [synchronizer] as the `synchronizer`.
+     *  - initialize our [List] of [NewsResource] variable `newsResourcesFromNetwork` to the result
+     *  of feeding the [List] of [String] returned by the [TestNiaNetworkDataSource.getNewsResources]
+     *  of our [TestNiaNetworkDataSource] property [network] though an [Iterable.map] whose
+     *  `transform` argument is the [NetworkNewsResource.asEntity] function which produces a [List]
+     *  of [NewsResourceEntity] which is then fed to an [Iterable.map] whose `transform` argument is
+     *  [NewsResourceEntity.asExternalModel] which produces a [List] of [NewsResource].
+     *  - initialize our [List] of [NewsResource] variable `newsResourcesFromDb` to the result of
+     *  feeding the [List] of [PopulatedNewsResource] returned by [Flow.first] applied to the
+     *  [Flow] of [List] of [PopulatedNewsResource] returned by the [NewsResourceDao.getNewsResources]
+     *  of our [NewsResourceDao] property [newsResourceDao] which is then fed to an [Iterable.map]
+     *  whose `transform` argument is the [PopulatedNewsResource.asExternalModel] function which
+     *  produces a [List] of [NewsResource].
+     * TODO: Continue here.
+     */
     @Test
     fun offlineFirstNewsRepository_sync_pulls_from_network(): TestResult =
         testScope.runTest {
             // User has not onboarded
-            niaPreferencesDataSource.setShouldHideOnboarding(false)
-            subject.syncWith(synchronizer)
+            niaPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding = false)
+            subject.syncWith(synchronizer = synchronizer)
 
-            val newsResourcesFromNetwork = network.getNewsResources()
-                .map(NetworkNewsResource::asEntity)
-                .map(NewsResourceEntity::asExternalModel)
+            val newsResourcesFromNetwork: List<NewsResource> = network.getNewsResources()
+                .map(transform = NetworkNewsResource::asEntity)
+                .map(transform = NewsResourceEntity::asExternalModel)
 
-            val newsResourcesFromDb = newsResourceDao.getNewsResources()
+            val newsResourcesFromDb: List<NewsResource> = newsResourceDao.getNewsResources()
                 .first()
-                .map(PopulatedNewsResource::asExternalModel)
+                .map(transform = PopulatedNewsResource::asExternalModel)
 
             assertEquals(
-                newsResourcesFromNetwork.map(NewsResource::id).sorted(),
-                newsResourcesFromDb.map(NewsResource::id).sorted(),
+                expected = newsResourcesFromNetwork.map(transform = NewsResource::id).sorted(),
+                actual = newsResourcesFromDb.map(transform = NewsResource::id).sorted(),
             )
 
             // After sync version should be updated
             assertEquals(
-                expected = network.latestChangeListVersion(CollectionType.NewsResources),
+                expected = network.latestChangeListVersion(collectionType = CollectionType.NewsResources),
                 actual = synchronizer.getChangeListVersions().newsResourceVersion,
             )
 
             // Notifier should not have been called
-            assertTrue(notifier.addedNewsResources.isEmpty())
+            assertTrue(actual = notifier.addedNewsResources.isEmpty())
         }
 
     @Test
     fun offlineFirstNewsRepository_sync_deletes_items_marked_deleted_on_network(): TestResult =
         testScope.runTest {
             // User has not onboarded
-            niaPreferencesDataSource.setShouldHideOnboarding(false)
+            niaPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding = false)
 
-            val newsResourcesFromNetwork = network.getNewsResources()
-                .map(NetworkNewsResource::asEntity)
-                .map(NewsResourceEntity::asExternalModel)
+            val newsResourcesFromNetwork: List<NewsResource> = network.getNewsResources()
+                .map(transform = NetworkNewsResource::asEntity)
+                .map(transform = NewsResourceEntity::asExternalModel)
 
             // Delete half of the items on the network
-            val deletedItems = newsResourcesFromNetwork
-                .map(NewsResource::id)
+            val deletedItems: Set<String> = newsResourcesFromNetwork
+                .map(transform = NewsResource::id)
                 .partition { it.chars().sum() % 2 == 0 }
                 .first
                 .toSet()
@@ -259,16 +314,18 @@ class OfflineFirstNewsRepositoryTest {
                 )
             }
 
-            subject.syncWith(synchronizer)
+            subject.syncWith(synchronizer = synchronizer)
 
-            val newsResourcesFromDb = newsResourceDao.getNewsResources()
+            val newsResourcesFromDb: List<NewsResource> = newsResourceDao.getNewsResources()
                 .first()
-                .map(PopulatedNewsResource::asExternalModel)
+                .map(transform = PopulatedNewsResource::asExternalModel)
 
             // Assert that items marked deleted on the network have been deleted locally
             assertEquals(
-                expected = (newsResourcesFromNetwork.map(NewsResource::id) - deletedItems).sorted(),
-                actual = newsResourcesFromDb.map(NewsResource::id).sorted(),
+                expected = (newsResourcesFromNetwork
+                    .map(transform = NewsResource::id) - deletedItems)
+                    .sorted(),
+                actual = newsResourcesFromDb.map(transform = NewsResource::id).sorted(),
             )
 
             // After sync version should be updated
@@ -278,42 +335,42 @@ class OfflineFirstNewsRepositoryTest {
             )
 
             // Notifier should not have been called
-            assertTrue(notifier.addedNewsResources.isEmpty())
+            assertTrue(actual = notifier.addedNewsResources.isEmpty())
         }
 
     @Test
     fun offlineFirstNewsRepository_incremental_sync_pulls_from_network(): TestResult =
         testScope.runTest {
             // User has not onboarded
-            niaPreferencesDataSource.setShouldHideOnboarding(false)
+            niaPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding = false)
 
             // Set news version to 7
             synchronizer.updateChangeListVersions {
                 copy(newsResourceVersion = 7)
             }
 
-            subject.syncWith(synchronizer)
+            subject.syncWith(synchronizer = synchronizer)
 
-            val changeList = network.changeListsAfter(
-                CollectionType.NewsResources,
+            val changeList: List<NetworkChangeList> = network.changeListsAfter(
+                collectionType = CollectionType.NewsResources,
                 version = 7,
             )
-            val changeListIds = changeList
-                .map(NetworkChangeList::id)
+            val changeListIds: Set<String> = changeList
+                .map(transform = NetworkChangeList::id)
                 .toSet()
 
-            val newsResourcesFromNetwork = network.getNewsResources()
-                .map(NetworkNewsResource::asEntity)
-                .map(NewsResourceEntity::asExternalModel)
+            val newsResourcesFromNetwork: List<NewsResource> = network.getNewsResources()
+                .map(transform = NetworkNewsResource::asEntity)
+                .map(transform = NewsResourceEntity::asExternalModel)
                 .filter { it.id in changeListIds }
 
-            val newsResourcesFromDb = newsResourceDao.getNewsResources()
+            val newsResourcesFromDb: List<NewsResource> = newsResourceDao.getNewsResources()
                 .first()
-                .map(PopulatedNewsResource::asExternalModel)
+                .map(transform = PopulatedNewsResource::asExternalModel)
 
             assertEquals(
-                expected = newsResourcesFromNetwork.map(NewsResource::id).sorted(),
-                actual = newsResourcesFromDb.map(NewsResource::id).sorted(),
+                expected = newsResourcesFromNetwork.map(transform = NewsResource::id).sorted(),
+                actual = newsResourcesFromDb.map(transform = NewsResource::id).sorted(),
             )
 
             // After sync version should be updated
@@ -323,50 +380,50 @@ class OfflineFirstNewsRepositoryTest {
             )
 
             // Notifier should not have been called
-            assertTrue(notifier.addedNewsResources.isEmpty())
+            assertTrue(actual = notifier.addedNewsResources.isEmpty())
         }
 
     @Test
     fun offlineFirstNewsRepository_sync_saves_shell_topic_entities(): TestResult =
         testScope.runTest {
-            subject.syncWith(synchronizer)
+            subject.syncWith(synchronizer = synchronizer)
 
             assertEquals(
                 expected = network.getNewsResources()
-                    .map(NetworkNewsResource::topicEntityShells)
+                    .map(transform = NetworkNewsResource::topicEntityShells)
                     .flatten()
-                    .distinctBy(TopicEntity::id)
-                    .sortedBy(TopicEntity::toString),
+                    .distinctBy(selector = TopicEntity::id)
+                    .sortedBy(selector = TopicEntity::toString),
                 actual = topicDao.getTopicEntities()
                     .first()
-                    .sortedBy(TopicEntity::toString),
+                    .sortedBy(selector = TopicEntity::toString),
             )
         }
 
     @Test
     fun offlineFirstNewsRepository_sync_saves_topic_cross_references(): TestResult =
         testScope.runTest {
-            subject.syncWith(synchronizer)
+            subject.syncWith(synchronizer = synchronizer)
 
             assertEquals(
                 expected = network.getNewsResources()
-                    .map(NetworkNewsResource::topicCrossReferences)
+                    .map(transform = NetworkNewsResource::topicCrossReferences)
                     .flatten()
                     .distinct()
-                    .sortedBy(NewsResourceTopicCrossRef::toString),
+                    .sortedBy(selector = NewsResourceTopicCrossRef::toString),
                 actual = newsResourceDao.topicCrossReferences
-                    .sortedBy(NewsResourceTopicCrossRef::toString),
+                    .sortedBy(selector = NewsResourceTopicCrossRef::toString),
             )
         }
 
     @Test
     fun offlineFirstNewsRepository_sync_marks_as_read_on_first_run(): TestResult =
         testScope.runTest {
-            subject.syncWith(synchronizer)
+            subject.syncWith(synchronizer = synchronizer)
 
             assertEquals(
-                network.getNewsResources().map { it.id }.toSet(),
-                niaPreferencesDataSource.userData.first().viewedNewsResources,
+                expected = network.getNewsResources().map { it.id }.toSet(),
+                actual = niaPreferencesDataSource.userData.first().viewedNewsResources,
             )
         }
 
@@ -378,11 +435,11 @@ class OfflineFirstNewsRepositoryTest {
                 copy(newsResourceVersion = 7)
             }
 
-            subject.syncWith(synchronizer)
+            subject.syncWith(synchronizer = synchronizer)
 
             assertEquals(
-                emptySet(),
-                niaPreferencesDataSource.userData.first().viewedNewsResources,
+                expected = emptySet(),
+                actual = niaPreferencesDataSource.userData.first().viewedNewsResources,
             )
         }
 
@@ -390,14 +447,14 @@ class OfflineFirstNewsRepositoryTest {
     fun offlineFirstNewsRepository_sends_notifications_for_newly_synced_news_that_is_followed(): TestResult =
         testScope.runTest {
             // User has onboarded
-            niaPreferencesDataSource.setShouldHideOnboarding(true)
+            niaPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding = true)
 
             val networkNewsResources = network.getNewsResources()
 
             // Follow roughly half the topics
-            val followedTopicIds = networkNewsResources
-                .flatMap(NetworkNewsResource::topicEntityShells)
-                .mapNotNull { topic ->
+            val followedTopicIds: Set<String> = networkNewsResources
+                .flatMap(transform = NetworkNewsResource::topicEntityShells)
+                .mapNotNull { topic: TopicEntity ->
                     when (topic.id.chars().sum() % 2) {
                         0 -> topic.id
                         else -> null
@@ -406,20 +463,23 @@ class OfflineFirstNewsRepositoryTest {
                 .toSet()
 
             // Set followed topics
-            niaPreferencesDataSource.setFollowedTopicIds(followedTopicIds)
+            niaPreferencesDataSource.setFollowedTopicIds(topicIds = followedTopicIds)
 
-            subject.syncWith(synchronizer)
+            subject.syncWith(synchronizer = synchronizer)
 
-            val followedNewsResourceIdsFromNetwork = networkNewsResources
+            val followedNewsResourceIdsFromNetwork: List<String> = networkNewsResources
                 .filter { (it.topics intersect followedTopicIds).isNotEmpty() }
-                .map(NetworkNewsResource::id)
+                .map(transform = NetworkNewsResource::id)
                 .sorted()
 
             // Notifier should have been called with only news resources that have topics
             // that the user follows
             assertEquals(
                 expected = followedNewsResourceIdsFromNetwork,
-                actual = notifier.addedNewsResources.first().map(NewsResource::id).sorted(),
+                actual = notifier.addedNewsResources
+                    .first()
+                    .map(transform = NewsResource::id)
+                    .sorted(),
             )
         }
 
@@ -427,28 +487,28 @@ class OfflineFirstNewsRepositoryTest {
     fun offlineFirstNewsRepository_does_not_send_notifications_for_existing_news_resources(): TestResult =
         testScope.runTest {
             // User has onboarded
-            niaPreferencesDataSource.setShouldHideOnboarding(true)
+            niaPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding = true)
 
-            val networkNewsResources = network.getNewsResources()
-                .map(NetworkNewsResource::asEntity)
+            val networkNewsResources: List<NewsResourceEntity> = network.getNewsResources()
+                .map(transform = NetworkNewsResource::asEntity)
 
-            val newsResources = networkNewsResources
-                .map(NewsResourceEntity::asExternalModel)
+            val newsResources: List<NewsResource> = networkNewsResources
+                .map(transform = NewsResourceEntity::asExternalModel)
 
             // Prepopulate dao with news resources
-            newsResourceDao.upsertNewsResources(networkNewsResources)
+            newsResourceDao.upsertNewsResources(newsResourceEntities = networkNewsResources)
 
             val followedTopicIds = newsResources
-                .flatMap(NewsResource::topics)
-                .map(Topic::id)
+                .flatMap(transform = NewsResource::topics)
+                .map(transform = Topic::id)
                 .toSet()
 
             // Follow all topics
-            niaPreferencesDataSource.setFollowedTopicIds(followedTopicIds)
+            niaPreferencesDataSource.setFollowedTopicIds(topicIds = followedTopicIds)
 
-            subject.syncWith(synchronizer)
+            subject.syncWith(synchronizer = synchronizer)
 
             // Notifier should not have been called bc all news resources existed previously
-            assertTrue(notifier.addedNewsResources.isEmpty())
+            assertTrue(actual = notifier.addedNewsResources.isEmpty())
         }
 }
