@@ -85,7 +85,7 @@ class NetworkEntityTest {
      * Then we initialize our [NewsResourceEntity] to the result of calling the
      * [NetworkNewsResource.asEntity] method of our [NetworkNewsResource] variable `networkModel`.
      * Then we use the [assertEquals] method to compare the values of the properties of our
-     * [NewsResourceEntity] variable `entity` with the values of the properties of our
+     * [NewsResourceEntity] variable `entity` with the values we used to set the properties of our
      * [NetworkNewsResource] variable `networkModel`.
      */
     @Test
@@ -170,7 +170,7 @@ class NetworkEntityTest {
      *  - `headerImageUrl`: "headerImageUrl"
      *  - `publishDate`: Instant.fromEpochMilliseconds(1)
      *  - `type`: "Article 📚"
-     *  - `topics`: listOf("1", "2")
+     *  - `topics`: the [List] of [String] created by listOf("1", "2")
      *
      * Then we initialize our [List] of [NetworkTopic] variable `networkTopics` to a new instance
      * whose elements are a new instance of [NetworkTopic] whose properties are:

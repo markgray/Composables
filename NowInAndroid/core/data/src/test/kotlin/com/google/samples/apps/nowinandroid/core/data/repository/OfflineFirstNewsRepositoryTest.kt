@@ -119,7 +119,8 @@ class OfflineFirstNewsRepositoryTest {
      * ensures that this function is executed before each test.
      *
      * This function initializes the following dependencies:
-     *  - [niaPreferencesDataSource]: A [NiaPreferencesDataSource] instance using an [InMemoryDataStore].
+     *  - [niaPreferencesDataSource]: A [NiaPreferencesDataSource] instance using an [InMemoryDataStore]
+     *  as its `userPreferences` property whose `initialValue` is [UserPreferences.getDefaultInstance]
      *  - [newsResourceDao]: A [TestNewsResourceDao] instance.
      *  - [topicDao]: A [TestTopicDao] instance.
      *  - [network]: A [TestNiaNetworkDataSource] instance.
@@ -132,8 +133,9 @@ class OfflineFirstNewsRepositoryTest {
      */
     @Before
     fun setup() {
-        niaPreferencesDataSource =
-            NiaPreferencesDataSource(InMemoryDataStore(UserPreferences.getDefaultInstance()))
+        niaPreferencesDataSource = NiaPreferencesDataSource(
+            userPreferences = InMemoryDataStore(initialValue = UserPreferences.getDefaultInstance()),
+        )
         newsResourceDao = TestNewsResourceDao()
         topicDao = TestTopicDao()
         network = TestNiaNetworkDataSource()
