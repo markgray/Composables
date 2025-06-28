@@ -191,7 +191,7 @@ class OfflineFirstNewsRepositoryTest {
      * backed by the [NewsResourceDao.getNewsResources] stream.
      *
      * This test verifies that when the [OfflineFirstNewsRepository.getNewsResources] method is
-     * called with a [NewsResourceQuery] that specifies a `filterTopicIds` set, the returned stream
+     * called with a [NewsResourceQuery] that specifies a `filterTopicIds` [Set], the returned stream
      * emits the same list of news resources as the [NewsResourceDao.getNewsResources] stream when
      * called with the same `filterTopicIds` and `useFilterTopicIds` set to `true`.
      *
