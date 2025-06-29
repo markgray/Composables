@@ -678,8 +678,6 @@ class OfflineFirstNewsRepositoryTest {
      *  collecting the [Flow.first] emitted by the [Flow] of [UserData] that the
      *  [NiaPreferencesDataSource.userData] property of our [NiaPreferencesDataSource] property
      *  [niaPreferencesDataSource] returns and returning its [UserData.viewedNewsResources] property.
-     *
-     * TODO: Continue here.
      */
     @Test
     fun offlineFirstNewsRepository_sync_does_not_mark_as_read_on_subsequent_run(): TestResult =
@@ -697,13 +695,64 @@ class OfflineFirstNewsRepositoryTest {
             )
         }
 
+    /**
+     * Test that when [OfflineFirstNewsRepository.syncWith] is called, the [Notifier] is called
+     * with newly synced news that is followed by the user.
+     *
+     * This test verifies the following:
+     *  - The user has onboarded.
+     *  - The user is following roughly half of the topics in the network news resources.
+     *  - The [Notifier.postNewsNotifications] method is called with a list of news resources that
+     *  have topics that the user follows.
+     *  - The list of news resources passed to the [Notifier.postNewsNotifications] method matches
+     *  the list of news resources from the network that have topics that the user follows.
+     *
+     * We call the [TestScope.runTest] function of our [TestScope] property [testScope] to run its
+     * [TestScope] `testBody` suspend lambda argument which is a lamdba in which we:
+     *  - call the [NiaPreferencesDataSource.setShouldHideOnboarding] method of our
+     *  [NiaPreferencesDataSource] property [niaPreferencesDataSource] with its `shouldHideOnboarding`
+     *  argument set to `true` to indicate that the user has already onboarded.
+     *  - initialize our [List] of [NetworkNewsResource] variable `val networkNewsResources` to the
+     *  [List] of [NetworkNewsResource] returned by the [TestNiaNetworkDataSource.getNewsResources]
+     *  method of our [TestNiaNetworkDataSource] property [network].
+     *  - initialize our [Set] of [String] variable `val followedTopicIds` to the [Set] of [String]
+     *  that results from feeding the [List] of [NetworkNewsResource] variable `networkNewsResources`
+     *  to an [Iterable.flatMap] whose `transform` argument is the
+     *  [NetworkNewsResource.topicEntityShells] method which produces a [List] of [List] of
+     *  [TopicEntity] which is flattened to a [List] of [TopicEntity] by [Iterable.flatMap]
+     *  which is then fed to an [Iterable.mapNotNull] whose `transform` argument is a lambda which
+     *  captures the [TopicEntity] passed the lambda in variable `topic` and used a `when` to switch
+     *  on whether the sum of the characters in the [TopicEntity.id] property of the [TopicEntity]
+     *  variable `topic` is even or odd. If the sum is even, the [TopicEntity.id] property of the
+     *  [TopicEntity] variable `topic` is returned as a [String] else `null`. This list of [String]
+     *  is then converted to a [Set] using the [Iterable.toSet] extension function.
+     *  - call the [NiaPreferencesDataSource.setFollowedTopicIds] method of our
+     *  [NiaPreferencesDataSource] property [niaPreferencesDataSource] with its `topicIds` argument
+     *  set to the [Set] of [String] variable `followedTopicIds`.
+     *  - call the [OfflineFirstNewsRepository.syncWith] function of our [OfflineFirstNewsRepository]
+     *  property [subject] to sync the data from the network into the database using our
+     *  [Synchronizer] property [synchronizer] as the `synchronizer`.
+     *  - initialize our [List] of [String] variable `val followedNewsResourceIdsFromNetwork` to the
+     *  result of feeding the [List] of [NetworkNewsResource] variable `networkNewsResources` to a
+     *  [Iterable.filter] whose `predicate` argument is `true` if the [NetworkNewsResource.topics]
+     *  `intersects` the [Set] of [String] variable `followedTopicIds` and feeding the resulting
+     *  [List] of [NetworkNewsResource] to an [Iterable.map] whose `transform` argument is the
+     *  [NetworkNewsResource.id] method which produces a [List] of [String], which is then sorted.
+     *  - call [assertEquals] to verify that the `expected` argument the [List] of [String] variable
+     *  `followedNewsResourceIdsFromNetwork` **matches** the `actual` argument the [List] of
+     *  [String] that results from using the [Flow.first] method of the [Flow] of [NewsResource]
+     *  returned by the [NewsResourceDao.getNewsResources] property of our [NewsResourceDao] property
+     *  [newsResourceDao] to collect the first [List] of [NewsResource] and feeding that to an
+     *  [Iterable.map] whose `transform` argument is the [NewsResource.id] method which produces a
+     *  [List] of [String], which is then sorted.
+     */
     @Test
     fun offlineFirstNewsRepository_sends_notifications_for_newly_synced_news_that_is_followed(): TestResult =
         testScope.runTest {
             // User has onboarded
             niaPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding = true)
 
-            val networkNewsResources = network.getNewsResources()
+            val networkNewsResources: List<NetworkNewsResource> = network.getNewsResources()
 
             // Follow roughly half the topics
             val followedTopicIds: Set<String> = networkNewsResources
@@ -737,6 +786,47 @@ class OfflineFirstNewsRepositoryTest {
             )
         }
 
+    /**
+     * Test that when [OfflineFirstNewsRepository.syncWith] is called, the [Notifier] is not called
+     * if all news resources from the network already exist in the database.
+     *
+     * This test verifies the following:
+     *  - The user has onboarded.
+     *  - All news resources from the network are already present in the database.
+     *  - The user is following all topics in the network news resources.
+     *  - The [Notifier.postNewsNotifications] method is not called.
+     *
+     * We call the [TestScope.runTest] function of our [TestScope] property [testScope] to run its
+     * [TestScope] `testBody` suspend lambda argument which is a lamdba in which we:
+     *  - call the [NiaPreferencesDataSource.setShouldHideOnboarding] method of our
+     *  [NiaPreferencesDataSource] property [niaPreferencesDataSource] with its `shouldHideOnboarding`
+     *  argument set to `true` to indicate that the user has already onboarded.
+     *  - initialize our [List] of [NewsResourceEntity] variable `val networkNewsResources` to the
+     *  [List] of [NewsResourceEntity] that results from feeding the [List] of [NetworkNewsResource]
+     *  returned by the [TestNiaNetworkDataSource.getNewsResources] method of our
+     *  [TestNiaNetworkDataSource] property [network] to an [Iterable.map] whose `transform`
+     *  argument is the [NetworkNewsResource.asEntity] method.
+     *  - initialize our [List] of [NewsResource] variable `val newsResources` to the [List] of
+     *  [NewsResource] that results from feeding the [List] of [NewsResourceEntity] variable
+     *  `networkNewsResources` to an [Iterable.map] whose `transform` argument is the
+     *  [NewsResourceEntity.asExternalModel] method.
+     *  - call the [TestNewsResourceDao.upsertNewsResources] method of our [TestNewsResourceDao]
+     *  property [newsResourceDao] to pre-populate it with the [List] of [NewsResourceEntity] in
+     *  our variable `networkNewsResources`.
+     *  - initialize our [Set] of [String] variable `val followedTopicIds` to the [Set] of [String]
+     *  that results from feeding the [List] of [NewsResource] variable `newsResources` to an
+     *  [Iterable.flatMap] whose `transform` argument returns the [NewsResource.topics] property
+     *  of the [NewsResource] and feeding the resulting [List] of [Topic] to an [Iterable.map]
+     *  whose `transform` argument is the [Topic.id] property which produces a [List] of [String]
+     *  which is then converted to a [Set] using the [Iterable.toSet] extension function.
+     *  - call the [NiaPreferencesDataSource.setFollowedTopicIds] method of our
+     *  [NiaPreferencesDataSource] property [niaPreferencesDataSource] with its `topicIds`
+     *  argument set to the [Set] of [String] variable `followedTopicIds`.
+     *  - call the [assertTrue] method with its `actual` argument the [Boolean] that results from
+     *  if the [List] of [List] of [NewsResource] of the [TestNotifier.addedNewsResources] property
+     *  of our [TestNotifier] property [notifier] is empty (meaning that the notifier has **not** been
+     *  called).
+     */
     @Test
     fun offlineFirstNewsRepository_does_not_send_notifications_for_existing_news_resources(): TestResult =
         testScope.runTest {
@@ -752,7 +842,7 @@ class OfflineFirstNewsRepositoryTest {
             // Prepopulate dao with news resources
             newsResourceDao.upsertNewsResources(newsResourceEntities = networkNewsResources)
 
-            val followedTopicIds = newsResources
+            val followedTopicIds: Set<String> = newsResources
                 .flatMap(transform = NewsResource::topics)
                 .map(transform = Topic::id)
                 .toSet()
