@@ -259,16 +259,17 @@ class OfflineFirstNewsRepositoryTest {
      *  of our [NewsResourceDao] property [newsResourceDao] which is then fed to an [Iterable.map]
      *  whose `transform` argument is the [PopulatedNewsResource.asExternalModel] function which
      *  produces a [List] of [NewsResource].
-     *  - call [assertEquals] to verify that the `expected` argument the [List] of [String] that
+     *  - call [assertEquals] to verify that the `expected` argument, the [List] of [String] that
      *  results from feeding the [List] of [NewsResource] `newsResourcesFromNetwork` to [Iterable.map]
      *  with `transform` set to [NewsResource.id] sorted by [Iterable.sorted] is the **same** as the
      *  `actual` argument the [List] of [String] that results from feeding the [List] of [NewsResource]
-     *  to [Iterable.map] with its `transform` set to [NewsResource.id] sorted by [Iterable.sorted].
-     *  - call [assertEquals] to verify that the `expected` argument the [List] of [String] that
-     *  results from calling the [TestNiaNetworkDataSource.latestChangeListVersion] method of our
+     *  variable `newsResourcesFromDb` to [Iterable.map] with its `transform` set to [NewsResource.id]
+     *  sorted by [Iterable.sorted].
+     *  - call [assertEquals] to verify that the `expected` argument the [Int] that results from
+     *  calling the [TestNiaNetworkDataSource.latestChangeListVersion] method of our
      *  [TestNiaNetworkDataSource] property [network] with the `collectionType` argument set to
-     *  [CollectionType.NewsResources] is the **same** as the `actual` argument the [List] of [String]
-     *  that results from calling the [ChangeListVersions.newsResourceVersion] method of the
+     *  [CollectionType.NewsResources] is the **same** as the `actual` argument the [Int]
+     *  that results from accessing the [ChangeListVersions.newsResourceVersion] property of the
      *  [ChangeListVersions] returned by the [Synchronizer.getChangeListVersions] method of our
      *  [Synchronizer] property [synchronizer].
      *  - call [assertTrue] to verify that the `actual` argument the [Boolean] that results from
@@ -311,8 +312,8 @@ class OfflineFirstNewsRepositoryTest {
      * the network are deleted locally.
      *
      * This test verifies the following:
-     *  - News resources that are marked as deleted on the network are deleted from the local database
-     *  after sync.
+     *  - News resources that are marked as deleted on the network are deleted from the local
+     *  database after sync.
      *  - The version of the news resources in the database is updated to the latest version from
      *  the network after sync.
      *  - The notifier is not called because the user has not onboarded yet.
@@ -338,7 +339,8 @@ class OfflineFirstNewsRepositoryTest {
      *  even, selects the [Pair.first] of the [Pair], then converts the [List] of [String] to a
      *  [Set] using its [Iterable.toSet]
      *  - iterate over the [Set] of [String] variable `deletedItems` using its [Iterable.forEach]
-     *  method and in the `action` argument call the [TestNiaNetworkDataSource.editCollection] method
+     *  method and in the `action` lambda argument we capture the [String] passed the lambda in
+     *  variable `deleted` then call the [TestNiaNetworkDataSource.editCollection] method
      *  of our [TestNiaNetworkDataSource] property [network] with its `collectionType` argument set
      *  to [CollectionType.NewsResources], its `id` argument set to the [String] variable `deleted`,
      *  and its `isDelete` argument set to `true`.
@@ -445,7 +447,7 @@ class OfflineFirstNewsRepositoryTest {
      *  calling the [TestNiaNetworkDataSource.changeListsAfter] method of our [TestNiaNetworkDataSource]
      *  property [network] with the `collectionType` argument set to [CollectionType.NewsResources]
      *  and the `version` argument set to 7.
-     *  - initialize our [Set] of [String] variable `val changeListIds` to the result of mapping the
+     *  - initialize our [Set] of [String] variable `val changeListIds` to the result of feeding the
      *  [List] of [NetworkChangeList] variable `changeList` to an [Iterable.map] whose `transform`
      *  argument is [NetworkChangeList.id] and feeding the resulting [List] of [String] to an
      *  [Iterable.toSet] to convert it to a [Set].
@@ -459,11 +461,11 @@ class OfflineFirstNewsRepositoryTest {
      *  selects all of the [NewsResource] in the [List] that have an id in the [Set] of [String]
      *  variable `changeListIds`.
      *  - initialize our [List] of [NewsResource] variable `val newsResourcesFromDb` to the result
-     *  of feeding the [List] of [PopulatedNewsResource] returned by the [NewsResourceDao.getNewsResources]
-     *  method of [NewsResourceDao] property [newsResourceDao] to [Flow.first] to select the first
-     *  [List] of [PopulatedNewsResource] and feeding that to an [Iterable.map] whose `transform`
-     *  argument is the [PopulatedNewsResource.asExternalModel] method to convert it to a [List]
-     *  of [NewsResource].
+     *  of feeding the [List] of [PopulatedNewsResource] returned by the
+     *  [NewsResourceDao.getNewsResources] method of [NewsResourceDao] property [newsResourceDao] to
+     *  [Flow.first] to select the first [List] of [PopulatedNewsResource] and feeding that to an
+     *  [Iterable.map] whose `transform` argument is the [PopulatedNewsResource.asExternalModel]
+     *  method to convert it to a [List] of [NewsResource].
      *  - call [assertEquals] to verify that the `expected` argument the [List] of [String] that
      *  results from feeding the [List] of [NewsResource] variable `newsResourcesFromDb` to an
      *  [Iterable.map] whose `transform` argument is [NewsResource.id] sorted is the **same** as
@@ -538,7 +540,7 @@ class OfflineFirstNewsRepositoryTest {
      *  - call the [OfflineFirstNewsRepository.syncWith] function of our [OfflineFirstNewsRepository]
      *  property [subject] to sync the data from the network into the database using our
      *  [Synchronizer] property [synchronizer] as the `synchronizer`.
-     *  - call [assertEquals] to verify that the `expected` argument the [List] of [String] that
+     *  - call [assertEquals] to verify that the `expected` argument the [List] of [TopicEntity] that
      *  results from feeding the [List] of [NetworkNewsResource] that the
      *  [TestNiaNetworkDataSource.getNewsResources] method of our [TestNiaNetworkDataSource] property
      *  [network] returns to an [Iterable.map] whose `transform` argument is the
@@ -548,11 +550,11 @@ class OfflineFirstNewsRepositoryTest {
      *  `selector` argument set to the [TopicEntity.id] property, then sorting the resulting [List]
      *  of [TopicEntity] using the [Iterable.sortedBy] extension function with its `selector` argument
      *  set to the [TopicEntity.toString] method **matches** the `actual` argument the [List] of
-     *  [String] that results from feeding the [List] of [TopicEntity] returned by collecting the
-     *  [Flow.first] emitted by the [Flow] of [List] of [TopicEntity] returned by the
+     *  [TopicEntity] that results from feeding the [List] of [TopicEntity] returned by collecting
+     *  the [Flow.first] emitted by the [Flow] of [List] of [TopicEntity] returned by the
      *  [TopicDao.getTopicEntities] method of our [TestTopicDao] property [topicDao] then sorting the
      *  resulting [List] of [TopicEntity] using the [Iterable.sortedBy] extension function with its
-     *  `selector` argument set to the [TopicEntity.toString] method.
+     *  `selector` argument set to the [NewsResourceTopicCrossRef.toString] method.
      */
     @Test
     fun offlineFirstNewsRepository_sync_saves_shell_topic_entities(): TestResult =
@@ -583,17 +585,17 @@ class OfflineFirstNewsRepositoryTest {
      *  - call the [OfflineFirstNewsRepository.syncWith] function of our [OfflineFirstNewsRepository]
      *  property [subject] to sync the data from the network into the database using our
      *  [Synchronizer] property [synchronizer] as the `synchronizer`.
-     *  - call [assertEquals] to verify that the `expected` argument the [List] of [String] that
-     *  results from feeding the [List] of [NetworkNewsResource] that the
-     *  [TestNiaNetworkDataSource.getNewsResources] method of our [TestNiaNetworkDataSource] property
-     *  [network] returns to the [Iterable.map] whose `transform` argument is the
+     *  - call [assertEquals] to verify that the `expected` argument the [List] of
+     *  [NewsResourceTopicCrossRef] that results from feeding the [List] of [NetworkNewsResource] that
+     *  the [TestNiaNetworkDataSource.getNewsResources] method of our [TestNiaNetworkDataSource]
+     *  property [network] returns to the [Iterable.map] whose `transform` argument is the
      *  [NetworkNewsResource.topicCrossReferences] function, then flattening the resulting [List] of
      *  [List] of [NewsResourceTopicCrossRef] by calling the [Iterable.flatten] extension function,
      *  then calling the [Iterable.distinct] extension function, then sorting the resulting [List]
      *  of [NewsResourceTopicCrossRef] using the [Iterable.sortedBy] extension function with its
      *  `selector` argument set to the [NewsResourceTopicCrossRef.toString] method **matches** the
-     *  `actual` argument the [List] of [String] that results from feeding the [List] of
-     *  [NewsResourceTopicCrossRef] returned by the [TestNewsResourceDao.topicCrossReferences]
+     *  `actual` argument the [List] of [NewsResourceTopicCrossRef] that results from feeding the
+     *  [List] of [NewsResourceTopicCrossRef] returned by the [TestNewsResourceDao.topicCrossReferences]
      *  property of our [TestNewsResourceDao] property [newsResourceDao] to the [Iterable.sortedBy]
      *  extension function with its `selector` argument set to the [NewsResourceTopicCrossRef.toString]
      *  method.
