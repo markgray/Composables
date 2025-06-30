@@ -160,7 +160,7 @@ class OfflineFirstTopicsRepositoryTest {
      *  - Call [assertEquals] to verify that the `expected` [Int] which is returned by the
      *  [TestNiaNetworkDataSource.latestChangeListVersion] method of our [TestNiaNetworkDataSource]
      *  property [network] for the [CollectionType.Topics] **matches** the `actual` [Int] which is
-     *  the [ChangeListVersions.topicVersion] propert of the [ChangeListVersions] object returned by
+     *  the [ChangeListVersions.topicVersion] property of the [ChangeListVersions] object returned by
      *  the [Synchronizer.getChangeListVersions] method of our [Synchronizer] property [synchronizer].
      */
     @Test
@@ -198,9 +198,10 @@ class OfflineFirstTopicsRepositoryTest {
      *  [synchronizer].
      *  - Initialize our [List] of [TopicEntity] variable `val networkTopics` to the [List] of
      *  [TopicEntity] that results from calling the [NiaNetworkDataSource.getTopics] method of our
-     *  [TestNiaNetworkDataSource] property [network] then mapping the [NetworkTopic] objects in
-     *  that list to [TopicEntity] objects using the [NetworkTopic.asEntity] function, then dropping
-     *  the first 10 items to simulate the first 10 items being unchanged.
+     *  [TestNiaNetworkDataSource] property [network] then converting the [NetworkTopic] objects in
+     *  the [List] of [NetworkTopic] returned to [TopicEntity] objects using an [Iterable.map] whose
+     *  `tranform` argument is the [NetworkTopic.asEntity] function, then dropping the first 10 items
+     *  to simulate the first 10 items being unchanged.
      *  - Initialize our [List] of [TopicEntity] variable `val dbTopics` to the [List] of
      *  [TopicEntity] that results from feeding the [Flow] of [List] of [TopicEntity] returned by the
      *  [TopicDao.getTopicEntities] to [Flow.first] to collect the first [List] of [TopicEntity].
@@ -211,7 +212,7 @@ class OfflineFirstTopicsRepositoryTest {
      *  - Call [assertEquals] to verify that the `expected` [Int] which is returned by the
      *  [TestNiaNetworkDataSource.latestChangeListVersion] method of our [TestNiaNetworkDataSource]
      *  property [network] for the [CollectionType.Topics] **matches** the `actual` [Int] which is
-     *  the [ChangeListVersions.topicVersion] propert of the [ChangeListVersions] object returned by
+     *  the [ChangeListVersions.topicVersion] property of the [ChangeListVersions] object returned by
      *  the [Synchronizer.getChangeListVersions] method of our [Synchronizer] property [synchronizer].
      */
     @Test
@@ -225,9 +226,9 @@ class OfflineFirstTopicsRepositoryTest {
             subject.syncWith(synchronizer = synchronizer)
 
             val networkTopics: List<TopicEntity> = network.getTopics()
-                .map(NetworkTopic::asEntity)
+                .map(transform = NetworkTopic::asEntity)
                 // Drop 10 to simulate the first 10 items being unchanged
-                .drop(10)
+                .drop(n = 10)
 
             val dbTopics: List<TopicEntity> = topicDao.getTopicEntities()
                 .first()
