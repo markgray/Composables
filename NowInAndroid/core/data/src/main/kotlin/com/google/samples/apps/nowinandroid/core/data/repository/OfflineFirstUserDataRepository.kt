@@ -25,6 +25,10 @@ import com.google.samples.apps.nowinandroid.core.model.data.UserData
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * [UserDataRepository] implementation that uses [NiaPreferencesDataSource] to store the data.
+ * It also uses [AnalyticsHelper] to log the changes to the user data.
+ */
 internal class OfflineFirstUserDataRepository @Inject constructor(
     private val niaPreferencesDataSource: NiaPreferencesDataSource,
     private val analyticsHelper: AnalyticsHelper,

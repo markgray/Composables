@@ -269,7 +269,20 @@ class OfflineFirstTopicsRepositoryTest {
      *  [synchronizer].
      *  - Initialize our [List] of [Topic] variable `val dbTopics` to the [List] of [Topic] that
      *  results from feeding the [Flow] of [List] of [TopicEntity] returned by the
-     *  TODO: Continue here.
+     *  [TopicDao.getTopicEntities] to [Flow.first] to collect the first [List] of [TopicEntity],
+     *  then using its [Iterable.map] method with its `transform` argument [TopicEntity.asExternalModel]
+     *  to convert each [TopicEntity] to a [Topic].
+     *  - Call [assertEquals] to verify that the `expected` [List] of [String] which is produced by
+     *  feeding the [List] of [Topic] variable `networkTopics` to an [Iterable.map] whose `transform`
+     *  argument is the [Topic.id] property of each [Topic] minus the [Set] of [String] variable
+     *  `deleted` **matches** the `actual` [List] of [String] that results from feeding the [List] of
+     *  [String] variable `dbTopics` to an [Iterable.map] whose `transform` argument is the
+     *  [Topic.id] property of each [Topic].
+     *  - Call [assertEquals] to verify that the `expected` [Int] which is returned by the
+     *  [TestNiaNetworkDataSource.latestChangeListVersion] for the `collectionType`
+     *  [CollectionType.Topics] **matches** the `actual` [Int] which is the
+     *  [ChangeListVersions.topicVersion] property of the [ChangeListVersions] object returned by
+     *  the [Synchronizer.getChangeListVersions] method of our [Synchronizer] property [synchronizer].
      */
     @Test
     fun offlineFirstTopicsRepository_sync_deletes_items_marked_deleted_on_network(): TestResult =

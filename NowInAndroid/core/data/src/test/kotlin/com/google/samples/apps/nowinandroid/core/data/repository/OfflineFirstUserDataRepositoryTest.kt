@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.core.data.repository
 
+import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.analytics.NoOpAnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.datastore.NiaPreferencesDataSource
 import com.google.samples.apps.nowinandroid.core.datastore.UserPreferences
@@ -23,8 +24,10 @@ import com.google.samples.apps.nowinandroid.core.datastore.test.InMemoryDataStor
 import com.google.samples.apps.nowinandroid.core.model.data.DarkThemeConfig
 import com.google.samples.apps.nowinandroid.core.model.data.ThemeBrand
 import com.google.samples.apps.nowinandroid.core.model.data.UserData
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -34,31 +37,70 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Unit tests for [OfflineFirstUserDataRepository].
+ */
 class OfflineFirstUserDataRepositoryTest {
+    /**
+     * The [TestScope] used in this test. The [UnconfinedTestDispatcher] as its `context` is similar
+     * to `Dispatchers.Unconfined`: the tasks that it executes are not confined to any particular
+     * thread and form an event loop; it's different in that it skips delays, as all TestDispatchers
+     * do. Like `Dispatchers.Unconfined`, this one does not provide guarantees about the execution
+     * order when several coroutines are queued in this dispatcher. However, we ensure that the
+     * launch and async blocks at the top level of runTest are entered eagerly. This allows
+     * launching child coroutines and not calling runCurrent for them to start executing.
+     */
+    private val testScope = TestScope(context = UnconfinedTestDispatcher())
 
-    private val testScope = TestScope(UnconfinedTestDispatcher())
-
+    /**
+     * The [OfflineFirstUserDataRepository] being tested, provides access to user preferences.
+     */
     private lateinit var subject: OfflineFirstUserDataRepository
 
+    /**
+     * The backing [NiaPreferencesDataSource] used to manage the user preferences data.
+     */
     private lateinit var niaPreferencesDataSource: NiaPreferencesDataSource
 
+    /**
+     * The [NoOpAnalyticsHelper] used in this test. [AnalyticsHelper] which does nothing.
+     */
     private val analyticsHelper = NoOpAnalyticsHelper()
 
+    /**
+     * Sets up the test dependencies before each test.
+     * Initializes [niaPreferencesDataSource] with an in-memory data store and
+     * creates an instance of [OfflineFirstUserDataRepository] with the mock dependencies.
+     */
     @Before
     fun setup() {
-        niaPreferencesDataSource = NiaPreferencesDataSource(InMemoryDataStore(UserPreferences.getDefaultInstance()))
+        niaPreferencesDataSource = NiaPreferencesDataSource(
+            userPreferences = InMemoryDataStore(initialValue = UserPreferences.getDefaultInstance()),
+        )
 
         subject = OfflineFirstUserDataRepository(
             niaPreferencesDataSource = niaPreferencesDataSource,
-            analyticsHelper,
+            analyticsHelper = analyticsHelper,
         )
     }
 
+    /**
+     * Tests that the default user data is correctly emitted by the repository.
+     * It verifies that all initial user preferences are set to their default values.
+     *
+     * We call the [TestScope.runTest] function of our [TestScope] property [testScope] to run its
+     * [TestScope] `testBody` suspend lambda argument which is a lamdba in which we:
+     *  - Call [assertEquals] to verify that the `expected` argument a new instance of [UserData]
+     *  constructed with the default values of all properties **matches** the `actual` argument
+     *  which is the [UserData] that results from using the [Flow.first] function of the
+     *  [OfflineFirstUserDataRepository.userData] property of our [OfflineFirstUserDataRepository]
+     *  property [subject] to collect the latest [UserData].
+     */
     @Test
-    fun offlineFirstUserDataRepository_default_user_data_is_correct() =
+    fun offlineFirstUserDataRepository_default_user_data_is_correct(): TestResult =
         testScope.runTest {
             assertEquals(
-                UserData(
+                expected = UserData(
                     bookmarkedNewsResources = emptySet(),
                     viewedNewsResources = emptySet(),
                     followedTopics = emptySet(),
@@ -67,18 +109,45 @@ class OfflineFirstUserDataRepositoryTest {
                     useDynamicColor = false,
                     shouldHideOnboarding = false,
                 ),
-                subject.userData.first(),
+                actual = subject.userData.first(),
             )
         }
 
+    /**
+     * Tests that the logic for toggling followed topics is delegated to [NiaPreferencesDataSource].
+     * It verifies that when a topic is followed or unfollowed, the change is correctly reflected
+     * in both the repository's user data and the underlying data source.
+     *
+     * We call the [TestScope.runTest] function of our [TestScope] property [testScope] to run its
+     * [TestScope] `testBody` suspend lambda argument which is a lamdba in which we:
+     *  - Call the [OfflineFirstUserDataRepository.setTopicIdFollowed] method of our
+     *  [OfflineFirstUserDataRepository] property [subject] with the `followedTopicId` argument "0",
+     *  and the `followed` argument set to `true` in order to follow the "0" topic.
+     *  - Call [assertEquals] to verify that the `expected` argument a new instance of [Set]
+     *  containing the string "0" **matches** the `actual` argument which is the result of feeding
+     *  [Flow] of [UserData] property [OfflineFirstUserDataRepository.userData] of our
+     *  [OfflineFirstUserDataRepository] property [subject] to the [Flow.map] extension function
+     *  with its `transform` argument the [UserData.followedTopics] property to create a [Flow] of
+     *  [Set] of [String] which we feed to its [Flow.first] method to collect the latest [Set].
+     *  - Call the [OfflineFirstUserDataRepository.setTopicIdFollowed] method of our
+     *  [OfflineFirstUserDataRepository] property [subject] with the `followedTopicId` argument "1",
+     *  and the `followed` argument set to `true` in order to follow the "1" topic.
+     *  - Call [assertEquals] to verify that the `expected` argument a new instance of [Set]
+     *  containing the strings "0" and "1" **matches** the `actual` argument which is the result of
+     *  feeding [Flow] of [UserData] property [OfflineFirstUserDataRepository.userData] of our
+     *  [OfflineFirstUserDataRepository] property [subject] to the [Flow.map] extension function
+     *  with its `transform` argument the [UserData.followedTopics] property to create a [Flow] of
+     *  [Set] of [String] which we feed to its [Flow.first] method to collect the latest [Set].
+     * TODO: Continue here.
+     */
     @Test
-    fun offlineFirstUserDataRepository_toggle_followed_topics_logic_delegates_to_nia_preferences() =
+    fun offlineFirstUserDataRepository_toggle_followed_topics_logic_delegates_to_nia_preferences(): TestResult =
         testScope.runTest {
             subject.setTopicIdFollowed(followedTopicId = "0", followed = true)
 
             assertEquals(
-                setOf("0"),
-                subject.userData
+                expected = setOf("0"),
+                actual = subject.userData
                     .map { it.followedTopics }
                     .first(),
             )
@@ -86,52 +155,52 @@ class OfflineFirstUserDataRepositoryTest {
             subject.setTopicIdFollowed(followedTopicId = "1", followed = true)
 
             assertEquals(
-                setOf("0", "1"),
-                subject.userData
+                expected = setOf("0", "1"),
+                actual = subject.userData
                     .map { it.followedTopics }
                     .first(),
             )
 
             assertEquals(
-                niaPreferencesDataSource.userData
+                expected = niaPreferencesDataSource.userData
                     .map { it.followedTopics }
                     .first(),
-                subject.userData
+                actual = subject.userData
                     .map { it.followedTopics }
                     .first(),
             )
         }
 
     @Test
-    fun offlineFirstUserDataRepository_set_followed_topics_logic_delegates_to_nia_preferences() =
+    fun offlineFirstUserDataRepository_set_followed_topics_logic_delegates_to_nia_preferences(): TestResult =
         testScope.runTest {
             subject.setFollowedTopicIds(followedTopicIds = setOf("1", "2"))
 
             assertEquals(
-                setOf("1", "2"),
-                subject.userData
+                expected = setOf("1", "2"),
+                actual = subject.userData
                     .map { it.followedTopics }
                     .first(),
             )
 
             assertEquals(
-                niaPreferencesDataSource.userData
+                expected = niaPreferencesDataSource.userData
                     .map { it.followedTopics }
                     .first(),
-                subject.userData
+                actual = subject.userData
                     .map { it.followedTopics }
                     .first(),
             )
         }
 
     @Test
-    fun offlineFirstUserDataRepository_bookmark_news_resource_logic_delegates_to_nia_preferences() =
+    fun offlineFirstUserDataRepository_bookmark_news_resource_logic_delegates_to_nia_preferences(): TestResult =
         testScope.runTest {
             subject.setNewsResourceBookmarked(newsResourceId = "0", bookmarked = true)
 
             assertEquals(
-                setOf("0"),
-                subject.userData
+                expected = setOf("0"),
+                actual = subject.userData
                     .map { it.bookmarkedNewsResources }
                     .first(),
             )
@@ -139,30 +208,30 @@ class OfflineFirstUserDataRepositoryTest {
             subject.setNewsResourceBookmarked(newsResourceId = "1", bookmarked = true)
 
             assertEquals(
-                setOf("0", "1"),
-                subject.userData
+                expected = setOf("0", "1"),
+                actual = subject.userData
                     .map { it.bookmarkedNewsResources }
                     .first(),
             )
 
             assertEquals(
-                niaPreferencesDataSource.userData
+                expected = niaPreferencesDataSource.userData
                     .map { it.bookmarkedNewsResources }
                     .first(),
-                subject.userData
+                actual = subject.userData
                     .map { it.bookmarkedNewsResources }
                     .first(),
             )
         }
 
     @Test
-    fun offlineFirstUserDataRepository_update_viewed_news_resources_delegates_to_nia_preferences() =
+    fun offlineFirstUserDataRepository_update_viewed_news_resources_delegates_to_nia_preferences(): TestResult =
         runTest {
             subject.setNewsResourceViewed(newsResourceId = "0", viewed = true)
 
             assertEquals(
-                setOf("0"),
-                subject.userData
+                expected = setOf("0"),
+                actual = subject.userData
                     .map { it.viewedNewsResources }
                     .first(),
             )
@@ -170,36 +239,36 @@ class OfflineFirstUserDataRepositoryTest {
             subject.setNewsResourceViewed(newsResourceId = "1", viewed = true)
 
             assertEquals(
-                setOf("0", "1"),
-                subject.userData
+                expected = setOf("0", "1"),
+                actual = subject.userData
                     .map { it.viewedNewsResources }
                     .first(),
             )
 
             assertEquals(
-                niaPreferencesDataSource.userData
+                expected = niaPreferencesDataSource.userData
                     .map { it.viewedNewsResources }
                     .first(),
-                subject.userData
+                actual = subject.userData
                     .map { it.viewedNewsResources }
                     .first(),
             )
         }
 
     @Test
-    fun offlineFirstUserDataRepository_set_theme_brand_delegates_to_nia_preferences() =
+    fun offlineFirstUserDataRepository_set_theme_brand_delegates_to_nia_preferences(): TestResult =
         testScope.runTest {
-            subject.setThemeBrand(ThemeBrand.ANDROID)
+            subject.setThemeBrand(themeBrand = ThemeBrand.ANDROID)
 
             assertEquals(
-                ThemeBrand.ANDROID,
-                subject.userData
+                expected = ThemeBrand.ANDROID,
+                actual = subject.userData
                     .map { it.themeBrand }
                     .first(),
             )
             assertEquals(
-                ThemeBrand.ANDROID,
-                niaPreferencesDataSource
+                expected = ThemeBrand.ANDROID,
+                actual = niaPreferencesDataSource
                     .userData
                     .map { it.themeBrand }
                     .first(),
@@ -207,19 +276,19 @@ class OfflineFirstUserDataRepositoryTest {
         }
 
     @Test
-    fun offlineFirstUserDataRepository_set_dynamic_color_delegates_to_nia_preferences() =
+    fun offlineFirstUserDataRepository_set_dynamic_color_delegates_to_nia_preferences(): TestResult =
         testScope.runTest {
-            subject.setDynamicColorPreference(true)
+            subject.setDynamicColorPreference(useDynamicColor = true)
 
             assertEquals(
-                true,
-                subject.userData
+                expected = true,
+                actual = subject.userData
                     .map { it.useDynamicColor }
                     .first(),
             )
             assertEquals(
-                true,
-                niaPreferencesDataSource
+                expected = true,
+                actual = niaPreferencesDataSource
                     .userData
                     .map { it.useDynamicColor }
                     .first(),
@@ -227,19 +296,19 @@ class OfflineFirstUserDataRepositoryTest {
         }
 
     @Test
-    fun offlineFirstUserDataRepository_set_dark_theme_config_delegates_to_nia_preferences() =
+    fun offlineFirstUserDataRepository_set_dark_theme_config_delegates_to_nia_preferences(): TestResult =
         testScope.runTest {
-            subject.setDarkThemeConfig(DarkThemeConfig.DARK)
+            subject.setDarkThemeConfig(darkThemeConfig = DarkThemeConfig.DARK)
 
             assertEquals(
-                DarkThemeConfig.DARK,
-                subject.userData
+                expected = DarkThemeConfig.DARK,
+                actual = subject.userData
                     .map { it.darkThemeConfig }
                     .first(),
             )
             assertEquals(
-                DarkThemeConfig.DARK,
-                niaPreferencesDataSource
+                expected = DarkThemeConfig.DARK,
+                actual = niaPreferencesDataSource
                     .userData
                     .map { it.darkThemeConfig }
                     .first(),
@@ -247,13 +316,13 @@ class OfflineFirstUserDataRepositoryTest {
         }
 
     @Test
-    fun whenUserCompletesOnboarding_thenRemovesAllInterests_shouldHideOnboardingIsFalse() =
+    fun whenUserCompletesOnboarding_thenRemovesAllInterests_shouldHideOnboardingIsFalse(): TestResult =
         testScope.runTest {
-            subject.setFollowedTopicIds(setOf("1"))
-            subject.setShouldHideOnboarding(true)
-            assertTrue(subject.userData.first().shouldHideOnboarding)
+            subject.setFollowedTopicIds(followedTopicIds = setOf("1"))
+            subject.setShouldHideOnboarding(shouldHideOnboarding = true)
+            assertTrue(actual = subject.userData.first().shouldHideOnboarding)
 
-            subject.setFollowedTopicIds(emptySet())
-            assertFalse(subject.userData.first().shouldHideOnboarding)
+            subject.setFollowedTopicIds(followedTopicIds = emptySet())
+            assertFalse(actual = subject.userData.first().shouldHideOnboarding)
         }
 }
