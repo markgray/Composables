@@ -1,18 +1,4 @@
-/*
- * Copyright 2021 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
@@ -24,11 +10,11 @@ plugins {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "androidx.compose.samples.crane"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.compose.samples.crane.CustomTestRunner"
@@ -62,8 +48,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
     }
     buildFeatures {
         compose = true
@@ -94,20 +82,20 @@ dependencies {
     implementation("com.google.accompanist:accompanist-insets:0.30.1")
     implementation("androidx.activity:activity-compose:1.10.1")
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.compose.runtime:runtime:1.8.2")
-    implementation("androidx.compose.foundation:foundation:1.8.2")
-    implementation("androidx.compose.material:material:1.8.2")
-    implementation("androidx.compose.foundation:foundation-layout:1.8.2")
-    implementation("androidx.compose.animation:animation:1.8.2")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.2")
+    implementation("androidx.compose.runtime:runtime:1.8.3")
+    implementation("androidx.compose.foundation:foundation:1.8.3")
+    implementation("androidx.compose.material:material:1.8.3")
+    implementation("androidx.compose.foundation:foundation-layout:1.8.3")
+    implementation("androidx.compose.animation:animation:1.8.3")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.3")
     implementation("com.google.dagger:hilt-android:2.56.2")
     implementation("io.coil-kt:coil-compose:2.7.0")
     ksp("com.google.dagger:hilt-compiler:2.56.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
 
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
     androidTestImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test:core:1.6.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
@@ -115,7 +103,7 @@ dependencies {
     androidTestImplementation("androidx.test:rules:1.6.1")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
     androidTestImplementation("com.google.dagger:hilt-android:2.56.2")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.56.2")
     kspAndroidTest("com.google.dagger:hilt-compiler:2.56.2")
