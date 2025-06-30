@@ -719,9 +719,9 @@ class OfflineFirstNewsRepositoryTest {
      *  that results from feeding the [List] of [NetworkNewsResource] variable `networkNewsResources`
      *  to an [Iterable.flatMap] whose `transform` argument is the
      *  [NetworkNewsResource.topicEntityShells] method which produces a [List] of [List] of
-     *  [TopicEntity] which is flattened to a [List] of [TopicEntity] by [Iterable.flatMap]
+     *  [TopicEntity] which is flattened to a [List] of [TopicEntity] by [Iterable.flatMap] and
      *  which is then fed to an [Iterable.mapNotNull] whose `transform` argument is a lambda which
-     *  captures the [TopicEntity] passed the lambda in variable `topic` and used a `when` to switch
+     *  captures the [TopicEntity] passed the lambda in variable `topic` and uses a `when` to switch
      *  on whether the sum of the characters in the [TopicEntity.id] property of the [TopicEntity]
      *  variable `topic` is even or odd. If the sum is even, the [TopicEntity.id] property of the
      *  [TopicEntity] variable `topic` is returned as a [String] else `null`. This list of [String]
@@ -822,6 +822,8 @@ class OfflineFirstNewsRepositoryTest {
      *  - call the [NiaPreferencesDataSource.setFollowedTopicIds] method of our
      *  [NiaPreferencesDataSource] property [niaPreferencesDataSource] with its `topicIds`
      *  argument set to the [Set] of [String] variable `followedTopicIds`.
+     *  - Sync the [OfflineFirstNewsRepository] property [subject] using the [Synchronizer] property
+     *  [synchronizer].
      *  - call the [assertTrue] method with its `actual` argument the [Boolean] that results from
      *  if the [List] of [List] of [NewsResource] of the [TestNotifier.addedNewsResources] property
      *  of our [TestNotifier] property [notifier] is empty (meaning that the notifier has **not** been
