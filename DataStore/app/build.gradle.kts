@@ -1,17 +1,19 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.protobuf") version "0.9.0"
+    id("com.google.protobuf") version "0.9.5"
 }
 
 android {
     namespace = "com.codelab.android.datastore"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.codelab.android.datastore"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -30,8 +32,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
     }
     buildFeatures {
         compose = true
@@ -49,10 +53,10 @@ android {
 dependencies {
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.compose.ui:ui:1.8.2")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.2")
-    implementation("androidx.compose.material:material:1.8.2")
-    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
+    implementation("androidx.compose.ui:ui:1.8.3")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.3")
+    implementation("androidx.compose.material:material:1.8.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
 
     // architecture components
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
@@ -61,7 +65,7 @@ dependencies {
 
     // ProtBuf
     implementation("androidx.datastore:datastore-core:1.1.7")
-    implementation("com.google.protobuf:protobuf-javalite:4.26.1")
+    implementation("com.google.protobuf:protobuf-javalite:4.31.1")
     implementation("androidx.datastore:datastore:1.1.7")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.12.0")
@@ -70,9 +74,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
 }
 
 protobuf {
