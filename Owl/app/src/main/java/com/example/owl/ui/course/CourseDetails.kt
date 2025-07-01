@@ -577,7 +577,6 @@ private fun CourseDescriptionBody(course: Course) {
  * @param selectCourse A lambda function that is invoked when a related course is selected.
  * It receives the ID of the selected course as a [Long].
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun RelatedCourses(
     courseId: Long,

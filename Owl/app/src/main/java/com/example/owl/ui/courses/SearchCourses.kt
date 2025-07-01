@@ -99,7 +99,6 @@ import com.example.owl.ui.theme.BlueTheme
  * @param topics (state) topics to display
  * @param modifier modifier for this element
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchCourses(
     topics: List<Topic>,
@@ -190,7 +189,6 @@ private fun getTopics(
  * @param updateSearchTerm a lambda the [BasicTextField] can call with a new [TextFieldValue] to
  * have it update the value that is displayed.
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AppBar(
     searchTerm: TextFieldValue,
