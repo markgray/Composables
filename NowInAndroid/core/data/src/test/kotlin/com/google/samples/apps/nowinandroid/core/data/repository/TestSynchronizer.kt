@@ -22,14 +22,24 @@ import com.google.samples.apps.nowinandroid.core.datastore.NiaPreferencesDataSou
 
 /**
  * Test synchronizer that delegates to [NiaPreferencesDataSource]
+ *
+ * @param niaPreferences Data source that exposes the latest versions of the data
  */
 class TestSynchronizer(
     private val niaPreferences: NiaPreferencesDataSource,
 ) : Synchronizer {
+    /**
+     * Gets the [ChangeListVersions] from the [NiaPreferencesDataSource]
+     */
     override suspend fun getChangeListVersions(): ChangeListVersions =
         niaPreferences.getChangeListVersions()
 
+    /**
+     * Updates the [ChangeListVersions] using the given [update].
+     *
+     * @param update The update to apply.
+     */
     override suspend fun updateChangeListVersions(
         update: ChangeListVersions.() -> ChangeListVersions,
-    ) = niaPreferences.updateChangeListVersion(update)
+    ): Unit = niaPreferences.updateChangeListVersion(update)
 }
