@@ -63,7 +63,7 @@ class OfflineFirstUserDataRepositoryTest {
     private lateinit var niaPreferencesDataSource: NiaPreferencesDataSource
 
     /**
-     * The [NoOpAnalyticsHelper] used in this test. [AnalyticsHelper] which does nothing.
+     * The [NoOpAnalyticsHelper] used in this test. An [AnalyticsHelper] which does nothing.
      */
     private val analyticsHelper = NoOpAnalyticsHelper()
 
