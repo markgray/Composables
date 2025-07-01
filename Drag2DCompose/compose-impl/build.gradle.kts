@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "android.support.drag2d.compose"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -31,7 +31,7 @@ android {
 
 dependencies {
     implementation(project(":engine"))
-    implementation("androidx.compose.animation:animation-core:1.8.2")
+    implementation("androidx.compose.animation:animation-core:1.8.3")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
