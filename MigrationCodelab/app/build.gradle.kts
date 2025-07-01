@@ -1,18 +1,4 @@
-/*
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
@@ -24,11 +10,11 @@ plugins {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.google.samples.apps.sunflower"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 1
         versionName = "0.1.6"
@@ -47,9 +33,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = listOf("-Xjvm-default=all-compatibility")
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
     }
     buildFeatures {
         dataBinding = true
@@ -68,7 +55,7 @@ android {
 }
 
 dependencies {
-    ksp("androidx.room:room-compiler:2.7.1")
+    ksp("androidx.room:room-compiler:2.7.2")
     ksp("com.github.bumptech.glide:compiler:4.16.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
@@ -77,30 +64,30 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.0")
     implementation("androidx.navigation:navigation-ui-ktx:2.9.0")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
-    implementation("androidx.room:room-runtime:2.7.1")
-    implementation("androidx.room:room-ktx:2.7.1")
+    implementation("androidx.room:room-runtime:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation("androidx.work:work-runtime-ktx:2.10.1")
+    implementation("androidx.work:work-runtime-ktx:2.10.2")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.13.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.8.2")
-    implementation("androidx.compose.ui:ui:1.8.2")
-    implementation("androidx.compose.foundation:foundation:1.8.2")
-    implementation("androidx.compose.foundation:foundation-layout:1.8.2")
-    implementation("androidx.compose.material:material:1.8.2")
-    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
+    implementation("androidx.compose.runtime:runtime:1.8.3")
+    implementation("androidx.compose.ui:ui:1.8.3")
+    implementation("androidx.compose.foundation:foundation:1.8.3")
+    implementation("androidx.compose.foundation:foundation-layout:1.8.3")
+    implementation("androidx.compose.material:material:1.8.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.2")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
 
-    implementation("com.google.accompanist:accompanist-themeadapter-material:0.34.0")
+    implementation("com.google.accompanist:accompanist-themeadapter-material:0.36.0")
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
@@ -109,8 +96,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
-    androidTestImplementation("androidx.work:work-testing:2.10.1")
+    androidTestImplementation("androidx.work:work-testing:2.10.2")
     androidTestImplementation("com.google.truth:truth:1.4.4")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
     testImplementation("junit:junit:4.13.2")
 }
