@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 /*
  * Copyright 2022 The Android Open Source Project
  *
@@ -22,11 +24,11 @@ plugins {
 
 android {
     namespace = "com.example.reply"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.example.reply"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         vectorDrawables.useSupportLibrary = true
@@ -58,8 +60,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
     }
     buildFeatures {
         compose = true
@@ -75,20 +79,20 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.runtime:runtime:1.8.2")
-    implementation("androidx.compose.ui:ui:1.8.2")
+    implementation("androidx.compose.runtime:runtime:1.8.3")
+    implementation("androidx.compose.ui:ui:1.8.3")
     implementation("androidx.compose.material3:material3:1.3.2")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("androidx.compose.foundation:foundation-layout:1.8.2")
-    implementation("androidx.compose.foundation:foundation:1.8.2")
-    implementation("androidx.compose.animation:animation:1.8.2")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.2")
-    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
-    testImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
-    androidTestImplementation("androidx.compose.ui:ui-test:1.8.2")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
+    implementation("androidx.compose.foundation:foundation-layout:1.8.3")
+    implementation("androidx.compose.foundation:foundation:1.8.3")
+    implementation("androidx.compose.animation:animation:1.8.3")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
+    testImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.8.3")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
