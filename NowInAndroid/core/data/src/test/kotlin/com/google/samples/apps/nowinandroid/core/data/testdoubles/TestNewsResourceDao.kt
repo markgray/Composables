@@ -179,7 +179,6 @@ class TestNewsResourceDao : NewsResourceDao {
      * The [entitiesStateFlow] is updated by concatenating the new [newsResourceEntities] with the
      * existing values, then removing duplicates based on the `id` property, and finally sorting
      * the result by `publishDate` in descending order.
-     * TODO: Continue here.
      *
      * @param newsResourceEntities The list of news resources to be upserted.
      */
@@ -194,6 +193,18 @@ class TestNewsResourceDao : NewsResourceDao {
         }
     }
 
+    /**
+     * Inserts the given [newsResourceTopicCrossReferences] into the backing [topicCrossReferences]
+     * list. The [topicCrossReferences] list is updated by concatenating the new
+     * [newsResourceTopicCrossReferences] with the existing values, then removing duplicates based
+     * on the [Pair] formed from their [NewsResourceTopicCrossRef.newsResourceId] to
+     * [NewsResourceTopicCrossRef.topicId] properties. Existing values are preferred over new
+     * ones in case of duplicates, and the [NewsResourceTopicCrossRef] in the resulting list are in
+     * the same order as they were in the original collection.
+     *
+     * @param newsResourceTopicCrossReferences The list of news resource topic cross references to
+     * be inserted.
+     */
     override suspend fun insertOrIgnoreTopicCrossRefEntities(
         newsResourceTopicCrossReferences: List<NewsResourceTopicCrossRef>,
     ) {
@@ -202,6 +213,21 @@ class TestNewsResourceDao : NewsResourceDao {
             .distinctBy { it.newsResourceId to it.topicId }
     }
 
+    /**
+     * Deletes the news resources with the given [ids] from the backing [entitiesStateFlow] flow.
+     * The [entitiesStateFlow] is updated by filtering out the news resources whose
+     * [NewsResourceEntity.id] is present in [List] of [String] parameter [ids].
+     *
+     * We start by initializing our [Set] of [String] variable `idSet` to the [List] of [String]
+     * parameter [ids] converted to a [Set]. Then we update the [MutableStateFlow] wrapped [List]
+     * of [NewsResourceEntity] property [entitiesStateFlow] using its [MutableStateFlow.update]
+     * method with its `function` lambda argument capturing the [List] of [NewsResourceEntity]
+     * passed the lambda in variable `entities`, and then using the [Iterable.filterNot] of
+     * `entities` filtering out the [NewsResourceEntity] whose [NewsResourceEntity.id] is not in
+     * [Set] of [String] variable `idSet`.
+     *
+     * @param ids The list of news resource ids to be deleted.
+     */
     override suspend fun deleteNewsResources(ids: List<String>) {
         val idSet: Set<String> = ids.toSet()
         entitiesStateFlow.update { entities: List<NewsResourceEntity> ->
@@ -210,12 +236,25 @@ class TestNewsResourceDao : NewsResourceDao {
     }
 }
 
+/**
+ * Populates a [NewsResourceEntity] with its associated topics.
+ *
+ * This function takes a [NewsResourceEntity] as its receiver and a list of
+ * [NewsResourceTopicCrossRef] objects as its parameter. It filters the cross-references to find
+ * those that match the `id` of the news resource. Then, for each matching cross-reference, it
+ * creates a [TopicEntity] using the `topicId` from the cross-reference and predefined placeholder
+ * values for other topic properties. Finally, it returns a [PopulatedNewsResource] containing the
+ * original news resource entity and the list of associated topic entities.
+ *
+ * @param topicCrossReferences The list of all news resource topic cross-references.
+ * @return A [PopulatedNewsResource] object.
+ */
 private fun NewsResourceEntity.asPopulatedNewsResource(
     topicCrossReferences: List<NewsResourceTopicCrossRef>,
-) = PopulatedNewsResource(
+): PopulatedNewsResource = PopulatedNewsResource(
     entity = this,
     topics = topicCrossReferences
-        .filter { it.newsResourceId == id }
+        .filter { ref: NewsResourceTopicCrossRef -> ref.newsResourceId == id }
         .map { newsResourceTopicCrossRef: NewsResourceTopicCrossRef ->
             TopicEntity(
                 id = newsResourceTopicCrossRef.topicId,

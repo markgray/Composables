@@ -23,10 +23,21 @@ import com.google.samples.apps.nowinandroid.core.network.model.NetworkNewsResour
 import com.google.samples.apps.nowinandroid.core.network.model.NetworkTopic
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
+/**
+ * The type of data that can be queried from the backend
+ */
 enum class CollectionType {
+    /**
+     * The [NetworkTopic] asset
+     */
     Topics,
+
+    /**
+     * The [NetworkNewsResource] asset
+     */
     NewsResources,
 }
 
@@ -35,15 +46,36 @@ enum class CollectionType {
  */
 class TestNiaNetworkDataSource : NiaNetworkDataSource {
 
+    /**
+     * The [DemoNiaNetworkDataSource] that this [TestNiaNetworkDataSource] delegates to.
+     * This is used to ensure that the data returned by this test double is realistic.
+     * We use [UnconfinedTestDispatcher] as its `ioDispatcher` argument which is
+     * similar to `Dispatchers.Unconfined`: the tasks that it executes are not confined to any
+     * particular thread and form an event loop; it's different from `Dispatchers.Unconfined` in
+     * that it skips delays, as all TestDispatchers do. We use a [Json] instance whose
+     * `ignoreUnknownKeys` is set to `true` so that encounters of unknown properties in the input
+     * JSON will be ignored instead of throwing [SerializationException].
+     */
     private val source = DemoNiaNetworkDataSource(
-        UnconfinedTestDispatcher(),
-        Json { ignoreUnknownKeys = true },
+        ioDispatcher = UnconfinedTestDispatcher(),
+        networkJson = Json { ignoreUnknownKeys = true },
     )
 
-    private val allTopics = runBlocking { source.getTopics() }
+    /**
+     * A backing store for all topics that are available from the [DemoNiaNetworkDataSource].
+     */
+    private val allTopics: List<NetworkTopic> = runBlocking { source.getTopics() }
 
-    private val allNewsResources = runBlocking { source.getNewsResources() }
+    /**
+     * A backing store for all news resources that are available from the [NiaNetworkDataSource].
+     */
+    private val allNewsResources: List<NetworkNewsResource> =
+        runBlocking { source.getNewsResources() }
 
+    /**
+     * A map from [CollectionType] to a list of [NetworkChangeList]s, where the version of each
+     * [NetworkChangeList] in the list is its index in the list (0 based).
+     */
     private val changeLists: MutableMap<CollectionType, List<NetworkChangeList>> = mutableMapOf(
         CollectionType.Topics to allTopics
             .mapToChangeList(idGetter = NetworkTopic::id),
@@ -51,6 +83,13 @@ class TestNiaNetworkDataSource : NiaNetworkDataSource {
             .mapToChangeList(idGetter = NetworkNewsResource::id),
     )
 
+    /**
+     * Gets a list of [NetworkTopic]s from the backing [allTopics] list.
+     * TODO: Continue here.
+     *
+     * @param ids A list of topic IDs. If null, returns all topics.
+     * @return A list of [NetworkTopic]s that match the given IDs, or all topics if [ids] is null.
+     */
     override suspend fun getTopics(ids: List<String>?): List<NetworkTopic> =
         allTopics.matchIds(
             ids = ids,
@@ -69,10 +108,10 @@ class TestNiaNetworkDataSource : NiaNetworkDataSource {
     override suspend fun getNewsResourceChangeList(after: Int?): List<NetworkChangeList> =
         changeLists.getValue(CollectionType.NewsResources).after(after)
 
-    fun latestChangeListVersion(collectionType: CollectionType) =
+    fun latestChangeListVersion(collectionType: CollectionType): Int =
         changeLists.getValue(collectionType).last().changeListVersion
 
-    fun changeListsAfter(collectionType: CollectionType, version: Int) =
+    fun changeListsAfter(collectionType: CollectionType, version: Int): List<NetworkChangeList> =
         changeLists.getValue(collectionType).after(version)
 
     /**
@@ -113,7 +152,7 @@ private fun <T> List<T>.matchIds(
  */
 private fun <T> List<T>.mapToChangeList(
     idGetter: (T) -> String,
-) = mapIndexed { index, item ->
+) = mapIndexed { index: Int, item: T ->
     NetworkChangeList(
         id = idGetter(item),
         changeListVersion = index + 1,
