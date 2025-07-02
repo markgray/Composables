@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 /*
  * Copyright 2021 The Android Open Source Project
  *
@@ -21,11 +23,11 @@ plugins {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.example.compose.rally"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 1
         versionName = "1.0"
@@ -56,8 +58,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
     }
     buildFeatures {
         compose = true
@@ -89,16 +93,16 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.8")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.8.2")
-    implementation("androidx.compose.ui:ui:1.8.2")
-    implementation("androidx.compose.foundation:foundation:1.8.2")
-    implementation("androidx.compose.foundation:foundation-layout:1.8.2")
-    implementation("androidx.compose.material:material:1.8.2")
-    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.2")
+    implementation("androidx.compose.runtime:runtime:1.8.3")
+    implementation("androidx.compose.ui:ui:1.8.3")
+    implementation("androidx.compose.foundation:foundation:1.8.3")
+    implementation("androidx.compose.foundation:foundation-layout:1.8.3")
+    implementation("androidx.compose.material:material:1.8.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.8.3")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.activity:activity-compose:1.10.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
@@ -106,7 +110,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     // Compose testing dependencies
-    androidTestImplementation("androidx.compose.ui:ui-test:1.8.2")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.8.3")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
 }
