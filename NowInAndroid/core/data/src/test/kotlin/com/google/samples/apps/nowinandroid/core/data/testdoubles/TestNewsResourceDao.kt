@@ -71,15 +71,15 @@ class TestNewsResourceDao : NewsResourceDao {
      * the lambda in variable `resources` and then if [useFilterTopicIds] is `true` it
      * sets `result` to the result of calling the [Iterable.filter] extension function on `result`
      * and in its `predicate` lambda captures each [PopulatedNewsResource] in variable `resource`
-     * uses the [Iterable.any] extension function select only the [PopulatedNewsResource] whose
-     * [PopulatedNewsResource.topics] property contains an element whose [TopicEntity.id] property
-     * is in the [Set] of [String] property [filteredInterestsIds]. Then if [useFilterNewsIds] is
-     * `true` it sets `result` to the result of calling the [Iterable.filter] extension function
-     * on `result` and in its `predicate` lambda captures each [PopulatedNewsResource] in variable
-     * `resource` uses the [Iterable.any] extension function select only the [PopulatedNewsResource]
+     * then uses the [Iterable.any] extension function of `result` to select only the
+     * [PopulatedNewsResource]'s whose [PopulatedNewsResource.topics] property contains an element
+     * whose [TopicEntity.id] property is in the [Set] of [String] property [filterTopicIds].
+     * Then if [useFilterNewsIds] is `true` it sets `result` to the result of calling the
+     * [Iterable.filter] extension function of `result` and in its `predicate` lambda captures each
+     * [PopulatedNewsResource] in variable `resource` selecting only the [PopulatedNewsResource]
      * whose [NewsResourceEntity.id] of [PopulatedNewsResource.entity] property is in the [Set] of
-     * [String] property [nonPresentInterestsIds]. Then it returns the possibly filtered [List]
-     * of [PopulatedNewsResource] `result` to have it emitted as a [Flow].
+     * [String] property [filterNewsIds]. Then it returns the possibly filtered [List] of
+     * [PopulatedNewsResource] `result` to have it emitted as a [Flow].
      *
      * @param useFilterTopicIds Whether to filter by topic ids.
      * @param filterTopicIds The set of topic ids to filter by.
@@ -128,18 +128,18 @@ class TestNewsResourceDao : NewsResourceDao {
      * variable `resources` and initializes its variable `result` to that [List] of
      * [PopulatedNewsResource]. Then if [useFilterTopicIds] is `true` it sets `result` to the
      * result of calling the [Iterable.filter] extension function on `result` and in its
-     * `predicate` lambda captures each [PopulatedNewsResource] in variable `resource`
-     * uses the [Iterable.any] extension function select only the [PopulatedNewsResource] whose
-     * [PopulatedNewsResource.topics] property contains an element whose [TopicEntity.id] property
-     * is in the [Set] of [String] parameter [filteredInterestsIds]. Then if [useFilterNewsIds] is
-     * `true` it sets `result` to the result of calling the [Iterable.filter] extension function
-     * on `result` and in its `predicate` lambda captures each [PopulatedNewsResource] in variable
-     * `resource` uses the [Iterable.any] extension function select only the [PopulatedNewsResource]
+     * `predicate` lambda captures each [PopulatedNewsResource] in variable `resource` theb
+     * using the [Iterable.any] extension function of `resource` selects only the
+     * [PopulatedNewsResource] whose [PopulatedNewsResource.topics] property contains an element
+     * whose [TopicEntity.id] property is in the [Set] of [String] parameter [filterTopicIds].
+     * Then if [useFilterNewsIds] is `true` it sets `result` to the result of calling the
+     * [Iterable.filter] extension function on `result` and in its `predicate` lambda captures each
+     * [PopulatedNewsResource] in variable `resource` then selects only the [PopulatedNewsResource]
      * whose [NewsResourceEntity.id] of [PopulatedNewsResource.entity] property is in the [Set] of
      * [String] parameter [filterNewsIds]. Then it returns the possibly filtered [List] of [String]
      * that results using the [Iterable.map] extension function on `result` with its `transform`
      * lambda method emitting the [NewsResourceEntity.id] of each [PopulatedNewsResource.entity] in
-     * `result` to have it emitted as a [Flow].
+     * `result` to have it emitted as a [Flow] of [List] of [String].
      *
      * @param useFilterTopicIds Whether to filter by topic ids.
      * @param filterTopicIds The set of topic ids to filter by.

@@ -138,16 +138,16 @@ class OfflineFirstUserDataRepositoryTest {
      *  [OfflineFirstUserDataRepository] property [subject] to the [Flow.map] extension function
      *  with its `transform` argument the [UserData.followedTopics] property to create a [Flow] of
      *  [Set] of [String] which we feed to its [Flow.first] method to collect the latest [Set].
-     *  - Call [assertEquals] to verify that the `expected` argument the result of feeding the [Flow]
-     *  of [UserData] property [OfflineFirstUserDataRepository.userData] of our
+     *  - Call [assertEquals] to verify that the `expected` argument, the result of feeding the
+     *  [Flow] of [UserData] property [NiaPreferencesDataSource.userData] of our
+     *  [NiaPreferencesDataSource] property [niaPreferencesDataSource] to the [Flow.map] extension
+     *  function with its `transform` argument the [UserData.followedTopics] property to create a
+     *  [Flow] of [Set] of [String] which we feed to its [Flow.first] method to collect the latest
+     *  [Set] **matches** the `actual` argument which is the result of feeding the [Flow] of
+     *  [UserData] property [OfflineFirstUserDataRepository.userData] of our
      *  [OfflineFirstUserDataRepository] property [subject] to the [Flow.map] extension function
      *  with its `transform` argument the [UserData.followedTopics] property to create a [Flow] of
-     *  [Set] of [String] which we feed to its [Flow.first] method to collect the latest [Set]
-     *  **matches** the `actual` argument which is the result of feeding the [Flow] of [UserData]
-     *  property [NiaPreferencesDataSource.userData] of our [NiaPreferencesDataSource] property
-     *  [niaPreferencesDataSource] to the [Flow.map] extension function with its `transform` argument
-     *  the [UserData.followedTopics] property to create a [Flow] of [Set] of [String] which we feed
-     *  to its [Flow.first] method to collect the latest [Set].
+     *  [Set] of [String] which we feed to its [Flow.first] method to collect the latest [Set].
      */
     @Test
     fun offlineFirstUserDataRepository_toggle_followed_topics_logic_delegates_to_nia_preferences(): TestResult =
@@ -391,12 +391,6 @@ class OfflineFirstUserDataRepositoryTest {
      *  [NiaPreferencesDataSource.userData] of our [NiaPreferencesDataSource] property
      *  [niaPreferencesDataSource] to the [Flow.map] extension function with its `transform` argument
      *  the [UserData.themeBrand] property to create a [Flow] of [ThemeBrand] which we feed to its
-     *  [Flow.first] method to collect the latest [ThemeBrand].
-     *  - Call [assertEquals] to verify that the `expected` argument [ThemeBrand.ANDROID] **matches**
-     *  the `actual` argument which is the result of feeding [Flow] of [UserData] property
-     *  [OfflineFirstUserDataRepository.userData] of our [OfflineFirstUserDataRepository] property
-     *  [subject] to the [Flow.map] extension function with its `transform` argument the
-     *  [UserData.themeBrand] property to create a [Flow] of [ThemeBrand] which we feed to its
      *  [Flow.first] method to collect the latest [ThemeBrand].
      */
     @Test
