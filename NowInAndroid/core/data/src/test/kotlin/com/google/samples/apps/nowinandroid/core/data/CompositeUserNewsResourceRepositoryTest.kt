@@ -20,16 +20,24 @@ import com.google.samples.apps.nowinandroid.core.data.repository.CompositeUserNe
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsResourceQuery
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
+import com.google.samples.apps.nowinandroid.core.model.data.UserData
+import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.mapToUserNewsResources
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestNewsRepository
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestUserDataRepository
 import com.google.samples.apps.nowinandroid.core.testing.repository.emptyUserData
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import org.junit.Test
 import kotlin.test.assertEquals
 
+/**
+ * Unit tests for [CompositeUserNewsResourceRepository].
+ * TODO: Continue here.
+ */
 class CompositeUserNewsResourceRepositoryTest {
 
     private val newsRepository = TestNewsRepository()
@@ -41,34 +49,35 @@ class CompositeUserNewsResourceRepositoryTest {
     )
 
     @Test
-    fun whenNoFilters_allNewsResourcesAreReturned() = runTest {
+    fun whenNoFilters_allNewsResourcesAreReturned(): TestResult = runTest {
         // Obtain the user news resources flow.
-        val userNewsResources = userNewsResourceRepository.observeAll()
+        val userNewsResources: Flow<List<UserNewsResource>> =
+            userNewsResourceRepository.observeAll()
 
         // Send some news resources and user data into the data repositories.
-        newsRepository.sendNewsResources(sampleNewsResources)
+        newsRepository.sendNewsResources(newsResources = sampleNewsResources)
 
         // Construct the test user data with bookmarks and followed topics.
-        val userData = emptyUserData.copy(
+        val userData: UserData = emptyUserData.copy(
             bookmarkedNewsResources = setOf(sampleNewsResources[0].id, sampleNewsResources[2].id),
             followedTopics = setOf(sampleTopic1.id),
         )
 
-        userDataRepository.setUserData(userData)
+        userDataRepository.setUserData(userData = userData)
 
         // Check that the correct news resources are returned with their bookmarked state.
         assertEquals(
-            sampleNewsResources.mapToUserNewsResources(userData),
-            userNewsResources.first(),
+            expected = sampleNewsResources.mapToUserNewsResources(userData = userData),
+            actual = userNewsResources.first(),
         )
     }
 
     @Test
-    fun whenFilteredByTopicId_matchingNewsResourcesAreReturned() = runTest {
+    fun whenFilteredByTopicId_matchingNewsResourcesAreReturned(): TestResult = runTest {
         // Obtain a stream of user news resources for the given topic id.
-        val userNewsResources =
+        val userNewsResources: Flow<List<UserNewsResource>> =
             userNewsResourceRepository.observeAll(
-                NewsResourceQuery(
+                query = NewsResourceQuery(
                     filterTopicIds = setOf(
                         sampleTopic1.id,
                     ),
@@ -76,60 +85,64 @@ class CompositeUserNewsResourceRepositoryTest {
             )
 
         // Send test data into the repositories.
-        newsRepository.sendNewsResources(sampleNewsResources)
-        userDataRepository.setUserData(emptyUserData)
+        newsRepository.sendNewsResources(newsResources = sampleNewsResources)
+        userDataRepository.setUserData(userData = emptyUserData)
 
         // Check that only news resources with the given topic id are returned.
         assertEquals(
-            sampleNewsResources
+            expected = sampleNewsResources
                 .filter { sampleTopic1 in it.topics }
-                .mapToUserNewsResources(emptyUserData),
-            userNewsResources.first(),
+                .mapToUserNewsResources(userData = emptyUserData),
+            actual = userNewsResources.first(),
         )
     }
 
     @Test
-    fun whenFilteredByFollowedTopics_matchingNewsResourcesAreReturned() = runTest {
+    fun whenFilteredByFollowedTopics_matchingNewsResourcesAreReturned(): TestResult = runTest {
         // Obtain a stream of user news resources for the given topic id.
-        val userNewsResources =
+        val userNewsResources: Flow<List<UserNewsResource>> =
             userNewsResourceRepository.observeAllForFollowedTopics()
 
         // Send test data into the repositories.
-        val userData = emptyUserData.copy(
+        val userData: UserData = emptyUserData.copy(
             followedTopics = setOf(sampleTopic1.id),
         )
-        newsRepository.sendNewsResources(sampleNewsResources)
-        userDataRepository.setUserData(userData)
+        newsRepository.sendNewsResources(newsResources = sampleNewsResources)
+        userDataRepository.setUserData(userData = userData)
 
         // Check that only news resources with the given topic id are returned.
         assertEquals(
-            sampleNewsResources
+            expected = sampleNewsResources
                 .filter { sampleTopic1 in it.topics }
-                .mapToUserNewsResources(userData),
-            userNewsResources.first(),
+                .mapToUserNewsResources(userData = userData),
+            actual = userNewsResources.first(),
         )
     }
 
     @Test
-    fun whenFilteredByBookmarkedResources_matchingNewsResourcesAreReturned() = runTest {
+    fun whenFilteredByBookmarkedResources_matchingNewsResourcesAreReturned(): TestResult = runTest {
         // Obtain the bookmarked user news resources flow.
-        val userNewsResources = userNewsResourceRepository.observeAllBookmarked()
+        val userNewsResources: Flow<List<UserNewsResource>> =
+            userNewsResourceRepository.observeAllBookmarked()
 
         // Send some news resources and user data into the data repositories.
-        newsRepository.sendNewsResources(sampleNewsResources)
+        newsRepository.sendNewsResources(newsResources = sampleNewsResources)
 
         // Construct the test user data with bookmarks and followed topics.
-        val userData = emptyUserData.copy(
+        val userData: UserData = emptyUserData.copy(
             bookmarkedNewsResources = setOf(sampleNewsResources[0].id, sampleNewsResources[2].id),
             followedTopics = setOf(sampleTopic1.id),
         )
 
-        userDataRepository.setUserData(userData)
+        userDataRepository.setUserData(userData = userData)
 
         // Check that the correct news resources are returned with their bookmarked state.
         assertEquals(
-            listOf(sampleNewsResources[0], sampleNewsResources[2]).mapToUserNewsResources(userData),
-            userNewsResources.first(),
+            expected = listOf(
+                sampleNewsResources[0],
+                sampleNewsResources[2],
+            ).mapToUserNewsResources(userData),
+            actual = userNewsResources.first(),
         )
     }
 }
