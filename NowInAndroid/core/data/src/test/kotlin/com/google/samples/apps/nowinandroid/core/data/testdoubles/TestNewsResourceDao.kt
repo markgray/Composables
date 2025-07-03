@@ -196,9 +196,10 @@ class TestNewsResourceDao : NewsResourceDao {
     /**
      * Inserts the given [newsResourceTopicCrossReferences] into the backing [topicCrossReferences]
      * list. The [topicCrossReferences] list is updated by concatenating the new
-     * [newsResourceTopicCrossReferences] with the existing values, then removing duplicates based
-     * on the [Pair] formed from their [NewsResourceTopicCrossRef.newsResourceId] to
-     * [NewsResourceTopicCrossRef.topicId] properties. Existing values are preferred over new
+     * [newsResourceTopicCrossReferences] with the existing values, then removing duplicates using
+     * the [Iterable.distinctBy] extension function with its `selector` lambda argument identifying
+     * duplicates based on the [Pair] formed from their [NewsResourceTopicCrossRef.newsResourceId]
+     * to [NewsResourceTopicCrossRef.topicId] properties. Existing values are preferred over new
      * ones in case of duplicates, and the [NewsResourceTopicCrossRef] in the resulting list are in
      * the same order as they were in the original collection.
      *
@@ -214,16 +215,15 @@ class TestNewsResourceDao : NewsResourceDao {
     }
 
     /**
-     * Deletes the news resources with the given [ids] from the backing [entitiesStateFlow] flow.
-     * The [entitiesStateFlow] is updated by filtering out the news resources whose
-     * [NewsResourceEntity.id] is present in [List] of [String] parameter [ids].
+     * Deletes the news resources whose [NewsResourceEntity.id] is in the [List] of [String]
+     * parameter [ids] from the backing [entitiesStateFlow] flow.
      *
      * We start by initializing our [Set] of [String] variable `idSet` to the [List] of [String]
      * parameter [ids] converted to a [Set]. Then we update the [MutableStateFlow] wrapped [List]
      * of [NewsResourceEntity] property [entitiesStateFlow] using its [MutableStateFlow.update]
      * method with its `function` lambda argument capturing the [List] of [NewsResourceEntity]
      * passed the lambda in variable `entities`, and then using the [Iterable.filterNot] of
-     * `entities` filtering out the [NewsResourceEntity] whose [NewsResourceEntity.id] is not in
+     * `entities` accepting only the [NewsResourceEntity] whose [NewsResourceEntity.id] is not in
      * [Set] of [String] variable `idSet`.
      *
      * @param ids The list of news resource ids to be deleted.
@@ -231,7 +231,7 @@ class TestNewsResourceDao : NewsResourceDao {
     override suspend fun deleteNewsResources(ids: List<String>) {
         val idSet: Set<String> = ids.toSet()
         entitiesStateFlow.update { entities: List<NewsResourceEntity> ->
-            entities.filterNot { it.id in idSet }
+            entities.filterNot { entity: NewsResourceEntity -> entity.id in idSet }
         }
     }
 }
