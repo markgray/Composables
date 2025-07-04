@@ -22,7 +22,22 @@ import kotlinx.datetime.Instant
 import org.junit.Test
 import kotlin.test.assertEquals
 
+/**
+ * Tests the [PopulatedNewsResource.asExternalModel] extension function.
+ */
 class PopulatedNewsResourceKtTest {
+    /**
+     * Tests that a [PopulatedNewsResource] can be successfully mapped to a [NewsResource]
+     * external model.
+     *
+     * This test creates a [PopulatedNewsResource] with sample data, including a
+     * [NewsResourceEntity] and a list of [TopicEntity] objects. It then calls the
+     * `asExternalModel()` extension function to convert it to a [NewsResource].
+     *
+     * Finally, it asserts that the properties of the resulting [NewsResource] match
+     * the data provided in the initial [PopulatedNewsResource], ensuring the mapping
+     * is correct.
+     */
     @Test
     fun populated_news_resource_can_be_mapped_to_news_resource() {
         val populatedNewsResource = PopulatedNewsResource(

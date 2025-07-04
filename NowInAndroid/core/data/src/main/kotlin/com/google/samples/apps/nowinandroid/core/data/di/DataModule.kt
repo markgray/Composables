@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.nowinandroid.core.data.di
 
 import com.google.samples.apps.nowinandroid.core.data.repository.DefaultRecentSearchRepository
@@ -35,10 +37,19 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+/**
+ * Hilt module that provides implementations for DI for data module.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
 
+    /**
+     * Binds [OfflineFirstTopicsRepository] to [TopicsRepository] for use in other modules.
+     * This allows other modules to depend on the [TopicsRepository] interface
+     * without needing to know about the concrete implementation.
+     * TODO: Continue here.
+     */
     @Binds
     internal abstract fun bindsTopicRepository(
         topicsRepository: OfflineFirstTopicsRepository,

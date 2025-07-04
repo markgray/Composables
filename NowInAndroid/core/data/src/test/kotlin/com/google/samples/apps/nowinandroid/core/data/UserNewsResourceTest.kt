@@ -28,12 +28,22 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+/**
+ * Tests for [UserNewsResource]
+ */
 class UserNewsResourceTest {
 
     /**
-     * Given: Some user data and news resources
-     * When: They are combined using `UserNewsResource.from`
-     * Then: The correct UserNewsResources are constructed
+     * Tests that a [UserNewsResource] is constructed correctly from a [NewsResource] and a
+     * [UserData].
+     *
+     * We start by initializing our [NewsResource] variable `newsResource1` to a [NewsResource]
+     * containing some fake data. We then initialize our [UserData] variable `userData` to a
+     * [UserData] containing some fake data. We initialize our [UserNewsResource] variable
+     * `userNewsResource` to a [UserNewsResource] constructed from `newsResource1` and `userData`.
+     * We use [assertEquals] to check that the fields in `userNewsResource` are equal to the fields
+     * in `newsResource1`. We also use [assertEquals] to check that the fields in `userNewsResource`
+     * are equal to the fields in `userData`.
      */
     @Test
     fun userNewsResourcesAreConstructedFromNewsResourcesAndUserData() {
@@ -75,31 +85,37 @@ class UserNewsResourceTest {
             shouldHideOnboarding = true,
         )
 
-        val userNewsResource = UserNewsResource(newsResource1, userData)
+        val userNewsResource = UserNewsResource(newsResource = newsResource1, userData = userData)
 
         // Check that the simple field mappings have been done correctly.
-        assertEquals(newsResource1.id, userNewsResource.id)
-        assertEquals(newsResource1.title, userNewsResource.title)
-        assertEquals(newsResource1.content, userNewsResource.content)
-        assertEquals(newsResource1.url, userNewsResource.url)
-        assertEquals(newsResource1.headerImageUrl, userNewsResource.headerImageUrl)
-        assertEquals(newsResource1.publishDate, userNewsResource.publishDate)
+        assertEquals(expected = newsResource1.id, actual = userNewsResource.id)
+        assertEquals(expected = newsResource1.title, actual = userNewsResource.title)
+        assertEquals(expected = newsResource1.content, actual = userNewsResource.content)
+        assertEquals(expected = newsResource1.url, actual = userNewsResource.url)
+        assertEquals(
+            expected = newsResource1.headerImageUrl,
+            actual = userNewsResource.headerImageUrl,
+        )
+        assertEquals(expected = newsResource1.publishDate, actual = userNewsResource.publishDate)
 
         // Check that each Topic has been converted to a FollowedTopic correctly.
-        assertEquals(newsResource1.topics.size, userNewsResource.followableTopics.size)
+        assertEquals(
+            expected = newsResource1.topics.size,
+            actual = userNewsResource.followableTopics.size,
+        )
         for (topic in newsResource1.topics) {
             // Construct the expected FollowableTopic.
             val followableTopic = FollowableTopic(
                 topic = topic,
                 isFollowed = topic.id in userData.followedTopics,
             )
-            assertTrue(userNewsResource.followableTopics.contains(followableTopic))
+            assertTrue(actual = userNewsResource.followableTopics.contains(followableTopic))
         }
 
         // Check that the saved flag is set correctly.
         assertEquals(
-            newsResource1.id in userData.bookmarkedNewsResources,
-            userNewsResource.isSaved,
+            expected = newsResource1.id in userData.bookmarkedNewsResources,
+            actual = userNewsResource.isSaved,
         )
     }
 }
