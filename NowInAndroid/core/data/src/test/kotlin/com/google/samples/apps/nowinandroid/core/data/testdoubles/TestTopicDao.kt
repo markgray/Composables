@@ -35,8 +35,8 @@ class TestTopicDao : TopicDao {
         MutableStateFlow(value = emptyList())
 
     /**
-     * Gets a topic by ID. We just throw a [NotImplementedError] because we don't have a need for
-     * this in tests.
+     * Gets a topic by ID. We just throw [NotImplementedError] because we don't have a need for
+     * this method in tests.
      *
      * @param topicId The ID of the topic.
      * @return A flow that emits the topic with the given ID.
@@ -101,7 +101,7 @@ class TestTopicDao : TopicDao {
      * Updates or inserts a list of topic entities in the local database. We call the
      * [MutableStateFlow.update] extension function on the [MutableStateFlow] wrapped [List] of
      * [TopicEntity]s property [entitiesStateFlow] with its `function` lambda argument capturing the
-     * [List] of [TopicEntity]s in passed the lambda in variable `oldValues` then appending the
+     * [List] of [TopicEntity]s passed the lambda in variable `oldValues` then appending the
      * `oldValues` [List] of [TopicEntity]s to the [List] of [TopicEntity]s parameter [entities] and
      * feeding the result to the [Iterable.distinctBy] extension function with its `selector` lambda
      * argument using the [TopicEntity.id] property of each [TopicEntity] to determine if two
@@ -126,7 +126,7 @@ class TestTopicDao : TopicDao {
      * [entitiesStateFlow] with its `function` lambda argument capturing the [List] of [TopicEntity]s
      * in variable `entities` then filtering that [List] for all [TopicEntity]s that are not in the
      * `idSet` [Set] of [String]s using the [Iterable.filterNot] extension function (those that are
-     * in the set are effectively deleted).
+     * in the set are deleted from [entitiesStateFlow]).
      *
      * @param ids The list of topic IDs to delete.
      */

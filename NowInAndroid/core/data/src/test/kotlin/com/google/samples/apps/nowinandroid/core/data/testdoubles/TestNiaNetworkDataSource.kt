@@ -241,7 +241,7 @@ private fun <T> List<T>.matchIds(
     idGetter: (T) -> String,
 ) = when (ids) {
     null -> this
-    else -> ids.toSet().let { idSet -> filter { idGetter(it) in idSet } }
+    else -> ids.toSet().let { idSet: Set<String> -> filter { idGetter(it) in idSet } }
 }
 
 /**
@@ -249,7 +249,7 @@ private fun <T> List<T>.matchIds(
  * We return the [List] of [NetworkChangeList]s that results from calling the [Iterable.mapIndexed]
  * extension function on the [List] of [T] receiver with its `transform` lambda argument capturing
  * the index of each item in variable `index` and the [T] item itself in variable `item` and then
- * calling the [NetworkChangeList] constructor with its `id` argument the [String] returned by
+ * we call the [NetworkChangeList] constructor with its `id` argument the [String] returned by
  * calling our lambda parameter `idGetter` with the [T] argument `item` and its
  * `changeListVersion` argument `index + 1` and its `isDelete` argument `false` returning the [List]
  * of [NetworkChangeList]s that results from this to the caller.
