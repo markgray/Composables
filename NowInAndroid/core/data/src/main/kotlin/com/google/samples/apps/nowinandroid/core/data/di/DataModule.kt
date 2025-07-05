@@ -48,38 +48,67 @@ abstract class DataModule {
      * Binds [OfflineFirstTopicsRepository] to [TopicsRepository] for use in other modules.
      * This allows other modules to depend on the [TopicsRepository] interface
      * without needing to know about the concrete implementation.
-     * TODO: Continue here.
      */
     @Binds
     internal abstract fun bindsTopicRepository(
         topicsRepository: OfflineFirstTopicsRepository,
     ): TopicsRepository
 
+    /**
+     * Binds [OfflineFirstNewsRepository] to [NewsRepository] for use in other modules.
+     * This allows other modules to depend on the [NewsRepository] interface
+     * without needing to know about the concrete implementation.
+     */
     @Binds
     internal abstract fun bindsNewsResourceRepository(
         newsRepository: OfflineFirstNewsRepository,
     ): NewsRepository
 
+    /**
+     * Binds [OfflineFirstUserDataRepository] to [UserDataRepository] for use in other modules.
+     * This allows other modules to depend on the [UserDataRepository] interface
+     * without needing to know about the concrete implementation.
+     */
     @Binds
     internal abstract fun bindsUserDataRepository(
         userDataRepository: OfflineFirstUserDataRepository,
     ): UserDataRepository
 
+    /**
+     * Binds [DefaultRecentSearchRepository] to [RecentSearchRepository] for use in other modules.
+     * This allows other modules to depend on the [RecentSearchRepository] interface
+     * without needing to know about the concrete implementation.
+     */
     @Binds
     internal abstract fun bindsRecentSearchRepository(
         recentSearchRepository: DefaultRecentSearchRepository,
     ): RecentSearchRepository
 
+    /**
+     * Binds [DefaultSearchContentsRepository] to [SearchContentsRepository] for use in other modules.
+     * This allows other modules to depend on the [SearchContentsRepository] interface
+     * without needing to know about the concrete implementation.
+     */
     @Binds
     internal abstract fun bindsSearchContentsRepository(
         searchContentsRepository: DefaultSearchContentsRepository,
     ): SearchContentsRepository
 
+    /**
+     * Binds [ConnectivityManagerNetworkMonitor] to [NetworkMonitor] for use in other modules.
+     * This allows other modules to depend on the [NetworkMonitor] interface
+     * without needing to know about the concrete implementation.
+     */
     @Binds
     internal abstract fun bindsNetworkMonitor(
         networkMonitor: ConnectivityManagerNetworkMonitor,
     ): NetworkMonitor
 
+    /**
+     * Binds [TimeZoneBroadcastMonitor] to [TimeZoneMonitor] for use in other modules.
+     * This allows other modules to depend on the [TimeZoneMonitor] interface
+     * without needing to know about the concrete implementation.
+     */
     @Binds
     internal abstract fun binds(impl: TimeZoneBroadcastMonitor): TimeZoneMonitor
 }

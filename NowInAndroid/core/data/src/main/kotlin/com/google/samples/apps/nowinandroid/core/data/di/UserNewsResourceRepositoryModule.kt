@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.nowinandroid.core.data.di
 
 import com.google.samples.apps.nowinandroid.core.data.repository.CompositeUserNewsResourceRepository
@@ -23,9 +25,16 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+/**
+ * DI module that provides the [UserNewsResourceRepository] implementation.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 internal interface UserNewsResourceRepositoryModule {
+    /**
+     * Binds [CompositeUserNewsResourceRepository] to [UserNewsResourceRepository] interface
+     * so that DI framework can inject the correct implementation.
+     */
     @Binds
     fun bindsUserNewsResourceRepository(
         userDataRepository: CompositeUserNewsResourceRepository,

@@ -20,12 +20,22 @@ import com.google.samples.apps.nowinandroid.core.database.model.RecentSearchQuer
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
+/**
+ * Data layer representation of a recent search query.
+ *
+ * @property query The search query.
+ * @property queriedDate The date when the query was executed.
+ */
 data class RecentSearchQuery(
     val query: String,
     val queriedDate: Instant = Clock.System.now(),
 )
 
-fun RecentSearchQueryEntity.asExternalModel() = RecentSearchQuery(
-    query = query,
-    queriedDate = queriedDate,
-)
+/**
+ * Maps a [RecentSearchQueryEntity] to a [RecentSearchQuery]
+ */
+fun RecentSearchQueryEntity.asExternalModel(): RecentSearchQuery =
+    RecentSearchQuery(
+        query = query,
+        queriedDate = queriedDate,
+    )

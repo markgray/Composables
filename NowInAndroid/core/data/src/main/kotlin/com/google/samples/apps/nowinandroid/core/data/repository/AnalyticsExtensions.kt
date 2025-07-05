@@ -20,11 +20,21 @@ import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsEvent
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsEvent.Param
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 
-internal fun AnalyticsHelper.logNewsResourceBookmarkToggled(newsResourceId: String, isBookmarked: Boolean) {
-    val eventType = if (isBookmarked) "news_resource_saved" else "news_resource_unsaved"
-    val paramKey = if (isBookmarked) "saved_news_resource_id" else "unsaved_news_resource_id"
+/**
+ * Logs a news resource bookmark toggled event.
+ *
+ * @param newsResourceId the ID of the news resource.
+ * @param isBookmarked whether the news resource is bookmarked.
+ */
+internal fun AnalyticsHelper.logNewsResourceBookmarkToggled(
+    newsResourceId: String,
+    isBookmarked: Boolean,
+) {
+    val eventType: String = if (isBookmarked) "news_resource_saved" else "news_resource_unsaved"
+    val paramKey: String =
+        if (isBookmarked) "saved_news_resource_id" else "unsaved_news_resource_id"
     logEvent(
-        AnalyticsEvent(
+        event = AnalyticsEvent(
             type = eventType,
             extras = listOf(
                 Param(key = paramKey, value = newsResourceId),
@@ -33,11 +43,17 @@ internal fun AnalyticsHelper.logNewsResourceBookmarkToggled(newsResourceId: Stri
     )
 }
 
+/**
+ * Logs a topic followed/unfollowed event.
+ *
+ * @param followedTopicId the ID of the topic.
+ * @param isFollowed whether the topic is followed.
+ */
 internal fun AnalyticsHelper.logTopicFollowToggled(followedTopicId: String, isFollowed: Boolean) {
-    val eventType = if (isFollowed) "topic_followed" else "topic_unfollowed"
-    val paramKey = if (isFollowed) "followed_topic_id" else "unfollowed_topic_id"
+    val eventType: String = if (isFollowed) "topic_followed" else "topic_unfollowed"
+    val paramKey: String = if (isFollowed) "followed_topic_id" else "unfollowed_topic_id"
     logEvent(
-        AnalyticsEvent(
+        event = AnalyticsEvent(
             type = eventType,
             extras = listOf(
                 Param(key = paramKey, value = followedTopicId),
@@ -46,9 +62,14 @@ internal fun AnalyticsHelper.logTopicFollowToggled(followedTopicId: String, isFo
     )
 }
 
+/**
+ * Logs a theme changed event.
+ *
+ * @param themeName the name of the theme.
+ */
 internal fun AnalyticsHelper.logThemeChanged(themeName: String) =
     logEvent(
-        AnalyticsEvent(
+        event = AnalyticsEvent(
             type = "theme_changed",
             extras = listOf(
                 Param(key = "theme_name", value = themeName),
@@ -56,9 +77,14 @@ internal fun AnalyticsHelper.logThemeChanged(themeName: String) =
         ),
     )
 
+/**
+ * Logs a dark theme config changed event.
+ *
+ * @param darkThemeConfigName the name of the dark theme config.
+ */
 internal fun AnalyticsHelper.logDarkThemeConfigChanged(darkThemeConfigName: String) =
     logEvent(
-        AnalyticsEvent(
+        event = AnalyticsEvent(
             type = "dark_theme_config_changed",
             extras = listOf(
                 Param(key = "dark_theme_config", value = darkThemeConfigName),
@@ -66,9 +92,14 @@ internal fun AnalyticsHelper.logDarkThemeConfigChanged(darkThemeConfigName: Stri
         ),
     )
 
+/**
+ * Logs a dynamic color preference changed event.
+ *
+ * @param useDynamicColor whether the dynamic color is used.
+ */
 internal fun AnalyticsHelper.logDynamicColorPreferenceChanged(useDynamicColor: Boolean) =
     logEvent(
-        AnalyticsEvent(
+        event = AnalyticsEvent(
             type = "dynamic_color_preference_changed",
             extras = listOf(
                 Param(key = "dynamic_color_preference", value = useDynamicColor.toString()),
@@ -76,9 +107,14 @@ internal fun AnalyticsHelper.logDynamicColorPreferenceChanged(useDynamicColor: B
         ),
     )
 
+/**
+ * Logs an onboarding state changed event.
+ *
+ * @param shouldHideOnboarding whether the onboarding screen should be hidden.
+ */
 internal fun AnalyticsHelper.logOnboardingStateChanged(shouldHideOnboarding: Boolean) {
-    val eventType = if (shouldHideOnboarding) "onboarding_complete" else "onboarding_reset"
+    val eventType: String = if (shouldHideOnboarding) "onboarding_complete" else "onboarding_reset"
     logEvent(
-        AnalyticsEvent(type = eventType),
+        event = AnalyticsEvent(type = eventType),
     )
 }

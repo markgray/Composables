@@ -24,7 +24,11 @@ import com.google.samples.apps.nowinandroid.core.network.model.NetworkNewsResour
 import com.google.samples.apps.nowinandroid.core.network.model.NetworkTopic
 import com.google.samples.apps.nowinandroid.core.network.model.asExternalModel
 
-fun NetworkNewsResource.asEntity() = NewsResourceEntity(
+/**
+ * Converts a [NetworkNewsResource] to a [NewsResourceEntity]. This function maps the fields from
+ * the network model receiver to the corresponding fields in the database entity.
+ */
+fun NetworkNewsResource.asEntity(): NewsResourceEntity = NewsResourceEntity(
     id = id,
     title = title,
     content = content,
@@ -38,8 +42,8 @@ fun NetworkNewsResource.asEntity() = NewsResourceEntity(
  * A shell [TopicEntity] to fulfill the foreign key constraint when inserting
  * a [NewsResourceEntity] into the DB
  */
-fun NetworkNewsResource.topicEntityShells() =
-    topics.map { topicId ->
+fun NetworkNewsResource.topicEntityShells(): List<TopicEntity> =
+    topics.map { topicId: String ->
         TopicEntity(
             id = topicId,
             name = "",
@@ -50,15 +54,30 @@ fun NetworkNewsResource.topicEntityShells() =
         )
     }
 
+/**
+ * Converts a [NetworkNewsResource] to a list of [NewsResourceTopicCrossRef] objects.
+ * This function iterates over the topics associated with the network news resource
+ * and creates a [NewsResourceTopicCrossRef] cross-reference object for each, linking
+ * the news resource ID with the topic ID.
+ */
 fun NetworkNewsResource.topicCrossReferences(): List<NewsResourceTopicCrossRef> =
-    topics.map { topicId ->
+    topics.map { topicId: String ->
         NewsResourceTopicCrossRef(
             newsResourceId = id,
             topicId = topicId,
         )
     }
 
-fun NetworkNewsResource.asExternalModel(topics: List<NetworkTopic>) =
+/**
+ * Converts a [NetworkNewsResource] to a [NewsResource] object.
+ * This function maps the fields from the network model receiver to the corresponding
+ * fields in the external model, including transforming associated topics.
+ *
+ * @param topics A list of [NetworkTopic] objects that are candidates for association with this
+ * news resource.
+ * @return A [NewsResource] object representing the external model.
+ */
+fun NetworkNewsResource.asExternalModel(topics: List<NetworkTopic>): NewsResource =
     NewsResource(
         id = id,
         title = title,
@@ -68,6 +87,6 @@ fun NetworkNewsResource.asExternalModel(topics: List<NetworkTopic>) =
         publishDate = publishDate,
         type = type,
         topics = topics
-            .filter { networkTopic -> this.topics.contains(networkTopic.id) }
-            .map(NetworkTopic::asExternalModel),
+            .filter { networkTopic: NetworkTopic -> this.topics.contains(networkTopic.id) }
+            .map(transform = NetworkTopic::asExternalModel),
     )

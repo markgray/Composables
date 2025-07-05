@@ -16,6 +16,8 @@
 
 package com.google.samples.apps.nowinandroid.core.data.repository
 
+import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
+import com.google.samples.apps.nowinandroid.core.model.data.UserData
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.mapToUserNewsResources
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +31,9 @@ import javax.inject.Inject
 /**
  * Implements a [UserNewsResourceRepository] by combining a [NewsRepository] with a
  * [UserDataRepository].
+ *
+ * @property newsRepository a [NewsRepository] instance injected by HILT.
+ * @property userDataRepository a [UserDataRepository] instance injected by HILT.
  */
 class CompositeUserNewsResourceRepository @Inject constructor(
     val newsRepository: NewsRepository,
@@ -37,13 +42,19 @@ class CompositeUserNewsResourceRepository @Inject constructor(
 
     /**
      * Returns available news resources (joined with user data) matching the given query.
+     *
+     * @param query the query to filter the news resources.
+     * @return a [Flow] of a list of [UserNewsResource] matching the given query.
      */
     override fun observeAll(
         query: NewsResourceQuery,
     ): Flow<List<UserNewsResource>> =
-        newsRepository.getNewsResources(query)
-            .combine(userDataRepository.userData) { newsResources, userData ->
-                newsResources.mapToUserNewsResources(userData)
+        newsRepository.getNewsResources(query = query)
+            .combine(flow = userDataRepository.userData) {
+                    newsResources: List<NewsResource>,
+                    userData: UserData,
+                ->
+                newsResources.mapToUserNewsResources(userData = userData)
             }
 
     /**
@@ -51,19 +62,22 @@ class CompositeUserNewsResourceRepository @Inject constructor(
      */
     override fun observeAllForFollowedTopics(): Flow<List<UserNewsResource>> =
         userDataRepository.userData.map { it.followedTopics }.distinctUntilChanged()
-            .flatMapLatest { followedTopics ->
+            .flatMapLatest { followedTopics: Set<String> ->
                 when {
-                    followedTopics.isEmpty() -> flowOf(emptyList())
-                    else -> observeAll(NewsResourceQuery(filterTopicIds = followedTopics))
+                    followedTopics.isEmpty() -> flowOf(value = emptyList())
+                    else -> observeAll(query = NewsResourceQuery(filterTopicIds = followedTopics))
                 }
             }
 
+    /**
+     * Returns available news resources (joined with user data) for the bookmarked news resources.
+     */
     override fun observeAllBookmarked(): Flow<List<UserNewsResource>> =
         userDataRepository.userData.map { it.bookmarkedNewsResources }.distinctUntilChanged()
-            .flatMapLatest { bookmarkedNewsResources ->
+            .flatMapLatest { bookmarkedNewsResources: Set<String> ->
                 when {
-                    bookmarkedNewsResources.isEmpty() -> flowOf(emptyList())
-                    else -> observeAll(NewsResourceQuery(filterNewsIds = bookmarkedNewsResources))
+                    bookmarkedNewsResources.isEmpty() -> flowOf(value = emptyList())
+                    else -> observeAll(query = NewsResourceQuery(filterNewsIds = bookmarkedNewsResources))
                 }
             }
 }

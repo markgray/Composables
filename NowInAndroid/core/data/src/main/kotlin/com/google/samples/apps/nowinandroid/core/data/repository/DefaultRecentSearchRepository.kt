@@ -25,22 +25,43 @@ import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
 import javax.inject.Inject
 
+/**
+ * Default implementation of the [RecentSearchRepository] that uses [RecentSearchQueryDao]
+ * as the backing.
+ *
+ * @property recentSearchQueryDao the DAO for recent search queries.
+ */
 internal class DefaultRecentSearchRepository @Inject constructor(
     private val recentSearchQueryDao: RecentSearchQueryDao,
 ) : RecentSearchRepository {
+    /**
+     * Inserts or replaces the [searchQuery] as a recent search.
+     *
+     * @param searchQuery the search query to insert or replace.
+     */
     override suspend fun insertOrReplaceRecentSearch(searchQuery: String) {
         recentSearchQueryDao.insertOrReplaceRecentSearchQuery(
-            RecentSearchQueryEntity(
+            recentSearchQuery = RecentSearchQueryEntity(
                 query = searchQuery,
                 queriedDate = Clock.System.now(),
             ),
         )
     }
 
+    /**
+     * Gets the most recent search queries, up to the specified [limit].
+     *
+     * @param limit the maximum number of recent search queries to return.
+     * @return a flow of the most recent search queries.
+     */
     override fun getRecentSearchQueries(limit: Int): Flow<List<RecentSearchQuery>> =
-        recentSearchQueryDao.getRecentSearchQueryEntities(limit).map { searchQueries ->
-            searchQueries.map { it.asExternalModel() }
-        }
+        recentSearchQueryDao.getRecentSearchQueryEntities(limit)
+            .map { searchQueries: List<RecentSearchQueryEntity> ->
+                searchQueries.map { it.asExternalModel() }
+            }
 
+    /**
+     * Clears all recent searches.
+     */
     override suspend fun clearRecentSearches() = recentSearchQueryDao.clearRecentSearchQueries()
 }
