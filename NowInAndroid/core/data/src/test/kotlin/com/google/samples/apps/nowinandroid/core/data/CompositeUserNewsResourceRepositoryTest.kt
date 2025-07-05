@@ -20,6 +20,7 @@ import com.google.samples.apps.nowinandroid.core.data.repository.CompositeUserNe
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsResourceQuery
 import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository
+import com.google.samples.apps.nowinandroid.core.data.repository.UserNewsResourceRepository
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.core.model.data.UserData
@@ -55,7 +56,7 @@ class CompositeUserNewsResourceRepositoryTest {
     private val userDataRepository = TestUserDataRepository()
 
     /**
-     * The test user news resource repository that is being tested.
+     * The test implementation of the [UserNewsResourceRepository] that is being tested.
      * This is the entry point for observing user news resources.
      */
     private val userNewsResourceRepository = CompositeUserNewsResourceRepository(
@@ -66,7 +67,7 @@ class CompositeUserNewsResourceRepositoryTest {
     /**
      * When the `observeAll` method is called without any filters, all news resources should
      * be returned. The news resources should be mapped to [UserNewsResource]s, with the
-     * [UserNewsResource.isSaved] field set to `true` if the user has bookmarked the resource,
+     * [UserNewsResource.isSaved] property set to `true` if the user has bookmarked the resource,
      * and `false` otherwise.
      *
      * We call [runTest] to run its [TestScope] `testBody` suspend lambda argument in which we:
@@ -82,7 +83,7 @@ class CompositeUserNewsResourceRepositoryTest {
      *  first two news resource ids in [sampleNewsResources], and its [UserData.followedTopics]
      *  field set to a set containing only the [Topic.id] of [sampleTopic1].
      *  - We call the [TestUserDataRepository.setUserData] method of our [TestUserDataRepository]
-     *  property [userDataRepository] to set the user data to [UserData] variable `userData`.
+     *  property [userDataRepository] to set its user data to [UserData] variable `userData`.
      *  - We call the [assertEquals] method to verify that its `expected` argument, the [List] of
      *  [UserNewsResource] returned by the [mapToUserNewsResources] method when applied to the
      *  [List] of [NewsResource] property [sampleNewsResources] with its `userData` argument set
@@ -117,7 +118,7 @@ class CompositeUserNewsResourceRepositoryTest {
     /**
      * When the `observeAll` method is called with a filter for a specific topic ID, only
      * news resources matching that topic ID should be returned. The news resources should
-     * be mapped to [UserNewsResource]s, with the [UserNewsResource.isSaved] field set to
+     * be mapped to [UserNewsResource]s, with the [UserNewsResource.isSaved] property set to
      * `true` if the user has bookmarked the resource, and `false` otherwise.
      *
      * We call [runTest] to run its [TestScope] `testBody` suspend lambda argument in which we:
@@ -230,7 +231,7 @@ class CompositeUserNewsResourceRepositoryTest {
      *  first and third news resource ids in [sampleNewsResources], and its [UserData.followedTopics]
      *  field set to a set containing only the [Topic.id] of [sampleTopic1].
      *  - We call the [TestUserDataRepository.setUserData] method of our [TestUserDataRepository]
-     *  property [userDataRepository] to set the user data to [UserData] variable `userData`.
+     *  property [userDataRepository] to set its user data to [UserData] variable `userData`.
      *  - We call the [assertEquals] method to verify that its `expected` argument, the [List] of
      *  [UserNewsResource] returned by the [mapToUserNewsResources] method when applied to a [List]
      *  of [NewsResource] which is the first and third [NewsResource] in the [List] of [NewsResource]
@@ -260,7 +261,7 @@ class CompositeUserNewsResourceRepositoryTest {
             expected = listOf(
                 sampleNewsResources[0],
                 sampleNewsResources[2],
-            ).mapToUserNewsResources(userData),
+            ).mapToUserNewsResources(userData = userData),
             actual = userNewsResources.first(),
         )
     }
@@ -279,7 +280,7 @@ private val sampleTopic1 = Topic(
 )
 
 /**
- *
+ * A sample [Topic] that can be used for testing.
  */
 private val sampleTopic2 = Topic(
     id = "Topic2",
