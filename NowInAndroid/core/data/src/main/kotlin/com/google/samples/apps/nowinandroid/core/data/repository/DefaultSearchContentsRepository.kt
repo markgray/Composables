@@ -26,7 +26,9 @@ import com.google.samples.apps.nowinandroid.core.database.model.TopicEntity
 import com.google.samples.apps.nowinandroid.core.database.model.TopicFtsEntity
 import com.google.samples.apps.nowinandroid.core.database.model.asExternalModel
 import com.google.samples.apps.nowinandroid.core.database.model.asFtsEntity
+import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.SearchResult
+import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.core.network.Dispatcher
 import com.google.samples.apps.nowinandroid.core.network.NiaDispatchers.IO
 import kotlinx.coroutines.CoroutineDispatcher
@@ -104,8 +106,41 @@ internal class DefaultSearchContentsRepository @Inject constructor(
      * Searches the FTS tables for news resources and topics that match the given query.
      *
      * The Flow combines the results from two separate queries: one for news resources and one for
-     * topics.
-     * TODO: Continue here.
+     * topics. The results are then combined into a [SearchResult] object and emitted as a [Flow].
+     *
+     * We start by initializing our [Flow] of [List] of [String] variable `newsResourceIds` with the
+     * result of calling the [NewsResourceFtsDao.searchAllNewsResources] method of [NewsResourceFtsDao]
+     * property [newsResourceFtsDao] with the argument `query = "*$searchQuery*"` (the query is
+     * surrounded by asterisks to match the query when it's in the middle of a word). We initialize
+     * our [Flow] of [List] of [String] variable `topicIds` with the result of calling the
+     * [TopicFtsDao.searchAllTopics] method of [TopicFtsDao] property [topicFtsDao] with the argument
+     * `query = "*$searchQuery*"`. We initialize our [Flow] of [List] of [PopulatedNewsResource]
+     * variable `newsResourcesFlow` with the result of feeding the [Flow] of [List] of [String]
+     * variable `newsResourceIds` to its [Flow.mapLatest] method with the `transform` suspend lambda
+     * argument a lambda that converts the [List] of [String] to a [Set] of [String] and then we
+     * feed that to its [Flow.distinctUntilChanged] method filter out duplicate values, and that
+     * we feed that to its [Flow.flatMapLatest] method with the `transform` suspend lambda argument
+     * a lambda that calls the [NewsResourceDao.getNewsResources] method of [NewsResourceDao] property
+     * with its `useFilterNewsIds` argument set to `true` and its `filterNewsIds` argument set to
+     * the [Set] of [String] passed the lambda.
+     *
+     * We initialize our [Flow] of [List] of [TopicEntity] variable `topicsFlow` with the result of
+     * feeding the [Flow] of [List] of [String] variable `topicIds` to its [Flow.mapLatest] method
+     * with the `transform` suspend lambda argument a lambda converts the [List] of [String] to a
+     * [Set] of [String] and then we feed that to its [Flow.distinctUntilChanged] method filter out
+     * duplicate values, and that we feed that to its [Flow.flatMapLatest] method with the
+     * `transform` suspend lambda argument a lambda that calls the [TopicDao.getTopicEntities] method
+     * of [TopicDao] property [topicDao].
+     *
+     * We then use the [combine] function to combine the `newsResourcesFlow` and `topicsFlow` [Flow]s
+     * and in its `transform` suspend lambda argument we acccept the [List] of [PopulatedNewsResource]
+     * passed the lambda in variable `newsResources` and the [List] of [TopicEntity] passed the lambda
+     * in variable `topics` and return a [SearchResult] object with its `topics` property set to the
+     * result of calling the [Iterable.map] method of [List] of [TopicEntity] variable `topics` with
+     * the `transform` lambda argument a lambda that converts each [TopicEntity] to a [Topic] and its
+     * `newsResources` argument set to the result of calling the [Iterable.map] method of [List] of
+     * [PopulatedNewsResource] variable `newsResources` with the `transform` lambda argument a lambda
+     * that converts each [PopulatedNewsResource] to a [NewsResource].
      *
      * @param searchQuery the query to search for.
      * @return a Flow of [SearchResult] objects that contains the search results.
@@ -138,6 +173,15 @@ internal class DefaultSearchContentsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Returns the total count of documents in the FTS tables for news resources and topics.
+     *
+     * This method combines the counts from two separate DAOs: the [NewsResourceFtsDao.getCount]
+     * of [NewsResourceFtsDao] property [newsResourceFtsDao] and the [TopicFtsDao.getCount] of
+     * [TopicFtsDao] property [topicFtsDao].
+     *
+     * @return a Flow that emits the total count of search contents.
+     */
     override fun getSearchContentsCount(): Flow<Int> =
         combine(
             flow = newsResourceFtsDao.getCount(),

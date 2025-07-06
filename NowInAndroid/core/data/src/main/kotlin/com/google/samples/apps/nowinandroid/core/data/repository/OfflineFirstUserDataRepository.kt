@@ -28,26 +28,39 @@ import javax.inject.Inject
 /**
  * [UserDataRepository] implementation that uses [NiaPreferencesDataSource] to store the data.
  * It also uses [AnalyticsHelper] to log the changes to the user data.
+ *
+ * @property niaPreferencesDataSource the data source for the user data injected by HILT
+ * @property analyticsHelper the analytics helper injected by HILT
  */
 internal class OfflineFirstUserDataRepository @Inject constructor(
     private val niaPreferencesDataSource: NiaPreferencesDataSource,
     private val analyticsHelper: AnalyticsHelper,
 ) : UserDataRepository {
 
+    /**
+     * The user data.
+     * TODO: Continue here.
+     */
     override val userData: Flow<UserData> =
         niaPreferencesDataSource.userData
 
     @VisibleForTesting
     override suspend fun setFollowedTopicIds(followedTopicIds: Set<String>) =
-        niaPreferencesDataSource.setFollowedTopicIds(followedTopicIds)
+        niaPreferencesDataSource.setFollowedTopicIds(topicIds = followedTopicIds)
 
     override suspend fun setTopicIdFollowed(followedTopicId: String, followed: Boolean) {
-        niaPreferencesDataSource.setTopicIdFollowed(followedTopicId, followed)
-        analyticsHelper.logTopicFollowToggled(followedTopicId, followed)
+        niaPreferencesDataSource.setTopicIdFollowed(topicId = followedTopicId, followed = followed)
+        analyticsHelper.logTopicFollowToggled(
+            followedTopicId = followedTopicId,
+            isFollowed = followed,
+        )
     }
 
     override suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
-        niaPreferencesDataSource.setNewsResourceBookmarked(newsResourceId, bookmarked)
+        niaPreferencesDataSource.setNewsResourceBookmarked(
+            newsResourceId = newsResourceId,
+            bookmarked = bookmarked,
+        )
         analyticsHelper.logNewsResourceBookmarkToggled(
             newsResourceId = newsResourceId,
             isBookmarked = bookmarked,
@@ -55,25 +68,28 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
     }
 
     override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) =
-        niaPreferencesDataSource.setNewsResourceViewed(newsResourceId, viewed)
+        niaPreferencesDataSource.setNewsResourceViewed(
+            newsResourceId = newsResourceId,
+            viewed = viewed,
+        )
 
     override suspend fun setThemeBrand(themeBrand: ThemeBrand) {
-        niaPreferencesDataSource.setThemeBrand(themeBrand)
-        analyticsHelper.logThemeChanged(themeBrand.name)
+        niaPreferencesDataSource.setThemeBrand(themeBrand = themeBrand)
+        analyticsHelper.logThemeChanged(themeName = themeBrand.name)
     }
 
     override suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
-        niaPreferencesDataSource.setDarkThemeConfig(darkThemeConfig)
-        analyticsHelper.logDarkThemeConfigChanged(darkThemeConfig.name)
+        niaPreferencesDataSource.setDarkThemeConfig(darkThemeConfig = darkThemeConfig)
+        analyticsHelper.logDarkThemeConfigChanged(darkThemeConfigName = darkThemeConfig.name)
     }
 
     override suspend fun setDynamicColorPreference(useDynamicColor: Boolean) {
-        niaPreferencesDataSource.setDynamicColorPreference(useDynamicColor)
-        analyticsHelper.logDynamicColorPreferenceChanged(useDynamicColor)
+        niaPreferencesDataSource.setDynamicColorPreference(useDynamicColor = useDynamicColor)
+        analyticsHelper.logDynamicColorPreferenceChanged(useDynamicColor = useDynamicColor)
     }
 
     override suspend fun setShouldHideOnboarding(shouldHideOnboarding: Boolean) {
-        niaPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding)
-        analyticsHelper.logOnboardingStateChanged(shouldHideOnboarding)
+        niaPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding = shouldHideOnboarding)
+        analyticsHelper.logOnboardingStateChanged(shouldHideOnboarding = shouldHideOnboarding)
     }
 }
