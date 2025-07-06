@@ -85,8 +85,8 @@ abstract class DataModule {
     ): RecentSearchRepository
 
     /**
-     * Binds [DefaultSearchContentsRepository] to [SearchContentsRepository] for use in other modules.
-     * This allows other modules to depend on the [SearchContentsRepository] interface
+     * Binds [DefaultSearchContentsRepository] to [SearchContentsRepository] for use in other
+     * modules. This allows other modules to depend on the [SearchContentsRepository] interface
      * without needing to know about the concrete implementation.
      */
     @Binds

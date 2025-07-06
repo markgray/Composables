@@ -21,7 +21,7 @@ import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsEvent.Param
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 
 /**
- * Logs a news resource bookmark toggled event.
+ * Logs a news resource "bookmark toggled event".
  *
  * @param newsResourceId the ID of the news resource.
  * @param isBookmarked whether the news resource is bookmarked.

@@ -41,7 +41,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * Implementation of [SearchContentsRepository] that uses FTS5 on a Room database.
+ * Implementation of [SearchContentsRepository] that uses FTS5 ("Full Text Search") on a Room
+ * database.
  *
  * The `searchContents` query has been split into two queries because it's not possible to use
  * `INNER JOIN` in a FTS virtual table.
@@ -68,7 +69,7 @@ internal class DefaultSearchContentsRepository @Inject constructor(
      * It retrieves all news resources and topics from the corresponding DAOs,
      * transforms them into FTS entities, and inserts them into the FTS tables.
      *
-     * We call [withContext] to launch a coroutine with `context` our [CoroutineDispatcher]
+     * We call [withContext] to launch a coroutine with its `context` our [CoroutineDispatcher]
      * property [ioDispatcher]. In its [CoroutineScope] `block` suspend lambda argument we first
      * call the [NewsResourceFtsDao.insertAll] method of [NewsResourceFtsDao] property
      * [newsResourceFtsDao] to insert the `newsResources` [List] of [PopulatedNewsResource]

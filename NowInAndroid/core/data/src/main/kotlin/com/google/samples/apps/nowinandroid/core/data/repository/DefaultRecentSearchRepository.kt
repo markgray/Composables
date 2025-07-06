@@ -29,7 +29,7 @@ import javax.inject.Inject
  * Default implementation of the [RecentSearchRepository] that uses [RecentSearchQueryDao]
  * as the backing.
  *
- * @property recentSearchQueryDao the DAO for recent search queries.
+ * @property recentSearchQueryDao the DAO for recent search queries injected by HILT.
  */
 internal class DefaultRecentSearchRepository @Inject constructor(
     private val recentSearchQueryDao: RecentSearchQueryDao,

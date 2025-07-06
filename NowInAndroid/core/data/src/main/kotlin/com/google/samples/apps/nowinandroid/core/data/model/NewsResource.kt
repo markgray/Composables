@@ -26,7 +26,7 @@ import com.google.samples.apps.nowinandroid.core.network.model.asExternalModel
 
 /**
  * Converts a [NetworkNewsResource] to a [NewsResourceEntity]. This function maps the fields from
- * the network model receiver to the corresponding fields in the database entity.
+ * its network model receiver to the corresponding fields in the database entity.
  */
 fun NetworkNewsResource.asEntity(): NewsResourceEntity = NewsResourceEntity(
     id = id,
@@ -70,8 +70,8 @@ fun NetworkNewsResource.topicCrossReferences(): List<NewsResourceTopicCrossRef> 
 
 /**
  * Converts a [NetworkNewsResource] to a [NewsResource] object.
- * This function maps the fields from the network model receiver to the corresponding
- * fields in the external model, including transforming associated topics.
+ * This function maps the fields from its network model receiver to the corresponding
+ * fields in the external model, including the transforming of ////////////////associated topics.
  *
  * @param topics A list of [NetworkTopic] objects that are candidates for association with this
  * news resource.
