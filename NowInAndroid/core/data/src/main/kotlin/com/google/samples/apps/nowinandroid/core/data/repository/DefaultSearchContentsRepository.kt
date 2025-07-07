@@ -105,7 +105,7 @@ internal class DefaultSearchContentsRepository @Inject constructor(
     /**
      * Searches the FTS tables for news resources and topics that match the given query.
      *
-     * The Flow combines the results from two separate queries: one for news resources and one for
+     * It combines the results from two separate queries: one for news resources and one for
      * topics. The results are then combined into a [SearchResult] object and emitted as a [Flow].
      *
      * We start by initializing our [Flow] of [List] of [String] variable `newsResourceIds` with the
@@ -118,19 +118,20 @@ internal class DefaultSearchContentsRepository @Inject constructor(
      * variable `newsResourcesFlow` with the result of feeding the [Flow] of [List] of [String]
      * variable `newsResourceIds` to its [Flow.mapLatest] method with the `transform` suspend lambda
      * argument a lambda that converts the [List] of [String] to a [Set] of [String] and then we
-     * feed that to its [Flow.distinctUntilChanged] method filter out duplicate values, and that
+     * feed that to its [Flow.distinctUntilChanged] method to filter out duplicate values, and that
      * we feed that to its [Flow.flatMapLatest] method with the `transform` suspend lambda argument
      * a lambda that calls the [NewsResourceDao.getNewsResources] method of [NewsResourceDao] property
      * with its `useFilterNewsIds` argument set to `true` and its `filterNewsIds` argument set to
-     * the [Set] of [String] passed the lambda.
+     * the [Set] of [String] passed the lambda, and the [Flow] of [List] of [PopulatedNewsResource]
+     * returned is then the value of `newsResourcesFlow`.
      *
      * We initialize our [Flow] of [List] of [TopicEntity] variable `topicsFlow` with the result of
      * feeding the [Flow] of [List] of [String] variable `topicIds` to its [Flow.mapLatest] method
-     * with the `transform` suspend lambda argument a lambda converts the [List] of [String] to a
-     * [Set] of [String] and then we feed that to its [Flow.distinctUntilChanged] method filter out
-     * duplicate values, and that we feed that to its [Flow.flatMapLatest] method with the
-     * `transform` suspend lambda argument a lambda that calls the [TopicDao.getTopicEntities] method
-     * of [TopicDao] property [topicDao].
+     * with the `transform` suspend lambda argument a lambda that converts the [List] of [String]
+     * `it` receives to a [Set] of [String] and then we feed that [Flow] of [Set] of [String] to its
+     * [Flow.distinctUntilChanged] method to filter out duplicate values, and that we feed that to
+     * its [Flow.flatMapLatest] method with the `transform` suspend lambda argument a lambda that
+     * calls the [TopicDao.getTopicEntities] method of [TopicDao] property [topicDao].
      *
      * We then use the [combine] function to combine the `newsResourcesFlow` and `topicsFlow` [Flow]s
      * and in its `transform` suspend lambda argument we acccept the [List] of [PopulatedNewsResource]

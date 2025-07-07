@@ -57,8 +57,8 @@ internal class OfflineFirstTopicsRepository @Inject constructor(
 
     /**
      * Gets data for a specific topic. We feed the [Flow] of [TopicEntity] returned by the
-     * [TopicDao.getTopicEntity] method of our [TopicDao] property [topicDao] for the
-     * `topicId` argument our [String] parameter [id] to its [Flow.map] method with its
+     * [TopicDao.getTopicEntity] method of our [TopicDao] property [topicDao] when called with
+     * its `topicId` argument our [String] parameter [id] to its [Flow.map] method with its
      * `transform` argument set to a lambda function that accepts the [TopicEntity] passed the
      * lambda in variable `it` and calls its [TopicEntity.asExternalModel] method, thereby
      * transforming the [Flow] of [TopicEntity] into a [Flow] of [Topic].
@@ -78,7 +78,7 @@ internal class OfflineFirstTopicsRepository @Inject constructor(
      *  of our [NiaNetworkDataSource] property [network] with its `after` argument set to
      *  `currentVersion`.
      *  - `versionUpdater`: a [ChangeListVersions] lambda that accepts the [Int] passed the lambda
-     *  in variable `latestVersion` and returns a copy of the [ChangeListVersions] receiver with its
+     *  in variable `latestVersion` and returns a copy of its [ChangeListVersions] receiver with its
      *  `topicVersion` property set to `latestVersion`.
      *  - `modelDeleter`: the [TopicDao.deleteTopics] method of our [TopicDao] property [topicDao].
      *  - `modelUpdater`: a lambda that accepts the [List] of [String] passed the lambda in variable
@@ -88,7 +88,7 @@ internal class OfflineFirstTopicsRepository @Inject constructor(
      *  method of our [TopicDao] property [topicDao] with its `entities` argument set to the result
      *  of calling the [Iterable.map] method of the [List] of [NetworkTopic] variable `networkTopics`
      *  to transform each [NetworkTopic] to a [TopicEntity] using the [NetworkTopic.asEntity] method.
-     *  The resulting [Boolean] is then returned.
+     *  The resulting [Boolean] of the call to [Synchronizer.changeListSync] is then returned.
      *
      * @param synchronizer The [Synchronizer] instance to use for syncing.
      * @return `true` if the sync was successful, `false` otherwise.

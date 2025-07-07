@@ -145,30 +145,30 @@ internal class OfflineFirstNewsRepository @Inject constructor(
      *  `topicEntities` argument set to the result of calling the [Iterable.map] method of the
      *  [List] of [NetworkNewsResource] variable `networkNewsResources` to transform each
      *  [NetworkNewsResource] to a [TopicEntity] using the [NetworkNewsResource.topicEntityShells],
-     *  the use the [Iterable.flatten] method to flatten the resulting [List] of [List] of
+     *  we use the [Iterable.flatten] method to flatten the resulting [List] of [List] of
      *  [TopicEntity]s, into a [List] of [TopicEntity]s, and then call the [Iterable.distinctBy]
      *  method to remove any duplicate [TopicEntity]s. Next we call the
      *  [NewsResourceDao.upsertNewsResources] method of our [NewsResourceDao] property [newsResourceDao]
      *  with its `newsResourceEntities` argument set to the result of calling the [Iterable.map]
      *  method of the [List] of [NetworkNewsResource] variable `networkNewsResources` to transform
-     *  each [NetworkNewsResource] to an [NewsResourceEntity] using the [NetworkNewsResource.asEntity]
+     *  each [NetworkNewsResource] to a [NewsResourceEntity] using the [NetworkNewsResource.asEntity]
      *  method. Next we call the [NewsResourceDao.insertOrIgnoreTopicCrossRefEntities] method of our
      *  [NewsResourceDao] property [newsResourceDao] with its `newsResourceTopicCrossReferences`
      *  argument set to the result of calling the [Iterable.map] method of the [List] of
      *  [NetworkNewsResource] variable `networkNewsResources` to transform each [NetworkNewsResource]
      *  to a [List] of [NewsResourceTopicCrossRef]s using the [NetworkNewsResource.topicCrossReferences],
-     *  the use the [Iterable.distinct] method to remove any duplicate [NewsResourceTopicCrossRef]s,
+     *  then use the [Iterable.distinct] method to remove any duplicate [NewsResourceTopicCrossRef]s,
      *  and then call the [Iterable.flatten] method to flatten the resulting [List] of [List] of
-     *  [NewsResourceTopicCrossRef]s into a [List] of [NewsResourceTopicCrossRef]s. Then if `hasOnboarded`
-     *  is `true`, we initialize our [List] of [NewsResource] variable `addedNewsResources` to the
-     *  result of calling the [NewsResourceDao.getNewsResources] method of our [NewsResourceDao]
-     *  property [newsResourceDao] with its `useFilterTopicIds` argument set to `true`, its
-     *  `filterTopicIds` argument set to `followedTopicIds`, its `useFilterNewsIds` argument set to
-     *  `true`, and its `filterNewsIds` argument set to the result of calling the [Iterable.toSet]
-     *  method of the [List] of [String] variable `changedIds` minus the [Set] of [String] variable
-     *  `existingNewsResourceIdsThatHaveChanged`. Then if `addedNewsResources` is not empty, we call
-     *  the [Notifier.postNewsNotifications] method of our [Notifier] property [notifier] with its
-     *  `newsResources` argument set to `addedNewsResources`.
+     *  [NewsResourceTopicCrossRef]s into a [List] of [NewsResourceTopicCrossRef]s. Then if
+     *  `hasOnboarded` is `true`, we initialize our [List] of [NewsResource] variable
+     *  `addedNewsResources` to the result of calling the [NewsResourceDao.getNewsResources] method
+     *  of our [NewsResourceDao] property [newsResourceDao] with its `useFilterTopicIds` argument set
+     *  to `true`, its `filterTopicIds` argument set to `followedTopicIds`, its `useFilterNewsIds`
+     *  argument set to `true`, and its `filterNewsIds` argument set to the result of calling the
+     *  [Iterable.toSet] method of the [List] of [String] variable `changedIds` minus the [Set] of
+     *  [String] variable `existingNewsResourceIdsThatHaveChanged`. Then if `addedNewsResources` is
+     *  not empty, we call the [Notifier.postNewsNotifications] method of our [Notifier] property
+     *  [notifier] with its `newsResources` argument set to `addedNewsResources`.
      *
      * @param synchronizer The [Synchronizer] instance to use for syncing.
      * @return `true` if the sync was successful, `false` otherwise.
