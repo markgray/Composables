@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.core.network.model
 
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 
 /**
@@ -24,6 +25,7 @@ import kotlinx.serialization.Serializable
  * Change lists are a representation of a server-side map like data structure of model ids to
  * metadata about that model. In a single change list, a given model id can only show up once.
  */
+@OptIn(InternalSerializationApi::class)
 @Serializable
 data class NetworkChangeList(
     /**

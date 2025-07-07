@@ -31,8 +31,16 @@ interface SearchContentsRepository {
 
     /**
      * Query the contents matched with the [searchQuery] and returns it as a [Flow] of [SearchResult]
+     *
+     * @param searchQuery the search query.
+     * @return a [Flow] of [SearchResult].
      */
     fun searchContents(searchQuery: String): Flow<SearchResult>
 
+    /**
+     * Returns the count of search contents saved in the database.
+     *
+     * @return a [Flow] of [Int].
+     */
     fun getSearchContentsCount(): Flow<Int>
 }

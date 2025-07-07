@@ -35,12 +35,21 @@ import javax.inject.Inject
  *
  * This allows us to run the app with fake data, without needing an internet connection or working
  * backend.
+ *
+ * @property ioDispatcher a coroutine dispatcher that is optimized for I/O operations injected by Hilt.
+ * @property datasource a [DemoNiaNetworkDataSource] injected by Hilt.
  */
 class FakeNewsRepository @Inject constructor(
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+    @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
     private val datasource: DemoNiaNetworkDataSource,
 ) : NewsRepository {
 
+    /**
+     * Returns available news resources that match the specified [query].
+     * TODO: Continue here.
+     * @param query - A [NewsResourceQuery] query that specifies what news resources to provide.
+     * @return A Flow of a list of news resources.
+     */
     override fun getNewsResources(
         query: NewsResourceQuery,
     ): Flow<List<NewsResource>> =
@@ -67,5 +76,5 @@ class FakeNewsRepository @Inject constructor(
             )
         }.flowOn(ioDispatcher)
 
-    override suspend fun syncWith(synchronizer: Synchronizer) = true
+    override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true
 }

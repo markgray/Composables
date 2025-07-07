@@ -25,6 +25,9 @@ import kotlinx.coroutines.flow.Flow
 interface UserNewsResourceRepository {
     /**
      * Returns available news resources as a stream.
+     *
+     * @param query the [NewsResourceQuery] that represents the filters to apply.
+     * @return [Flow] of [List] of [UserNewsResource]
      */
     fun observeAll(
         query: NewsResourceQuery = NewsResourceQuery(
@@ -35,11 +38,15 @@ interface UserNewsResourceRepository {
 
     /**
      * Returns available news resources for the user's followed topics as a stream.
+     *
+     * @return [Flow] of [List] of [UserNewsResource] of news resources that the user is following.
      */
     fun observeAllForFollowedTopics(): Flow<List<UserNewsResource>>
 
     /**
      * Returns the user's bookmarked news resources as a stream.
+     *
+     * @return [Flow] of [List] of [UserNewsResource] of bookmarked news resources.
      */
     fun observeAllBookmarked(): Flow<List<UserNewsResource>>
 }

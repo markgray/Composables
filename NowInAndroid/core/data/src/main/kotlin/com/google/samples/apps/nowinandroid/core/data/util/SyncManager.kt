@@ -22,6 +22,13 @@ import kotlinx.coroutines.flow.Flow
  * Reports on if synchronization is in progress
  */
 interface SyncManager {
+    /**
+     * [Flow] of [Boolean] representing the current sync status
+     */
     val isSyncing: Flow<Boolean>
+
+    /**
+     * Requests that a sync be performed.
+     */
     fun requestSync()
 }

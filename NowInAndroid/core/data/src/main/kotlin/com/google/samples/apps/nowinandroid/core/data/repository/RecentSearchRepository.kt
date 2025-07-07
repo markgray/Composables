@@ -25,12 +25,17 @@ import kotlinx.coroutines.flow.Flow
 interface RecentSearchRepository {
 
     /**
-     * Get the recent search queries up to the number of queries specified as [limit].
+     * Get the recent search queries up to the number of queries specified by [Int] parameter [limit].
+     *
+     * @param limit the number of queries to return.
+     * @return a [Flow] of a [List] of [RecentSearchQuery]s.
      */
     fun getRecentSearchQueries(limit: Int): Flow<List<RecentSearchQuery>>
 
     /**
-     * Insert or replace the [searchQuery] as part of the recent searches.
+     * Insert or replace the [String] parameter [searchQuery] as part of the recent searches.
+     *
+     * @param searchQuery the search query to insert or replace.
      */
     suspend fun insertOrReplaceRecentSearch(searchQuery: String)
 

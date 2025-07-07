@@ -19,8 +19,12 @@ package com.google.samples.apps.nowinandroid.core.data.util
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Utility for reporting app connectivity status
+ * Utility interface for reporting app connectivity status
  */
 interface NetworkMonitor {
+    /**
+     * Emits the network connectivity status as a [Flow] of [Boolean], `true` if the device is online
+     * or `false` if offline.
+     */
     val isOnline: Flow<Boolean>
 }

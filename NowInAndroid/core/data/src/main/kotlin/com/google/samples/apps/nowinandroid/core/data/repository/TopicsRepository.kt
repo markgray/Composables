@@ -22,12 +22,17 @@ import kotlinx.coroutines.flow.Flow
 
 interface TopicsRepository : Syncable {
     /**
-     * Gets the available topics as a stream
+     * Gets the available topics as a stream.
+     *
+     * @return [Flow] of [List] of [Topic]
      */
     fun getTopics(): Flow<List<Topic>>
 
     /**
-     * Gets data for a specific topic
+     * Gets data for a specific topic.
+     *
+     * @param id unique id of a topic
+     * @return [Flow] of [Topic]
      */
     fun getTopic(id: String): Flow<Topic>
 }
