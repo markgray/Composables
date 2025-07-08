@@ -56,15 +56,15 @@ internal class ConnectivityManagerNetworkMonitor @Inject constructor(
      * Network monitoring via [ConnectivityManager.NetworkCallback] requires the INTERNET permission.
      * Returns a flow that emits `true` when the network is available and `false` otherwise.
      *
-     * We call the [callbackFlow] method an in its [ProducerScope] `block` lambda argument we start
+     * We call the [callbackFlow] method and in its [ProducerScope] `block` lambda argument we start
      * by calling the [trace] method with the `label` "NetworkMonitor.callbackFlow" to wrap its
      * `block` lambda argument in calls to [Trace.beginSection] and [Trace.endSection] so that we
      * may reference the block in the tracing UI. In that `block` lambda argument, we initialize our
      * [ConnectivityManager] variable `connectivityManager` to the application context's
-     * [ConnectivityManager] system service. If `connectivityManager` is null, we send a `false`
+     * [ConnectivityManager] system service. If `connectivityManager` is `null`, we send a `false`
      * to the [ProducerScope.channel], close it and exit the [callbackFlow]. If `connectivityManager`
-     * is not null, we initialize our [NetworkCallback] singleton `object` variable `callback`
-     * to a new instance which we keep track of the [Network] objects which are currently available
+     * is not `null`, we initialize our [NetworkCallback] singleton `object` variable `callback`
+     * to a new instance in which we keep track of the [Network] objects which are currently available
      * in a [MutableSet] of [Network] variable `networks` and emit `true` and `false` to the [Flow]
      * of [Boolean] variable `isOnline` depending on whether `networks` contains any [Network].
      *
@@ -103,7 +103,7 @@ internal class ConnectivityManagerNetworkMonitor @Inject constructor(
                  */
                 override fun onAvailable(network: Network) {
                     networks += network
-                    channel.trySend(true)
+                    channel.trySend(element = true)
                 }
 
                 /**

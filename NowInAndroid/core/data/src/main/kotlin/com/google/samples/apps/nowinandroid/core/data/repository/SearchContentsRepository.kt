@@ -30,7 +30,8 @@ interface SearchContentsRepository {
     suspend fun populateFtsData()
 
     /**
-     * Query the contents matched with the [searchQuery] and returns it as a [Flow] of [SearchResult]
+     * Queries the contents for matches of the [String] parameter [searchQuery] and returns the
+     * result as a [Flow] of [SearchResult]
      *
      * @param searchQuery the search query.
      * @return a [Flow] of [SearchResult].

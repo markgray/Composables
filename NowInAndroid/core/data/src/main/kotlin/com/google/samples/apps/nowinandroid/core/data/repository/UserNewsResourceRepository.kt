@@ -20,7 +20,7 @@ import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Data layer implementation for [UserNewsResource]
+ * Data layer interface for [UserNewsResource]
  */
 interface UserNewsResourceRepository {
     /**

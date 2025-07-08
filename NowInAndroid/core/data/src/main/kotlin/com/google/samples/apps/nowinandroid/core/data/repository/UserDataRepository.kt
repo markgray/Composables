@@ -39,7 +39,7 @@ interface UserDataRepository {
     suspend fun setFollowedTopicIds(followedTopicIds: Set<String>)
 
     /**
-     * Sets the user's newly followed/unfollowed topic.
+     * Sets the followed/unfollowed status of the user's newly followed/unfollowed topic.
      *
      * @param followedTopicId id of the topic that was followed/unfollowed.
      * @param followed `true` if the topic should be followed, `false` if it should be unfollowed.
@@ -60,7 +60,7 @@ interface UserDataRepository {
      *
      * @param newsResourceId id of the news resource.
      * @param viewed `true` if the news resource should be marked as viewed, `false` if it should be
-     *
+     * marked as unviewed.
      */
     suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean)
 

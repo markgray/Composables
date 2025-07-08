@@ -122,7 +122,7 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
      * property [niaPreferencesDataSource] with its `themeBrand` argument set to the
      * [ThemeBrand] parameter [themeBrand]. Then we call the [AnalyticsHelper.logThemeChanged]
      * method of our [AnalyticsHelper] property [analyticsHelper] with its `themeName` argument
-     * set [ThemeBrand.name] of the [ThemeBrand] parameter [themeBrand].
+     * set to the [ThemeBrand.name] of the [ThemeBrand] parameter [themeBrand].
      *
      * @param themeBrand the [ThemeBrand] to set.
      */
@@ -132,7 +132,7 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
     }
 
     /**
-     * Sets the preferred dark theme configuration. WE delegate to the
+     * Sets the preferred dark theme configuration. We delegate to the
      * [NiaPreferencesDataSource.setDarkThemeConfig] method of our [NiaPreferencesDataSource]
      * property [niaPreferencesDataSource] with its `darkThemeConfig` argument set to the
      * [DarkThemeConfig] parameter [darkThemeConfig]. Then we call the
@@ -150,10 +150,10 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
     /**
      * Sets the preferred dynamic color policy. We delegate to the
      * [NiaPreferencesDataSource.setDynamicColorPreference] method of our [NiaPreferencesDataSource]
-     * property [niaPreferencesDataSource] with its `useDynamicColor` argument set to the [Boolean]
+     * property [niaPreferencesDataSource] with its `useDynamicColor` argument set to our [Boolean]
      * parameter [useDynamicColor]. Then we call the [AnalyticsHelper.logDynamicColorPreferenceChanged]
      * method of our [AnalyticsHelper] property [analyticsHelper] with its `useDynamicColor` argument
-     * set to the [Boolean] parameter [useDynamicColor].
+     * set to our [Boolean] parameter [useDynamicColor].
      *
      * @param useDynamicColor whether to use dynamic color.
      */
@@ -165,10 +165,10 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
     /**
      * Sets whether the onboarding should be hidden. We delegate to the
      * [NiaPreferencesDataSource.setShouldHideOnboarding] method of our [NiaPreferencesDataSource]
-     * property [niaPreferencesDataSource] with its `shouldHideOnboarding` argument set to the [Boolean]
+     * property [niaPreferencesDataSource] with its `shouldHideOnboarding` argument set to our [Boolean]
      * parameter [shouldHideOnboarding]. Then we call the [AnalyticsHelper.logOnboardingStateChanged]
-     * method of our [AnalyticsHelper] property [analyticsHelper] with its `shouldHideOnboarding` argument
-     * set to the [Boolean] parameter [shouldHideOnboarding].
+     * method of our [AnalyticsHelper] property [analyticsHelper] with its `shouldHideOnboarding`
+     * argument set to our [Boolean] parameter [shouldHideOnboarding].
      *
      * @param shouldHideOnboarding whether the onboarding should be hidden.
      */

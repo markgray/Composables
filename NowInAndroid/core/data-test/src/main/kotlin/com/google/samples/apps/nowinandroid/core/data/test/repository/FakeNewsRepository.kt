@@ -24,6 +24,8 @@ import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.network.Dispatcher
 import com.google.samples.apps.nowinandroid.core.network.NiaDispatchers.IO
 import com.google.samples.apps.nowinandroid.core.network.demo.DemoNiaNetworkDataSource
+import com.google.samples.apps.nowinandroid.core.network.model.NetworkNewsResource
+import com.google.samples.apps.nowinandroid.core.network.model.NetworkTopic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -40,7 +42,7 @@ import javax.inject.Inject
  * @property datasource a [DemoNiaNetworkDataSource] injected by Hilt.
  */
 class FakeNewsRepository @Inject constructor(
-    @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+    @param:Dispatcher(niaDispatcher = IO) private val ioDispatcher: CoroutineDispatcher,
     private val datasource: DemoNiaNetworkDataSource,
 ) : NewsRepository {
 
@@ -54,27 +56,27 @@ class FakeNewsRepository @Inject constructor(
         query: NewsResourceQuery,
     ): Flow<List<NewsResource>> =
         flow {
-            val newsResources = datasource.getNewsResources()
-            val topics = datasource.getTopics()
+            val newsResources: List<NetworkNewsResource> = datasource.getNewsResources()
+            val topics: List<NetworkTopic> = datasource.getTopics()
 
             emit(
-                newsResources
-                    .filter { networkNewsResource ->
+                value = newsResources
+                    .filter { networkNewsResource: NetworkNewsResource ->
                         // Filter out any news resources which don't match the current query.
                         // If no query parameters (filterTopicIds or filterNewsIds) are specified
                         // then the news resource is returned.
                         listOfNotNull(
                             true,
-                            query.filterNewsIds?.contains(networkNewsResource.id),
-                            query.filterTopicIds?.let { filterTopicIds ->
-                                networkNewsResource.topics.intersect(filterTopicIds).isNotEmpty()
+                            query.filterNewsIds?.contains(element = networkNewsResource.id),
+                            query.filterTopicIds?.let { filterTopicIds: Set<String> ->
+                                networkNewsResource.topics.intersect(other = filterTopicIds).isNotEmpty()
                             },
                         )
-                            .all(true::equals)
+                            .all(predicate = true::equals)
                     }
-                    .map { it.asExternalModel(topics) },
+                    .map { it.asExternalModel(topics = topics) },
             )
-        }.flowOn(ioDispatcher)
+        }.flowOn(context = ioDispatcher)
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true
 }

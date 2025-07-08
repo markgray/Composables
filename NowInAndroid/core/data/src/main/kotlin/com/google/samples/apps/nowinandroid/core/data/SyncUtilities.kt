@@ -84,10 +84,10 @@ private suspend fun <T> suspendRunCatching(block: suspend () -> T): Result<T> = 
 
 /**
  * Utility function for syncing a repository with the network.
- * [versionReader] Reads the current version of the model that needs to be synced
- * [changeListFetcher] Fetches the change list for the model
- * [versionUpdater] Updates the [ChangeListVersions] after a successful sync
- * [modelDeleter] Deletes models by consuming the ids of the models that have been deleted.
+ * [versionReader] Reads the current version of the model that needs to be synced,
+ * [changeListFetcher] Fetches the change list for the model,
+ * [versionUpdater] Updates the [ChangeListVersions] after a successful sync,
+ * [modelDeleter] Deletes models by consuming the ids of the models that have been deleted,
  * [modelUpdater] Updates models by consuming the ids of the models that have changed.
  *
  * Note that the blocks defined above are never run concurrently, and the [Synchronizer]
