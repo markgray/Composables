@@ -21,6 +21,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
+/**
+ * Implementation of [NetworkMonitor] that is always online.
+ * This is useful for testing purposes.
+ */
 class AlwaysOnlineNetworkMonitor @Inject constructor() : NetworkMonitor {
-    override val isOnline: Flow<Boolean> = flowOf(true)
+    /**
+     * Emits the network connectivity status as a [Flow] of [Boolean], `true` if the device is online
+     * or `false` if offline. We always return a flow that emits `true` to indicate that the device
+     * is always online.
+     *
+     * @return A flow that emits true.
+     */
+    override val isOnline: Flow<Boolean> = flowOf(value = true)
 }

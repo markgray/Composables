@@ -27,7 +27,26 @@ import javax.inject.Inject
  */
 internal class FakeSearchContentsRepository @Inject constructor() : SearchContentsRepository {
 
+    /**
+     * Populate the fts tables for the search contents. No-op since this fake implementation doesn't
+     * use FTS.
+     */
     override suspend fun populateFtsData() = Unit
+
+    /**
+     * Queries the contents for matches of the [String] parameter [searchQuery] and returns the
+     * result as a [Flow] of [SearchResult]. This fake implementation always returns an empty flow.
+     *
+     * @param searchQuery the search query.
+     * @return a [Flow] of [SearchResult].
+     */
     override fun searchContents(searchQuery: String): Flow<SearchResult> = flowOf()
-    override fun getSearchContentsCount(): Flow<Int> = flowOf(1)
+
+    /**
+     * Returns the count of search contents saved in the database. Returns a flow that emits the
+     * value 1. This is a fake implementation and does not represent any actual search data.
+     *
+     * @return a [Flow] of [Int].
+     */
+    override fun getSearchContentsCount(): Flow<Int> = flowOf(value = 1)
 }

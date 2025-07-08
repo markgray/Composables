@@ -28,6 +28,7 @@ import com.google.samples.apps.nowinandroid.core.network.model.NetworkNewsResour
 import com.google.samples.apps.nowinandroid.core.network.model.NetworkTopic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
@@ -48,7 +49,28 @@ class FakeNewsRepository @Inject constructor(
 
     /**
      * Returns available news resources that match the specified [query].
-     * TODO: Continue here.
+     *
+     * We start by calling [flow] to create a [Flow] of [List] of [NewsResource], and in its
+     * [FlowCollector] of [List] of [NewsResource] `block` suspend lambda argument we:
+     *  - initialize our [List] of [NetworkNewsResource] variable `newsResources` with the value
+     *  returned by the [DemoNiaNetworkDataSource.getNewsResources] method of our
+     *  [DemoNiaNetworkDataSource]. property [datasource].
+     *  - initialize our [List] of [NetworkTopic] variable `topics` with the value returned by
+     *  the [DemoNiaNetworkDataSource.getTopics] method of our [DemoNiaNetworkDataSource]. property
+     *  [datasource].
+     *  - we call the [FlowCollector.emit] method of our receiver with the `value` returned by
+     *  feeding the [List] of [NetworkNewsResource] variable `newsResources` to its [Iterable.filter]
+     *  extension function. In the `predicate` lambda argument of [Iterable.filter] we capture the
+     *  [NetworkNewsResource] passed the lambda in variable `networkNewsResource` and filter out any
+     *  `netWorkNewsResource` that doesn't match the [NewsResourceQuery] parameter [query]. We feed
+     *  the resulting [List] of [NetworkNewsResource] to the [Iterable.map] extension function to
+     *  convert each [NetworkNewsResource] to a [NewsResource] using its
+     *  [NetworkNewsResource.asExternalModel] method.
+     *
+     * The resulting [Flow] of [List] of [NewsResource] is then fed to the [Flow.flowOn] operator
+     * to change the `context` that the [Flow] is emitted on to the [CoroutineDispatcher] provided
+     * by our [CoroutineDispatcher] property [ioDispatcher].
+     *
      * @param query - A [NewsResourceQuery] query that specifies what news resources to provide.
      * @return A Flow of a list of news resources.
      */
@@ -69,7 +91,8 @@ class FakeNewsRepository @Inject constructor(
                             true,
                             query.filterNewsIds?.contains(element = networkNewsResource.id),
                             query.filterTopicIds?.let { filterTopicIds: Set<String> ->
-                                networkNewsResource.topics.intersect(other = filterTopicIds).isNotEmpty()
+                                networkNewsResource.topics.intersect(other = filterTopicIds)
+                                    .isNotEmpty()
                             },
                         )
                             .all(predicate = true::equals)
@@ -78,5 +101,12 @@ class FakeNewsRepository @Inject constructor(
             )
         }.flowOn(context = ioDispatcher)
 
+    /**
+     * A fake implementation of the [NewsRepository.syncWith] method which just returns `true`
+     * without doing anything.
+     *
+     * @param synchronizer a [Synchronizer] that we ignore.
+     * @return `true` always.
+     */
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true
 }

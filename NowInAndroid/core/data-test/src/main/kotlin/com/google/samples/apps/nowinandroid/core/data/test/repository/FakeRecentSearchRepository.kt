@@ -26,10 +26,27 @@ import javax.inject.Inject
  * Fake implementation of the [RecentSearchRepository]
  */
 internal class FakeRecentSearchRepository @Inject constructor() : RecentSearchRepository {
+    /**
+     * A fake implementation of the [RecentSearchRepository.insertOrReplaceRecentSearch] that does
+     * nothing.
+     *
+     * @param searchQuery The search query to be inserted or replaced.
+     */
     override suspend fun insertOrReplaceRecentSearch(searchQuery: String) = Unit
 
+    /**
+     * Returns the recent search queries, up to the specified [limit].
+     * In this fake implementation, it always returns an empty list.
+     *
+     * @param limit The maximum number of recent search queries to return.
+     * @return A flow that emits a list of recent search queries.
+     */
     override fun getRecentSearchQueries(limit: Int): Flow<List<RecentSearchQuery>> =
-        flowOf(emptyList())
+        flowOf(value = emptyList())
 
+    /**
+     * Clears all recent searches.
+     * In this fake implementation, this function does nothing.
+     */
     override suspend fun clearRecentSearches() = Unit
 }

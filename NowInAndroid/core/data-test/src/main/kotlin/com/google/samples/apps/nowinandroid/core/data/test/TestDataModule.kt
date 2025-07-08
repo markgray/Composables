@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.nowinandroid.core.data.test
 
 import com.google.samples.apps.nowinandroid.core.data.di.DataModule
@@ -34,12 +36,28 @@ import dagger.Module
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 
+/**
+ * DI module that provides bindings for fake data repositories.
+ * This module is used in tests to replace the production [DataModule] with
+ * fake implementations.
+ *
+ * The [TestInstallIn.components] argument is used to specify the component to use for
+ * testing. The [SingletonComponent] is used here to ensure that the same
+ * instance of the fake data repository is used throughout the tests.
+ * The [TestInstallIn.replaces] argument is used to specify the module to replace, in
+ * this case [DataModule].
+ */
 @Module
 @TestInstallIn(
     components = [SingletonComponent::class],
     replaces = [DataModule::class],
 )
 internal interface TestDataModule {
+    /**
+     * Binds a [FakeTopicsRepository] to the [TopicsRepository] interface.
+     * This allows injecting a fake implementation of the repository for testing purposes.
+     * TODO: Continue here.
+     */
     @Binds
     fun bindsTopicRepository(
         fakeTopicsRepository: FakeTopicsRepository,

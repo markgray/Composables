@@ -22,6 +22,15 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.TimeZone
 import javax.inject.Inject
 
+/**
+ * [TimeZoneMonitor] implementation that always returns a fixed time zone ("Europe/Warsaw").
+ * This is used in tests when a predictable time zone is required.
+ */
 class DefaultZoneIdTimeZoneMonitor @Inject constructor() : TimeZoneMonitor {
+    /**
+     * A [Flow] that emits the current [TimeZone]. This implementation always emits "Europe/Warsaw".
+     *
+     * @return A [Flow] that emits the current [TimeZone].
+     */
     override val currentTimeZone: Flow<TimeZone> = flowOf(TimeZone.of("Europe/Warsaw"))
 }
