@@ -27,12 +27,39 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface RecentSearchQueryDao {
+    /**
+     * Get the most recent search queries up to the limit. The [Query] annotation specifies the SQL
+     * query to be executed. The meaning of the SQL query is:
+     *  - `SELECT * FROM recentSearchQueries`: This query selects all columns from the
+     *  `recentSearchQueries` table.
+     *  - `ORDER BY queriedDate DESC`: This keyword is used to sort the results in descending order
+     *  based on the `queriedDate` column.
+     *  - `LIMIT :limit`: This keyword is used to limit the number of results returned by the query
+     *  to our [Int] parameter [limit].
+     *
+     * @param limit The maximum number of recent search queries to get.
+     * @return A flow of a list of recent search queries.
+     */
     @Query(value = "SELECT * FROM recentSearchQueries ORDER BY queriedDate DESC LIMIT :limit")
     fun getRecentSearchQueryEntities(limit: Int): Flow<List<RecentSearchQueryEntity>>
 
+    /**
+     * Inserts or replaces [RecentSearchQueryEntity] in the db under the Fts tables.
+     * If the [RecentSearchQueryEntity] is new, it is inserted.
+     * If the [RecentSearchQueryEntity] is already directly in the db, it is replaced.
+     * If the last query was the same, the timestamp is updated.
+     *
+     * @param recentSearchQuery To be inserted or replaced.
+     */
     @Upsert
     suspend fun insertOrReplaceRecentSearchQuery(recentSearchQuery: RecentSearchQueryEntity)
 
+    /**
+     * Clears all recent search queries. The [Query] annotation specifies the SQL query to be executed.
+     * The meaning of the SQL query is:
+     *  - `DELETE FROM recentSearchQueries`: This query deletes all rows from the `recentSearchQueries`
+     *  table.
+     */
     @Query(value = "DELETE FROM recentSearchQueries")
     suspend fun clearRecentSearchQueries()
 }

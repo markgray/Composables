@@ -26,6 +26,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Dagger module for providing the [NiaDatabase] instance.
+ * TODO: CONTINUE HERE.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 internal object DatabaseModule {

@@ -28,12 +28,36 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface NewsResourceFtsDao {
+    /**
+     * Inserts [newsResources] into the FTS table. If a [NewsResourceFtsEntity] already exists, it will
+     * be replaced.
+     *
+     * @param newsResources The list of news resources to insert.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(newsResources: List<NewsResourceFtsEntity>)
 
+    /**
+     * Searches for news resources that match the [String] parameter [query]. The [Query] annotation
+     * specifies the SQL query to be executed. The meaning of the SQL query is:
+     *  - `SELECT newsResourceId FROM newsResourcesFts WHERE newsResourcesFts MATCH :query`: This
+     *  query selects the `newsResourceId` column from the `newsResourcesFts` table. It applies a
+     *  FTS5 match against the `newsResourcesFts` column using the provided [query] parameter.
+     *
+     * @param query The search query.
+     * @return A flow of lists of news resource IDs that match the query.
+     */
     @Query("SELECT newsResourceId FROM newsResourcesFts WHERE newsResourcesFts MATCH :query")
     fun searchAllNewsResources(query: String): Flow<List<String>>
 
+    /**
+     * Gets the number of FTS news resources. The [Query] annotation specifies the SQL query to be
+     * executed. The meaning of the SQL query is:
+     *  - `SELECT count(*) FROM newsResourcesFts`: This query counts the number of rows in the
+     *  `newsResourcesFts` table.
+     *
+     * @return The number of FTS news resources.
+     */
     @Query("SELECT count(*) FROM newsResourcesFts")
     fun getCount(): Flow<Int>
 }

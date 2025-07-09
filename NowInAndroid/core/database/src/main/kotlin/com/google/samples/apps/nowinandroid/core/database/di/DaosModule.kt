@@ -27,29 +27,69 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+/**
+ * Hilt module that provides DAO instances.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 internal object DaosModule {
+    /**
+     * Provides a [TopicDao] instance. We return the [TopicDao] instance returned from the
+     * [NiaDatabase.topicDao] method of our [NiaDatabase] parameter [database].
+     *
+     * @param database The [NiaDatabase] instance.
+     * @return A [TopicDao] instance.
+     */
     @Provides
     fun providesTopicsDao(
         database: NiaDatabase,
     ): TopicDao = database.topicDao()
 
+    /**
+     * Provides a [NewsResourceDao] instance. We return the [NewsResourceDao] instance returned
+     * from the [NiaDatabase.newsResourceDao] method of our [NiaDatabase] parameter [database].
+     *
+     * @param database The [NiaDatabase] instance.
+     * @return A [NewsResourceDao] instance.
+     */
     @Provides
     fun providesNewsResourceDao(
         database: NiaDatabase,
     ): NewsResourceDao = database.newsResourceDao()
 
+    /**
+     * Provides a [TopicFtsDao] instance. We return the [TopicFtsDao] instance returned from the
+     * [NiaDatabase.topicFtsDao] method of our [NiaDatabase] parameter [database].
+     *
+     * @param database The [NiaDatabase] instance.
+     * @return A [TopicFtsDao] instance.
+     */
     @Provides
     fun providesTopicFtsDao(
         database: NiaDatabase,
     ): TopicFtsDao = database.topicFtsDao()
 
+    /**
+     * Provides a [NewsResourceFtsDao] instance. This DAO is used for full-text search on
+     * `news_resources` table. We return the [NewsResourceFtsDao] instance returned from the
+     * [NiaDatabase.newsResourceFtsDao] method of our [NiaDatabase] parameter [database].
+     *
+     * @param database The [NiaDatabase] instance.
+     * @return A [NewsResourceFtsDao] instance.
+     */
     @Provides
     fun providesNewsResourceFtsDao(
         database: NiaDatabase,
     ): NewsResourceFtsDao = database.newsResourceFtsDao()
 
+    /**
+     * Provides a [RecentSearchQueryDao] instance. This DAO is used for interacting with the
+     * `recent_search_queries` table. We return the [RecentSearchQueryDao] instance returned
+     * from the [NiaDatabase.recentSearchQueryDao] method of our [NiaDatabase] parameter [database].
+     *
+     * @param database The [NiaDatabase] instance.
+     * @return A [RecentSearchQueryDao] instance.
+     */
     @Provides
     fun providesRecentSearchQueryDao(
         database: NiaDatabase,

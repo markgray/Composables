@@ -57,38 +57,78 @@ internal interface TestDataModule {
     /**
      * Binds a [FakeTopicsRepository] to the [TopicsRepository] interface.
      * This allows injecting a fake implementation of the repository for testing purposes.
-     * TODO: Continue here.
+     *
+     * @param fakeTopicsRepository The fake implementation of the repository.
      */
     @Binds
     fun bindsTopicRepository(
         fakeTopicsRepository: FakeTopicsRepository,
     ): TopicsRepository
 
+    /**
+     * Binds a [FakeNewsRepository] to the [NewsRepository] interface.
+     * This allows injecting a fake implementation of the news resource repository
+     * for testing purposes.
+     *
+     * @param fakeNewsRepository The fake implementation of the news resource repository.
+     */
     @Binds
     fun bindsNewsResourceRepository(
         fakeNewsRepository: FakeNewsRepository,
     ): NewsRepository
 
+    /**
+     * Binds a [FakeUserDataRepository] to the [UserDataRepository] interface.
+     * This allows injecting a fake implementation of the user data repository for testing purposes.
+     *
+     * @param userDataRepository The fake implementation of the user data repository.
+     */
     @Binds
     fun bindsUserDataRepository(
         userDataRepository: FakeUserDataRepository,
     ): UserDataRepository
 
+    /**
+     * Binds a [FakeRecentSearchRepository] to the [RecentSearchRepository] interface.
+     * This allows injecting a fake implementation of the repository for testing purposes.
+     *
+     * @param recentSearchRepository The fake implementation of the repository.
+     */
     @Binds
     fun bindsRecentSearchRepository(
         recentSearchRepository: FakeRecentSearchRepository,
     ): RecentSearchRepository
 
+    /**
+     * Binds a [FakeSearchContentsRepository] to the [SearchContentsRepository] interface.
+     * This allows injecting a fake implementation of the repository for testing purposes.
+     *
+     * @param searchContentsRepository The fake implementation of the repository.
+     */
     @Binds
     fun bindsSearchContentsRepository(
         searchContentsRepository: FakeSearchContentsRepository,
     ): SearchContentsRepository
 
+    /**
+     * Binds an [AlwaysOnlineNetworkMonitor] to the [NetworkMonitor] interface.
+     * This allows injecting a network monitor that always reports an online state
+     * for testing purposes.
+     *
+     * @param networkMonitor The always online network monitor.
+     */
     @Binds
     fun bindsNetworkMonitor(
         networkMonitor: AlwaysOnlineNetworkMonitor,
     ): NetworkMonitor
 
+    /**
+     * Binds a [DefaultZoneIdTimeZoneMonitor] to the [TimeZoneMonitor] interface.
+     * This allows injecting a time zone monitor that provides the default system time zone
+     * for testing purposes.
+     *
+     * @param impl The default time zone monitor implementation.
+     */
     @Binds
     fun binds(impl: DefaultZoneIdTimeZoneMonitor): TimeZoneMonitor
 }
