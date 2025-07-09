@@ -27,8 +27,8 @@ import javax.inject.Inject
  */
 internal class FakeRecentSearchRepository @Inject constructor() : RecentSearchRepository {
     /**
-     * A fake implementation of the [RecentSearchRepository.insertOrReplaceRecentSearch] that does
-     * nothing.
+     * A fake implementation of the [RecentSearchRepository.insertOrReplaceRecentSearch] method
+     * that does nothing.
      *
      * @param searchQuery The search query to be inserted or replaced.
      */

@@ -41,7 +41,7 @@ import javax.inject.Inject
  * @property ioDispatcher a coroutine dispatcher that is used for running blocking code like
  * suspend function calls injected by HILT.
  * @property datasource the instance of [DemoNiaNetworkDataSource] that will be used to retrieve the
- * fake data injected by HILT.
+ * fake data, injected by HILT.
  */
 internal class FakeTopicsRepository @Inject constructor(
     @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
@@ -99,7 +99,7 @@ internal class FakeTopicsRepository @Inject constructor(
      *
      * @param synchronizer [Synchronizer] that will perform the sync.
      * @return `true` if the sync was successful or `false` if it failed. In this fake
-     * implementation it is always `true`.
+     * implementation it always returns `true`.
      */
     override suspend fun syncWith(synchronizer: Synchronizer) = true
 }

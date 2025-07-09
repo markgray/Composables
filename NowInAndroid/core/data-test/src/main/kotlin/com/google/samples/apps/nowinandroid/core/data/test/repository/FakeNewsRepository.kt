@@ -62,7 +62,7 @@ class FakeNewsRepository @Inject constructor(
      *  feeding the [List] of [NetworkNewsResource] variable `newsResources` to its [Iterable.filter]
      *  extension function. In the `predicate` lambda argument of [Iterable.filter] we capture the
      *  [NetworkNewsResource] passed the lambda in variable `networkNewsResource` and filter out any
-     *  `netWorkNewsResource` that doesn't match the [NewsResourceQuery] parameter [query]. We feed
+     *  `netWorkNewsResource` that do not match the [NewsResourceQuery] parameter [query]. We feed
      *  the resulting [List] of [NetworkNewsResource] to the [Iterable.map] extension function to
      *  convert each [NetworkNewsResource] to a [NewsResource] using its
      *  [NetworkNewsResource.asExternalModel] method.
@@ -72,7 +72,7 @@ class FakeNewsRepository @Inject constructor(
      * by our [CoroutineDispatcher] property [ioDispatcher].
      *
      * @param query - A [NewsResourceQuery] query that specifies what news resources to provide.
-     * @return A Flow of a list of news resources.
+     * @return A Flow of a list of news resources that match [query].
      */
     override fun getNewsResources(
         query: NewsResourceQuery,

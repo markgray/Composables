@@ -41,6 +41,7 @@ import dagger.hilt.testing.TestInstallIn
  * This module is used in tests to replace the production [DataModule] with
  * fake implementations.
  *
+ * It is annotated with [TestInstallIn] to have it replace one or more modules in tests.
  * The [TestInstallIn.components] argument is used to specify the component to use for
  * testing. The [SingletonComponent] is used here to ensure that the same
  * instance of the fake data repository is used throughout the tests.
