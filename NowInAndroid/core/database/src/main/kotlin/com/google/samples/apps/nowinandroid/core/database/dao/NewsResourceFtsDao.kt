@@ -24,7 +24,7 @@ import com.google.samples.apps.nowinandroid.core.database.model.NewsResourceFtsE
 import kotlinx.coroutines.flow.Flow
 
 /**
- * DAO for [NewsResourceFtsEntity] access.
+ * FTS5 DAO for [NewsResourceFtsEntity] access.
  */
 @Dao
 interface NewsResourceFtsDao {

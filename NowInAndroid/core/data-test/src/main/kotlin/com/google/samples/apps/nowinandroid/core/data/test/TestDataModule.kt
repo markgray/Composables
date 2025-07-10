@@ -58,7 +58,7 @@ internal interface TestDataModule {
      * Binds a [FakeTopicsRepository] to the [TopicsRepository] interface.
      * This allows injecting a fake implementation of the repository for testing purposes.
      *
-     * @param fakeTopicsRepository The fake implementation of the repository.
+     * @param fakeTopicsRepository The fake implementation of the [TopicsRepository].
      */
     @Binds
     fun bindsTopicRepository(
@@ -70,7 +70,7 @@ internal interface TestDataModule {
      * This allows injecting a fake implementation of the news resource repository
      * for testing purposes.
      *
-     * @param fakeNewsRepository The fake implementation of the news resource repository.
+     * @param fakeNewsRepository The fake implementation of the [NewsRepository].
      */
     @Binds
     fun bindsNewsResourceRepository(
@@ -81,7 +81,7 @@ internal interface TestDataModule {
      * Binds a [FakeUserDataRepository] to the [UserDataRepository] interface.
      * This allows injecting a fake implementation of the user data repository for testing purposes.
      *
-     * @param userDataRepository The fake implementation of the user data repository.
+     * @param userDataRepository The fake implementation of the [UserDataRepository].
      */
     @Binds
     fun bindsUserDataRepository(
@@ -92,7 +92,7 @@ internal interface TestDataModule {
      * Binds a [FakeRecentSearchRepository] to the [RecentSearchRepository] interface.
      * This allows injecting a fake implementation of the repository for testing purposes.
      *
-     * @param recentSearchRepository The fake implementation of the repository.
+     * @param recentSearchRepository The fake implementation of the [RecentSearchRepository].
      */
     @Binds
     fun bindsRecentSearchRepository(
@@ -103,7 +103,7 @@ internal interface TestDataModule {
      * Binds a [FakeSearchContentsRepository] to the [SearchContentsRepository] interface.
      * This allows injecting a fake implementation of the repository for testing purposes.
      *
-     * @param searchContentsRepository The fake implementation of the repository.
+     * @param searchContentsRepository The fake implementation of the [SearchContentsRepository].
      */
     @Binds
     fun bindsSearchContentsRepository(
@@ -115,7 +115,7 @@ internal interface TestDataModule {
      * This allows injecting a network monitor that always reports an online state
      * for testing purposes.
      *
-     * @param networkMonitor The always online network monitor.
+     * @param networkMonitor The always online [NetworkMonitor].
      */
     @Binds
     fun bindsNetworkMonitor(
@@ -127,7 +127,7 @@ internal interface TestDataModule {
      * This allows injecting a time zone monitor that provides the default system time zone
      * for testing purposes.
      *
-     * @param impl The default time zone monitor implementation.
+     * @param impl The default [TimeZoneMonitor] time zone monitor implementation.
      */
     @Binds
     fun binds(impl: DefaultZoneIdTimeZoneMonitor): TimeZoneMonitor

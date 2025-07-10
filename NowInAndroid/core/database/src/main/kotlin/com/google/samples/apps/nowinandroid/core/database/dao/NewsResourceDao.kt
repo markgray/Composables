@@ -64,8 +64,8 @@ interface NewsResourceDao {
      * @param useFilterNewsIds Whether to filter by news resource IDs.
      * @param filterNewsIds The set of news resource IDs to filter by. If [useFilterNewsIds] is
      * false, this parameter is ignored.
-     * @return A [Flow] of a list of [PopulatedNewsResource] objects that match the query parameters.
-     * The list is ordered by publish date in descending order.
+     * @return A [Flow] of a [List] of [PopulatedNewsResource] objects that match the query
+     * parameters. The list is ordered by publish date in descending order.
      */
     @Transaction
     @Query(

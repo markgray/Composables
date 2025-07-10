@@ -24,7 +24,7 @@ import com.google.samples.apps.nowinandroid.core.database.model.TopicFtsEntity
 import kotlinx.coroutines.flow.Flow
 
 /**
- * DAO for [TopicFtsEntity] access.
+ * FTS5 DAO for [TopicFtsEntity] access.
  */
 @Dao
 interface TopicFtsDao {
