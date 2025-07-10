@@ -30,6 +30,10 @@ import androidx.room.migration.AutoMigrationSpec
  */
 internal object DatabaseMigrations {
 
+    /**
+     * Handles the migration from schema version 2 to 3.
+     * Renames the 'description' column to 'shortDescription' in the 'topics' table.
+     */
     @RenameColumn(
         tableName = "topics",
         fromColumnName = "description",
@@ -37,6 +41,12 @@ internal object DatabaseMigrations {
     )
     class Schema2to3 : AutoMigrationSpec
 
+    /**
+     * Handles the migration from schema version 10 to 11.
+     *  - Deletes the 'episode_id' column from the 'news_resources' table.
+     *  - Deletes the 'episodes_authors' table.
+     *  - Deletes the 'episodes' table.
+     */
     @DeleteColumn(
         tableName = "news_resources",
         columnName = "episode_id",
@@ -51,6 +61,11 @@ internal object DatabaseMigrations {
     )
     class Schema10to11 : AutoMigrationSpec
 
+    /**
+     * Handles the migration from schema version 11 to 12.
+     *  - Deletes the 'news_resources_authors' table.
+     *  - Deletes the 'authors' table.
+     */
     @DeleteTable.Entries(
         DeleteTable(
             tableName = "news_resources_authors",

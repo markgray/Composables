@@ -22,7 +22,27 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 
 /**
- * Cross reference for many to many relationship between [NewsResourceEntity] and [TopicEntity]
+ * Cross reference for many to many relationship between [NewsResourceEntity] and [TopicEntity]. The
+ * arguments of the [Entity] annotation are:
+ *  - tableName: The name of the table to be created in the database is "news_resources_topics".
+ *  - primaryKeys: The primary keys of the table are "news_resource_id" and "topic_id".
+ *  - foreignKeys: The foreign keys of the table are a list of two [ForeignKey] annotations. The
+ *  first foreign key is a [ForeignKey] annotation that specifies the [ForeignKey.entity] as the
+ *  [NewsResourceEntity] class and the [ForeignKey.parentColumns] as the "id" column of the
+ *  [NewsResourceEntity] class. The [ForeignKey.childColumns] is set to the "news_resource_id" column
+ *  of the [NewsResourceTopicCrossRef] class. The [ForeignKey.onDelete] is set to [ForeignKey.CASCADE]
+ *  (propagates the delete or update operation on the parent key to each dependent child key). The
+ *  second foreign key is a [ForeignKey] annotation that specifies the [ForeignKey.entity] as the
+ *  [TopicEntity] class and the [ForeignKey.parentColumns] as the "id" column of the [TopicEntity]
+ *  class. The [ForeignKey.childColumns] is set to the "topic_id" column of the [NewsResourceTopicCrossRef]
+ *  class. The [ForeignKey.onDelete] is set to [ForeignKey.CASCADE] (propagates the delete or update
+ *  operation on the parent key to each dependent child key)..
+ *  - indices: The indices of the table are a list of two [Index] annotations. The first index is a
+ *  [Index] annotation that specifies the "news_resource_id" column as the index. The second index is
+ *  a [Index] annotation that specifies the "topic_id" column as the index.
+ *
+ * @property newsResourceId The ID of the news resource is in column "news_resource_id" of the table.
+ * @property topicId The ID of the topic is in column "topic_id" of the table.
  */
 @Entity(
     tableName = "news_resources_topics",

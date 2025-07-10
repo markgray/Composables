@@ -18,6 +18,7 @@ package com.google.samples.apps.nowinandroid.core.database.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.google.samples.apps.nowinandroid.core.database.NiaDatabase
 import dagger.Module
 import dagger.Provides
@@ -28,18 +29,27 @@ import javax.inject.Singleton
 
 /**
  * Dagger module for providing the [NiaDatabase] instance.
- * TODO: CONTINUE HERE.
  */
 @Module
 @InstallIn(SingletonComponent::class)
 internal object DatabaseModule {
+    /**
+     * Provides the [NiaDatabase] instance. We call [Room.databaseBuilder] to construct a new
+     * instance of [RoomDatabase.Builder] with its `context` argument set to our [Context] parameter
+     * [context], `klass` argument set to [NiaDatabase] and `name` argument set to "nia-database".
+     * We call its [RoomDatabase.Builder.build] method to build the database and return the resulting
+     * instance of [NiaDatabase]..
+     *
+     * @param context The application context.
+     * @return The [NiaDatabase] instance.
+     */
     @Provides
     @Singleton
     fun providesNiaDatabase(
         @ApplicationContext context: Context,
     ): NiaDatabase = Room.databaseBuilder(
-        context,
-        NiaDatabase::class.java,
-        "nia-database",
+        context = context,
+        klass = NiaDatabase::class.java,
+        name = "nia-database",
     ).build()
 }

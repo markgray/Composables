@@ -22,7 +22,14 @@ import androidx.room.PrimaryKey
 import kotlinx.datetime.Instant
 
 /**
- * Defines an database entity that stored recent search queries.
+ * Defines an database entity that stores recent search queries. The [Entity] annotation
+ * specifies its table name to be "recentSearchQueries". The [PrimaryKey] annotation specifies
+ * the primary key of the table to be "query". The [ColumnInfo] annotation specifies the name
+ * of the column in the table "queriedDate" for the [queriedDate] property.
+ *
+ * Its properties are:
+ *  - [query]: The unique ID of the news resource.
+ *  - [queriedDate]: The date when the news resource was published.
  */
 @Entity(
     tableName = "recentSearchQueries",

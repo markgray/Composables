@@ -22,6 +22,14 @@ import androidx.room.Fts4
 
 /**
  * Fts entity for the news resources. See https://developer.android.com/reference/androidx/room/Fts4.
+ *
+ * This class is used to define the structure of the `newsResourcesFts` table in the database.
+ * The `newsResourcesFts` table is a full-text search table that allows for efficient searching
+ * of news resources by their title and content.
+ *
+ * @property newsResourceId The ID of the news resource.
+ * @property title The title of the news resource.
+ * @property content The content of the news resource.
  */
 @Entity(tableName = "newsResourcesFts")
 @Fts4

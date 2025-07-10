@@ -20,22 +20,47 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.google.samples.apps.nowinandroid.core.database.NiaDatabase
+import com.google.samples.apps.nowinandroid.core.database.model.NewsResourceEntity
+import com.google.samples.apps.nowinandroid.core.database.model.TopicEntity
 import org.junit.After
 import org.junit.Before
 
+/**
+ * Abstract class for database tests, providing common setup and teardown logic.
+ * This class initializes an in-memory Room database and provides DAOs for testing.
+ */
 internal abstract class DatabaseTest {
 
+    /**
+     * The in-memory Room database instance.
+     * Initialized in the [setup] method.
+     */
     private lateinit var db: NiaDatabase
+
+    /**
+     * The Data Access Object for the [NewsResourceEntity] class.
+     * Initialized in the [setup] method.
+     */
     protected lateinit var newsResourceDao: NewsResourceDao
+
+    /**
+     * The Data Access Object for the [TopicEntity] class.
+     * Initialized in the [setup] method.
+     */
     protected lateinit var topicDao: TopicDao
 
+    /**
+     * Sets up the in-memory Room database and initializes the DAOs before each test.
+     * This method is annotated with [Before] to ensure it runs before each test case.
+     * TODO: Continue here.
+     */
     @Before
     fun setup() {
         db = run {
-            val context = ApplicationProvider.getApplicationContext<Context>()
+            val context: Context = ApplicationProvider.getApplicationContext()
             Room.inMemoryDatabaseBuilder(
-                context,
-                NiaDatabase::class.java,
+                context = context,
+                klass = NiaDatabase::class.java,
             ).build()
         }
         newsResourceDao = db.newsResourceDao()

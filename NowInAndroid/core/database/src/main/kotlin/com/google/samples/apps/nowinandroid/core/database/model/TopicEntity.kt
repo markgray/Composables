@@ -22,8 +22,17 @@ import androidx.room.PrimaryKey
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 
 /**
- * Defines a topic a user may follow.
- * It has a many to many relationship with [NewsResourceEntity]
+ * Defines a topic a user may follow. It has a many-to-many relationship with [NewsResourceEntity]
+ * via [NewsResourceTopicCrossRef]. The [Entity] annotation specifies its table name to be
+ * "topics". The [PrimaryKey] annotation specifies the primary key of the table to be "id". The
+ * [ColumnInfo] annotation specifies that the default value of the [longDescription] column, the
+ * [url] column, and the [imageUrl] column should be empty strings. The properties are:
+ *  - [id]: The unique ID of the topic.
+ *  - [name]: The name of the topic.
+ *  - [shortDescription]: The short description of the topic.
+ *  - [longDescription]: The long description of the topic.
+ *  - [url]: The URL of the topic.
+ *  - [imageUrl]: The URL of the image associated with the topic.
  */
 @Entity(
     tableName = "topics",
@@ -41,7 +50,11 @@ data class TopicEntity(
     val imageUrl: String,
 )
 
-fun TopicEntity.asExternalModel() = Topic(
+/**
+ * Maps a [TopicEntity] to a [Topic] external model. It just copies the properties of the
+ * [TopicEntity] to the properties of the [Topic] object with the same names.
+ */
+fun TopicEntity.asExternalModel(): Topic = Topic(
     id = id,
     name = name,
     shortDescription = shortDescription,
