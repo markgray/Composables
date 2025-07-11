@@ -22,97 +22,174 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
+/**
+ * Data Access Object (DAO) test for the [TopicEntity] access.
+ *
+ * Note that the database is cleared before and after each test.
+ *
+ * @see DatabaseTest
+ */
 internal class TopicDaoTest : DatabaseTest() {
 
+    /**
+     * Tests that topics can be retrieved as a stream.
+     * - It first inserts a set of predefined topics.
+     * - Then, it retrieves all topics as a Flow and takes the first emission.
+     * - Finally, it asserts that the IDs of the retrieved topics match the expected IDs
+     * ("1", "2", "3").
+     */
     @Test
     fun getTopics() = runTest {
         insertTopics()
 
-        val savedTopics = topicDao.getTopicEntities().first()
+        val savedTopics: List<TopicEntity> = topicDao.getTopicEntities().first()
 
         assertEquals(
-            listOf("1", "2", "3"),
-            savedTopics.map { it.id },
+            expected = listOf("1", "2", "3"),
+            actual = savedTopics.map { it.id },
         )
     }
 
+    /**
+     * Tests that a specific topic can be retrieved by its ID.
+     * - It first inserts a set of predefined topics.
+     * - Then, it retrieves the topic with ID "2".
+     * - Finally, it asserts that the name of the retrieved topic is "performance".
+     */
     @Test
     fun getTopic() = runTest {
         insertTopics()
 
-        val savedTopicEntity = topicDao.getTopicEntity("2").first()
+        val savedTopicEntity: TopicEntity = topicDao.getTopicEntity(topicId = "2").first()
 
-        assertEquals("performance", savedTopicEntity.name)
+        assertEquals(expected = "performance", actual = savedTopicEntity.name)
     }
 
+    /**
+     * Tests that topics can be retrieved as a one-off list.
+     * - It first inserts a set of predefined topics.
+     * - Then, it retrieves all topics as a List (not a Flow).
+     * - Finally, it asserts that the IDs of the retrieved topics match the expected IDs
+     * ("1", "2", "3").
+     */
     @Test
     fun getTopics_oneOff() = runTest {
         insertTopics()
 
-        val savedTopics = topicDao.getOneOffTopicEntities()
+        val savedTopics: List<TopicEntity> = topicDao.getOneOffTopicEntities()
 
         assertEquals(
-            listOf("1", "2", "3"),
-            savedTopics.map { it.id },
+            expected = listOf("1", "2", "3"),
+            actual = savedTopics.map { it.id },
         )
     }
 
+    /**
+     * Tests that topics can be retrieved by their IDs.
+     * - It first inserts a set of predefined topics.
+     * - Then, it retrieves topics with specific IDs ("1", "2").
+     * - Finally, it asserts that the names of the retrieved topics match the expected names
+     * ("compose", "performance").
+     */
     @Test
     fun getTopics_byId() = runTest {
         insertTopics()
 
-        val savedTopics = topicDao.getTopicEntities(setOf("1", "2"))
+        val savedTopics: List<TopicEntity> = topicDao.getTopicEntities(ids = setOf("1", "2"))
             .first()
 
-        assertEquals(listOf("compose", "performance"), savedTopics.map { it.name })
+        assertEquals(
+            expected = listOf("compose", "performance"),
+            actual = savedTopics.map { it.name },
+        )
     }
 
+    /**
+     * Tests that inserting a topic with an existing ID is ignored.
+     * - It first inserts a set of predefined topics.
+     * - Then, it attempts to insert a new topic with an ID that already exists ("1").
+     * - Finally, it retrieves all topics and asserts that the total number of topics remains
+     * unchanged (3), indicating that the duplicate insertion was ignored.
+     */
     @Test
     fun insertTopic_newEntryIsIgnoredIfAlreadyExists() = runTest {
         insertTopics()
         topicDao.insertOrIgnoreTopics(
-            listOf(testTopicEntity("1", "compose")),
+            topicEntities = listOf(testTopicEntity(id = "1", name = "compose")),
         )
 
-        val savedTopics = topicDao.getOneOffTopicEntities()
+        val savedTopics: List<TopicEntity> = topicDao.getOneOffTopicEntities()
 
-        assertEquals(3, savedTopics.size)
+        assertEquals(expected = 3, actual = savedTopics.size)
     }
 
+    /**
+     * Tests that upserting a topic with an existing ID updates the existing entry.
+     * - It first inserts a set of predefined topics.
+     * - Then, it upserts a topic with an existing ID ("1") but a new name ("newName").
+     * - Finally, it retrieves all topics and asserts:
+     *     - The total number of topics remains unchanged (3).
+     *     - The name of the topic with ID "1" is updated to "newName".
+     */
     @Test
     fun upsertTopic_existingEntryIsUpdated() = runTest {
         insertTopics()
         topicDao.upsertTopics(
-            listOf(testTopicEntity("1", "newName")),
+            entities = listOf(testTopicEntity(id = "1", name = "newName")),
         )
 
-        val savedTopics = topicDao.getOneOffTopicEntities()
+        val savedTopics: List<TopicEntity> = topicDao.getOneOffTopicEntities()
 
-        assertEquals(3, savedTopics.size)
-        assertEquals("newName", savedTopics.first().name)
+        assertEquals(expected = 3, actual = savedTopics.size)
+        assertEquals(expected = "newName", actual = savedTopics.first().name)
     }
 
+    /**
+     * Tests that topics with specified IDs are deleted.
+     * - It first inserts a set of predefined topics.
+     * - Then, it deletes topics with specific IDs ("1", "2").
+     * - Finally, it retrieves all topics and asserts:
+     *     - The total number of topics is reduced to 1.
+     *     - The remaining topic has the ID "3".
+     */
     @Test
     fun deleteTopics_byId_existingEntriesAreDeleted() = runTest {
         insertTopics()
-        topicDao.deleteTopics(listOf("1", "2"))
+        topicDao.deleteTopics(ids = listOf("1", "2"))
 
-        val savedTopics = topicDao.getOneOffTopicEntities()
+        val savedTopics: List<TopicEntity> = topicDao.getOneOffTopicEntities()
 
-        assertEquals(1, savedTopics.size)
-        assertEquals("3", savedTopics.first().id)
+        assertEquals(expected = 1, actual = savedTopics.size)
+        assertEquals(expected = "3", actual = savedTopics.first().id)
     }
 
+    /**
+     * Helper function to insert a predefined set of topics into the database.
+     * This function is used by various tests to set up initial data.
+     * The topics inserted are:
+     * - id: "1", name: "compose"
+     * - id: "2", name: "performance"
+     * - id: "3", name: "headline"
+     */
     private suspend fun insertTopics() {
-        val topicEntities = listOf(
-            testTopicEntity("1", "compose"),
-            testTopicEntity("2", "performance"),
-            testTopicEntity("3", "headline"),
+        val topicEntities: List<TopicEntity> = listOf(
+            testTopicEntity(id = "1", name = "compose"),
+            testTopicEntity(id = "2", name = "performance"),
+            testTopicEntity(id = "3", name = "headline"),
         )
-        topicDao.insertOrIgnoreTopics(topicEntities)
+        topicDao.insertOrIgnoreTopics(topicEntities = topicEntities)
     }
 }
 
+/**
+ * Creates a test [TopicEntity] with the given [id] and [name].
+ * The other fields ([TopicEntity.shortDescription], [TopicEntity.longDescription],
+ * [TopicEntity.url], and [TopicEntity.imageUrl] are initialized with empty strings.
+ *
+ * @param id The ID of the topic. Defaults to "0".
+ * @param name The name of the topic.
+ * @return A new [TopicEntity] instance.
+ */
 private fun testTopicEntity(
     id: String = "0",
     name: String,

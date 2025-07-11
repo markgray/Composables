@@ -35,6 +35,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
+/**
+ * Module that provides the DataStore for user preferences.
+ * TODO: Continue here.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DataStoreModule {
@@ -43,17 +47,17 @@ object DataStoreModule {
     @Singleton
     internal fun providesUserPreferencesDataStore(
         @ApplicationContext context: Context,
-        @Dispatcher(IO) ioDispatcher: CoroutineDispatcher,
+        @Dispatcher(niaDispatcher = IO) ioDispatcher: CoroutineDispatcher,
         @ApplicationScope scope: CoroutineScope,
         userPreferencesSerializer: UserPreferencesSerializer,
     ): DataStore<UserPreferences> =
         DataStoreFactory.create(
             serializer = userPreferencesSerializer,
-            scope = CoroutineScope(scope.coroutineContext + ioDispatcher),
+            scope = CoroutineScope(context = scope.coroutineContext + ioDispatcher),
             migrations = listOf(
                 IntToStringIdsMigration,
             ),
         ) {
-            context.dataStoreFile("user_preferences.pb")
+            context.dataStoreFile(fileName = "user_preferences.pb")
         }
 }

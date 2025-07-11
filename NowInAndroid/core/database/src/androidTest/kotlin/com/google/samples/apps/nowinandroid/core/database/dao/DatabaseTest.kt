@@ -18,6 +18,7 @@ package com.google.samples.apps.nowinandroid.core.database.dao
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import androidx.test.core.app.ApplicationProvider
 import com.google.samples.apps.nowinandroid.core.database.NiaDatabase
 import com.google.samples.apps.nowinandroid.core.database.model.NewsResourceEntity
@@ -52,7 +53,16 @@ internal abstract class DatabaseTest {
     /**
      * Sets up the in-memory Room database and initializes the DAOs before each test.
      * This method is annotated with [Before] to ensure it runs before each test case.
-     * TODO: Continue here.
+     *
+     * We initialize our [NiaDatabase] property [db] to the result returned by the [run]
+     * function when called with its [DatabaseTest] `block` lambda argument a lambda wherein we
+     * initialize our [Context] variable `context` with the application context returned by
+     * [ApplicationProvider.getApplicationContext], and then build an in-memory Room database
+     * using the [RoomDatabase.Builder] returned by the [Room.inMemoryDatabaseBuilder] method whose
+     * context is `context` and whose database `klass` is [NiaDatabase]. We initialize our
+     * [NewsResourceDao] property [newsResourceDao] with the [NiaDatabase.newsResourceDao] of
+     * the [NiaDatabase] property [db], and we initialize our [TopicDao] property [topicDao] with
+     * the [NiaDatabase.topicDao] of the [NiaDatabase] property [db].
      */
     @Before
     fun setup() {
@@ -67,6 +77,11 @@ internal abstract class DatabaseTest {
         topicDao = db.topicDao()
     }
 
+    /**
+     * Closes the in-memory Room database after each test.
+     * This method is annotated with [After] to ensure it runs after each test case,
+     * releasing database resources.
+     */
     @After
     fun teardown() = db.close()
 }
