@@ -34,12 +34,12 @@ import androidx.room.Index
  *  (propagates the delete or update operation on the parent key to each dependent child key). The
  *  second foreign key is a [ForeignKey] annotation that specifies the [ForeignKey.entity] as the
  *  [TopicEntity] class and the [ForeignKey.parentColumns] as the "id" column of the [TopicEntity]
- *  class. The [ForeignKey.childColumns] is set to the "topic_id" column of the [NewsResourceTopicCrossRef]
- *  class. The [ForeignKey.onDelete] is set to [ForeignKey.CASCADE] (propagates the delete or update
- *  operation on the parent key to each dependent child key)..
+ *  class. The [ForeignKey.childColumns] is set to the "topic_id" column of the
+ *  [NewsResourceTopicCrossRef]  class. The [ForeignKey.onDelete] is set to [ForeignKey.CASCADE]
+ *  (propagates the delete or update operation on the parent key to each dependent child key).
  *  - indices: The indices of the table are a list of two [Index] annotations. The first index is a
  *  [Index] annotation that specifies the "news_resource_id" column as the index. The second index is
- *  a [Index] annotation that specifies the "topic_id" column as the index.
+ *  an [Index] annotation that specifies the "topic_id" column as the index.
  *
  * @property newsResourceId The ID of the news resource is in column "news_resource_id" of the table.
  * @property topicId The ID of the topic is in column "topic_id" of the table.

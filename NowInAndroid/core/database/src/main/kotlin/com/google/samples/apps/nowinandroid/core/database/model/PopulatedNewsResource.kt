@@ -79,7 +79,7 @@ fun PopulatedNewsResource.asExternalModel(): NewsResource = NewsResource(
  * for Full-Text Search (FTS). This function maps the relevant properties from the
  * [PopulatedNewsResource.entity] to create a new [NewsResourceFtsEntity] object,
  * specifically using the `id`, `title`, and `content` for indexing and searching.
- *
+receiver
  * @return A [NewsResourceFtsEntity] object ready for FTS.
  */
 fun PopulatedNewsResource.asFtsEntity(): NewsResourceFtsEntity = NewsResourceFtsEntity(

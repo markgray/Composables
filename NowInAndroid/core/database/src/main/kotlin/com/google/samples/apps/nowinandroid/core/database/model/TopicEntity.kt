@@ -52,7 +52,7 @@ data class TopicEntity(
 
 /**
  * Maps a [TopicEntity] to a [Topic] external model. It just copies the properties of the
- * [TopicEntity] to the properties of the [Topic] object with the same names.
+ * [TopicEntity] receiver to the properties of a new instance of [Topic] with the same names.
  */
 fun TopicEntity.asExternalModel(): Topic = Topic(
     id = id,
