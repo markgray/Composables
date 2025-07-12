@@ -105,11 +105,12 @@ internal class TopicDaoTest : DatabaseTest() {
     }
 
     /**
-     * Tests that inserting a topic with an existing ID is ignored.
-     * - It first inserts a set of predefined topics.
-     * - Then, it attempts to insert a new topic with an ID that already exists ("1").
-     * - Finally, it retrieves all topics and asserts that the total number of topics remains
-     * unchanged (3), indicating that the duplicate insertion was ignored.
+     * Tests that inserting a topic with an existing ID using [TopicDao.insertOrIgnoreTopics] method
+     * is ignored.
+     *  - It first inserts a set of predefined topics.
+     *  - Then, it attempts to insert a new topic with an ID that already exists ("1").
+     *  - Finally, it retrieves all topics and asserts that the total number of topics remains
+     *  unchanged (3), indicating that the duplicate insertion was ignored.
      */
     @Test
     fun insertTopic_newEntryIsIgnoredIfAlreadyExists() = runTest {
@@ -124,7 +125,8 @@ internal class TopicDaoTest : DatabaseTest() {
     }
 
     /**
-     * Tests that upserting a topic with an existing ID updates the existing entry.
+     * Tests that upserting a topic with an existing ID using the [TopicDao.upsertTopics] method
+     * updates the existing entry.
      * - It first inserts a set of predefined topics.
      * - Then, it upserts a topic with an existing ID ("1") but a new name ("newName").
      * - Finally, it retrieves all topics and asserts:

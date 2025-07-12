@@ -40,18 +40,19 @@ internal class NewsResourceDaoTest : DatabaseTest() {
      * When the [NewsResourceDao.getNewsResources] query is called, all entries in the table
      * are returned, and they are ordered by their publish date, with the most recent first.
      *
-     * We initialize our [List] of [NewsResourceEntity] variable `newsResourceEntities` `4` instances
-     * of [testNewsResource] whose `millisSinceEpoch` values are `0`, `3`, `1`, and `2` then use the
-     * [NewsResourceDao.upsertNewsResources] method to insert them into the "news_resources" table
-     * of the [NiaDatabase] database. Then we initialize our [List] of [PopulatedNewsResource]
-     * variable `savedNewsResourceEntities` by collecting the first emission of the
-     * [NewsResourceDao.getNewsResources] method. Finally, we call [assertEquals] to verify that
-     * the`expected` [List] of `3L`, `2L`, `1L`, and `0L` is equal to the `actual` [List] of [Long]
-     * that results when we call the [Iterable.map] method of `savedNewsResourceEntities` and in its
-     * `transform` lambda argument we call the [asExternalModel] method of each [PopulatedNewsResource]
-     * of each [PopulatedNewsResource] in `savedNewsResourceEntities` to convert it to an [NewsResource]
-     * and then call the [Instant.toEpochMilliseconds] method on its [NewsResource.publishDate]
-     * property to convert them to a [List] of [Long].
+     * We initialize our [List] of [NewsResourceEntity] variable `newsResourceEntities` a [List] of
+     * `4` instances of [testNewsResource] whose `millisSinceEpoch` values are `0`, `3`, `1`, and
+     * `2` then use the [NewsResourceDao.upsertNewsResources] method to insert them into the
+     * "news_resources" table of the [NiaDatabase] database. Then we initialize our [List] of
+     * [PopulatedNewsResource] variable `savedNewsResourceEntities` by collecting the first emission
+     * of the [NewsResourceDao.getNewsResources] method. Finally, we call [assertEquals] to verify
+     * that the`expected` [List] of `3L`, `2L`, `1L`, and `0L` is equal to the `actual` [List] of
+     * [Long] that results when we call the [Iterable.map] method of `savedNewsResourceEntities` and
+     * in its `transform` lambda argument we call the [asExternalModel] method of each
+     * [PopulatedNewsResource] of each [PopulatedNewsResource] in `savedNewsResourceEntities` to
+     * convert it to an [NewsResource] and then call the [Instant.toEpochMilliseconds] method on its
+     * [NewsResource.publishDate] property to convert the [List] of [PopulatedNewsResource] to a
+     * [List] of [Long].
      */
     @Test
     fun getNewsResources_allEntries_areOrderedByPublishDateDesc() = runTest {
