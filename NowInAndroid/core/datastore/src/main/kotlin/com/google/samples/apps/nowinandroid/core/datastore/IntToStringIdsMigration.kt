@@ -19,25 +19,49 @@ package com.google.samples.apps.nowinandroid.core.datastore
 import androidx.datastore.core.DataMigration
 
 /**
- * Migrates saved ids from [Int] to [String] types
+ * Migrates saved ids from [Int] to [String] types.
+ *
+ * The `*_ids` fields were initially stored as `Int` types. This migration
+ * changes them to `String` types.
  */
 internal object IntToStringIdsMigration : DataMigration<UserPreferences> {
 
+    /**
+     * This migration does not have any clean up logic as it is a one time migration.
+     */
     override suspend fun cleanUp() = Unit
 
+    /**
+     * Migrates the user preferences from using integer IDs for followed topics and authors
+     * to using string IDs.
+     *
+     * This migration involves the following steps:
+     *  1. Clears the existing string-based followed topic IDs.
+     *  2. Converts the integer-based followed topic IDs to strings and adds them to the
+     *  string-based list.
+     *  3. Clears the integer-based followed topic IDs.
+     *  4. Clears the existing string-based followed author IDs.
+     *  5. Converts the integer-based followed author IDs to strings and adds them to the
+     *  string-based list.
+     *  6. Clears the integer-based followed author IDs.
+     *  7. Sets a flag indicating that the migration has been completed.
+     *
+     * @param currentData The current user preferences data.
+     * @return The updated user preferences data after migration.
+     */
     override suspend fun migrate(currentData: UserPreferences): UserPreferences =
         currentData.copy {
             // Migrate topic ids
             deprecatedFollowedTopicIds.clear()
             deprecatedFollowedTopicIds.addAll(
-                currentData.deprecatedIntFollowedTopicIdsList.map(Int::toString),
+                values = currentData.deprecatedIntFollowedTopicIdsList.map(transform = Int::toString),
             )
             deprecatedIntFollowedTopicIds.clear()
 
             // Migrate author ids
             deprecatedFollowedAuthorIds.clear()
             deprecatedFollowedAuthorIds.addAll(
-                currentData.deprecatedIntFollowedAuthorIdsList.map(Int::toString),
+                values = currentData.deprecatedIntFollowedAuthorIdsList.map(transform = Int::toString),
             )
             deprecatedIntFollowedAuthorIds.clear()
 
@@ -45,6 +69,15 @@ internal object IntToStringIdsMigration : DataMigration<UserPreferences> {
             hasDoneIntToStringIdMigration = true
         }
 
+    /**
+     * Determines whether the migration should be performed.
+     *
+     * The migration should be performed if the `hasDoneIntToStringIdMigration` flag is false,
+     * indicating that the migration has not yet been completed.
+     *
+     * @param currentData The current user preferences data.
+     * @return `true` if the migration should be performed, `false` otherwise.
+     */
     override suspend fun shouldMigrate(currentData: UserPreferences): Boolean =
         !currentData.hasDoneIntToStringIdMigration
 }

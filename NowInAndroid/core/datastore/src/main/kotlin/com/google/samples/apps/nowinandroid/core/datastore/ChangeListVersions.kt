@@ -17,7 +17,10 @@
 package com.google.samples.apps.nowinandroid.core.datastore
 
 /**
- * Class summarizing the local version of each model for sync
+ * Class summarizing the local version of each model for sync.
+ *
+ * @property topicVersion the version of the topic list
+ * @property newsResourceVersion the version of the news resources list
  */
 data class ChangeListVersions(
     val topicVersion: Int = -1,

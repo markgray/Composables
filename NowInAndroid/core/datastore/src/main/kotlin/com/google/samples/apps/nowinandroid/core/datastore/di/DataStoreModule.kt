@@ -36,13 +36,48 @@ import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 /**
- * Module that provides the DataStore for user preferences.
- * TODO: Continue here.
+ * Hilt module called [DataStoreModule] that provides a [DataStore] of [UserPreferences] instance
+ * for managing user preferences in our application. The meaning of the HILT annotations are:
+ *  - [Module]: This annotation from Hilt indicates that this object is a Hilt module. Modules are
+ *  used to provide instances of classes that cannot be constructor-injected (e.g., interfaces,
+ *  classes from external libraries, or classes that require a builder pattern).
+ *  - [InstallIn] ([SingletonComponent]::class): This Hilt annotation specifies that the bindings
+ *  defined in this module will be available in the [SingletonComponent]. This means that any
+ *  dependency provided by this module will have a singleton scope, and the same instance will be
+ *  provided throughout the application's lifecycle.
+ *  - object [DataStoreModule]: This declares [DataStoreModule] as a Kotlin object. Using object
+ *  makes it a singleton by default, which is a common practice for Hilt modules.
+ *  - [Provides]: This Hilt annotation marks the [providesUserPreferencesDataStore] function as a
+ *  provider method. Hilt will use this method to create and provide instances of [DataStore] of
+ *  [UserPreferences].
+ *  - [Singleton]: This annotation, when used with @Provides, ensures that Hilt will only create a
+ *  single instance of [DataStore] of [UserPreferences] and reuse that same instance whenever it's
+ *  requested as a dependency.
  */
 @Module
 @InstallIn(SingletonComponent::class)
 object DataStoreModule {
 
+    /**
+     * Provides a singleton instance of [[DataStore]<[UserPreferences]>].
+     *
+     * This function is responsible for creating and configuring the [DataStore] for user
+     * preferences. It uses a custom serializer [UserPreferencesSerializer] to handle the
+     * serialization and deserialization of [UserPreferences] objects. The [DataStore] is created
+     * with a scope that combines the application's main [CoroutineScope] with an IO dispatcher,
+     * ensuring that DataStore operations are performed off the main thread. It also includes a
+     * migration path [IntToStringIdsMigration] to handle any necessary data migrations between
+     * different versions of the user preferences data structure. The [DataStore] file is named
+     * "user_preferences.pb".
+     *
+     * @param context The application context, used to get the path for the [DataStore] file.
+     * Injected by Hilt.
+     * @param ioDispatcher A [CoroutineDispatcher] for IO-bound tasks, ensuring [DataStore]
+     * operations do not block the main thread. Injected by Hilt.
+     * @param scope The application-level [CoroutineScope]. Injected by Hilt.
+     * @param userPreferencesSerializer The serializer for [UserPreferences]. Injected by Hilt.
+     * @return A singleton instance of [DataStore]<[UserPreferences]>.
+     */
     @Provides
     @Singleton
     internal fun providesUserPreferencesDataStore(

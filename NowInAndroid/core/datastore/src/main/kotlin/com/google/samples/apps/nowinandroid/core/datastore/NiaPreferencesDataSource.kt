@@ -28,47 +28,96 @@ import java.io.IOException
 import javax.inject.Inject
 
 /**
- * Class that handles saving and retrieving user preferences
+ * Data source for user preferences. This class is responsible for updating and exposing user
+ * data such as bookmarked news resources, viewed news resources, followed topics, theme brand,
+ * dark theme configuration, dynamic color preference, and onboarding status.
+ * It uses [DataStore] to persist user preferences.
+ *
+ * @property userPreferences [DataStore] that stores user preferences.
  */
 class NiaPreferencesDataSource @Inject constructor(
     private val userPreferences: DataStore<UserPreferences>,
 ) {
+    /**
+     * Stream of [UserData] created from the [Flow] of [UserPreferences] returned by the
+     * [DataStore.data] property of our [DataStore]<[UserPreferences]> property [userPreferences].
+     *
+     * We use the [Flow.map] method of the [Flow] of [UserPreferences] returned by the
+     * [DataStore.data] property of our [DataStore]<[UserPreferences]> property [userPreferences]
+     * and in its `transform` block we capture the [UserPreferences] in variable `userPreferences`
+     * then emit a [UserData] object created from the [UserPreferences] with the following
+     * arguments:
+     *  - [UserData.bookmarkedNewsResources] is the set of news resource ids that the user has
+     *  bookmarked and we initialize this to a [Set] of [String] that are the keys to the
+     *  [UserPreferences.bookmarkedNewsResourceIdsMap] map of `userPreferences`.
+     *  - [UserData.viewedNewsResources] is the set of news resource ids that the user has viewed
+     *  and we initialize this to a [Set] of [String] that are the keys to the
+     *  [UserPreferences.viewedNewsResourceIdsMap] map of `userPreferences`.
+     *  - [UserData.followedTopics] is the set of topic ids that the user has followed and we
+     *  initialize this to a [Set] of [String] that are the keys to the
+     *  [UserPreferences.followedTopicIdsMap] map of `userPreferences`.
+     *  - [UserData.themeBrand] is the value of the [UserPreferences.themeBrand] property of
+     *  `userPreferences` converted to a [ThemeBrand] enum.
+     *  - [UserData.darkThemeConfig] is the value of the [UserPreferences.darkThemeConfig] property
+     *  of `userPreferences` converted to a [DarkThemeConfig] enum.
+     *  - [UserData.useDynamicColor] is the value of the [UserPreferences.useDynamicColor] property
+     *  of `userPreferences`.
+     *  - [UserData.shouldHideOnboarding] is the value of the [UserPreferences.shouldHideOnboarding]
+     *  property of `userPreferences`.
+     */
     val userData: Flow<UserData> = userPreferences.data
-        .map {
+        .map { userPreferences: UserPreferences ->
             UserData(
-                bookmarkedNewsResources = it.bookmarkedNewsResourceIdsMap.keys,
-                viewedNewsResources = it.viewedNewsResourceIdsMap.keys,
-                followedTopics = it.followedTopicIdsMap.keys,
-                themeBrand = when (it.themeBrand) {
+                bookmarkedNewsResources = userPreferences.bookmarkedNewsResourceIdsMap.keys,
+                viewedNewsResources = userPreferences.viewedNewsResourceIdsMap.keys,
+                followedTopics = userPreferences.followedTopicIdsMap.keys,
+                themeBrand = when (userPreferences.themeBrand) {
                     null,
                     ThemeBrandProto.THEME_BRAND_UNSPECIFIED,
                     ThemeBrandProto.UNRECOGNIZED,
                     ThemeBrandProto.THEME_BRAND_DEFAULT,
-                    -> ThemeBrand.DEFAULT
+                        -> ThemeBrand.DEFAULT
+
                     ThemeBrandProto.THEME_BRAND_ANDROID -> ThemeBrand.ANDROID
                 },
-                darkThemeConfig = when (it.darkThemeConfig) {
+                darkThemeConfig = when (userPreferences.darkThemeConfig) {
                     null,
                     DarkThemeConfigProto.DARK_THEME_CONFIG_UNSPECIFIED,
                     DarkThemeConfigProto.UNRECOGNIZED,
                     DarkThemeConfigProto.DARK_THEME_CONFIG_FOLLOW_SYSTEM,
-                    ->
+                        ->
                         DarkThemeConfig.FOLLOW_SYSTEM
+
                     DarkThemeConfigProto.DARK_THEME_CONFIG_LIGHT ->
                         DarkThemeConfig.LIGHT
+
                     DarkThemeConfigProto.DARK_THEME_CONFIG_DARK -> DarkThemeConfig.DARK
                 },
-                useDynamicColor = it.useDynamicColor,
-                shouldHideOnboarding = it.shouldHideOnboarding,
+                useDynamicColor = userPreferences.useDynamicColor,
+                shouldHideOnboarding = userPreferences.shouldHideOnboarding,
             )
         }
 
+    /**
+     * Sets the followed topic IDs. Wrapped in a `try` block intended to catch and Log any
+     * [IOException] we call the [DataStore.updateData] method of our [DataStore]<[UserPreferences]>
+     * property [userPreferences] capturing the [UserPreferences] in variable `userPreferences` and
+     * then we call the [UserPreferences.copy] method of the `userPreferences` object and in its
+     * `copy` block we call the `clear` method of the [UserPreferences.followedTopicIdsMap] map of
+     * `userPreferences` and then we call the `putAll` method of the
+     * [UserPreferences.followedTopicIdsMap] to add all of the [Set] of [String] paramter [topicIds]
+     * mapped to `true`. Finally we call the [UserPreferencesKt.Dsl.updateShouldHideOnboardingIfNecessary]
+     * method of the `userPreferences` object to update the [UserPreferences.shouldHideOnboarding]
+     * property of `userPreferences` if necessary.
+     *
+     * @param topicIds The set of topic IDs to follow.
+     */
     suspend fun setFollowedTopicIds(topicIds: Set<String>) {
         try {
-            userPreferences.updateData {
-                it.copy {
+            userPreferences.updateData { userPreferences: UserPreferences ->
+                userPreferences.copy {
                     followedTopicIds.clear()
-                    followedTopicIds.putAll(topicIds.associateWith { true })
+                    followedTopicIds.putAll(map = topicIds.associateWith { true })
                     updateShouldHideOnboardingIfNecessary()
                 }
             }
@@ -77,14 +126,21 @@ class NiaPreferencesDataSource @Inject constructor(
         }
     }
 
+    /**
+     * Sets the followed state of a topic.
+     * TODO: Continue here.
+     *
+     * @param topicId The ID of the topic.
+     * @param followed Whether the topic should be followed or not.
+     */
     suspend fun setTopicIdFollowed(topicId: String, followed: Boolean) {
         try {
-            userPreferences.updateData {
-                it.copy {
+            userPreferences.updateData { userPreferences: UserPreferences ->
+                userPreferences.copy {
                     if (followed) {
-                        followedTopicIds.put(topicId, true)
+                        followedTopicIds.put(key = topicId, value = true)
                     } else {
-                        followedTopicIds.remove(topicId)
+                        followedTopicIds.remove(key = topicId)
                     }
                     updateShouldHideOnboardingIfNecessary()
                 }
@@ -117,6 +173,7 @@ class NiaPreferencesDataSource @Inject constructor(
                 this.darkThemeConfig = when (darkThemeConfig) {
                     DarkThemeConfig.FOLLOW_SYSTEM ->
                         DarkThemeConfigProto.DARK_THEME_CONFIG_FOLLOW_SYSTEM
+
                     DarkThemeConfig.LIGHT -> DarkThemeConfigProto.DARK_THEME_CONFIG_LIGHT
                     DarkThemeConfig.DARK -> DarkThemeConfigProto.DARK_THEME_CONFIG_DARK
                 }
