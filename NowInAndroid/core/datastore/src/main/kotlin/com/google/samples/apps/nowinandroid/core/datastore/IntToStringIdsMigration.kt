@@ -72,8 +72,8 @@ internal object IntToStringIdsMigration : DataMigration<UserPreferences> {
     /**
      * Determines whether the migration should be performed.
      *
-     * The migration should be performed if the `hasDoneIntToStringIdMigration` flag is false,
-     * indicating that the migration has not yet been completed.
+     * The migration should be performed if the [UserPreferences.hasDoneIntToStringIdMigration]
+     * flag is false, indicating that the migration has not yet been completed.
      *
      * @param currentData The current user preferences data.
      * @return `true` if the migration should be performed, `false` otherwise.

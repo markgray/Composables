@@ -57,9 +57,9 @@ class NiaPreferencesDataSource @Inject constructor(
      *  initialize this to a [Set] of [String] that are the keys to the
      *  [UserPreferences.followedTopicIdsMap] map of `userPreferences`.
      *  - [UserData.themeBrand] is the value of the [UserPreferences.themeBrand] property of
-     *  `userPreferences` converted to a [ThemeBrand] enum.
+     *  `userPreferences` converted to a [ThemeBrand] enum using a `when` switch.
      *  - [UserData.darkThemeConfig] is the value of the [UserPreferences.darkThemeConfig] property
-     *  of `userPreferences` converted to a [DarkThemeConfig] enum.
+     *  of `userPreferences` converted to a [DarkThemeConfig] enum using a `when` switch.
      *  - [UserData.useDynamicColor] is the value of the [UserPreferences.useDynamicColor] property
      *  of `userPreferences`.
      *  - [UserData.shouldHideOnboarding] is the value of the [UserPreferences.shouldHideOnboarding]

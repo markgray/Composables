@@ -19,7 +19,7 @@ package com.google.samples.apps.nowinandroid.core.datastore
 import androidx.datastore.core.DataMigration
 
 /**
- * Migrates from using lists to maps for user data.
+ * Migrates from using lists to using maps for user data.
  *
  * The `*_ids` fields were initially lists of strings. They are now maps of strings to booleans,
  * where the boolean value indicates whether the item is followed (true) or not (false).
