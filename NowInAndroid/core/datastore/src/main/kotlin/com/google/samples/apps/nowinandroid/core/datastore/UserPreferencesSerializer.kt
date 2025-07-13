@@ -25,10 +25,29 @@ import javax.inject.Inject
 
 /**
  * An [androidx.datastore.core.Serializer] for the [UserPreferences] proto.
+ *
+ * This class is responsible for serializing and deserializing [UserPreferences] objects.
+ * It uses the Protocol Buffer library to parse and write the data.
  */
 class UserPreferencesSerializer @Inject constructor() : Serializer<UserPreferences> {
+    /**
+     * The default value for the [UserPreferences] object.
+     *
+     * This value is used if the data store is empty or if there is an error reading the data.
+     */
     override val defaultValue: UserPreferences = UserPreferences.getDefaultInstance()
 
+    /**
+     * Reads a [UserPreferences] object from the given [InputStream].
+     *
+     * This function is called by DataStore to deserialize the data from disk.
+     * It uses [UserPreferences.parseFrom] to parse the [InputStream] into a [UserPreferences]
+     * object. If the data is corrupted and cannot be parsed, it throws a [CorruptionException].
+     *
+     * @param input The [InputStream] to read from.
+     * @return The deserialized [UserPreferences] object.
+     * @throws CorruptionException If the data is corrupted and cannot be parsed.
+     */
     override suspend fun readFrom(input: InputStream): UserPreferences =
         try {
             // readFrom is already called on the data store background thread
@@ -37,6 +56,17 @@ class UserPreferencesSerializer @Inject constructor() : Serializer<UserPreferenc
             throw CorruptionException("Cannot read proto.", exception)
         }
 
+    /**
+     * Writes the [UserPreferences] to the [output] stream.
+     *
+     * This method is called on the data store background thread, so it is safe to perform
+     * blocking I/O operations. We just call the [UserPreferences.writeTo] method of our
+     * [UserPreferences] parameter [t] to have it write its data to our [OutputStream] parameter
+     * [output].
+     *
+     * @param t The [UserPreferences] to write.
+     * @param output The [OutputStream] to write to.
+     */
     override suspend fun writeTo(t: UserPreferences, output: OutputStream) {
         // writeTo is already called on the data store background thread
         t.writeTo(output)
