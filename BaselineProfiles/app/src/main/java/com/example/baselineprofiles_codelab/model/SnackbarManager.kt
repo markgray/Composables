@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.update
  * @property id A unique Long identifier for the message.
  * @property messageId The resource ID (e.g., R.string.my_message) of the message string.
  */
-data class Message(val id: Long, @StringRes val messageId: Int)
+data class Message(val id: Long, @param:StringRes val messageId: Int)
 
 /**
  * [SnackbarManager] is a singleton object responsible for managing the display of snackbar messages.

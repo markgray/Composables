@@ -154,7 +154,7 @@ fun NavGraphBuilder.addHomeGraph(
  * navigation system to navigate to the correct destination when the user selects this section.
  */
 enum class HomeSections(
-    @StringRes val title: Int,
+    @param:StringRes val title: Int,
     val icon: ImageVector,
     val route: String
 ) {
