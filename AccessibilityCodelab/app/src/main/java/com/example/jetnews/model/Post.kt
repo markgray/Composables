@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.jetnews.model
 
 import androidx.annotation.DrawableRes
@@ -58,8 +60,8 @@ data class Post(
     val publication: Publication? = null,
     val metadata: Metadata,
     val paragraphs: List<Paragraph> = emptyList(),
-    @DrawableRes val imageId: Int,
-    @DrawableRes val imageThumbId: Int
+    @param:DrawableRes val imageId: Int,
+    @param:DrawableRes val imageThumbId: Int
 )
 
 /**
