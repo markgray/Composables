@@ -16,6 +16,7 @@
 
 package com.example.composeanimateddraganddrop
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -85,6 +86,7 @@ private const val INITIAL_COLUMN_COUNT = 4
 /**
  * This is Composable which handles our UI. It is used by [MainActivity] in its call to `setContent`.
  */
+@SuppressLint("NewApi")
 @Preview
 @Composable
 internal fun FlowDragAndDropExample() {
