@@ -68,10 +68,24 @@ private const val SCROLLBAR_INACTIVE_TO_DORMANT_TIME_IN_MS = 2_000L
 /**
  * A [Scrollbar] that allows for fast scrolling of content by dragging its thumb.
  * Its thumb disappears when the scrolling container is dormant.
- * @param modifier a [Modifier] for the [Scrollbar]
+ *
+ * We starrt by initializing and remembering our [MutableInteractionSource] variable
+ * `interactionSource` to a new instance. Then our root composable is a [Scrollbar]
+ * whose arguments are:
+ *  - `modifier`: is our [Modifier] parameter [modifier].
+ *  - `orientation`: is our [Orientation] parameter [orientation].
+ *  - `interactionSource`: is our [MutableInteractionSource] variable `interactionSource`.
+ *  - `state`: is our [ScrollbarState] parameter [state].
+ *  - `thumb`: is a lambda which composes our [DraggableScrollbarThumb] composable with its
+ *  `interactionSource` argument our [MutableInteractionSource] variable `interactionSource` and
+ *  its `orientation` argument our [Orientation] parameter [orientation].
+ *  - `onThumbMoved`: is our lambda parameter [onThumbMoved].
+ *
  * @param state the driving state for the [Scrollbar]
  * @param orientation the orientation of the scrollbar
  * @param onThumbMoved the fast scroll implementation
+ * @param modifier a [Modifier] instance that our caller can use to modify the appearance and/or
+ * behavior of our [Scrollbar].
  */
 @Composable
 fun ScrollableState.DraggableScrollbar(
@@ -80,7 +94,7 @@ fun ScrollableState.DraggableScrollbar(
     onThumbMoved: (Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
+    val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     Scrollbar(
         modifier = modifier,
         orientation = orientation,
@@ -97,11 +111,13 @@ fun ScrollableState.DraggableScrollbar(
 }
 
 /**
- * A simple [Scrollbar].
- * Its thumb disappears when the scrolling container is dormant.
- * @param modifier a [Modifier] for the [Scrollbar]
+ * A simple [Scrollbar]. Its thumb disappears when the scrolling container is dormant.
+ * TODO: Continue here.
+ *
  * @param state the driving state for the [Scrollbar]
  * @param orientation the orientation of the scrollbar
+ * @param modifier a [Modifier] instance that our caller can use to modify the appearance and/or
+ * behavior of our [Scrollbar].
  */
 @Composable
 fun ScrollableState.DecorativeScrollbar(
@@ -109,7 +125,7 @@ fun ScrollableState.DecorativeScrollbar(
     orientation: Orientation,
     modifier: Modifier = Modifier,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
+    val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     Scrollbar(
         modifier = modifier,
         orientation = orientation,
@@ -136,11 +152,11 @@ private fun ScrollableState.DraggableScrollbarThumb(
         modifier = Modifier
             .run {
                 when (orientation) {
-                    Vertical -> width(12.dp).fillMaxHeight()
-                    Horizontal -> height(12.dp).fillMaxWidth()
+                    Vertical -> width(width = 12.dp).fillMaxHeight()
+                    Horizontal -> height(height = 12.dp).fillMaxWidth()
                 }
             }
-            .scrollThumb(this, interactionSource),
+            .scrollThumb(scrollableState = this, interactionSource = interactionSource),
     )
 }
 
@@ -156,11 +172,11 @@ private fun ScrollableState.DecorativeScrollbarThumb(
         modifier = Modifier
             .run {
                 when (orientation) {
-                    Vertical -> width(2.dp).fillMaxHeight()
-                    Horizontal -> height(2.dp).fillMaxWidth()
+                    Vertical -> width(width = 2.dp).fillMaxHeight()
+                    Horizontal -> height(height = 2.dp).fillMaxWidth()
                 }
             }
-            .scrollThumb(this, interactionSource),
+            .scrollThumb(scrollableState = this, interactionSource = interactionSource),
     )
 }
 
@@ -172,10 +188,14 @@ private fun Modifier.scrollThumb(
     scrollableState: ScrollableState,
     interactionSource: InteractionSource,
 ): Modifier {
-    val colorState = scrollbarThumbColor(scrollableState, interactionSource)
+    val colorState: State<Color> = scrollbarThumbColor(
+        scrollableState = scrollableState,
+        interactionSource = interactionSource,
+    )
     return this then ScrollThumbElement { colorState.value }
 }
 
+@SuppressLint("ModifierNodeInspectableProperties")
 private data class ScrollThumbElement(val colorProducer: ColorProducer) :
     ModifierNodeElement<ScrollThumbNode>() {
     override fun create(): ScrollThumbNode = ScrollThumbNode(colorProducer)
@@ -185,8 +205,9 @@ private data class ScrollThumbElement(val colorProducer: ColorProducer) :
     }
 }
 
-private class ScrollThumbNode(var colorProducer: ColorProducer) : DrawModifierNode, Modifier.Node() {
-    private val shape = RoundedCornerShape(16.dp)
+private class ScrollThumbNode(var colorProducer: ColorProducer) : DrawModifierNode,
+    Modifier.Node() {
+    private val shape = RoundedCornerShape(size = 16.dp)
 
     // naive cache outline calculation if size is the same
     private var lastSize: Size? = null
@@ -194,14 +215,14 @@ private class ScrollThumbNode(var colorProducer: ColorProducer) : DrawModifierNo
     private var lastOutline: Outline? = null
 
     override fun ContentDrawScope.draw() {
-        val color = colorProducer()
-        val outline =
+        val color: Color = colorProducer()
+        val outline: Outline =
             if (size == lastSize && layoutDirection == lastLayoutDirection) {
                 lastOutline!!
             } else {
-                shape.createOutline(size, layoutDirection, this)
+                shape.createOutline(size = size, layoutDirection = layoutDirection, density = this)
             }
-        if (color != Color.Unspecified) drawOutline(outline, color = color)
+        if (color != Color.Unspecified) drawOutline(outline = outline, color = color)
 
         lastOutline = outline
         lastSize = size
@@ -218,16 +239,16 @@ private fun scrollbarThumbColor(
     scrollableState: ScrollableState,
     interactionSource: InteractionSource,
 ): State<Color> {
-    var state by remember { mutableStateOf(Dormant) }
-    val pressed by interactionSource.collectIsPressedAsState()
-    val hovered by interactionSource.collectIsHoveredAsState()
-    val dragged by interactionSource.collectIsDraggedAsState()
-    val active = (scrollableState.canScrollForward || scrollableState.canScrollBackward) &&
+    var state: ThumbState by remember { mutableStateOf(Dormant) }
+    val pressed: Boolean by interactionSource.collectIsPressedAsState()
+    val hovered: Boolean by interactionSource.collectIsHoveredAsState()
+    val dragged: Boolean by interactionSource.collectIsDraggedAsState()
+    val active: Boolean = (scrollableState.canScrollForward || scrollableState.canScrollBackward) &&
         (pressed || hovered || dragged || scrollableState.isScrollInProgress)
 
-    val color = animateColorAsState(
+    val color: State<Color> = animateColorAsState(
         targetValue = when (state) {
-            Active -> MaterialTheme.colorScheme.onSurface.copy(0.5f)
+            Active -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
             Inactive -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
             Dormant -> Color.Transparent
         },
@@ -236,12 +257,12 @@ private fun scrollbarThumbColor(
         ),
         label = "Scrollbar thumb color",
     )
-    LaunchedEffect(active) {
+    LaunchedEffect(key1 = active) {
         when (active) {
             true -> state = Active
             false -> if (state == Active) {
                 state = Inactive
-                delay(SCROLLBAR_INACTIVE_TO_DORMANT_TIME_IN_MS)
+                delay(timeMillis = SCROLLBAR_INACTIVE_TO_DORMANT_TIME_IN_MS)
                 state = Dormant
             }
         }

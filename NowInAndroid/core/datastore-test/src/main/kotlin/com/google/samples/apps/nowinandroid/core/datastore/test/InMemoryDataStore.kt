@@ -20,8 +20,23 @@ import androidx.datastore.core.DataStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.updateAndGet
 
+/**
+ * A test implementation of [DataStore] that stores data in memory.
+ *
+ * @param initialValue The initial value to store.
+ */
 class InMemoryDataStore<T>(initialValue: T) : DataStore<T> {
+    /**
+     * A [MutableStateFlow] that emits the current value of the [T] data.
+     */
     override val data: MutableStateFlow<T> = MutableStateFlow(initialValue)
+
+    /**
+     * Updates the data in the [DataStore] by applying the given [transform] function.
+     *
+     * @param transform The function to apply to the current data.
+     * @return The updated data.
+     */
     override suspend fun updateData(
         transform: suspend (it: T) -> T,
     ): T = data.updateAndGet { transform(it) }

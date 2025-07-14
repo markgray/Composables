@@ -18,6 +18,7 @@ package com.google.samples.apps.nowinandroid.core.datastore
 
 import com.google.samples.apps.nowinandroid.core.datastore.test.InMemoryDataStore
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -26,64 +27,109 @@ import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Unit tests for [NiaPreferencesDataSource].
+ */
 class NiaPreferencesDataSourceTest {
 
-    private val testScope = TestScope(UnconfinedTestDispatcher())
+    /**
+     * The scope for testing coroutines.
+     *
+     * It uses an [UnconfinedTestDispatcher] to run coroutines eagerly.
+     */
+    private val testScope = TestScope(context = UnconfinedTestDispatcher())
 
+    /**
+     * The instance of [NiaPreferencesDataSource] being tested.
+     * This is initialized in the [setup] method.
+     */
     private lateinit var subject: NiaPreferencesDataSource
 
+    /**
+     * Sets up the test environment by initializing the [NiaPreferencesDataSource] property [subject]
+     * with an in-memory data store. This ensures that each test runs with a fresh instance of
+     * [NiaPreferencesDataSource].
+     */
     @Before
     fun setup() {
-        subject = NiaPreferencesDataSource(InMemoryDataStore(UserPreferences.getDefaultInstance()))
+        subject = NiaPreferencesDataSource(
+            userPreferences = InMemoryDataStore(initialValue = UserPreferences.getDefaultInstance()),
+        )
     }
 
+    /**
+     * Test that checks if the `shouldHideOnboarding` flag is false by default.
+     * This ensures that the onboarding process is shown to new users.
+     */
     @Test
-    fun shouldHideOnboardingIsFalseByDefault() = testScope.runTest {
-        assertFalse(subject.userData.first().shouldHideOnboarding)
+    fun shouldHideOnboardingIsFalseByDefault(): TestResult = testScope.runTest {
+        assertFalse(actual = subject.userData.first().shouldHideOnboarding)
     }
 
+    /**
+     * Tests that the `shouldHideOnboarding` property is correctly set to `true` when
+     * [NiaPreferencesDataSource.setShouldHideOnboarding] is called with `true`. It verifies
+     * that the updated value is reflected in the [NiaPreferencesDataSource.userData] flow.
+     */
     @Test
-    fun userShouldHideOnboardingIsTrueWhenSet() = testScope.runTest {
-        subject.setShouldHideOnboarding(true)
-        assertTrue(subject.userData.first().shouldHideOnboarding)
+    fun userShouldHideOnboardingIsTrueWhenSet(): TestResult = testScope.runTest {
+        subject.setShouldHideOnboarding(shouldHideOnboarding = true)
+        assertTrue(actual = subject.userData.first().shouldHideOnboarding)
     }
 
+    /**
+     * Test case to verify that if a user has completed onboarding by selecting a single topic
+     * and then unfollows that topic, the onboarding should be shown again.
+     */
     @Test
-    fun userShouldHideOnboarding_unfollowsLastTopic_shouldHideOnboardingIsFalse() =
+    fun userShouldHideOnboarding_unfollowsLastTopic_shouldHideOnboardingIsFalse(): TestResult =
         testScope.runTest {
             // Given: user completes onboarding by selecting a single topic.
-            subject.setTopicIdFollowed("1", true)
-            subject.setShouldHideOnboarding(true)
+            subject.setTopicIdFollowed(topicId = "1", followed = true)
+            subject.setShouldHideOnboarding(shouldHideOnboarding = true)
 
             // When: they unfollow that topic.
-            subject.setTopicIdFollowed("1", false)
+            subject.setTopicIdFollowed(topicId = "1", followed = false)
 
             // Then: onboarding should be shown again
-            assertFalse(subject.userData.first().shouldHideOnboarding)
+            assertFalse(actual = subject.userData.first().shouldHideOnboarding)
         }
 
+    /**
+     * Test case to verify that if a user has completed onboarding by selecting several topics
+     * and then unfollows all of those topics, the onboarding should be shown again.
+     */
     @Test
-    fun userShouldHideOnboarding_unfollowsAllTopics_shouldHideOnboardingIsFalse() =
+    fun userShouldHideOnboarding_unfollowsAllTopics_shouldHideOnboardingIsFalse(): TestResult =
         testScope.runTest {
             // Given: user completes onboarding by selecting several topics.
-            subject.setFollowedTopicIds(setOf("1", "2"))
-            subject.setShouldHideOnboarding(true)
+            subject.setFollowedTopicIds(topicIds = setOf("1", "2"))
+            subject.setShouldHideOnboarding(shouldHideOnboarding = true)
 
             // When: they unfollow those topics.
-            subject.setFollowedTopicIds(emptySet())
+            subject.setFollowedTopicIds(topicIds = emptySet())
 
             // Then: onboarding should be shown again
-            assertFalse(subject.userData.first().shouldHideOnboarding)
+            assertFalse(actual = subject.userData.first().shouldHideOnboarding)
         }
 
+    /**
+     * Test case to verify that the `useDynamicColor` property is `false` by default.
+     * This means that dynamic theming is not enabled when the app is first launched.
+     */
     @Test
-    fun shouldUseDynamicColorFalseByDefault() = testScope.runTest {
-        assertFalse(subject.userData.first().useDynamicColor)
+    fun shouldUseDynamicColorFalseByDefault(): TestResult = testScope.runTest {
+        assertFalse(actual = subject.userData.first().useDynamicColor)
     }
 
+    /**
+     * Tests that the `useDynamicColor` property is correctly set to `true` when
+     * [NiaPreferencesDataSource.setDynamicColorPreference] is called with `true`. It verifies
+     * that the updated value is reflected in the [NiaPreferencesDataSource.userData] flow.
+     */
     @Test
-    fun userShouldUseDynamicColorIsTrueWhenSet() = testScope.runTest {
-        subject.setDynamicColorPreference(true)
-        assertTrue(subject.userData.first().useDynamicColor)
+    fun userShouldUseDynamicColorIsTrueWhenSet(): TestResult = testScope.runTest {
+        subject.setDynamicColorPreference(useDynamicColor = true)
+        assertTrue(actual = subject.userData.first().useDynamicColor)
     }
 }
