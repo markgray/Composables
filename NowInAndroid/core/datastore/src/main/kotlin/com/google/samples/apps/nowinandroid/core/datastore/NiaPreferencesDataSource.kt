@@ -131,16 +131,16 @@ class NiaPreferencesDataSource @Inject constructor(
      *
      * Wrapped in a `try` block intended to catch and Log any [IOException] we call the
      * [DataStore.updateData] method of our [DataStore]<[UserPreferences]> property [userPreferences]
-     * and in its `tranform` suspend lambda block we capture the [UserPreferences] in variable
-     * `userPreferences` and then we call the [UserPreferences.copy] method of the `userPreferences`
-     * object and in its `copy` block if our [Boolean] parameter [followed] is `true` we call the
-     * `put` method of the [UserPreferences.followedTopicIdsMap] map of `userPreferences` with the
-     * [String] parameter [topicId] mapped to `true` and if our [Boolean] parameter [followed] is
-     * `false` we call the `remove` method of the [UserPreferences.followedTopicIdsMap] map of
-     * `userPreferences` with the [String] parameter [topicId]. Finally we call the
-     * [UserPreferencesKt.Dsl.updateShouldHideOnboardingIfNecessary] method of the `userPreferences`
-     * object to update the [UserPreferences.shouldHideOnboarding] property of `userPreferences` if
-     * necessary.
+     * and in its `tranform` suspend lambda argument we capture the [UserPreferences] passed the
+     * lambda in variable `userPreferences` and then call the [UserPreferences.copy] method of the
+     * `userPreferences` object and in its `copy` block if our [Boolean] parameter [followed] is
+     * `true` we call the `put` method of the [UserPreferences.followedTopicIdsMap] map of
+     * `userPreferences` with the [String] parameter [topicId] mapped to `true` and if our [Boolean]
+     * parameter [followed] is `false` we call the `remove` method of the
+     * [UserPreferences.followedTopicIdsMap] map of `userPreferences` with the [String] parameter
+     * [topicId]. Finally we call the [UserPreferencesKt.Dsl.updateShouldHideOnboardingIfNecessary]
+     * method of the `userPreferences` object to update the [UserPreferences.shouldHideOnboarding]
+     * property of `userPreferences` if necessary.
      *
      * @param topicId The ID of the topic.
      * @param followed Whether the topic should be followed or not.
@@ -233,12 +233,12 @@ class NiaPreferencesDataSource @Inject constructor(
      *
      * Wrapped in a `try` block intended to catch and Log any [IOException] we call the
      * [DataStore.updateData] method of our [DataStore]<[UserPreferences]> property [userPreferences]
-     * and in its `tranform` suspend lambda block we capture the [UserPreferences] in variable
-     * `userPreferences` and then we call the [UserPreferences.copy] method of the `userPreferences`
-     * object and in its `copy` block if our [Boolean] parameter [bookmarked] is `true` we call the
-     * `put` method of the [UserPreferences.bookmarkedNewsResourceIdsMap] map of `userPreferences`
-     * with the [String] parameter [newsResourceId] mapped to `true` and if our [Boolean] parameter
-     * [bookmarked] is `false` we call the `remove` method of the
+     * and in its `tranform` suspend lambda argument we capture the [UserPreferences] passed the
+     * lambda in variable `userPreferences` and then we call the [UserPreferences.copy] method of
+     * `userPreferences` and in its `copy` block if our [Boolean] parameter [bookmarked] is `true`
+     * we call the `put` method of the [UserPreferences.bookmarkedNewsResourceIdsMap] map of
+     * `userPreferences` with the [String] parameter [newsResourceId] mapped to `true` and if our
+     * [Boolean] parameter [bookmarked] is `false` we call the `remove` method of the
      * [UserPreferences.bookmarkedNewsResourceIdsMap] map of `userPreferences` with the [String]
      * parameter [newsResourceId].
      *
@@ -284,9 +284,9 @@ class NiaPreferencesDataSource @Inject constructor(
      * method of `prefs` and in its `copy` block we iterate over the [List] of [String] parameter
      * [newsResourceIds] using its [Iterable.forEach] method capturing each [String] in variable
      * `id`. If our [Boolean] parameter [viewed] is `true` we call the `put` method of the
-     * [UserPreferences.viewedNewsResourceIdsMap] map of `prefs` with the key `id` mapped to `true`,
-     * and if our [Boolean] parameter [viewed] is `false` we call the `remove` method of the
-     * [UserPreferences.viewedNewsResourceIdsMap] map of `prefs` with the key `id`.
+     * [UserPreferences.viewedNewsResourceIdsMap] map of `prefs` with the key `id` mapped to the
+     * value `true`,and if our [Boolean] parameter [viewed] is `false` we call the `remove` method
+     * of the [UserPreferences.viewedNewsResourceIdsMap] map of `prefs` with the key `id`.
      *
      * @param newsResourceIds The list of news resource IDs.
      * @param viewed Whether the news resources should be marked as viewed or not.
@@ -308,7 +308,7 @@ class NiaPreferencesDataSource @Inject constructor(
     /**
      * Retrieves the current change list versions from user preferences.
      * It maps the [UserPreferences] to [ChangeListVersions] and returns the first emitted value
-     * or a default [ChangeListVersions] if no value is emitted.
+     * or a default [ChangeListVersions] instance if no value is emitted.
      *
      * @return The current [ChangeListVersions].
      */
@@ -342,8 +342,8 @@ class NiaPreferencesDataSource @Inject constructor(
      * [UserPreferences.newsResourceChangeListVersion] property to the value of the
      * [ChangeListVersions.newsResourceVersion] of `updatedChangeListVersions`.
      *
-     * @param update A lambda that takes the current [ChangeListVersions] and returns the updated
-     * [ChangeListVersions].
+     * @param update A lambda that takes the current [ChangeListVersions] as its receiver and returns
+     * the updated [ChangeListVersions].
      */
     suspend fun updateChangeListVersion(update: ChangeListVersions.() -> ChangeListVersions) {
         try {
