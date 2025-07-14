@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("Destructure")
+@file:Suppress("Destructure", "UnusedImport")
 
 package com.codelab.basiclayouts
 
@@ -655,8 +655,8 @@ private val favoriteCollectionsData = listOf(
  * @param text a [String] resource ID
  */
 private data class DrawableStringPair(
-    @DrawableRes val drawable: Int,
-    @StringRes val text: Int
+    @param:DrawableRes val drawable: Int,
+    @param:StringRes val text: Int
 )
 
 /**
