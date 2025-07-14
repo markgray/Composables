@@ -67,7 +67,7 @@ const val MAX_PEOPLE: Int = 4
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val destinationsRepository: DestinationsRepository,
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+    @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     /**
