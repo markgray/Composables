@@ -192,8 +192,8 @@ fun CoursesAppBar() {
  * @param route The navigation route associated with the tab.
  */
 enum class CourseTabs(
-    @StringRes val title: Int,
-    @DrawableRes val icon: Int,
+    @param:StringRes val title: Int,
+    @param:DrawableRes val icon: Int,
     val route: String
 ) {
     MY_COURSES(R.string.my_courses, R.drawable.ic_grain, CoursesDestinations.MY_COURSES_ROUTE),

@@ -24,7 +24,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
  * Images that can vary by theme.
  */
 @Immutable
-data class Images(@DrawableRes val lockupLogo: Int)
+data class Images(@param:DrawableRes val lockupLogo: Int)
 
 /**
  * CompositionLocal used to pass [Images] down the tree.
