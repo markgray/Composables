@@ -223,7 +223,7 @@ fun SingleChoiceQuestionPreview() {
         Superhero(stringResourceId = R.string.lenz, imageResourceId = R.drawable.lenz),
         Superhero(stringResourceId = R.string.bugchaos, imageResourceId = R.drawable.bug_of_chaos),
     )
-    var selectedAnswer: Superhero? by remember { mutableStateOf<Superhero?>(null) }
+    var selectedAnswer: Superhero? by remember { mutableStateOf(value = null) }
 
     SingleChoiceQuestion(
         titleResourceId = R.string.pick_superhero,
@@ -240,4 +240,4 @@ fun SingleChoiceQuestionPreview() {
  * @param stringResourceId The string resource ID for the superhero's name.
  * @param imageResourceId The drawable resource ID for the superhero's image.
  */
-data class Superhero(@StringRes val stringResourceId: Int, @DrawableRes val imageResourceId: Int)
+data class Superhero(@param:StringRes val stringResourceId: Int, @param:DrawableRes val imageResourceId: Int)
