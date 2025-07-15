@@ -30,18 +30,18 @@ import kotlin.test.assertTrue
 class ListToMapMigrationTest {
 
     /**
-     * Tests that the [ListToMapMigration] migrates topic ids from the deprecated list to the new map
-     * and sets the `has_done_list_to_map_migration` flag to true.
+     * Tests that the [ListToMapMigration] function migrates topic ids from the deprecated [List] to
+     * the new [Map] and sets the `has_done_list_to_map_migration` flag to true.
      *
      * We start by initializing our [UserPreferences] variable `preMigrationUserPreferences` with
      * an instance whose [UserPreferences.deprecatedFollowedTopicIds] is initialized with a [List]
-     * of [String] containing "1", "2", and "3". We then assert that the
+     * of [String] containing "1", "2", and "3". We then assert that its
      * [UserPreferences.followedTopicIdsMap] is empty. We initialize our [UserPreferences] variable
      * `postMigrationUserPreferences` by calling the [ListToMapMigration.migrate] function with the
      * current data being `preMigrationUserPreferences` to perform the migration. We then assert
-     * that the [UserPreferences.followedTopicIdsMap] is equal to a [Map] containing the keys
-     * "1", "2", and "3" and the values true. We also assert that the `hasDoneListToMapMigration`
-     * flag is set to true.
+     * that its [UserPreferences.followedTopicIdsMap] is equal to a [Map] containing the keys
+     * "1", "2", and "3" and the values `true`. We also assert that the `hasDoneListToMapMigration`
+     * flag is set to `true`.
      */
     @Test
     fun ListToMapMigration_should_migrate_topic_ids(): TestResult = runTest {
@@ -70,18 +70,18 @@ class ListToMapMigrationTest {
     }
 
     /**
-     * Tests that the [ListToMapMigration] migrates author ids from the deprecated [List] to the new
-     * [Map] and sets the `has_done_list_to_map_migration` flag to true.
+     * Tests that the [ListToMapMigration] function migrates author ids from the deprecated [List]
+     * to the new [Map] and sets the `has_done_list_to_map_migration` flag to true.
      *
      * We start by initializing our [UserPreferences] variable `preMigrationUserPreferences` with
      * an instance whose [UserPreferences.deprecatedFollowedAuthorIds] is initialized with a
-     * [List] of [String] containing "4", "5", and "6". We then assert that the
+     * [List] of [String] containing "4", "5", and "6". We then assert that its
      * [UserPreferences.followedAuthorIdsMap] is empty. We initialize our [UserPreferences] variable
      * `postMigrationUserPreferences` by calling the [ListToMapMigration.migrate] function with the
      * current data being `preMigrationUserPreferences` to perform the migration. We then assert
-     * that the [UserPreferences.followedAuthorIdsMap] is equal to a [Map] containing the keys
-     * "4", "5", and "6" and the values true. We also assert that the `hasDoneListToMapMigration`
-     * flag is set to true.
+     * that its [UserPreferences.followedAuthorIdsMap] is equal to a [Map] containing the keys
+     * "4", "5", and "6" and the values `true`. We also assert that the `hasDoneListToMapMigration`
+     * flag is set to `true`.
      */
     @Test
     fun ListToMapMigration_should_migrate_author_ids(): TestResult = runTest {
@@ -115,13 +115,13 @@ class ListToMapMigrationTest {
      *
      * We start by initializing our [UserPreferences] variable `preMigrationUserPreferences` with
      * an instance whose [UserPreferences.deprecatedBookmarkedNewsResourceIds] is initialized with
-     * a [List] of [String] containing "7", "8", and "9". We then assert that the
+     * a [List] of [String] containing "7", "8", and "9". We then assert that its
      * [UserPreferences.bookmarkedNewsResourceIdsMap] is empty. We initialize our [UserPreferences]
      * variable `postMigrationUserPreferences` by calling the [ListToMapMigration.migrate] function
      * with the current data being `preMigrationUserPreferences` to perform the migration. We then
-     * assert that the [UserPreferences.bookmarkedNewsResourceIdsMap] is equal to a [Map] containing
-     * the keys "7", "8", and "9" and the values true. We also assert that the
-     * `hasDoneListToMapMigration` flag is set to true.
+     * assert that its [UserPreferences.bookmarkedNewsResourceIdsMap] is equal to a [Map] containing
+     * the keys "7", "8", and "9" and the values `true`. We also assert that the
+     * `hasDoneListToMapMigration` flag is set to `true`.
      */
     @Test
     fun ListToMapMigration_should_migrate_bookmarks(): TestResult = runTest {

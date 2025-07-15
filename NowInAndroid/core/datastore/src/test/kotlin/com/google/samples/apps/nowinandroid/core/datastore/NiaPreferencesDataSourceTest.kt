@@ -35,7 +35,7 @@ class NiaPreferencesDataSourceTest {
     /**
      * The scope for testing coroutines.
      *
-     * It uses an [UnconfinedTestDispatcher] to run coroutines eagerly.
+     * It uses an [UnconfinedTestDispatcher] as its context to run coroutines eagerly.
      */
     private val testScope = TestScope(context = UnconfinedTestDispatcher())
 
@@ -46,9 +46,9 @@ class NiaPreferencesDataSourceTest {
     private lateinit var subject: NiaPreferencesDataSource
 
     /**
-     * Sets up the test environment by initializing the [NiaPreferencesDataSource] property [subject]
-     * with an in-memory data store. This ensures that each test runs with a fresh instance of
-     * [NiaPreferencesDataSource].
+     * Sets up the test environment by initializing the [NiaPreferencesDataSource] property
+     * [subject] with an in-memory data store. This ensures that each test runs with a fresh
+     * instance of [NiaPreferencesDataSource].
      */
     @Before
     fun setup() {
@@ -58,7 +58,7 @@ class NiaPreferencesDataSourceTest {
     }
 
     /**
-     * Test that checks if the `shouldHideOnboarding` flag is false by default.
+     * Test that checks if the `shouldHideOnboarding` flag is `false` by default.
      * This ensures that the onboarding process is shown to new users.
      */
     @Test

@@ -69,7 +69,7 @@ private const val SCROLLBAR_INACTIVE_TO_DORMANT_TIME_IN_MS = 2_000L
  * A [Scrollbar] that allows for fast scrolling of content by dragging its thumb.
  * Its thumb disappears when the scrolling container is dormant.
  *
- * We starrt by initializing and remembering our [MutableInteractionSource] variable
+ * We start by initializing and remembering our [MutableInteractionSource] variable
  * `interactionSource` to a new instance. Then our root composable is a [Scrollbar]
  * whose arguments are:
  *  - `modifier`: is our [Modifier] parameter [modifier].

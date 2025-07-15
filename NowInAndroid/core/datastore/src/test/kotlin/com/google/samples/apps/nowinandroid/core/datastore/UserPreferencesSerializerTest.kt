@@ -29,7 +29,7 @@ import kotlin.test.assertEquals
  */
 class UserPreferencesSerializerTest {
     /**
-     * Serializer for [UserPreferences].
+     * Serializer instance for [UserPreferences] that we will test.
      */
     private val userPreferencesSerializer = UserPreferencesSerializer()
 
