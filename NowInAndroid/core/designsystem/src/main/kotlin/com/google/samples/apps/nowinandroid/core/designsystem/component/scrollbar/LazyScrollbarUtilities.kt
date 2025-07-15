@@ -22,6 +22,8 @@ import kotlin.math.abs
 /**
  * Linearly interpolates the index for the first item in [visibleItems] for smooth scrollbar
  * progression.
+ * TODO: Continue here.
+ *
  * @param visibleItems a list of items currently visible in the layout.
  * @param itemSize a lookup function for the size of an item in the layout.
  * @param offset a lookup function for the offset of an item relative to the start of the view port.
