@@ -307,7 +307,7 @@ private class ScrollThumbNode(var colorProducer: ColorProducer) : DrawModifierNo
     /**
      * Draws the scrollbar thumb.
      * We initialize our [Color] variable `val color` to the [Color] returned by our [colorProducer]
-     * lambda. We initialize our [Outline] variable `val outline`:
+     * lambda parameter. We initialize our [Outline] variable `val outline` to:
      *  - If the current [ContentDrawScope.size] of the content is equal to our [lastSize] field AND
      *  the current [ContentDrawScope.layoutDirection] is equal to our [lastLayoutDirection] field
      *  we set `outline` to our [lastOutline] field.
@@ -352,6 +352,7 @@ private class ScrollThumbNode(var colorProducer: ColorProducer) : DrawModifierNo
  * [ThumbState.Dormant].
  *
  * The color is animated using [animateColorAsState] with a [SpringSpec] for smooth transitions.
+ * The `targetValue` of the [animateColorAsState] is:
  *  - [ThumbState.Active]: a copy of [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme]
  *  with 50% alpha.
  *  - [ThumbState.Inactive]: a copy of [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme]
