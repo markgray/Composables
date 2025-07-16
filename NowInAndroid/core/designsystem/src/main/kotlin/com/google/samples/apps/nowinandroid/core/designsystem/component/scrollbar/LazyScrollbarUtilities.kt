@@ -22,7 +22,24 @@ import kotlin.math.abs
 /**
  * Linearly interpolates the index for the first item in [visibleItems] for smooth scrollbar
  * progression.
- * TODO: Continue here.
+ *
+ * If our [List] of [LazyStateItem] parameter [visibleItems] is empty, we return `0f`. We initialize
+ * our [LazyStateItem] variable `firstItem` to the first item in our [List] of [LazyStateItem] parameter
+ * [visibleItems]. We initialize our [Int] variable `firstItemIndex` to the index of our [LazyStateItem]
+ * variable `firstItem` using our [itemIndex] lambda parameter. If our [Int] variable `firstItemIndex`
+ * is less than `0`, we return `Float.NaN`. We initialize our [Int] variable `firstItemSize` to the
+ * size of our [LazyStateItem] variable `firstItem` using our [itemSize] lambda parameter. If our
+ * [Int] variable `firstItemSize` is `0`, we return `Float.NaN`. We initialize our [Float] variable
+ * `itemOffset` to the offset of our [LazyStateItem] variable `firstItem` using our [offset] lambda
+ * parameter. We initialize our [Float] variable `offsetPercentage` to the absolute value of our
+ * [Float] variable `itemOffset` divided by our [Int] variable `firstItemSize`. We initialize our
+ * [LazyStateItem] variable `nextItem` to the next item in our [List] of [LazyStateItem] parameter
+ * [visibleItems] using our [nextItemOnMainAxis] lambda parameter, but if that is `null` return our
+ * [Int] variable `firstItemIndex` plus our [Float] variable `offsetPercentage`. We initialize our
+ * [Int] variable `nextItemIndex` to the index of our [LazyStateItem] variable `nextItem` using our
+ * [itemIndex] lambda parameter. We return our [Int] variable `firstItemIndex` plus the difference
+ * between our [Int] variable `nextItemIndex` and our [Int] variable `firstItemIndex` times our
+ * [Float] variable `offsetPercentage`.
  *
  * @param visibleItems a list of items currently visible in the layout.
  * @param itemSize a lookup function for the size of an item in the layout.
@@ -44,26 +61,41 @@ internal inline fun <LazyState : ScrollableState, LazyStateItem> LazyState.inter
 ): Float {
     if (visibleItems.isEmpty()) return 0f
 
-    val firstItem = visibleItems.first()
-    val firstItemIndex = itemIndex(firstItem)
+    val firstItem: LazyStateItem = visibleItems.first()
+    val firstItemIndex: Int = itemIndex(firstItem)
 
     if (firstItemIndex < 0) return Float.NaN
 
-    val firstItemSize = itemSize(firstItem)
+    val firstItemSize: Int = itemSize(firstItem)
     if (firstItemSize == 0) return Float.NaN
 
-    val itemOffset = offset(firstItem).toFloat()
-    val offsetPercentage = abs(itemOffset) / firstItemSize
+    val itemOffset: Float = offset(firstItem).toFloat()
+    val offsetPercentage: Float = abs(x = itemOffset) / firstItemSize
 
-    val nextItem = nextItemOnMainAxis(firstItem) ?: return firstItemIndex + offsetPercentage
+    val nextItem: LazyStateItem =
+        nextItemOnMainAxis(firstItem) ?: return firstItemIndex + offsetPercentage
 
-    val nextItemIndex = itemIndex(nextItem)
+    val nextItemIndex: Int = itemIndex(nextItem)
 
     return firstItemIndex + ((nextItemIndex - firstItemIndex) * offsetPercentage)
 }
 
 /**
  * Returns the percentage of an item that is currently visible in the view port.
+ *
+ * If our [Int] parameter [itemSize] is `0`, we return `0f`. We initialize our [Int] variable
+ * `itemEnd` to our [Int] parameter [itemStartOffset] plus our [Int] parameter [itemSize]. We
+ * initialize our [Int] variable `startOffset` to `0` if our [Int] parameter [viewportStartOffset]
+ * is less than our [Int] parameter [itemStartOffset], otherwise we initialize our [Int] variable
+ * `startOffset` to the absolute value of our [Int] parameter [viewportStartOffset] minus the
+ * absolute value of our [Int] parameter [itemStartOffset]. We initialize our [Int] variable
+ * `endOffset` to `0` if our [Int] variable `itemEnd` is less than our [Int] parameter
+ * [viewportEndOffset], otherwise we initialize our [Int] variable `endOffset` to the absolute value
+ * of our [Int] parameter [viewportEndOffset] minus the absolute value of our [Int] variable
+ * `itemEnd`. We initialize our [Float] variable `size` to our [Int] parameter [itemSize]. We
+ * return our [Float] variable `size` minus our [Float] variable `startOffset` minus our [Float]
+ * variable `endOffset` that quantity divided by our [Float] variable `size`.
+ *
  * @param itemSize the size of the item
  * @param itemStartOffset the start offset of the item relative to the view port start
  * @param viewportStartOffset the start offset of the view port
@@ -76,15 +108,15 @@ internal fun itemVisibilityPercentage(
     viewportEndOffset: Int,
 ): Float {
     if (itemSize == 0) return 0f
-    val itemEnd = itemStartOffset + itemSize
-    val startOffset = when {
+    val itemEnd: Int = itemStartOffset + itemSize
+    val startOffset: Int = when {
         itemStartOffset > viewportStartOffset -> 0
-        else -> abs(abs(viewportStartOffset) - abs(itemStartOffset))
+        else -> abs(n = abs(n = viewportStartOffset) - abs(n = itemStartOffset))
     }
-    val endOffset = when {
+    val endOffset: Int = when {
         itemEnd < viewportEndOffset -> 0
-        else -> abs(abs(itemEnd) - abs(viewportEndOffset))
+        else -> abs(n = abs(n = itemEnd) - abs(n = viewportEndOffset))
     }
-    val size = itemSize.toFloat()
+    val size: Float = itemSize.toFloat()
     return (size - startOffset - endOffset) / size
 }
