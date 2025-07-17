@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("unused")
+@file:Suppress("unused", "UnusedImport")
 
 package com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar
 

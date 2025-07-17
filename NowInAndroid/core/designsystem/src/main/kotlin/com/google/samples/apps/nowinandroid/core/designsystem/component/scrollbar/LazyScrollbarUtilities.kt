@@ -24,22 +24,22 @@ import kotlin.math.abs
  * progression.
  *
  * If our [List] of [LazyStateItem] parameter [visibleItems] is empty, we return `0f`. We initialize
- * our [LazyStateItem] variable `firstItem` to the first item in our [List] of [LazyStateItem] parameter
- * [visibleItems]. We initialize our [Int] variable `firstItemIndex` to the index of our [LazyStateItem]
- * variable `firstItem` using our [itemIndex] lambda parameter. If our [Int] variable `firstItemIndex`
- * is less than `0`, we return `Float.NaN`. We initialize our [Int] variable `firstItemSize` to the
- * size of our [LazyStateItem] variable `firstItem` using our [itemSize] lambda parameter. If our
- * [Int] variable `firstItemSize` is `0`, we return `Float.NaN`. We initialize our [Float] variable
- * `itemOffset` to the offset of our [LazyStateItem] variable `firstItem` using our [offset] lambda
- * parameter. We initialize our [Float] variable `offsetPercentage` to the absolute value of our
- * [Float] variable `itemOffset` divided by our [Int] variable `firstItemSize`. We initialize our
- * [LazyStateItem] variable `nextItem` to the next item in our [List] of [LazyStateItem] parameter
- * [visibleItems] using our [nextItemOnMainAxis] lambda parameter, but if that is `null` return our
- * [Int] variable `firstItemIndex` plus our [Float] variable `offsetPercentage`. We initialize our
- * [Int] variable `nextItemIndex` to the index of our [LazyStateItem] variable `nextItem` using our
- * [itemIndex] lambda parameter. We return our [Int] variable `firstItemIndex` plus the difference
- * between our [Int] variable `nextItemIndex` and our [Int] variable `firstItemIndex` times our
- * [Float] variable `offsetPercentage`.
+ * our [LazyStateItem] variable `firstItem` to the first item in our [List] of [LazyStateItem]
+ * parameter [visibleItems]. We initialize our [Int] variable `firstItemIndex` to the index of our
+ * [LazyStateItem] variable `firstItem` using our [itemIndex] lambda parameter. If our [Int] variable
+ * `firstItemIndex` is less than `0`, we return `Float.NaN`. We initialize our [Int] variable
+ * `firstItemSize` to the size of our [LazyStateItem] variable `firstItem` using our [itemSize] lambda
+ * parameter. If our [Int] variable `firstItemSize` is `0`, we return `Float.NaN`. We initialize our
+ * [Float] variable `itemOffset` to the offset of our [LazyStateItem] variable `firstItem` using our
+ * [offset] lambda parameter. We initialize our [Float] variable `offsetPercentage` to the absolute
+ * value of our [Float] variable `itemOffset` divided by our [Int] variable `firstItemSize`. We
+ * initialize our [LazyStateItem] variable `nextItem` to the next item in our [List] of [LazyStateItem]
+ * parameter [visibleItems] using our [nextItemOnMainAxis] lambda parameter, but if that is `null`
+ * return our [Int] variable `firstItemIndex` plus our [Float] variable `offsetPercentage`. We
+ * initialize our [Int] variable `nextItemIndex` to the index of our [LazyStateItem] variable
+ * `nextItem` using our [itemIndex] lambda parameter. We return our [Int] variable `firstItemIndex`
+ * plus the difference between our [Int] variable `nextItemIndex` and our [Int] variable
+ * `firstItemIndex` times our [Float] variable `offsetPercentage`.
  *
  * @param visibleItems a list of items currently visible in the layout.
  * @param itemSize a lookup function for the size of an item in the layout.
