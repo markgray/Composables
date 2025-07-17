@@ -30,6 +30,7 @@ import kotlin.math.roundToInt
 
 /**
  * Remembers a function to react to [Scrollbar] thumb position displacements for a [LazyListState]
+ *
  * @param itemsAvailable the amount of items in the list.
  */
 @Composable
@@ -42,6 +43,7 @@ fun LazyListState.rememberDraggableScroller(
 
 /**
  * Remembers a function to react to [Scrollbar] thumb position displacements for a [LazyGridState]
+ *
  * @param itemsAvailable the amount of items in the grid.
  */
 @Composable
@@ -55,6 +57,7 @@ fun LazyGridState.rememberDraggableScroller(
 /**
  * Remembers a function to react to [Scrollbar] thumb position displacements for a
  * [LazyStaggeredGridState]
+ *
  * @param itemsAvailable the amount of items in the staggered grid.
  */
 @Composable
@@ -67,6 +70,7 @@ fun LazyStaggeredGridState.rememberDraggableScroller(
 
 /**
  * Generic function to react to [Scrollbar] thumb displacements in a lazy layout.
+ *
  * @param itemsAvailable the total amount of items available to scroll in the layout.
  * @param scroll a function to be invoked when an index has been identified to scroll to.
  */
@@ -75,15 +79,15 @@ private inline fun rememberDraggableScroller(
     itemsAvailable: Int,
     crossinline scroll: suspend (index: Int) -> Unit,
 ): (Float) -> Unit {
-    var percentage by remember { mutableFloatStateOf(Float.NaN) }
-    val itemCount by rememberUpdatedState(itemsAvailable)
+    var percentage: Float by remember { mutableFloatStateOf(Float.NaN) }
+    val itemCount: Int by rememberUpdatedState(itemsAvailable)
 
-    LaunchedEffect(percentage) {
+    LaunchedEffect(key1 = percentage) {
         if (percentage.isNaN()) return@LaunchedEffect
-        val indexToFind = (itemCount * percentage).roundToInt()
+        val indexToFind: Int = (itemCount * percentage).roundToInt()
         scroll(indexToFind)
     }
     return remember {
-        { newPercentage -> percentage = newPercentage }
+        { newPercentage: Float -> percentage = newPercentage }
     }
 }

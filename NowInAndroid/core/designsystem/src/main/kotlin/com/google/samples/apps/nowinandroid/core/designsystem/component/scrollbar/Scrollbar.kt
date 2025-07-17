@@ -29,11 +29,14 @@ import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -133,7 +136,7 @@ private val ScrollbarTrack.size: Float
 
 /**
  * Returns the position of the scrollbar thumb on the track as a percentage of the total track size.
- * TODO: Continue here.
+ *
  * @param dimension the position of the thumb on the track in pixels
  */
 private fun ScrollbarTrack.thumbPosition(
@@ -148,6 +151,8 @@ private fun ScrollbarTrack.thumbPosition(
 
 /**
  * Class definition for the core properties of a scroll bar
+ *
+ * @property packedValue the packed value of the scrollbar
  */
 @Immutable
 @JvmInline
@@ -157,6 +162,8 @@ value class ScrollbarStateValue internal constructor(
 
 /**
  * Class definition for the core properties of a scroll bar track
+ *
+ * @property packedValue the packed value of the scrollbar track
  */
 @Immutable
 @JvmInline
@@ -187,7 +194,10 @@ fun scrollbarStateValue(
 )
 
 /**
- * Returns the value of [offset] along the axis specified by [this]
+ * Returns the value of [offset] along the axis specified by its [Orientation] receiver.
+ *
+ * @param offset the offset of the item relative to the view port start
+ * @return the value of [offset] along the axis specified by its [Orientation] receiver.
  */
 internal fun Orientation.valueOf(offset: Offset) = when (this) {
     Horizontal -> offset.x
@@ -195,7 +205,10 @@ internal fun Orientation.valueOf(offset: Offset) = when (this) {
 }
 
 /**
- * Returns the value of [intSize] along the axis specified by [this]
+ * Returns the value of [intSize] along the axis specified by its [Orientation] receiver.
+ *
+ * @param intSize the size of the item
+ * @return the value of [intSize] along the axis specified by its [Orientation] receiver.
  */
 internal fun Orientation.valueOf(intSize: IntSize) = when (this) {
     Horizontal -> intSize.width
@@ -203,7 +216,10 @@ internal fun Orientation.valueOf(intSize: IntSize) = when (this) {
 }
 
 /**
- * Returns the value of [intOffset] along the axis specified by [this]
+ * Returns the value of [intOffset] along the axis specified by its [Orientation] receiver.
+ *
+ * @param intOffset the offset of the item relative to the view port start
+ * @return the value of [intOffset] along the axis specified by its [Orientation] receiver.
  */
 internal fun Orientation.valueOf(intOffset: IntOffset) = when (this) {
     Horizontal -> intOffset.x
@@ -211,7 +227,17 @@ internal fun Orientation.valueOf(intOffset: IntOffset) = when (this) {
 }
 
 /**
- * A Composable for drawing a scrollbar
+ * A Composable for drawing a scrollbar. We initialize and remember our [MutableState] wrapped
+ * [Offset] variable `pressedOffset` to an initial value of [Offset.Unspecified] and our
+ * [MutableState] wrapped [Offset] variable `draggedOffset` to an initial value of
+ * [Offset.Unspecified]. We initialize our [MutableFloatState] wrapped [Float] variable
+ * `interactionThumbTravelPercent` to an initial value of [Float.NaN]. We initialize and remember
+ * our [MutableState] wrapped [ScrollbarTrack] variable `track` to a [ScrollbarTrack] constructed
+ * with a `packedValue` argument of `0`.
+ *
+ * Our root composable is a [Box] whose `modifier` argument is `94` lines of code which deal with
+ * pointer movements and should be extracted in my opinion, and its [BoxScope] `content` Composable
+ * lambda argument has a serious case of bitrot as well.
  *
  * @param orientation the scroll direction of the scrollbar
  * @param state the state describing the position of the scrollbar
@@ -234,25 +260,47 @@ fun Scrollbar(
 ) {
     // Using Offset.Unspecified and Float.NaN instead of null
     // to prevent unnecessary boxing of primitives
+    /**
+     * Stores the Offset (x, y coordinates) where a press interaction on the scrollbar track begins.
+     * It's initialized to [Offset.Unspecified] to indicate no active press
+     */
     var pressedOffset: Offset by remember { mutableStateOf(value = Offset.Unspecified) }
+
+    /**
+     * Stores the Offset where a drag interaction on the scrollbar thumb is currently happening.
+     * Also initialized to [Offset.Unspecified]
+     */
     var draggedOffset: Offset by remember { mutableStateOf(value = Offset.Unspecified) }
 
     // Used to immediately show drag feedback in the UI while the scrolling implementation
     // catches up
+    /**
+     * A Float representing the percentage the thumb has traveled due to direct user interaction
+     * (press or drag). This is used for immediate visual feedback. Initialized to [Float.NaN]
+     */
     var interactionThumbTravelPercent: Float by remember { mutableFloatStateOf(value = Float.NaN) }
 
+    /**
+     * Stores the [ScrollbarTrack] state.
+     */
     var track: ScrollbarTrack by remember { mutableStateOf(value = ScrollbarTrack(packedValue = 0)) }
 
     // scrollbar track container
     Box(
         modifier = modifier
             .run {
+                // If an interactionSource is provided, it makes the scrollbar hoverable.
                 val withHover: Modifier = interactionSource?.let(block = ::hoverable) ?: this
+                // It makes the Box fill the maximum height if the orientation is Vertical, or the
+                // maximum width if it's Horizontal.
                 when (orientation) {
                     Vertical -> withHover.fillMaxHeight()
                     Horizontal -> withHover.fillMaxWidth()
                 }
             }
+            // This modifier is crucial for determining the actual position and size of the scrollbar
+            // track on the screen after it has been laid out. It updates the `track` state variable
+            // with the calculated start and end coordinates of the scrollbar track.
             .onGloballyPositioned { coordinates: LayoutCoordinates ->
                 val scrollbarStartCoordinate: Float =
                     orientation.valueOf(offset = coordinates.positionInRoot())
@@ -263,6 +311,8 @@ fun Scrollbar(
             }
             // Process scrollbar presses
             .pointerInput(key1 = Unit) {
+                // It uses detectTapGestures to listen for press events on the scrollbar track
+                // (not the thumb).
                 detectTapGestures(
                     onPress = { offset: Offset ->
                         try {

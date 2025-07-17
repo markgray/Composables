@@ -41,32 +41,33 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import kotlin.math.tan
 
 /**
- * The main background for the app.
- * Uses [LocalBackgroundTheme] to set the color and tonal elevation of a [Surface].
+ * The main background for the Now in Android app.
+ * This composable function uses [LocalBackgroundTheme] to set the color and tonal elevation of a
+ * [Surface] composable.
  *
  * @param modifier Modifier to be applied to the background.
- * @param content The background content.
+ * @param content The content to be displayed on the background.
  */
 @Composable
 fun NiaBackground(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    val color = LocalBackgroundTheme.current.color
-    val tonalElevation = LocalBackgroundTheme.current.tonalElevation
+    val color: Color = LocalBackgroundTheme.current.color
+    val tonalElevation: Dp = LocalBackgroundTheme.current.tonalElevation
     Surface(
         color = if (color == Color.Unspecified) Color.Transparent else color,
         tonalElevation = if (tonalElevation == Dp.Unspecified) 0.dp else tonalElevation,
         modifier = modifier.fillMaxSize(),
     ) {
-        CompositionLocalProvider(LocalAbsoluteTonalElevation provides 0.dp) {
+        CompositionLocalProvider(value = LocalAbsoluteTonalElevation provides 0.dp) {
             content()
         }
     }
 }
 
 /**
- * A gradient background for select screens. Uses [LocalBackgroundTheme] to set the gradient colors
+ * A gradient background for select screens. Uses [LocalGradientColors] to set the gradient colors
  * of a [Box] within a [Surface].
  *
  * @param modifier Modifier to be applied to the background.
@@ -79,8 +80,8 @@ fun NiaGradientBackground(
     gradientColors: GradientColors = LocalGradientColors.current,
     content: @Composable () -> Unit,
 ) {
-    val currentTopColor by rememberUpdatedState(gradientColors.top)
-    val currentBottomColor by rememberUpdatedState(gradientColors.bottom)
+    val currentTopColor: Color by rememberUpdatedState(newValue = gradientColors.top)
+    val currentBottomColor: Color by rememberUpdatedState(newValue = gradientColors.bottom)
     Surface(
         color = if (gradientColors.container == Color.Unspecified) {
             Color.Transparent
@@ -90,22 +91,22 @@ fun NiaGradientBackground(
         modifier = modifier.fillMaxSize(),
     ) {
         Box(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .drawWithCache {
                     // Compute the start and end coordinates such that the gradients are angled 11.06
                     // degrees off the vertical axis
-                    val offset = size.height * tan(
+                    val offset: Float = size.height * tan(
                         Math
                             .toRadians(11.06)
                             .toFloat(),
                     )
 
-                    val start = Offset(size.width / 2 + offset / 2, 0f)
-                    val end = Offset(size.width / 2 - offset / 2, size.height)
+                    val start = Offset(x = size.width / 2 + offset / 2, y = 0f)
+                    val end = Offset(x = size.width / 2 - offset / 2, y = size.height)
 
                     // Create the top gradient that fades out after the halfway point vertically
-                    val topGradient = Brush.linearGradient(
+                    val topGradient: Brush = Brush.linearGradient(
                         0f to if (currentTopColor == Color.Unspecified) {
                             Color.Transparent
                         } else {
@@ -116,7 +117,7 @@ fun NiaGradientBackground(
                         end = end,
                     )
                     // Create the bottom gradient that fades in before the halfway point vertically
-                    val bottomGradient = Brush.linearGradient(
+                    val bottomGradient: Brush = Brush.linearGradient(
                         0.2552f to Color.Transparent,
                         1f to if (currentBottomColor == Color.Unspecified) {
                             Color.Transparent
@@ -129,8 +130,8 @@ fun NiaGradientBackground(
 
                     onDrawBehind {
                         // There is overlap here, so order is important
-                        drawRect(topGradient)
-                        drawRect(bottomGradient)
+                        drawRect(brush = topGradient)
+                        drawRect(brush = bottomGradient)
                     }
                 },
         ) {
@@ -147,52 +148,70 @@ fun NiaGradientBackground(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark theme")
 annotation class ThemePreviews
 
+/**
+ * Preview of the [NiaBackground] composable with default theme.
+ */
 @ThemePreviews
 @Composable
 fun BackgroundDefault() {
     @Suppress("RedundantValueArgument")
     NiaTheme(disableDynamicTheming = true) {
-        NiaBackground(Modifier.size(100.dp), content = {})
+        NiaBackground(modifier = Modifier.size(size = 100.dp), content = {})
     }
 }
 
+/**
+ * Preview of the [NiaBackground] composable with dynamic theming enabled.
+ */
 @ThemePreviews
 @Composable
 fun BackgroundDynamic() {
     NiaTheme(disableDynamicTheming = false) {
-        NiaBackground(Modifier.size(100.dp), content = {})
+        NiaBackground(modifier = Modifier.size(size = 100.dp), content = {})
     }
 }
 
+/**
+ * Preview of the [NiaBackground] composable with Android theme.
+ */
 @ThemePreviews
 @Composable
 fun BackgroundAndroid() {
     NiaTheme(androidTheme = true) {
-        NiaBackground(Modifier.size(100.dp), content = {})
+        NiaBackground(modifier = Modifier.size(size = 100.dp), content = {})
     }
 }
 
+/**
+ * Preview of the [NiaGradientBackground] composable with default theme.
+ */
 @ThemePreviews
 @Composable
 fun GradientBackgroundDefault() {
     @Suppress("RedundantValueArgument")
     NiaTheme(disableDynamicTheming = true) {
-        NiaGradientBackground(Modifier.size(100.dp), content = {})
+        NiaGradientBackground(modifier = Modifier.size(size = 100.dp), content = {})
     }
 }
 
+/**
+ * Preview of the [NiaGradientBackground] composable with dynamic theming enabled.
+ */
 @ThemePreviews
 @Composable
 fun GradientBackgroundDynamic() {
     NiaTheme(disableDynamicTheming = false) {
-        NiaGradientBackground(Modifier.size(100.dp), content = {})
+        NiaGradientBackground(modifier = Modifier.size(size = 100.dp), content = {})
     }
 }
 
+/**
+ * Preview of the [NiaGradientBackground] composable with Android theme.
+ */
 @ThemePreviews
 @Composable
 fun GradientBackgroundAndroid() {
     NiaTheme(androidTheme = true) {
-        NiaGradientBackground(Modifier.size(100.dp), content = {})
+        NiaGradientBackground(modifier = Modifier.size(size = 100.dp), content = {})
     }
 }

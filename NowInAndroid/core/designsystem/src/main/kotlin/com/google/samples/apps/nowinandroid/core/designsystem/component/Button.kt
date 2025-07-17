@@ -32,13 +32,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 
 /**
  * Now in Android filled button with generic content slot. Wraps Material 3 [Button].
- *
+ * TODO: Continue here.
  * @param onClick Will be called when the user clicks the button.
  * @param modifier Modifier to be applied to the button.
  * @param enabled Controls the enabled state of the button. When `false`, this button will not be
@@ -305,9 +306,9 @@ fun NiaButtonLeadingIconPreview() {
 object NiaButtonDefaults {
     // TODO: File bug
     // OutlinedButton border color doesn't respect disabled state by default
-    const val DISABLED_OUTLINED_BUTTON_BORDER_ALPHA = 0.12f
+    const val DISABLED_OUTLINED_BUTTON_BORDER_ALPHA: Float = 0.12f
 
     // TODO: File bug
     // OutlinedButton default border width isn't exposed via ButtonDefaults
-    val OutlinedButtonBorderWidth = 1.dp
+    val OutlinedButtonBorderWidth: Dp = 1.dp
 }

@@ -42,15 +42,15 @@ fun LazyListState.scrollbarState(
     itemsAvailable: Int,
     itemIndex: (LazyListItemInfo) -> Int = LazyListItemInfo::index,
 ): ScrollbarState {
-    val state = remember { ScrollbarState() }
-    LaunchedEffect(this, itemsAvailable) {
+    val state: ScrollbarState = remember { ScrollbarState() }
+    LaunchedEffect(key1 = this, key2 = itemsAvailable) {
         snapshotFlow {
             if (itemsAvailable == 0) return@snapshotFlow null
 
-            val visibleItemsInfo = layoutInfo.visibleItemsInfo
+            val visibleItemsInfo: List<LazyListItemInfo> = layoutInfo.visibleItemsInfo
             if (visibleItemsInfo.isEmpty()) return@snapshotFlow null
 
-            val firstIndex = min(
+            val firstIndex: Float = min(
                 a = interpolateFirstItemIndex(
                     visibleItems = visibleItemsInfo,
                     itemSize = { it.size },
@@ -62,7 +62,7 @@ fun LazyListState.scrollbarState(
             )
             if (firstIndex.isNaN()) return@snapshotFlow null
 
-            val itemsVisible = visibleItemsInfo.floatSumOf { itemInfo ->
+            val itemsVisible: Float = visibleItemsInfo.floatSumOf { itemInfo ->
                 itemVisibilityPercentage(
                     itemSize = itemInfo.size,
                     itemStartOffset = itemInfo.offset,
@@ -71,11 +71,11 @@ fun LazyListState.scrollbarState(
                 )
             }
 
-            val thumbTravelPercent = min(
+            val thumbTravelPercent: Float = min(
                 a = firstIndex / itemsAvailable,
                 b = 1f,
             )
-            val thumbSizePercent = min(
+            val thumbSizePercent: Float = min(
                 a = itemsVisible / itemsAvailable,
                 b = 1f,
             )
@@ -89,7 +89,7 @@ fun LazyListState.scrollbarState(
         }
             .filterNotNull()
             .distinctUntilChanged()
-            .collect { state.onScroll(it) }
+            .collect { state.onScroll(stateValue = it) }
     }
     return state
 }
@@ -137,8 +137,8 @@ fun LazyGridState.scrollbarState(
 
             val itemsVisible = visibleItemsInfo.floatSumOf { itemInfo ->
                 itemVisibilityPercentage(
-                    itemSize = layoutInfo.orientation.valueOf(itemInfo.size),
-                    itemStartOffset = layoutInfo.orientation.valueOf(itemInfo.offset),
+                    itemSize = layoutInfo.orientation.valueOf(intSize = itemInfo.size),
+                    itemStartOffset = layoutInfo.orientation.valueOf(intOffset = itemInfo.offset),
                     viewportStartOffset = layoutInfo.viewportStartOffset,
                     viewportEndOffset = layoutInfo.viewportEndOffset,
                 )
@@ -162,7 +162,7 @@ fun LazyGridState.scrollbarState(
         }
             .filterNotNull()
             .distinctUntilChanged()
-            .collect { state.onScroll(it) }
+            .collect { state.onScroll(stateValue = it) }
     }
     return state
 }
@@ -179,15 +179,15 @@ fun LazyStaggeredGridState.scrollbarState(
     itemsAvailable: Int,
     itemIndex: (LazyStaggeredGridItemInfo) -> Int = LazyStaggeredGridItemInfo::index,
 ): ScrollbarState {
-    val state = remember { ScrollbarState() }
-    LaunchedEffect(this, itemsAvailable) {
+    val state: ScrollbarState = remember { ScrollbarState() }
+    LaunchedEffect(key1 = this, key2 = itemsAvailable) {
         snapshotFlow {
             if (itemsAvailable == 0) return@snapshotFlow null
 
-            val visibleItemsInfo = layoutInfo.visibleItemsInfo
+            val visibleItemsInfo: List<LazyStaggeredGridItemInfo> = layoutInfo.visibleItemsInfo
             if (visibleItemsInfo.isEmpty()) return@snapshotFlow null
 
-            val firstIndex = min(
+            val firstIndex: Float = min(
                 a = interpolateFirstItemIndex(
                     visibleItems = visibleItemsInfo,
                     itemSize = { layoutInfo.orientation.valueOf(it.size) },
@@ -201,20 +201,21 @@ fun LazyStaggeredGridState.scrollbarState(
             )
             if (firstIndex.isNaN()) return@snapshotFlow null
 
-            val itemsVisible = visibleItemsInfo.floatSumOf { itemInfo ->
-                itemVisibilityPercentage(
-                    itemSize = layoutInfo.orientation.valueOf(itemInfo.size),
-                    itemStartOffset = layoutInfo.orientation.valueOf(itemInfo.offset),
-                    viewportStartOffset = layoutInfo.viewportStartOffset,
-                    viewportEndOffset = layoutInfo.viewportEndOffset,
-                )
-            }
+            val itemsVisible: Float =
+                visibleItemsInfo.floatSumOf { itemInfo: LazyStaggeredGridItemInfo ->
+                    itemVisibilityPercentage(
+                        itemSize = layoutInfo.orientation.valueOf(itemInfo.size),
+                        itemStartOffset = layoutInfo.orientation.valueOf(itemInfo.offset),
+                        viewportStartOffset = layoutInfo.viewportStartOffset,
+                        viewportEndOffset = layoutInfo.viewportEndOffset,
+                    )
+                }
 
-            val thumbTravelPercent = min(
+            val thumbTravelPercent: Float = min(
                 a = firstIndex / itemsAvailable,
                 b = 1f,
             )
-            val thumbSizePercent = min(
+            val thumbSizePercent: Float = min(
                 a = itemsVisible / itemsAvailable,
                 b = 1f,
             )
@@ -225,10 +226,22 @@ fun LazyStaggeredGridState.scrollbarState(
         }
             .filterNotNull()
             .distinctUntilChanged()
-            .collect { state.onScroll(it) }
+            .collect { state.onScroll(stateValue = it) }
     }
     return state
 }
 
+/**
+ * Returns the sum of all values produced by [selector] function applied to each element in the
+ * collection.
+ *
+ * It is a copy of the [sumOf] function, but using [Float] instead of [Double] to avoid
+ * precision loss.
+ *
+ * @param selector function that maps collection elements to float values.
+ * @param T the type of the collection elements.
+ * @return the sum of all values produced by [selector] function applied to each element in the
+ * [List] of [T] receiver.
+ */
 private inline fun <T> List<T>.floatSumOf(selector: (T) -> Float): Float =
-    fold(initial = 0f) { accumulator, listItem -> accumulator + selector(listItem) }
+    fold(initial = 0f) { accumulator: Float, listItem: T -> accumulator + selector(listItem) }
