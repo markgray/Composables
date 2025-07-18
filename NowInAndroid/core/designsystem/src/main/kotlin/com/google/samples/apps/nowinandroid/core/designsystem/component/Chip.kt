@@ -27,13 +27,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 
 /**
  * Now in Android filter chip with included leading checked icon as well as text content slot.
- *
+ * TODO: Continue here.
  * @param selected Whether the chip is currently checked.
  * @param onSelectedChange Called when the user clicks the chip and toggles checked.
  * @param modifier Modifier to be applied to the chip.
@@ -110,9 +111,9 @@ fun NiaFilterChip(
 @Composable
 fun ChipPreview() {
     NiaTheme {
-        NiaBackground(modifier = Modifier.size(80.dp, 20.dp)) {
+        NiaBackground(modifier = Modifier.size(width = 80.dp, height = 20.dp)) {
             NiaFilterChip(selected = true, onSelectedChange = {}) {
-                Text("Chip")
+                Text(text = "Chip")
             }
         }
     }
@@ -124,7 +125,7 @@ fun ChipPreview() {
 object NiaChipDefaults {
     // TODO: File bug
     // FilterChip default values aren't exposed via FilterChipDefaults
-    const val DISABLED_CHIP_CONTAINER_ALPHA = 0.12f
-    const val DISABLED_CHIP_CONTENT_ALPHA = 0.38f
-    val ChipBorderWidth = 1.dp
+    const val DISABLED_CHIP_CONTAINER_ALPHA: Float = 0.12f
+    const val DISABLED_CHIP_CONTENT_ALPHA: Float = 0.38f
+    val ChipBorderWidth: Dp = 1.dp
 }
