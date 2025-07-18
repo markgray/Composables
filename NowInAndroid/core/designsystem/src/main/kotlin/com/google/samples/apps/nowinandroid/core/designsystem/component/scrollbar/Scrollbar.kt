@@ -152,7 +152,8 @@ private fun ScrollbarTrack.thumbPosition(
 /**
  * Class definition for the core properties of a scroll bar
  *
- * @property packedValue the packed value of the scrollbar
+ * @property packedValue the packed value of the scrollbar.
+ * @see scrollbarStateValue
  */
 @Immutable
 @JvmInline
@@ -164,6 +165,7 @@ value class ScrollbarStateValue internal constructor(
  * Class definition for the core properties of a scroll bar track
  *
  * @property packedValue the packed value of the scrollbar track
+ * @see scrollbarStateValue
  */
 @Immutable
 @JvmInline
@@ -177,11 +179,12 @@ private value class ScrollbarTrack(
 }
 
 /**
- * Creates a [ScrollbarStateValue] with the listed properties
+ * Creates a [ScrollbarStateValue] with the listed properties.
  *
  * @param thumbSizePercent the thumb size of the scrollbar as a percentage of the total track size.
  * Refers to either the thumb width (for horizontal scrollbars) or height (for vertical scrollbars).
  * @param thumbMovedPercent the distance the thumb has traveled as a percentage of total track size.
+ * @see packFloats
  */
 fun scrollbarStateValue(
     thumbSizePercent: Float,
@@ -205,7 +208,8 @@ internal fun Orientation.valueOf(offset: Offset) = when (this) {
 }
 
 /**
- * Returns the value of [intSize] along the axis specified by its [Orientation] receiver.
+ * Returns the value of [intSize] along the axis specified by its [Orientation] receiver. The
+ * [IntSize.width] for [Horizontal] or the [IntSize.height] for [Vertical].
  *
  * @param intSize the size of the item
  * @return the value of [intSize] along the axis specified by its [Orientation] receiver.
@@ -216,7 +220,8 @@ internal fun Orientation.valueOf(intSize: IntSize) = when (this) {
 }
 
 /**
- * Returns the value of [intOffset] along the axis specified by its [Orientation] receiver.
+ * Returns the value of [intOffset] along the axis specified by its [Orientation] receiver. The
+ * [IntOffset.x] for [Horizontal] or the [IntOffset.y] for [Vertical].
  *
  * @param intOffset the offset of the item relative to the view port start
  * @return the value of [intOffset] along the axis specified by its [Orientation] receiver.

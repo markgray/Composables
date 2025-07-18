@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlin.math.min
 
 /**
- * Calculates a [ScrollbarState] driven by the changes in a [LazyListState].
+ * Calculates a [ScrollbarState] driven by the changes in its [LazyListState] receiver.
  *
  * @param itemsAvailable the total amount of items available to scroll in the lazy list.
  * @param itemIndex a lookup function for index of an item in the list relative to [itemsAvailable].
@@ -95,7 +95,7 @@ fun LazyListState.scrollbarState(
 }
 
 /**
- * Calculates a [ScrollbarState] driven by the changes in a [LazyGridState]
+ * Calculates a [ScrollbarState] driven by the changes in its [LazyGridState] receiver.
  *
  * @param itemsAvailable the total amount of items available to scroll in the grid.
  * @param itemIndex a lookup function for index of an item in the grid relative to [itemsAvailable].
@@ -168,7 +168,7 @@ fun LazyGridState.scrollbarState(
 }
 
 /**
- * Remembers a [ScrollbarState] driven by the changes in a [LazyStaggeredGridState]
+ * Remembers a [ScrollbarState] driven by the changes in its [LazyStaggeredGridState] receiver.
  *
  * @param itemsAvailable the total amount of items available to scroll in the staggered grid.
  * @param itemIndex a lookup function for index of an item in the staggered grid relative
@@ -235,8 +235,8 @@ fun LazyStaggeredGridState.scrollbarState(
  * Returns the sum of all values produced by [selector] function applied to each element in the
  * collection.
  *
- * It is a copy of the [sumOf] function, but using [Float] instead of [Double] to avoid
- * precision loss.
+ * It replaces the [Iterable.sumOf] function using [Iterable.fold] to allow use of non-float
+ * [T] list items (I think).
  *
  * @param selector function that maps collection elements to float values.
  * @param T the type of the collection elements.

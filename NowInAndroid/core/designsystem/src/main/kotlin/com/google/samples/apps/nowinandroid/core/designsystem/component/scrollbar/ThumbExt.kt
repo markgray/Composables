@@ -29,7 +29,8 @@ import androidx.compose.runtime.setValue
 import kotlin.math.roundToInt
 
 /**
- * Remembers a function to react to [Scrollbar] thumb position displacements for a [LazyListState]
+ * Remembers a function to react to [Scrollbar] thumb position displacements for its [LazyListState]
+ * receiver.
  *
  * @param itemsAvailable the amount of items in the list.
  */
@@ -42,10 +43,12 @@ fun LazyListState.rememberDraggableScroller(
 )
 
 /**
- * Remembers a function to react to [Scrollbar] thumb position displacements for a [LazyGridState]
+ * Remembers a function to react to [Scrollbar] thumb position displacements for its [LazyGridState]
+ * receiver.
  *
  * @param itemsAvailable the amount of items in the grid.
  */
+@Suppress("unused")
 @Composable
 fun LazyGridState.rememberDraggableScroller(
     itemsAvailable: Int,
@@ -55,8 +58,8 @@ fun LazyGridState.rememberDraggableScroller(
 )
 
 /**
- * Remembers a function to react to [Scrollbar] thumb position displacements for a
- * [LazyStaggeredGridState]
+ * Remembers a function to react to [Scrollbar] thumb position displacements for its
+ * [LazyStaggeredGridState] receiver.
  *
  * @param itemsAvailable the amount of items in the staggered grid.
  */

@@ -149,7 +149,8 @@ fun NiaGradientBackground(
 annotation class ThemePreviews
 
 /**
- * Preview of the [NiaBackground] composable with default theme.
+ * Two Previews of the [NiaBackground] composable with dynamic theming disabled using the
+ * [ThemePreviews] "Light theme" and  "Dark theme".
  */
 @ThemePreviews
 @Composable
@@ -161,7 +162,8 @@ fun BackgroundDefault() {
 }
 
 /**
- * Preview of the [NiaBackground] composable with dynamic theming enabled.
+ * Two Previews of the [NiaBackground] composable with dynamic theming enabled using the
+ * [ThemePreviews] "Light theme" and  "Dark theme".
  */
 @ThemePreviews
 @Composable
@@ -172,7 +174,8 @@ fun BackgroundDynamic() {
 }
 
 /**
- * Preview of the [NiaBackground] composable with Android theme.
+ * Two Previews of the [NiaBackground] composable with Android theme using the
+ * [ThemePreviews] "Light theme" and  "Dark theme".
  */
 @ThemePreviews
 @Composable
@@ -183,7 +186,8 @@ fun BackgroundAndroid() {
 }
 
 /**
- * Preview of the [NiaGradientBackground] composable with default theme.
+ * Two Previews of the [NiaGradientBackground] composable with default theme using the
+ * [ThemePreviews] "Light theme" and  "Dark theme".
  */
 @ThemePreviews
 @Composable
@@ -195,7 +199,8 @@ fun GradientBackgroundDefault() {
 }
 
 /**
- * Preview of the [NiaGradientBackground] composable with dynamic theming enabled.
+ * Two Previews of the [NiaGradientBackground] composable with dynamic theming enabled using the
+ * [ThemePreviews] "Light theme" and  "Dark theme".
  */
 @ThemePreviews
 @Composable
@@ -206,7 +211,8 @@ fun GradientBackgroundDynamic() {
 }
 
 /**
- * Preview of the [NiaGradientBackground] composable with Android theme.
+ * Two Previews of the [NiaGradientBackground] composable with Android theme using the
+ * [ThemePreviews] "Light theme" and  "Dark theme".
  */
 @ThemePreviews
 @Composable
