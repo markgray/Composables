@@ -83,11 +83,11 @@ fun NiaButton(
 /**
  * Now in Android filled button with text and icon content slots.
  *
- * Our root composable is our [NiaButton] overload whose arguments are:
+ * Our root composable is a [NiaButton] overload whose arguments are:
  *  - `onClick`: is is our [onClick] lambda parameter.
  *  - `modifier`: is our [Modifier] parameter [modifier].
  *  - `enabled`: is our [Boolean] parameter [enabled].
- *  - `contentPadding`: is [ButtonDefaults.ButtonWithIconContentPadding] is our [leadingIcon]
+ *  - `contentPadding`: is [ButtonDefaults.ButtonWithIconContentPadding] if our [leadingIcon]
  *  composable lambda parameter is not `null`, or [ButtonDefaults.ContentPadding] it is `null`.
  *
  * In the [RowScope] `content` composable lambda argument we compose a [NiaButtonContent] whose
@@ -137,7 +137,8 @@ fun NiaButton(
  *  the [ColorScheme.onBackground] or our custom [MaterialTheme.colorScheme].
  *  - `border`: is a [BorderStroke] whose `width` argument is
  *  [NiaButtonDefaults.OutlinedButtonBorderWidth], whose `color` argument is [ColorScheme.outline]
- *  if our [Boolean] parameter [enabled] is `true`, or a copy of [ColorScheme.onSurface] with its
+ *  of our custom [MaterialTheme.colorScheme] if our [Boolean] parameter [enabled] is `true`, or a
+ *  copy of [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme] with its
  *  `alpha` value [NiaButtonDefaults.DISABLED_OUTLINED_BUTTON_BORDER_ALPHA] if it is `false`.
  *  - `contentPadding`: is our [PaddingValues] parameter [contentPadding].
  *  - `content`: is our [content] composable lambda parameter.
@@ -187,7 +188,7 @@ fun NiaOutlinedButton(
  *  - `onClick`: is is our [onClick] lambda parameter.
  *  - `modifier`: is our [Modifier] parameter [modifier].
  *  - `enabled`: is our [Boolean] parameter [enabled].
- *  - `contentPadding`: is [ButtonDefaults.ButtonWithIconContentPadding] is our [leadingIcon]
+ *  - `contentPadding`: is [ButtonDefaults.ButtonWithIconContentPadding] if our [leadingIcon]
  *  composable lambda parameter is not `null`, or [ButtonDefaults.ContentPadding] it is `null`.
  *
  * In its [RowScope] `content` composable lambda argument we compose a [NiaButtonContent] whose
@@ -375,13 +376,13 @@ fun NiaOutlinedButtonPreview() {
 }
 
 /**
- * This is two previews of our [NiaButton] Composable using its `leadingIcon` argument ("Light theme"
- * and "Dark theme"). We wrap our [NiaTheme] custom [MaterialTheme] around a [NiaBackground] whose
- * `modifier` argument is a [Modifier.size] of 150.dp by 50.dp, and whose `content` is a [NiaButton].
- * The `onClick` lambda argument of the [NiaButton] is a do nothing lambda, its `text` lambda argument
- * is a [Text] displaying the string "Test button", and its `leadingIcon` lambda argument is an [Icon]
- * whose `imageVector` argument is our [NiaIcons.Add] "Add" icon, and whose `contentDescription`
- * argument is `null`.
+ * This is two previews of our [NiaButton] Composable ("Light theme" and "Dark theme") using a
+ * non-`null` `leadingIcon` argument. We wrap our [NiaTheme] custom [MaterialTheme] around a
+ * [NiaBackground] whose `modifier` argument is a [Modifier.size] of 150.dp by 50.dp, and whose
+ * `content` is a [NiaButton]. The `onClick` lambda argument of the [NiaButton] is a do nothing
+ * lambda, its `text` lambda argument is a [Text] displaying the string "Test button", and its
+ * `leadingIcon` lambda argument is an [Icon] whose `imageVector` argument is our [NiaIcons.Add]
+ * "Add" icon, and whose `contentDescription` argument is `null`.
  */
 @ThemePreviews
 @Composable
