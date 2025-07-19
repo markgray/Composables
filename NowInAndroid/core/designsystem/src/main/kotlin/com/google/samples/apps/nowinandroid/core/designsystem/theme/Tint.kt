@@ -17,6 +17,7 @@
 package com.google.samples.apps.nowinandroid.core.designsystem.theme
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
@@ -31,4 +32,5 @@ data class TintTheme(
 /**
  * A composition local for [TintTheme].
  */
-val LocalTintTheme = staticCompositionLocalOf { TintTheme() }
+val LocalTintTheme: ProvidableCompositionLocal<TintTheme> =
+    staticCompositionLocalOf { TintTheme() }

@@ -18,15 +18,18 @@ package com.google.samples.apps.nowinandroid.core.designsystem.component
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
@@ -34,7 +37,45 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 
 /**
  * Now in Android filter chip with included leading checked icon as well as text content slot.
- * TODO: Continue here.
+ *
+ * Our root composable is a [FilterChip] whose arguments are:
+ *  - `selected`: is our [Boolean] parameter [selected].
+ *  - `onClick`: is a lambda that calls our [onSelectedChange] lambda parameter with the inverse of
+ *  our [selected] parameter.
+ *  - `label`: is a lambda that wraps our [label] composable lambda parameter in a [ProvideTextStyle]
+ *  whose `value` is the [Typography.labelSmall] of our custom [MaterialTheme.typography].
+ *  - `modifier`: is our [Modifier] parameter [modifier].
+ *  - `enabled`: is our [Boolean] parameter [enabled].
+ *  - `leadingIcon`: if our [Boolean] parameter [selected] is `true`, we compose an [Icon] whose
+ *  `imageVector` argument is the [ImageVector] drawn by [NiaIcons.Check] (a checkmark) and its
+ *  `contentDescription` is `null`, if our [Boolean] parameter [selected] is `false`, we don't
+ *  compose anything.
+ *  - `shape`: is [CircleShape].
+ *  - `border`: is a [FilterChipDefaults.filterChipBorder] whose `enabled` argument is our [Boolean]
+ *  parameter [enabled], whose `selected` argument is our [Boolean] parameter [selected],
+ *  whose `borderColor` argument is the [ColorScheme.onBackground] of our custom
+ *  [MaterialTheme.colorScheme], whose `selectedBorderColor` argument is the [ColorScheme.onBackground]
+ *  of our custom [MaterialTheme.colorScheme], whose `disabledBorderColor` argument is a copy of the
+ *  [ColorScheme.onBackground] of our custom [MaterialTheme.colorScheme] with its `alpha` value
+ *  [NiaChipDefaults.DISABLED_CHIP_CONTENT_ALPHA], whose `disabledSelectedBorderColor` argument is
+ *  a copy of the [ColorScheme.onBackground] of our custom [MaterialTheme.colorScheme] with its
+ *  `alpha` value [NiaChipDefaults.DISABLED_CHIP_CONTENT_ALPHA], and whose `selectedBorderWidth`
+ *  argument is [NiaChipDefaults.ChipBorderWidth].
+ *  - `colors`: is a [FilterChipDefaults.filterChipColors] whose `labelColor` argument is the
+ *  [ColorScheme.onBackground] of our custom [MaterialTheme.colorScheme], whose `iconColor` argument
+ *  is the [ColorScheme.onBackground] of our custom [MaterialTheme.colorScheme], whose
+ *  `disabledContainerColor` argument is a copy of the [ColorScheme.onBackground] of our custom
+ *  [MaterialTheme.colorScheme] with its `alpha` value [NiaChipDefaults.DISABLED_CHIP_CONTAINER_ALPHA]
+ *  if our [Boolean] parameter [selected] is `true`, or [Color.Transparent] if it is `false`,
+ *  whose `disabledLabelColor` argument is a copy of the [ColorScheme.onBackground] of our custom
+ *  [MaterialTheme.colorScheme] with its `alpha` value [NiaChipDefaults.DISABLED_CHIP_CONTENT_ALPHA],
+ *  whose `disabledLeadingIconColor` argument is a copy of the [ColorScheme.onBackground] of our
+ *  custom [MaterialTheme.colorScheme] with its `alpha` value [NiaChipDefaults.DISABLED_CHIP_CONTENT_ALPHA],
+ *  whose `selectedContainerColor` argument is the [ColorScheme.primaryContainer] of our custom
+ *  [MaterialTheme.colorScheme], whose `selectedLabelColor` argument is the [ColorScheme.onBackground]
+ *  of our custom [MaterialTheme.colorScheme], and whose `selectedLeadingIconColor` argument is the
+ *  [ColorScheme.onBackground] of our custom [MaterialTheme.colorScheme].
+ *
  * @param selected Whether the chip is currently checked.
  * @param onSelectedChange Called when the user clicks the chip and toggles checked.
  * @param modifier Modifier to be applied to the chip.
@@ -107,6 +148,14 @@ fun NiaFilterChip(
     )
 }
 
+/**
+ * Two Previews ("Light theme" and "Dark theme") of the [NiaFilterChip] composable. Wrapped in a
+ * [NiaTheme] custom [MaterialTheme] is a [NiaBackground] Composable. The [NiaBackground] `modifier`
+ * argument is a [Modifier.size] that sets its `width` to 80.dp and its `height` to 20.dp. The
+ * `content` argument of the [NiaBackground] is a [NiaFilterChip] whose `selected` argument is `true`,
+ * whose `onSelectedChange` argument is a do nothing lambda, and whose `label` argument is a [Text]
+ * displaying the text "Chip".
+ */
 @ThemePreviews
 @Composable
 fun ChipPreview() {

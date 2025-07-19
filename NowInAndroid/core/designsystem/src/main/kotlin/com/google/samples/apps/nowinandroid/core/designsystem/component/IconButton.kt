@@ -30,7 +30,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 /**
  * Now in Android toggle button with icon and checked icon content slots. Wraps Material 3
  * [IconButton].
- *
+ * TODO: Continue here.
  * @param checked Whether the toggle button is currently checked.
  * @param onCheckedChange Called when the user clicks the toggle button and toggles checked.
  * @param modifier Modifier to be applied to the toggle button.
@@ -123,5 +123,5 @@ fun IconButtonPreviewUnchecked() {
 object NiaIconButtonDefaults {
     // TODO: File bug
     // IconToggleButton disabled container alpha not exposed by IconButtonDefaults
-    const val DISABLED_ICON_BUTTON_CONTAINER_ALPHA = 0.12f
+    const val DISABLED_ICON_BUTTON_CONTAINER_ALPHA: Float = 0.12f
 }
