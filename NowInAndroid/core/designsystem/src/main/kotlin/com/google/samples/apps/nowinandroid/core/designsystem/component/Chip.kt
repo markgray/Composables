@@ -50,7 +50,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  *  `imageVector` argument is the [ImageVector] drawn by [NiaIcons.Check] (a checkmark) and its
  *  `contentDescription` is `null`, if our [Boolean] parameter [selected] is `false`, we don't
  *  compose anything.
- *  - `shape`: is [CircleShape].
+ *  - `shape`: is a [CircleShape].
  *  - `border`: is a [FilterChipDefaults.filterChipBorder] whose `enabled` argument is our [Boolean]
  *  parameter [enabled], whose `selected` argument is our [Boolean] parameter [selected],
  *  whose `borderColor` argument is the [ColorScheme.onBackground] of our custom

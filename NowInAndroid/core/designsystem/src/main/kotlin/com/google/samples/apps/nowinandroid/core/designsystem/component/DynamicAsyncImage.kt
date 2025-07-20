@@ -49,7 +49,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.LocalTintThe
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.TintTheme
 
 /**
- * A wrapper around [Image] and [rememberAsyncImagePainter] that loads an image from a URL,
+ * A wrapper around [AsyncImage] and [rememberAsyncImagePainter] that loads an image from a URL,
  * applying a tint based on the current [LocalTintTheme] and displaying a placeholder
  * and loading indicator.
  *
