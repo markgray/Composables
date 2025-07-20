@@ -35,6 +35,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItemCo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,17 +46,17 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 /**
  * Now in Android navigation bar item with icon and label content slots. Wraps Material 3
  * [NavigationBarItem].
- *
+ * TODO: Continue here.
  * @param selected Whether this item is selected.
  * @param onClick The callback to be invoked when this item is selected.
- * @param icon The item icon content.
  * @param modifier Modifier to be applied to this item.
- * @param selectedIcon The item icon content when selected.
  * @param enabled controls the enabled state of this item. When `false`, this item will not be
  * clickable and will appear disabled to accessibility services.
- * @param label The item text label content.
  * @param alwaysShowLabel Whether to always show the label for this item. If false, the label will
  * only be shown when this item is selected.
+ * @param icon The item icon content.
+ * @param selectedIcon The item icon content when selected.
+ * @param label The item text label content.
  */
 @Composable
 fun RowScope.NiaNavigationBarItem(
@@ -112,14 +113,14 @@ fun NiaNavigationBar(
  *
  * @param selected Whether this item is selected.
  * @param onClick The callback to be invoked when this item is selected.
- * @param icon The item icon content.
  * @param modifier Modifier to be applied to this item.
- * @param selectedIcon The item icon content when selected.
  * @param enabled controls the enabled state of this item. When `false`, this item will not be
  * clickable and will appear disabled to accessibility services.
- * @param label The item text label content.
  * @param alwaysShowLabel Whether to always show the label for this item. If false, the label will
  * only be shown when this item is selected.
+ * @param icon The item icon content.
+ * @param selectedIcon The item icon content when selected.
+ * @param label The item text label content.
  */
 @Composable
 fun NiaNavigationRailItem(
@@ -177,8 +178,8 @@ fun NiaNavigationRail(
  * Now in Android navigation suite scaffold with item and content slots.
  * Wraps Material 3 [NavigationSuiteScaffold].
  *
- * @param modifier Modifier to be applied to the navigation suite scaffold.
  * @param navigationSuiteItems A slot to display multiple items via [NiaNavigationSuiteScope].
+ * @param modifier Modifier to be applied to the navigation suite scaffold.
  * @param windowAdaptiveInfo The window adaptive info.
  * @param content The app content inside the scaffold.
  */
@@ -189,8 +190,8 @@ fun NiaNavigationSuiteScaffold(
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
     content: @Composable () -> Unit,
 ) {
-    val layoutType = NavigationSuiteScaffoldDefaults
-        .calculateFromAdaptiveInfo(windowAdaptiveInfo)
+    val layoutType: NavigationSuiteType = NavigationSuiteScaffoldDefaults
+        .calculateFromAdaptiveInfo(adaptiveInfo = windowAdaptiveInfo)
     val navigationSuiteItemColors = NavigationSuiteItemColors(
         navigationBarItemColors = NavigationBarItemDefaults.colors(
             selectedIconColor = NiaNavigationDefaults.navigationSelectedItemColor(),
@@ -219,7 +220,7 @@ fun NiaNavigationSuiteScaffold(
             NiaNavigationSuiteScope(
                 navigationSuiteScope = this,
                 navigationSuiteItemColors = navigationSuiteItemColors,
-            ).run(navigationSuiteItems)
+            ).run(block = navigationSuiteItems)
         },
         layoutType = layoutType,
         containerColor = Color.Transparent,
@@ -247,7 +248,7 @@ class NiaNavigationSuiteScope internal constructor(
         icon: @Composable () -> Unit,
         selectedIcon: @Composable () -> Unit = icon,
         label: @Composable (() -> Unit)? = null,
-    ) = navigationSuiteScope.item(
+    ): Unit = navigationSuiteScope.item(
         selected = selected,
         onClick = onClick,
         icon = {
@@ -280,7 +281,7 @@ fun NiaNavigationBarPreview() {
 
     NiaTheme {
         NiaNavigationBar {
-            items.forEachIndexed { index, item ->
+            items.forEachIndexed { index: Int, item: String ->
                 NiaNavigationBarItem(
                     icon = {
                         Icon(
@@ -294,7 +295,7 @@ fun NiaNavigationBarPreview() {
                             contentDescription = item,
                         )
                     },
-                    label = { Text(item) },
+                    label = { Text(text = item) },
                     selected = index == 0,
                     onClick = { },
                 )
@@ -320,7 +321,7 @@ fun NiaNavigationRailPreview() {
 
     NiaTheme {
         NiaNavigationRail {
-            items.forEachIndexed { index, item ->
+            items.forEachIndexed { index: Int, item: String ->
                 NiaNavigationRailItem(
                     icon = {
                         Icon(
@@ -334,7 +335,7 @@ fun NiaNavigationRailPreview() {
                             contentDescription = item,
                         )
                     },
-                    label = { Text(item) },
+                    label = { Text(text = item) },
                     selected = index == 0,
                     onClick = { },
                 )
@@ -348,11 +349,11 @@ fun NiaNavigationRailPreview() {
  */
 object NiaNavigationDefaults {
     @Composable
-    fun navigationContentColor() = MaterialTheme.colorScheme.onSurfaceVariant
+    fun navigationContentColor(): Color = MaterialTheme.colorScheme.onSurfaceVariant
 
     @Composable
-    fun navigationSelectedItemColor() = MaterialTheme.colorScheme.onPrimaryContainer
+    fun navigationSelectedItemColor(): Color = MaterialTheme.colorScheme.onPrimaryContainer
 
     @Composable
-    fun navigationIndicatorColor() = MaterialTheme.colorScheme.primaryContainer
+    fun navigationIndicatorColor(): Color = MaterialTheme.colorScheme.primaryContainer
 }

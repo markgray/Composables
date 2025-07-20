@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.core.designsystem.component
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,7 +31,24 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 /**
  * Now in Android toggle button with icon and checked icon content slots. Wraps Material 3
  * [IconButton].
- * TODO: Continue here.
+ *
+ * Our root composable is a [FilledIconToggleButton] whose arguments are:
+ *  - `checked`: is our [Boolean] parameter [checked].
+ *  - `onCheckedChange`: is our [onCheckedChange] lambda parameter.
+ *  - `modifier`: is our [Modifier] parameter [modifier].
+ *  - `enabled`: is our [Boolean] parameter [enabled].
+ *  - `colors`: is a [IconButtonDefaults.iconToggleButtonColors] whose `checkedContainerColor`
+ *  argument is the [ColorScheme.primaryContainer] of our custom [MaterialTheme.colorScheme],
+ *  whose `checkedContentColor` argument is the [ColorScheme.onPrimaryContainer] of our custom
+ *  [MaterialTheme.colorScheme], whose `disabledContainerColor` argument is a copy of the
+ *  [ColorScheme.onBackground] of our custom [MaterialTheme.colorScheme] with its
+ *  `alpha` value [NiaIconButtonDefaults.DISABLED_ICON_BUTTON_CONTAINER_ALPHA] is our [Boolean]
+ *  parameter [checked] is `true` or [Color.Transparent] if it is `false`.
+ *
+ * In the `content` composable lambda argument of the [FilledIconToggleButton] we compose our
+ * [checkedIcon] composable lambda parameter if our [Boolean] parameter [checked] is `true` or
+ * our [icon] composable lambda parameter if it is `false`.
+ *
  * @param checked Whether the toggle button is currently checked.
  * @param onCheckedChange Called when the user clicks the toggle button and toggles checked.
  * @param modifier Modifier to be applied to the toggle button.
@@ -71,6 +89,16 @@ fun NiaIconToggleButton(
     }
 }
 
+/**
+ * Two previews ("Light theme" and "Dark theme") of a [NiaIconToggleButton] Composable wrapped in
+ * our [NiaTheme] custom [MaterialTheme]. The arguments to the [NiaIconToggleButton] are:
+ *  - `checked`: true
+ *  - `onCheckedChange`: a do nothing lambda
+ *  - `icon`: an [Icon] whose `imageVector` argument is [NiaIcons.BookmarkBorder] (a stylised
+ *  outlined bookmark), and whose `contentDescription` is `null`.
+ *  - `checkedIcon`: an [Icon] whose `imageVector` argument is [NiaIcons.Bookmark] (a stylised
+ *  filled bookmark), and whose `contentDescription` is `null`.
+ */
 @ThemePreviews
 @Composable
 fun IconButtonPreview() {
@@ -94,6 +122,17 @@ fun IconButtonPreview() {
     }
 }
 
+/**
+ * Two previews ("Light theme" and "Dark theme") of an unchecked [NiaIconToggleButton]. We display
+ * it wrapped in our [NiaTheme] custom [MaterialTheme]. The arguments to the [NiaIconToggleButton]
+ * are:
+ *  - `checked` is `false`.
+ *  - `onCheckedChange` is an empty lambda.
+ *  - `icon` is an [Icon] whose `imageVector` argument is [NiaIcons.BookmarkBorder] (a stylized open
+ *  book with a bookmark hanging out the bottom).
+ *  - `checkedIcon` is an [Icon] whose `imageVector` argument is [NiaIcons.Bookmark] (a stylized
+ *  closed book with a bookmark hanging out the bottom).
+ */
 @ThemePreviews
 @Composable
 fun IconButtonPreviewUnchecked() {
