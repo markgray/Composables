@@ -30,13 +30,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 
 /**
  * Now in Android tab. Wraps Material 3 [Tab] and shifts text label down.
- *
+ * TODO: Continue here.
  * @param selected Whether this tab is selected or not.
  * @param onClick The callback to be invoked when this tab is selected.
  * @param modifier Modifier to be applied to the tab.
@@ -58,7 +60,8 @@ fun NiaTab(
         modifier = modifier,
         enabled = enabled,
         text = {
-            val style = MaterialTheme.typography.labelLarge.copy(textAlign = TextAlign.Center)
+            val style: TextStyle =
+                MaterialTheme.typography.labelLarge.copy(textAlign = TextAlign.Center)
             ProvideTextStyle(
                 value = style,
                 content = {
@@ -85,6 +88,7 @@ fun NiaTabRow(
     modifier: Modifier = Modifier,
     tabs: @Composable () -> Unit,
 ) {
+    @Suppress("DEPRECATION") // TODO: Replace with PrimaryTabRow and SecondaryTabRow.
     TabRow(
         selectedTabIndex = selectedTabIndex,
         modifier = modifier,
@@ -105,9 +109,9 @@ fun NiaTabRow(
 @Composable
 fun TabsPreview() {
     NiaTheme {
-        val titles = listOf("Topics", "People")
+        val titles: List<String> = listOf("Topics", "People")
         NiaTabRow(selectedTabIndex = 0) {
-            titles.forEachIndexed { index, title ->
+            titles.forEachIndexed { index: Int, title: String ->
                 NiaTab(
                     selected = index == 0,
                     onClick = { },
@@ -119,5 +123,5 @@ fun TabsPreview() {
 }
 
 object NiaTabDefaults {
-    val TabTopPadding = 7.dp
+    val TabTopPadding: Dp = 7.dp
 }
