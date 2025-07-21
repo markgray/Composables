@@ -54,8 +54,8 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  * clickable and will appear disabled to accessibility services.
  * @param alwaysShowLabel Whether to always show the label for this item. If false, the label will
  * only be shown when this item is selected.
- * @param icon The item icon content.
- * @param selectedIcon The item icon content when selected.
+ * @param icon The item icon content when [selected] is `false`.
+ * @param selectedIcon The item icon content when [selected] is `true`.
  * @param label The item text label content.
  */
 @Composable

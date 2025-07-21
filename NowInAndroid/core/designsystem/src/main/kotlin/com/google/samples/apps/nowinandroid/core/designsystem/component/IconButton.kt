@@ -42,7 +42,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  *  whose `checkedContentColor` argument is the [ColorScheme.onPrimaryContainer] of our custom
  *  [MaterialTheme.colorScheme], whose `disabledContainerColor` argument is a copy of the
  *  [ColorScheme.onBackground] of our custom [MaterialTheme.colorScheme] with its
- *  `alpha` value [NiaIconButtonDefaults.DISABLED_ICON_BUTTON_CONTAINER_ALPHA] is our [Boolean]
+ *  `alpha` value [NiaIconButtonDefaults.DISABLED_ICON_BUTTON_CONTAINER_ALPHA] if our [Boolean]
  *  parameter [checked] is `true` or [Color.Transparent] if it is `false`.
  *
  * In the `content` composable lambda argument of the [FilledIconToggleButton] we compose our
@@ -92,7 +92,7 @@ fun NiaIconToggleButton(
 /**
  * Two previews ("Light theme" and "Dark theme") of a [NiaIconToggleButton] Composable wrapped in
  * our [NiaTheme] custom [MaterialTheme]. The arguments to the [NiaIconToggleButton] are:
- *  - `checked`: true
+ *  - `checked`: `true`
  *  - `onCheckedChange`: a do nothing lambda
  *  - `icon`: an [Icon] whose `imageVector` argument is [NiaIcons.BookmarkBorder] (a stylised
  *  outlined bookmark), and whose `contentDescription` is `null`.

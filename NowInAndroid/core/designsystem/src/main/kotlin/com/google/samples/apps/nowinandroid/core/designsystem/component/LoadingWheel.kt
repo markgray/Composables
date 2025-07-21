@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
  *
  * We start by initializing and remembering our [InfiniteTransition] variable `infiniteTransition`
  * to the instance returned by [rememberInfiniteTransition] called with its `label` argument the
- * string "wheel transition". We initialize our [Float] variable `startValue` to `0F` is the current
+ * string "wheel transition". We initialize our [Float] variable `startValue` to `0F` if the current
  * [LocalInspectionMode] is `true` or `1F` if it is `false`. We initialize and remember our [List]
  * of [Animatable] of [Float] variable `floatAnimValues` using the [Iterable.map] method of the
  * range of `0` until [NUM_OF_LINES] with its `transform` lambda argument returning a remembered
@@ -74,10 +74,10 @@ import kotlinx.coroutines.launch
  * Then we compose a [LaunchedEffect] whose `key1` argument is `floatAnimValues` and in its
  * [CoroutineScope] `block` suspend lambda argument we use the [Iterable.map] method of the
  * range of `0` until [NUM_OF_LINES] with its `transform` lambda argument capturing the [Int]
- * passed the lambda in variable `index` the calls the [launch] method to launch a coroutine which
- * calls the [Animatable.animateTo] method of the [Animatable] at index `index` in the [List] of
- * [Animatable] of [Float] variable `floatAnimValues` with its `targetValue` argument set to `0F`,
- * its `animationSpec` argument set to [tween] with its `durationMillis` argument set to
+ * passed the lambda in variable `index`, and then calling the [launch] method to launch a coroutine
+ * which calls the [Animatable.animateTo] method of the [Animatable] at index `index` in the [List]
+ * of [Animatable] of [Float] variable `floatAnimValues` with its `targetValue` argument set to `0F`,
+ * its `animationSpec` argument set to a [tween] with its `durationMillis` argument set to
  * `100`, its `easing` argument set to [FastOutSlowInEasing], and its `delayMillis` argument set
  * to `40 * index`.
  *
@@ -85,7 +85,7 @@ import kotlinx.coroutines.launch
  * `rotationAnim` to the value returned by the [InfiniteTransition.animateFloat] method of the
  * [InfiniteTransition] variable `infiniteTransition` with its `initialValue` argument set to `0F`,
  * its `targetValue` argument set to `360F`, its `animationSpec` argument set to an
- * [infiniteRepeatable] with its `animation` argument set to [tween] with its `durationMillis`
+ * [infiniteRepeatable] with its `animation` argument set to a [tween] with its `durationMillis`
  * argument set to [ROTATION_TIME], and its `easing` argument set to [LinearEasing]. The `label`
  * of this animated value is "wheel rotation animation".
  *
