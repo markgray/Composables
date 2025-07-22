@@ -20,8 +20,10 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.unit.dp
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaBackground
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaGradientBackground
 import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiTheme
@@ -34,29 +36,53 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import org.robolectric.annotation.LooperMode
 
+/**
+ * Screenshot tests for the background layout.
+ */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(application = HiltTestApplication::class, qualifiers = "480dpi")
 @LooperMode(LooperMode.Mode.PAUSED)
 class BackgroundScreenshotTests {
 
+    /**
+     * The compose test rule used in this test.
+     * TODO: Continue here.
+     */
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<ComponentActivity>, ComponentActivity> =
+        createAndroidComposeRule<ComponentActivity>()
 
+    /**
+     * Tests that the [NiaBackground] component is displayed correctly in different themes.
+     * It captures a screenshot of the component in each theme and compares it to a baseline image.
+     * The test is run on a 480dpi device.
+     * The test is run in paused looper mode.
+     * The test is run with the Hilt test application.
+     * The test is run with the Robolectric test runner.
+     * The test is run with native graphics mode.
+     */
     @Test
     fun niaBackground_multipleThemes() {
-        composeTestRule.captureMultiTheme("Background") { description ->
-            NiaBackground(Modifier.size(100.dp)) {
-                Text("$description background")
+        composeTestRule.captureMultiTheme(name = "Background") { description: String ->
+            NiaBackground(modifier = Modifier.size(size = 100.dp)) {
+                Text(text = "$description background")
             }
         }
     }
 
+    /**
+     * Tests that the gradient background is displayed correctly in different themes.
+     * It captures screenshots of the [NiaGradientBackground] composable in various themes.
+     */
     @Test
     fun niaGradientBackground_multipleThemes() {
-        composeTestRule.captureMultiTheme("Background", "GradientBackground") { description ->
-            NiaGradientBackground(Modifier.size(100.dp)) {
-                Text("$description background")
+        composeTestRule.captureMultiTheme(
+            name = "Background",
+            overrideFileName = "GradientBackground",
+        ) { description: String ->
+            NiaGradientBackground(modifier = Modifier.size(size = 100.dp)) {
+                Text(text = "$description background")
             }
         }
     }

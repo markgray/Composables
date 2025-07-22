@@ -17,6 +17,7 @@
 package com.google.samples.apps.nowinandroid.core.designsystem.theme
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -33,4 +34,5 @@ data class BackgroundTheme(
 /**
  * A composition local for [BackgroundTheme].
  */
-val LocalBackgroundTheme = staticCompositionLocalOf { BackgroundTheme() }
+val LocalBackgroundTheme: ProvidableCompositionLocal<BackgroundTheme> =
+    staticCompositionLocalOf { BackgroundTheme() }

@@ -20,6 +20,7 @@ import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -36,7 +37,7 @@ import androidx.compose.ui.unit.dp
  * Light default theme color scheme
  */
 @VisibleForTesting
-val LightDefaultColorScheme = lightColorScheme(
+val LightDefaultColorScheme: ColorScheme = lightColorScheme(
     primary = Purple40,
     onPrimary = Color.White,
     primaryContainer = Purple90,
@@ -68,7 +69,7 @@ val LightDefaultColorScheme = lightColorScheme(
  * Dark default theme color scheme
  */
 @VisibleForTesting
-val DarkDefaultColorScheme = darkColorScheme(
+val DarkDefaultColorScheme: ColorScheme = darkColorScheme(
     primary = Purple80,
     onPrimary = Purple20,
     primaryContainer = Purple30,
@@ -100,7 +101,7 @@ val DarkDefaultColorScheme = darkColorScheme(
  * Light Android theme color scheme
  */
 @VisibleForTesting
-val LightAndroidColorScheme = lightColorScheme(
+val LightAndroidColorScheme: ColorScheme = lightColorScheme(
     primary = Green40,
     onPrimary = Color.White,
     primaryContainer = Green90,
@@ -132,7 +133,7 @@ val LightAndroidColorScheme = lightColorScheme(
  * Dark Android theme color scheme
  */
 @VisibleForTesting
-val DarkAndroidColorScheme = darkColorScheme(
+val DarkAndroidColorScheme: ColorScheme = darkColorScheme(
     primary = Green80,
     onPrimary = Green20,
     primaryContainer = Green30,
@@ -163,31 +164,31 @@ val DarkAndroidColorScheme = darkColorScheme(
 /**
  * Light Android gradient colors
  */
-val LightAndroidGradientColors = GradientColors(container = DarkGreenGray95)
+val LightAndroidGradientColors: GradientColors = GradientColors(container = DarkGreenGray95)
 
 /**
  * Dark Android gradient colors
  */
-val DarkAndroidGradientColors = GradientColors(container = Color.Black)
+val DarkAndroidGradientColors: GradientColors = GradientColors(container = Color.Black)
 
 /**
  * Light Android background theme
  */
-val LightAndroidBackgroundTheme = BackgroundTheme(color = DarkGreenGray95)
+val LightAndroidBackgroundTheme: BackgroundTheme = BackgroundTheme(color = DarkGreenGray95)
 
 /**
  * Dark Android background theme
  */
-val DarkAndroidBackgroundTheme = BackgroundTheme(color = Color.Black)
+val DarkAndroidBackgroundTheme: BackgroundTheme = BackgroundTheme(color = Color.Black)
 
 /**
  * Now in Android theme.
  *
  * @param darkTheme Whether the theme should use a dark color scheme (follows system by default).
  * @param androidTheme Whether the theme should use the Android theme color scheme instead of the
- *        default theme.
+ * default theme.
  * @param disableDynamicTheming If `true`, disables the use of dynamic theming, even when it is
- *        supported. This parameter has no effect if [androidTheme] is `true`.
+ * supported. This parameter has no effect if [androidTheme] is `true`.
  */
 @Composable
 fun NiaTheme(
@@ -247,4 +248,4 @@ fun NiaTheme(
 }
 
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
-fun supportsDynamicTheming() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+fun supportsDynamicTheming(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S

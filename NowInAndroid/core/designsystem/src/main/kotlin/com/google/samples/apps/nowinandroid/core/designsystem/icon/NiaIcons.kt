@@ -40,21 +40,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
  * Now in Android icons. Material icons are [ImageVector]s, custom icons are drawable resource IDs.
  */
 object NiaIcons {
-    val Add = Icons.Rounded.Add
-    val ArrowBack = Icons.AutoMirrored.Rounded.ArrowBack
-    val Bookmark = Icons.Rounded.Bookmark
-    val BookmarkBorder = Icons.Rounded.BookmarkBorder
-    val Bookmarks = Icons.Rounded.Bookmarks
-    val BookmarksBorder = Icons.Outlined.Bookmarks
-    val Check = Icons.Rounded.Check
-    val Close = Icons.Rounded.Close
-    val Grid3x3 = Icons.Rounded.Grid3x3
-    val MoreVert = Icons.Default.MoreVert
-    val Person = Icons.Rounded.Person
-    val Search = Icons.Rounded.Search
-    val Settings = Icons.Rounded.Settings
-    val ShortText = Icons.AutoMirrored.Rounded.ShortText
-    val Upcoming = Icons.Rounded.Upcoming
-    val UpcomingBorder = Icons.Outlined.Upcoming
-    val ViewDay = Icons.Rounded.ViewDay
+    val Add: ImageVector = Icons.Rounded.Add
+    val ArrowBack: ImageVector = Icons.AutoMirrored.Rounded.ArrowBack
+    val Bookmark: ImageVector = Icons.Rounded.Bookmark
+    val BookmarkBorder: ImageVector = Icons.Rounded.BookmarkBorder
+    val Bookmarks: ImageVector = Icons.Rounded.Bookmarks
+    val BookmarksBorder: ImageVector = Icons.Outlined.Bookmarks
+    val Check: ImageVector = Icons.Rounded.Check
+    val Close: ImageVector = Icons.Rounded.Close
+    val Grid3x3: ImageVector = Icons.Rounded.Grid3x3
+    val MoreVert: ImageVector = Icons.Default.MoreVert
+    val Person: ImageVector = Icons.Rounded.Person
+    val Search: ImageVector = Icons.Rounded.Search
+    val Settings: ImageVector = Icons.Rounded.Settings
+    val ShortText: ImageVector = Icons.AutoMirrored.Rounded.ShortText
+    val Upcoming: ImageVector = Icons.Rounded.Upcoming
+    val UpcomingBorder: ImageVector = Icons.Outlined.Upcoming
+    val ViewDay: ImageVector = Icons.Rounded.ViewDay
 }
