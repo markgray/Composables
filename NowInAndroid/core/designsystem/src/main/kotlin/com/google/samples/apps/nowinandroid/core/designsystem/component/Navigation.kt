@@ -49,7 +49,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  * Now in Android navigation bar item with icon and label content slots. Wraps Material 3
  * [NavigationBarItem].
  *
- * Our root composable is a [NiaNavigationSuiteScaffold] whose arguments are:
+ * Our root composable is a [NavigationBarItem] whose arguments are:
  *  - `selected`: is our [Boolean] parameter [selected]
  *  - `onClick`: is our lambda parameter [onClick].
  *  - `icon`: if our [Boolean] parameter [selected] is `true` it is our lambda parameter [selectedIcon],
@@ -118,7 +118,7 @@ fun RowScope.NiaNavigationBarItem(
  *  - `content`: is our Composable lambda parameter [content].
  *
  * @param modifier Modifier to be applied to the navigation bar.
- * @param content Destinations inside the navigation bar. This should contain multiple
+ * @param content Destinations inside the navigation bar. This should compose multiple
  * [NavigationBarItem]s.
  */
 @Composable
@@ -209,7 +209,7 @@ fun NiaNavigationRailItem(
  *
  * @param modifier Modifier to be applied to the navigation rail.
  * @param header Optional header that may hold a floating action button or a logo.
- * @param content Destinations inside the navigation rail. This should contain multiple
+ * @param content Destinations inside the navigation rail. This should compose multiple
  * [NavigationRailItem]s.
  */
 @Composable
@@ -239,23 +239,24 @@ fun NiaNavigationRail(
  * instance of the [NavigationSuiteItemColors] class whose `navigationBarItemColors` argument is set
  * to a [NavigationBarItemDefaults.colors] whose `selectedIconColor` is the [Color] returned by the
  * [NiaNavigationDefaults.navigationSelectedItemColor] method, whose `unselectedIconColor` is the
- * [Color] returned by the [NiaNavigationDefaults.navigationContentColor] method, method,
- * whose `selectedTextColor` is the [Color] returned by the
+ * [Color] returned by the [NiaNavigationDefaults.navigationContentColor] method, whose
+ * `selectedTextColor` is the [Color] returned by the
  * [NiaNavigationDefaults.navigationSelectedItemColor] method, whose `unselectedTextColor` is the
  * [Color] returned by the [NiaNavigationDefaults.navigationContentColor] method, and whose
  * `indicatorColor` is the [Color] returned by the [NiaNavigationDefaults.navigationIndicatorColor]
  * method. The `navigationRailItemColors` argument is set to a [NavigationRailItemDefaults.colors]
- * whose `selectedIconColor` is the [Color] returned by the [NiaNavigationDefaults.navigationSelectedItemColor]
- * method, whose `unselectedIconColor` is the [Color] returned by the
- * [NiaNavigationDefaults.navigationContentColor] method, method, whose `selectedTextColor` is the
- * [Color] returned by the [NiaNavigationDefaults.navigationSelectedItemColor] method, whose
- * `unselectedTextColor` is the [Color] returned by the [NiaNavigationDefaults.navigationContentColor]
- * method, and whose `indicatorColor` is the [Color] returned by the
- * [NiaNavigationDefaults.navigationIndicatorColor] method. The `navigationDrawerItemColors`
- * argument is set to a [NavigationDrawerItemDefaults.colors] whose `selectedIconColor` is the
- * [Color] returned by the [NiaNavigationDefaults.navigationSelectedItemColor] method, whose
- * `unselectedIconColor` is the [Color] returned by the [NiaNavigationDefaults.navigationContentColor]
- * method, method, whose `selectedTextColor` is the [Color] returned by the
+ * whose `selectedIconColor` is the [Color] returned by the
+ * [NiaNavigationDefaults.navigationSelectedItemColor] method, whose `unselectedIconColor` is the
+ * [Color] returned by the [NiaNavigationDefaults.navigationContentColor] method, method, whose
+ * `selectedTextColor` is the [Color] returned by the
+ * [NiaNavigationDefaults.navigationSelectedItemColor] method, whose `unselectedTextColor` is the
+ * [Color] returned by the [NiaNavigationDefaults.navigationContentColor] method, and whose
+ * `indicatorColor` is the [Color] returned by the [NiaNavigationDefaults.navigationIndicatorColor]
+ * method. The `navigationDrawerItemColors` argument is set to a [NavigationDrawerItemDefaults.colors]
+ * whose `selectedIconColor` is the [Color] returned by the
+ * [NiaNavigationDefaults.navigationSelectedItemColor] method, whose `unselectedIconColor` is the
+ * [Color] returned by the [NiaNavigationDefaults.navigationContentColor] method, whose
+ * `selectedTextColor` is the [Color] returned by the
  * [NiaNavigationDefaults.navigationSelectedItemColor] method, whose `unselectedTextColor` is the
  * [Color] returned by the [NiaNavigationDefaults.navigationContentColor] method, and whose
  * `indicatorColor` is the [Color] returned by the [NiaNavigationDefaults.navigationIndicatorColor]
@@ -266,7 +267,7 @@ fun NiaNavigationRail(
  *  is the [NavigationSuiteScope] of the lambda argument, and whose `navigationSuiteItemColors`
  *  argument is the [NavigationSuiteItemColors] variable `navigationSuiteItemColors`. We then call
  *  the [NiaNavigationSuiteScope.run] method of the [NiaNavigationSuiteScope] and in its `block`
- *  lambda argument we call the our [NiaNavigationSuiteScope] lambda parameter [navigationSuiteItems]
+ *  lambda argument we call our [NiaNavigationSuiteScope] lambda parameter [navigationSuiteItems]
  *  to populate the navigation items to be displayed.
  *  - `layoutType`: is the [NavigationSuiteType] variable `layoutType`.
  *  - `containerColor`: is [Color.Transparent].
@@ -371,13 +372,13 @@ class NiaNavigationSuiteScope internal constructor(
 /**
  * Two previews ("Light theme" and "Dark theme") of the [NiaNavigationBar] Composable. We initialize
  * our [List] of [String] variable `val items` to ("For you", "Saved", "Interests"). We initialize
- * our [List] of [ImageVector] variable `val icons` to a list of the [NiaIcons.UpcomingBorder],
- * [NiaIcons.BookmarksBorder], and [NiaIcons.Grid3x3], icons. We initialize our [List] of [ImageVector]
- * variable `val selectedIcons` to a [NiaIcons.Upcoming], [NiaIcons.Bookmarks], and [NiaIcons.Grid3x3]
- * icons.
+ * our [List] of [ImageVector] variable `val icons` to a list containing [NiaIcons.UpcomingBorder],
+ * [NiaIcons.BookmarksBorder], and [NiaIcons.Grid3x3]. We initialize our [List] of [ImageVector]
+ * variable `val selectedIcons` to a list containing [NiaIcons.Upcoming], [NiaIcons.Bookmarks],
+ * and [NiaIcons.Grid3x3].
  *
  * Our root Composable is a [NiaTheme] whose `content` Composable lambda argument is a
- * [NiaNavigationBar]. For the `content` of the [NiaNavigationBar] we loop through the
+ * [NiaNavigationBar]. For the `content` of the [NiaNavigationBar] we loop through the [List]
  * [String]'s in `items` capturing the [Int] passed the lambda in variable `index` and the [String]
  * it variable `item` then compose a [NiaNavigationBarItem] whose arguments are:
  *  - `icon`: is an [Icon] whose `imageVector` is the [NiaIcons] at index `index` in `icons`
@@ -433,8 +434,8 @@ fun NiaNavigationBarPreview() {
  * our [List] of [String] variable `val items` to ("For you", "Saved", "Interests"). We initialize
  * our [List] of [ImageVector] variable `val icons` to a list of the [NiaIcons.UpcomingBorder],
  * [NiaIcons.BookmarksBorder], and [NiaIcons.Grid3x3] icons. We initialize our [List] of [ImageVector]
- * variable `val selectedIcons` to a list of the [NiaIcons.Upcoming], [NiaIcons.Bookmarks], and
- * [NiaIcons.Grid3x3] icons.
+ * variable `val selectedIcons` to a list containing [NiaIcons.Upcoming], [NiaIcons.Bookmarks], and
+ * [NiaIcons.Grid3x3].
  *
  * Our root Composable is a [NiaTheme] whose `content` Composable lambda argument is a
  * [NiaNavigationRail]. For the `content` of the [NiaNavigationRail] we loop through the
