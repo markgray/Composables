@@ -37,7 +37,22 @@ import org.robolectric.annotation.GraphicsMode
 import org.robolectric.annotation.LooperMode
 
 /**
- * Screenshot tests for [NiaButton] and [NiaOutlinedButton].
+ * This Kotlin code defines a class [ButtonScreenshotTests] that uses screenshot testing to verify
+ * the visual appearance of [NiaButton] and [NiaOutlinedButton] composables in different themes and
+ * configurations. The meaning of the annotations is as follows:
+ *  - @[RunWith] ([RobolectricTestRunner]::class): This annotation specifies that the tests should
+ *  be run using [RobolectricTestRunner]. Robolectric allows you to run Android tests on the JVM
+ *  without needing an emulator or physical device.
+ *  - @[GraphicsMode] ([GraphicsMode.Mode.NATIVE]): This configures Robolectric's graphics mode to
+ *  use native graphics. This is often necessary for accurate screenshot testing.
+ *  - @[Config] (application = [HiltTestApplication]::class, qualifiers = "480dpi"):
+ *  application = [HiltTestApplication]::class: This likely specifies a custom Application class for
+ *  testing, potentially for Hilt dependency injection setup.
+ *  qualifiers = "480dpi": This sets the screen density for the test environment to 480dpi (xxhdpi).
+ *  This helps ensure that screenshots are generated for a specific screen configuration.
+ *  - @[LooperMode] ([LooperMode.Mode.PAUSED]): This controls the Android Looper during tests.
+ *  PAUSED mode gives you more control over the execution of asynchronous tasks, which can be
+ *  helpful in UI testing.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -45,7 +60,10 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 class ButtonScreenshotTests {
     /**
-     * The compose test rule used in this test.
+     * The compose test rule used in this test. Test rules provide a way to run code before and after
+     * test methods. [createAndroidComposeRule]<[ComponentActivity]>() creates a rule that provides
+     * a testing environment for Jetpack Compose UI. It launches a simple [ComponentActivity] for
+     * hosting the composables under test.
      */
     @get:Rule
     val composeTestRule: AndroidComposeTestRule<
@@ -53,6 +71,11 @@ class ButtonScreenshotTests {
         ComponentActivity,
         > = createAndroidComposeRule<ComponentActivity>()
 
+    /**
+     * Tests that [NiaButton] is rendered correctly in multiple themes.
+     * It uses our [AndroidComposeTestRule.captureMultiTheme] extension function to capture
+     * screenshots of the component in each theme.
+     */
     @Test
     fun niaButton_multipleThemes() {
         composeTestRule.captureMultiTheme(name = "Button") { description: String ->
@@ -62,6 +85,11 @@ class ButtonScreenshotTests {
         }
     }
 
+    /**
+     * Test that the [NiaOutlinedButton] outlined button is displayed correctly in multiple themes.
+     * It uses our [AndroidComposeTestRule.captureMultiTheme] extension function to capture
+     * screenshots of the component in each theme.
+     */
     @Test
     fun niaOutlineButton_multipleThemes() {
         composeTestRule.captureMultiTheme(
@@ -77,6 +105,11 @@ class ButtonScreenshotTests {
         }
     }
 
+    /**
+     * Tests that a [NiaButton] with a leading icon is rendered correctly in multiple themes.
+     * It uses our [AndroidComposeTestRule.captureMultiTheme] extension function to capture
+     * screenshots of the component in each theme.
+     */
     @Test
     fun niaButton_leadingIcon_multipleThemes() {
         composeTestRule.captureMultiTheme(

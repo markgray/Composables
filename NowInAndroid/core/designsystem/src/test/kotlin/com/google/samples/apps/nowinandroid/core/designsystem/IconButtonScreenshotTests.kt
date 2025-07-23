@@ -20,7 +20,9 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaIconToggleButton
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiTheme
@@ -33,6 +35,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import org.robolectric.annotation.LooperMode
 
+/**
+ * Screenshot tests for the [NiaIconToggleButton].
+ * TODO: Continue here.
+ */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(application = HiltTestApplication::class, qualifiers = "480dpi")
@@ -40,7 +46,10 @@ import org.robolectric.annotation.LooperMode
 class IconButtonScreenshotTests {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule: AndroidComposeTestRule<
+        ActivityScenarioRule<ComponentActivity>,
+        ComponentActivity,
+        > = createAndroidComposeRule<ComponentActivity>()
 
     @Test
     fun iconButton_multipleThemes() {
