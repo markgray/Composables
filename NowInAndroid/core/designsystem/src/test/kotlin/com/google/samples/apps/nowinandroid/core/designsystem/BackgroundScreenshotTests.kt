@@ -38,6 +38,7 @@ import org.robolectric.annotation.LooperMode
 
 /**
  * Screenshot tests for the background layout.
+ * TODO: Continue here.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -47,7 +48,6 @@ class BackgroundScreenshotTests {
 
     /**
      * The compose test rule used in this test.
-     * TODO: Continue here.
      */
     @get:Rule
     val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<ComponentActivity>, ComponentActivity> =

@@ -60,7 +60,6 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  * argument is [NiaIcons.ViewDay] if our [Boolean] parameter [expanded] is `true`, or
  * [NiaIcons.ShortText] if it is `false`, and its `contentDescription` argument is `null`.
  *
- *
  * @param expanded Whether the view toggle is currently in expanded mode or compact mode.
  * @param onExpandedChange Called when the user clicks the button and toggles the mode.
  * @param modifier Modifier to be applied to the button.
@@ -106,7 +105,7 @@ fun NiaViewToggleButton(
  * Our root Composable is a [Box] whose `modifier` argument is a [Modifier.padding] that adds
  * [ButtonDefaults.IconSpacing] to the `end` if our [Boolean] parameter [trailingIcon] is `true`
  * or `0.dp` if it is `false`. In ite [BoxScope] `content` Composable lambda argument we use
- * [ProvideTextStyle] to to set the current value of [LocalTextStyle] to [Typography.labelSmall] of
+ * [ProvideTextStyle] to set the current value of [LocalTextStyle] to [Typography.labelSmall] of
  * our custom [MaterialTheme.typography] and in its `content` Composable lambda argument we compose
  * our Composable lambda parameter [text].
  *

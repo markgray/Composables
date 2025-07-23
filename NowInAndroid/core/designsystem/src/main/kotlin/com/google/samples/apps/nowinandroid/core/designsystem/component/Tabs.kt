@@ -17,8 +17,10 @@
 package com.google.samples.apps.nowinandroid.core.designsystem.component
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Tab
@@ -27,6 +29,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,7 +47,12 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  *  - `onClick`: is our lambda parameter [onClick].
  *  - `modifier`: is our [Modifier] parameter [modifier].
  *  - `enabled`: is our [Boolean] parameter [enabled].
- *  - `text`: is our Composable lambda parameter [text].
+ *  - `text`: is a lambda in which we initialize our [TextStyle] variable `style` to a copy of the
+ *  [Typography.labelLarge] of our custom [MaterialTheme.typography] with its `textAlign` set to
+ *  [TextAlign.Center]. Then we use [ProvideTextStyle] to provide the `value` `style` as the
+ *  [LocalTextStyle] to its `content` which is a lambda which composes a [Box] whose `modifier`
+ *  argument is a [Modifier.padding] that adds [NiaTabDefaults.TabTopPadding] to its `top` and in
+ *  its [BoxScope] `content` Composable lambda argument it composes our [text] lambda parameter.
  *
  * @param selected Whether this tab is selected or not.
  * @param onClick The callback to be invoked when this tab is selected.
