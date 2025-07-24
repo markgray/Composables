@@ -47,7 +47,7 @@ import org.robolectric.annotation.LooperMode
  *  use native graphics. This is often necessary for accurate screenshot testing.
  *  - @[Config] (application = [HiltTestApplication]::class, qualifiers = "480dpi"):
  *  application = [HiltTestApplication]::class: This likely specifies a custom Application class for
- *  testing, potentially for Hilt dependency injection setup.
+ *  testing for Hilt dependency injection setup.
  *  qualifiers = "480dpi": This sets the screen density for the test environment to 480dpi (xxhdpi).
  *  This helps ensure that screenshots are generated for a specific screen configuration.
  *  - @[LooperMode] ([LooperMode.Mode.PAUSED]): This controls the Android Looper during tests.

@@ -101,7 +101,8 @@ class FilterChipScreenshotTests {
     }
 
     /**
-     * Tests that the selected [NiaFilterChip] is rendered correctly in multiple themes.
+     * Tests that the [NiaFilterChip] is rendered correctly in multiple themes when its `selected`
+     * argument is `true`.
      * It uses our [AndroidComposeTestRule.captureMultiTheme] extension function to capture
      * screenshots of the selected [NiaFilterChip] in each theme.
      * The `overrideFileName` argument is used to specify a different filename for the

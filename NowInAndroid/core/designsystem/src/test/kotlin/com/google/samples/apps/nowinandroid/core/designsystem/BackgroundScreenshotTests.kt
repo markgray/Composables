@@ -76,6 +76,13 @@ class BackgroundScreenshotTests {
      * our [AndroidComposeTestRule.captureMultiTheme] extension function to capture screenshots of
      * the component in each theme.
      *
+     * [AndroidComposeTestRule.captureMultiTheme] is called with its `name` argument the string
+     * "Background" and in its `content` Composable lambda argument we capture the [String] passed
+     * the lambdq in variable `description` (describes the theme being tested) then compose a
+     * [NiaBackground] whose `modifier` argument is a [Modifier.size] whose `size` is `100.dp`, and
+     * whose `content` Composable lambda argument composes a [Text] whose `text` argument is the
+     * [String] variable `description` concatenated to the string "background".
+     *
      * It captures a screenshot of the component in each theme and compares it to a baseline image.
      *  - The test is run on a 480dpi device.
      *  - The test is run in paused looper mode.
@@ -97,6 +104,15 @@ class BackgroundScreenshotTests {
      * It captures screenshots of the [NiaGradientBackground] composable in various themes.
      * It uses our [AndroidComposeTestRule.captureMultiTheme] extension function to capture
      * screenshots of the component in each theme.
+     *
+     * [AndroidComposeTestRule.captureMultiTheme] is called with its `name` argument the string
+     * "Background" and its `overrideFileName` argument the string "GradientBackground" (causes
+     * the output to be written to the file "GradientBackground*.png" instead of "Background*.png").
+     * In its `content` Composable lambda argument we capture the [String] passed the lambdq in
+     * variable `description` (describes the theme being tested) then compose a
+     * [NiaGradientBackground] whose `modifier` argument is a [Modifier.size] whose `size` is
+     * `100.dp`, and whose `content` Composable lambda argument composes a [Text] whose `text`
+     * argument is the [String] variable `description` concatenated to the string "background".
      */
     @Test
     fun niaGradientBackground_multipleThemes() {
