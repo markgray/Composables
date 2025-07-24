@@ -107,7 +107,7 @@ class BackgroundScreenshotTests {
      *
      * [AndroidComposeTestRule.captureMultiTheme] is called with its `name` argument the string
      * "Background" and its `overrideFileName` argument the string "GradientBackground" (causes
-     * the output to be written to the file "GradientBackground*.png" instead of "Background*.png").
+     * the output to be written to the files "GradientBackground*.png" instead of "Background*.png").
      * In its `content` Composable lambda argument we capture the [String] passed the lambdq in
      * variable `description` (describes the theme being tested) then compose a
      * [NiaGradientBackground] whose `modifier` argument is a [Modifier.size] whose `size` is
