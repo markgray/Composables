@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantValueArgument")
+
 package com.google.samples.apps.nowinandroid.core.designsystem
 
 import android.os.Build.VERSION.SDK_INT
@@ -25,6 +27,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.BackgroundTheme
@@ -55,12 +58,13 @@ import kotlin.test.assertEquals
  * It verifies that the various composition locals — [MaterialTheme], [LocalGradientColors] and
  * [LocalBackgroundTheme] — have the expected values for a given theme mode, as specified by the
  * design system.
+ * TODO: Continue here.
  */
 @RunWith(RobolectricTestRunner::class)
 class ThemeTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule: ComposeContentTestRule = createComposeRule()
 
     @Test
     fun darkThemeFalse_dynamicColorFalse_androidThemeFalse() {
@@ -70,14 +74,18 @@ class ThemeTest {
                 disableDynamicTheming = true,
                 androidTheme = false,
             ) {
-                val colorScheme = LightDefaultColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = defaultGradientColors(colorScheme)
-                assertEquals(gradientColors, LocalGradientColors.current)
-                val backgroundTheme = defaultBackgroundTheme(colorScheme)
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
+                val colorScheme: ColorScheme = LightDefaultColorScheme
+                assertColorSchemesEqual(
+                    expectedColorScheme = colorScheme,
+                    actualColorScheme = MaterialTheme.colorScheme,
+                )
+                val gradientColors: GradientColors =
+                    defaultGradientColors(colorScheme = colorScheme)
+                assertEquals(expected = gradientColors, actual = LocalGradientColors.current)
+                val backgroundTheme: BackgroundTheme = defaultBackgroundTheme(colorScheme)
+                assertEquals(expected = backgroundTheme, actual = LocalBackgroundTheme.current)
+                val tintTheme: TintTheme = defaultTintTheme()
+                assertEquals(expected = tintTheme, actual = LocalTintTheme.current)
             }
         }
     }
@@ -90,14 +98,19 @@ class ThemeTest {
                 disableDynamicTheming = true,
                 androidTheme = false,
             ) {
-                val colorScheme = DarkDefaultColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = defaultGradientColors(colorScheme)
-                assertEquals(gradientColors, LocalGradientColors.current)
-                val backgroundTheme = defaultBackgroundTheme(colorScheme)
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
+                val colorScheme: ColorScheme = DarkDefaultColorScheme
+                assertColorSchemesEqual(
+                    expectedColorScheme = colorScheme,
+                    actualColorScheme = MaterialTheme.colorScheme,
+                )
+                val gradientColors: GradientColors =
+                    defaultGradientColors(colorScheme = colorScheme)
+                assertEquals(expected = gradientColors, actual = LocalGradientColors.current)
+                val backgroundTheme: BackgroundTheme =
+                    defaultBackgroundTheme(colorScheme = colorScheme)
+                assertEquals(expected = backgroundTheme, actual = LocalBackgroundTheme.current)
+                val tintTheme: TintTheme = defaultTintTheme()
+                assertEquals(expected = tintTheme, actual = LocalTintTheme.current)
             }
         }
     }
@@ -110,14 +123,19 @@ class ThemeTest {
                 disableDynamicTheming = false,
                 androidTheme = false,
             ) {
-                val colorScheme = dynamicLightColorSchemeWithFallback()
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = dynamicGradientColorsWithFallback(colorScheme)
-                assertEquals(gradientColors, LocalGradientColors.current)
-                val backgroundTheme = defaultBackgroundTheme(colorScheme)
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = dynamicTintThemeWithFallback(colorScheme)
-                assertEquals(tintTheme, LocalTintTheme.current)
+                val colorScheme: ColorScheme = dynamicLightColorSchemeWithFallback()
+                assertColorSchemesEqual(
+                    expectedColorScheme = colorScheme,
+                    actualColorScheme = MaterialTheme.colorScheme,
+                )
+                val gradientColors: GradientColors =
+                    dynamicGradientColorsWithFallback(colorScheme = colorScheme)
+                assertEquals(expected = gradientColors, actual = LocalGradientColors.current)
+                val backgroundTheme: BackgroundTheme =
+                    defaultBackgroundTheme(colorScheme = colorScheme)
+                assertEquals(expected = backgroundTheme, actual = LocalBackgroundTheme.current)
+                val tintTheme: TintTheme = dynamicTintThemeWithFallback(colorScheme)
+                assertEquals(expected = tintTheme, actual = LocalTintTheme.current)
             }
         }
     }
@@ -130,14 +148,18 @@ class ThemeTest {
                 disableDynamicTheming = false,
                 androidTheme = false,
             ) {
-                val colorScheme = dynamicDarkColorSchemeWithFallback()
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = dynamicGradientColorsWithFallback(colorScheme)
-                assertEquals(gradientColors, LocalGradientColors.current)
-                val backgroundTheme = defaultBackgroundTheme(colorScheme)
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = dynamicTintThemeWithFallback(colorScheme)
-                assertEquals(tintTheme, LocalTintTheme.current)
+                val colorScheme: ColorScheme = dynamicDarkColorSchemeWithFallback()
+                assertColorSchemesEqual(
+                    expectedColorScheme = colorScheme,
+                    actualColorScheme = MaterialTheme.colorScheme,
+                )
+                val gradientColors: GradientColors =
+                    dynamicGradientColorsWithFallback(colorScheme = colorScheme)
+                assertEquals(expected = gradientColors, actual = LocalGradientColors.current)
+                val backgroundTheme: BackgroundTheme = defaultBackgroundTheme(colorScheme)
+                assertEquals(expected = backgroundTheme, actual = LocalBackgroundTheme.current)
+                val tintTheme: TintTheme = dynamicTintThemeWithFallback(colorScheme = colorScheme)
+                assertEquals(expected = tintTheme, actual = LocalTintTheme.current)
             }
         }
     }
@@ -150,14 +172,17 @@ class ThemeTest {
                 disableDynamicTheming = true,
                 androidTheme = true,
             ) {
-                val colorScheme = LightAndroidColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = LightAndroidGradientColors
-                assertEquals(gradientColors, LocalGradientColors.current)
-                val backgroundTheme = LightAndroidBackgroundTheme
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
+                val colorScheme: ColorScheme = LightAndroidColorScheme
+                assertColorSchemesEqual(
+                    expectedColorScheme = colorScheme,
+                    actualColorScheme = MaterialTheme.colorScheme,
+                )
+                val gradientColors: GradientColors = LightAndroidGradientColors
+                assertEquals(expected = gradientColors, actual = LocalGradientColors.current)
+                val backgroundTheme: BackgroundTheme = LightAndroidBackgroundTheme
+                assertEquals(expected = backgroundTheme, actual = LocalBackgroundTheme.current)
+                val tintTheme: TintTheme = defaultTintTheme()
+                assertEquals(expected = tintTheme, actual = LocalTintTheme.current)
             }
         }
     }
@@ -170,14 +195,17 @@ class ThemeTest {
                 disableDynamicTheming = true,
                 androidTheme = true,
             ) {
-                val colorScheme = DarkAndroidColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = DarkAndroidGradientColors
-                assertEquals(gradientColors, LocalGradientColors.current)
-                val backgroundTheme = DarkAndroidBackgroundTheme
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
+                val colorScheme: ColorScheme = DarkAndroidColorScheme
+                assertColorSchemesEqual(
+                    expectedColorScheme = colorScheme,
+                    actualColorScheme = MaterialTheme.colorScheme,
+                )
+                val gradientColors: GradientColors = DarkAndroidGradientColors
+                assertEquals(expected = gradientColors, actual = LocalGradientColors.current)
+                val backgroundTheme: BackgroundTheme = DarkAndroidBackgroundTheme
+                assertEquals(expected = backgroundTheme, actual = LocalBackgroundTheme.current)
+                val tintTheme: TintTheme = defaultTintTheme()
+                assertEquals(expected = tintTheme, actual = LocalTintTheme.current)
             }
         }
     }
@@ -190,14 +218,17 @@ class ThemeTest {
                 disableDynamicTheming = false,
                 androidTheme = true,
             ) {
-                val colorScheme = LightAndroidColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = LightAndroidGradientColors
-                assertEquals(gradientColors, LocalGradientColors.current)
-                val backgroundTheme = LightAndroidBackgroundTheme
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
+                val colorScheme: ColorScheme = LightAndroidColorScheme
+                assertColorSchemesEqual(
+                    expectedColorScheme = colorScheme,
+                    actualColorScheme = MaterialTheme.colorScheme,
+                )
+                val gradientColors: GradientColors = LightAndroidGradientColors
+                assertEquals(expected = gradientColors, actual = LocalGradientColors.current)
+                val backgroundTheme: BackgroundTheme = LightAndroidBackgroundTheme
+                assertEquals(expected = backgroundTheme, actual = LocalBackgroundTheme.current)
+                val tintTheme: TintTheme = defaultTintTheme()
+                assertEquals(expected = tintTheme, actual = LocalTintTheme.current)
             }
         }
     }
@@ -210,32 +241,35 @@ class ThemeTest {
                 disableDynamicTheming = false,
                 androidTheme = true,
             ) {
-                val colorScheme = DarkAndroidColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = DarkAndroidGradientColors
-                assertEquals(gradientColors, LocalGradientColors.current)
-                val backgroundTheme = DarkAndroidBackgroundTheme
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
+                val colorScheme: ColorScheme = DarkAndroidColorScheme
+                assertColorSchemesEqual(
+                    expectedColorScheme = colorScheme,
+                    actualColorScheme = MaterialTheme.colorScheme,
+                )
+                val gradientColors: GradientColors = DarkAndroidGradientColors
+                assertEquals(expected = gradientColors, actual = LocalGradientColors.current)
+                val backgroundTheme: BackgroundTheme = DarkAndroidBackgroundTheme
+                assertEquals(expected = backgroundTheme, actual = LocalBackgroundTheme.current)
+                val tintTheme: TintTheme = defaultTintTheme()
+                assertEquals(expected = tintTheme, actual = LocalTintTheme.current)
             }
         }
     }
 
     @Composable
     private fun dynamicLightColorSchemeWithFallback(): ColorScheme = when {
-        SDK_INT >= VERSION_CODES.S -> dynamicLightColorScheme(LocalContext.current)
+        SDK_INT >= VERSION_CODES.S -> dynamicLightColorScheme(context = LocalContext.current)
         else -> LightDefaultColorScheme
     }
 
     @Composable
     private fun dynamicDarkColorSchemeWithFallback(): ColorScheme = when {
-        SDK_INT >= VERSION_CODES.S -> dynamicDarkColorScheme(LocalContext.current)
+        SDK_INT >= VERSION_CODES.S -> dynamicDarkColorScheme(context = LocalContext.current)
         else -> DarkDefaultColorScheme
     }
 
     private fun emptyGradientColors(colorScheme: ColorScheme): GradientColors =
-        GradientColors(container = colorScheme.surfaceColorAtElevation(2.dp))
+        GradientColors(container = colorScheme.surfaceColorAtElevation(elevation = 2.dp))
 
     private fun defaultGradientColors(colorScheme: ColorScheme): GradientColors = GradientColors(
         top = colorScheme.inverseOnSurface,
@@ -244,8 +278,8 @@ class ThemeTest {
     )
 
     private fun dynamicGradientColorsWithFallback(colorScheme: ColorScheme): GradientColors = when {
-        SDK_INT >= VERSION_CODES.S -> emptyGradientColors(colorScheme)
-        else -> defaultGradientColors(colorScheme)
+        SDK_INT >= VERSION_CODES.S -> emptyGradientColors(colorScheme = colorScheme)
+        else -> defaultGradientColors(colorScheme = colorScheme)
     }
 
     private fun defaultBackgroundTheme(colorScheme: ColorScheme): BackgroundTheme = BackgroundTheme(
@@ -256,7 +290,7 @@ class ThemeTest {
     private fun defaultTintTheme(): TintTheme = TintTheme()
 
     private fun dynamicTintThemeWithFallback(colorScheme: ColorScheme): TintTheme = when {
-        SDK_INT >= VERSION_CODES.S -> TintTheme(colorScheme.primary)
+        SDK_INT >= VERSION_CODES.S -> TintTheme(iconTint = colorScheme.primary)
         else -> TintTheme()
     }
 
@@ -267,33 +301,105 @@ class ThemeTest {
         expectedColorScheme: ColorScheme,
         actualColorScheme: ColorScheme,
     ) {
-        assertEquals(expectedColorScheme.primary, actualColorScheme.primary)
-        assertEquals(expectedColorScheme.onPrimary, actualColorScheme.onPrimary)
-        assertEquals(expectedColorScheme.primaryContainer, actualColorScheme.primaryContainer)
-        assertEquals(expectedColorScheme.onPrimaryContainer, actualColorScheme.onPrimaryContainer)
-        assertEquals(expectedColorScheme.secondary, actualColorScheme.secondary)
-        assertEquals(expectedColorScheme.onSecondary, actualColorScheme.onSecondary)
-        assertEquals(expectedColorScheme.secondaryContainer, actualColorScheme.secondaryContainer)
         assertEquals(
-            expectedColorScheme.onSecondaryContainer,
-            actualColorScheme.onSecondaryContainer,
+            expected = expectedColorScheme.primary,
+            actual = actualColorScheme.primary,
         )
-        assertEquals(expectedColorScheme.tertiary, actualColorScheme.tertiary)
-        assertEquals(expectedColorScheme.onTertiary, actualColorScheme.onTertiary)
-        assertEquals(expectedColorScheme.tertiaryContainer, actualColorScheme.tertiaryContainer)
-        assertEquals(expectedColorScheme.onTertiaryContainer, actualColorScheme.onTertiaryContainer)
-        assertEquals(expectedColorScheme.error, actualColorScheme.error)
-        assertEquals(expectedColorScheme.onError, actualColorScheme.onError)
-        assertEquals(expectedColorScheme.errorContainer, actualColorScheme.errorContainer)
-        assertEquals(expectedColorScheme.onErrorContainer, actualColorScheme.onErrorContainer)
-        assertEquals(expectedColorScheme.background, actualColorScheme.background)
-        assertEquals(expectedColorScheme.onBackground, actualColorScheme.onBackground)
-        assertEquals(expectedColorScheme.surface, actualColorScheme.surface)
-        assertEquals(expectedColorScheme.onSurface, actualColorScheme.onSurface)
-        assertEquals(expectedColorScheme.surfaceVariant, actualColorScheme.surfaceVariant)
-        assertEquals(expectedColorScheme.onSurfaceVariant, actualColorScheme.onSurfaceVariant)
-        assertEquals(expectedColorScheme.inverseSurface, actualColorScheme.inverseSurface)
-        assertEquals(expectedColorScheme.inverseOnSurface, actualColorScheme.inverseOnSurface)
-        assertEquals(expectedColorScheme.outline, actualColorScheme.outline)
+        assertEquals(
+            expected = expectedColorScheme.onPrimary,
+            actual = actualColorScheme.onPrimary,
+        )
+        assertEquals(
+            expected = expectedColorScheme.primaryContainer,
+            actual = actualColorScheme.primaryContainer,
+        )
+        assertEquals(
+            expected = expectedColorScheme.onPrimaryContainer,
+            actual = actualColorScheme.onPrimaryContainer,
+        )
+        assertEquals(
+            expected = expectedColorScheme.secondary,
+            actual = actualColorScheme.secondary,
+        )
+        assertEquals(
+            expected = expectedColorScheme.onSecondary,
+            actual = actualColorScheme.onSecondary,
+        )
+        assertEquals(
+            expected = expectedColorScheme.secondaryContainer,
+            actual = actualColorScheme.secondaryContainer,
+        )
+        assertEquals(
+            expected = expectedColorScheme.onSecondaryContainer,
+            actual = actualColorScheme.onSecondaryContainer,
+        )
+        assertEquals(
+            expected = expectedColorScheme.tertiary,
+            actual = actualColorScheme.tertiary,
+        )
+        assertEquals(
+            expected = expectedColorScheme.onTertiary,
+            actual = actualColorScheme.onTertiary,
+        )
+        assertEquals(
+            expected = expectedColorScheme.tertiaryContainer,
+            actual = actualColorScheme.tertiaryContainer,
+        )
+        assertEquals(
+            expected = expectedColorScheme.onTertiaryContainer,
+            actual = actualColorScheme.onTertiaryContainer,
+        )
+        assertEquals(
+            expected = expectedColorScheme.error,
+            actual = actualColorScheme.error,
+        )
+        assertEquals(
+            expected = expectedColorScheme.onError,
+            actual = actualColorScheme.onError,
+        )
+        assertEquals(
+            expected = expectedColorScheme.errorContainer,
+            actual = actualColorScheme.errorContainer,
+        )
+        assertEquals(
+            expected = expectedColorScheme.onErrorContainer,
+            actual = actualColorScheme.onErrorContainer,
+        )
+        assertEquals(
+            expected = expectedColorScheme.background,
+            actual = actualColorScheme.background,
+        )
+        assertEquals(
+            expected = expectedColorScheme.onBackground,
+            actual = actualColorScheme.onBackground,
+        )
+        assertEquals(
+            expected = expectedColorScheme.surface,
+            actual = actualColorScheme.surface,
+        )
+        assertEquals(
+            expected = expectedColorScheme.onSurface,
+            actual = actualColorScheme.onSurface,
+        )
+        assertEquals(
+            expected = expectedColorScheme.surfaceVariant,
+            actual = actualColorScheme.surfaceVariant,
+        )
+        assertEquals(
+            expected = expectedColorScheme.onSurfaceVariant,
+            actual = actualColorScheme.onSurfaceVariant,
+        )
+        assertEquals(
+            expected = expectedColorScheme.inverseSurface,
+            actual = actualColorScheme.inverseSurface,
+        )
+        assertEquals(
+            expected = expectedColorScheme.inverseOnSurface,
+            actual = actualColorScheme.inverseOnSurface,
+        )
+        assertEquals(
+            expected = expectedColorScheme.outline,
+            actual = actualColorScheme.outline,
+        )
     }
 }
