@@ -104,8 +104,7 @@ class NavigationScreenshotTests {
      * The [CompositionLocalProvider] that specifies that [LocalInspectionMode] provides `true`
      * is used to disable certain runtime checks that might interfere with screenshot testing.
      * The [DeviceConfigurationOverride] function is used to simulate a specific device
-     * configuration for the test, in this case, a larger font scale and a fixed size for
-     * the composable.
+     * configuration for the test, in this case, a larger font scale.
      */
     @Test
     fun navigation_hugeFont() {

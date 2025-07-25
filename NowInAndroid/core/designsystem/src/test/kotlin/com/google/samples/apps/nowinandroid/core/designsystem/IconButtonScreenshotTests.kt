@@ -17,17 +17,13 @@
 package com.google.samples.apps.nowinandroid.core.designsystem
 
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaBackground
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaIconToggleButton
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiTheme
@@ -84,8 +80,8 @@ class IconButtonScreenshotTests {
      * various themes, ensuring consistent appearance across different UI configurations.
      *
      * [AndroidComposeTestRule.captureMultiTheme] is called with its `name` argument the string
-     * "IconButton" and in its `content` Composable lambda argument compose a [NiaIconToggleButton]
-     * whose `checked` argument is `false`.
+     * "IconButton" and in its `content` Composable lambda argument composes a [NiaIconToggleExample]
+     * which composes a [NiaIconToggleButton] whose `checked` argument is `false`.
      */
     @Test
     fun iconButton_multipleThemes() {
@@ -102,8 +98,8 @@ class IconButtonScreenshotTests {
      * "IconButton" and its `overrideFileName` argument the string "IconButtonUnchecked" (causes
      * the output to be written to the files "IconButtonUnchecked*.png" instead of "IconButton*.png").
      * In its `content` Composable lambda argument we compose a [Surface], and in the `content`
-     * Composable lambda argument of the [Surface] we compose a [NiaIconToggleExample] whose `checked`
-     * argument is `true`.
+     * Composable lambda argument of the [Surface] we compose a [NiaIconToggleExample] which composes
+     * a [NiaIconToggleButton] whose `checked` argument is `true`.
      */
     @Test
     fun iconButton_unchecked_multipleThemes() {
