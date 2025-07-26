@@ -136,15 +136,15 @@ class TabsScreenshotTests {
     }
 
     /**
-     * An example of [NiaTabRow] and [NiaTab]'s
+     * An example of [NiaTabRow] with two [NiaTab]'s
      *
      * Our root composable is a [Surface] in whose `content` Composable lambda argument we initialize
      * our [List] of [String] variable `titles` with a list containing our [String] parameter [label]
      * and the [String] "People". We then compose a [NiaTabRow] whose `selectedTabIndex` is `0`, and
      * in its `tabs` Composable lambda argument we use the [Iterable.forEachIndexed] method of our
-     * [List] of [String] variable `titles` to iterate contents capturing the [Int] passed the `action`
-     * lambda in variable `index` and the [String] passed the `action` lambda in variable `title`,
-     * then we compose a [NiaTab] whose `selected` argument is `true` if `index == 0`, whose
+     * [List] of [String] variable `titles` to iterate though its contents capturing the [Int] passed
+     * the `action` lambda in variable `index` and the [String] passed the `action` lambda in variable
+     * `title`, then we compose a [NiaTab] whose `selected` argument is `true` if `index == 0`, whose
      * `onClick` argument is an empty lambda, and in its `text` Composable lambda argument we compose
      * a [Text] whose `text` argument is `title`.
      *
