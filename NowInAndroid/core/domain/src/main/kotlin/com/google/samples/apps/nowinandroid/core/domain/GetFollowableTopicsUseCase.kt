@@ -21,12 +21,20 @@ import com.google.samples.apps.nowinandroid.core.data.repository.UserDataReposit
 import com.google.samples.apps.nowinandroid.core.domain.TopicSortField.NAME
 import com.google.samples.apps.nowinandroid.core.domain.TopicSortField.NONE
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
+import com.google.samples.apps.nowinandroid.core.model.data.Topic
+import com.google.samples.apps.nowinandroid.core.model.data.UserData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 /**
- * A use case which obtains a list of topics with their followed state.
+ * A use case which obtains a list of topics that can be followed.
+ *
+ * The list of topics is combined with the user's followed topic IDs to determine the
+ * followed state of each topic. The list can also be sorted by topic name.
+ *
+ * @property topicsRepository a data repository for [Topic] instances injected by Hilt.
+ * @property userDataRepository a data repository for [UserData] instances injected by Hilt.
  */
 class GetFollowableTopicsUseCase @Inject constructor(
     private val topicsRepository: TopicsRepository,
@@ -34,15 +42,16 @@ class GetFollowableTopicsUseCase @Inject constructor(
 ) {
     /**
      * Returns a list of topics with their associated followed state.
+     * TODO: Continue here.
      *
      * @param sortBy - the field used to sort the topics. Default NONE = no sorting.
      */
     operator fun invoke(sortBy: TopicSortField = NONE): Flow<List<FollowableTopic>> = combine(
-        userDataRepository.userData,
-        topicsRepository.getTopics(),
-    ) { userData, topics ->
-        val followedTopics = topics
-            .map { topic ->
+        flow = userDataRepository.userData,
+        flow2 = topicsRepository.getTopics(),
+    ) { userData: UserData, topics: List<Topic> ->
+        val followedTopics: List<FollowableTopic> = topics
+            .map { topic: Topic ->
                 FollowableTopic(
                     topic = topic,
                     isFollowed = topic.id in userData.followedTopics,
@@ -55,7 +64,17 @@ class GetFollowableTopicsUseCase @Inject constructor(
     }
 }
 
+/**
+ * A [TopicSortField] identifies a field by which a list of [FollowableTopic]s can be sorted.
+ */
 enum class TopicSortField {
+    /**
+     * Do not sort the list.
+     */
     NONE,
+
+    /**
+     * Sorts the list of topics by [Topic.name].
+     */
     NAME,
 }
