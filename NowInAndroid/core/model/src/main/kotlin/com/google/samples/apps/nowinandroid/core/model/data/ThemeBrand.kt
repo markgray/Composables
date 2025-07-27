@@ -16,7 +16,17 @@
 
 package com.google.samples.apps.nowinandroid.core.model.data
 
+/**
+ * Represents the available theme brands.
+ */
 enum class ThemeBrand {
+    /**
+     * Default theme brand.
+     */
     DEFAULT,
+
+    /**
+     * A theme that uses the Android brand.
+     */
     ANDROID,
 }

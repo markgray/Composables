@@ -42,7 +42,21 @@ class GetFollowableTopicsUseCase @Inject constructor(
 ) {
     /**
      * Returns a list of topics with their associated followed state.
-     * TODO: Continue here.
+     *
+     * We use the [combine] method to combine the [Flow] of [UserData] property returned by the
+     * [UserDataRepository.userData] property of our [UserDataRepository] property [userDataRepository]
+     * with the [Flow] of [Topic] property returned by the [TopicsRepository.getTopics] property of
+     * our [TopicsRepository] property [topicsRepository] and in the `transform` lambda argument we
+     * accept the [UserData] in variable `userData` and the [List] of [Topic] in variable `topics`.
+     * We then initialize our [List] of [FollowableTopic] variable `followedTopics` with the result
+     * of applying the [Iterable.map] method of `topics` to emit a [FollowableTopic] for each
+     * [Topic] in `topics`. The [FollowableTopic.isFollowed] property of each [FollowableTopic] is
+     * `true` if the [Topic.id] of the [Topic] is in the [Set] of [String] of the
+     * [UserData.followedTopics] property of `userData`. Then we switch on the [TopicSortField]
+     * parameter [sortBy] to determine how to sort the [List] of [FollowableTopic]s. If [sortBy] is
+     * [NAME] we return the [List] of [FollowableTopic]s sorted by the [Topic.name] property of
+     * the [FollowableTopic.topic] property of each [FollowableTopic] in `followedTopics`, otherwise
+     * we just return the [List] of [FollowableTopic]s in `followedTopics`.
      *
      * @param sortBy - the field used to sort the topics. Default NONE = no sorting.
      */

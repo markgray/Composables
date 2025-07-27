@@ -22,11 +22,18 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
- * A use case which returns the recent search queries.
+ * A use case which returns the recent search queries. We just return the [Flow] of [List] of
+ * [RecentSearchQuery]s returned by the [RecentSearchRepository.getRecentSearchQueries] method of
+ * our [RecentSearchRepository] property [recentSearchRepository] when called with its `limit`
+ * argument our [Int] parameter `limit`.
+ *
+ * @param recentSearchRepository the [RecentSearchRepository] to use to get the recent searches
+ * injected by Hilt.
+ * @return A [Flow] of [List] of [RecentSearchQuery]s.
  */
 class GetRecentSearchQueriesUseCase @Inject constructor(
     private val recentSearchRepository: RecentSearchRepository,
 ) {
     operator fun invoke(limit: Int = 10): Flow<List<RecentSearchQuery>> =
-        recentSearchRepository.getRecentSearchQueries(limit)
+        recentSearchRepository.getRecentSearchQueries(limit = limit)
 }

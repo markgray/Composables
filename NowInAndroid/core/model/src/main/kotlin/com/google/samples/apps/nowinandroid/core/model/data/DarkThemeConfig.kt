@@ -16,8 +16,22 @@
 
 package com.google.samples.apps.nowinandroid.core.model.data
 
+/**
+ * Represents the available UI themes for the application.
+ */
 enum class DarkThemeConfig {
+    /**
+     * The app's theme will follow the system's theme.
+     */
     FOLLOW_SYSTEM,
+
+    /**
+     * The app's theme will be light.
+     */
     LIGHT,
+
+    /**
+     * The app's theme will be dark.
+     */
     DARK,
 }

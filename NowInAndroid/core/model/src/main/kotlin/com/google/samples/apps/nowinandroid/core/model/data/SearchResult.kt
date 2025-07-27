@@ -16,7 +16,15 @@
 
 package com.google.samples.apps.nowinandroid.core.model.data
 
-/** An entity that holds the search result */
+/**
+ * An entity that holds the search result.
+ *
+ * This class is used to represent the result of a search query, which can include a list of
+ * matching [Topic]s and a list of matching [NewsResource]s.
+ *
+ * @property topics The list of topics that match the search query.
+ * @property newsResources The list of news resources that match the search query.
+ */
 data class SearchResult(
     val topics: List<Topic> = emptyList(),
     val newsResources: List<NewsResource> = emptyList(),

@@ -19,7 +19,17 @@ package com.google.samples.apps.nowinandroid.core.model.data
 import kotlinx.datetime.Instant
 
 /**
- * External data layer representation of a fully populated NiA news resource
+ * External data layer representation of a fully populated NiA news resource.
+ * This is the model that is used to represent a news resource in the UI.
+ *
+ * @property id The unique identifier of the news resource.
+ * @property title The title of the news resource.
+ * @property content The content of the news resource.
+ * @property url The URL of the news resource.
+ * @property headerImageUrl The URL of the header image for the news resource.
+ * @property publishDate The date the news resource was published.
+ * @property type The type of the news resource.
+ * @property topics The list of topics associated with the news resource.
  */
 data class NewsResource(
     val id: String,

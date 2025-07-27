@@ -17,9 +17,11 @@
 package com.google.samples.apps.nowinandroid.core.model.data
 
 /**
- * A [topic] with the additional information for whether or not it is followed.
+ * A [Topic] with the additional information for whether or not it is followed.
+ *
+ * @property topic The [Topic] about which this information is being provided.
+ * @property isFollowed Whether or not the currently logged in user follows this topic.
  */
-// TODO consider changing to UserTopic and flattening
 data class FollowableTopic(
     val topic: Topic,
     val isFollowed: Boolean,
