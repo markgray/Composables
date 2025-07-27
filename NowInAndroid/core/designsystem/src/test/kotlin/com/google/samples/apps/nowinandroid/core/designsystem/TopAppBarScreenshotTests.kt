@@ -21,6 +21,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.test.DeviceConfigurationOverride
 import androidx.compose.ui.test.FontScale
@@ -142,10 +143,10 @@ class TopAppBarScreenshotTests {
      * This is used for screenshot testing purposes.
      *
      * Our root composable is a [NiaTopAppBar] whose arguments are:
-     *  - `titleRes`: is `R.string.untitled`
-     *  - `navigationIcon`: is [NiaIcons.Search]
+     *  - `titleRes`: is the resource ID `R.string.untitled`
+     *  - `navigationIcon`: is the [ImageVector] drawn by [NiaIcons.Search]
      *  - `navigationIconContentDescription`: is "Navigation icon"
-     *  - `actionIcon`: is [NiaIcons.MoreVert]
+     *  - `actionIcon`: is the [ImageVector] drawn by [NiaIcons.MoreVert]
      *  - `actionIconContentDescription`: is "Action icon"
      */
     @Composable

@@ -81,7 +81,6 @@ class ThemeTest {
      * is [LightAndroidGradientColors], and that the [BackgroundTheme] of our custom
      * [LocalBackgroundTheme] is [LightAndroidBackgroundTheme], and that the [TintTheme] of our
      * custom [LocalTintTheme] is [defaultTintTheme].
-     *
      */
     @Test
     fun darkThemeFalse_dynamicColorFalse_androidThemeFalse() {
