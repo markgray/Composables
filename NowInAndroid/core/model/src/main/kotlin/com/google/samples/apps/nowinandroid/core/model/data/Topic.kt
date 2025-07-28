@@ -18,7 +18,7 @@ package com.google.samples.apps.nowinandroid.core.model.data
 
 /**
  * External data layer representation of a NiA Topic.
- * TODO: Continue here.
+ *
  * @property id The unique identifier of the topic.
  * @property name The name of the topic.
  * @property shortDescription A brief description of the topic.

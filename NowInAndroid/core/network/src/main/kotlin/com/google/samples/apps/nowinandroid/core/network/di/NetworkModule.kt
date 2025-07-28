@@ -34,6 +34,10 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Singleton
 
+/**
+ * Module that provides network related classes
+ * TODO: Continue here.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 internal object NetworkModule {
@@ -48,17 +52,17 @@ internal object NetworkModule {
     @Singleton
     fun providesDemoAssetManager(
         @ApplicationContext context: Context,
-    ): DemoAssetManager = DemoAssetManager(context.assets::open)
+    ): DemoAssetManager = DemoAssetManager(function = context.assets::open)
 
     @Provides
     @Singleton
-    fun okHttpCallFactory(): Call.Factory = trace("NiaOkHttpClient") {
+    fun okHttpCallFactory(): Call.Factory = trace(label = "NiaOkHttpClient") {
         OkHttpClient.Builder()
             .addInterceptor(
-                HttpLoggingInterceptor()
+                interceptor = HttpLoggingInterceptor()
                     .apply {
                         if (BuildConfig.DEBUG) {
-                            setLevel(HttpLoggingInterceptor.Level.BODY)
+                            setLevel(level = HttpLoggingInterceptor.Level.BODY)
                         }
                     },
             )
@@ -78,16 +82,16 @@ internal object NetworkModule {
         // We specifically request dagger.Lazy here, so that it's not instantiated from Dagger.
         okHttpCallFactory: dagger.Lazy<Call.Factory>,
         @ApplicationContext application: Context,
-    ): ImageLoader = trace("NiaImageLoader") {
-        ImageLoader.Builder(application)
+    ): ImageLoader = trace(label = "NiaImageLoader") {
+        ImageLoader.Builder(context = application)
             .callFactory { okHttpCallFactory.get() }
-            .components { add(SvgDecoder.Factory()) }
+            .components { add(factory = SvgDecoder.Factory()) }
             // Assume most content images are versioned urls
             // but some problematic images are fetching each time
-            .respectCacheHeaders(false)
+            .respectCacheHeaders(enable = false)
             .apply {
                 if (BuildConfig.DEBUG) {
-                    logger(DebugLogger())
+                    logger(logger = DebugLogger())
                 }
             }
             .build()

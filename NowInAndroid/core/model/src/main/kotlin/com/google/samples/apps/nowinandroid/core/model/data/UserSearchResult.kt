@@ -19,6 +19,9 @@ package com.google.samples.apps.nowinandroid.core.model.data
 /**
  * An entity of [SearchResult] with additional user information such as whether the user is
  * following a topic.
+ *
+ * @property topics The list of topics that matched the search query.
+ * @property newsResources The list of news resources that matched the search query.
  */
 data class UserSearchResult(
     val topics: List<FollowableTopic> = emptyList(),

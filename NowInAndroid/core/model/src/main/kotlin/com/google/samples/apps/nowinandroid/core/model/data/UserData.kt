@@ -17,7 +17,16 @@
 package com.google.samples.apps.nowinandroid.core.model.data
 
 /**
- * Class summarizing user interest data
+ * Class summarizing user interest data.
+ *
+ * @param bookmarkedNewsResources The set of news resources that the user has bookmarked.
+ * @param viewedNewsResources The set of news resources that the user has viewed.
+ * @param followedTopics The set of topics that the user has followed.
+ * @param themeBrand The user's preferred theme brand.
+ * @param darkThemeConfig The user's preferred dark theme configuration.
+ * @param useDynamicColor Whether the user has enabled dynamic color.
+ * @param shouldHideOnboarding `true` if the user has completed the onboarding process, in which case
+ * the onboarding screen should be hidden.
  */
 data class UserData(
     val bookmarkedNewsResources: Set<String>,

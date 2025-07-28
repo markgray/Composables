@@ -18,6 +18,15 @@ package com.google.samples.apps.nowinandroid.core.network.demo
 
 import java.io.InputStream
 
+/**
+ * A functional interface for opening assets in the demo.
+ */
 fun interface DemoAssetManager {
+    /**
+     * Opens an asset from the demo, using a [fileName].
+     *
+     * @param fileName The name of the file to open.
+     * @return An [InputStream] for reading the asset.
+     */
     fun open(fileName: String): InputStream
 }

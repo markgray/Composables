@@ -20,7 +20,19 @@ import kotlinx.datetime.Instant
 
 /**
  * A [NewsResource] with additional user information such as whether the user is following the
- * news resource's topics and whether they have saved (bookmarked) this news resource.
+ * news resource's topics, whether they have saved (bookmarked) this news resource and whether they
+ * have viewed it.
+ *
+ * @property id The unique identifier of the news resource.
+ * @property title The title of the news resource.
+ * @property content The content of the news resource.
+ * @property url The URL of the news resource.
+ * @property headerImageUrl The URL of the header image for the news resource.
+ * @property publishDate The date the news resource was published.
+ * @property type The type of the news resource.
+ * @property followableTopics The list of topics associated with the news resource.
+ * @property isSaved Whether the user has saved (bookmarked) this news resource.
+ * @property hasBeenViewed Whether the user has viewed this news resource.
  */
 data class UserNewsResource internal constructor(
     val id: String,
@@ -34,6 +46,35 @@ data class UserNewsResource internal constructor(
     val isSaved: Boolean,
     val hasBeenViewed: Boolean,
 ) {
+    /**
+     * Secondary constructor for [UserNewsResource] that takes a [NewsResource] and a [UserData].
+     * We call the primary constructor with the arguments:
+     *  - `id`: The [NewsResource.id] of our [NewsResource] parameter [newsResource].
+     *  - `title`: The [NewsResource.title] of our [NewsResource] parameter [newsResource].
+     *  - `content`: The [NewsResource.content] of our [NewsResource] parameter [newsResource].
+     *  - `url`: The [NewsResource.url] of our [NewsResource] parameter [newsResource].
+     *  - `headerImageUrl`: The [NewsResource.headerImageUrl] of our [NewsResource] parameter
+     *  [newsResource].
+     *  - `publishDate`: The [NewsResource.publishDate] of our [NewsResource] parameter
+     *  [newsResource].
+     *  - `type`: The [NewsResource.type] of our [NewsResource] parameter [newsResource].
+     *  - `followableTopics`: The list of [FollowableTopic] associated with the news resource is
+     *  created by using the [Iterable.map] method of the [NewsResource.topics] property of the
+     *  [NewsResource] parameter [newsResource] to loop through the list of topics capturing the
+     *  [Topic] in variable `topic` and creating a [FollowableTopic] with its `topic` property
+     *  set to `topic` and its `isFollowed` property set to `true` if `topic.id` is in the
+     *  [Set] of [String] property [UserData.followedTopics] of the [UserData] parameter [userData].
+     *  - `isSaved`: `true` if the [NewsResource.id] of the [NewsResource] parameter [newsResource]
+     *  is in the [Set] of [String] property [UserData.bookmarkedNewsResources] of the [UserData]
+     *  parameter [userData].
+     *  - `hasBeenViewed`: `true` if the [NewsResource.id] of the [NewsResource] parameter
+     *  [newsResource] is in the [Set] of [String] property [UserData.viewedNewsResources] of the
+     *  [UserData] parameter [userData].
+     *
+     * @param newsResource The [NewsResource] to convert to a [UserNewsResource].
+     * @param userData The [UserData] to use when converting the [NewsResource] to a
+     * [UserNewsResource].
+     */
     constructor(newsResource: NewsResource, userData: UserData) : this(
         id = newsResource.id,
         title = newsResource.title,
@@ -42,7 +83,7 @@ data class UserNewsResource internal constructor(
         headerImageUrl = newsResource.headerImageUrl,
         publishDate = newsResource.publishDate,
         type = newsResource.type,
-        followableTopics = newsResource.topics.map { topic ->
+        followableTopics = newsResource.topics.map { topic: Topic ->
             FollowableTopic(
                 topic = topic,
                 isFollowed = topic.id in userData.followedTopics,
@@ -53,5 +94,12 @@ data class UserNewsResource internal constructor(
     )
 }
 
+/**
+ * Converts a list of [NewsResource]s to a list of [UserNewsResource]s based on information in the
+ * [UserData] parameter [userData]. We use the [Iterable.map] method of our [List] of [NewsResource]
+ * receiver to loop through the list of news resources capturing the [NewsResource] in variable `it`
+ * and creating a [UserNewsResource] with its `newsResource` property set to `it` and its `userData`
+ * property set to our [UserData] parameter [userData].
+ */
 fun List<NewsResource>.mapToUserNewsResources(userData: UserData): List<UserNewsResource> =
     map { UserNewsResource(it, userData) }
