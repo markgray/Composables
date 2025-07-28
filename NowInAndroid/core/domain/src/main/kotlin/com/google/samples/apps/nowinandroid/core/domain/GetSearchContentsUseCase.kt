@@ -71,13 +71,13 @@ class GetSearchContentsUseCase @Inject constructor(
  * includes information about followed topics and bookmarked news resources.
  *
  * We call the [Flow.combine] extension function with its `flow` argument our [Flow] of [UserData]
- * parameter [userDataStream] to combine it with our [Flow] of [SearchResult] recciver capturing
+ * parameter [userDataStream] to combine it with our [Flow] of [SearchResult] receiver capturing
  * the [SearchResult] in variable `searchResult` and the [UserData] in variable `userData`. Then we
- * emit a [UserSearchResult] with its `topics` argument the list of [FollowableTopic]s created bu
+ * emit a [UserSearchResult] with its `topics` argument the list of [FollowableTopic]s created by
  * using the [Iterable.map] extension function to loop over each [Topic] in the [SearchResult.topics]
  * capturing the [Topic] in variable `topic` which we use as the `topic` argument of the
  * [FollowableTopic] with its `isFollowed` argument `true` if the [Topic.id] of the [Topic] is in
- * the [Set] pf [String] property [UserData.followedTopics] of `userData`. The `newsResources`
+ * the [Set] of [String] property [UserData.followedTopics] of `userData`. The `newsResources`
  * argument is the list of [UserNewsResource]s created by using the [Iterable.map] extension function
  * of the [List] of [NewsResource] property [SearchResult.newsResources] of `searchResult` to loop
  * over its contents capturing the [NewsResource] in variable `news` which we use as the `newsResource`
