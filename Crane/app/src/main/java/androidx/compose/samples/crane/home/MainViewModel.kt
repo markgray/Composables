@@ -43,7 +43,6 @@ import kotlin.random.Random
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -74,7 +73,7 @@ const val MAX_PEOPLE: Int = 4
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val destinationsRepository: DestinationsRepository,
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+    @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     /**
@@ -192,7 +191,7 @@ class MainViewModel @Inject constructor(
      * this [ViewModel] to launch a new coroutine, and in that coroutine we use our
      * [CoroutineDispatcher] field [defaultDispatcher] (that is injected by Hilt) as the
      * [CoroutineContext] for a coroutine which sets the [List] of [ExploreModel] variable
-     * `val newDestinations` to a [List] of [ExploreModel] created using the [List.filter] method of
+     * `val newDestinations` to a [List] of [ExploreModel] created using the [Iterable.filter] method of
      * the [DestinationsRepository.destinations] field of [destinationsRepository] to filter for only
      * those [ExploreModel]'s whose [City.nameToDisplay] property contains our [String] parameter
      * [newDestination]. When that coroutine finishes we set  the value of our [List] of [ExploreModel]
