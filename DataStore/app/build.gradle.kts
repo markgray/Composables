@@ -59,9 +59,9 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
 
     // architecture components
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.2")
 
     // ProtBuf
     implementation("androidx.datastore:datastore-core:1.1.7")
