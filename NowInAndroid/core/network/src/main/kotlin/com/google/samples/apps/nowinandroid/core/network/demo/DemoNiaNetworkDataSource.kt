@@ -58,7 +58,7 @@ class DemoNiaNetworkDataSource @Inject constructor(
      * @param ids A list of topic IDs to filter by. If null or empty, all topics are returned.
      * Note: In this demo implementation, the `ids` parameter is ignored, and all topics from
      * the JSON file are always returned.
-     * @return A list of [NetworkTopic] objects.
+     * @return A [List] of [NetworkTopic] objects.
      */
     override suspend fun getTopics(ids: List<String>?): List<NetworkTopic> =
         getDataFromJsonFile(fileName = TOPICS_ASSET)
@@ -69,7 +69,7 @@ class DemoNiaNetworkDataSource @Inject constructor(
      * @param ids A list of news resource IDs to retrieve. If null, all news resources are returned.
      * This parameter is currently ignored by this implementation, which always returns all
      * news resources from the JSON file.
-     * @return A list of [NetworkNewsResource] objects.
+     * @return A [List] of [NetworkNewsResource] objects.
      */
     override suspend fun getNewsResources(ids: List<String>?): List<NetworkNewsResource> =
         getDataFromJsonFile(fileName = NEWS_ASSET)

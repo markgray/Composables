@@ -30,7 +30,7 @@ import kotlinx.datetime.Instant
  * @property headerImageUrl The URL of the header image for the news resource.
  * @property publishDate The date the news resource was published.
  * @property type The type of the news resource.
- * @property followableTopics The list of topics associated with the news resource.
+ * @property followableTopics The [List] of [FollowableTopic] topics associated with the news resource.
  * @property isSaved Whether the user has saved (bookmarked) this news resource.
  * @property hasBeenViewed Whether the user has viewed this news resource.
  */
@@ -102,4 +102,4 @@ data class UserNewsResource internal constructor(
  * property set to our [UserData] parameter [userData].
  */
 fun List<NewsResource>.mapToUserNewsResources(userData: UserData): List<UserNewsResource> =
-    map { UserNewsResource(it, userData) }
+    map { UserNewsResource(newsResource = it, userData = userData) }

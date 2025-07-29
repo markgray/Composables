@@ -19,9 +19,11 @@ package com.google.samples.apps.nowinandroid.core.model.data
 /**
  * Class summarizing user interest data.
  *
- * @param bookmarkedNewsResources The set of news resources that the user has bookmarked.
- * @param viewedNewsResources The set of news resources that the user has viewed.
- * @param followedTopics The set of topics that the user has followed.
+ * @param bookmarkedNewsResources The [Set] of [String] identifying news resources that the user has
+ * bookmarked.
+ * @param viewedNewsResources The [Set] of [String] identifying news resources that the user has
+ * viewed.
+ * @param followedTopics The [Set] of [String] identifying topics that the user has followed.
  * @param themeBrand The user's preferred theme brand.
  * @param darkThemeConfig The user's preferred dark theme configuration.
  * @param useDynamicColor Whether the user has enabled dynamic color.
