@@ -40,7 +40,7 @@ data class Account(
     val lastName: String,
     val email: String,
     val altEmail: String,
-    @DrawableRes val avatar: Int,
+    @param:DrawableRes val avatar: Int,
     var isCurrentAccount: Boolean = false
 ) {
     /**

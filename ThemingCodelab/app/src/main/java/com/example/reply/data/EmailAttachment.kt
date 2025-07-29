@@ -10,6 +10,6 @@ import androidx.annotation.DrawableRes
  * @param contentDesc a description of what the drawable shows.
  */
 data class EmailAttachment(
-    @DrawableRes val resId: Int,
+    @param:DrawableRes val resId: Int,
     val contentDesc: String
 )
