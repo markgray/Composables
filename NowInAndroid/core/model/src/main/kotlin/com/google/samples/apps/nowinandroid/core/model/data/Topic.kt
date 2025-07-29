@@ -23,8 +23,8 @@ package com.google.samples.apps.nowinandroid.core.model.data
  * @property name The name of the topic.
  * @property shortDescription A brief description of the topic.
  * @property longDescription A more detailed description of the topic.
- * @property url A URL associated with the topic, for example, a link to a relevant webpage.
- * @property imageUrl A URL for an image representing the topic.
+ * @property url An URL associated with the topic, for example, a link to a relevant webpage.
+ * @property imageUrl An URL for an image representing the topic.
  */
 data class Topic(
     val id: String,

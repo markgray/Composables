@@ -19,7 +19,7 @@ package com.google.samples.apps.nowinandroid.core.network.demo
 import java.io.InputStream
 
 /**
- * A functional interface for opening assets in the demo.
+ * A functional interface for opening assets in the demo. Implemented by [JvmUnitTestDemoAssetManager].
  */
 fun interface DemoAssetManager {
     /**
