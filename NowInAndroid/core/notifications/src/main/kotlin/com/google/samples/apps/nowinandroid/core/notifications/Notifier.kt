@@ -22,5 +22,10 @@ import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
  * Interface for creating notifications in the app
  */
 interface Notifier {
+    /**
+     * Posts notifications for new [NewsResource]s.
+     *
+     * @param newsResources The list of [NewsResource]s to post notifications for.
+     */
     fun postNewsNotifications(newsResources: List<NewsResource>)
 }

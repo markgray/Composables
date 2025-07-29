@@ -23,10 +23,31 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+/**
+ * Hilt module that provides a [NiaNetworkDataSource] implementation for the demo flavor.
+ * This module is installed in the [SingletonComponent], meaning that the provided
+ * [NiaNetworkDataSource] will be a singleton and available throughout the application.
+ *  - @[Module]: This annotation marks the [FlavoredNetworkModule] object as a Hilt module.
+ *  Modules are responsible for providing instances of classes that cannot be constructor
+ *  -injected (e.g., interfaces, classes from external libraries, or classes that require complex
+ *  setup).
+ *  - @[InstallIn] ([SingletonComponent]::class): This annotation tells Hilt that the bindings
+ *  defined in this module should be available in the [SingletonComponent]. The [SingletonComponent]
+ *  is a Hilt component that lives as long as the application itself. This means that any
+ *  dependencies provided by this module will be singletons (only one instance will be created and
+ *  shared throughout the app).
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 internal interface FlavoredNetworkModule {
 
+    /**
+     * Binds [DemoNiaNetworkDataSource] to [NiaNetworkDataSource] for the demo flavor.
+     * This function is used by Hilt to inject the correct implementation of [NiaNetworkDataSource]
+     * when the app is built with the demo flavor.
+     *
+     * @param impl The implementation of [DemoNiaNetworkDataSource] to be used.
+     */
     @Binds
     fun binds(impl: DemoNiaNetworkDataSource): NiaNetworkDataSource
 }

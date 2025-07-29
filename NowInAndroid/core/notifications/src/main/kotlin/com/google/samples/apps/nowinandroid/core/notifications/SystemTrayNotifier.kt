@@ -46,17 +46,24 @@ private const val NEWS_NOTIFICATION_GROUP = "NEWS_NOTIFICATIONS"
 private const val DEEP_LINK_SCHEME_AND_HOST = "https://www.nowinandroid.apps.samples.google.com"
 private const val DEEP_LINK_FOR_YOU_PATH = "foryou"
 private const val DEEP_LINK_BASE_PATH = "$DEEP_LINK_SCHEME_AND_HOST/$DEEP_LINK_FOR_YOU_PATH"
-const val DEEP_LINK_NEWS_RESOURCE_ID_KEY = "linkedNewsResourceId"
-const val DEEP_LINK_URI_PATTERN = "$DEEP_LINK_BASE_PATH/{$DEEP_LINK_NEWS_RESOURCE_ID_KEY}"
+const val DEEP_LINK_NEWS_RESOURCE_ID_KEY: String = "linkedNewsResourceId"
+const val DEEP_LINK_URI_PATTERN: String = "$DEEP_LINK_BASE_PATH/{$DEEP_LINK_NEWS_RESOURCE_ID_KEY}"
 
 /**
  * Implementation of [Notifier] that displays notifications in the system tray.
  */
 @Singleton
 internal class SystemTrayNotifier @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) : Notifier {
 
+    /**
+     * Posts notifications for new or updated news resources.
+     *
+     * If the user hasn't granted the `POST_NOTIFICATIONS` permission, this function is a no-op.
+     * TODO: Continue here.
+     * @param newsResources The list of news resources to post notifications for.
+     */
     override fun postNewsNotifications(
         newsResources: List<NewsResource>,
     ) = with(context) {

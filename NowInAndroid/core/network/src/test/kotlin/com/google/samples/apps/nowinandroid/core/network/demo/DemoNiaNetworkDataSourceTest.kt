@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantValueArgument")
+
 package com.google.samples.apps.nowinandroid.core.network.demo
 
 import JvmUnitTestDemoAssetManager
 import com.google.samples.apps.nowinandroid.core.network.model.NetworkNewsResource
 import com.google.samples.apps.nowinandroid.core.network.model.NetworkTopic
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -29,12 +32,25 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
+/**
+ * Tests for [DemoNiaNetworkDataSource] that ensure that the json files are correctly parsed.
+ */
 class DemoNiaNetworkDataSourceTest {
 
+    /**
+     * The [DemoNiaNetworkDataSource] that is being tested.
+     */
     private lateinit var subject: DemoNiaNetworkDataSource
 
+    /**
+     * A [StandardTestDispatcher] for testing coroutines.
+     */
     private val testDispatcher = StandardTestDispatcher()
 
+    /**
+     * Sets up the test environment by initializing the [DemoNiaNetworkDataSource] with a
+     * test dispatcher, a JSON parser, and a demo asset manager.
+     */
     @Before
     fun setUp() {
         subject = DemoNiaNetworkDataSource(
@@ -44,11 +60,15 @@ class DemoNiaNetworkDataSourceTest {
         )
     }
 
+    /**
+     * Tests that the [DemoNiaNetworkDataSource.getTopics] method correctly deserializes the
+     * topics from the json file.
+     */
     @Suppress("ktlint:standard:max-line-length")
     @Test
-    fun testDeserializationOfTopics() = runTest(testDispatcher) {
+    fun testDeserializationOfTopics(): TestResult = runTest(context = testDispatcher) {
         assertEquals(
-            NetworkTopic(
+            expected = NetworkTopic(
                 id = "1",
                 name = "Headlines",
                 shortDescription = "News you'll definitely be interested in",
@@ -56,15 +76,19 @@ class DemoNiaNetworkDataSourceTest {
                 url = "",
                 imageUrl = "https://firebasestorage.googleapis.com/v0/b/now-in-android.appspot.com/o/img%2Fic_topic_Headlines.svg?alt=media&token=506faab0-617a-4668-9e63-4a2fb996603f",
             ),
-            subject.getTopics().first(),
+            actual = subject.getTopics().first(),
         )
     }
 
+    /**
+     * Tests that the [DemoNiaNetworkDataSource.getNewsResources] method correctly deserializes the
+     * news resources from the json file.
+     */
     @Suppress("ktlint:standard:max-line-length")
     @Test
-    fun testDeserializationOfNewsResources() = runTest(testDispatcher) {
+    fun testDeserializationOfNewsResources(): TestResult = runTest(context = testDispatcher) {
         assertEquals(
-            NetworkNewsResource(
+            expected = NetworkNewsResource(
                 id = "125",
                 title = "Android Basics with Compose",
                 content = "We released the first two units of Android Basics with Compose, our first free course that teaches Android Development with Jetpack Compose to anyone; you do not need any prior programming experience other than basic computer literacy to get started. ",
@@ -82,7 +106,7 @@ class DemoNiaNetworkDataSourceTest {
                 type = "Codelab",
                 topics = listOf("2", "3", "10"),
             ),
-            subject.getNewsResources().find { it.id == "125" },
+            actual = subject.getNewsResources().find { it.id == "125" },
         )
     }
 }

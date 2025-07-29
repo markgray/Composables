@@ -24,11 +24,36 @@ import com.google.samples.apps.nowinandroid.core.network.model.NetworkTopic
  * Interface representing network calls to the NIA backend
  */
 interface NiaNetworkDataSource {
+    /**
+     * Fetches the topics from the network
+     *
+     * @param ids The list of topic ids to fetch. If `null`, fetches all topics.
+     * @return The list of topics that match the [ids]
+     */
     suspend fun getTopics(ids: List<String>? = null): List<NetworkTopic>
 
+    /**
+     * Fetches the news resources from the network
+     *
+     * @param ids The list of news resource ids to fetch. If `null`, fetches all news resources.
+     * @return The list of news resources that match the [ids]
+     */
     suspend fun getNewsResources(ids: List<String>? = null): List<NetworkNewsResource>
 
+    /**
+     * Fetches the change list for topics from the network
+     *
+     * @param after The change list version to fetch after. If `null`, it fetches the initial change
+     * list.
+     * @return The list of change lists for topics
+     */
     suspend fun getTopicChangeList(after: Int? = null): List<NetworkChangeList>
 
+    /**
+     * Fetches the change list for news resources from the network
+     *
+     * @param after The change list version to fetch after. If `null`, fetches the initial change list.
+     * @return The list of change lists for news resources
+     */
     suspend fun getNewsResourceChangeList(after: Int? = null): List<NetworkChangeList>
 }

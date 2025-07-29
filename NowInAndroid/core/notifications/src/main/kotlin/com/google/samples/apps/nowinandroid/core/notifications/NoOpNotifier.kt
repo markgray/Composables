@@ -20,8 +20,13 @@ import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import javax.inject.Inject
 
 /**
- * Implementation of [Notifier] which does nothing. Useful for tests and previews.
+ * Implementation of [Notifier] that does nothing. Useful for tests and previews.
  */
 internal class NoOpNotifier @Inject constructor() : Notifier {
+    /**
+     * Does nothing. In the real app it Posts notifications for new or updated news resources.
+     *
+     * @param newsResources The list of news resources to post notifications for.
+     */
     override fun postNewsNotifications(newsResources: List<NewsResource>) = Unit
 }

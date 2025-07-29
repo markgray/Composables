@@ -24,6 +24,18 @@ import kotlinx.serialization.Serializable
  *
  * Change lists are a representation of a server-side map like data structure of model ids to
  * metadata about that model. In a single change list, a given model id can only show up once.
+ *  - @[OptIn] ([InternalSerializationApi]::class): This annotation indicates that the class uses
+ *  experimental or internal features of the Kotlinx Serialization library. It's a way for library
+ *  authors to signal that certain APIs might change in the future.
+ *  - @[Serializable]: This annotation comes from the Kotlinx Serialization library. It indicates
+ *  that instances of this class can be automatically converted to and from a serialized format
+ *  (like JSON). This is crucial for network communication, as data needs to be in a format that
+ *  can be transmitted over the internet.
+ *
+ * @property id The id of the model that was changed
+ * @property changeListVersion Unique consecutive, monotonically increasing version number in the
+ * collection describing the relative point of change between models in the collection
+ * @property isDelete Summarizes the update to the model; whether it was deleted or updated.
  */
 @OptIn(InternalSerializationApi::class)
 @Serializable

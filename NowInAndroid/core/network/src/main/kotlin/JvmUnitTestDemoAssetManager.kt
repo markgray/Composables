@@ -26,16 +26,37 @@ import java.util.Properties
  */
 
 internal object JvmUnitTestDemoAssetManager : DemoAssetManager {
+    /**
+     * The path to the Android Asset file. This property is only available when running JVM unit tests.
+     * @see <a href="https://developer.android.com/studio/build/gradle-tips#access-build-config-fields-from-test">Access build config fields from test</a>
+     */
     private val config =
-        requireNotNull(javaClass.getResource("com/android/tools/test_config.properties")) {
+        requireNotNull(value = javaClass.getResource("com/android/tools/test_config.properties")) {
             """
             Missing Android resources properties file.
             Did you forget to enable the feature in the gradle build file?
             android.testOptions.unitTests.isIncludeAndroidResources = true
             """.trimIndent()
         }
-    private val properties = Properties().apply { config.openStream().use(::load) }
+
+    /**
+     * Lazily loaded [Properties] which contains the key "android_merged_assets" whose value is the
+     * path to the directory that contains the `/assets` files.
+     */
+    private val properties = Properties().apply { config.openStream().use(block = ::load) }
+
+    /**
+     * The `assets` property is a [File] object that points to the merged assets directory.
+     * It is initialized using the value of the "android_merged_assets" property from the
+     * `properties` object.
+     */
     private val assets = File(properties["android_merged_assets"].toString())
 
+    /**
+     * Opens an asset file as an [InputStream].
+     *
+     * @param fileName The name of the asset file to open.
+     * @return An [InputStream] for reading the asset file.
+     */
     override fun open(fileName: String): InputStream = File(assets, fileName).inputStream()
 }
