@@ -26,6 +26,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 
+/**
+ * Test implementation of the [NewsRepository] that allows injecting specific news resources
+ * for testing purposes. This class is useful for creating controlled test environments
+ * where the behavior of the news data can be precisely managed.
+ * TODO: Continue here.
+ * It uses a [MutableSharedFlow] to simulate a stream of news resources,
+ * allowing tests to emit new lists of news resources and observe how the UI or other
+ * components react to these changes.
+ *
+ * The `syncWith` method is overridden to always return `true`, simplifying synchronization
+ * logic in tests where the actual synchronization process is not the focus of the test.
+ */
 class TestNewsRepository : NewsRepository {
 
     /**
@@ -55,5 +67,5 @@ class TestNewsRepository : NewsRepository {
         newsResourcesFlow.tryEmit(newsResources)
     }
 
-    override suspend fun syncWith(synchronizer: Synchronizer) = true
+    override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true
 }

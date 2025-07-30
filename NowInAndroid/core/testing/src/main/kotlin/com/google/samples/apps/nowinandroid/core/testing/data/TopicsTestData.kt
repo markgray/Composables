@@ -20,6 +20,9 @@ package com.google.samples.apps.nowinandroid.core.testing.data
 
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 
+/**
+ * Test data for [Topic]s.
+ */
 val topicsTestData: List<Topic> = listOf(
     Topic(
         id = "2",

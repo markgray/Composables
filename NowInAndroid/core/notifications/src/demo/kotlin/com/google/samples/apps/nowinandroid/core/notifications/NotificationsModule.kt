@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.nowinandroid.core.notifications
 
 import dagger.Binds
@@ -21,6 +23,21 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+/**
+ * Hilt module that provides a binding for [Notifier].
+ *
+ * This module is installed in the [SingletonComponent], meaning that the [Notifier]
+ * instance provided by this module will be a singleton and will be available
+ * throughout the application's lifecycle. The meaning of the annotations are:
+ *  - @[Module]: This is a Dagger module that provides dependencies.
+ *  - @[InstallIn]: This annotation tells Dagger to install the module in the
+ *  [SingletonComponent], which is the top-level Dagger component that
+ *  contains all the dependencies provided by the application.
+ *  - @[SingletonComponent]: This is a Dagger component that is installed
+ *  in the application's singleton scope.
+ *  - @[Binds]: This annotation tells Dagger to bind the [NoOpNotifier]
+ *  implementation to the [Notifier] interface.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class NotificationsModule {

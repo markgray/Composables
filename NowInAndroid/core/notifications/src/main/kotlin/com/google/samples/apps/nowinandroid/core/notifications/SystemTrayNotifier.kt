@@ -38,22 +38,69 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- *  TODO: Continue here.
+ * The maximum number of notifications that can be displayed at once.
  */
 private const val MAX_NUM_NOTIFICATIONS = 5
+
+/**
+ * The name of the activity to start when a notification is clicked.
+ * This should be the fully qualified name of the activity.
+ */
 private const val TARGET_ACTIVITY_NAME = "com.google.samples.apps.nowinandroid.MainActivity"
+
+/**
+ * The request code for the news notification pending intent.
+ */
 private const val NEWS_NOTIFICATION_REQUEST_CODE = 0
+
+/**
+ * The ID of the summary notification for news updates.
+ */
 private const val NEWS_NOTIFICATION_SUMMARY_ID = 1
+
+/**
+ * The ID of the notification channel for news updates.
+ */
 private const val NEWS_NOTIFICATION_CHANNEL_ID = ""
+
+/**
+ * The group of notifications for news updates.
+ */
 private const val NEWS_NOTIFICATION_GROUP = "NEWS_NOTIFICATIONS"
+
+/**
+ * The deep link scheme and host for news updates.
+ */
 private const val DEEP_LINK_SCHEME_AND_HOST = "https://www.nowinandroid.apps.samples.google.com"
+
+/**
+ * The path for news updates.
+ */
 private const val DEEP_LINK_FOR_YOU_PATH = "foryou"
+
+/**
+ * The base path for news updates.
+ */
 private const val DEEP_LINK_BASE_PATH = "$DEEP_LINK_SCHEME_AND_HOST/$DEEP_LINK_FOR_YOU_PATH"
+
+/**
+ * The key for the news resource ID in a deep link.
+ */
 const val DEEP_LINK_NEWS_RESOURCE_ID_KEY: String = "linkedNewsResourceId"
+
+/**
+ * The deep link URI pattern for news updates.
+ */
 const val DEEP_LINK_URI_PATTERN: String = "$DEEP_LINK_BASE_PATH/{$DEEP_LINK_NEWS_RESOURCE_ID_KEY}"
 
 /**
  * Implementation of [Notifier] that displays notifications in the system tray.
+ * - @[Singleton]: This annotation indicates that only one instance of [SystemTrayNotifier] will be
+ * created and shared throughout the application.
+ * - @[Inject] constructor signifies that its dependencies will be provided by Hilt.
+ * - @param:[ApplicationContext] it takes an application Context as a dependency injected by Hilt.
+ *
+ * @property context The application context injected by Hilt.
  */
 @Singleton
 internal class SystemTrayNotifier @Inject constructor(
@@ -65,29 +112,34 @@ internal class SystemTrayNotifier @Inject constructor(
      *
      * If the user hasn't granted the `POST_NOTIFICATIONS` permission, this function is a no-op.
      *
-     * @param newsResources The list of news resources to post notifications for.
+     * @param newsResources The list of news resources to post notifications for. The list is
+     * truncated to [MAX_NUM_NOTIFICATIONS]. A summary notification is also posted with a title
+     * summarizing the number of new news resources. The individual notifications are grouped
+     * under the summary notification.
      */
     override fun postNewsNotifications(
         newsResources: List<NewsResource>,
-    ) = with(context) {
+    ) = with(receiver = context) {
         if (checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
             return
         }
 
-        val truncatedNewsResources = newsResources.take(MAX_NUM_NOTIFICATIONS)
+        val truncatedNewsResources: List<NewsResource> =
+            newsResources.take(n = MAX_NUM_NOTIFICATIONS)
 
-        val newsNotifications = truncatedNewsResources.map { newsResource ->
-            createNewsNotification {
-                setSmallIcon(R.drawable.core_notifications_ic_nia_notification)
-                    .setContentTitle(newsResource.title)
-                    .setContentText(newsResource.content)
-                    .setContentIntent(newsPendingIntent(newsResource))
-                    .setGroup(NEWS_NOTIFICATION_GROUP)
-                    .setAutoCancel(true)
+        val newsNotifications: List<Notification> =
+            truncatedNewsResources.map { newsResource: NewsResource ->
+                createNewsNotification {
+                    setSmallIcon(R.drawable.core_notifications_ic_nia_notification)
+                        .setContentTitle(newsResource.title)
+                        .setContentText(newsResource.content)
+                        .setContentIntent(newsPendingIntent(newsResource))
+                        .setGroup(NEWS_NOTIFICATION_GROUP)
+                        .setAutoCancel(true)
+                }
             }
-        }
-        val summaryNotification = createNewsNotification {
-            val title = getString(
+        val summaryNotification: Notification = createNewsNotification {
+            val title: String = getString(
                 R.string.core_notifications_news_notification_group_summary,
                 truncatedNewsResources.size,
             )
@@ -103,8 +155,9 @@ internal class SystemTrayNotifier @Inject constructor(
         }
 
         // Send the notifications
-        val notificationManager = NotificationManagerCompat.from(this)
-        newsNotifications.forEachIndexed { index, notification ->
+        val notificationManager: NotificationManagerCompat =
+            NotificationManagerCompat.from(this)
+        newsNotifications.forEachIndexed { index: Int, notification: Notification ->
             notificationManager.notify(
                 truncatedNewsResources[index].id.hashCode(),
                 notification,
@@ -114,19 +167,36 @@ internal class SystemTrayNotifier @Inject constructor(
     }
 
     /**
-     * Creates an inbox style summary notification for news updates
+     * Creates an [InboxStyle] notification for news updates.
+     *
+     * This function constructs an inbox-style notification, which is used for displaying a list of
+     * items. Each news resource's title is added as a line in the notification. The notification's
+     * big content title and summary text are set to the [String] parameter [title].
+     *
+     * @param newsResources The list of [NewsResource] objects to be displayed in the notification.
+     * The title of each news resource will be a line in the inbox style.
+     * @param title The title for the notification, used as the big content title and summary text.
+     * @return An [InboxStyle] object configured with the news resources and title.
      */
     private fun newsNotificationStyle(
         newsResources: List<NewsResource>,
         title: String,
     ): InboxStyle = newsResources
-        .fold(InboxStyle()) { inboxStyle, newsResource -> inboxStyle.addLine(newsResource.title) }
+        .fold(initial = InboxStyle()) { inboxStyle: InboxStyle, newsResource: NewsResource ->
+            inboxStyle.addLine(newsResource.title)
+        }
         .setBigContentTitle(title)
         .setSummaryText(title)
 }
 
 /**
- * Creates a notification for configured for news updates
+ * Creates a notification for news updates.
+ *
+ * This function ensures that the notification channel for news updates exists before creating the
+ * notification.
+ *
+ * @param block A lambda function that configures the notification builder.
+ * @return The created notification.
  */
 private fun Context.createNewsNotification(
     block: NotificationCompat.Builder.() -> Unit,
@@ -137,12 +207,21 @@ private fun Context.createNewsNotification(
         NEWS_NOTIFICATION_CHANNEL_ID,
     )
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        .apply(block)
+        .apply(block = block)
         .build()
 }
 
 /**
- * Ensures that a notification channel is present if applicable
+ * Ensures that the notification channel for news updates exists.
+ *
+ * This function is a no-op if the device's SDK version is lower than Android Oreo (API level 26),
+ * as notification channels were introduced in that version.
+ *
+ * The notification channel is created with the ID [NEWS_NOTIFICATION_CHANNEL_ID], the name
+ * specified by the string resource `R.string.core_notifications_news_notification_channel_name`,
+ * and the description specified by the string resource
+ * `R.string.core_notifications_news_notification_channel_description`.
+ * The importance level is set to [NotificationManager.IMPORTANCE_DEFAULT].
  */
 private fun Context.ensureNotificationChannelExists() {
     if (VERSION.SDK_INT < VERSION_CODES.O) return
@@ -158,6 +237,17 @@ private fun Context.ensureNotificationChannelExists() {
     NotificationManagerCompat.from(this).createNotificationChannel(channel)
 }
 
+/**
+ * Creates a [PendingIntent] that will open the app to the specific [newsResource] when the
+ * notification is clicked.
+ *
+ * The [PendingIntent] is created with the [Intent.ACTION_VIEW] action, the deep link URI for the
+ * [newsResource], and the [TARGET_ACTIVITY_NAME] component. The flags
+ * [PendingIntent.FLAG_UPDATE_CURRENT] and [PendingIntent.FLAG_IMMUTABLE] are used.
+ *
+ * @param newsResource The news resource to create the deep link for.
+ * @return The created [PendingIntent].
+ */
 private fun Context.newsPendingIntent(
     newsResource: NewsResource,
 ): PendingIntent? = PendingIntent.getActivity(
@@ -174,4 +264,11 @@ private fun Context.newsPendingIntent(
     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
 )
 
+/**
+ * Creates a deep link URI for the given news resource.
+ *
+ * This URI can be used to navigate directly to the news resource in the app.
+ *
+ * @return The deep link URI for the news resource.
+ */
 private fun NewsResource.newsDeepLinkUri() = "$DEEP_LINK_BASE_PATH/$id".toUri()

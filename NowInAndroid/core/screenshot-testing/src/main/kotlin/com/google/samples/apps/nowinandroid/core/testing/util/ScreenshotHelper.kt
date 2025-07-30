@@ -46,6 +46,7 @@ import com.google.android.apps.common.testing.accessibility.framework.Accessibil
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityViewCheckResult
 import com.google.android.apps.common.testing.accessibility.framework.integrations.espresso.AccessibilityViewCheckException
 import com.google.android.apps.common.testing.accessibility.framework.utils.contrast.BitmapImage
+import com.google.android.apps.common.testing.accessibility.framework.utils.contrast.Image
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -53,7 +54,12 @@ import org.robolectric.RuntimeEnvironment
 import java.io.File
 import java.io.FileOutputStream
 
-val DefaultRoborazziOptions =
+/**
+ * Default Roborazzi options for screenshot tests.
+ * This object provides a baseline configuration for Roborazzi, ensuring consistency across tests.
+ * It's configured for pixel-perfect matching and resizes images to 50% to reduce file size.
+ */
+val DefaultRoborazziOptions: RoborazziOptions =
     RoborazziOptions(
         // Pixel-perfect matching
         compareOptions = CompareOptions(changeThreshold = 0f),
@@ -61,11 +67,42 @@ val DefaultRoborazziOptions =
         recordOptions = RecordOptions(resizeScale = 0.5),
     )
 
+/**
+ * Default test devices to be used for screenshot tests.
+ */
 enum class DefaultTestDevices(val description: String, val spec: String) {
-    PHONE("phone", "spec:shape=Normal,width=640,height=360,unit=dp,dpi=480"),
-    FOLDABLE("foldable", "spec:shape=Normal,width=673,height=841,unit=dp,dpi=480"),
-    TABLET("tablet", "spec:shape=Normal,width=1280,height=800,unit=dp,dpi=480"),
+    /**
+     * A typical phone screen.
+     */
+    PHONE(
+        description = "phone",
+        spec = "spec:shape=Normal,width=640,height=360,unit=dp,dpi=480",
+    ),
+
+    /**
+     * A typical foldable screen.
+     */
+    FOLDABLE(
+        description = "foldable",
+        spec = "spec:shape=Normal,width=673,height=841,unit=dp,dpi=480",
+    ),
+
+    /**
+     * A typical tablet screen.
+     */
+    TABLET(
+        description = "tablet",
+        spec = "spec:shape=Normal,width=1280,height=800,unit=dp,dpi=480",
+    )
 }
+
+/**
+ * Captures a screenshot of the [body] composable for each device in [DefaultTestDevices].
+ *
+ * @param screenshotName The name of the screenshot.
+ * @param accessibilitySuppressions A matcher for accessibility checks to suppress.
+ * @param body The composable to capture.
+ */
 fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.captureMultiDevice(
     screenshotName: String,
     accessibilitySuppressions: Matcher<in AccessibilityViewCheckResult> = Matchers.not(Matchers.anything()),
@@ -82,6 +119,17 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
     }
 }
 
+/**
+ * Captures a screenshot of the [body] composable for a given [deviceName] and [deviceSpec].
+ *
+ * @param deviceName The name of the device.
+ * @param deviceSpec The device spec string.
+ * @param screenshotName The name of the screenshot.
+ * @param roborazziOptions The Roborazzi options to use.
+ * @param accessibilitySuppressions A matcher for accessibility checks to suppress.
+ * @param darkMode Whether to capture the screenshot in dark mode.
+ * @param body The composable to capture.
+ */
 fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.captureForDevice(
     deviceName: String,
     deviceSpec: String,
@@ -91,17 +139,17 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
     darkMode: Boolean = false,
     body: @Composable () -> Unit,
 ) {
-    val (width, height, dpi) = extractSpecs(deviceSpec)
+    val (width: Int, height: Int, dpi: Int) = extractSpecs(deviceSpec = deviceSpec)
 
     // Set qualifiers from specs
     RuntimeEnvironment.setQualifiers("w${width}dp-h${height}dp-${dpi}dpi")
 
     this.activity.setContent {
         CompositionLocalProvider(
-            LocalInspectionMode provides true,
+            value = LocalInspectionMode provides true,
         ) {
             DeviceConfigurationOverride(
-                override = DeviceConfigurationOverride.Companion.DarkMode(darkMode),
+                override = DeviceConfigurationOverride.Companion.DarkMode(isDarkMode = darkMode),
             ) {
                 body()
             }
@@ -109,7 +157,7 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
     }
 
     // Run Accessibility checks first so logging is included
-    val accessibilityException = try {
+    val accessibilityException: AccessibilityViewCheckException? = try {
         this.onRoot().checkRoboAccessibility(
             roborazziATFAccessibilityCheckOptions = RoborazziATFAccessibilityCheckOptions(
                 failureLevel = CheckLevel.Error,
@@ -126,16 +174,18 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
 
     this.onRoot()
         .captureRoboImage(
-            "src/test/screenshots/${screenshotName}_$deviceName.png",
+            filePath = "src/test/screenshots/${screenshotName}_$deviceName.png",
             roborazziOptions = roborazziOptions,
         )
 
     // Rethrow the Accessibility exception once screenshots have passed
     if (accessibilityException != null) {
-        accessibilityException.results.forEachIndexed { index, check ->
-            val viewImage = check.viewImage
+        accessibilityException.results.forEachIndexed { index: Int, check: AccessibilityViewCheckResult ->
+            val viewImage: Image? = check.viewImage
             if (viewImage is BitmapImage) {
-                val file = File("build/outputs/roborazzi/${screenshotName}_${deviceName}_$index.png")
+                val file =
+                    File("build/outputs/roborazzi/${screenshotName}_${deviceName}_$index.png")
+                @Suppress("ReplacePrintlnWithLogging")
                 println("Writing check.viewImage to $file")
                 FileOutputStream(
                     file,
@@ -150,8 +200,16 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
 }
 
 /**
- * Takes six screenshots combining light/dark and default/Android themes and whether dynamic color
- * is enabled.
+ * Takes screenshots of the given [content] in the specified permutations of light/dark,
+ * default/Android theme, and dynamic color enabled/disabled.
+ *
+ * @param name The name of the screenshot.
+ * @param overrideFileName The name of the screenshot file. If null, [name] will be used.
+ * @param shouldCompareDarkMode Whether to compare dark and light mode.
+ * @param shouldCompareDynamicColor Whether to compare dynamic color enabled and disabled.
+ * @param shouldCompareAndroidTheme Whether to compare default and Android theme.
+ * @param content The composable to capture. The current theme description will be passed to this
+ * composable.
  */
 fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.captureMultiTheme(
     name: String,
@@ -161,17 +219,20 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
     shouldCompareAndroidTheme: Boolean = true,
     content: @Composable (desc: String) -> Unit,
 ) {
-    val darkModeValues = if (shouldCompareDarkMode) listOf(true, false) else listOf(false)
-    val dynamicThemingValues = if (shouldCompareDynamicColor) listOf(true, false) else listOf(false)
-    val androidThemeValues = if (shouldCompareAndroidTheme) listOf(true, false) else listOf(false)
+    val darkModeValues: List<Boolean> =
+        if (shouldCompareDarkMode) listOf(true, false) else listOf(false)
+    val dynamicThemingValues: List<Boolean> =
+        if (shouldCompareDynamicColor) listOf(true, false) else listOf(false)
+    val androidThemeValues: List<Boolean> =
+        if (shouldCompareAndroidTheme) listOf(true, false) else listOf(false)
 
-    var darkMode by mutableStateOf(true)
-    var dynamicTheming by mutableStateOf(false)
-    var androidTheme by mutableStateOf(false)
+    var darkMode: Boolean by mutableStateOf(value = true)
+    var dynamicTheming: Boolean by mutableStateOf(value = false)
+    var androidTheme: Boolean by mutableStateOf(value = false)
 
     this.setContent {
         CompositionLocalProvider(
-            LocalInspectionMode provides true,
+            value = LocalInspectionMode provides true,
         ) {
             NiaTheme(
                 androidTheme = androidTheme,
@@ -180,7 +241,7 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
             ) {
                 // Keying is necessary in some cases (e.g. animations)
                 key(androidTheme, darkMode, dynamicTheming) {
-                    val description = generateDescription(
+                    val description: String = generateDescription(
                         shouldCompareDarkMode,
                         darkMode,
                         shouldCompareAndroidTheme,
@@ -195,26 +256,29 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
     }
 
     // Create permutations
-    darkModeValues.forEach { isDarkMode ->
+    darkModeValues.forEach { isDarkMode: Boolean ->
+        @Suppress("AssignedValueIsNeverRead")
         darkMode = isDarkMode
         val darkModeDesc = if (isDarkMode) "dark" else "light"
 
-        androidThemeValues.forEach { isAndroidTheme ->
+        androidThemeValues.forEach { isAndroidTheme: Boolean ->
+            @Suppress("AssignedValueIsNeverRead")
             androidTheme = isAndroidTheme
-            val androidThemeDesc = if (isAndroidTheme) "androidTheme" else "defaultTheme"
+            val androidThemeDesc: String = if (isAndroidTheme) "androidTheme" else "defaultTheme"
 
-            dynamicThemingValues.forEach dynamicTheme@{ isDynamicTheming ->
+            dynamicThemingValues.forEach dynamicTheme@{ isDynamicTheming: Boolean ->
                 // Skip tests with both Android Theme and Dynamic color as they're incompatible.
                 if (isAndroidTheme && isDynamicTheming) return@dynamicTheme
 
+                @Suppress("AssignedValueIsNeverRead")
                 dynamicTheming = isDynamicTheming
-                val dynamicThemingDesc = if (isDynamicTheming) "dynamic" else "notDynamic"
+                val dynamicThemingDesc: String = if (isDynamicTheming) "dynamic" else "notDynamic"
 
-                val filename = overrideFileName ?: name
+                val filename: String = overrideFileName ?: name
 
                 this.onRoot()
                     .captureRoboImage(
-                        "src/test/screenshots/" +
+                        filePath = "src/test/screenshots/" +
                             "$name/$filename" +
                             "_$darkModeDesc" +
                             "_$androidThemeDesc" +
@@ -227,6 +291,17 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
     }
 }
 
+/**
+ * Generates a description based on the given theme parameters.
+ *
+ * @param shouldCompareDarkMode Whether to include dark mode in the description.
+ * @param darkMode Whether dark mode is enabled.
+ * @param shouldCompareAndroidTheme Whether to include Android theme in the description.
+ * @param androidTheme Whether Android theme is enabled.
+ * @param shouldCompareDynamicColor Whether to include dynamic color in the description.
+ * @param dynamicTheming Whether dynamic theming is enabled.
+ * @return A string describing the current theme configuration.
+ */
 @Composable
 private fun generateDescription(
     shouldCompareDarkMode: Boolean,
@@ -236,7 +311,7 @@ private fun generateDescription(
     shouldCompareDynamicColor: Boolean,
     dynamicTheming: Boolean,
 ): String {
-    val description = "" +
+    val description: String = "" +
         if (shouldCompareDarkMode) {
             if (darkMode) "Dark" else "Light"
         } else {
@@ -257,15 +332,27 @@ private fun generateDescription(
 }
 
 /**
- * Extracts some properties from the spec string. Note that this function is not exhaustive.
+ * Extracts width, height, and dpi from the device spec string.
+ * This function is not exhaustive and only extracts the mentioned properties.
+ *
+ * @param deviceSpec The device spec string, e.g., "spec:shape=Normal,width=640,height=360,unit=dp,dpi=480".
+ * @return [TestDeviceSpecs] containing the extracted width, height, and dpi. Defaults to width=640,
+ * height=480, dpi=480 if not found in the spec string.
  */
 private fun extractSpecs(deviceSpec: String): TestDeviceSpecs {
-    val specs = deviceSpec.substringAfter("spec:")
+    val specs: Map<String, String> = deviceSpec.substringAfter(delimiter = "spec:")
         .split(",").map { it.split("=") }.associate { it[0] to it[1] }
-    val width = specs["width"]?.toInt() ?: 640
-    val height = specs["height"]?.toInt() ?: 480
-    val dpi = specs["dpi"]?.toInt() ?: 480
-    return TestDeviceSpecs(width, height, dpi)
+    val width: Int = specs["width"]?.toInt() ?: 640
+    val height: Int = specs["height"]?.toInt() ?: 480
+    val dpi: Int = specs["dpi"]?.toInt() ?: 480
+    return TestDeviceSpecs(width = width, height = height, dpi = dpi)
 }
 
+/**
+ * Data class representing the specifications of a test device.
+ *
+ * @property width The width of the device screen in dp.
+ * @property height The height of the device screen in dp.
+ * @property dpi The screen density in dots per inch (dpi).
+ */
 data class TestDeviceSpecs(val width: Int, val height: Int, val dpi: Int)

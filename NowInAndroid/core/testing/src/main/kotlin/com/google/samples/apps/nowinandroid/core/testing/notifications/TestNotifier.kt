@@ -24,10 +24,25 @@ import com.google.samples.apps.nowinandroid.core.notifications.Notifier
  */
 class TestNotifier : Notifier {
 
+    /**
+     * A list of news resources that have been posted via [postNewsNotifications].
+     * The items in the list are the lists of news resources that were passed to
+     * [postNewsNotifications].
+     */
     private val mutableAddedNewResources = mutableListOf<List<NewsResource>>()
 
+    /**
+     * A list of news resources that have been posted via [postNewsNotifications].
+     * The items in the list are the lists of news resources that were passed to
+     * [postNewsNotifications].
+     */
     val addedNewsResources: List<List<NewsResource>> = mutableAddedNewResources
 
+    /**
+     * Adds the given [newsResources] to the list of posted news resources.
+     *
+     * @param newsResources The list of news resources to be posted.
+     */
     override fun postNewsNotifications(newsResources: List<NewsResource>) {
         mutableAddedNewResources.add(newsResources)
     }

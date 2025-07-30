@@ -21,6 +21,9 @@ package com.google.samples.apps.nowinandroid.core.testing.data
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 
+/**
+ * Test data for [FollowableTopic]
+ */
 val followableTopicTestData: List<FollowableTopic> = listOf(
     FollowableTopic(
         topic = Topic(
