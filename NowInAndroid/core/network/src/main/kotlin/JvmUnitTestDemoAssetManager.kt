@@ -24,7 +24,6 @@ import java.util.Properties
  * It must remain on the root package for an easier [Class.getResource] with relative paths.
  * @see <a href="https://developer.android.com/reference/tools/gradle-api/7.3/com/android/build/api/dsl/UnitTestOptions">UnitTestOptions</a>
  */
-
 internal object JvmUnitTestDemoAssetManager : DemoAssetManager {
     /**
      * The path to the Android Asset file. This property is only available when running JVM unit tests.
@@ -58,5 +57,6 @@ internal object JvmUnitTestDemoAssetManager : DemoAssetManager {
      * @param fileName The name of the asset file to open.
      * @return An [InputStream] for reading the asset file.
      */
-    override fun open(fileName: String): InputStream = File(assets, fileName).inputStream()
+    override fun open(fileName: String): InputStream =
+        File(assets, fileName).inputStream()
 }

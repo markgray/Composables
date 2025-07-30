@@ -49,7 +49,8 @@ class DemoNiaNetworkDataSourceTest {
 
     /**
      * Sets up the test environment by initializing the [DemoNiaNetworkDataSource] with a
-     * test dispatcher, a JSON parser, and a demo asset manager.
+     * test dispatcher, a JSON parser, and a demo asset manager. @[Before] causes this method
+     * to be run before the Test methods.
      */
     @Before
     fun setUp() {

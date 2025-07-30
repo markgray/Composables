@@ -38,7 +38,7 @@ import kotlinx.serialization.Serializable
  * @property imageUrl The URL to the image of the topic.
  * @property followed Whether the user is following the topic.
  */
-@OptIn(kotlinx.serialization.InternalSerializationApi::class)
+@OptIn(InternalSerializationApi::class)
 @Serializable
 data class NetworkTopic(
     val id: String,
@@ -55,7 +55,8 @@ data class NetworkTopic(
  *
  * This function is an extension function for the [NetworkTopic] class. It takes a [NetworkTopic]
  * object as its receiver and returns a [Topic] object. The [Topic] object is created by copying the
- * properties of the [NetworkTopic] object into a new instance of [Topic].
+ * properties of the [NetworkTopic] object into a new instance of [Topic] (the properties have the
+ * same names in both classes).
  *
  * This function is useful for converting data from the network layer to the domain layer. The
  * network layer uses [NetworkTopic] objects to represent topics, while the domain layer uses

@@ -37,6 +37,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ *  TODO: Continue here.
+ */
 private const val MAX_NUM_NOTIFICATIONS = 5
 private const val TARGET_ACTIVITY_NAME = "com.google.samples.apps.nowinandroid.MainActivity"
 private const val NEWS_NOTIFICATION_REQUEST_CODE = 0
@@ -61,7 +64,7 @@ internal class SystemTrayNotifier @Inject constructor(
      * Posts notifications for new or updated news resources.
      *
      * If the user hasn't granted the `POST_NOTIFICATIONS` permission, this function is a no-op.
-     * TODO: Continue here.
+     *
      * @param newsResources The list of news resources to post notifications for.
      */
     override fun postNewsNotifications(

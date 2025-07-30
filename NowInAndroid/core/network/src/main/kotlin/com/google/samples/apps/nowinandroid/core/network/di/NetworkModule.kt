@@ -46,7 +46,6 @@ import javax.inject.Singleton
  *  is a Hilt component that lives as long as the application itself. This means that any
  *  dependencies provided by this module will be singletons (only one instance will be created and
  *  shared throughout the app).
- *
  */
 @Module
 @InstallIn(SingletonComponent::class)
