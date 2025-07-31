@@ -24,24 +24,47 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 
+/**
+ * Test implementation of [TopicsRepository]
+ */
 class TestTopicsRepository : TopicsRepository {
     /**
-     * The backing hot flow for the list of topics ids for testing.
+     * The backing hot flow for the [List] of [Topic] for testing. A [MutableSharedFlow] is used
+     * to simulate a stream of data that can be controlled from tests.
      */
     private val topicsFlow: MutableSharedFlow<List<Topic>> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
+    /**
+     * Returns a hot flow of the list of topics. Provides public read-only access to the
+     * [topicsFlow] backing property.
+     */
     override fun getTopics(): Flow<List<Topic>> = topicsFlow
 
+    /**
+     * Gets the Topic with the given ID.
+     * This method relies on the [topicsFlow] to be populated.
+     *
+     * @param id the [Topic.id] of the topic to get.
+     */
     override fun getTopic(id: String): Flow<Topic> =
-        topicsFlow.map { topics -> topics.find { it.id == id }!! }
+        topicsFlow.map { topics: List<Topic> -> topics.find { topic: Topic -> topic.id == id }!! }
 
     /**
      * A test-only API to allow controlling the list of topics from tests.
+     *
+     * @param topics the new [List] of [Topic].
      */
     fun sendTopics(topics: List<Topic>) {
-        topicsFlow.tryEmit(topics)
+        topicsFlow.tryEmit(value = topics)
     }
 
-    override suspend fun syncWith(synchronizer: Synchronizer) = true
+    /**
+     * A test-only implementation of the [TopicsRepository.syncWith], a [Synchronizer]
+     * that always returns true.
+     *
+     * @param synchronizer the [Synchronizer] that will perform the sync.
+     * @return Always `true`.
+     */
+    override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true
 }

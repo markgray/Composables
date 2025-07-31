@@ -26,31 +26,90 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import org.jetbrains.annotations.TestOnly
 
+/**
+ * Test implementation of [SearchContentsRepository] that allows adding [Topic]s and [NewsResource]s
+ * to backing [MutableStateFlow]s, which are then searched through for the query.
+ *
+ * This allows easy testing of search functionality without requiring a full FTS-backed implementation.
+ */
 class TestSearchContentsRepository : SearchContentsRepository {
 
-    private val cachedTopics = MutableStateFlow(emptyList<Topic>())
-    private val cachedNewsResources = MutableStateFlow(emptyList<NewsResource>())
+    /**
+     * A backing prop that can be used to add and remove topics.
+     */
+    private val cachedTopics = MutableStateFlow(value = emptyList<Topic>())
 
-    override suspend fun populateFtsData() = Unit
+    /**
+     * A backing prop that can be used to add news resources to this repository for searching.
+     */
+    private val cachedNewsResources = MutableStateFlow(value = emptyList<NewsResource>())
 
+    /**
+     * Populate the fts tables for the search contents.
+     *
+     * This implementation of [SearchContentsRepository] does not use FTS, so this method does
+     * nothing.
+     */
+    override suspend fun populateFtsData(): Unit = Unit
+
+    /**
+     * Gets a [Flow] of [SearchResult] that match the search query.
+     *
+     * In this implementation, the search query is matched against the topic name, short description,
+     * and long description, and the search query is matched against the content of the news resources,
+     * and the title of the news resources.
+     *
+     * @param searchQuery The search query.
+     * @return A [Flow] of [SearchResult] whose topics match the search query, or whose [NewsResource]
+     * match the search query.
+     */
     override fun searchContents(searchQuery: String): Flow<SearchResult> =
-        combine(cachedTopics, cachedNewsResources) { topics, news ->
+        combine(
+            flow = cachedTopics,
+            flow2 = cachedNewsResources,
+        ) { topics: List<Topic>, news: List<NewsResource> ->
             SearchResult(
-                topics = topics.filter {
-                    searchQuery in it.name || searchQuery in it.shortDescription || searchQuery in it.longDescription
+                topics = topics.filter { topic: Topic ->
+                    searchQuery in topic.name ||
+                        searchQuery in topic.shortDescription ||
+                        searchQuery in topic.longDescription
                 },
-                newsResources = news.filter {
-                    searchQuery in it.content || searchQuery in it.title
+                newsResources = news.filter { newsResource: NewsResource ->
+                    searchQuery in newsResource.content || searchQuery in newsResource.title
                 },
             )
         }
 
-    override fun getSearchContentsCount(): Flow<Int> = combine(cachedTopics, cachedNewsResources) { topics, news -> topics.size + news.size }
+    /**
+     * Gets the count of all searchable topics and news resources.
+     *
+     * In this implementation, the count is the sum of the number of topics and the number of news
+     * resources.
+     *
+     * @return A [Flow] of [Int] that emits the count of searchable topics and news resources.
+     */
+    override fun getSearchContentsCount(): Flow<Int> =
+        combine(
+            flow = cachedTopics,
+            flow2 = cachedNewsResources,
+        ) { topics: List<Topic>, news: List<NewsResource> ->
+            topics.size + news.size
+        }
 
+    /**
+     * A test-only API to allow adding user-editable topics to this repository.
+     *
+     * @param topics The [List] of [Topic] to add.
+     */
     @TestOnly
-    fun addTopics(topics: List<Topic>) = cachedTopics.update { it + topics }
+    fun addTopics(topics: List<Topic>): Unit = cachedTopics.update { it + topics }
 
+    /**
+     * A test-only API to allow adding news resources to this repository.
+     *
+     * @param newsResources The [List] of [NewsResource] to add.
+     */
     @TestOnly
-    fun addNewsResources(newsResources: List<NewsResource>) =
+    fun addNewsResources(newsResources: List<NewsResource>): Unit =
         cachedNewsResources.update { it + newsResources }
 }

@@ -28,11 +28,27 @@ import org.junit.runner.Description
 /**
  * A JUnit [TestRule] that sets the Main dispatcher to [testDispatcher]
  * for the duration of the test.
+ *
+ * @property testDispatcher The [TestDispatcher] to use for the test.
  */
 class MainDispatcherRule(
     private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher(),
 ) : TestWatcher() {
-    override fun starting(description: Description) = Dispatchers.setMain(testDispatcher)
+    /**
+     * Overrides the starting method of the [TestWatcher] class.
+     * This method is called before each test method is executed.
+     * It sets the main dispatcher to the test dispatcher.
+     *
+     * @param description The description of the test method.
+     */
+    override fun starting(description: Description): Unit = Dispatchers.setMain(testDispatcher)
 
-    override fun finished(description: Description) = Dispatchers.resetMain()
+    /**
+     * Overrides the finished method of the [TestWatcher] class.
+     * This method is called after each test method is executed.
+     * It resets the main dispatcher.
+     *
+     * @param description The description of the test method.
+     */
+    override fun finished(description: Description): Unit = Dispatchers.resetMain()
 }

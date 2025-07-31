@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.map
  * Test implementation of the [NewsRepository] that allows injecting specific news resources
  * for testing purposes. This class is useful for creating controlled test environments
  * where the behavior of the news data can be precisely managed.
- * TODO: Continue here.
+ *
  * It uses a [MutableSharedFlow] to simulate a stream of news resources,
  * allowing tests to emit new lists of news resources and observe how the UI or other
  * components react to these changes.
@@ -41,21 +41,34 @@ import kotlinx.coroutines.flow.map
 class TestNewsRepository : NewsRepository {
 
     /**
-     * The backing hot flow for the list of topics ids for testing.
+     * The backing hot flow for the list of news resources for testing.
      */
     private val newsResourcesFlow: MutableSharedFlow<List<NewsResource>> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
+    /**
+     * Retrieves a flow of [NewsResource] instances that match the given [NewsResourceQuery].
+     *
+     * This implementation filters the news resources based on the `filterTopicIds` and
+     * `filterNewsIds` properties of the [NewsResourceQuery]. If `filterTopicIds` is provided,
+     * it filters the news resources to include only those that have at least one topic whose ID
+     * is present in the `filterTopicIds` set. If `filterNewsIds` is provided, it further
+     * filters the news resources to include only those whose ID is present in the `filterNewsIds` set.
+     *
+     * @param query The query parameters to filter the news resources.
+     * @return A flow emitting a list of [NewsResource] objects that satisfy the query.
+     */
     override fun getNewsResources(query: NewsResourceQuery): Flow<List<NewsResource>> =
-        newsResourcesFlow.map { newsResources ->
-            var result = newsResources
-            query.filterTopicIds?.let { filterTopicIds ->
-                result = newsResources.filter {
-                    it.topics.map(Topic::id).intersect(filterTopicIds).isNotEmpty()
+        newsResourcesFlow.map { newsResources: List<NewsResource> ->
+            var result: List<NewsResource> = newsResources
+            query.filterTopicIds?.let { filterTopicIds: Set<String> ->
+                result = newsResources.filter { newsResource: NewsResource ->
+                    newsResource.topics.map(transform = Topic::id)
+                        .intersect(other = filterTopicIds).isNotEmpty()
                 }
             }
-            query.filterNewsIds?.let { filterNewsIds ->
-                result = newsResources.filter { it.id in filterNewsIds }
+            query.filterNewsIds?.let { filterNewsIds: Set<String> ->
+                result = newsResources.filter { newsResource -> newsResource.id in filterNewsIds }
             }
             result
         }
@@ -64,7 +77,7 @@ class TestNewsRepository : NewsRepository {
      * A test-only API to allow controlling the list of news resources from tests.
      */
     fun sendNewsResources(newsResources: List<NewsResource>) {
-        newsResourcesFlow.tryEmit(newsResources)
+        newsResourcesFlow.tryEmit(value = newsResources)
     }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true

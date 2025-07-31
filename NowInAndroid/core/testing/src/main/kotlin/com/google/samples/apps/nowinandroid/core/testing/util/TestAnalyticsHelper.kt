@@ -19,6 +19,11 @@ package com.google.samples.apps.nowinandroid.core.testing.util
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsEvent
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 
+/**
+ * An implementation of [AnalyticsHelper] that records events in a list, makes them available
+ * for inspection and assertions.
+ * TODO: Continue here.
+ */
 class TestAnalyticsHelper : AnalyticsHelper {
 
     private val events = mutableListOf<AnalyticsEvent>()
@@ -26,5 +31,5 @@ class TestAnalyticsHelper : AnalyticsHelper {
         events.add(event)
     }
 
-    fun hasLogged(event: AnalyticsEvent) = event in events
+    fun hasLogged(event: AnalyticsEvent): Boolean = event in events
 }

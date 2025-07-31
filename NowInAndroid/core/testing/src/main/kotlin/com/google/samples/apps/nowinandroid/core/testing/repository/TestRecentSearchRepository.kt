@@ -21,16 +21,36 @@ import com.google.samples.apps.nowinandroid.core.data.repository.RecentSearchRep
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
+/**
+ * Test implementation of [RecentSearchRepository] that stores recent searches in memory.
+ */
 class TestRecentSearchRepository : RecentSearchRepository {
 
+    /**
+     * In-memory list of recent searches.
+     */
     private val cachedRecentSearches: MutableList<RecentSearchQuery> = mutableListOf()
 
+    /**
+     * Returns a flow of the most recent search queries, sorted by date, up to the given limit.
+     *
+     * @param limit The maximum number of recent search queries to return.
+     * @return A flow of a list of recent search queries.
+     */
     override fun getRecentSearchQueries(limit: Int): Flow<List<RecentSearchQuery>> =
-        flowOf(cachedRecentSearches.sortedByDescending { it.queriedDate }.take(limit))
+        flowOf(value = cachedRecentSearches.sortedByDescending { it.queriedDate }.take(n = limit))
 
+    /**
+     * Inserts or replaces a recent search query in the in-memory list.
+     *
+     * @param searchQuery The search query to insert or replace.
+     */
     override suspend fun insertOrReplaceRecentSearch(searchQuery: String) {
         cachedRecentSearches.add(RecentSearchQuery(searchQuery))
     }
 
-    override suspend fun clearRecentSearches() = cachedRecentSearches.clear()
+    /**
+     * Clears all recent searches from the in-memory list.
+     */
+    override suspend fun clearRecentSearches(): Unit = cachedRecentSearches.clear()
 }
