@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.nowinandroid.core.testing.di
 
 import dagger.Module

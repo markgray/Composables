@@ -101,7 +101,7 @@ enum class DefaultTestDevices(val description: String, val spec: String) {
  *
  * @param screenshotName The name of the screenshot.
  * @param accessibilitySuppressions A matcher for accessibility checks to suppress.
- * @param body The composable to capture.
+ * @param body The composable to capture a screenshot of.
  */
 fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.captureMultiDevice(
     screenshotName: String,
