@@ -20,16 +20,30 @@ import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsEvent
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 
 /**
- * An implementation of [AnalyticsHelper] that records events in a list, makes them available
+ * An test implementation of [AnalyticsHelper] that records events in a list, makes them available
  * for inspection and assertions.
- * TODO: Continue here.
  */
 class TestAnalyticsHelper : AnalyticsHelper {
 
-    private val events = mutableListOf<AnalyticsEvent>()
+    /**
+     * The list of [AnalyticsEvent] recorded by this helper.
+     */
+    private val events: MutableList<AnalyticsEvent> = mutableListOf()
+
+    /**
+     * Records an [AnalyticsEvent] in our [MutableList] of [AnalyticsEvent] property [events].
+     *
+     * @param event the [AnalyticsEvent] to record.
+     */
     override fun logEvent(event: AnalyticsEvent) {
         events.add(event)
     }
 
+    /**
+     * Asserts that a particular [AnalyticsEvent] has been logged.
+     *
+     * @param event The [AnalyticsEvent] to search for.
+     * @return `true` if the event was logged, `false` otherwise.
+     */
     fun hasLogged(event: AnalyticsEvent): Boolean = event in events
 }

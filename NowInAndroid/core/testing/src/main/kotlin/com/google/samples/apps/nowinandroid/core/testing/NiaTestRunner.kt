@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.nowinandroid.core.testing
 
 import android.app.Application
@@ -25,6 +27,18 @@ import dagger.hilt.android.testing.HiltTestApplication
  * A custom runner to set up the instrumented application class for tests.
  */
 class NiaTestRunner : AndroidJUnitRunner() {
+    /**
+     * Overrides the default [AndroidJUnitRunner.newApplication] method to use [HiltTestApplication]
+     * as the application class for tests.
+     *
+     * This ensures that Hilt is properly initialized for instrumented tests.
+     *
+     * @param cl The class loader to use.
+     * @param name The name of the application class to instantiate. This is ignored and
+     * [HiltTestApplication] is used instead.
+     * @param context The context for the new application.
+     * @return A new instance of [HiltTestApplication].
+     */
     override fun newApplication(cl: ClassLoader, name: String, context: Context): Application =
         super.newApplication(cl, HiltTestApplication::class.java.name, context)
 }

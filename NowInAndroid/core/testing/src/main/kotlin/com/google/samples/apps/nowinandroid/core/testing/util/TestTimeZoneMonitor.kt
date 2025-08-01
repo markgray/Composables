@@ -21,20 +21,39 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.datetime.TimeZone
 
+/**
+ * A testable implementation of [TimeZoneMonitor].
+ *
+ * It allows consuming and emitting values to [currentTimeZone].
+ */
 class TestTimeZoneMonitor : TimeZoneMonitor {
 
-    private val timeZoneFlow = MutableStateFlow(defaultTimeZone)
+    /**
+     * The current time zone that should be used by the app. This is a [MutableStateFlow] that can
+     * be updated by tests to simulate changes in the time zone.
+     */
+    private val timeZoneFlow: MutableStateFlow<TimeZone> = MutableStateFlow(value = defaultTimeZone)
 
+    /**
+     * Public read-only [Flow] of [Boolean] that emits the [MutableStateFlow] of [Boolean] property
+     * [currentTimeZone].
+     */
     override val currentTimeZone: Flow<TimeZone> = timeZoneFlow
 
     /**
-     * A test-only API to set the from tests.
+     * A test-only API to set the current time zone from tests.
+     *
+     * @param zoneId The desired [TimeZone].
      */
     fun setTimeZone(zoneId: TimeZone) {
         timeZoneFlow.value = zoneId
     }
 
     companion object {
-        val defaultTimeZone: TimeZone = TimeZone.of("Europe/Warsaw")
+        /**
+         * The default time zone to use in tests. This is Europe/Warsaw because it is a fixed
+         * offset time zone that is not affected by daylight saving time.
+         */
+        val defaultTimeZone: TimeZone = TimeZone.of(zoneId = "Europe/Warsaw")
     }
 }

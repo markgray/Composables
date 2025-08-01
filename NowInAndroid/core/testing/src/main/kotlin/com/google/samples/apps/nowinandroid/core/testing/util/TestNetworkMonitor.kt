@@ -20,14 +20,29 @@ import com.google.samples.apps.nowinandroid.core.data.util.NetworkMonitor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
+/**
+ * A test-only implementation of [NetworkMonitor] that allows setting the network connectivity
+ * from tests.
+ */
 class TestNetworkMonitor : NetworkMonitor {
 
-    private val connectivityFlow = MutableStateFlow(true)
+    /**
+     * A mutable state flow that emits the connectivity status.
+     * By default, the connectivity status is set to `true` (connected).
+     */
+    private val connectivityFlow: MutableStateFlow<Boolean> = MutableStateFlow(value = true)
 
+    /**
+     * A public read-only property that exposes the [MutableStateFlow] of [Boolean] property
+     * [connectivityFlow] as a [Flow] of [Boolean].
+     */
     override val isOnline: Flow<Boolean> = connectivityFlow
 
     /**
-     * A test-only API to set the connectivity state from tests.
+     * Sets the connectivity status to the given [isConnected] value.
+     * This function is intended for use in tests to simulate different network conditions.
+     *
+     * @param isConnected `true` if the network should be considered connected, `false` otherwise.
      */
     fun setConnected(isConnected: Boolean) {
         connectivityFlow.value = isConnected

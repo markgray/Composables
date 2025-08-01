@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.core.ui
 
+import android.view.View
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -33,12 +34,13 @@ import kotlinx.coroutines.CoroutineScope
  * Retrieves [PerformanceMetricsState.Holder] from current [LocalView] and
  * remembers it until the View changes.
  * @see PerformanceMetricsState.getHolderForHierarchy
+ * TODO: Continue here.
  */
 @Composable
 fun rememberMetricsStateHolder(): Holder {
-    val localView = LocalView.current
+    val localView: View = LocalView.current
 
-    return remember(localView) {
+    return remember(key1 = localView) {
         PerformanceMetricsState.getHolderForHierarchy(localView)
     }
 }
@@ -53,7 +55,7 @@ fun TrackJank(
     vararg keys: Any,
     reportMetric: suspend CoroutineScope.(state: Holder) -> Unit,
 ) {
-    val metrics = rememberMetricsStateHolder()
+    val metrics: Holder = rememberMetricsStateHolder()
     LaunchedEffect(metrics, *keys) {
         reportMetric(metrics)
     }
@@ -68,7 +70,7 @@ fun TrackDisposableJank(
     vararg keys: Any,
     reportMetric: DisposableEffectScope.(state: Holder) -> DisposableEffectResult,
 ) {
-    val metrics = rememberMetricsStateHolder()
+    val metrics: Holder = rememberMetricsStateHolder()
     DisposableEffect(metrics, *keys) {
         reportMetric(this, metrics)
     }
@@ -79,13 +81,13 @@ fun TrackDisposableJank(
  */
 @Composable
 fun TrackScrollJank(scrollableState: ScrollableState, stateName: String) {
-    TrackJank(scrollableState) { metricsHolder ->
-        snapshotFlow { scrollableState.isScrollInProgress }.collect { isScrollInProgress ->
+    TrackJank(scrollableState) { metricsHolder: Holder ->
+        snapshotFlow { scrollableState.isScrollInProgress }.collect { isScrollInProgress: Boolean ->
             metricsHolder.state?.apply {
                 if (isScrollInProgress) {
-                    putState(stateName, "Scrolling=true")
+                    putState(key = stateName, value = "Scrolling=true")
                 } else {
-                    removeState(stateName)
+                    removeState(key = stateName)
                 }
             }
         }

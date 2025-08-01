@@ -18,6 +18,7 @@ package com.google.samples.apps.nowinandroid.core.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.DisposableEffectScope
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsEvent
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsEvent.Param
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsEvent.ParamKeys
@@ -26,38 +27,52 @@ import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.analytics.LocalAnalyticsHelper
 
 /**
- * Classes and functions associated with analytics events for the UI.
+ * Logs a screen view event.
+ *
+ * @param screenName The name of the screen.
  */
 fun AnalyticsHelper.logScreenView(screenName: String) {
     logEvent(
-        AnalyticsEvent(
+        event = AnalyticsEvent(
             type = Types.SCREEN_VIEW,
             extras = listOf(
-                Param(ParamKeys.SCREEN_NAME, screenName),
-            ),
-        ),
-    )
-}
-
-fun AnalyticsHelper.logNewsResourceOpened(newsResourceId: String) {
-    logEvent(
-        event = AnalyticsEvent(
-            type = "news_resource_opened",
-            extras = listOf(
-                Param("opened_news_resource", newsResourceId),
+                Param(key = ParamKeys.SCREEN_NAME, value = screenName),
             ),
         ),
     )
 }
 
 /**
- * A side-effect which records a screen view event.
+ * Logs a news resource opened event.
+ *
+ * @param newsResourceId The ID of the news resource that was opened.
+ */
+fun AnalyticsHelper.logNewsResourceOpened(newsResourceId: String) {
+    logEvent(
+        event = AnalyticsEvent(
+            type = "news_resource_opened",
+            extras = listOf(
+                Param(key = "opened_news_resource", value = newsResourceId),
+            ),
+        ),
+    )
+}
+
+/**
+ * A side-effect which records a screen view event. We launch a [DisposableEffect] keyed on [Unit]
+ * and in its [DisposableEffectScope] `effect` block we call the [AnalyticsHelper.logScreenView]
+ * method of our [AnalyticsHelper] parameter [analyticsHelper] with its `screenName` argument
+ * ouf [String] parameter [screenName], then call [onDispose] with an empty lambda as its
+ * `onDisposeEffect` lambda argument.
+ *
+ * @param screenName The name of the screen to record.
+ * @param analyticsHelper The analytics helper to use to log the event.
  */
 @Composable
 fun TrackScreenViewEvent(
     screenName: String,
     analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current,
-) = DisposableEffect(Unit) {
-    analyticsHelper.logScreenView(screenName)
+): Unit = DisposableEffect(key1 = Unit) {
+    analyticsHelper.logScreenView(screenName = screenName)
     onDispose {}
 }

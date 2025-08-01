@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantValueArgument")
+
 package com.google.samples.apps.nowinandroid.core.ui
 
 import androidx.compose.foundation.background
@@ -40,6 +42,19 @@ import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.ui.R.string
 
+/**
+ * Displays an interest item in a [ListItem] with its name, description, image, and follow button.
+ *
+ * @param name The name of the interest.
+ * @param following Whether the user is currently following this interest.
+ * @param topicImageUrl The URL of the image for this interest.
+ * @param onClick The callback invoked when this item is clicked.
+ * @param onFollowButtonClick The callback invoked when the follow button is clicked.
+ * @param modifier The modifier to be applied to the item.
+ * @param iconModifier The modifier to be applied to the interest icon.
+ * @param description The description of the interest.
+ * @param isSelected Whether this item is currently selected.
+ */
 @Composable
 fun InterestsItem(
     name: String,
@@ -54,7 +69,7 @@ fun InterestsItem(
 ) {
     ListItem(
         leadingContent = {
-            InterestsIcon(topicImageUrl, iconModifier.size(48.dp))
+            InterestsIcon(topicImageUrl = topicImageUrl, modifier = iconModifier.size(size = 48.dp))
         },
         headlineContent = {
             Text(text = name)
@@ -99,13 +114,20 @@ fun InterestsItem(
     )
 }
 
+/**
+ * Displays an icon for an interest, using either a dynamic image if `topicImageUrl` is provided,
+ * or a default icon if `topicImageUrl` is empty.
+ *
+ * @param topicImageUrl The URL of the image for the interest. If empty, a default icon is shown.
+ * @param modifier The modifier to be applied to the icon.
+ */
 @Composable
 private fun InterestsIcon(topicImageUrl: String, modifier: Modifier = Modifier) {
     if (topicImageUrl.isEmpty()) {
         Icon(
             modifier = modifier
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(4.dp),
+                .background(color = MaterialTheme.colorScheme.surface)
+                .padding(all = 4.dp),
             imageVector = NiaIcons.Person,
             // decorative image
             contentDescription = null,
@@ -119,6 +141,9 @@ private fun InterestsIcon(topicImageUrl: String, modifier: Modifier = Modifier) 
     }
 }
 
+/**
+ * Preview of the [InterestsItem] composable.
+ */
 @Preview
 @Composable
 private fun InterestsCardPreview() {
@@ -136,6 +161,9 @@ private fun InterestsCardPreview() {
     }
 }
 
+/**
+ * Preview of the [InterestsItem] composable with a long name.
+ */
 @Preview
 @Composable
 private fun InterestsCardLongNamePreview() {
@@ -153,6 +181,9 @@ private fun InterestsCardLongNamePreview() {
     }
 }
 
+/**
+ * Preview of the [InterestsItem] composable with a long description.
+ */
 @Preview
 @Composable
 private fun InterestsCardLongDescriptionPreview() {
@@ -171,6 +202,9 @@ private fun InterestsCardLongDescriptionPreview() {
     }
 }
 
+/**
+ * Preview of the [InterestsItem] composable with an empty description.
+ */
 @Preview
 @Composable
 private fun InterestsCardWithEmptyDescriptionPreview() {
@@ -188,6 +222,9 @@ private fun InterestsCardWithEmptyDescriptionPreview() {
     }
 }
 
+/**
+ * Preview of the [InterestsItem] composable when it is selected.
+ */
 @Preview
 @Composable
 private fun InterestsCardSelectedPreview() {

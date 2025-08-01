@@ -29,7 +29,7 @@ import com.google.samples.apps.nowinandroid.core.model.data.Topic
 class FollowableTopicPreviewParameterProvider : PreviewParameterProvider<List<FollowableTopic>> {
     override val values: Sequence<List<FollowableTopic>>
         get() = sequenceOf(
-            listOf(
+            element = listOf(
                 FollowableTopic(
                     topic = Topic(
                         id = "2",

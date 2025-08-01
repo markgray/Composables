@@ -20,16 +20,31 @@ import com.google.samples.apps.nowinandroid.core.data.util.SyncManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
+/**
+ * Test implementation of [SyncManager] that allows directly setting the sync status from tests.
+ */
 class TestSyncManager : SyncManager {
 
-    private val syncStatusFlow = MutableStateFlow(false)
+    /**
+     * The backing [MutableStateFlow] of [Boolean] for the [isSyncing] property.
+     */
+    private val syncStatusFlow: MutableStateFlow<Boolean> = MutableStateFlow(value = false)
 
+    /**
+     * Public read-only property that exposes our [MutableStateFlow] of [Boolean] property
+     * [syncStatusFlow] as a [Flow] of [Boolean].
+     */
     override val isSyncing: Flow<Boolean> = syncStatusFlow
 
+    /**
+     * Requests that a sync be performed. (not yet implemented).
+     */
     override fun requestSync(): Unit = TODO("Not yet implemented")
 
     /**
      * A test-only API to set the sync status from tests.
+     *
+     * @param isSyncing: The new sync status value.
      */
     fun setSyncing(isSyncing: Boolean) {
         syncStatusFlow.value = isSyncing
