@@ -58,7 +58,7 @@ class AndroidApplicationFirebaseConventionPlugin : Plugin<Project> {
             apply(plugin = "com.google.firebase.crashlytics")
 
             dependencies {
-                val bom: Provider<MinimalExternalModuleDependency?> =
+                val bom: Provider<MinimalExternalModuleDependency> =
                     libs.findLibrary("firebase-bom").get()
                 "implementation"(platform(bom))
                 "implementation"(libs.findLibrary("firebase.analytics").get())

@@ -68,11 +68,11 @@ internal fun Project.configurePrintApksTask(extension: AndroidComponentsExtensio
             val javaSources: Provider<out Collection<Directory>>? =
                 variant.androidTest?.sources?.java?.all
 
-            @Suppress("UnstableApiUsage")
+            @Suppress("UnstableApiUsage", "RedundantSuppression")
             val kotlinSources: Provider<out Collection<Directory>>? =
                 variant.androidTest?.sources?.kotlin?.all
 
-            val testSources: Provider<out Collection<Directory>?>? =
+            val testSources: Provider<out Collection<Directory>>? =
                 if (javaSources != null && kotlinSources != null) {
                     javaSources.zip(kotlinSources) { javaDirs, kotlinDirs ->
                         javaDirs + kotlinDirs
