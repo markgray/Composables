@@ -80,5 +80,12 @@ class TestNewsRepository : NewsRepository {
         newsResourcesFlow.tryEmit(value = newsResources)
     }
 
+    /**
+     * Synchronizes the local database backing the repository with the network.
+     * Returns if the sync was successful or not.
+     *
+     * @param synchronizer [Synchronizer] that will perform the sync.
+     * @return `true` if the sync was successful or `false` if it failed, we always return `true`
+     */
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true
 }
