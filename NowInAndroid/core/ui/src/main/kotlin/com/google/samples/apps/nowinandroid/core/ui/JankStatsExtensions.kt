@@ -34,7 +34,6 @@ import kotlinx.coroutines.CoroutineScope
  * Retrieves [PerformanceMetricsState.Holder] from current [LocalView] and
  * remembers it until the View changes.
  * @see PerformanceMetricsState.getHolderForHierarchy
- * TODO: Continue here.
  */
 @Composable
 fun rememberMetricsStateHolder(): Holder {
@@ -46,9 +45,16 @@ fun rememberMetricsStateHolder(): Holder {
 }
 
 /**
- * Convenience function to work with [PerformanceMetricsState] state. The side effect is
- * re-launched if any of the [keys] value is not equal to the previous composition.
- * @see TrackDisposableJank if you need to work with DisposableEffect to cleanup added state.
+ * Convenience function to work with [PerformanceMetricsState].
+ * The [reportMetric] block is launched whenever one of the [keys] changes.
+ *
+ * It is re-launched if any of the [keys] are not equal to the previous composition.
+ *
+ * @param keys A set of unique keys that identify the current state.
+ * @param reportMetric A block of code that will be executed when the keys change.
+ * This block will have the [PerformanceMetricsState.Holder] as a receiver.
+ *
+ * @see TrackDisposableJank if you need to work with DisposableEffect to clean up added state.
  */
 @Composable
 fun TrackJank(
@@ -64,6 +70,11 @@ fun TrackJank(
 /**
  * Convenience function to work with [PerformanceMetricsState] state that needs to be cleaned up.
  * The side effect is re-launched if any of the [keys] value is not equal to the previous composition.
+ *
+ * @param keys The keys to compare for re-launching the effect.
+ * @param reportMetric The function to report the metric. It will be invoked within a
+ * [DisposableEffectScope]. The [DisposableEffectResult] returned by this function will be used
+ * to clean up the state when the effect is disposed.
  */
 @Composable
 fun TrackDisposableJank(
@@ -78,6 +89,9 @@ fun TrackDisposableJank(
 
 /**
  * Track jank while scrolling anything that's scrollable.
+ *
+ * @param scrollableState the state of the scrollable component.
+ * @param stateName the name of the state to be reported to JankStats.
  */
 @Composable
 fun TrackScrollJank(scrollableState: ScrollableState, stateName: String) {

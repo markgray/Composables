@@ -82,9 +82,17 @@ import java.time.format.FormatStyle
 import java.util.Locale
 
 /**
- * [NewsResource] card used on the following screens: For You, Saved
+ * An expanded news resource card with a header image, byline, date, title, description, and topics.
+ *  [NewsResource] card used on the following screens: "For You", "Saved"
+ * TODO: Continue here.
+ * @param userNewsResource The [UserNewsResource] to show.
+ * @param isBookmarked Whether the resource is bookmarked.
+ * @param hasBeenViewed Whether the resource has been viewed.
+ * @param onToggleBookmark Callback for when the bookmark button is toggled.
+ * @param onClick Callback for when the card is clicked.
+ * @param onTopicClick Callback for when a topic is clicked.
+ * @param modifier Modifier to be applied to the card.
  */
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NewsResourceCardExpanded(
@@ -96,15 +104,15 @@ fun NewsResourceCardExpanded(
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val clickActionLabel = stringResource(R.string.core_ui_card_tap_action)
-    val sharingLabel = stringResource(R.string.core_ui_feed_sharing)
-    val sharingContent = stringResource(
+    val clickActionLabel: String = stringResource(id = R.string.core_ui_card_tap_action)
+    val sharingLabel: String = stringResource(id = R.string.core_ui_feed_sharing)
+    val sharingContent: String = stringResource(
         R.string.core_ui_feed_sharing_data,
         userNewsResource.title,
         userNewsResource.url,
     )
 
-    val dragAndDropFlags = if (VERSION.SDK_INT >= VERSION_CODES.N) {
+    val dragAndDropFlags: Int = if (VERSION.SDK_INT >= VERSION_CODES.N) {
         View.DRAG_FLAG_GLOBAL
     } else {
         0
@@ -112,7 +120,7 @@ fun NewsResourceCardExpanded(
 
     Card(
         onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(size = 16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         // Use custom label for accessibility services to communicate button's action to user.
         // Pass null for action to only override the label and not the actual action.
@@ -120,27 +128,27 @@ fun NewsResourceCardExpanded(
             .semantics {
                 onClick(label = clickActionLabel, action = null)
             }
-            .testTag("newsResourceCard:${userNewsResource.id}"),
+            .testTag(tag = "newsResourceCard:${userNewsResource.id}"),
     ) {
         Column {
             if (!userNewsResource.headerImageUrl.isNullOrEmpty()) {
                 Row {
-                    NewsResourceHeaderImage(userNewsResource.headerImageUrl)
+                    NewsResourceHeaderImage(headerImageUrl = userNewsResource.headerImageUrl)
                 }
             }
             Box(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(all = 16.dp),
             ) {
                 Column {
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(height = 12.dp))
                     Row {
                         NewsResourceTitle(
-                            userNewsResource.title,
+                            newsResourceTitle = userNewsResource.title,
                             modifier = Modifier
-                                .fillMaxWidth((.8f))
+                                .fillMaxWidth(fraction = .8f)
                                 .dragAndDropSource { _ ->
                                     DragAndDropTransferData(
-                                        ClipData.newPlainText(
+                                        clipData = ClipData.newPlainText(
                                             sharingLabel,
                                             sharingContent,
                                         ),
@@ -148,23 +156,26 @@ fun NewsResourceCardExpanded(
                                     )
                                 },
                         )
-                        Spacer(modifier = Modifier.weight(1f))
-                        BookmarkButton(isBookmarked, onToggleBookmark)
+                        Spacer(modifier = Modifier.weight(weight = 1f))
+                        BookmarkButton(isBookmarked = isBookmarked, onClick = onToggleBookmark)
                     }
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(height = 14.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (!hasBeenViewed) {
                             NotificationDot(
                                 color = MaterialTheme.colorScheme.tertiary,
-                                modifier = Modifier.size(8.dp),
+                                modifier = Modifier.size(size = 8.dp),
                             )
-                            Spacer(modifier = Modifier.size(6.dp))
+                            Spacer(modifier = Modifier.size(size = 6.dp))
                         }
-                        NewsResourceMetaData(userNewsResource.publishDate, userNewsResource.type)
+                        NewsResourceMetaData(
+                            publishDate = userNewsResource.publishDate,
+                            resourceType = userNewsResource.type,
+                        )
                     }
-                    Spacer(modifier = Modifier.height(14.dp))
-                    NewsResourceShortDescription(userNewsResource.content)
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(height = 14.dp))
+                    NewsResourceShortDescription(newsResourceShortDescription = userNewsResource.content)
+                    Spacer(modifier = Modifier.height(height = 12.dp))
                     NewsResourceTopics(
                         topics = userNewsResource.followableTopics,
                         onTopicClick = onTopicClick,
@@ -179,28 +190,28 @@ fun NewsResourceCardExpanded(
 fun NewsResourceHeaderImage(
     headerImageUrl: String?,
 ) {
-    var isLoading by remember { mutableStateOf(true) }
-    var isError by remember { mutableStateOf(false) }
-    val imageLoader = rememberAsyncImagePainter(
+    var isLoading: Boolean by remember { mutableStateOf(value = true) }
+    var isError: Boolean by remember { mutableStateOf(value = false) }
+    val imageLoader: AsyncImagePainter = rememberAsyncImagePainter(
         model = headerImageUrl,
-        onState = { state ->
+        onState = { state: AsyncImagePainter.State ->
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
         },
     )
-    val isLocalInspection = LocalInspectionMode.current
+    val isLocalInspection: Boolean = LocalInspectionMode.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp),
+            .height(height = 180.dp),
         contentAlignment = Alignment.Center,
     ) {
         if (isLoading) {
             // Display a progress bar while loading
             CircularProgressIndicator(
                 modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(80.dp),
+                    .align(alignment = Alignment.Center)
+                    .size(size = 80.dp),
                 color = MaterialTheme.colorScheme.tertiary,
             )
         }
@@ -208,12 +219,12 @@ fun NewsResourceHeaderImage(
         Image(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(180.dp),
+                .height(height = 180.dp),
             contentScale = ContentScale.Crop,
             painter = if (isError.not() && !isLocalInspection) {
                 imageLoader
             } else {
-                painterResource(drawable.core_designsystem_ic_placeholder_default)
+                painterResource(id = drawable.core_designsystem_ic_placeholder_default)
             },
             // TODO b/226661685: Investigate using alt text of  image to populate content description
             // decorative image,
@@ -227,7 +238,11 @@ fun NewsResourceTitle(
     newsResourceTitle: String,
     modifier: Modifier = Modifier,
 ) {
-    Text(newsResourceTitle, style = MaterialTheme.typography.headlineSmall, modifier = modifier)
+    Text(
+        text = newsResourceTitle,
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -243,13 +258,13 @@ fun BookmarkButton(
         icon = {
             Icon(
                 imageVector = NiaIcons.BookmarkBorder,
-                contentDescription = stringResource(R.string.core_ui_bookmark),
+                contentDescription = stringResource(id = R.string.core_ui_bookmark),
             )
         },
         checkedIcon = {
             Icon(
                 imageVector = NiaIcons.Bookmark,
-                contentDescription = stringResource(R.string.core_ui_unbookmark),
+                contentDescription = stringResource(id = R.string.core_ui_unbookmark),
             )
         },
     )
@@ -260,13 +275,14 @@ fun NotificationDot(
     color: Color,
     modifier: Modifier = Modifier,
 ) {
-    val description = stringResource(R.string.core_ui_unread_resource_dot_content_description)
+    val description: String =
+        stringResource(id = R.string.core_ui_unread_resource_dot_content_description)
     Canvas(
         modifier = modifier
             .semantics { contentDescription = description },
         onDraw = {
             drawCircle(
-                color,
+                color = color,
                 radius = size.minDimension / 2,
             )
         },
@@ -285,9 +301,9 @@ fun NewsResourceMetaData(
     publishDate: Instant,
     resourceType: String,
 ) {
-    val formattedDate = dateFormatted(publishDate)
+    val formattedDate: String = dateFormatted(publishDate = publishDate)
     Text(
-        if (resourceType.isNotBlank()) {
+        text = if (resourceType.isNotBlank()) {
             stringResource(R.string.core_ui_card_meta_data_text, formattedDate, resourceType)
         } else {
             formattedDate
@@ -300,7 +316,7 @@ fun NewsResourceMetaData(
 fun NewsResourceShortDescription(
     newsResourceShortDescription: String,
 ) {
-    Text(newsResourceShortDescription, style = MaterialTheme.typography.bodyLarge)
+    Text(text = newsResourceShortDescription, style = MaterialTheme.typography.bodyLarge)
 }
 
 @Composable
@@ -311,15 +327,15 @@ fun NewsResourceTopics(
 ) {
     Row(
         // causes narrow chips
-        modifier = modifier.horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = modifier.horizontalScroll(state = rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(space = 4.dp),
     ) {
-        for (followableTopic in topics) {
+        for (followableTopic: FollowableTopic in topics) {
             NiaTopicTag(
                 followed = followableTopic.isFollowed,
                 onClick = { onTopicClick(followableTopic.topic.id) },
                 text = {
-                    val contentDescription = if (followableTopic.isFollowed) {
+                    val contentDescription: String = if (followableTopic.isFollowed) {
                         stringResource(
                             R.string.core_ui_topic_chip_content_description_when_followed,
                             followableTopic.topic.name,
@@ -336,7 +352,7 @@ fun NewsResourceTopics(
                             .semantics {
                                 this.contentDescription = contentDescription
                             }
-                            .testTag("topicTag:${followableTopic.topic.id}"),
+                            .testTag(tag = "topicTag:${followableTopic.topic.id}"),
                     )
                 },
             )
@@ -367,11 +383,11 @@ private fun BookmarkButtonBookmarkedPreview() {
 @Preview("NewsResourceCardExpanded")
 @Composable
 private fun ExpandedNewsResourcePreview(
-    @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
+    @PreviewParameter(provider = UserNewsResourcePreviewParameterProvider::class)
     userNewsResources: List<UserNewsResource>,
 ) {
     CompositionLocalProvider(
-        LocalInspectionMode provides true,
+        value = LocalInspectionMode provides true,
     ) {
         NiaTheme {
             Surface {

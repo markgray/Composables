@@ -16,11 +16,13 @@
 
 package com.google.samples.apps.nowinandroid.core.ui
 
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import kotlinx.datetime.TimeZone
 
 /**
- * TimeZone that can be provided with the TimeZoneMonitor.
+ * [TimeZone] that can be provided as the [LocalTimeZone] and be updated by `TimeZoneMonitor`.
  * This way, it's not needed to pass every single composable the time zone to show in UI.
  */
-val LocalTimeZone = compositionLocalOf { TimeZone.currentSystemDefault() }
+val LocalTimeZone: ProvidableCompositionLocal<TimeZone> =
+    compositionLocalOf { TimeZone.currentSystemDefault() }

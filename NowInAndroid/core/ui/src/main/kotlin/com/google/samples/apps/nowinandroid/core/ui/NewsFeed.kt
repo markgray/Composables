@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.core.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.ColorInt
@@ -36,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.analytics.LocalAnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
@@ -43,7 +45,15 @@ import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 /**
  * An extension on [LazyListScope] defining a feed with news resources.
  * Depending on the [feedState], this might emit no items.
+ *
+ * @param feedState The state of the feed, determining what is displayed.
+ * @param onNewsResourcesCheckedChanged A callback invoked when the user changes the saved state of a
+ * news resource.
+ * @param onNewsResourceViewed A callback invoked when the user views a news resource.
+ * @param onTopicClick A callback invoked when the user clicks on a topic chip.
+ * @param onExpandedCardClick A callback invoked when the user clicks on an expanded card.
  */
+@SuppressLint("UseKtx")
 fun LazyStaggeredGridScope.newsFeed(
     feedState: NewsFeedUiState,
     onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
@@ -58,10 +68,10 @@ fun LazyStaggeredGridScope.newsFeed(
                 items = feedState.feed,
                 key = { it.id },
                 contentType = { "newsFeedItem" },
-            ) { userNewsResource ->
-                val context = LocalContext.current
-                val analyticsHelper = LocalAnalyticsHelper.current
-                val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
+            ) { userNewsResource: UserNewsResource ->
+                val context: Context = LocalContext.current
+                val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
+                val backgroundColor: Int = MaterialTheme.colorScheme.background.toArgb()
 
                 NewsResourceCardExpanded(
                     userNewsResource = userNewsResource,
@@ -71,7 +81,11 @@ fun LazyStaggeredGridScope.newsFeed(
                         analyticsHelper.logNewsResourceOpened(
                             newsResourceId = userNewsResource.id,
                         )
-                        launchCustomChromeTab(context, Uri.parse(userNewsResource.url), backgroundColor)
+                        launchCustomChromeTab(
+                            context = context,
+                            uri = Uri.parse(userNewsResource.url),
+                            toolbarColor = backgroundColor,
+                        )
 
                         onNewsResourceViewed(userNewsResource.id)
                     },
@@ -92,10 +106,17 @@ fun LazyStaggeredGridScope.newsFeed(
     }
 }
 
+/**
+ * Launches a custom Chrome tab with the specified URI and toolbar color.
+ *
+ * @param context The context to use for launching the custom tab.
+ * @param uri The URI to open in the custom tab.
+ * @param toolbarColor The color to use for the custom tab's toolbar.
+ */
 fun launchCustomChromeTab(context: Context, uri: Uri, @ColorInt toolbarColor: Int) {
-    val customTabBarColor = CustomTabColorSchemeParams.Builder()
+    val customTabBarColor: CustomTabColorSchemeParams = CustomTabColorSchemeParams.Builder()
         .setToolbarColor(toolbarColor).build()
-    val customTabsIntent = CustomTabsIntent.Builder()
+    val customTabsIntent: CustomTabsIntent = CustomTabsIntent.Builder()
         .setDefaultColorSchemeParams(customTabBarColor)
         .build()
 
@@ -122,11 +143,14 @@ sealed interface NewsFeedUiState {
     ) : NewsFeedUiState
 }
 
+/**
+ * Preview of the [newsFeed] loading state.
+ */
 @Preview
 @Composable
 private fun NewsFeedLoadingPreview() {
     NiaTheme {
-        LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Adaptive(300.dp)) {
+        LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Adaptive(minSize = 300.dp)) {
             newsFeed(
                 feedState = NewsFeedUiState.Loading,
                 onNewsResourcesCheckedChanged = { _, _ -> },
@@ -137,17 +161,22 @@ private fun NewsFeedLoadingPreview() {
     }
 }
 
+/**
+ * Preview function for the news feed when it is populated with content.
+ *
+ * @param userNewsResources The list of user news resources to display.
+ */
 @Preview
 @Preview(device = Devices.TABLET)
 @Composable
 private fun NewsFeedContentPreview(
-    @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
+    @PreviewParameter(provider = UserNewsResourcePreviewParameterProvider::class)
     userNewsResources: List<UserNewsResource>,
 ) {
     NiaTheme {
-        LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Adaptive(300.dp)) {
+        LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Adaptive(minSize = 300.dp)) {
             newsFeed(
-                feedState = NewsFeedUiState.Success(userNewsResources),
+                feedState = NewsFeedUiState.Success(feed = userNewsResources),
                 onNewsResourcesCheckedChanged = { _, _ -> },
                 onNewsResourceViewed = {},
                 onTopicClick = {},
