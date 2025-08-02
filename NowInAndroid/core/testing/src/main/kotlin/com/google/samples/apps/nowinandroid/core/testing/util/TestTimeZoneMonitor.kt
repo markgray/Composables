@@ -35,8 +35,8 @@ class TestTimeZoneMonitor : TimeZoneMonitor {
     private val timeZoneFlow: MutableStateFlow<TimeZone> = MutableStateFlow(value = defaultTimeZone)
 
     /**
-     * Public read-only [Flow] of [Boolean] that emits the [MutableStateFlow] of [Boolean] property
-     * [currentTimeZone].
+     * Public read-only [Flow] of [TimeZone] that emits the [MutableStateFlow] of [TimeZone] property
+     * [timeZoneFlow].
      */
     override val currentTimeZone: Flow<TimeZone> = timeZoneFlow
 

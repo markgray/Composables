@@ -62,8 +62,8 @@ fun AnalyticsHelper.logNewsResourceOpened(newsResourceId: String) {
  * A side-effect which records a screen view event. We launch a [DisposableEffect] keyed on [Unit]
  * and in its [DisposableEffectScope] `effect` block we call the [AnalyticsHelper.logScreenView]
  * method of our [AnalyticsHelper] parameter [analyticsHelper] with its `screenName` argument
- * ouf [String] parameter [screenName], then call [onDispose] with an empty lambda as its
- * `onDisposeEffect` lambda argument.
+ * ouf [String] parameter [screenName], then call [DisposableEffectScope.onDispose] with an empty
+ * lambda as its `onDisposeEffect` lambda argument.
  *
  * @param screenName The name of the screen to record.
  * @param analyticsHelper The analytics helper to use to log the event.

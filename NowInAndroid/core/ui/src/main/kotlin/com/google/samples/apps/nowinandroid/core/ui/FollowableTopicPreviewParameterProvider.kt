@@ -24,7 +24,7 @@ import com.google.samples.apps.nowinandroid.core.model.data.Topic
 
 /**
  * This [PreviewParameterProvider](https://developer.android.com/reference/kotlin/androidx/compose/ui/tooling/preview/PreviewParameterProvider)
- * provides list of [FollowableTopic] for Composable previews.
+ * provides a [List] of fake [FollowableTopic]s for Composable previews.
  */
 class FollowableTopicPreviewParameterProvider : PreviewParameterProvider<List<FollowableTopic>> {
     override val values: Sequence<List<FollowableTopic>>

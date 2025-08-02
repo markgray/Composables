@@ -37,7 +37,8 @@ class NiaTestRunner : AndroidJUnitRunner() {
      * @param name The name of the application class to instantiate. This is ignored and
      * [HiltTestApplication] is used instead.
      * @param context The context for the new application.
-     * @return A new instance of [HiltTestApplication].
+     * @return A new instance of [HiltTestApplication] that has been cast to [Application] (by our
+     * super's super's super's super).
      */
     override fun newApplication(cl: ClassLoader, name: String, context: Context): Application =
         super.newApplication(cl, HiltTestApplication::class.java.name, context)
