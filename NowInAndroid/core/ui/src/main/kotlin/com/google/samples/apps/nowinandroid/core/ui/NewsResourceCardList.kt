@@ -16,6 +16,8 @@
 
 package com.google.samples.apps.nowinandroid.core.ui
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -23,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.analytics.LocalAnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 
@@ -32,21 +35,30 @@ import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
  *
  * [onToggleBookmark] defines the action invoked when a user wishes to bookmark an item
  * When a news resource card is tapped it will open the news resource URL in a Chrome Custom Tab.
+ *
+ * TODO: Continue here.
+ *
+ * @param items (state) the [List] of [UserNewsResource] news resources to display in the UI.
+ * @param onToggleBookmark (event) the callback invoked when a user wishes to bookmark an item.
+ * @param onNewsResourceViewed (event) callback invoked when a news resource is viewed.
+ * @param onTopicClick (event) callback invoked when an item topic is clicked.
+ * @param itemModifier the modifier to apply to each list item.
  */
+@SuppressLint("UseKtx")
 fun LazyListScope.userNewsResourceCardItems(
     items: List<UserNewsResource>,
     onToggleBookmark: (item: UserNewsResource) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     itemModifier: Modifier = Modifier,
-) = items(
+): Unit = items(
     items = items,
     key = { it.id },
-    itemContent = { userNewsResource ->
-        val resourceUrl = Uri.parse(userNewsResource.url)
-        val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
-        val context = LocalContext.current
-        val analyticsHelper = LocalAnalyticsHelper.current
+    itemContent = { userNewsResource: UserNewsResource ->
+        val resourceUrl: Uri = Uri.parse(userNewsResource.url)
+        val backgroundColor: Int = MaterialTheme.colorScheme.background.toArgb()
+        val context: Context = LocalContext.current
+        val analyticsHelper: AnalyticsHelper = LocalAnalyticsHelper.current
 
         NewsResourceCardExpanded(
             userNewsResource = userNewsResource,
@@ -57,7 +69,11 @@ fun LazyListScope.userNewsResourceCardItems(
                 analyticsHelper.logNewsResourceOpened(
                     newsResourceId = userNewsResource.id,
                 )
-                launchCustomChromeTab(context, resourceUrl, backgroundColor)
+                launchCustomChromeTab(
+                    context = context,
+                    uri = resourceUrl,
+                    toolbarColor = backgroundColor,
+                )
                 onNewsResourceViewed(userNewsResource.id)
             },
             onTopicClick = onTopicClick,
