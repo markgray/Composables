@@ -43,8 +43,10 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 
 /**
- * An extension on [LazyListScope] defining a feed with news resources.
- * Depending on the [feedState], this might emit no items.
+ * An extension on [LazyListScope] that provides `items` of [NewsResourceCardExpanded] displaying
+ * [UserNewsResource] from the [List] of [UserNewsResource] property [NewsFeedUiState.Success.feed]
+ * of its [NewsFeedUiState] parameter [feedState] (if it is a [NewsFeedUiState.Success]). If the
+ * [NewsFeedUiState] parameter [feedState] is a [NewsFeedUiState.Loading] it will emit no items.
  *
  * @param feedState The state of the feed, determining what is displayed.
  * @param onNewsResourcesCheckedChanged A callback invoked when the user changes the saved state of a

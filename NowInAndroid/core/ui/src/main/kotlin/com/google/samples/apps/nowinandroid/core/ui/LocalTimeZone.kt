@@ -21,7 +21,7 @@ import androidx.compose.runtime.compositionLocalOf
 import kotlinx.datetime.TimeZone
 
 /**
- * [TimeZone] that can be provided as the [LocalTimeZone] and be updated by `TimeZoneMonitor`.
+ * [TimeZone] that is provided as the [LocalTimeZone] and is updated by `TimeZoneMonitor`.
  * This way, it's not needed to pass every single composable the time zone to show in UI.
  */
 val LocalTimeZone: ProvidableCompositionLocal<TimeZone> =
