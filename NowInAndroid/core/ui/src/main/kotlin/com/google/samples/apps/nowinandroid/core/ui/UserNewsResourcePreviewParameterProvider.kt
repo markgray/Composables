@@ -37,11 +37,29 @@ import kotlinx.datetime.toInstant
  */
 class UserNewsResourcePreviewParameterProvider : PreviewParameterProvider<List<UserNewsResource>> {
 
-    override val values: Sequence<List<UserNewsResource>> = sequenceOf(newsResources)
+    /**
+     * A sequence of sample [UserNewsResource] lists for Composable previews.
+     */
+    override val values: Sequence<List<UserNewsResource>> = sequenceOf(element = newsResources)
 }
 
+/**
+ * An object that provides sample data for Composable previews.
+ */
 object PreviewParameterData {
 
+    /**
+     * Represents the user's data, including bookmarked news resources, viewed news resources,
+     * followed topics, theme preferences, and onboarding status.
+     *
+     * - `bookmarkedNewsResources`: A set of IDs of news resources that the user has bookmarked.
+     * - `viewedNewsResources`: A set of IDs of news resources that the user has viewed.
+     * - `followedTopics`: A set of IDs of topics that the user is following.
+     * - `themeBrand`: The selected theme brand for the app.
+     * - `darkThemeConfig`: The configuration for the dark theme.
+     * - `shouldHideOnboarding`: A boolean indicating whether the onboarding screen should be hidden.
+     * - `useDynamicColor`: A boolean indicating whether dynamic colors should be used.
+     */
     private val userData: UserData = UserData(
         bookmarkedNewsResources = setOf("1", "3"),
         viewedNewsResources = setOf("1", "2", "4"),
@@ -52,7 +70,18 @@ object PreviewParameterData {
         useDynamicColor = false,
     )
 
-    val topics = listOf(
+    /**
+     * A list of [Topic] instances that can be used in previews.
+     * Each topic includes an ID, name, short description, long description, image URL, and URL.
+     *
+     * - `id`: The unique identifier for the topic.
+     * - `name`: The name of the topic.
+     * - `shortDescription`: A brief overview of the topic.
+     * - `longDescription`: A more detailed explanation of the topic.
+     * - `imageUrl`: The URL for an image representing the topic.
+     * - `url`: A URL related to the topic, if applicable.
+     */
+    val topics: List<Topic> = listOf(
         Topic(
             id = "2",
             name = "Headlines",
@@ -79,7 +108,11 @@ object PreviewParameterData {
         ),
     )
 
-    val newsResources = listOf(
+    /**
+     * A list of sample [UserNewsResource]s.
+     * Each [UserNewsResource] contains a [NewsResource] and the associated [userData].
+     */
+    val newsResources: List<UserNewsResource> = listOf(
         UserNewsResource(
             newsResource = NewsResource(
                 id = "1",

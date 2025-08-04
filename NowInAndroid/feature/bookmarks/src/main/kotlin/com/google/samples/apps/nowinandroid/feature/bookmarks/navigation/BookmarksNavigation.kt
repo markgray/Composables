@@ -23,16 +23,28 @@ import androidx.navigation.compose.composable
 import com.google.samples.apps.nowinandroid.feature.bookmarks.BookmarksRoute
 import kotlinx.serialization.Serializable
 
-@Serializable object BookmarksRoute
+@Serializable
+object BookmarksRoute
 
-fun NavController.navigateToBookmarks(navOptions: NavOptions) =
-    navigate(route = BookmarksRoute, navOptions)
+/**
+ * Navigates to the bookmarks screen.
+ *
+ * @param navOptions Navigation options to apply to this navigation call.
+ */
+fun NavController.navigateToBookmarks(navOptions: NavOptions): Unit =
+    navigate(route = BookmarksRoute, navOptions = navOptions)
 
+/**
+ * Adds the bookmarks screen to the navigation graph.
+ *
+ * @param onTopicClick Callback called when a topic is clicked.
+ * @param onShowSnackbar Callback called to show a snackbar.
+ */
 fun NavGraphBuilder.bookmarksScreen(
     onTopicClick: (String) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     composable<BookmarksRoute> {
-        BookmarksRoute(onTopicClick, onShowSnackbar)
+        BookmarksRoute(onTopicClick = onTopicClick, onShowSnackbar = onShowSnackbar)
     }
 }
