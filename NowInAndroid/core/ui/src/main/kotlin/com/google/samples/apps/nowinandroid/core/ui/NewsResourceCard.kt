@@ -192,7 +192,7 @@ fun NewsResourceCardExpanded(
 
     /**
      * Used to enable global drag and drop of the [NewsResourceTitle] if the version of Android
-     * running on the device is 24 or higher.
+     * running on the device is 24 ("N") or higher.
      */
     val dragAndDropFlags: Int = if (VERSION.SDK_INT >= VERSION_CODES.N) {
         View.DRAG_FLAG_GLOBAL
@@ -532,7 +532,7 @@ fun NewsResourceShortDescription(
  * the `horizontalArrangement` argument of the [Row] is [Arrangement.spacedBy] whose `space`
  * argument is `4.dp`. In the [RowScope] `content` composable lambda argument of the [Row] we
  * loop through our [List] of [FollowableTopic] parameter [topics] using variable `followableTopic`
- * for each [FollowableTopic]. We then compose a [NiaTopicTag] arguments are:
+ * for each [FollowableTopic]. We then compose a [NiaTopicTag] whose arguments are:
  *  - `followed`: is the [Boolean] property [FollowableTopic.isFollowed] of `followableTopic`.
  *  - `onClick`: is a lambda that calls our lambda parameter [onTopicClick] with the [String]
  *  property [Topic.id] of the [FollowableTopic.topic] property of `followableTopic`.
