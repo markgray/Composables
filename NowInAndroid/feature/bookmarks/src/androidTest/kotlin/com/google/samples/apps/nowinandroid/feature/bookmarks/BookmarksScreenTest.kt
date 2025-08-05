@@ -24,6 +24,7 @@ import androidx.compose.ui.test.filter
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onFirst
@@ -34,8 +35,10 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.testing.TestLifecycleOwner
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.samples.apps.nowinandroid.core.testing.data.userNewsResourcesTestData
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -47,8 +50,15 @@ import kotlin.test.assertTrue
  */
 class BookmarksScreenTest {
 
+    /**
+     * The a [AndroidComposeTestRule] used to run our tests.
+     * TODO: Continue here.
+     */
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule: AndroidComposeTestRule<
+        ActivityScenarioRule<ComponentActivity>,
+        ComponentActivity,
+        > = createAndroidComposeRule<ComponentActivity>()
 
     @Test
     fun loading_showsLoadingSpinner() {
@@ -74,7 +84,7 @@ class BookmarksScreenTest {
         composeTestRule.setContent {
             BookmarksScreen(
                 feedState = NewsFeedUiState.Success(
-                    userNewsResourcesTestData.take(2),
+                    feed = userNewsResourcesTestData.take(n = 2),
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromBookmarks = {},
@@ -85,23 +95,23 @@ class BookmarksScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[0].title,
+                text = userNewsResourcesTestData[0].title,
                 substring = true,
             )
             .assertExists()
             .assertHasClickAction()
 
-        composeTestRule.onNode(hasScrollToNodeAction())
+        composeTestRule.onNode(matcher = hasScrollToNodeAction())
             .performScrollToNode(
-                hasText(
-                    userNewsResourcesTestData[1].title,
+                matcher = hasText(
+                    text = userNewsResourcesTestData[1].title,
                     substring = true,
                 ),
             )
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[1].title,
+                text = userNewsResourcesTestData[1].title,
                 substring = true,
             )
             .assertExists()
@@ -115,11 +125,14 @@ class BookmarksScreenTest {
         composeTestRule.setContent {
             BookmarksScreen(
                 feedState = NewsFeedUiState.Success(
-                    userNewsResourcesTestData.take(2),
+                    feed = userNewsResourcesTestData.take(n = 2),
                 ),
                 onShowSnackbar = { _, _ -> false },
-                removeFromBookmarks = { newsResourceId ->
-                    assertEquals(userNewsResourcesTestData[0].id, newsResourceId)
+                removeFromBookmarks = { newsResourceId: String ->
+                    assertEquals(
+                        expected = userNewsResourcesTestData[0].id,
+                        actual = newsResourceId,
+                    )
                     removeFromBookmarksCalled = true
                 },
                 onTopicClick = {},
@@ -129,22 +142,22 @@ class BookmarksScreenTest {
 
         composeTestRule
             .onAllNodesWithContentDescription(
-                composeTestRule.activity.getString(
+                label = composeTestRule.activity.getString(
                     com.google.samples.apps.nowinandroid.core.ui.R.string.core_ui_unbookmark,
                 ),
             ).filter(
-                hasAnyAncestor(
-                    hasText(
-                        userNewsResourcesTestData[0].title,
+                matcher = hasAnyAncestor(
+                    matcher = hasText(
+                        text = userNewsResourcesTestData[0].title,
                         substring = true,
                     ),
                 ),
             )
-            .assertCountEquals(1)
+            .assertCountEquals(expectedSize = 1)
             .onFirst()
             .performClick()
 
-        assertTrue(removeFromBookmarksCalled)
+        assertTrue(actual = removeFromBookmarksCalled)
     }
 
     @Test
@@ -161,24 +174,24 @@ class BookmarksScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                composeTestRule.activity.getString(R.string.feature_bookmarks_empty_error),
+                text = composeTestRule.activity.getString(R.string.feature_bookmarks_empty_error),
             )
             .assertExists()
 
         composeTestRule
             .onNodeWithText(
-                composeTestRule.activity.getString(R.string.feature_bookmarks_empty_description),
+                text = composeTestRule.activity.getString(R.string.feature_bookmarks_empty_description),
             )
             .assertExists()
     }
 
     @Test
-    fun feed_whenLifecycleStops_undoBookmarkedStateIsCleared() = runTest {
+    fun feed_whenLifecycleStops_undoBookmarkedStateIsCleared(): TestResult = runTest {
         var undoStateCleared = false
         val testLifecycleOwner = TestLifecycleOwner(initialState = Lifecycle.State.STARTED)
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalLifecycleOwner provides testLifecycleOwner) {
+            CompositionLocalProvider(value = LocalLifecycleOwner provides testLifecycleOwner) {
                 BookmarksScreen(
                     feedState = NewsFeedUiState.Success(emptyList()),
                     onShowSnackbar = { _, _ -> false },
@@ -192,8 +205,8 @@ class BookmarksScreenTest {
             }
         }
 
-        assertEquals(false, undoStateCleared)
+        assertEquals(expected = false, actual = undoStateCleared)
         testLifecycleOwner.handleLifecycleEvent(event = Lifecycle.Event.ON_STOP)
-        assertEquals(true, undoStateCleared)
+        assertEquals(expected = true, actual = undoStateCleared)
     }
 }
