@@ -97,7 +97,12 @@ internal fun BookmarksRoute(
         feedState = feedState,
         onShowSnackbar = onShowSnackbar,
         removeFromBookmarks = viewModel::removeFromSavedResources,
-        onNewsResourceViewed = { viewModel.setNewsResourceViewed(newsResourceId = it, viewed = true) },
+        onNewsResourceViewed = {
+            viewModel.setNewsResourceViewed(
+                newsResourceId = it,
+                viewed = true,
+            )
+        },
         onTopicClick = onTopicClick,
         modifier = modifier,
         shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoBookmark,

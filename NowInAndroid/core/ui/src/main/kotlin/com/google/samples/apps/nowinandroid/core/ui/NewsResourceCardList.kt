@@ -66,14 +66,14 @@ import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
  *  its `uri` argument the [Uri] variable `resourceUrl`, and its `toolbarColor` argument the
  *  [Int] variable `backgroundColor`. Finally it calls our [onNewsResourceViewed] lambda parameter
  *  with the [UserNewsResource.id] of our [UserNewsResource] variable `userNewsResource`.
- *  - `onTopicClick`: is our [onTopicClick] lambda.
+ *  - `onTopicClick`: is our [onTopicClick] lambda parameter.
  *  - `modifier`: is our [Modifier] parameter `itemModifier`.
  *
  * @param items (state) the [List] of [UserNewsResource] news resources to display in the UI.
  * @param onToggleBookmark (event) the callback invoked when a user wishes to bookmark an item.
  * @param onNewsResourceViewed (event) callback invoked when a news resource is viewed.
  * @param onTopicClick (event) callback invoked when an item topic is clicked.
- * @param itemModifier the modifier to apply to each list item.
+ * @param itemModifier the modifier to apply to each [NewsResourceCardExpanded].
  */
 @SuppressLint("UseKtx")
 fun LazyListScope.userNewsResourceCardItems(

@@ -33,7 +33,7 @@ import kotlinx.datetime.toInstant
 
 /**
  * This [PreviewParameterProvider](https://developer.android.com/reference/kotlin/androidx/compose/ui/tooling/preview/PreviewParameterProvider)
- * provides list of [UserNewsResource] for Composable previews.
+ * provides a [List] of fake [UserNewsResource] for Composable previews.
  */
 class UserNewsResourcePreviewParameterProvider : PreviewParameterProvider<List<UserNewsResource>> {
 
@@ -52,13 +52,13 @@ object PreviewParameterData {
      * Represents the user's data, including bookmarked news resources, viewed news resources,
      * followed topics, theme preferences, and onboarding status.
      *
-     * - `bookmarkedNewsResources`: A set of IDs of news resources that the user has bookmarked.
-     * - `viewedNewsResources`: A set of IDs of news resources that the user has viewed.
-     * - `followedTopics`: A set of IDs of topics that the user is following.
+     * - `bookmarkedNewsResources`: A [Set] of IDs of news resources that the user has bookmarked.
+     * - `viewedNewsResources`: A [Set] of IDs of news resources that the user has viewed.
+     * - `followedTopics`: A [Set] of IDs of topics that the user is following.
      * - `themeBrand`: The selected theme brand for the app.
      * - `darkThemeConfig`: The configuration for the dark theme.
-     * - `shouldHideOnboarding`: A boolean indicating whether the onboarding screen should be hidden.
-     * - `useDynamicColor`: A boolean indicating whether dynamic colors should be used.
+     * - `shouldHideOnboarding`: A [Boolean] indicating whether the onboarding screen should be hidden.
+     * - `useDynamicColor`: A [Boolean] indicating whether dynamic colors should be used.
      */
     private val userData: UserData = UserData(
         bookmarkedNewsResources = setOf("1", "3"),
