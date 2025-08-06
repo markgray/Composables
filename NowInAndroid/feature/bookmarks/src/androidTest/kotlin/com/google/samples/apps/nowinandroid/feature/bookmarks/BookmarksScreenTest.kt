@@ -51,8 +51,10 @@ import kotlin.test.assertTrue
 class BookmarksScreenTest {
 
     /**
-     * The [AndroidComposeTestRule] used to run our tests.
-     * TODO: Continue here.
+     * The [AndroidComposeTestRule] used to run our tests. Test rules provide a way to run code
+     * before and after test methods. [createAndroidComposeRule]<[ComponentActivity]>() creates a
+     * rule that provides a testing environment for Jetpack Compose UI. It launches a simple
+     * [ComponentActivity] for hosting the composables under test.
      */
     @get:Rule
     val composeTestRule: AndroidComposeTestRule<
@@ -60,6 +62,21 @@ class BookmarksScreenTest {
         ComponentActivity,
         > = createAndroidComposeRule<ComponentActivity>()
 
+    /**
+     * Tests whether the loading spinner is shown when the feed is loading. We call the
+     * [AndroidComposeTestRule.setContent] method of our [AndroidComposeTestRule] property
+     * [composeTestRule] to set the content of the Activity that we are testing to a
+     * [BookmarksScreen] whose arguments are:
+     *  - `feedState` is a [NewsFeedUiState.Loading] state
+     *  - `onShowSnackbar` is a lambda that always returns `false`
+     *  - `removeFromBookmarks` is a lambda that does nothing.
+     *  - `onTopicClick` is a lambda that does nothing.
+     *  - `onNewsResourceViewed` is a lambda that does nothing.
+     *
+     * Then we use the [AndroidComposeTestRule.onNodeWithContentDescription] method to find the
+     * node with the content description of the loading spinner and apply the `assertExists`
+     * assertion to verify that it exists.
+     */
     @Test
     fun loading_showsLoadingSpinner() {
         composeTestRule.setContent {
@@ -74,11 +91,18 @@ class BookmarksScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_bookmarks_loading),
+                label = composeTestRule
+                    .activity.resources.getString(R.string.feature_bookmarks_loading),
             )
             .assertExists()
     }
 
+    /**
+     * Tests that the correct information is displayed for each bookmarked news item. It initializes
+     * the [BookmarksScreen] with two bookmarked news items from [userNewsResourcesTestData].
+     * Then it checks if the first item's title is displayed and if it has a click action.
+     * It then scrolls to the second item and performs the same checks.
+     */
     @Test
     fun feed_whenHasBookmarks_showsBookmarks() {
         composeTestRule.setContent {
@@ -118,6 +142,13 @@ class BookmarksScreenTest {
             .assertHasClickAction()
     }
 
+    /**
+     * Tests that the unbookmark action on a news item calls the `removeFromBookmarks` lambda with
+     * the correct news resource ID. It initializes the [BookmarksScreen] with two bookmarked news
+     * items. It then finds the unbookmark button for the first news item and clicks it.
+     * Finally, it asserts that the `removeFromBookmarks` lambda was called with the ID of the
+     * first news item.
+     */
     @Test
     fun feed_whenRemovingBookmark_removesBookmark() {
         var removeFromBookmarksCalled = false
@@ -160,6 +191,11 @@ class BookmarksScreenTest {
         assertTrue(actual = removeFromBookmarksCalled)
     }
 
+    /**
+     * Tests that the empty state is shown when there are no bookmarked news items. It initializes
+     * the [BookmarksScreen] with an empty list of bookmarked news items. Then it checks if the
+     * empty state title and description are displayed.
+     */
     @Test
     fun feed_whenHasNoBookmarks_showsEmptyState() {
         composeTestRule.setContent {
@@ -185,6 +221,11 @@ class BookmarksScreenTest {
             .assertExists()
     }
 
+    /**
+     * Tests that the undo state is cleared when the lifecycle stops. It initializes the
+     * [BookmarksScreen] and a [TestLifecycleOwner] in the started state. It then moves the
+     * lifecycle to the stopped state and asserts that the `clearUndoState` lambda was called.
+     */
     @Test
     fun feed_whenLifecycleStops_undoBookmarkedStateIsCleared(): TestResult = runTest {
         var undoStateCleared = false

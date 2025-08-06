@@ -16,6 +16,9 @@
 
 package com.google.samples.apps.nowinandroid.feature.foryou
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -48,10 +51,12 @@ import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -68,6 +73,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -77,12 +84,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.PermissionStatus.Denied
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.samples.apps.nowinandroid.core.designsystem.component.DynamicAsyncImage
@@ -91,6 +101,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaIconT
 import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaOverlayLoadingWheel
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.DecorativeScrollbar
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.DraggableScrollbar
+import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.ScrollbarState
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.scrollbarState
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
@@ -104,16 +115,32 @@ import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParam
 import com.google.samples.apps.nowinandroid.core.ui.launchCustomChromeTab
 import com.google.samples.apps.nowinandroid.core.ui.newsFeed
 
+/**
+ * The For You screen.
+ * TODO: Continue here.
+ * This stateful screen is composed of two main parts:
+ *
+ * * A list of topics that the user can choose to follow.
+ * * A list of news resources that are relevant to the user's followed topics.
+ *
+ * The screen also shows a loading indicator when the data is loading.
+ *
+ * This screen is also responsible for handling deep links to news resources.
+ *
+ * @param onTopicClick The callback to be invoked when a topic is clicked.
+ * @param modifier The modifier to be applied to the screen.
+ * @param viewModel The view model for the screen.
+ */
 @Composable
 internal fun ForYouScreen(
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ForYouViewModel = hiltViewModel(),
 ) {
-    val onboardingUiState by viewModel.onboardingUiState.collectAsStateWithLifecycle()
-    val feedState by viewModel.feedState.collectAsStateWithLifecycle()
-    val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
-    val deepLinkedUserNewsResource by viewModel.deepLinkedNewsResource.collectAsStateWithLifecycle()
+    val onboardingUiState: OnboardingUiState by viewModel.onboardingUiState.collectAsStateWithLifecycle()
+    val feedState: NewsFeedUiState by viewModel.feedState.collectAsStateWithLifecycle()
+    val isSyncing: Boolean by viewModel.isSyncing.collectAsStateWithLifecycle()
+    val deepLinkedUserNewsResource: UserNewsResource? by viewModel.deepLinkedNewsResource.collectAsStateWithLifecycle()
 
     ForYouScreen(
         isSyncing = isSyncing,
@@ -125,7 +152,12 @@ internal fun ForYouScreen(
         onTopicClick = onTopicClick,
         saveFollowedTopics = viewModel::dismissOnboarding,
         onNewsResourcesCheckedChanged = viewModel::updateNewsResourceSaved,
-        onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
+        onNewsResourceViewed = {
+            viewModel.setNewsResourceViewed(
+                newsResourceId = it,
+                viewed = true,
+            )
+        },
         modifier = modifier,
     )
 }
@@ -144,16 +176,19 @@ internal fun ForYouScreen(
     onNewsResourceViewed: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isOnboardingLoading = onboardingUiState is OnboardingUiState.Loading
-    val isFeedLoading = feedState is NewsFeedUiState.Loading
+    val isOnboardingLoading: Boolean = onboardingUiState is OnboardingUiState.Loading
+    val isFeedLoading: Boolean = feedState is NewsFeedUiState.Loading
 
     // This code should be called when the UI is ready for use and relates to Time To Full Display.
     ReportDrawnWhen { !isSyncing && !isOnboardingLoading && !isFeedLoading }
 
-    val itemsAvailable = feedItemsSize(feedState, onboardingUiState)
+    val itemsAvailable: Int = feedItemsSize(
+        feedState = feedState,
+        onboardingUiState = onboardingUiState,
+    )
 
-    val state = rememberLazyStaggeredGridState()
-    val scrollbarState = state.scrollbarState(
+    val state: LazyStaggeredGridState = rememberLazyStaggeredGridState()
+    val scrollbarState: ScrollbarState = state.scrollbarState(
         itemsAvailable = itemsAvailable,
     )
     TrackScrollJank(scrollableState = state, stateName = "forYou:feed")
@@ -163,12 +198,12 @@ internal fun ForYouScreen(
             .fillMaxSize(),
     ) {
         LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Adaptive(300.dp),
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            columns = StaggeredGridCells.Adaptive(minSize = 300.dp),
+            contentPadding = PaddingValues(all = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
             verticalItemSpacing = 24.dp,
             modifier = Modifier
-                .testTag("forYou:feed"),
+                .testTag(tag = "forYou:feed"),
             state = state,
         ) {
             onboarding(
@@ -177,14 +212,14 @@ internal fun ForYouScreen(
                 saveFollowedTopics = saveFollowedTopics,
                 // Custom LayoutModifier to remove the enforced parent 16.dp contentPadding
                 // from the LazyVerticalGrid and enable edge-to-edge scrolling for this section
-                interestsItemModifier = Modifier.layout { measurable, constraints ->
-                    val placeable = measurable.measure(
-                        constraints.copy(
+                interestsItemModifier = Modifier.layout { measurable: Measurable, constraints: Constraints ->
+                    val placeable: Placeable = measurable.measure(
+                        constraints = constraints.copy(
                             maxWidth = constraints.maxWidth + 32.dp.roundToPx(),
                         ),
                     )
-                    layout(placeable.width, placeable.height) {
-                        placeable.place(0, 0)
+                    layout(width = placeable.width, height = placeable.height) {
+                        placeable.place(x = 0, y = 0)
                     }
                 },
             )
@@ -198,24 +233,25 @@ internal fun ForYouScreen(
 
             item(span = StaggeredGridItemSpan.FullLine, contentType = "bottomSpacing") {
                 Column {
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(height = 8.dp))
                     // Add space for the content to clear the "offline" snackbar.
                     // TODO: Check that the Scaffold handles this correctly in NiaApp
                     // if (isOffline) Spacer(modifier = Modifier.height(48.dp))
-                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+                    Spacer(modifier = Modifier.windowInsetsBottomHeight(insets = WindowInsets.safeDrawing))
                 }
             }
         }
         AnimatedVisibility(
             visible = isSyncing || isFeedLoading || isOnboardingLoading,
             enter = slideInVertically(
-                initialOffsetY = { fullHeight -> -fullHeight },
+                initialOffsetY = { fullHeight: Int -> -fullHeight },
             ) + fadeIn(),
             exit = slideOutVertically(
-                targetOffsetY = { fullHeight -> -fullHeight },
+                targetOffsetY = { fullHeight: Int -> -fullHeight },
             ) + fadeOut(),
         ) {
-            val loadingContentDescription = stringResource(id = R.string.feature_foryou_loading)
+            val loadingContentDescription: String =
+                stringResource(id = R.string.feature_foryou_loading)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -223,7 +259,7 @@ internal fun ForYouScreen(
             ) {
                 NiaOverlayLoadingWheel(
                     modifier = Modifier
-                        .align(Alignment.Center),
+                        .align(alignment = Alignment.Center),
                     contentDesc = loadingContentDescription,
                 )
             }
@@ -231,9 +267,9 @@ internal fun ForYouScreen(
         state.DraggableScrollbar(
             modifier = Modifier
                 .fillMaxHeight()
-                .windowInsetsPadding(WindowInsets.systemBars)
+                .windowInsetsPadding(insets = WindowInsets.systemBars)
                 .padding(horizontal = 2.dp)
-                .align(Alignment.CenterEnd),
+                .align(alignment = Alignment.CenterEnd),
             state = scrollbarState,
             orientation = Orientation.Vertical,
             onThumbMoved = state.rememberDraggableScroller(
@@ -244,13 +280,13 @@ internal fun ForYouScreen(
     TrackScreenViewEvent(screenName = "ForYou")
     NotificationPermissionEffect()
     DeepLinkEffect(
-        deepLinkedUserNewsResource,
-        onDeepLinkOpened,
+        userNewsResource = deepLinkedUserNewsResource,
+        onDeepLinkOpened = onDeepLinkOpened,
     )
 }
 
 /**
- * An extension on [LazyListScope] defining the onboarding portion of the for you screen.
+ * An extension on [LazyStaggeredGridScope] defining the onboarding portion of the for you screen.
  * Depending on the [onboardingUiState], this might emit no items.
  *
  */
@@ -264,13 +300,13 @@ private fun LazyStaggeredGridScope.onboarding(
         OnboardingUiState.Loading,
         OnboardingUiState.LoadFailed,
         OnboardingUiState.NotShown,
-        -> Unit
+            -> Unit
 
         is OnboardingUiState.Shown -> {
             item(span = StaggeredGridItemSpan.FullLine, contentType = "onboarding") {
                 Column(modifier = interestsItemModifier) {
                     Text(
-                        text = stringResource(R.string.feature_foryou_onboarding_guidance_title),
+                        text = stringResource(id = R.string.feature_foryou_onboarding_guidance_title),
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -278,7 +314,7 @@ private fun LazyStaggeredGridScope.onboarding(
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Text(
-                        text = stringResource(R.string.feature_foryou_onboarding_guidance_subtitle),
+                        text = stringResource(id = R.string.feature_foryou_onboarding_guidance_subtitle),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp, start = 24.dp, end = 24.dp),
@@ -304,7 +340,7 @@ private fun LazyStaggeredGridScope.onboarding(
                                 .fillMaxWidth(),
                         ) {
                             Text(
-                                text = stringResource(R.string.feature_foryou_done),
+                                text = stringResource(id = R.string.feature_foryou_done),
                             )
                         }
                     }
@@ -320,7 +356,7 @@ private fun TopicSelection(
     onTopicCheckedChanged: (String, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val lazyGridState = rememberLazyGridState()
+    val lazyGridState: LazyGridState = rememberLazyGridState()
     val topicSelectionTestTag = "forYou:topicSelection"
 
     TrackScrollJank(scrollableState = lazyGridState, stateName = topicSelectionTestTag)
@@ -331,10 +367,10 @@ private fun TopicSelection(
     ) {
         LazyHorizontalGrid(
             state = lazyGridState,
-            rows = GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(24.dp),
+            rows = GridCells.Fixed(count = 3),
+            horizontalArrangement = Arrangement.spacedBy(space = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(space = 12.dp),
+            contentPadding = PaddingValues(all = 24.dp),
             modifier = Modifier
                 // LazyHorizontalGrid has to be constrained in height.
                 // However, we can't set a fixed height because the horizontal grid contains
@@ -345,9 +381,14 @@ private fun TopicSelection(
                 // horizontal grid will increase by at most the same factor, so 240sp is a valid
                 // upper bound for how much space we need in that case.
                 // The maximum of these two bounds is therefore a valid upper bound in all cases.
-                .heightIn(max = max(240.dp, with(LocalDensity.current) { 240.sp.toDp() }))
+                .heightIn(
+                    max = max(
+                        a = 240.dp,
+                        b = with(receiver = LocalDensity.current) { 240.sp.toDp() },
+                    ),
+                )
                 .fillMaxWidth()
-                .testTag(topicSelectionTestTag),
+                .testTag(tag = topicSelectionTestTag),
         ) {
             items(
                 items = onboardingUiState.topics,
@@ -383,9 +424,9 @@ private fun SingleTopicButton(
 ) {
     Surface(
         modifier = Modifier
-            .width(312.dp)
+            .width(width = 312.dp)
             .heightIn(min = 56.dp),
-        shape = RoundedCornerShape(corner = CornerSize(8.dp)),
+        shape = RoundedCornerShape(corner = CornerSize(size = 8.dp)),
         color = MaterialTheme.colorScheme.surface,
         selected = isSelected,
         onClick = {
@@ -404,12 +445,12 @@ private fun SingleTopicButton(
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier
                     .padding(horizontal = 12.dp)
-                    .weight(1f),
+                    .weight(weight = 1f),
                 color = MaterialTheme.colorScheme.onSurface,
             )
             NiaIconToggleButton(
                 checked = isSelected,
-                onCheckedChange = { checked -> onClick(topicId, checked) },
+                onCheckedChange = { checked: Boolean -> onClick(topicId, checked) },
                 icon = {
                     Icon(
                         imageVector = NiaIcons.Add,
@@ -433,13 +474,13 @@ fun TopicIcon(
     modifier: Modifier = Modifier,
 ) {
     DynamicAsyncImage(
-        placeholder = painterResource(R.drawable.feature_foryou_ic_icon_placeholder),
+        placeholder = painterResource(id = R.drawable.feature_foryou_ic_icon_placeholder),
         imageUrl = imageUrl,
         // decorative
         contentDescription = null,
         modifier = modifier
-            .padding(10.dp)
-            .size(32.dp),
+            .padding(all = 10.dp)
+            .size(size = 32.dp),
     )
 }
 
@@ -450,29 +491,31 @@ private fun NotificationPermissionEffect() {
     // in previews
     if (LocalInspectionMode.current) return
     if (VERSION.SDK_INT < VERSION_CODES.TIRAMISU) return
-    val notificationsPermissionState = rememberPermissionState(
-        android.Manifest.permission.POST_NOTIFICATIONS,
+    val notificationsPermissionState: PermissionState = rememberPermissionState(
+        permission = Manifest.permission.POST_NOTIFICATIONS,
     )
-    LaunchedEffect(notificationsPermissionState) {
-        val status = notificationsPermissionState.status
+    LaunchedEffect(key1 = notificationsPermissionState) {
+        val status: PermissionStatus = notificationsPermissionState.status
         if (status is Denied && !status.shouldShowRationale) {
             notificationsPermissionState.launchPermissionRequest()
         }
     }
 }
 
+
 @Composable
 private fun DeepLinkEffect(
     userNewsResource: UserNewsResource?,
     onDeepLinkOpened: (String) -> Unit,
 ) {
-    val context = LocalContext.current
-    val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
+    val context: Context = LocalContext.current
+    val backgroundColor: Int = MaterialTheme.colorScheme.background.toArgb()
 
-    LaunchedEffect(userNewsResource) {
+    LaunchedEffect(key1 = userNewsResource) {
         if (userNewsResource == null) return@LaunchedEffect
         if (!userNewsResource.hasBeenViewed) onDeepLinkOpened(userNewsResource.id)
 
+        @SuppressLint("UseKtx")
         launchCustomChromeTab(
             context = context,
             uri = Uri.parse(userNewsResource.url),
@@ -485,15 +528,15 @@ private fun feedItemsSize(
     feedState: NewsFeedUiState,
     onboardingUiState: OnboardingUiState,
 ): Int {
-    val feedSize = when (feedState) {
+    val feedSize: Int = when (feedState) {
         NewsFeedUiState.Loading -> 0
         is NewsFeedUiState.Success -> feedState.feed.size
     }
-    val onboardingSize = when (onboardingUiState) {
+    val onboardingSize: Int = when (onboardingUiState) {
         OnboardingUiState.Loading,
         OnboardingUiState.LoadFailed,
         OnboardingUiState.NotShown,
-        -> 0
+            -> 0
 
         is OnboardingUiState.Shown -> 1
     }
@@ -503,7 +546,7 @@ private fun feedItemsSize(
 @DevicePreviews
 @Composable
 fun ForYouScreenPopulatedFeed(
-    @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
+    @PreviewParameter(provider = UserNewsResourcePreviewParameterProvider::class)
     userNewsResources: List<UserNewsResource>,
 ) {
     NiaTheme {
@@ -527,7 +570,7 @@ fun ForYouScreenPopulatedFeed(
 @DevicePreviews
 @Composable
 fun ForYouScreenOfflinePopulatedFeed(
-    @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
+    @PreviewParameter(provider = UserNewsResourcePreviewParameterProvider::class)
     userNewsResources: List<UserNewsResource>,
 ) {
     NiaTheme {
@@ -551,14 +594,14 @@ fun ForYouScreenOfflinePopulatedFeed(
 @DevicePreviews
 @Composable
 fun ForYouScreenTopicSelection(
-    @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
+    @PreviewParameter(provider = UserNewsResourcePreviewParameterProvider::class)
     userNewsResources: List<UserNewsResource>,
 ) {
     NiaTheme {
         ForYouScreen(
             isSyncing = false,
             onboardingUiState = OnboardingUiState.Shown(
-                topics = userNewsResources.flatMap { news -> news.followableTopics }
+                topics = userNewsResources.flatMap { news: UserNewsResource -> news.followableTopics }
                     .distinctBy { it.topic.id },
             ),
             feedState = NewsFeedUiState.Success(
@@ -597,7 +640,7 @@ fun ForYouScreenLoading() {
 @DevicePreviews
 @Composable
 fun ForYouScreenPopulatedAndLoading(
-    @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
+    @PreviewParameter(provider = UserNewsResourcePreviewParameterProvider::class)
     userNewsResources: List<UserNewsResource>,
 ) {
     NiaTheme {

@@ -16,28 +16,57 @@
 
 package com.google.samples.apps.nowinandroid.feature.foryou.navigation
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navDeepLink
+import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.core.notifications.DEEP_LINK_URI_PATTERN
 import com.google.samples.apps.nowinandroid.feature.foryou.ForYouScreen
 import kotlinx.serialization.Serializable
 
-@Serializable data object ForYouRoute // route to ForYou screen
-
-@Serializable data object ForYouBaseRoute // route to base navigation graph
-
-fun NavController.navigateToForYou(navOptions: NavOptions) = navigate(route = ForYouRoute, navOptions)
+/**
+ * Represents the route to the For You screen.
+ */
+@Serializable
+data object ForYouRoute // route to ForYou screen
 
 /**
- *  The ForYou section of the app. It can also display information about topics.
- *  This should be supplied from a separate module.
+ * Base route for the For You navigation graph.
+ */
+@Serializable
+data object ForYouBaseRoute // route to base navigation graph
+
+/**
+ * Navigates to the For You screen.
  *
- *  @param onTopicClick - Called when a topic is clicked, contains the ID of the topic
- *  @param topicDestination - Destination for topic content
+ * @param navOptions The navigation options.
+ */
+fun NavController.navigateToForYou(navOptions: NavOptions): Unit =
+    navigate(route = ForYouRoute, navOptions)
+
+/**
+ * Builds the navigation graph for the For You section of the app.
+ * This section displays personalized content and allows users to explore topics.
+ *
+ * We cqll the [NavGraphBuilder.navigation] extension function to create a nested navigation graph
+ * with the base route [ForYouBaseRoute] with the start destination [ForYouRoute]. We then call the
+ * [NavGraphBuilder.composable] extension function to add a composable destination for the
+ * [ForYouRoute] with the deep link [DEEP_LINK_URI_PATTERN] that allows a specific news resource to
+ * be opened from a notification. In the [AnimatedContentScope] `content` Composable lambda argument
+ * we compose a [ForYouScreen] whose `onTopicClick` lambda argument is our [onTopicClick] lambda
+ * parameter.
+ *
+ * Also in the [NavGraphBuilder.navigation] extension function's `builder` lambda argument we call
+ * our [topicDestination] lambda argument to add the topic specific content to the graph.
+ *
+ * @param onTopicClick called when a topic is clicked with the [Topic.id] of the selected topic.
+ * @param topicDestination A lambda function that defines the navigation destination for topic
+ * specific content. This allows for modularity, as the topic content can be defined in a
+ * separate module.
  */
 fun NavGraphBuilder.forYouSection(
     onTopicClick: (String) -> Unit,
@@ -58,7 +87,7 @@ fun NavGraphBuilder.forYouSection(
                 },
             ),
         ) {
-            ForYouScreen(onTopicClick)
+            ForYouScreen(onTopicClick = onTopicClick)
         }
         topicDestination()
     }
