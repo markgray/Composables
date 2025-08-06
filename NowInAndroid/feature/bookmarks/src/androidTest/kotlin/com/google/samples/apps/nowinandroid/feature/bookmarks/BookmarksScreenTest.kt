@@ -51,7 +51,7 @@ import kotlin.test.assertTrue
 class BookmarksScreenTest {
 
     /**
-     * The a [AndroidComposeTestRule] used to run our tests.
+     * The [AndroidComposeTestRule] used to run our tests.
      * TODO: Continue here.
      */
     @get:Rule

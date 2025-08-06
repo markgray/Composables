@@ -54,7 +54,7 @@ class BookmarksViewModel @Inject constructor(
     /*
      * Whether to display the "undo" action for removing a bookmark.
      */
-    var shouldDisplayUndoBookmark: Boolean by mutableStateOf(false)
+    var shouldDisplayUndoBookmark: Boolean by mutableStateOf(value = false)
 
     /**
      * The ID of the last removed bookmark.
@@ -150,9 +150,9 @@ class BookmarksViewModel @Inject constructor(
     }
 
     /**
-     * Clears the undo state by resetting the [shouldDisplayUndoBookmark] flag to `false` and
-     * setting the [lastRemovedBookmarkId] to `null`. This is typically called after the undo
-     * action has been performed or if the undo message is dismissed.
+     * Clears the undo state by resetting the [shouldDisplayUndoBookmark] property to `false` and
+     * setting the [lastRemovedBookmarkId] property to `null`. This is typically called after the
+     * undo action has been performed or if the undo message is dismissed.
      */
     fun clearUndoState() {
         shouldDisplayUndoBookmark = false

@@ -153,7 +153,7 @@ internal fun BookmarksRoute(
  *
  * We start by initializing our [String] variable `bookmarkRemovedMessage` to the [String]
  * "Bookmark removed", and initializing our [String] variable `undoText` to the [String] "UNDO".
- * Then we launch a [LaunchedEffect] with our [Boolean] parameter [shouldDisplayUndoBookmark]
+ * Then we compose a [LaunchedEffect] with our [Boolean] parameter [shouldDisplayUndoBookmark]
  * as its `key1`. In its [CoroutineScope] `block` lambda argument if [shouldDisplayUndoBookmark] is
  * `true` we initialize our [Boolean] variable `snackBarResult` to the result of calling the
  * [onShowSnackbar] suspend lambda with the [String] variable `bookmarkRemovedMessage` and the
@@ -161,14 +161,14 @@ internal fun BookmarksRoute(
  * `snackBarResult` is `true` we call our lambda parameter [undoBookmarkRemoval], and if it is
  * `false` we call our lambda parameter [clearUndoState].
  *
- * Next we call [LifecycleEventEffect] method with [Lifecycle.Event.ON_STOP] as its `event` argument
- * and in its `onEvent` lambda argument we call our lambda parameter [clearUndoState] (this will run
- * when the composable is stopped).
+ * Next we call the [LifecycleEventEffect] method with [Lifecycle.Event.ON_STOP] as its `event`
+ * argument and in its `onEvent` lambda argument we call our lambda parameter [clearUndoState]
+ * (this will run when the composable is stopped).
  *
  * Next we branch on the value of [feedState]:
  *  - If [feedState] is [Loading] we compose a [LoadingState] with our [Modifier] parameter [modifier]
  *  as its `modifier` argument.
- *  - If [feedState] is [Success] and the feed is not empty we compose a [BookmarksGrid] with our
+ *  - If [feedState] is [Success] and the `feed` is not empty we compose a [BookmarksGrid] with our
  *  [NewsFeedUiState] parameter [feedState] as its `feedState` argument, our lambda parameter
  *  [removeFromBookmarks] as its `removeFromBookmarks` argument, our lambda parameter
  *  [onNewsResourceViewed] as its `onNewsResourceViewed` argument, our lambda parameter
@@ -177,7 +177,7 @@ internal fun BookmarksRoute(
  *  - If [feedState] is [Success] and the feed is empty we compose an [EmptyState] with our
  *  [Modifier] parameter [modifier] as its `modifier` argument.
  *
- * Finally we call [TrackScreenViewEvent] method with the [String] "Saved" as its `screenName`
+ * Finally we call the [TrackScreenViewEvent] method with the [String] "Saved" as its `screenName`
  * argument.
  *
  * @param feedState The state of the news feed.
@@ -272,8 +272,8 @@ private fun LoadingState(modifier: Modifier = Modifier) {
  * as its `scrollableState` argument and "bookmarks:grid" as its `stateName`.
  *
  * The root Composable is a [Box] whose `modifier` argument is our [Modifier] parameter [modifier]
- * with a [Modifier.fillMaxSize] chained to it. The [BoxScope] `content` lambda argument of the [Box] is a
- * [LazyVerticalStaggeredGrid] and a [DraggableScrollbar]. The arguments to the
+ * with a [Modifier.fillMaxSize] chained to it. The [BoxScope] `content` lambda argument of the [Box]
+ * contains a [LazyVerticalStaggeredGrid] and a [DraggableScrollbar]. The arguments to the
  * [LazyVerticalStaggeredGrid] are:
  *  - `columns`: a [StaggeredGridCells.Adaptive] whose `minSize` is 300.dp (The grid will have as
  *  many columns as possible such that each column has at least 300.dp of width).
@@ -468,7 +468,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 }
 
 /**
- * Previews the loading state of the Bookmarks screen.
+ * Previews the loading state [LoadingState] Composable of the Bookmarks screen.
  *
  * This preview is displayed within the NiaTheme.
  */
@@ -515,7 +515,7 @@ private fun BookmarksGridPreview(
 }
 
 /**
- * Previews the empty state of the Bookmarks screen.
+ * Previews the empty state [EmptyState] Composable of the Bookmarks screen.
  *
  * This preview is displayed within the NiaTheme.
  */
