@@ -113,7 +113,7 @@ class BookmarksViewModelTest {
             newsResourceId = newsResourcesTestData[0].id,
             bookmarked = true,
         )
-        val item = viewModel.feedUiState.value
+        val item: NewsFeedUiState = viewModel.feedUiState.value
         assertIs<Success>(value = item)
         assertEquals(expected = item.feed.size, actual = 1)
     }
