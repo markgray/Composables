@@ -55,6 +55,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -68,6 +70,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -91,7 +94,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
@@ -113,6 +118,8 @@ import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollba
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.scrollbarState
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
+import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
+import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.ui.DevicePreviews
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
@@ -543,9 +550,51 @@ private fun LazyStaggeredGridScope.onboarding(
 
 /**
  * Displays a list of topics for the user to select from.
- * TODO: Continue here.
  *
- * @param onboardingUiState The current state of the onboarding UI.
+ * We start by initializing and remembering our [LazyGridState] variable `lazyGridState` to the
+ * the instance returned by the [rememberLazyGridState] composable function. We also initialize
+ * our [String] variable `topicSelectionTestTag` to the string "forYou:topicSelection".
+ *
+ * We call the [TrackScrollJank] composable with its `scrollableState` argument our [LazyGridState]
+ * variable `lazyGridState`, and its `stateName` argument our [String] variable `topicSelectionTestTag`
+ * to have it track jank while anything that's scrollable.
+ *
+ * Our root composable is a [Box] whose `modifier` argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.fillMaxWidth]. In the [BoxScope] `content` composable lambda argument we
+ * we first compose a [LazyHorizontalGrid] whose arguments are:
+ *  - `state`: our [LazyGridState] variable `lazyGridState`.
+ *  - `rows`: a [GridCells.Fixed] whose `count` argument is `3`.
+ *  - `horizontalArrangement`: a [Arrangement.spacedBy] whose `space` argument is `12.dp`.
+ *  - `verticalArrangement`: a [Arrangement.spacedBy] whose `space` argument is `12.dp`.
+ *  - `contentPadding`: a [PaddingValues] whose `all` argument is `24.dp`.
+ *  - `modifier`: a [Modifier.heightIn] whose `max` argument is the maximum of `240.dp` and the
+ *  [Dp] equivalent of `240.sp`, chained to a [Modifier.fillMaxWidth] chained to a [Modifier.testTag]
+ *  whose `tag` argument is our [String] variable `topicSelectionTestTag`.
+ *
+ * In the [LazyGridScope] `content` composable lambda argument we compose a [LazyGridScope.items]
+ * whose `items` argument is the [List] of [FollowableTopic] of the [OnboardingUiState.Shown.topics]
+ * of our [OnboardingUiState] parameter [onboardingUiState]. The `key` argument is the [String]
+ * property [Topic.id] of the current [FollowableTopic].  In the [LazyGridItemScope] `itemContent`
+ * composable lambda argument of the [LazyGridScope.items] we compose a [SingleTopicButton] whose
+ * arguments are:
+ *  - `name`: is the [String] property [Topic.name] of the current [FollowableTopic].
+ *  - `topicId`: is the [String] property [Topic.id] of the current [FollowableTopic].
+ *  - `imageUrl`: is the [String] property [Topic.imageUrl] of the current [FollowableTopic].
+ *  - `isSelected`: is the [Boolean] property [FollowableTopic.isFollowed] of the current
+ *  [FollowableTopic].
+ *  - `onClick`: is our lambda parameter [onTopicCheckedChanged].
+ *
+ * Alongside the [LazyHorizontalGrid] in the [Box] we compose a [DecorativeScrollbar] using our
+ * [LazyGridState] variable `lazyGridState` as its receiver with the arguments:
+ *  - `modifier`: a [Modifier.fillMaxWidth] chained to a [Modifier.padding] whose `horizontal`
+ *  argument is `12.dp`, chained to a [BoxScope.align] whose `alignment` argument is
+ *  [Alignment.BottomStart].
+ *  - `state`: the [ScrollbarState] returned by the [LazyGridState.scrollbarState] method of our
+ *  [LazyGridState] variable `lazyGridState` with its `itemsAvailable` argument the size of the
+ *  [OnboardingUiState.Shown.topics] of our [OnboardingUiState] parameter [onboardingUiState].
+ *  - `orientation`: is [Orientation.Horizontal].
+ *
+ * @param onboardingUiState The current [OnboardingUiState] state of the onboarding UI.
  * @param onTopicCheckedChanged A callback that is invoked when the user checks or unchecks a topic.
  * @param modifier A [Modifier] that is applied to the [Box] that contains the grid and scrollbar.
  */
@@ -613,6 +662,48 @@ private fun TopicSelection(
     }
 }
 
+/**
+ * A button that displays a single [Topic].
+ *
+ * Our root composable is a [Surface] whose arguments are:
+ *  - `modifier`: is a [Modifier.width] whose `width` argument is `312.dp`, chained to a
+ *  [Modifier.heightIn] whsoe `min` is `56.dp`
+ *  - `shape`: is a [RoundedCornerShape] whose `corner` argument is a [CornerSize] whose `size`
+ *  is `8.dp`.
+ *  - `color`: is the [ColorScheme.surface] of our custom [MaterialTheme.colorScheme].
+ *  - `selected`: is our [Boolean] parameter [isSelected].
+ *  - `onClick`: is a lambda that calls our lambda parameter [onClick] with our [String] parameter
+ *  [topicId] and the negation of our [Boolean] parameter [isSelected].
+ *
+ * In the `content` composable lambda argument of the [Surface] we compose a [Row] whose
+ * `verticalAlignment` argument is [Alignment.CenterVertically] and whose `modifier` argument is a
+ * [Modifier.padding] that adds `12.dp` to the `start` and `8.dp` to the `end`. In the [RowScope]
+ * `content` composable lambda argument we compose:
+ *
+ * A [TopicIcon] whose `imageUrl` argument is our [String] parameter [imageUrl].
+ *
+ * A [Text] whose arguments are:
+ *  - `text`: is our [String] parameter [name].
+ *  - `style`: the [TextStyle] is [Typography.titleSmall] of our custom [MaterialTheme.typography].
+ *  - `modifier`: a [Modifier.padding] that adds `12.dp` to the `horizontal` sides, chained to
+ *  [RowScope.weight] whose `weight` is `1f`.
+ *  - `color`: is the [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme].
+ *
+ * A [NiaIconToggleButton] whose arguments are:
+ *  - `checked`: is our [Boolean] parameter [isSelected].
+ *  - `onCheckedChange`: is a lambda that calls our lambda parameter [onClick] with our [String]
+ *  parameter [topicId] and the [Boolean] passed the lambda in variable `checked`.
+ *  - `icon`: is a lambda that composes an [Icon] whose `imageVector` argument is [NiaIcons.Add]
+ *  and whose `contentDescription` argument is our [String] parameter [name].
+ *  - `checkedIcon`: is a lambda that composes an [Icon] whose `imageVector` argument is
+ *  [NiaIcons.Check] and whose `contentDescription` argument is our [String] parameter [name].
+ *
+ * @param name the name of the [Topic].
+ * @param topicId the [Topic,id] of the [Topic].
+ * @param imageUrl the [Topic.imageUrl] of the [Topic].
+ * @param isSelected whether or not the [Topic] is currently selected.
+ * @param onClick a function to be invoked when the button is clicked.
+ */
 @Composable
 private fun SingleTopicButton(
     name: String,
@@ -667,6 +758,20 @@ private fun SingleTopicButton(
     }
 }
 
+/**
+ * An composable that displays the icon for a [Topic].
+ *
+ * We compose a [DynamicAsyncImage] whose arguments are:
+ *  - `placeholder`: is a drawable with resource ID [R.drawable.feature_foryou_ic_icon_placeholder]
+ *  (a stylized circle containing the text "Nia").
+ *  - `imageUrl`: is our [String] parameter [imageUrl].
+ *  - `contentDescription`: is `null` (it is a decorative image so needs no content description).
+ *  - `modifier`: is our [Modifier] parameter [modifier] chained to a [Modifier.padding] that adds
+ *  `10.dp` to all sides, chained to a [Modifier.size] that sets its `size` to `32.dp`.
+ *
+ * @param imageUrl the url of the image to display.
+ * @param modifier a [Modifier] to be applied to the [DynamicAsyncImage].
+ */
 @Composable
 fun TopicIcon(
     imageUrl: String,
@@ -683,6 +788,21 @@ fun TopicIcon(
     )
 }
 
+/**
+ * Effect that requests notification permission, if it shouldn't show rationale.
+ *
+ * We first use the [LocalInspectionMode] CompositionLocal to check if we are in a preview, and if
+ * so we return early. If our Build version is less than [VERSION_CODES.TIRAMISU] we return early.
+ * We initialize and remember our [PermissionState] variable `notificationsPermissionState` using the
+ * `accompanist-permissions` library's [rememberPermissionState] method with the `permission` argument
+ * [Manifest.permission.POST_NOTIFICATIONS].
+ *
+ * We then use a [LaunchedEffect] whose `key1` is `notificationsPermissionState` to launch its lambda
+ * block whenever `notificationsPermissionState` changes. In this block we initialize our [PermissionStatus]
+ * variable `status` to the [PermissionState.status] of `notificationsPermissionState`. Then if
+ * `status` is of type [Denied] and its [Denied.shouldShowRationale] property is `false` we call the
+ * [PermissionState.launchPermissionRequest] method of `notificationsPermissionState`.
+ */
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 private fun NotificationPermissionEffect() {
@@ -702,6 +822,26 @@ private fun NotificationPermissionEffect() {
 }
 
 
+/**
+ * A side effect that handles deep links to news resources.
+ *
+ * It uses the [LocalContext] CompositionLocal to initialize its [Context] variable `context` to
+ * the current [Context]. It initializes its [Int] variable `backgroundColor` to the
+ * [ColorScheme.background] color of our custom [MaterialTheme.colorScheme] converted to an ARGB [Int].
+ *
+ * It then uses a [LaunchedEffect] whose `key1` is its [UserNewsResource] parameter [userNewsResource]
+ * to launch its lambda block whenever [userNewsResource] changes. In this block it first checks if
+ * [userNewsResource] is `null` and if it is it returns from the [LaunchedEffect]. If the
+ * [UserNewsResource.hasBeenViewed] property of [userNewsResource] is `false` it calls our lambda
+ * parameter [onDeepLinkOpened] with the [UserNewsResource.id] property of [userNewsResource].
+ *
+ * Finally it calls the [launchCustomChromeTab] method with its `context` argument our [Context]
+ * variable `context`, its `uri` argument the [Uri] parsed from the [UserNewsResource.url] property
+ * of [userNewsResource], and its `toolbarColor` argument our [Int] variable `backgroundColor`.
+ *
+ * @param userNewsResource The [UserNewsResource] to deep link to. If this is `null`, nothing happens.
+ * @param onDeepLinkOpened The callback to be invoked when the deep link is opened.
+ */
 @Composable
 private fun DeepLinkEffect(
     userNewsResource: UserNewsResource?,
@@ -723,6 +863,17 @@ private fun DeepLinkEffect(
     }
 }
 
+/**
+ * Returns the size of the feed items, which is the sum of the feed size and the onboarding size.
+ * If the feed is loading, the feed size is 0, if the [NewsFeedUiState] is [NewsFeedUiState.Success]
+ * the feed size is the size of the [NewsFeedUiState.Success.feed] list of our [NewsFeedUiState]
+ * parameter [feedState]. If the onboarding is loading, failed, or not shown, the onboarding size is
+ * 0. If the onboarding is shown, the onboarding size is 1.
+ *
+ * @param feedState The [NewsFeedUiState] state of the news feed.
+ * @param onboardingUiState The [OnboardingUiState] state of the onboarding UI.
+ * @return The size of the feed items.
+ */
 private fun feedItemsSize(
     feedState: NewsFeedUiState,
     onboardingUiState: OnboardingUiState,
@@ -742,6 +893,26 @@ private fun feedItemsSize(
     return feedSize + onboardingSize
 }
 
+/**
+ * Preview of the "For You" screen with a populated feed.
+ *
+ * It is composed wrapped in our [NiaTheme] custom [MaterialTheme].
+ * It calls the stateless [ForYouScreen] composable with the arguments:
+ *  - `isSyncing`: `false`.
+ *  - `onboardingUiState`: [OnboardingUiState.NotShown].
+ *  - `feedState`: [NewsFeedUiState.Success] whose `feed` argument is our [List] of [UserNewsResource]
+ *  parameter [userNewsResources].
+ *  - `deepLinkedUserNewsResource`: `null`.
+ *  - `onTopicCheckedChanged`: a no-op lambda.
+ *  - `saveFollowedTopics`: a no-op lambda.
+ *  - `onNewsResourcesCheckedChanged`: a no-op lambda.
+ *  - `onNewsResourceViewed`: a no-op lambda.
+ *  - `onTopicClick`: a no-op lambda.
+ *  - `onDeepLinkOpened`: a no-op lambda.
+ *
+ * @param userNewsResources the [List] of [UserNewsResource] to display, provided by our
+ * [UserNewsResourcePreviewParameterProvider] custom [PreviewParameterProvider].
+ */
 @DevicePreviews
 @Composable
 fun ForYouScreenPopulatedFeed(
@@ -766,6 +937,26 @@ fun ForYouScreenPopulatedFeed(
     }
 }
 
+/**
+ * Preview of the "For You" screen with a populated feed and the device offline.
+ *
+ * It is composed wrapped in our [NiaTheme] custom [MaterialTheme].
+ * It calls the stateless [ForYouScreen] composable with the arguments:
+ *  - `isSyncing`: `false`.
+ *  - `onboardingUiState`: [OnboardingUiState.NotShown].
+ *  - `feedState`: [NewsFeedUiState.Success] whose `feed` argument is our [List] of [UserNewsResource]
+ *  parameter [userNewsResources].
+ *  - `deepLinkedUserNewsResource`: `null`.
+ *  - `onTopicCheckedChanged`: a no-op lambda.
+ *  - `saveFollowedTopics`: a no-op lambda.
+ *  - `onNewsResourcesCheckedChanged`: a no-op lambda.
+ *  - `onNewsResourceViewed`: a no-op lambda.
+ *  - `onTopicClick`: a no-op lambda.
+ *  - `onDeepLinkOpened`: a no-op lambda.
+ *
+ * @param userNewsResources the [List] of [UserNewsResource] to display, provided by our
+ * [UserNewsResourcePreviewParameterProvider] custom [PreviewParameterProvider].
+ */
 @DevicePreviews
 @Composable
 fun ForYouScreenOfflinePopulatedFeed(
@@ -790,6 +981,28 @@ fun ForYouScreenOfflinePopulatedFeed(
     }
 }
 
+/**
+ * Preview of the "For You" screen with topic selection.
+ *
+ * It is composed wrapped in our [NiaTheme] custom [MaterialTheme].
+ * It calls the stateless [ForYouScreen] composable with the arguments:
+ *  - `isSyncing`: `false`.
+ *  - `onboardingUiState`: [OnboardingUiState.Shown] whose `topics` argument is created by
+ *  flat-mapping the [UserNewsResource.followableTopics] property of the [UserNewsResource] in
+ *  our [List] of [UserNewsResource] parameter [userNewsResources] then removing the duplicates.
+ *  - `feedState`: [NewsFeedUiState.Success] whose `feed` argument is our [List] of [UserNewsResource]
+ *  parameter [userNewsResources].
+ *  - `deepLinkedUserNewsResource`: `null`.
+ *  - `onTopicCheckedChanged`: a no-op lambda.
+ *  - `saveFollowedTopics`: a no-op lambda.
+ *  - `onNewsResourcesCheckedChanged`: a no-op lambda.
+ *  - `onNewsResourceViewed`: a no-op lambda.
+ *  - `onTopicClick`: a no-op lambda.
+ *  - `onDeepLinkOpened`: a no-op lambda.
+ *
+ * @param userNewsResources the [List] of [UserNewsResource] to display, provided by our
+ * [UserNewsResourcePreviewParameterProvider] custom [PreviewParameterProvider].
+ */
 @DevicePreviews
 @Composable
 fun ForYouScreenTopicSelection(
@@ -817,6 +1030,22 @@ fun ForYouScreenTopicSelection(
     }
 }
 
+/**
+ * Preview of the "For You" screen when the feed is loading.
+ *
+ * It is composed wrapped in our [NiaTheme] custom [MaterialTheme].
+ * It calls the stateless [ForYouScreen] composable with the arguments:
+ *  - `isSyncing`: `false`.
+ *  - `onboardingUiState`: [OnboardingUiState.Loading].
+ *  - `feedState`: [NewsFeedUiState.Loading].
+ *  - `deepLinkedUserNewsResource`: `null`.
+ *  - `onTopicCheckedChanged`: a no-op lambda.
+ *  - `saveFollowedTopics`: a no-op lambda.
+ *  - `onNewsResourcesCheckedChanged`: a no-op lambda.
+ *  - `onNewsResourceViewed`: a no-op lambda.
+ *  - `onTopicClick`: a no-op lambda.
+ *  - `onDeepLinkOpened`: a no-op lambda.
+ */
 @DevicePreviews
 @Composable
 fun ForYouScreenLoading() {
@@ -836,6 +1065,26 @@ fun ForYouScreenLoading() {
     }
 }
 
+/**
+ * Preview of the "For You" screen with a populated feed and the data is loading.
+ *
+ * It is composed wrapped in our [NiaTheme] custom [MaterialTheme].
+ * It calls the stateless [ForYouScreen] composable with the arguments:
+ *  - `isSyncing`: `true` (a loading indicator will be shown).
+ *  - `onboardingUiState`: [OnboardingUiState.Loading].
+ *  - `feedState`: [NewsFeedUiState.Success] whose `feed` argument is our [List] of [UserNewsResource]
+ *  parameter [userNewsResources].
+ *  - `deepLinkedUserNewsResource`: `null`.
+ *  - `onTopicCheckedChanged`: a no-op lambda.
+ *  - `saveFollowedTopics`: a no-op lambda.
+ *  - `onNewsResourcesCheckedChanged`: a no-op lambda.
+ *  - `onNewsResourceViewed`: a no-op lambda.
+ *  - `onTopicClick`: a no-op lambda.
+ *  - `onDeepLinkOpened`: a no-op lambda.
+ *
+ * @param userNewsResources the [List] of [UserNewsResource] to display, provided by our
+ * [UserNewsResourcePreviewParameterProvider] custom [PreviewParameterProvider].
+ */
 @DevicePreviews
 @Composable
 fun ForYouScreenPopulatedAndLoading(
