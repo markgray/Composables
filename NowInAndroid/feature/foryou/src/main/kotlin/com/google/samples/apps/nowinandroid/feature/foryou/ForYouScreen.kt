@@ -54,7 +54,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -89,8 +88,8 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -125,12 +124,12 @@ import com.google.samples.apps.nowinandroid.core.ui.newsFeed
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * The For You screen. This stateful screen is composed of two main parts:
+ * The For You screen. The stateless override it calls is composed of two main parts:
  *  * A list of topics that the user can choose to follow.
  *  * A list of news resources that are relevant to the user's followed topics.
  *
  * The screen also shows a loading indicator when the data is loading.
- * This screen is also responsible for handling deep links to news resources.
+ * The screen is also responsible for handling deep links to news resources.
  *
  * We start by initializing our [State] wrapped [OnboardingUiState] variable `onboardingUiState`
  * using the [StateFlow.collectAsStateWithLifecycle] method of the [StateFlow] of [OnboardingUiState]
@@ -145,7 +144,7 @@ import kotlinx.coroutines.flow.StateFlow
  * of the [StateFlow] of [UserNewsResource] property [ForYouViewModel.deepLinkedNewsResource] of
  * our [ForYouViewModel] parameter [viewModel].
  *
- * Then we compose a [ForYouScreen] with the arguments:
+ * Then we compose a stateless [ForYouScreen] with the arguments:
  *  - `isSyncing`: is our [State] wrapped [Boolean] variable `isSyncing`.
  *  - `onboardingUiState`: is our [State] wrapped [OnboardingUiState] variable `onboardingUiState`.
  *  - `feedState`: is our [State] wrapped [NewsFeedUiState] variable `feedState`.
@@ -161,7 +160,7 @@ import kotlinx.coroutines.flow.StateFlow
  *  - `onNewsResourcesCheckedChanged`: is a reference to the [ForYouViewModel.updateNewsResourceSaved]
  *  method of our [ForYouViewModel] parameter [viewModel].
  *  - `onNewsResourceViewed`: is a lambda that acccepts the [String] it is passed in variable
- *  `newsResourceId` Then calls the [ForYouViewModel.setNewsResourceViewed] method of our
+ *  `newsResourceId` then calls the [ForYouViewModel.setNewsResourceViewed] method of our
  *  [ForYouViewModel] parameter [viewModel] with the `newsResourceId` argument our [String] variable
  *  `newsResourceId` and the `viewed` argument `true`.
  *  - `modifier`: is our [Modifier] parameter [modifier].
@@ -255,7 +254,7 @@ internal fun ForYouScreen(
  *
  * At the bottom of the [LazyStaggeredGridScope] `content` composable lambda argument we compose
  * a [LazyStaggeredGridScope.item] whose `span` argument is [StaggeredGridItemSpan.FullLine] and
- * its `contentType` argument is "bottomSpacing". In its [LazyStaggeredGridItemScope] `content`
+ * whose `contentType` argument is "bottomSpacing". In its [LazyStaggeredGridItemScope] `content`
  * lambda argument we compose a [Column] which contains a [Spacer] whose `modifier` argument
  * is a [Modifier.height] whose `height` argument is 8.dp, and a second [Spacer] whose `modifier`
  * argument is a [Modifier.windowInsetsBottomHeight] whose `insets` argument is
@@ -265,26 +264,26 @@ internal fun ForYouScreen(
  * `isSyncing` is `true`, `isOnboardingLoading` is `true`, or `isFeedLoading` is `true`, whose
  * `enter` argument is a [slideInVertically] whose `initialOffsetY` argument is a lambda that
  * accepts the [Int] passed the lambda in variable `fullHeight` and returns minus `fullHeight` with
- * a [fadeIn] added to it. And whose `exit` argument is a [slideOutVertically] whose `targetOffsetY`
- * argument is a lambda that accepts the [Int] passed the lambda in variable `fullHeight` and
- * returns minus `fullHeight` with a [fadeOut] added to it. In the [AnimatedVisibilityScope] `content`
- * composable lambda argument we initialize our [String] variable `loadingContentDescription` to
- * the string resource with the id `R.string.feature_foryou_loading` ("Loading for you…"), then
- * compose a [Box] whose `modifier` argument is a [Modifier.fillMaxWidth] chained to a
- * [Modifier.padding] that adds `8.dp` to the top. In its [BoxScope] `content` composable lambda
- * argument we compose a [NiaOverlayLoadingWheel] whose `modifier` argument is a [BoxScope.align]
- * whose `alignment` argument is [Alignment.Center], and whose `contentDesc` argument is our
- * [String] variable `loadingContentDescription`.
+ * a [fadeIn] added to the [slideInVertically]. And whose `exit` argument is a [slideOutVertically]
+ * whose `targetOffsetY` argument is a lambda that accepts the [Int] passed the lambda in variable
+ * `fullHeight` and returns minus `fullHeight` with a [fadeOut] added to the [slideOutVertically].
+ * In the [AnimatedVisibilityScope] `content` composable lambda argument we initialize our [String]
+ * variable `loadingContentDescription` to the string resource with the id
+ * `R.string.feature_foryou_loading` ("Loading for you…"), then compose a [Box] whose `modifier`
+ * argument is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] that adds `8.dp` to the top.
+ * In its [BoxScope] `content` composable lambda argument we compose a [NiaOverlayLoadingWheel] whose
+ * `modifier` argument is a [BoxScope.align] whose `alignment` argument is [Alignment.Center], and
+ * whose `contentDesc` argument is our [String] variable `loadingContentDescription`.
  *
- * Next in the [Box] we compose a [DraggableScrollbar] whose receiver is our [LazyStaggeredGridState]
- * variable `state`, whose `modifier` argument is a [Modifier.fillMaxHeight] chained to a
- * [Modifier.windowInsetsPadding] whose `insets` argument is [WindowInsets.Companion.systemBars],
- * chained to a [Modifier.padding] whose `horizontal` argument is 2.dp, and chained to a
- * [BoxScope.align] whose `alignment` argument is [Alignment.CenterEnd]. The `state` argument is
- * our [ScrollbarState] variable `scrollbarState`, the `orientation` argument is [Orientation.Vertical],
- * and the `onThumbMoved` argument is the remembered lambda returned by the method
- * [LazyStaggeredGridState.rememberDraggableScroller] when called with its `itemsAvailable` argument
- * our [Int] variable `itemsAvailable`.
+ * Next in the outer [Box] holding the [LazyVerticalStaggeredGrid] we compose a [DraggableScrollbar]
+ * whose receiver is our [LazyStaggeredGridState] variable `state`, whose `modifier` argument is a
+ * [Modifier.fillMaxHeight] chained to a [Modifier.windowInsetsPadding] whose `insets` argument is
+ * [WindowInsets.Companion.systemBars], chained to a [Modifier.padding] whose `horizontal` argument
+ * is 2.dp, and chained to a [BoxScope.align] whose `alignment` argument is [Alignment.CenterEnd].
+ * The `state` argument is our [ScrollbarState] variable `scrollbarState`, the `orientation` argument
+ * is [Orientation.Vertical], and the `onThumbMoved` argument is the remembered lambda returned by
+ * the method [LazyStaggeredGridState.rememberDraggableScroller] when called with its `itemsAvailable`
+ * argument our [Int] variable `itemsAvailable`.
  *
  * Outside of the [Box] now we call the [TrackScreenViewEvent] composable with its `screenName`
  * argument the string "forYou". Then we call [NotificationPermissionEffect] to have it ask
@@ -292,17 +291,17 @@ internal fun ForYouScreen(
  * with its `userNewsResource` argument our [UserNewsResource] variable `deepLinkedUserNewsResource`,
  * and its `onDeepLinkOpened` argument our lambda parameter [onDeepLinkOpened].
  *
- * @param isSyncing Whether the app is currently syncing data.
- * @param onboardingUiState The state of the onboarding UI.
- * @param feedState The state of the news feed.
- * @param deepLinkedUserNewsResource The news resource that was deep linked to, if any.
+ * @param isSyncing `true` if the app is currently syncing data.
+ * @param onboardingUiState The [OnboardingUiState] state of the onboarding UI.
+ * @param feedState The [NewsFeedUiState] state of the news feed.
+ * @param deepLinkedUserNewsResource The [UserNewsResource] that was deep linked to, if any.
  * @param onTopicCheckedChanged The callback to be invoked when a topic is checked or unchecked.
  * @param onTopicClick The callback to be invoked when a topic is clicked.
  * @param onDeepLinkOpened The callback to be invoked when a deep link is opened.
  * @param saveFollowedTopics The callback to be invoked when the user saves their followed topics.
  * @param onNewsResourcesCheckedChanged The callback to be invoked when a news resource is checked or unchecked.
  * @param onNewsResourceViewed The callback to be invoked when a news resource is viewed.
- * @param modifier The modifier to be applied to the screen.
+ * @param modifier The [Modifier] to be applied to the screen.
  */
 @Composable
 internal fun ForYouScreen(
@@ -480,7 +479,7 @@ internal fun ForYouScreen(
  * [OnboardingUiState.Shown].
  * @param onTopicCheckedChanged a function to be invoked when a topic is checked or unchecked.
  * @param saveFollowedTopics a function to be invoked when the user saves their followed topics.
- * @param interestsItemModifier a modifier to be applied to the interests item.
+ * @param interestsItemModifier a [Modifier] to be applied to the interests item.
  */
 private fun LazyStaggeredGridScope.onboarding(
     onboardingUiState: OnboardingUiState,
