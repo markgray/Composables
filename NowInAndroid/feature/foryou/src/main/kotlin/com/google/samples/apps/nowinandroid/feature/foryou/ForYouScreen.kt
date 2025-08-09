@@ -557,7 +557,7 @@ private fun LazyStaggeredGridScope.onboarding(
  *
  * We call the [TrackScrollJank] composable with its `scrollableState` argument our [LazyGridState]
  * variable `lazyGridState`, and its `stateName` argument our [String] variable `topicSelectionTestTag`
- * to have it track jank while anything that's scrollable.
+ * to have it track jank while scrolling anything that's scrollable.
  *
  * Our root composable is a [Box] whose `modifier` argument chains to our [Modifier] parameter
  * [modifier] a [Modifier.fillMaxWidth]. In the [BoxScope] `content` composable lambda argument we
@@ -573,10 +573,10 @@ private fun LazyStaggeredGridScope.onboarding(
  *
  * In the [LazyGridScope] `content` composable lambda argument we compose a [LazyGridScope.items]
  * whose `items` argument is the [List] of [FollowableTopic] of the [OnboardingUiState.Shown.topics]
- * of our [OnboardingUiState] parameter [onboardingUiState]. The `key` argument is the [String]
- * property [Topic.id] of the current [FollowableTopic].  In the [LazyGridItemScope] `itemContent`
- * composable lambda argument of the [LazyGridScope.items] we compose a [SingleTopicButton] whose
- * arguments are:
+ * property of our [OnboardingUiState] parameter [onboardingUiState]. The `key` argument is the
+ * [String] property [Topic.id] of the current [FollowableTopic].  In the [LazyGridItemScope]
+ * `itemContent` composable lambda argument of the [LazyGridScope.items] we compose a
+ * [SingleTopicButton] whose arguments are:
  *  - `name`: is the [String] property [Topic.name] of the current [FollowableTopic].
  *  - `topicId`: is the [String] property [Topic.id] of the current [FollowableTopic].
  *  - `imageUrl`: is the [String] property [Topic.imageUrl] of the current [FollowableTopic].
@@ -591,7 +591,8 @@ private fun LazyStaggeredGridScope.onboarding(
  *  [Alignment.BottomStart].
  *  - `state`: the [ScrollbarState] returned by the [LazyGridState.scrollbarState] method of our
  *  [LazyGridState] variable `lazyGridState` with its `itemsAvailable` argument the size of the
- *  [OnboardingUiState.Shown.topics] of our [OnboardingUiState] parameter [onboardingUiState].
+ *  [OnboardingUiState.Shown.topics] property of our [OnboardingUiState] parameter
+ *  [onboardingUiState].
  *  - `orientation`: is [Orientation.Horizontal].
  *
  * @param onboardingUiState The current [OnboardingUiState] state of the onboarding UI.
@@ -684,7 +685,7 @@ private fun TopicSelection(
  *
  * A [Text] whose arguments are:
  *  - `text`: is our [String] parameter [name].
- *  - `style`: the [TextStyle] is [Typography.titleSmall] of our custom [MaterialTheme.typography].
+ *  - `style`: [TextStyle] is the [Typography.titleSmall] of our custom [MaterialTheme.typography].
  *  - `modifier`: a [Modifier.padding] that adds `12.dp` to the `horizontal` sides, chained to
  *  [RowScope.weight] whose `weight` is `1f`.
  *  - `color`: is the [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme].
@@ -699,7 +700,7 @@ private fun TopicSelection(
  *  [NiaIcons.Check] and whose `contentDescription` argument is our [String] parameter [name].
  *
  * @param name the name of the [Topic].
- * @param topicId the [Topic,id] of the [Topic].
+ * @param topicId the [Topic.id] of the [Topic].
  * @param imageUrl the [Topic.imageUrl] of the [Topic].
  * @param isSelected whether or not the [Topic] is currently selected.
  * @param onClick a function to be invoked when the button is clicked.
@@ -798,9 +799,10 @@ fun TopicIcon(
  * [Manifest.permission.POST_NOTIFICATIONS].
  *
  * We then use a [LaunchedEffect] whose `key1` is `notificationsPermissionState` to launch its lambda
- * block whenever `notificationsPermissionState` changes. In this block we initialize our [PermissionStatus]
- * variable `status` to the [PermissionState.status] of `notificationsPermissionState`. Then if
- * `status` is of type [Denied] and its [Denied.shouldShowRationale] property is `false` we call the
+ * block whenever `notificationsPermissionState` changes. In this block we initialize our
+ * [PermissionStatus] variable `status` to the [PermissionState.status] of
+ * `notificationsPermissionState`. Then if `status` is of type [Denied] and its
+ * [Denied.shouldShowRationale] property is `false` we call the
  * [PermissionState.launchPermissionRequest] method of `notificationsPermissionState`.
  */
 @Composable
