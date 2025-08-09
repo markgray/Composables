@@ -1,3 +1,5 @@
+@file:Suppress("UnusedImport") // It is used by kdoc
+
 package com.codelabs.basicstatecodelab
 
 import androidx.activity.compose.setContent
