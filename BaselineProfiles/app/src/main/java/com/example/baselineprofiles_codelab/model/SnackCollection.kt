@@ -94,7 +94,7 @@ object SnackRepo {
      * This parameter is currently unused in this implementation.
      * @return A list of [SnackCollection] objects that are considered related.
      */
-    @Suppress("UNUSED_PARAMETER", "unused")
+    @Suppress("UNUSED_PARAMETER", "RedundantSuppression")
     fun getRelated(snackId: Long): List<SnackCollection> = related
 
     /**

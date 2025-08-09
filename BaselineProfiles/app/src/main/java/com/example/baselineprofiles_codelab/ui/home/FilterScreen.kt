@@ -178,7 +178,7 @@ fun FilterScreen(
                         )
                     },
                     actions = {
-                        var resetEnabled: Boolean = sortState != defaultFilter
+                        val resetEnabled: Boolean = sortState != defaultFilter
                         IconButton(
                             onClick = { /* TODO: Open search */ },
                             enabled = resetEnabled

@@ -100,7 +100,7 @@ fun Feed(
     // Simulate loading data asynchronously.
     // In real world application, you shouldn't have this kind of logic in your UI code,
     // but you should move it to appropriate layer.
-    var snackCollections: List<SnackCollection> by remember { mutableStateOf(listOf<SnackCollection>()) }
+    var snackCollections: List<SnackCollection> by remember { mutableStateOf(listOf()) }
     LaunchedEffect(key1 = Unit) {
         trace(sectionName = "Snacks loading") {
             delay(timeMillis = 300)
