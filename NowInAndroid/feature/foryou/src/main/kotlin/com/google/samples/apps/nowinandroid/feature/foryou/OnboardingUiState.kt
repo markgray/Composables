@@ -38,7 +38,7 @@ sealed interface OnboardingUiState {
     data object NotShown : OnboardingUiState
 
     /**
-     * There is a onboarding state, with the given lists of topics.
+     * There is a onboarding state, with the given [List] of [FollowableTopic].
      */
     data class Shown(
         val topics: List<FollowableTopic>,

@@ -23,11 +23,15 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaOverlayLoadingWheel
+import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
 import com.google.samples.apps.nowinandroid.core.rules.GrantPostNotificationsPermissionRule
 import com.google.samples.apps.nowinandroid.core.testing.data.followableTopicTestData
 import com.google.samples.apps.nowinandroid.core.testing.data.userNewsResourcesTestData
@@ -35,20 +39,44 @@ import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import org.junit.Rule
 import org.junit.Test
 
+/**
+ * UI tests for [ForYouScreen].
+ */
 class ForYouScreenTest {
 
+    /**
+     * This test rule grants the POST_NOTIFICATIONS permission, which is required on SDK 33+
+     * for notifications to be displayed.
+     */
     @get:Rule(order = 0)
-    val postNotificationsPermission = GrantPostNotificationsPermissionRule()
+    val postNotificationsPermission: GrantPostNotificationsPermissionRule =
+        GrantPostNotificationsPermissionRule()
 
+    /**
+     * The compose test rule which is used to access the composable functions, this test rule
+     * also launches the Compose host activity.
+     */
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule: AndroidComposeTestRule<
+        ActivityScenarioRule<ComponentActivity>,
+        ComponentActivity
+        > = createAndroidComposeRule<ComponentActivity>()
 
+    /**
+     * Convenience property to find the "Done" button on the screen.
+     */
     private val doneButtonMatcher by lazy {
         hasText(
-            composeTestRule.activity.resources.getString(R.string.feature_foryou_done),
+            text = composeTestRule.activity.resources.getString(R.string.feature_foryou_done),
         )
     }
 
+    /**
+     * When the screen is loading the [NiaOverlayLoadingWheel] circular progress indicator whose
+     * content description is the [String] with resource ID `R.string.feature_foryou_loading`
+     * ("Loading for you…") should exist.
+     * TODO: Continue here.
+     */
     @Test
     fun circularProgressIndicator_whenScreenIsLoading_exists() {
         composeTestRule.setContent {
@@ -70,7 +98,7 @@ class ForYouScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_foryou_loading),
+                label = composeTestRule.activity.resources.getString(R.string.feature_foryou_loading),
             )
             .assertExists()
     }
@@ -96,14 +124,15 @@ class ForYouScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_foryou_loading),
+                label = composeTestRule.activity.resources.getString(R.string.feature_foryou_loading),
             )
             .assertExists()
     }
 
     @Test
     fun topicSelector_whenNoTopicsSelected_showsTopicChipsAndDisabledDoneButton() {
-        val testData = followableTopicTestData.map { it.copy(isFollowed = false) }
+        val testData: List<FollowableTopic> =
+            followableTopicTestData.map { it.copy(isFollowed = false) }
 
         composeTestRule.setContent {
             Box {
@@ -126,21 +155,21 @@ class ForYouScreenTest {
             }
         }
 
-        testData.forEach { testTopic ->
+        testData.forEach { testTopic: FollowableTopic ->
             composeTestRule
-                .onNodeWithText(testTopic.topic.name)
+                .onNodeWithText(text = testTopic.topic.name)
                 .assertExists()
                 .assertHasClickAction()
         }
 
         // Scroll until the Done button is visible
         composeTestRule
-            .onAllNodes(hasScrollToNodeAction())
+            .onAllNodes(matcher = hasScrollToNodeAction())
             .onFirst()
-            .performScrollToNode(doneButtonMatcher)
+            .performScrollToNode(matcher = doneButtonMatcher)
 
         composeTestRule
-            .onNode(doneButtonMatcher)
+            .onNode(matcher = doneButtonMatcher)
             .assertExists()
             .assertIsNotEnabled()
             .assertHasClickAction()
@@ -153,12 +182,12 @@ class ForYouScreenTest {
                 ForYouScreen(
                     isSyncing = false,
                     onboardingUiState =
-                    OnboardingUiState.Shown(
-                        // Follow one topic
-                        topics = followableTopicTestData.mapIndexed { index, testTopic ->
-                            testTopic.copy(isFollowed = index == 1)
-                        },
-                    ),
+                        OnboardingUiState.Shown(
+                            // Follow one topic
+                            topics = followableTopicTestData.mapIndexed { index, testTopic ->
+                                testTopic.copy(isFollowed = index == 1)
+                            },
+                        ),
                     feedState = NewsFeedUiState.Success(
                         feed = emptyList(),
                     ),
@@ -173,21 +202,21 @@ class ForYouScreenTest {
             }
         }
 
-        followableTopicTestData.forEach { testTopic ->
+        followableTopicTestData.forEach { testTopic: FollowableTopic ->
             composeTestRule
-                .onNodeWithText(testTopic.topic.name)
+                .onNodeWithText(text = testTopic.topic.name)
                 .assertExists()
                 .assertHasClickAction()
         }
 
         // Scroll until the Done button is visible
         composeTestRule
-            .onAllNodes(hasScrollToNodeAction())
+            .onAllNodes(matcher = hasScrollToNodeAction())
             .onFirst()
-            .performScrollToNode(doneButtonMatcher)
+            .performScrollToNode(matcher = doneButtonMatcher)
 
         composeTestRule
-            .onNode(doneButtonMatcher)
+            .onNode(matcher = doneButtonMatcher)
             .assertExists()
             .assertIsEnabled()
             .assertHasClickAction()
@@ -200,7 +229,7 @@ class ForYouScreenTest {
                 ForYouScreen(
                     isSyncing = false,
                     onboardingUiState =
-                    OnboardingUiState.Shown(topics = followableTopicTestData),
+                        OnboardingUiState.Shown(topics = followableTopicTestData),
                     feedState = NewsFeedUiState.Loading,
                     deepLinkedUserNewsResource = null,
                     onTopicCheckedChanged = { _, _ -> },
@@ -215,7 +244,7 @@ class ForYouScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_foryou_loading),
+                label = composeTestRule.activity.resources.getString(R.string.feature_foryou_loading),
             )
             .assertExists()
     }
@@ -241,7 +270,7 @@ class ForYouScreenTest {
 
         composeTestRule
             .onNodeWithContentDescription(
-                composeTestRule.activity.resources.getString(R.string.feature_foryou_loading),
+                label = composeTestRule.activity.resources.getString(R.string.feature_foryou_loading),
             )
             .assertExists()
     }
@@ -267,23 +296,23 @@ class ForYouScreenTest {
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[0].title,
+                text = userNewsResourcesTestData[0].title,
                 substring = true,
             )
             .assertExists()
             .assertHasClickAction()
 
-        composeTestRule.onNode(hasScrollToNodeAction())
+        composeTestRule.onNode(matcher = hasScrollToNodeAction())
             .performScrollToNode(
-                hasText(
-                    userNewsResourcesTestData[1].title,
+                matcher = hasText(
+                    text = userNewsResourcesTestData[1].title,
                     substring = true,
                 ),
             )
 
         composeTestRule
             .onNodeWithText(
-                userNewsResourcesTestData[1].title,
+                text = userNewsResourcesTestData[1].title,
                 substring = true,
             )
             .assertExists()
