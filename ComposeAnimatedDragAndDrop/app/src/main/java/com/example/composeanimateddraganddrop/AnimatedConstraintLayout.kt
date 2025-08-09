@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport") // It is used by kdoc
+
 package com.example.composeanimateddraganddrop
 
 import androidx.compose.animation.core.Animatable
