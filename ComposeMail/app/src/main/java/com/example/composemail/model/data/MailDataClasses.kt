@@ -18,6 +18,7 @@ package com.example.composemail.model.data
 
 import android.net.Uri
 import java.time.Instant
+import androidx.core.net.toUri
 
 /**
  * TODO: Add kdoc
@@ -182,7 +183,7 @@ data class Contact(
          */
         val Default: Contact = Contact(
             name = "John Doe",
-            profilePic = Uri.parse("android.resource://com.example.composemail/drawable/avatar_1"),
+            profilePic = "android.resource://com.example.composemail/drawable/avatar_1".toUri(),
             email = "johndoe@example.com",
             phone = "123 456 789"
         )
@@ -192,7 +193,7 @@ data class Contact(
          */
         val Me: Contact = Contact(
             name = "Me",
-            profilePic = Uri.parse("android.resource://com.example.composemail/drawable/ic_no_profile_pic"),
+            profilePic = "android.resource://com.example.composemail/drawable/ic_no_profile_pic".toUri(),
             email = "me@example.com",
             phone = "987 654 321"
         )
