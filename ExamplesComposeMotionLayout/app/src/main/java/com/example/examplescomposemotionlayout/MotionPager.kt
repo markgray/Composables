@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION", "UNUSED_PARAMETER")
+@file:Suppress("DEPRECATION", "UNUSED_PARAMETER", "RedundantSuppression")
 
 package com.example.examplescomposemotionlayout
 

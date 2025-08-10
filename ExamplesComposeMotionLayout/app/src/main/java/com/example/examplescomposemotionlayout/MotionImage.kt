@@ -81,6 +81,7 @@ fun MotionImage(
             val sy = zoom * sh / ih / scale
             val tx: Float = (sw - sx * iw) * panX
             val ty: Float = (sh - sy * ih) * panY
+            @Suppress("ReplacePrintlnWithLogging")
             println("pan = $tx,$ty")
             val cf = ColorMatrix()
             updateMatrix(cf, brightness = brightness, saturation = saturation, contrast = contrast, warmth = warmth)
@@ -307,7 +308,7 @@ fun updateMatrix(
             brightness(tmp.values, brightness)
             out.timesAssign(tmp)
         }
-        @Suppress("UNUSED_VALUE")
+        @Suppress("UNUSED_VALUE", "AssignedValueIsNeverRead")
         used = true
     }
 
