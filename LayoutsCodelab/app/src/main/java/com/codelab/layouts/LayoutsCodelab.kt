@@ -198,10 +198,10 @@ fun StaggeredGrid(
     ) { measurables: List<Measurable>, constraints: Constraints ->
 
         // Keep track of the width of each row
-        val rowWidths = IntArray(rows) { 0 }
+        val rowWidths = IntArray(rows)
 
         // Keep track of the max height of each row
-        val rowHeights = IntArray(rows) { 0 }
+        val rowHeights = IntArray(rows)
 
         /**
          * This is where we have each of our children in our [List] of [Measurable] parameter measure
@@ -234,7 +234,7 @@ fun StaggeredGrid(
             .coerceIn(constraints.minHeight.rangeTo(constraints.maxHeight))
 
         // Y of each row, based on the height accumulation of previous rows
-        val rowY = IntArray(rows) { 0 }
+        val rowY = IntArray(rows)
         for (i in 1 until rows) {
             rowY[i] = rowY[i - 1] + rowHeights[i - 1]
         }
@@ -242,7 +242,7 @@ fun StaggeredGrid(
         // Set the size of the parent layout
         layout(width, height) {
             // x co-ord we have placed up to, per row
-            val rowX = IntArray(rows) { 0 }
+            val rowX = IntArray(rows)
 
             /**
              * This is where we go through all of the [Placeable] objects in the [List] of [Placeable]
