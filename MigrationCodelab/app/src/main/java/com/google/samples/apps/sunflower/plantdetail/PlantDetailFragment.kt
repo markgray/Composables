@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.google.samples.apps.sunflower.plantdetail
 
 import android.content.Intent
