@@ -106,7 +106,7 @@ fun Material2DMotionPreview() {
                     // TODO: Draw curves from Velocity2D
                     offset.value // Trigger recomposition
 
-                    @Suppress("UsePropertyAccessSyntax") // TODO: Gradle considers `isEmpty` property an error
+                    @Suppress("UsePropertyAccessSyntax", "RedundantSuppression") // TODO: Gradle considers `isEmpty` property an error
                     if (accumulator.isEmpty()) {
                         return@drawWithContent
                     }

@@ -121,7 +121,7 @@ public class Velocity2D {
 
     public int getPointOffsetX(int len, float fraction) {
         int lines = (len  - 5 * 4)/8;
-        int off = (int) (((len - 20) / 8) * fraction);
+        int off = (int) (((float) (len - 20) / 8) * fraction);
 
         if (off >= lines) {
              off = lines-2;
@@ -132,7 +132,7 @@ public class Velocity2D {
     public int getPointOffsetY(int len, float fraction) {
 
         int lines = (len  - 5 * 4)/8;
-        int off = (int) (((len - 20) / 8) * fraction);
+        int off = (int) (((float) (len - 20) / 8) * fraction);
 
         if (off >= lines) {
             off = lines-2;
