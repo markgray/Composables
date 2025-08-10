@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
+@file:Suppress("unused", "UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate",
+    "RedundantSuppression"
+)
 
 package android.support.composegraph3d.lib
 
@@ -249,6 +251,7 @@ open class Object3D {
      */
     fun rasterPhong1(s: Scene3D, zbuff: FloatArray, img: IntArray, w: Int, h: Int) {
         var i = 0
+        @Suppress("ReplacePrintlnWithLogging")
         println(" render ")
 
         while (i < index.size) {

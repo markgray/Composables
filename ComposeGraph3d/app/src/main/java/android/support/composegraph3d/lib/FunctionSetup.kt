@@ -1,4 +1,8 @@
-@file:Suppress("unused", "UNUSED_PARAMETER", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress("unused", "UNUSED_PARAMETER", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
+    "RedundantSuppression",
+    "RedundantSuppression",
+    "RedundantSuppression"
+)
 
 package android.support.composegraph3d.lib
 
@@ -167,6 +171,7 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
     /**
      * TODO: Add kdoc
      */
+    @Suppress("ReplacePrintlnWithLogging")
     fun onKeyTyped(c: Long) {
         println(c)
         //        switch ((char) c) {
@@ -261,6 +266,7 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         if (mWidth == width && mHeight == height) {
             return
         }
+        @Suppress("ReplacePrintlnWithLogging")
         println("$width $height")
         mWidth = width
         mHeight = height

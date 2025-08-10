@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
+@file:Suppress("UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
 
 package android.support.composegraph3d.lib
 
@@ -57,6 +57,7 @@ class ViewMatrix : Matrix() {
     /**
      * TODO: Add kdoc
      */
+    @Suppress("ReplacePrintlnWithLogging")
     override fun print() {
         println("mLookPoint  :" + toStr(lookPoint))
         println("mEyePoint   :" + toStr(eyePoint))

@@ -59,6 +59,7 @@ open class Matrix {
     /**
      * TODO: Add kdoc
      */
+    @Suppress("ReplacePrintlnWithLogging")
     open fun print() {
         val df = DecimalFormat("      ##0.000")
         for (i in 0..3) {
@@ -351,6 +352,7 @@ open class Matrix {
         /**
          * TODO: Add kdoc
          */
+        @Suppress("ReplacePrintlnWithLogging")
         @JvmStatic
         fun main(args: Array<String>) {
             val m = Matrix()

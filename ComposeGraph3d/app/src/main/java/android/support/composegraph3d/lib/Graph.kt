@@ -1,4 +1,4 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
+@file:Suppress("MemberVisibilityCanBePrivate", "RedundantSuppression", "RedundantSuppression")
 
 package android.support.composegraph3d.lib
 
@@ -58,6 +58,7 @@ class Graph {
         h = height/scale
         graphFunctions.setSize(w, h)
         bitmap = ImageBitmap(w, h, ImageBitmapConfig.Argb8888)
+        @Suppress("ReplacePrintlnWithLogging")
         println("$w x $h")
     }
 
