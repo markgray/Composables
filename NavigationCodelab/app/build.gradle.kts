@@ -76,16 +76,16 @@ dependencies {
     implementation("androidx.compose.material:material:1.8.3")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.navigation:navigation-compose:2.9.2")
+    implementation("androidx.navigation:navigation-compose:2.9.3")
     debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.7.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
     // Compose testing dependencies
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
-    androidTestImplementation("androidx.navigation:navigation-testing:2.9.2")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.9.3")
 }

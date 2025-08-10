@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.compose.rally.ui.overview
 
 import androidx.compose.foundation.ScrollState
