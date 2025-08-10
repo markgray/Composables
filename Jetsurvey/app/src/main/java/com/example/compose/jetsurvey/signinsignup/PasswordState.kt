@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantSuppression", "RedundantSuppression")
+
 package com.example.compose.jetsurvey.signinsignup
 
 /**

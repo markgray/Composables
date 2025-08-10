@@ -66,7 +66,7 @@ class SurveyViewModel(
      * For example, if the user selected "Reading" and "Exercising", this list would contain
      * the IDs for those two answers.
      */
-    private val _freeTimeResponse: SnapshotStateList<Int> = mutableStateListOf<Int>()
+    private val _freeTimeResponse: SnapshotStateList<Int> = mutableStateListOf()
 
     /**
      * Public read-only access to our [SnapshotStateList] of [Int] property  [_freeTimeResponse].
@@ -79,7 +79,7 @@ class SurveyViewModel(
      *
      * Null if the user has not yet selected a superhero.
      */
-    private val _superheroResponse: MutableState<Superhero?> = mutableStateOf<Superhero?>(null)
+    private val _superheroResponse: MutableState<Superhero?> = mutableStateOf(null)
 
     /**
      * Public read-only access to our [MutableState] of [Superhero] property [_superheroResponse].
@@ -92,7 +92,7 @@ class SurveyViewModel(
      *
      * Null if the user has not yet selected a takeaway date.
      */
-    private val _takeawayResponse: MutableState<Long?> = mutableStateOf<Long?>(null)
+    private val _takeawayResponse: MutableState<Long?> = mutableStateOf(null)
 
     /**
      * Public read-only access to our [MutableState] of [Long] property [_takeawayResponse].
@@ -108,7 +108,7 @@ class SurveyViewModel(
      *
      * Null if the user has not yet answered the question.
      */
-    private val _feelingAboutSelfiesResponse: MutableState<Float?> = mutableStateOf<Float?>(null)
+    private val _feelingAboutSelfiesResponse: MutableState<Float?> = mutableStateOf(null)
 
     /**
      * Public read-only access to our [MutableState] of [Float] property [_feelingAboutSelfiesResponse].
@@ -121,7 +121,7 @@ class SurveyViewModel(
      *
      * Null if the user has not yet taken a selfie.
      */
-    private val _selfieUri: MutableState<Uri?> = mutableStateOf<Uri?>(null)
+    private val _selfieUri: MutableState<Uri?> = mutableStateOf(null)
 
     /**
      * Public read-only access to our [MutableState] of [Uri] property [_selfieUri].

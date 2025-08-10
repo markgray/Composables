@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantSuppression")
+
 package com.example.compose.jetsurvey.signinsignup
 
 import androidx.compose.runtime.Immutable
