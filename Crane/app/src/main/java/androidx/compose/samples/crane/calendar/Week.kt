@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package androidx.compose.samples.crane.calendar
 
 import androidx.compose.foundation.layout.Box

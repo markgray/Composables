@@ -167,7 +167,7 @@ fun Calendar(
  *  appending the month name to the year to the [String] "header" to allow it to be found in tests,
  *  and contains a [MonthHeader] Composable whose `modifier` argument is a [Modifier.padding] that
  *  adds 32.dp to the `start`, 32.dp to the `end` and 32.dp to the `top` of the [MonthHeader], whose
- *  `month` argument is the [YearMonth.getMonth.value] of the [Month.yearMonth] of our [Month]
+ *  `month` argument is the [YearMonth.getMonth] of the [Month.yearMonth] of our [Month]
  *  parameter [month], and whose `year` argument is the [String] value of the [YearMonth.getYear]
  *  of the [Month.yearMonth] of our [Month] parameter [month].
  *  - We initialize our [Modifier] variable `val contentModifier` to a [Modifier.fillMaxWidth], with

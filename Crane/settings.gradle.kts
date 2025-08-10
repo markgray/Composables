@@ -32,7 +32,7 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
         snapshotVersion?.let {
-            @Suppress("ReplacePrintlnWithLogging")
+            @Suppress("ReplacePrintlnWithLogging", "RedundantSuppression")
             println("https://androidx.dev/snapshots/builds/$it/artifacts/repository/")
             maven { url = uri("https://androidx.dev/snapshots/builds/$it/artifacts/repository/") }
         }

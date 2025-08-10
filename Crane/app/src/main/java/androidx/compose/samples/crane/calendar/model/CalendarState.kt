@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantSuppression")
+
 package androidx.compose.samples.crane.calendar.model
 
 import androidx.compose.runtime.MutableState
