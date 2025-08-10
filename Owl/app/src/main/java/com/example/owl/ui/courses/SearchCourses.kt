@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.owl.ui.courses
 
 import androidx.compose.foundation.ExperimentalFoundationApi

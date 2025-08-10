@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantSuppression", "RedundantSuppression", "RedundantSuppression")
+
 package com.example.owl.model
 
 import androidx.compose.runtime.Immutable
@@ -51,6 +53,7 @@ data class Course(
  * This is a fake implementation. In a real app, this would be backed by a database and/or network
  * requests.
  */
+@Suppress("RedundantSuppression")
 object CourseRepo {
     /**
      * Returns the [Course] with the given ID.

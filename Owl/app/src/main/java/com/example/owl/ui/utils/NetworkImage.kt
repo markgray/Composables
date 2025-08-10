@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("unused")
+@file:Suppress("unused", "RedundantSuppression")
 
 package com.example.owl.ui.utils
 

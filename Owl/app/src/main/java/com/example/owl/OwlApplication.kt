@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused", "RedundantSuppression")
+
 package com.example.owl
 
 import android.app.Application
@@ -26,7 +28,6 @@ import com.example.owl.ui.utils.UnsplashSizingInterceptor
 /**
  * An [Application] that implements [ImageLoaderFactory] to provide Coil's image loading services.
  */
-@Suppress("unused")
 class OwlApplication : Application(), ImageLoaderFactory {
 
     /**
