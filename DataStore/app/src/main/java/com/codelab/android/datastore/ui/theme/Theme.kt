@@ -1,3 +1,5 @@
+@file:Suppress("UnusedImport") // Used in kdoc
+
 package com.codelab.android.datastore.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme

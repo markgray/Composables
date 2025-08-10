@@ -1,3 +1,5 @@
+@file:Suppress("UnusedImport") // Used in kdoc
+
 package com.codelab.android.datastore
 
 import android.content.Context

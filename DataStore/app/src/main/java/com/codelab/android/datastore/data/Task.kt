@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport") // Used in kdoc
+
 package com.codelab.android.datastore.data
 
 import androidx.compose.foundation.lazy.LazyColumn
