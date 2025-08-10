@@ -59,7 +59,7 @@ class ForYouScreenTest {
     @get:Rule(order = 1)
     val composeTestRule: AndroidComposeTestRule<
         ActivityScenarioRule<ComponentActivity>,
-        ComponentActivity
+        ComponentActivity,
         > = createAndroidComposeRule<ComponentActivity>()
 
     /**

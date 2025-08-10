@@ -88,14 +88,14 @@ class ForYouViewModel @Inject constructor(
      * [Flow.flatMapLatest] extension function with the `transform` suspend lambda argument
      * capturing the [String] passed the lambda in variable `newsResourceId` and if it is `null`
      * we emit a [flowOf] an [emptyList], otherwise we use the [UserNewsResourceRepository.observeAll]
-     * of our [UserNewsResourceRepository] property [userNewsResourceRepository] to retrieve the
-     * [Flow] of [List] of [UserNewsResource] that match the [NewsResourceQuery] with its
-     * `filterNewsIds` argument a [Set] of the [String] variable `newsResourceId`. The [Flow] emitted
-     * by the [Flow.flatMapLatest] extension function is then [Flow.map]'ed to a [Flow] of the first
-     * [UserNewsResource] in the [List] of [UserNewsResource]s, or `null` if the [List] is empty.
-     * This [Flow] is then fed to the [Flow.stateIn] method with the `scope` argument [viewModelScope],
-     * the `started` argument [SharingStarted.WhileSubscribed] and the `initialValue` argument of
-     * `null` to convert it into a [StateFlow] of [UserNewsResource].
+     * method of our [UserNewsResourceRepository] property [userNewsResourceRepository] to retrieve
+     * the [Flow] of [List] of [UserNewsResource] that match the [NewsResourceQuery] with its
+     * `filterNewsIds` argument a [Set] containing only the [String] variable `newsResourceId`. The
+     * [Flow] emitted by the [Flow.flatMapLatest] extension function is then [Flow.map]'ed to a [Flow]
+     * of the first [UserNewsResource] in the [List] of [UserNewsResource]s, or `null` if the [List]
+     * is empty. This [Flow] is then fed to the [Flow.stateIn] method with the `scope` argument
+     * [viewModelScope], the `started` argument [SharingStarted.WhileSubscribed] and the `initialValue`
+     * argument `null` to convert it into a [StateFlow] of [UserNewsResource].
      */
     val deepLinkedNewsResource: StateFlow<UserNewsResource?> =
         savedStateHandle.getStateFlow<String?>(
@@ -163,11 +163,11 @@ class ForYouViewModel @Inject constructor(
      * argument of [combine] we capture the [Boolean] value from the [Flow] of [Boolean] property
      * [shouldShowOnboarding] in variable `shouldShowOnboarding` and the [List] of [FollowableTopic]
      * from the [Flow] of [FollowableTopic] in variable `topics`. If `shouldShowOnboarding` is `true`,
-     * it emits [OnboardingUiState.Shown] with the list of topics in variable `topics`. Otherwise,
-     * it emits [OnboardingUiState.NotShown]. This [Flow] of [OnboardingUiState] is then converted
-     * to a [StateFlow] of [OnboardingUiState] by the [Flow.stateIn] extension function with the
-     * `scope` argument [viewModelScope], the `started` argument [SharingStarted.WhileSubscribed] and
-     * with an initial value of [OnboardingUiState.Loading].
+     * it emits [OnboardingUiState.Shown] with the list of topics in variable `topics` as its `topics`
+     * property. Otherwise, it emits [OnboardingUiState.NotShown]. This [Flow] of [OnboardingUiState]
+     * is then converted to a [StateFlow] of [OnboardingUiState] by the [Flow.stateIn] extension
+     * function with the `scope` argument [viewModelScope], the `started` argument
+     * [SharingStarted.WhileSubscribed] and with an initial value of [OnboardingUiState.Loading].
      */
     val onboardingUiState: StateFlow<OnboardingUiState> =
         combine(
@@ -279,8 +279,8 @@ class ForYouViewModel @Inject constructor(
 
 /**
  * Logs the event that a news resource deep link was opened. We call the [AnalyticsHelper.logEvent]
- * method of our [AnalyticsHelper] receiver with an [AnalyticsEvent] with its `type` argument
- * "news_deep_link_opened" and its `extras` argument a [List] of a single [Param] with the
+ * method of our [AnalyticsHelper] receiver with an [AnalyticsEvent] whose `type` argument is
+ * "news_deep_link_opened" and whose `extras` argument is a [List] of a single [Param] with the
  * [Param] having its `key` argument "news_resource_id" and its `value` argument our
  * [String] parameter [newsResourceId].
  *
