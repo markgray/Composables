@@ -53,7 +53,7 @@ class HeavyScreenViewModel : ViewModel() {
      *
      * Initialized with an empty list.
      */
-    private var _items: MutableStateFlow<List<HeavyItem>> = MutableStateFlow(emptyList<HeavyItem>())
+    private var _items: MutableStateFlow<List<HeavyItem>> = MutableStateFlow(emptyList())
 
     /**
      * A publicly accessible [StateFlow] providing read-only access to the list of [HeavyItem]

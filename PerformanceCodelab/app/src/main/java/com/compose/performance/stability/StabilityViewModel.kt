@@ -101,7 +101,7 @@ class StabilityViewModel : ViewModel() {
      * @see mutableStateOf
      * @see neverEqualPolicy
      */
-    var latestDateChange: LocalDate by mutableStateOf<LocalDate>(
+    var latestDateChange: LocalDate by mutableStateOf(
         value = LocalDate.now(),
         policy = neverEqualPolicy()
     )
