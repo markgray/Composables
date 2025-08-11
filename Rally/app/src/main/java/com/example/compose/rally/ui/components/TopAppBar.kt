@@ -156,7 +156,7 @@ private fun RallyTab(
     val durationMillis: Int =
         if (selected) TabFadeInAnimationDuration else TabFadeOutAnimationDuration
     val animSpec: TweenSpec<Color> = remember {
-        tween<Color>(
+        tween(
             durationMillis = durationMillis,
             easing = LinearEasing,
             delayMillis = TabFadeInAnimationDelay

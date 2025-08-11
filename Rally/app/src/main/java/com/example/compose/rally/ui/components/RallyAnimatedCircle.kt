@@ -114,7 +114,7 @@ fun AnimatedCircle(
             .apply { targetState = AnimatedCircleProgress.END }
     }
     val stroke: Stroke = with(LocalDensity.current) { Stroke(width = 5.dp.toPx()) }
-    val transition: Transition<AnimatedCircleProgress> = rememberTransition<AnimatedCircleProgress>(
+    val transition: Transition<AnimatedCircleProgress> = rememberTransition(
         transitionState = currentState,
         label = "CircleTransition"
     )
