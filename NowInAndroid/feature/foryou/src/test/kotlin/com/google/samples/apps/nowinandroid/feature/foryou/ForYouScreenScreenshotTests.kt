@@ -79,7 +79,7 @@ class ForYouScreenScreenshotTests {
     @get:Rule
     val composeTestRule: AndroidComposeTestRule<
         ActivityScenarioRule<ComponentActivity>,
-        ComponentActivity
+        ComponentActivity,
         > = createAndroidComposeRule<ComponentActivity>()
 
     /**

@@ -42,7 +42,6 @@ import com.google.samples.apps.nowinandroid.core.testing.util.MainDispatcherRule
 import com.google.samples.apps.nowinandroid.core.testing.util.TestAnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.testing.util.TestSyncManager
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -87,7 +86,7 @@ class ForYouViewModelTest {
     private val syncManager = TestSyncManager()
 
     /**
-     * A test version of [AnalyticsHelper] that records events in a list, makes them available
+     * A test version of [AnalyticsHelper] that records events in a list, making them available
      * for inspection and assertions.
      */
     private val analyticsHelper = TestAnalyticsHelper()
@@ -143,7 +142,7 @@ class ForYouViewModelTest {
 
     /**
      * Sets up the test environment by initializing the [ForYouViewModel] with mock dependencies.
-     * This function is annotated with `@Before` to ensure it runs before each test method.
+     * This function is annotated with @[Before] to ensure it runs before each test method.
      * TODO: Continue here.
      */
     @Before
@@ -210,7 +209,7 @@ class ForYouViewModelTest {
         )
         assertEquals(
             expected = NewsFeedUiState.Success(feed = emptyList()),
-            actual = viewModel.feedState.value
+            actual = viewModel.feedState.value,
         )
     }
 
@@ -526,11 +525,11 @@ class ForYouViewModelTest {
                 feed = listOf(
                     UserNewsResource(
                         newsResource = sampleNewsResources[1],
-                        userData = userDataExpected
+                        userData = userDataExpected,
                     ),
                     UserNewsResource(
                         newsResource = sampleNewsResources[2],
-                        userData = userDataExpected
+                        userData = userDataExpected,
                     ),
                 ),
             ),
