@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.codelab.theming.ui.finish
 
 import androidx.compose.foundation.Image
