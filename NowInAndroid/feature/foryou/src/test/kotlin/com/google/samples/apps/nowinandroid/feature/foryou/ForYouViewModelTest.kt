@@ -143,7 +143,16 @@ class ForYouViewModelTest {
     /**
      * Sets up the test environment by initializing the [ForYouViewModel] with mock dependencies.
      * This function is annotated with @[Before] to ensure it runs before each test method.
-     * TODO: Continue here.
+     * We initialize our [ForYouViewModel] property [viewModel] with a new instance with the
+     * following arguments:
+     *  - `syncManager`: our [TestSyncManager] property [syncManager].
+     *  - `savedStateHandle`: our [SavedStateHandle] property [savedStateHandle].
+     *  - `analyticsHelper`: our [TestAnalyticsHelper] property [analyticsHelper].
+     *  - `userDataRepository`: our [TestUserDataRepository] property [userDataRepository].
+     *  - `userNewsResourceRepository`: our [CompositeUserNewsResourceRepository] property
+     *  [userNewsResourceRepository].
+     *  - `getFollowableTopics`: our [GetFollowableTopicsUseCase] property [getFollowableTopicsUseCase].
+     *  This is a use case that returns a list of topics that can be followed.
      */
     @Before
     fun setup() {
@@ -157,6 +166,11 @@ class ForYouViewModelTest {
         )
     }
 
+    /**
+     * Test that the initial state of the [ForYouViewModel.onboardingUiState] property is
+     * [OnboardingUiState.Loading] and the initial state of the [ForYouViewModel.feedState]
+     * property is [NewsFeedUiState.Loading].
+     */
     @Test
     fun stateIsInitiallyLoading(): TestResult = runTest {
         assertEquals(
@@ -166,6 +180,15 @@ class ForYouViewModelTest {
         assertEquals(expected = NewsFeedUiState.Loading, actual = viewModel.feedState.value)
     }
 
+    /**
+     * Test case to verify that the UI state remains in the loading state
+     * when the followed topics are still loading.
+     *
+     * It launches two background coroutines to collect the `onboardingUiState` and `feedState` flows.
+     * Then, it sends a list of sample topics to the `topicsRepository`. Finally, it asserts that
+     * both [ForYouViewModel.onboardingUiState] and [ForYouViewModel.feedState] are still in their
+     * respective loading states ([OnboardingUiState.Loading] and [NewsFeedUiState.Loading]).
+     */
     @Test
     fun stateIsLoadingWhenFollowedTopicsAreLoading(): TestResult = runTest {
         backgroundScope.launch(context = UnconfinedTestDispatcher()) {
@@ -184,6 +207,14 @@ class ForYouViewModelTest {
         assertEquals(expected = NewsFeedUiState.Loading, actual = viewModel.feedState.value)
     }
 
+    /**
+     * Test case to verify that the UI state indicates loading when the app is syncing
+     * and there are no followed interests.
+     *
+     * It sets the sync status to `true` using the `syncManager`.
+     * Then, it launches a background coroutine to collect the `isSyncing` flow from the ViewModel.
+     * Finally, it asserts that the `isSyncing` value in the ViewModel is `true`.
+     */
     @Test
     fun stateIsLoadingWhenAppIsSyncingWithNoInterests(): TestResult = runTest {
         syncManager.setSyncing(true)
@@ -196,6 +227,15 @@ class ForYouViewModelTest {
         )
     }
 
+    /**
+     * Test case to verify that the onboarding UI state remains in the loading state
+     * when the topics are still loading, even if the user has no followed topics.
+     *
+     * It launches two background coroutines to collect the `onboardingUiState` and `feedState` flows.
+     * Then, it sets the followed topic IDs in the `userDataRepository` to an empty set.
+     * Finally, it asserts that the `onboardingUiState` is still [OnboardingUiState.Loading]
+     * and the `feedState` is [NewsFeedUiState.Success] with an empty feed.
+     */
     @Test
     fun onboardingStateIsLoadingWhenTopicsAreLoading(): TestResult = runTest {
         backgroundScope.launch(context = UnconfinedTestDispatcher()) { viewModel.onboardingUiState.collect() }
@@ -213,6 +253,15 @@ class ForYouViewModelTest {
         )
     }
 
+    /**
+     * Test case to verify that the onboarding UI is shown when news resources are still loading.
+     *
+     * It launches two background coroutines to collect the `onboardingUiState` and `feedState` flows.
+     * Then, it sends sample topics to the `topicsRepository` and sets an empty set of followed
+     * topic IDs in the `userDataRepository`.
+     * Finally, it asserts that the `onboardingUiState` is `OnboardingUiState.Shown` with the
+     * sample topics, and the `feedState` is `NewsFeedUiState.Success` with an empty feed list.
+     */
     @Test
     fun onboardingIsShownWhenNewsResourcesAreLoading(): TestResult = runTest {
         backgroundScope.launch(context = UnconfinedTestDispatcher()) {
@@ -273,6 +322,17 @@ class ForYouViewModelTest {
         )
     }
 
+    /**
+     * Test case to verify that the onboarding UI is shown after loading empty followed topics.
+     *
+     * It launches two background coroutines to collect the `onboardingUiState` and `feedState` flows.
+     * Then, it sends sample topics to the `topicsRepository`, sets followed topic IDs to an empty set
+     * in the `userDataRepository`, and sends sample news resources to the `newsRepository`.
+     *
+     * Finally, it asserts that the `onboardingUiState` is `OnboardingUiState.Shown` with the sample
+     * topics (all marked as not followed) and the `feedState` is `NewsFeedUiState.Success` with an
+     * empty feed.
+     */
     @Test
     fun onboardingIsShownAfterLoadingEmptyFollowedTopics(): TestResult = runTest {
         backgroundScope.launch(context = UnconfinedTestDispatcher()) {
@@ -334,6 +394,20 @@ class ForYouViewModelTest {
         )
     }
 
+    /**
+     * Test case to verify that the onboarding UI is not shown after the user dismisses it.
+     *
+     * It launches two background coroutines to collect the `onboardingUiState` and `feedState` flows.
+     * Then, it sends sample topics to the `topicsRepository`, sets some followed topic IDs in the
+     * `userDataRepository`, and calls `viewModel.dismissOnboarding()`.
+     *
+     * It asserts that the `onboardingUiState` is `OnboardingUiState.NotShown` and the `feedState`
+     * is initially `NewsFeedUiState.Loading`.
+     *
+     * After sending sample news resources to the `newsRepository`, it asserts that the
+     * `onboardingUiState` remains `OnboardingUiState.NotShown` and the `feedState` becomes
+     * `NewsFeedUiState.Success` with the mapped user news resources.
+     */
     @Test
     fun onboardingIsNotShownAfterUserDismissesOnboarding(): TestResult = runTest {
         backgroundScope.launch(context = UnconfinedTestDispatcher()) {
@@ -370,6 +444,23 @@ class ForYouViewModelTest {
         )
     }
 
+    /**
+     * Test case to verify that the topic selection updates correctly after selecting a topic.
+     *
+     * It launches two background coroutines to collect the `onboardingUiState` and `feedState` flows.
+     * Then, it sends sample topics to the `topicsRepository`, sets followed topic IDs to an empty
+     * set in the `userDataRepository`, and sends sample news resources to the `newsRepository`.
+     *
+     * It asserts that the initial `onboardingUiState` is `OnboardingUiState.Shown` with all topics
+     * marked as not followed, and the `feedState` is `NewsFeedUiState.Success` with an empty feed.
+     *
+     * Then, it simulates selecting a topic by calling `viewModel.updateTopicSelection()` with
+     * `isChecked = true`.
+     *
+     * It asserts that the `onboardingUiState` is updated to reflect the selected topic, and the
+     * `feedState` is updated to `NewsFeedUiState.Success` with the relevant news resources for
+     * the selected topic.
+     */
     @Test
     fun topicSelectionUpdatesAfterSelectingTopic(): TestResult = runTest {
         backgroundScope.launch(context = UnconfinedTestDispatcher()) {
@@ -423,6 +514,19 @@ class ForYouViewModelTest {
         )
     }
 
+    /**
+     * Test case to verify that the topic selection updates correctly after unselecting a topic.
+     *
+     * It launches two background coroutines to collect the `onboardingUiState` and `feedState` flows.
+     * Then, it sends sample topics to the `topicsRepository`, sets followed topic IDs to an empty set
+     * in the `userDataRepository`, and sends sample news resources to the `newsRepository`.
+     *
+     * It simulates selecting and then unselecting a topic by calling `updateTopicSelection` twice.
+     *
+     * Finally, it asserts that:
+     * - The `onboardingUiState` is `OnboardingUiState.Shown` with all topics marked as not followed.
+     * - The `feedState` is `NewsFeedUiState.Success` with an empty feed.
+     */
     @Test
     fun topicSelectionUpdatesAfterUnselectingTopic(): TestResult = runTest {
         backgroundScope.launch(context = UnconfinedTestDispatcher()) {
@@ -487,6 +591,21 @@ class ForYouViewModelTest {
         )
     }
 
+    /**
+     * Test case to verify that the news resource selection is updated correctly
+     * after loading the followed topics.
+     *
+     * It launches two background coroutines to collect the `onboardingUiState` and `feedState` flows.
+     * Then, it sets the initial user data with some followed topics and hides onboarding.
+     * It sends sample topics to `topicsRepository`, user data to `userDataRepository`, and
+     * news resources to `newsRepository`.
+     *
+     * Next, it updates the saved status of a specific news resource.
+     *
+     * Finally, it asserts that the `onboardingUiState` is `OnboardingUiState.NotShown` and the
+     * `feedState` is `NewsFeedUiState.Success` with the expected list of user news resources,
+     * including the updated bookmarked status.
+     */
     @Test
     fun newsResourceSelectionUpdatesAfterLoadingFollowedTopics(): TestResult = runTest {
         backgroundScope.launch(context = UnconfinedTestDispatcher()) {
@@ -537,6 +656,23 @@ class ForYouViewModelTest {
         )
     }
 
+    /**
+     * Test case to verify that a deep-linked news resource is fetched and then reset after viewing.
+     *
+     * It launches a background coroutine to collect the `deepLinkedNewsResource` flow from the
+     * ViewModel. Then, it sends sample news resources to the `newsRepository`, sets empty user
+     * data in the `userDataRepository`, and sets a deep link news resource ID in the
+     * `savedStateHandle`.
+     *
+     * It asserts that the `deepLinkedNewsResource` in the ViewModel matches the expected
+     * `UserNewsResource`.
+     *
+     * After calling `viewModel.onDeepLinkOpened()` with the news resource ID, it asserts that the
+     * `deepLinkedNewsResource` becomes null.
+     *
+     * Finally, it verifies that an analytics event for "news_deep_link_opened" with the correct
+     * news resource ID has been logged.
+     */
     @Test
     fun deepLinkedNewsResourceIsFetchedAndResetAfterViewing(): TestResult = runTest {
         backgroundScope.launch(context = UnconfinedTestDispatcher()) {
@@ -578,6 +714,17 @@ class ForYouViewModelTest {
         )
     }
 
+    /**
+     * Test case to verify that the bookmark state is updated correctly when
+     * [ForYouViewModel.updateNewsResourceSaved] is called.
+     *
+     * It calls `viewModel.updateNewsResourceSaved` twice:
+     * 1. With `isChecked = true` to bookmark a news resource.
+     * 2. With `isChecked = false` to unbookmark the same news resource.
+     *
+     * It asserts that the `bookmarkedNewsResources` in the `userDataRepository` is updated
+     * accordingly after each call.
+     */
     @Test
     fun whenUpdateNewsResourceSavedIsCalled_bookmarkStateIsUpdated(): TestResult = runTest {
         val newsResourceId = "123"
@@ -597,6 +744,11 @@ class ForYouViewModelTest {
     }
 }
 
+/**
+ * A sample list of [Topic] instances used for testing.
+ * This list contains three topics: "Headlines", "UI", and "Tools".
+ * Each topic has a unique ID, name, short description, long description, URL, and image URL.
+ */
 private val sampleTopics = listOf(
     Topic(
         id = "0",
@@ -624,6 +776,11 @@ private val sampleTopics = listOf(
     ),
 )
 
+/**
+ * A sample list of [NewsResource] instances used for testing.
+ * This list contains three news resources, each with a unique ID, title, content, URL,
+ * header image URL, publish date, type, and associated topics.
+ */
 private val sampleNewsResources = listOf(
     NewsResource(
         id = "1",

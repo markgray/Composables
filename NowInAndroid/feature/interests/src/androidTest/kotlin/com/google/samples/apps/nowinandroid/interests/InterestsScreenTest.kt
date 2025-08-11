@@ -20,10 +20,13 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
 import com.google.samples.apps.nowinandroid.core.testing.data.followableTopicTestData
 import com.google.samples.apps.nowinandroid.feature.interests.InterestsScreen
 import com.google.samples.apps.nowinandroid.feature.interests.InterestsUiState
@@ -40,14 +43,41 @@ import com.google.samples.apps.nowinandroid.feature.interests.R as InterestsR
  */
 class InterestsScreenTest {
 
+    /**
+     * The Jetpack Compose UI test rule, used to control the lifecycle of the composable being
+     * tested. It also provides convenient APIs to interact with the UI elements.
+     */
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule: AndroidComposeTestRule<
+        ActivityScenarioRule<ComponentActivity>,
+        ComponentActivity
+        > = createAndroidComposeRule<ComponentActivity>()
 
+    /**
+     * String resource for the loading content description
+     */
     private lateinit var interestsLoading: String
+
+    /**
+     * String resource for the header of the empty screen
+     */
     private lateinit var interestsEmptyHeader: String
+
+    /**
+     * String resource for the follow button content description
+     */
     private lateinit var interestsTopicCardFollowButton: String
+
+    /**
+     * String resource for the unfollow button content description
+     */
     private lateinit var interestsTopicCardUnfollowButton: String
 
+    /**
+     * Initializes our [String] properties to the [String]s in our resources that they are supposed
+     * to match. The @[Before] annotation ensures that this method is executed before each the tests
+     * in the class.
+     */
     @Before
     fun setup() {
         composeTestRule.activity.apply {
@@ -60,6 +90,18 @@ class InterestsScreenTest {
         }
     }
 
+    /**
+     * When the screen is loading, show a loading wheel.
+     *
+     * This test verifies that when the [InterestsUiState] is `Loading`, the loading wheel
+     * with the content description [interestsLoading] is displayed.
+     *
+     * We call the [AndroidComposeTestRule.setContent] method of our [AndroidComposeTestRule]
+     * property [composeTestRule] to set the content of the screen that we want to test to a
+     * [InterestsScreen] whose `uiState` is [InterestsUiState.Loading]. Then we use the
+     * [AndroidComposeTestRule.onNodeWithContentDescription] method to find the node with the
+     * content description [interestsLoading] and assert that it exists.
+     */
     @Test
     fun niaLoadingWheel_inTopics_whenScreenIsLoading_showLoading() {
         composeTestRule.setContent {
@@ -67,10 +109,24 @@ class InterestsScreenTest {
         }
 
         composeTestRule
-            .onNodeWithContentDescription(interestsLoading)
+            .onNodeWithContentDescription(label = interestsLoading)
             .assertExists()
     }
 
+    /**
+     * When topics are followed, show followed and unfollowed topics with info.
+     * This test verifies that when the [InterestsUiState] is [InterestsUiState.Interests] with a
+     * non-empty list of [FollowableTopic] objects, the screen displays the names of the topics and
+     * the correct number of follow buttons.
+     *
+     * It sets the content of the screen to an [InterestsScreen] with the `uiState` set to a
+     * [InterestsUiState.Interests], using [followableTopicTestData] as the list of `topics` and
+     * `null` as the `selectedTopicId`.
+     *
+     * It then asserts that the names of the first three topics in [followableTopicTestData] are
+     * displayed on the screen. Finally, it asserts that the number of nodes with the content
+     * description [interestsTopicCardFollowButton] is equal to [numberOfUnfollowedTopics].
+     */
     @Test
     fun interestsWithTopics_whenTopicsFollowed_showFollowedAndUnfollowedTopicsWithInfo() {
         composeTestRule.setContent {
@@ -83,20 +139,29 @@ class InterestsScreenTest {
         }
 
         composeTestRule
-            .onNodeWithText(followableTopicTestData[0].topic.name)
+            .onNodeWithText(text = followableTopicTestData[0].topic.name)
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithText(followableTopicTestData[1].topic.name)
+            .onNodeWithText(text = followableTopicTestData[1].topic.name)
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithText(followableTopicTestData[2].topic.name)
+            .onNodeWithText(text = followableTopicTestData[2].topic.name)
             .assertIsDisplayed()
 
         composeTestRule
-            .onAllNodesWithContentDescription(interestsTopicCardFollowButton)
-            .assertCountEquals(numberOfUnfollowedTopics)
+            .onAllNodesWithContentDescription(label = interestsTopicCardFollowButton)
+            .assertCountEquals(expectedSize = numberOfUnfollowedTopics)
     }
 
+    /**
+     * When data is empty, show the empty screen. This test verifies that when the [InterestsUiState]
+     * is [InterestsUiState.Empty], the empty screen with the header [interestsEmptyHeader] is
+     * displayed.
+     *
+     * It sets the content of the screen to an [InterestsScreen] with the `uiState` set to
+     * [InterestsUiState.Empty]. Then, it asserts that the node with the text [interestsEmptyHeader]
+     * is displayed on the screen.
+     */
     @Test
     fun topicsEmpty_whenDataIsEmptyOccurs_thenShowEmptyScreen() {
         composeTestRule.setContent {
@@ -104,10 +169,19 @@ class InterestsScreenTest {
         }
 
         composeTestRule
-            .onNodeWithText(interestsEmptyHeader)
+            .onNodeWithText(text = interestsEmptyHeader)
             .assertIsDisplayed()
     }
 
+    /**
+     * This is a wrapper Composable that allows us to provide a default implementation for the
+     * `followTopic` and `onTopicClick` parameters of the [InterestsScreen] Composable that we are
+     * testing. It calls the original [InterestsScreen] with its `uiState` argument the [uiState]
+     * that it was called with, and with lambda stubs for the `followTopic` and `onTopicClick`
+     * parameters.
+     *
+     * @param uiState the [InterestsUiState] that should be used to render the [InterestsScreen].
+     */
     @Composable
     private fun InterestsScreen(uiState: InterestsUiState) {
         InterestsScreen(
@@ -118,4 +192,11 @@ class InterestsScreenTest {
     }
 }
 
-private val numberOfUnfollowedTopics = followableTopicTestData.filter { !it.isFollowed }.size
+/**
+ * The number of topics in [followableTopicTestData] that are not followed. This is used in the
+ * `interestsWithTopics_whenTopicsFollowed_showFollowedAndUnfollowedTopicsWithInfo` test to assert
+ * that the correct number of follow buttons are displayed.
+ */
+private val numberOfUnfollowedTopics = followableTopicTestData.filter { topic: FollowableTopic ->
+    !topic.isFollowed
+}.size

@@ -29,6 +29,7 @@ import com.google.samples.apps.nowinandroid.feature.interests.InterestsViewModel
 import com.google.samples.apps.nowinandroid.feature.interests.navigation.InterestsRoute
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -39,6 +40,10 @@ import org.robolectric.RobolectricTestRunner
 import kotlin.test.assertEquals
 
 /**
+ * Unit tests for [InterestsViewModel]. The @[RunWith] annotation causes the tests to be run with
+ * the test runner [RobolectricTestRunner], which is a test runner that allows the use of
+ * Android framework classes like [SavedStateHandle].
+ *
  * To learn more about how this test handles Flows created with stateIn, see
  * https://developer.android.com/kotlin/flow/test#statein
  *
@@ -51,8 +56,13 @@ import kotlin.test.assertEquals
 @RunWith(RobolectricTestRunner::class)
 class InterestsViewModelTest {
 
+    /**
+     * Overrides the main dispatcher for testing, ensuring that coroutines launched on the main
+     * dispatcher execute immediately.
+     * TODO: Continue here.
+     */
     @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    val mainDispatcherRule: MainDispatcherRule = MainDispatcherRule()
 
     private val userDataRepository = TestUserDataRepository()
     private val topicsRepository = TestTopicsRepository()
@@ -74,12 +84,12 @@ class InterestsViewModelTest {
     }
 
     @Test
-    fun uiState_whenInitialized_thenShowLoading() = runTest {
+    fun uiState_whenInitialized_thenShowLoading(): TestResult = runTest {
         assertEquals(InterestsUiState.Loading, viewModel.uiState.value)
     }
 
     @Test
-    fun uiState_whenFollowedTopicsAreLoading_thenShowLoading() = runTest {
+    fun uiState_whenFollowedTopicsAreLoading_thenShowLoading(): TestResult = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
         userDataRepository.setFollowedTopicIds(emptySet())
@@ -87,7 +97,7 @@ class InterestsViewModelTest {
     }
 
     @Test
-    fun uiState_whenFollowingNewTopic_thenShowUpdatedTopics() = runTest {
+    fun uiState_whenFollowingNewTopic_thenShowUpdatedTopics(): TestResult = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
         val toggleTopicId = testOutputTopics[1].topic.id
@@ -115,7 +125,7 @@ class InterestsViewModelTest {
     }
 
     @Test
-    fun uiState_whenUnfollowingTopics_thenShowUpdatedTopics() = runTest {
+    fun uiState_whenUnfollowingTopics_thenShowUpdatedTopics(): TestResult = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
         val toggleTopicId = testOutputTopics[1].topic.id

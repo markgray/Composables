@@ -20,14 +20,30 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import kotlinx.serialization.Serializable
 
-@Serializable data class InterestsRoute(
+/**
+ * Represents the route for the Interests screen.
+ *
+ * This class is used for type-safe navigation and argument passing between destinations.
+ *
+ * @param initialTopicId The ID of the topic to be initially selected when navigating to this
+ * destination. If null, no specific topic will be selected initially.
+ */
+@Serializable
+data class InterestsRoute(
     // The ID of the topic which will be initially selected at this destination
     val initialTopicId: String? = null,
 )
 
+/**
+ * Navigates to the interests route.
+ *
+ * @param initialTopicId The ID of the topic that should be initially selected when navigating to the
+ * interests route. If null, no topic will be initially selected.
+ * @param navOptions The navigation options to apply to this navigation.
+ */
 fun NavController.navigateToInterests(
     initialTopicId: String? = null,
     navOptions: NavOptions? = null,
 ) {
-    navigate(route = InterestsRoute(initialTopicId), navOptions)
+    navigate(route = InterestsRoute(initialTopicId), navOptions = navOptions)
 }
