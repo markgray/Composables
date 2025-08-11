@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER", "unused", "MemberVisibilityCanBePrivate") // I like to use kdoc [] references
+@file:Suppress("UNUSED_PARAMETER", "unused", "MemberVisibilityCanBePrivate", "RedundantSuppression") // I like to use kdoc [] references
 
 package com.example.android.trackmysleepquality.ui.sleeptracker
 

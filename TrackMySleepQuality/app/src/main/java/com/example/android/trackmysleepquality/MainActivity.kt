@@ -1,3 +1,5 @@
+@file:Suppress("UnusedImport")
+
 package com.example.android.trackmysleepquality
 
 import android.app.Application
