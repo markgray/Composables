@@ -90,8 +90,8 @@ dependencies {
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.7.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
     // Compose testing dependencies
     androidTestImplementation("androidx.compose.ui:ui-test:1.8.3")

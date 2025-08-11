@@ -55,6 +55,7 @@ private fun saveScreenshot(filename: String, bmp: Bitmap) {
     FileOutputStream("$path/$filename.png").use { out ->
         bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
     }
+    @Suppress("ReplacePrintlnWithLogging")
     println("Saved screenshot to $path/$filename.png")
 }
 
