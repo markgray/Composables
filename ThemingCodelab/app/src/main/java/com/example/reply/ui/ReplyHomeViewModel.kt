@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantSuppression")
+
 package com.example.reply.ui
 
 import androidx.activity.compose.BackHandler
