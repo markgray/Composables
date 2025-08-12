@@ -19,7 +19,14 @@ package com.google.samples.apps.nowinandroid.feature.search
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 
+/**
+ * A sealed hierarchy describing the state of the search result.
+ */
 sealed interface SearchResultUiState {
+
+    /**
+     * The search is currently in progress.
+     */
     data object Loading : SearchResultUiState
 
     /**
@@ -29,12 +36,24 @@ sealed interface SearchResultUiState {
      */
     data object EmptyQuery : SearchResultUiState
 
+    /**
+     * The search result failed to load.
+     */
     data object LoadFailed : SearchResultUiState
 
+    /**
+     * The search results.
+     *
+     * @param topics The [List] of [FollowableTopic] that match the query.
+     * @param newsResources The [List] of [UserNewsResource] news resources that match the query.
+     */
     data class Success(
         val topics: List<FollowableTopic> = emptyList(),
         val newsResources: List<UserNewsResource> = emptyList(),
     ) : SearchResultUiState {
+        /**
+         * Returns true if the search result is empty.
+         */
         fun isEmpty(): Boolean = topics.isEmpty() && newsResources.isEmpty()
     }
 

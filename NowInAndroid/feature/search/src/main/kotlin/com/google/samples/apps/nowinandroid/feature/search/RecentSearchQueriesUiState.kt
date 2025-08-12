@@ -18,9 +18,20 @@ package com.google.samples.apps.nowinandroid.feature.search
 
 import com.google.samples.apps.nowinandroid.core.data.model.RecentSearchQuery
 
+/**
+ * A sealed hierarchy describing the recent search queries state.
+ */
 sealed interface RecentSearchQueriesUiState {
+    /**
+     * The recent search queries are being loaded.
+     */
     data object Loading : RecentSearchQueriesUiState
 
+    /**
+     * The recent search queries are successfully loaded.
+     *
+     * @param recentQueries The [List] of [RecentSearchQuery] queries.
+     */
     data class Success(
         val recentQueries: List<RecentSearchQuery> = emptyList(),
     ) : RecentSearchQueriesUiState

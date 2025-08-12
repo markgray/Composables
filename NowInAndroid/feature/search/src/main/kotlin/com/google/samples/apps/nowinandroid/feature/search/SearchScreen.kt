@@ -21,6 +21,7 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,6 +37,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -59,9 +61,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -80,7 +84,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.samples.apps.nowinandroid.core.data.model.RecentSearchQuery
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.DraggableScrollbar
+import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.ScrollbarState
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.scrollbarState
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
@@ -93,8 +99,54 @@ import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState.Success
 import com.google.samples.apps.nowinandroid.core.ui.R.string
 import com.google.samples.apps.nowinandroid.core.ui.TrackScreenViewEvent
 import com.google.samples.apps.nowinandroid.core.ui.newsFeed
+import kotlinx.coroutines.flow.StateFlow
 import com.google.samples.apps.nowinandroid.feature.search.R as searchR
 
+/**
+ * Displays the search screen. Holds all the UI state for the stateless [SearchScreen]. We start by
+ * initializing our [State] wrapped [RecentSearchQueriesUiState] variable `recentSearchQueriesUiState`
+ * using the [StateFlow.collectAsStateWithLifecycle] method of the [StateFlow] of
+ * [RecentSearchQueriesUiState] property [SearchViewModel.recentSearchQueriesUiState] of our
+ * [SearchViewModel] parameter [searchViewModel] to collect the [StateFlow] as a [State] wrapped
+ * [RecentSearchQueriesUiState]. Next we initialize our [State] wrapped [SearchResultUiState]
+ * variable `searchResultUiState` using the [StateFlow.collectAsStateWithLifecycle] method of the
+ * [StateFlow] of [SearchResultUiState] property [SearchViewModel.searchResultUiState] of our
+ * [SearchViewModel] parameter [searchViewModel] to collect the [StateFlow] as a [State] wrapped
+ * [SearchResultUiState]. Finally, we initialize our [State] wrapped [String] variable
+ * `searchQuery` using the [StateFlow.collectAsStateWithLifecycle] method of the [StateFlow] of
+ * [String] property [SearchViewModel.searchQuery] of our [SearchViewModel] parameter.
+ *
+ * Then we compose a [SearchScreen] with the arguments:
+ *  - `modifier`: Our [Modifier] parameter [modifier].
+ *  - `searchQuery`: Our [State] wrapped [String] variable `searchQuery`.
+ *  - `recentSearchesUiState`: Our [State] wrapped [RecentSearchQueriesUiState] variable
+ *  `recentSearchQueriesUiState`.
+ *  - `searchResultUiState`: Our [State] wrapped [SearchResultUiState] variable
+ *  `searchResultUiState`.
+ *  - `onSearchQueryChanged`: A reference to the [SearchViewModel.onSearchQueryChanged] method
+ *  of our [SearchViewModel] parameter [searchViewModel].
+ *  - `onSearchTriggered`: A reference to the [SearchViewModel.onSearchTriggered] method of our
+ *  [SearchViewModel] parameter [searchViewModel].
+ *  - `onClearRecentSearches`: A reference to the [SearchViewModel.clearRecentSearches] method of
+ *  our [SearchViewModel] parameter [searchViewModel].
+ *  - `onNewsResourcesCheckedChanged`: A reference to the [SearchViewModel.setNewsResourceBookmarked]
+ *  method of our [SearchViewModel] parameter [searchViewModel].
+ *  - `onNewsResourceViewed`: A lambda that accepts the [String] passed the lamba in variable `newsId`
+ *  then calls the [SearchViewModel.setNewsResourceViewed] method of our [SearchViewModel] parameter
+ *  [searchViewModel] with its `newsResourceId` argument set to `newsId` and its `viewed` argument
+ *  set to `true`.
+ *  - `onFollowButtonClick`: A reference to the [SearchViewModel.followTopic] method of our
+ *  [SearchViewModel] parameter [searchViewModel].
+ *  - `onBackClick`: Our lambda parameter [onBackClick].
+ *  - `onInterestsClick`: Our lambda parameter [onInterestsClick].
+ *  - `onTopicClick`: Our lambda parameter [onTopicClick].
+ *
+ * @param onBackClick Called when the user clicks the back button.
+ * @param onInterestsClick Called when the user clicks the interests button.
+ * @param onTopicClick Called when the user clicks a topic.
+ * @param modifier The modifier to be applied to the screen.
+ * @param searchViewModel The view model for the search screen.
+ */
 @Composable
 internal fun SearchRoute(
     onBackClick: () -> Unit,
@@ -103,9 +155,33 @@ internal fun SearchRoute(
     modifier: Modifier = Modifier,
     searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
-    val recentSearchQueriesUiState by searchViewModel.recentSearchQueriesUiState.collectAsStateWithLifecycle()
-    val searchResultUiState by searchViewModel.searchResultUiState.collectAsStateWithLifecycle()
-    val searchQuery by searchViewModel.searchQuery.collectAsStateWithLifecycle()
+    /**
+     * The recent search queries state. It uses the [StateFlow.collectAsStateWithLifecycle] method
+     * of the [StateFlow] of [RecentSearchQueriesUiState] property
+     * [SearchViewModel.recentSearchQueriesUiState] of our [SearchViewModel] parameter
+     * [searchViewModel] to collect the [StateFlow] as a [State] wrapped [RecentSearchQueriesUiState].
+     */
+    val recentSearchQueriesUiState:
+        RecentSearchQueriesUiState by searchViewModel
+        .recentSearchQueriesUiState.collectAsStateWithLifecycle()
+
+    /**
+     * The search result state. It uses the [StateFlow.collectAsStateWithLifecycle] method of the
+     * [StateFlow] of [SearchResultUiState] property [SearchViewModel.searchResultUiState] of our
+     * [SearchViewModel] parameter [searchViewModel] to collect the [StateFlow] as a [State] wrapped
+     * [SearchResultUiState].
+     */
+    val searchResultUiState:
+        SearchResultUiState by searchViewModel
+        .searchResultUiState.collectAsStateWithLifecycle()
+
+    /**
+     * The current search string. It uses the [StateFlow.collectAsStateWithLifecycle] method of the
+     * [StateFlow] of [String] property [SearchViewModel.searchQuery] of our [SearchViewModel]
+     * parameter [searchViewModel] to collect the [StateFlow] as a [State] wrapped [String].
+     */
+    val searchQuery: String by searchViewModel.searchQuery.collectAsStateWithLifecycle()
+
     SearchScreen(
         modifier = modifier,
         searchQuery = searchQuery,
@@ -115,7 +191,12 @@ internal fun SearchRoute(
         onSearchTriggered = searchViewModel::onSearchTriggered,
         onClearRecentSearches = searchViewModel::clearRecentSearches,
         onNewsResourcesCheckedChanged = searchViewModel::setNewsResourceBookmarked,
-        onNewsResourceViewed = { searchViewModel.setNewsResourceViewed(it, true) },
+        onNewsResourceViewed = { newsId: String ->
+            searchViewModel.setNewsResourceViewed(
+                newsResourceId = newsId,
+                viewed = true
+            )
+        },
         onFollowButtonClick = searchViewModel::followTopic,
         onBackClick = onBackClick,
         onInterestsClick = onInterestsClick,
@@ -123,6 +204,80 @@ internal fun SearchRoute(
     )
 }
 
+/**
+ * This is the stateless version of the screen that is shown when the user wants to search for
+ * something.
+ *
+ * We start by calling the [TrackScreenViewEvent] composable with its `screenName` argument set to
+ * the string "Search" in order to trigget a side-effect that records the screen view event.
+ *
+ * Our root composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier].
+ * In the [ColumnScope] `content` composable lambda argument we compose:
+ *
+ * A [Spacer] whose `modifier` argument is [Modifier.windowInsetsTopHeight] with its `insets` argument
+ * set to [WindowInsets.Companion.safeDrawing].
+ *
+ * A [SearchToolbar] whose `onBackClick` argument is our lambda parameter [onBackClick], whose
+ * `onSearchQueryChanged` argument is our lambda parameter [onSearchQueryChanged], whose
+ * `onSearchTriggered` argument is our lambda parameter [onSearchTriggered], and whose
+ * `searchQuery` argument is our [String] parameter [searchQuery].
+ *
+ * Next we switch on the type of our [SearchResultUiState] parameter [searchResultUiState]:
+ *
+ * When it is [SearchResultUiState.Loading], or [SearchResultUiState.LoadFailed], we do nothing.
+ *
+ * When it is [SearchResultUiState.SearchNotReady], we compose a [SearchNotReadyBody] composable.
+ *
+ * When it is [SearchResultUiState.EmptyQuery], if our [RecentSearchQueriesUiState] parameter
+ * [recentSearchesUiState] is [RecentSearchQueriesUiState.Success], we compose a
+ * [RecentSearchesBody] composable whose `onClearRecentSearches` argument is our lambda parameter
+ * [onClearRecentSearches], whose `onRecentSearchClicked` argument a lambda that accepts the
+ * [String] passed the lamba in variable `query` then calls our [onSearchQueryChanged] lambda
+ * parameter [onSearchQueryChanged] with `query`, then calls our [onSearchTriggered] lambda
+ * parameter with `query`, and whose `recentSearchQueries` uses the [Iterable.map] method of the
+ * [List] of [RecentSearchQuery] property [RecentSearchQueriesUiState.Success.recentQueries]
+ * that transforms it to a [List] of [String] of their [RecentSearchQuery.query] properties.
+ *
+ * When it is [SearchResultUiState.Success], if its [SearchResultUiState.Success.isEmpty], we
+ * compose a [EmptySearchResultBody] composable whose `searchQuery` argument is our [String]
+ * parameter [searchQuery], and whose `onInterestsClick` argument is our lambda parameter
+ * [onInterestsClick], and if our [RecentSearchQueriesUiState] parameter [recentSearchesUiState]
+ * is [RecentSearchQueriesUiState.Success], we compose a [RecentSearchesBody] composable
+ * whose `onClearRecentSearches` argument is our lambda parameter [onClearRecentSearches],
+ * whose `onRecentSearchClicked` argument a lambda that accepts the [String] passed the lamba
+ * in variable `query` then calls our [onSearchQueryChanged] lambda parameter [onSearchQueryChanged]
+ * with `query`, then calls our [onSearchTriggered] lambda parameter with `query`, and whose
+ * `recentSearchQueries` uses the [Iterable.map] method of the [List] of [RecentSearchQuery]
+ * property [RecentSearchQueriesUiState.Success.recentQueries] that transforms it to a [List] of
+ * [String] of their [RecentSearchQuery.query] properties. And if the [SearchResultUiState.Success]
+ * is not empty, we compose a [SearchResultBody] composable whose `searchQuery` argument is our
+ * [String] parameter [searchQuery], whose `topics` argument is our [List] of [FollowableTopic]
+ * property [SearchResultUiState.Success.topics], whose `newsResources` argument is our
+ * [List] of [UserNewsResource] property [SearchResultUiState.Success.newsResources], whose
+ * `onSearchTriggered` argument is our lambda parameter [onSearchTriggered], whose
+ * `onTopicClick` argument is our lambda parameter [onTopicClick], whose
+ * `onNewsResourcesCheckedChanged` argument is our lambda parameter [onNewsResourcesCheckedChanged],
+ * whose `onNewsResourceViewed` argument is our lambda parameter [onNewsResourceViewed], and whose
+ * `onFollowButtonClick` argument is our lambda parameter [onFollowButtonClick].
+ *
+ * At the end of the [ColumnScope] `content` composable lambda argument we compose a [Spacer] whose
+ * `modifier` argument is [Modifier.windowInsetsBottomHeight] with its `insets` argument set to
+ * [WindowInsets.Companion.safeDrawing].
+ *
+ * @param modifier The modifier to be applied to the screen.
+ * @param searchQuery The current search query string.
+ * @param recentSearchesUiState The recent search queries state.
+ * @param searchResultUiState The search result state.
+ * @param onSearchQueryChanged Called when the search query changes.
+ * @param onSearchTriggered Called when the user submits the search query.
+ * @param onClearRecentSearches Called when the user clicks the clear recent searches button.
+ * @param onNewsResourcesCheckedChanged Called when the user checks or unchecks a news resource.
+ * @param onNewsResourceViewed Called when the user views a news resource.
+ * @param onFollowButtonClick Called when the user clicks the follow button.
+ * @param onBackClick Called when the user clicks the back button.
+ * @param onInterestsClick Called when the user clicks the interests button.
+ * @param onTopicClick Called when the user clicks a topic.
+ */
 @Composable
 internal fun SearchScreen(
     modifier: Modifier = Modifier,
@@ -141,7 +296,7 @@ internal fun SearchScreen(
 ) {
     TrackScreenViewEvent(screenName = "Search")
     Column(modifier = modifier) {
-        Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+        Spacer(modifier = Modifier.windowInsetsTopHeight(insets = WindowInsets.safeDrawing))
         SearchToolbar(
             onBackClick = onBackClick,
             onSearchQueryChanged = onSearchQueryChanged,
@@ -151,17 +306,17 @@ internal fun SearchScreen(
         when (searchResultUiState) {
             SearchResultUiState.Loading,
             SearchResultUiState.LoadFailed,
-            -> Unit
+                -> Unit
 
             SearchResultUiState.SearchNotReady -> SearchNotReadyBody()
             SearchResultUiState.EmptyQuery,
-            -> {
+                -> {
                 if (recentSearchesUiState is RecentSearchQueriesUiState.Success) {
                     RecentSearchesBody(
                         onClearRecentSearches = onClearRecentSearches,
-                        onRecentSearchClicked = {
-                            onSearchQueryChanged(it)
-                            onSearchTriggered(it)
+                        onRecentSearchClicked = { query: String ->
+                            onSearchQueryChanged(query)
+                            onSearchTriggered(query)
                         },
                         recentSearchQueries = recentSearchesUiState.recentQueries.map { it.query },
                     )
@@ -177,9 +332,9 @@ internal fun SearchScreen(
                     if (recentSearchesUiState is RecentSearchQueriesUiState.Success) {
                         RecentSearchesBody(
                             onClearRecentSearches = onClearRecentSearches,
-                            onRecentSearchClicked = {
-                                onSearchQueryChanged(it)
-                                onSearchTriggered(it)
+                            onRecentSearchClicked = { query: String ->
+                                onSearchQueryChanged(query)
+                                onSearchTriggered(query)
                             },
                             recentSearchQueries = recentSearchesUiState.recentQueries.map { it.query },
                         )
@@ -198,10 +353,19 @@ internal fun SearchScreen(
                 }
             }
         }
-        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+        Spacer(modifier = Modifier.windowInsetsBottomHeight(insets = WindowInsets.safeDrawing))
     }
 }
 
+/**
+ * Composable that displays when a search result is empty. Our root composable is a [Column] whose
+ * `horizontalAlignment` argument is [Alignment.CenterHorizontally] and whose `modifier` argument is
+ * a [Modifier.padding] that adds `48.dp` to the horizontal sides.
+ * TODO: Continue here.
+ *
+ * @param searchQuery the search query that was used.
+ * @param onInterestsClick the callback that is called when the "Interests" link is clicked.
+ */
 @Composable
 fun EmptySearchResultBody(
     searchQuery: String,
@@ -211,14 +375,15 @@ fun EmptySearchResultBody(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(horizontal = 48.dp),
     ) {
-        val message = stringResource(id = searchR.string.feature_search_result_not_found, searchQuery)
-        val start = message.indexOf(searchQuery)
+        val message: String =
+            stringResource(id = searchR.string.feature_search_result_not_found, searchQuery)
+        val start: Int = message.indexOf(string = searchQuery)
         Text(
             text = AnnotatedString(
                 text = message,
                 spanStyles = listOf(
                     AnnotatedString.Range(
-                        SpanStyle(fontWeight = FontWeight.Bold),
+                        item = SpanStyle(fontWeight = FontWeight.Bold),
                         start = start,
                         end = start + searchQuery.length,
                     ),
@@ -228,9 +393,9 @@ fun EmptySearchResultBody(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(vertical = 24.dp),
         )
-        val tryAnotherSearchString = buildAnnotatedString {
-            append(stringResource(id = searchR.string.feature_search_try_another_search))
-            append(" ")
+        val tryAnotherSearchString: AnnotatedString = buildAnnotatedString {
+            append(text = stringResource(id = searchR.string.feature_search_try_another_search))
+            append(text = " ")
             withLink(
                 LinkAnnotation.Clickable(
                     tag = "",
@@ -245,17 +410,17 @@ fun EmptySearchResultBody(
                         fontWeight = FontWeight.Bold,
                     ),
                 ) {
-                    append(stringResource(id = searchR.string.feature_search_interests))
+                    append(text = stringResource(id = searchR.string.feature_search_interests))
                 }
             }
 
-            append(" ")
-            append(stringResource(id = searchR.string.feature_search_to_browse_topics))
+            append(text = " ")
+            append(text = stringResource(id = searchR.string.feature_search_to_browse_topics))
         }
         Text(
             text = tryAnotherSearchString,
             style = MaterialTheme.typography.bodyLarge.merge(
-                TextStyle(
+                other = TextStyle(
                     color = MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center,
                 ),
@@ -292,19 +457,19 @@ private fun SearchResultBody(
     onNewsResourceViewed: (String) -> Unit,
     onFollowButtonClick: (String, Boolean) -> Unit,
 ) {
-    val state = rememberLazyStaggeredGridState()
+    val state: LazyStaggeredGridState = rememberLazyStaggeredGridState()
     Box(
         modifier = Modifier
             .fillMaxSize(),
     ) {
         LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Adaptive(300.dp),
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            columns = StaggeredGridCells.Adaptive(minSize = 300.dp),
+            contentPadding = PaddingValues(all = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
             verticalItemSpacing = 24.dp,
             modifier = Modifier
                 .fillMaxSize()
-                .testTag("search:newsResources"),
+                .testTag(tag = "search:newsResources"),
             state = state,
         ) {
             if (topics.isNotEmpty()) {
@@ -314,14 +479,14 @@ private fun SearchResultBody(
                     Text(
                         text = buildAnnotatedString {
                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(stringResource(id = searchR.string.feature_search_topics))
+                                append(text = stringResource(id = searchR.string.feature_search_topics))
                             }
                         },
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     )
                 }
-                topics.forEach { followableTopic ->
-                    val topicId = followableTopic.topic.id
+                topics.forEach { followableTopic: FollowableTopic ->
+                    val topicId: String = followableTopic.topic.id
                     item(
                         // Append a prefix to distinguish a key for news resources
                         key = "topic-$topicId",
@@ -350,7 +515,7 @@ private fun SearchResultBody(
                     Text(
                         text = buildAnnotatedString {
                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(stringResource(id = searchR.string.feature_search_updates))
+                                append(text = stringResource(id = searchR.string.feature_search_updates))
                             }
                         },
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -368,16 +533,16 @@ private fun SearchResultBody(
                 )
             }
         }
-        val itemsAvailable = topics.size + newsResources.size
-        val scrollbarState = state.scrollbarState(
+        val itemsAvailable: Int = topics.size + newsResources.size
+        val scrollbarState: ScrollbarState = state.scrollbarState(
             itemsAvailable = itemsAvailable,
         )
         state.DraggableScrollbar(
             modifier = Modifier
                 .fillMaxHeight()
-                .windowInsetsPadding(WindowInsets.systemBars)
+                .windowInsetsPadding(insets = WindowInsets.systemBars)
                 .padding(horizontal = 2.dp)
-                .align(Alignment.CenterEnd),
+                .align(alignment = Alignment.CenterEnd),
             state = scrollbarState,
             orientation = Orientation.Vertical,
             onThumbMoved = state.rememberDraggableScroller(
@@ -402,7 +567,7 @@ private fun RecentSearchesBody(
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(stringResource(id = searchR.string.feature_search_recent_searches))
+                        append(text = stringResource(id = searchR.string.feature_search_recent_searches))
                     }
                 },
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -425,7 +590,7 @@ private fun RecentSearchesBody(
             }
         }
         LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
-            items(recentSearchQueries) { recentSearch ->
+            items(items = recentSearchQueries) { recentSearch: String ->
                 Text(
                     text = recentSearch,
                     style = MaterialTheme.typography.headlineSmall,
@@ -473,8 +638,8 @@ private fun SearchTextField(
     onSearchQueryChanged: (String) -> Unit,
     onSearchTriggered: (String) -> Unit,
 ) {
-    val focusRequester = remember { FocusRequester() }
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester: FocusRequester = remember { FocusRequester() }
+    val keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
 
     val onSearchExplicitlyTriggered = {
         keyboardController?.hide()
@@ -518,10 +683,10 @@ private fun SearchTextField(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .focusRequester(focusRequester)
-            .onKeyEvent {
-                if (it.key == Key.Enter) {
+            .padding(all = 16.dp)
+            .focusRequester(focusRequester = focusRequester)
+            .onKeyEvent { keyEvent: KeyEvent ->
+                if (keyEvent.key == Key.Enter) {
                     if (searchQuery.isBlank()) return@onKeyEvent false
                     onSearchExplicitlyTriggered()
                     true
@@ -529,8 +694,8 @@ private fun SearchTextField(
                     false
                 }
             }
-            .testTag("searchTextField"),
-        shape = RoundedCornerShape(32.dp),
+            .testTag(tag = "searchTextField"),
+        shape = RoundedCornerShape(size = 32.dp),
         value = searchQuery,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Search,
@@ -544,7 +709,7 @@ private fun SearchTextField(
         maxLines = 1,
         singleLine = true,
     )
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = Unit) {
         focusRequester.requestFocus()
     }
 }
@@ -596,7 +761,7 @@ private fun SearchNotReadyBodyPreview() {
 @DevicePreviews
 @Composable
 private fun SearchScreenPreview(
-    @PreviewParameter(SearchUiStatePreviewParameterProvider::class)
+    @PreviewParameter(provider = SearchUiStatePreviewParameterProvider::class)
     searchResultUiState: SearchResultUiState,
 ) {
     NiaTheme {
