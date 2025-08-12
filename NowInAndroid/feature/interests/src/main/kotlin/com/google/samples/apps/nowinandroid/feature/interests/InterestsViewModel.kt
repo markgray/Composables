@@ -56,7 +56,7 @@ class InterestsViewModel @Inject constructor(
 
     /**
      * Route parameter for the interests screen. The [SavedStateHandle.toRoute] extension function
-     * Extrapolates arguments from [SavedStateHandle] and recreates [InterestsRoute].
+     * Extrapolates arguments from [SavedStateHandle] and recreates an [InterestsRoute] instance.
      */
     private val interestsRoute: InterestsRoute = savedStateHandle.toRoute()
 
@@ -105,7 +105,7 @@ class InterestsViewModel @Inject constructor(
         viewModelScope.launch {
             userDataRepository.setTopicIdFollowed(
                 followedTopicId = followedTopicId,
-                followed = followed
+                followed = followed,
             )
         }
     }

@@ -53,7 +53,7 @@ import com.google.samples.apps.nowinandroid.core.ui.InterestsItem
  *
  * Our root composable is a [Box] whose `modifier` argument chains to our [Modifier] parameter
  * [modifier] a [Modifier.fillMaxWidth]. In the [BoxScope] `content` composable lambda argument of
- * the [Box] we start by initializing an remembering our [LazyListState] variable `scrollableState`
+ * the [Box] we start by initializing and remembering our [LazyListState] variable `scrollableState`
  * with a [rememberLazyListState] call. Then we compose a [LazyColumn] whose arguments are:
  *  - `modifier`: is a [Modifier.padding] that adds `24.dp` to the `horizontal` sides chained to a
  *  [Modifier.testTag] with the tag "interests:topics".
@@ -70,10 +70,10 @@ import com.google.samples.apps.nowinandroid.core.ui.InterestsItem
  * `topicId` is equal to our [String] parameter [selectedTopicId]. Then we compose an
  * [InterestsItem] whose arguments are:
  *  - `name`: is the [Topic.name] of the [FollowableTopic.topic] of `followableTopic`.
- *  - `following`: is the [FollowableTopic.isFollowed] of `followableTopic`.
- *  - `description`: is the [Topic.shortDescription] of the [FollowableTopic.topic] of
+ *  - `following`: is the [FollowableTopic.isFollowed] property of `followableTopic`.
+ *  - `description`: is the [Topic.shortDescription] property of the [FollowableTopic.topic] of
  *  `followableTopic`.
- *  - `topicImageUrl`: is the [Topic.imageUrl] of the [FollowableTopic.topic] of
+ *  - `topicImageUrl`: is the [Topic.imageUrl] property of the [FollowableTopic.topic] of
  *  `followableTopic`.
  *  - `onClick`: is a lambda that calls our lambda parameter [onTopicClick] with the [String]
  *  variable `topicId` as its argument.
@@ -155,8 +155,8 @@ fun TopicsTabContent(
                 item {
                     Spacer(
                         modifier = Modifier.windowInsetsBottomHeight(
-                            insets = WindowInsets.safeDrawing
-                        )
+                            insets = WindowInsets.safeDrawing,
+                        ),
                     )
                 }
             }

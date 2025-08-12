@@ -399,7 +399,8 @@ class ForYouViewModelTest {
      *
      * It launches two background coroutines to collect the `onboardingUiState` and `feedState` flows.
      * Then, it sends sample topics to the `topicsRepository`, sets some followed topic IDs in the
-     * `userDataRepository`, and calls `viewModel.dismissOnboarding()`.
+     * `userDataRepository`, and calls the [ForYouViewModel.dismissOnboarding] method of
+     * [ForYouViewModel] property [viewModel].
      *
      * It asserts that the `onboardingUiState` is `OnboardingUiState.NotShown` and the `feedState`
      * is initially `NewsFeedUiState.Loading`.

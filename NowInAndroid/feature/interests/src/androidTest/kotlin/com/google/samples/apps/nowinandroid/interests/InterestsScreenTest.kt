@@ -44,13 +44,15 @@ import com.google.samples.apps.nowinandroid.feature.interests.R as InterestsR
 class InterestsScreenTest {
 
     /**
-     * The Jetpack Compose UI test rule, used to control the lifecycle of the composable being
-     * tested. It also provides convenient APIs to interact with the UI elements.
+     * The compose test rule used in this test. Test rules provide a way to run code before and after
+     * test methods. [createAndroidComposeRule]<[ComponentActivity]>() creates a rule that provides
+     * a testing environment for Jetpack Compose UI. It launches a simple [ComponentActivity] for
+     * hosting the composables under test.
      */
     @get:Rule
     val composeTestRule: AndroidComposeTestRule<
         ActivityScenarioRule<ComponentActivity>,
-        ComponentActivity
+        ComponentActivity,
         > = createAndroidComposeRule<ComponentActivity>()
 
     /**
@@ -93,8 +95,8 @@ class InterestsScreenTest {
     /**
      * When the screen is loading, show a loading wheel.
      *
-     * This test verifies that when the [InterestsUiState] is `Loading`, the loading wheel
-     * with the content description [interestsLoading] is displayed.
+     * This test verifies that when the [InterestsUiState] is [InterestsUiState.Loading], the loading
+     * wheel with the content description [interestsLoading] is displayed.
      *
      * We call the [AndroidComposeTestRule.setContent] method of our [AndroidComposeTestRule]
      * property [composeTestRule] to set the content of the screen that we want to test to a
@@ -176,7 +178,7 @@ class InterestsScreenTest {
     /**
      * This is a wrapper Composable that allows us to provide a default implementation for the
      * `followTopic` and `onTopicClick` parameters of the [InterestsScreen] Composable that we are
-     * testing. It calls the original [InterestsScreen] with its `uiState` argument the [uiState]
+     * testing. It composes the original [InterestsScreen] with its `uiState` argument the [uiState]
      * that it was called with, and with lambda stubs for the `followTopic` and `onTopicClick`
      * parameters.
      *

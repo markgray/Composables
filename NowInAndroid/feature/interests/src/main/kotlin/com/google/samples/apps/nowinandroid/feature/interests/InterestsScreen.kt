@@ -85,7 +85,7 @@ fun InterestsRoute(
  *
  * Our root composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier]
  * and whose `horizontalAlignment` argument is [Alignment.CenterHorizontally]. In the [ColumnScope]
- * `content` composable lambda argument we branch on the value of our [InterestsUiState] parameter
+ * `content` composable lambda argument we branch on the type of our [InterestsUiState] parameter
  * [uiState]:
  *  - If its [InterestsUiState.Loading] we display a [NiaLoadingWheel] with its `contentDesc`
  *  argument the [String] with resource ID `R.string.feature_interests_loading` ("Loading data")
@@ -216,8 +216,8 @@ fun InterestsScreenLoading() {
  *
  * It is wrapped in our custom [NiaTheme] themed [NiaBackground] Composable. Its root Composable
  * is an [InterestsScreen] whose `uiState` argument is an [InterestsUiState.Empty], whose
- * `followTopic` argument is a no-op lambda, and its `onTopicClick` argument is a no-op lambda.
- *
+ * `followTopic` argument is a no-op lambda, and whose `onTopicClick` argument is a no-op lambda.
+ *InterestsUiState.Loading
  * The @[DevicePreviews] annotation causes this Composable to be rendered on different devices in
  * the Android Studio Preview pane.
  */

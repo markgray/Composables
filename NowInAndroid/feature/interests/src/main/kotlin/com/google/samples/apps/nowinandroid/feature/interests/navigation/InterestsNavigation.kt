@@ -26,7 +26,7 @@ import kotlinx.serialization.Serializable
  * This class is used for type-safe navigation and argument passing between destinations.
  *
  * @param initialTopicId The ID of the topic to be initially selected when navigating to this
- * destination. If null, no specific topic will be selected initially.
+ * destination. If `null`, no specific topic will be selected initially.
  */
 @Serializable
 data class InterestsRoute(
@@ -38,7 +38,7 @@ data class InterestsRoute(
  * Navigates to the interests route.
  *
  * @param initialTopicId The ID of the topic that should be initially selected when navigating to the
- * interests route. If null, no topic will be initially selected.
+ * interests route. If `null`, no topic will be initially selected.
  * @param navOptions The navigation options to apply to this navigation.
  */
 fun NavController.navigateToInterests(
