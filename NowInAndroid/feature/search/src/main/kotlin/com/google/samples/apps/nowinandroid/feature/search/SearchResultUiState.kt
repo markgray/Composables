@@ -31,7 +31,7 @@ sealed interface SearchResultUiState {
 
     /**
      * The state query is empty or too short. To distinguish the state between the
-     * (initial state or when the search query is cleared) vs the state where no search
+     * initial state or when the search query is cleared vs the state where no search
      * result is returned, explicitly define the empty query state.
      */
     data object EmptyQuery : SearchResultUiState
@@ -42,7 +42,7 @@ sealed interface SearchResultUiState {
     data object LoadFailed : SearchResultUiState
 
     /**
-     * The search results.
+     * The search results of a successful search.
      *
      * @param topics The [List] of [FollowableTopic] that match the query.
      * @param newsResources The [List] of [UserNewsResource] news resources that match the query.

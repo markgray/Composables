@@ -114,7 +114,8 @@ import com.google.samples.apps.nowinandroid.feature.search.R as searchR
  * [SearchViewModel] parameter [searchViewModel] to collect the [StateFlow] as a [State] wrapped
  * [SearchResultUiState]. Finally, we initialize our [State] wrapped [String] variable
  * `searchQuery` using the [StateFlow.collectAsStateWithLifecycle] method of the [StateFlow] of
- * [String] property [SearchViewModel.searchQuery] of our [SearchViewModel] parameter.
+ * [String] property [SearchViewModel.searchQuery] of our [SearchViewModel] parameter to collect the
+ * [StateFlow] as a [State] wrapped [String].
  *
  * Then we compose a [SearchScreen] with the arguments:
  *  - `modifier`: Our [Modifier] parameter [modifier].
@@ -236,9 +237,9 @@ internal fun SearchRoute(
  * parameter [onSearchQueryChanged] with `query`, then calls our [onSearchTriggered] lambda
  * parameter with `query`, and whose `recentSearchQueries` uses the [Iterable.map] method of the
  * [List] of [RecentSearchQuery] property [RecentSearchQueriesUiState.Success.recentQueries]
- * that transforms it to a [List] of [String] of their [RecentSearchQuery.query] properties.
+ * to transform it to a [List] of [String] of their [RecentSearchQuery.query] properties.
  *
- * When it is [SearchResultUiState.Success], if its [SearchResultUiState.Success.isEmpty], we
+ * When it is [SearchResultUiState.Success], if it is [SearchResultUiState.Success.isEmpty], we
  * compose a [EmptySearchResultBody] composable whose `searchQuery` argument is our [String]
  * parameter [searchQuery], and whose `onInterestsClick` argument is our lambda parameter
  * [onInterestsClick], and if our [RecentSearchQueriesUiState] parameter [recentSearchesUiState]
