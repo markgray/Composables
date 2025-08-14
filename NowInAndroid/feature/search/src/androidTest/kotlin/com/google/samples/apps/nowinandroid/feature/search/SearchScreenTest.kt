@@ -21,6 +21,7 @@ import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.hasScrollToNodeAction
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onFirst
@@ -28,8 +29,11 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.samples.apps.nowinandroid.core.data.model.RecentSearchQuery
 import com.google.samples.apps.nowinandroid.core.model.data.DarkThemeConfig.DARK
+import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
+import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.ThemeBrand.ANDROID
 import com.google.samples.apps.nowinandroid.core.model.data.UserData
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
@@ -45,18 +49,62 @@ import org.junit.Test
  */
 class SearchScreenTest {
 
+    /**
+     * The compose test rule used in this test. Test rules provide a way to run code before and after
+     * test methods. [createAndroidComposeRule]<[ComponentActivity]>() creates a rule that provides
+     * a testing environment for Jetpack Compose UI. It launches a simple [ComponentActivity] for
+     * hosting the composables under test.
+     */
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule: AndroidComposeTestRule<
+        ActivityScenarioRule<ComponentActivity>,
+        ComponentActivity
+        > = createAndroidComposeRule<ComponentActivity>()
 
+    /**
+     * The content description for the clear search text button. ("Clear search text")
+     */
     private lateinit var clearSearchContentDesc: String
+
+    /**
+     * The content description for the follow button. ("Follow interest")
+     */
     private lateinit var followButtonContentDesc: String
+
+    /**
+     * The content description for the unfollow button. ("Unfollow interest")
+     */
     private lateinit var unfollowButtonContentDesc: String
+
+    /**
+     * The content description for the clear recent searches button. ("Clear searches")
+     */
     private lateinit var clearRecentSearchesContentDesc: String
+
+    /**
+     * The string for the topics header. ("Topics")
+     */
     private lateinit var topicsString: String
+
+    /**
+     * The string for the updates header. ("Updates")
+     */
     private lateinit var updatesString: String
+
+    /**
+     * The string for the try another search button. ("Try another search or explorer...")
+     */
     private lateinit var tryAnotherSearchString: String
+
+    /**
+     * The string for the search not ready message. ("Sorry, we are still processing the search
+     * index. Please come back later")
+     */
     private lateinit var searchNotReadyString: String
 
+    /**
+     * The dummy [UserData] used in this test.
+     */
     private val userData: UserData = UserData(
         bookmarkedNewsResources = setOf("1", "3"),
         viewedNewsResources = setOf("1", "2", "4"),
@@ -67,11 +115,17 @@ class SearchScreenTest {
         useDynamicColor = false,
     )
 
+    /**
+     * Sets up the necessary string resources for the test.
+     * This method is called before each test case.
+     */
     @Before
     fun setup() {
         composeTestRule.activity.apply {
-            clearSearchContentDesc = getString(R.string.feature_search_clear_search_text_content_desc)
-            clearRecentSearchesContentDesc = getString(R.string.feature_search_clear_recent_searches_content_desc)
+            clearSearchContentDesc =
+                getString(R.string.feature_search_clear_search_text_content_desc)
+            clearRecentSearchesContentDesc =
+                getString(R.string.feature_search_clear_recent_searches_content_desc)
             followButtonContentDesc =
                 getString(string.core_ui_interests_card_follow_button_content_desc)
             unfollowButtonContentDesc =
@@ -84,6 +138,9 @@ class SearchScreenTest {
         }
     }
 
+    /**
+     * When the search screen is shown, the search text field is shown as focused.
+     */
     @Test
     fun searchTextField_isFocused() {
         composeTestRule.setContent {
@@ -91,10 +148,14 @@ class SearchScreenTest {
         }
 
         composeTestRule
-            .onNodeWithTag("searchTextField")
+            .onNodeWithTag(testTag = "searchTextField")
             .assertIsFocused()
     }
 
+    /**
+     * When the search results are empty, the empty search screen is displayed.
+     * "Try another search"
+     */
     @Test
     fun emptySearchResult_emptyScreenIsDisplayed() {
         composeTestRule.setContent {
@@ -104,13 +165,17 @@ class SearchScreenTest {
         }
 
         composeTestRule
-            .onNodeWithText(tryAnotherSearchString)
+            .onNodeWithText(text = tryAnotherSearchString)
             .assertIsDisplayed()
     }
 
+    /**
+     * When the search results are empty and there are recent searches, the empty search screen
+     * is displayed and the recent searches are displayed.
+     */
     @Test
     fun emptySearchResult_nonEmptyRecentSearches_emptySearchScreenAndRecentSearchesAreDisplayed() {
-        val recentSearches = listOf("kotlin")
+        val recentSearches: List<String> = listOf("kotlin")
         composeTestRule.setContent {
             SearchScreen(
                 searchResultUiState = SearchResultUiState.Success(),
@@ -121,16 +186,22 @@ class SearchScreenTest {
         }
 
         composeTestRule
-            .onNodeWithText(tryAnotherSearchString)
+            .onNodeWithText(text = tryAnotherSearchString)
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithContentDescription(clearRecentSearchesContentDesc)
+            .onNodeWithContentDescription(label = clearRecentSearchesContentDesc)
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithText("kotlin")
+            .onNodeWithText(text = "kotlin")
             .assertIsDisplayed()
     }
 
+    /**
+     * When a search result contains topics, all topics are displayed and the follow buttons are
+     * displayed for the number of followed topics.
+     * For example, if there are 3 topics and 1 is followed, then 2 follow buttons and 1 unfollow
+     * button should be displayed.
+     */
     @Test
     fun searchResultWithTopics_allTopicsAreVisible_followButtonsVisibleForTheNumOfFollowedTopics() {
         composeTestRule.setContent {
@@ -140,37 +211,40 @@ class SearchScreenTest {
         }
 
         composeTestRule
-            .onNodeWithText(topicsString)
+            .onNodeWithText(text = topicsString)
             .assertIsDisplayed()
 
         val scrollableNode = composeTestRule
-            .onAllNodes(hasScrollToNodeAction())
+            .onAllNodes(matcher = hasScrollToNodeAction())
             .onFirst()
 
-        followableTopicTestData.forEachIndexed { index, followableTopic ->
-            scrollableNode.performScrollToIndex(index)
+        followableTopicTestData.forEachIndexed { index: Int, followableTopic: FollowableTopic ->
+            scrollableNode.performScrollToIndex(index = index)
 
             composeTestRule
-                .onNodeWithText(followableTopic.topic.name)
+                .onNodeWithText(text = followableTopic.topic.name)
                 .assertIsDisplayed()
         }
 
         composeTestRule
-            .onAllNodesWithContentDescription(followButtonContentDesc)
-            .assertCountEquals(2)
+            .onAllNodesWithContentDescription(label = followButtonContentDesc)
+            .assertCountEquals(expectedSize = 2)
         composeTestRule
-            .onAllNodesWithContentDescription(unfollowButtonContentDesc)
-            .assertCountEquals(1)
+            .onAllNodesWithContentDescription(label = unfollowButtonContentDesc)
+            .assertCountEquals(expectedSize = 1)
     }
 
+    /**
+     * When a search result contains news resources, the first news resource is visible.
+     */
     @Test
     fun searchResultWithNewsResources_firstNewsResourcesIsVisible() {
         composeTestRule.setContent {
             SearchScreen(
                 searchResultUiState = SearchResultUiState.Success(
-                    newsResources = newsResourcesTestData.map {
+                    newsResources = newsResourcesTestData.map { newsResource: NewsResource ->
                         UserNewsResource(
-                            newsResource = it,
+                            newsResource = newsResource,
                             userData = userData,
                         )
                     },
@@ -179,36 +253,44 @@ class SearchScreenTest {
         }
 
         composeTestRule
-            .onNodeWithText(updatesString)
+            .onNodeWithText(text = updatesString)
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithText(newsResourcesTestData[0].title)
+            .onNodeWithText(text = newsResourcesTestData[0].title)
             .assertIsDisplayed()
     }
 
+    /**
+     * When the search query is empty and there are recent searches, the clear searches button is
+     * displayed.
+     */
     @Test
     fun emptyQuery_notEmptyRecentSearches_verifyClearSearchesButton_displayed() {
-        val recentSearches = listOf("kotlin", "testing")
+        val recentSearches: List<String> = listOf("kotlin", "testing")
         composeTestRule.setContent {
             SearchScreen(
                 searchResultUiState = SearchResultUiState.EmptyQuery,
                 recentSearchesUiState = RecentSearchQueriesUiState.Success(
-                    recentQueries = recentSearches.map(::RecentSearchQuery),
+                    recentQueries = recentSearches.map(transform = ::RecentSearchQuery),
                 ),
             )
         }
 
         composeTestRule
-            .onNodeWithContentDescription(clearRecentSearchesContentDesc)
+            .onNodeWithContentDescription(label = clearRecentSearchesContentDesc)
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithText("kotlin")
+            .onNodeWithText(text = "kotlin")
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithText("testing")
+            .onNodeWithText(text = "testing")
             .assertIsDisplayed()
     }
 
+    /**
+     * When the search is not ready, the "Search not ready" message is displayed.
+     * "Sorry, we are still processing the search index. Please come back later"
+     */
     @Test
     fun searchNotReady_verifySearchNotReadyMessageIsVisible() {
         composeTestRule.setContent {
@@ -218,7 +300,7 @@ class SearchScreenTest {
         }
 
         composeTestRule
-            .onNodeWithText(searchNotReadyString)
+            .onNodeWithText(text = searchNotReadyString)
             .assertIsDisplayed()
     }
 }

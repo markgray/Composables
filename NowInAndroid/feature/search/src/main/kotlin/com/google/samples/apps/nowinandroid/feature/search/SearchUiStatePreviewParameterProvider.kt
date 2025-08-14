@@ -21,16 +21,25 @@ package com.google.samples.apps.nowinandroid.feature.search
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
+import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.ui.PreviewParameterData.newsResources
 import com.google.samples.apps.nowinandroid.core.ui.PreviewParameterData.topics
 
 /**
  * This [PreviewParameterProvider](https://developer.android.com/reference/kotlin/androidx/compose/ui/tooling/preview/PreviewParameterProvider)
- * provides list of [SearchResultUiState] for Composable previews.
- *
- * TODO: Continue here.
+ * provides a [List] of [SearchResultUiState] for Composable previews.
  */
 class SearchUiStatePreviewParameterProvider : PreviewParameterProvider<SearchResultUiState> {
+    /**
+     * A sequence of [SearchResultUiState] for Composable previews. We return the result of calling
+     * the [sequenceOf] with its `element` argument an [SearchResultUiState.Success] whose `topics`
+     * argument is created by using the [Iterable.mapIndexed] method of the [topics] dummy [List] of
+     * [Topic] and in the `transform` lambda argument we capture the index of the [Topic] in the [Int]
+     * variable `i` and the [Topic] itself in the [Topic] variable `topic`. We then create a
+     * [FollowableTopic] whose `topic` property is `topic` and whose `isFollowed` property is `true`
+     * if `i` is even, and `false` otherwise. The `newsResources` property of the
+     * [SearchResultUiState.Success] is the [newsResources] dummy [List] of  [UserNewsResource].
+     */
     override val values: Sequence<SearchResultUiState> = sequenceOf(
         element = SearchResultUiState.Success(
             topics = topics.mapIndexed { i: Int, topic: Topic ->
