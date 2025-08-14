@@ -205,7 +205,7 @@ internal fun SearchRoute(
         onNewsResourceViewed = { newsId: String ->
             searchViewModel.setNewsResourceViewed(
                 newsResourceId = newsId,
-                viewed = true
+                viewed = true,
             )
         },
         onFollowButtonClick = searchViewModel::followTopic,
@@ -508,14 +508,15 @@ private fun SearchNotReadyBody() {
  * a [Modifier.fillMaxSize]. In the [BoxScope] `content` composable lambda argument of the [Box] we
  * compose a [LazyVerticalStaggeredGrid] whose arguments are:
  *  - `columns`: is a [StaggeredGridCells.Adaptive] whose `minSize` argument is `300.dp`.
- *  - `contentPadding`: is a [PaddingValues] whose `all` argument is `16.dp`.
- *  - `horizontalArrangement`: is a [Arrangement.spacedBy] whose `space` argument is `16.dp`.
+ *  - `contentPadding`: is a [PaddingValues] that adds `16.dp` to `all` sides.
+ *  - `horizontalArrangement`: is a [Arrangement.spacedBy] that causes adjacent children to be placed
+ *  `space`d by `16.dp` horizontally.
  *  - `verticalItemSpacing`: is `24.dp`.
  *  - `modifier`: is a [Modifier.fillMaxSize] chained to a [Modifier.testTag] whose `tag` argument
  *  is the [String] "search:newsResources".
  *  - `state`: is our [LazyStaggeredGridState] variable `state`.
  *
- * In the [LazyStaggeredGridScope] `content` composable lambda argument if our [List] of
+ * In the [LazyStaggeredGridScope] `content` composable lambda argument, if our [List] of
  * [FollowableTopic] parameter [topics] is not empty, we compose a [LazyStaggeredGridScope.item]
  * whose `span` argument is [StaggeredGridItemSpan.FullLine]. In its [LazyStaggeredGridItemScope]
  * `content` composable lambda argument we compose a [Text] whose `text` argument is an
@@ -698,7 +699,7 @@ private fun SearchResultBody(
  * is a [Modifier.fillMaxWidth]. In the [RowScope] `content` composable lambda argument we compose
  * a [Text] whose `text` argument is an [AnnotatedString] displaying the string "Recent searches"
  * using [FontWeight.Bold], and whose `modifier` argument is a [Modifier.padding] that adds  `16.dp`
- * to the `horizontal` sides and `8.dp` to the `vertical` sides. Below that is our [List] of [String]
+ * to the `horizontal` sides and `8.dp` to the `vertical` sides. Below that if our [List] of [String]
  * parameter [recentSearchQueries] is not empty, we compose an [IconButton] whose `onClick` argument
  * is a lambda that calls our [onClearRecentSearches] lambda parameter, and whose `modifier` argument
  * is a [Modifier.padding] that adds `16.dp` to the `horizontal` sides. In its `content` composable
@@ -711,13 +712,14 @@ private fun SearchResultBody(
  * adds `16.dp` to the `horizontal` sides. In the [LazyListScope] `content` composable lambda
  * argument we compose an [LazyListScope.items] whose `items` argument is our [List] of [String]
  * parameter [recentSearchQueries]. In the [LazyItemScope] `itemContent` composable lambda argument
- * wej capture the [String] passed the lambda in variable `recentSearch` then we compose a [Text]
+ * we capture the [String] passed the lambda in variable `recentSearch` then we compose a [Text]
  * whose arguments are:
  *  - `text`: is the [String] variable `recentSearch`.
  *  - `style`: is the [Typography.headlineSmall] of our custom [MaterialTheme.typography].
  *  - `modifier`: is a [Modifier.padding] that adds `16.dp` to the `vertical` sides chained to a
  *  [Modifier.clickable] whose `onClick` argument is a lambda that calls our [onRecentSearchClicked]
- *  lambda parameter with the [String] variable `recentSearch`, chained to a [Modifier.fillMaxWidth].
+ *  lambda parameter with the [String] variable `recentSearch`, and to that is chained a
+ *  [Modifier.fillMaxWidth].
  *
  * @param recentSearchQueries The list of recent search queries.
  * @param onClearRecentSearches Called when the clear recent searches button is clicked.
@@ -781,7 +783,7 @@ private fun RecentSearchesBody(
  * is a [Row] whose `verticalAlignment` argument is [Alignment.CenterVertically] (to center its
  * children vertically), and whose `modifier` argument is our [Modifier] parameter [modifier]
  * chained to a [Modifier.fillMaxWidth] (so that the [Row] occupies its entire incoming width
- * constraint). The [RowScope] `content` composable lambda argument of the [Row] is:
+ * constraint). The [RowScope] `content` composable lambda argument of the [Row] contains:
  *  - An [IconButton] whose `onClick` argument is a lambda that calls our [onBackClick] lambda
  *  parameter. In the `content` lambda argument of the [IconButton] is an [Icon] displaying
  *  [NiaIcons.ArrowBack] (a left pointing arrow vector graphic) with a `contentDescription` which
@@ -850,13 +852,13 @@ private fun SearchToolbar(
  *  - `onValueChange`: is a lambda that accepts the [String] passed the lambda in variable `it` then
  *  calls our [onSearchQueryChanged] lambda parameter with `it` if there is no newline character in
  *  `it`.
- *  - `modifier`: is a [Modifier] that is a [Modifier.fillMaxWidth] chained to a [Modifier.padding]
- *  that adds `6.dp` to `all` sides, chained to a [Modifier.focusRequester] whose `focusRequester`
- *  argument is our [FocusRequester] variable `focusRequester`, chained to a [Modifier.onKeyEvent]
- *  that accepts the [KeyEvent] passed its lambda argument in variable `keyEvent` then if the
- *  [KeyEvent.key] is [Key.Enter] calls our `onSearchExplicitlyTriggered` lambda variable if
- *  `searchQuery` is not empty, and returns `true`. Otherwise returns `false`. And this is chained
- *  to a [Modifier.testTag] whose `tag` argument is the string "searchTextField".
+ *  - `modifier`: is a [Modifier.fillMaxWidth] chained to a [Modifier.padding] that adds `6.dp` to
+ *  `all` sides, chained to a [Modifier.focusRequester] whose `focusRequester` argument is our
+ *  [FocusRequester] variable `focusRequester`, chained to a [Modifier.onKeyEvent] that accepts the
+ *  [KeyEvent] passed its lambda argument in variable `keyEvent` then if the [KeyEvent.key] is
+ *  [Key.Enter] calls our `onSearchExplicitlyTriggered` lambda variable if `searchQuery` is not
+ *  empty, and returns `true`. Otherwise it returns `false`. And this is chained to a
+ *  [Modifier.testTag] whose `tag` argument is the string "searchTextField".
  *  - `shape`: is a [RoundedCornerShape] with its `size` argument set to `32.dp`.
  *  - `value`: is our [String] parameter [searchQuery].
  *  - `keyboardOptions`: is a [KeyboardOptions] with its `imeAction` argument set to [ImeAction.Search].
@@ -1019,7 +1021,7 @@ private fun SearchNotReadyBodyPreview() {
 
 /**
  * This is a Preview of the [SearchScreen] composable that is annotated with our [DevicePreviews]
- * custom Preview annotation which causes it to be rendered on four different device sizes.
+ * custom Preview annotation to cause it to be rendered on four different device sizes.
  *
  * We compose our [SearchScreenPreview] inside our [NiaTheme] custom [MaterialTheme], with its
  * `searchResultUiState` argument our [SearchResultUiState] parameter [searchResultUiState].
