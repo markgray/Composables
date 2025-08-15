@@ -21,6 +21,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository
 import com.google.samples.apps.nowinandroid.core.model.data.DarkThemeConfig
 import com.google.samples.apps.nowinandroid.core.model.data.ThemeBrand
+import com.google.samples.apps.nowinandroid.core.model.data.UserData
 import com.google.samples.apps.nowinandroid.feature.settings.SettingsUiState.Loading
 import com.google.samples.apps.nowinandroid.feature.settings.SettingsUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,13 +33,25 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * [SettingsViewModel] is the view model for the settings screen.
+ * It is responsible for exposing the [UserData] to the UI and for updating the [UserData]
+ * when the user changes the settings.
+ *
+ * @param userDataRepository The [UserDataRepository] that provides the [UserData], injected by Hilt.
+ */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
+    /**
+     * Represents the state of the settings screen. It can be either [Loading] or [Success].
+     * The [Success] state contains the [UserEditableSettings] that can be modified by the user.
+     * TODO: Continue here.
+     */
     val settingsUiState: StateFlow<SettingsUiState> =
         userDataRepository.userData
-            .map { userData ->
+            .map { userData: UserData ->
                 Success(
                     settings = UserEditableSettings(
                         brand = userData.themeBrand,
@@ -49,25 +62,25 @@ class SettingsViewModel @Inject constructor(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = WhileSubscribed(5.seconds.inWholeMilliseconds),
+                started = WhileSubscribed(stopTimeoutMillis = 5.seconds.inWholeMilliseconds),
                 initialValue = Loading,
             )
 
     fun updateThemeBrand(themeBrand: ThemeBrand) {
         viewModelScope.launch {
-            userDataRepository.setThemeBrand(themeBrand)
+            userDataRepository.setThemeBrand(themeBrand = themeBrand)
         }
     }
 
     fun updateDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         viewModelScope.launch {
-            userDataRepository.setDarkThemeConfig(darkThemeConfig)
+            userDataRepository.setDarkThemeConfig(darkThemeConfig = darkThemeConfig)
         }
     }
 
     fun updateDynamicColorPreference(useDynamicColor: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setDynamicColorPreference(useDynamicColor)
+            userDataRepository.setDynamicColorPreference(useDynamicColor = useDynamicColor)
         }
     }
 }

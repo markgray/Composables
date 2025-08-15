@@ -194,7 +194,7 @@ class SearchViewModelTest {
     /**
      * Test case to verify that when a search is triggered, the [SearchViewModel]
      * state is [Success].
-     * TODO: Continue here.
+     *
      * This test simulates a scenario where the user triggers a search with a non-empty query.
      * It ensures that the [SearchViewModel.recentSearchQueriesUiState] Flow emits [Success],
      * indicating that the recent search queries were successfully retrieved.
@@ -210,6 +210,15 @@ class SearchViewModelTest {
         assertIs<Success>(value = result)
     }
 
+    /**
+     * Test case to verify that when the FTS table is not populated, the [SearchViewModel] state
+     * is [SearchNotReady].
+     *
+     * This test simulates a scenario where the underlying FTS table in the database,
+     * which is used for searching, has not been populated yet.
+     * It ensures that the [SearchViewModel.searchResultUiState] Flow emits [SearchNotReady],
+     * indicating that the search functionality is not yet available.
+     */
     @Test
     fun searchNotReady_withNoFtsTableEntity(): TestResult = runTest {
         backgroundScope.launch(context = UnconfinedTestDispatcher()) {
@@ -221,6 +230,14 @@ class SearchViewModelTest {
         assertEquals(expected = SearchNotReady, actual = viewModel.searchResultUiState.value)
     }
 
+    /**
+     * Test case to verify that an empty search query is not added to the recent searches.
+     *
+     * This test ensures that if the user triggers a search with an empty query,
+     * it is not saved in the recent search history.
+     * It checks that the [GetRecentSearchQueriesUseCase] does not return any
+     * [RecentSearchQuery] after an empty search is performed.
+     */
     @Test
     fun emptySearchText_isNotAddedToRecentSearches(): TestResult = runTest {
         viewModel.onSearchTriggered(query = "")
@@ -232,6 +249,14 @@ class SearchViewModelTest {
         assertNull(actual = recentSearchQuery)
     }
 
+    /**
+     * Test case to verify that a search query with three spaces is treated as an empty query.
+     *
+     * This test ensures that if the user enters a search query consisting only of spaces,
+     * it is considered an empty query.
+     * It checks that the [SearchViewModel.searchResultUiState] Flow emits [EmptyQuery]
+     * in this scenario.
+     */
     @Test
     fun searchTextWithThreeSpaces_isEmptyQuery(): TestResult = runTest {
         searchContentsRepository.addNewsResources(newsResources = newsResourcesTestData)
@@ -247,6 +272,16 @@ class SearchViewModelTest {
         collectJob.cancel()
     }
 
+    /**
+     * Test case to verify that a search query with leading spaces is treated as an empty query
+     * if it contains fewer than [SEARCH_QUERY_MIN_LENGTH] characters after trimming.
+     *
+     * This test simulates a scenario where the user enters a search query with three leading
+     * spaces followed by a single letter.
+     * It ensures that the [SearchViewModel.searchResultUiState] Flow emits [EmptyQuery],
+     * indicating that the search query is considered empty because it does not meet the
+     * minimum length requirement after trimming.
+     */
     @Test
     fun searchTextWithThreeSpacesAndOneLetter_isEmptyQuery(): TestResult = runTest {
         searchContentsRepository.addNewsResources(newsResources = newsResourcesTestData)
@@ -262,6 +297,17 @@ class SearchViewModelTest {
         collectJob.cancel()
     }
 
+    /**
+     * Test case to verify that when a news resource is bookmarked or unbookmarked,
+     * the bookmark state is updated correctly.
+     *
+     * This test simulates toggling the bookmark state of a news resource.
+     * It ensures that when [SearchViewModel.setNewsResourceBookmarked] is called:
+     * - If `isChecked` is true, the news resource ID is added to the set of bookmarked
+     *   news resources in the [userDataRepository].
+     * - If `isChecked` is false, the news resource ID is removed from the set of bookmarked
+     *   news resources in the [userDataRepository].
+     */
     @Test
     fun whenToggleNewsResourceSavedIsCalled_bookmarkStateIsUpdated(): TestResult = runTest {
         val newsResourceId = "123"
