@@ -32,12 +32,12 @@ import com.google.samples.apps.nowinandroid.core.ui.PreviewParameterData.topics
 class SearchUiStatePreviewParameterProvider : PreviewParameterProvider<SearchResultUiState> {
     /**
      * A sequence of [SearchResultUiState] for Composable previews. We return the result of calling
-     * the [sequenceOf] with its `element` argument an [SearchResultUiState.Success] whose `topics`
-     * argument is created by using the [Iterable.mapIndexed] method of the [topics] dummy [List] of
-     * [Topic] and in the `transform` lambda argument we capture the index of the [Topic] in the [Int]
-     * variable `i` and the [Topic] itself in the [Topic] variable `topic`. We then create a
-     * [FollowableTopic] whose `topic` property is `topic` and whose `isFollowed` property is `true`
-     * if `i` is even, and `false` otherwise. The `newsResources` property of the
+     * the [sequenceOf] method with its `element` argument an [SearchResultUiState.Success] whose
+     * `topics` argument is created by using the [Iterable.mapIndexed] method of the [topics] dummy
+     * [List] of [Topic] and in the `transform` lambda argument capturing the index of the [Topic]
+     * in the [Int] variable `i` and the [Topic] itself in the [Topic] variable `topic`. We then
+     * create a [FollowableTopic] whose `topic` property is `topic` and whose `isFollowed` property
+     * is `true` if `i` is even, and `false` otherwise. The `newsResources` property of the
      * [SearchResultUiState.Success] is the [newsResources] dummy [List] of  [UserNewsResource].
      */
     override val values: Sequence<SearchResultUiState> = sequenceOf(

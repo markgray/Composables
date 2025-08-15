@@ -112,7 +112,7 @@ class SearchViewModelTest {
     private lateinit var viewModel: SearchViewModel
 
     /**
-     * Sets up the test environment before each test.
+     * Sets up the test environment @[Before] each test.
      *
      * This method initializes the [viewModel] with the necessary dependencies, including mock
      * repositories and use cases. It also sets the initial user data in the [userDataRepository]

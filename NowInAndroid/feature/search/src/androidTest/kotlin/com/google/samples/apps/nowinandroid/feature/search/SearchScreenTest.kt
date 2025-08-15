@@ -58,7 +58,7 @@ class SearchScreenTest {
     @get:Rule
     val composeTestRule: AndroidComposeTestRule<
         ActivityScenarioRule<ComponentActivity>,
-        ComponentActivity
+        ComponentActivity,
         > = createAndroidComposeRule<ComponentActivity>()
 
     /**
@@ -117,7 +117,7 @@ class SearchScreenTest {
 
     /**
      * Sets up the necessary string resources for the test.
-     * This method is called before each test case.
+     * This method is called before each test case because of the @[Before] annotation.
      */
     @Before
     fun setup() {
@@ -139,7 +139,8 @@ class SearchScreenTest {
     }
 
     /**
-     * When the search screen is shown, the search text field is shown as focused.
+     * When the search screen is shown, the search text field (the node whose `testTag` is the
+     * [String] "searchTextField") is shown as focused.
      */
     @Test
     fun searchTextField_isFocused() {
@@ -154,7 +155,7 @@ class SearchScreenTest {
 
     /**
      * When the search results are empty, the empty search screen is displayed.
-     * "Try another search"
+     * (The node with the text "Try another search").
      */
     @Test
     fun emptySearchResult_emptyScreenIsDisplayed() {
@@ -171,7 +172,9 @@ class SearchScreenTest {
 
     /**
      * When the search results are empty and there are recent searches, the empty search screen
-     * is displayed and the recent searches are displayed.
+     * (the node displaying the text [tryAnotherSearchString]) is displayed, the recent searches
+     * (the node displaying the text [tryAnotherSearchString]) is displayed, and the node displaying
+     * the text "kotlin" is displayed.
      */
     @Test
     fun emptySearchResult_nonEmptyRecentSearches_emptySearchScreenAndRecentSearchesAreDisplayed() {
@@ -262,7 +265,7 @@ class SearchScreenTest {
 
     /**
      * When the search query is empty and there are recent searches, the clear searches button is
-     * displayed.
+     * displayed, and the nodes displaying the recent searches "kotlin" and "testing" are displayed.
      */
     @Test
     fun emptyQuery_notEmptyRecentSearches_verifyClearSearchesButton_displayed() {

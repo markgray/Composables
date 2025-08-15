@@ -51,7 +51,7 @@ import javax.inject.Inject
  * @param searchContentsRepository The repository for searching contents, Injected by Hilt.
  * @param recentSearchRepository The repository for recent searches, Injected by Hilt.
  * @param userDataRepository The repository for user data, Injected by Hilt.
- * @param savedStateHandle The saved state handle, Injected by Hilt.
+ * @param savedStateHandle The saved state handle.
  * @param analyticsHelper The analytics helper, Injected by Hilt.
  */
 @HiltViewModel
@@ -214,7 +214,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             userDataRepository.setNewsResourceBookmarked(
                 newsResourceId = newsResourceId,
-                bookmarked = isChecked
+                bookmarked = isChecked,
             )
         }
     }
@@ -233,7 +233,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             userDataRepository.setTopicIdFollowed(
                 followedTopicId = followedTopicId,
-                followed = followed
+                followed = followed,
             )
         }
     }
@@ -252,7 +252,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             userDataRepository.setNewsResourceViewed(
                 newsResourceId = newsResourceId,
-                viewed = viewed
+                viewed = viewed,
             )
         }
     }
