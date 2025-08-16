@@ -34,18 +34,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 
+/**
+ * A placeholder for the topic detail screen.
+ * This is shown when no topic is selected.
+ * TODO: Continue here.
+ * @param modifier The modifier to be applied to the placeholder.
+ */
 @Composable
 fun TopicDetailPlaceholder(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        shape = RoundedCornerShape(24.dp, 24.dp, 0.dp, 0.dp),
+        shape = RoundedCornerShape(
+            topStart = 24.dp,
+            topEnd = 24.dp,
+            bottomEnd = 0.dp,
+            bottomStart = 0.dp
+        ),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(
-                20.dp,
+                space = 20.dp,
                 alignment = Alignment.CenterVertically,
             ),
         ) {

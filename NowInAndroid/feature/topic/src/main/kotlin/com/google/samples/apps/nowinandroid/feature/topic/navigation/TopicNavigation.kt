@@ -16,7 +16,9 @@
 
 package com.google.samples.apps.nowinandroid.feature.topic.navigation
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
@@ -26,29 +28,60 @@ import com.google.samples.apps.nowinandroid.feature.topic.TopicScreen
 import com.google.samples.apps.nowinandroid.feature.topic.TopicViewModel
 import kotlinx.serialization.Serializable
 
-@Serializable data class TopicRoute(val id: String)
+/**
+ * Type for navigating to the Topic screen.
+ *
+ * @param id The ID of the topic to display.
+ */
+@Serializable
+data class TopicRoute(val id: String)
 
+/**
+ * Navigates to the Topic screen.
+ *
+ * @param topicId The ID of the topic to display.
+ * @param navOptions Optional navigation options to apply to this navigation call.
+ */
 fun NavController.navigateToTopic(topicId: String, navOptions: NavOptionsBuilder.() -> Unit = {}) {
     navigate(route = TopicRoute(topicId)) {
         navOptions()
     }
 }
 
+/**
+ * Adds the Topic screen to the navigation graph. We call the [NavGraphBuilder.composable] method of
+ * our [NavGraphBuilder] receiver to add the screen to the navigation graph, and in its
+ * [AnimatedContentScope] `content` composable lambda argument we first initialize our [String]
+ * variable `id` using the [NavBackStackEntry.toRoute] to retrieve the [TopicRoute.id] then
+ * compose a [TopicScreen] whose arguments are:
+ *  - `showBackButton`: our [Boolean] parameter [showBackButton].
+ *  - `onBackClick`: our lambda parameter [onBackClick].
+ *  - `onTopicClick`: our lambda parameter [onTopicClick].
+ *  - `viewModel`: a [TopicViewModel] that is built using [hiltViewModel] with the `key` our
+ *  [String] variable `id`, and in its `creationCallback` lambda argument we capture the
+ *  [TopicViewModel.Factory] passed the lambda in variable `factory` and then return the
+ *  [TopicViewModel] created by the [TopicViewModel.Factory.create] method of `factory` when
+ *  called with the `topicId` our [String] variable `id`.
+ *
+ * @param showBackButton Whether to show the back button.
+ * @param onBackClick Called when the back button is clicked.
+ * @param onTopicClick Called when a topic is clicked.
+ */
 fun NavGraphBuilder.topicScreen(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
 ) {
-    composable<TopicRoute> { entry ->
-        val id = entry.toRoute<TopicRoute>().id
+    composable<TopicRoute> { entry: NavBackStackEntry ->
+        val id: String = entry.toRoute<TopicRoute>().id
         TopicScreen(
             showBackButton = showBackButton,
             onBackClick = onBackClick,
             onTopicClick = onTopicClick,
             viewModel = hiltViewModel<TopicViewModel, TopicViewModel.Factory>(
                 key = id,
-            ) { factory ->
-                factory.create(id)
+            ) { factory: TopicViewModel.Factory ->
+                factory.create(topicId = id)
             },
         )
     }
