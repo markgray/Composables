@@ -137,16 +137,18 @@ fun SettingsDialog(
  *  [Boolean] parameter [supportDynamicColor], whose `onChangeThemeBrand` argument is our lambda
  *  parameter [onChangeThemeBrand], whose `onChangeDynamicColorPreference` argument is our lambda
  *  parameter [onChangeDynamicColorPreference], and whose `onChangeDarkThemeConfig` argument is our
- *  lambda parameter [onChangeDarkThemeConfig]. Below these two possible composables in the [Column]
- *  we compose a [HorizontalDivider] whose `modifier` argument is a [Modifier.padding] that adds
- *  `8.dp` to the `top` side, and below that we compose a [LinksPanel].
+ *  lambda parameter [onChangeDarkThemeConfig]. Below these two alternative composables in the
+ *  [Column] we compose a [HorizontalDivider] whose `modifier` argument is a [Modifier.padding] that
+ *  adds `8.dp` to the `top` side, and below that we compose a [LinksPanel]. At the end of the `text`
+ *  argument we call the [TrackScreenViewEvent] method to record a screen view event whose `screenName`
+ *  is "Settings".
  *  - `confirmButton`: a lambda that composes a [NiaTextButton] whose `onClick` argument is our lambda
  *  parameter [onDismiss] and whose `modifier` argument is a [Modifier.padding] that adds `8.dp` to
  *  the horizontal sides. In the [NiaTextButton] lambda argument we compose a [Text] whose `text`
  *  argument is the [String] with resource id `string.feature_settings_dismiss_dialog_button_text`
  *  ("OK"), whose [TextStyle] `style` argument is the [Typography.labelLarge] of our custom
- *  [MaterialTheme.typography] whose [Color] `color` argument is the [ColorScheme.primary] of our
- *  custom [MaterialTheme.colorScheme].
+ *  [MaterialTheme.typography], and whose [Color] `color` argument is the [ColorScheme.primary] of
+ *  our custom [MaterialTheme.colorScheme].
  *
  * @param settingsUiState The UI state of the settings dialog.
  * @param supportDynamicColor Whether the device supports dynamic color.
@@ -229,8 +231,8 @@ fun SettingsDialog(
 // [ColumnScope] is used for using the [ColumnScope.AnimatedVisibility] extension overload composable.
 /**
  * This composable allows the user to change the settings that affect the appearance of the app.
- * It is used as the `content` of the [Column] in the `text` lambda argument of the [AlertDialog]
- * displayed by the [SettingsDialog] composable's [SettingsUiState.Success] branch.
+ * It is used as part of the `content` of the [Column] in the `text` lambda argument of the
+ * [AlertDialog] displayed by the [SettingsDialog] composable's [SettingsUiState.Success] branch.
  *
  * We start by composing a [SettingsDialogSectionTitle] whose `text` argument is the [String] with
  * resource id `string.feature_settings_theme` ("Theme"). Then we compose a [Column] whose `modifier`
