@@ -49,7 +49,7 @@ fun TopicDetailPlaceholder(modifier: Modifier = Modifier) {
             topStart = 24.dp,
             topEnd = 24.dp,
             bottomEnd = 0.dp,
-            bottomStart = 0.dp
+            bottomStart = 0.dp,
         ),
     ) {
         Column(

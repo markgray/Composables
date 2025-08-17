@@ -49,7 +49,7 @@ class SettingsViewModelTest {
     val mainDispatcherRule: MainDispatcherRule = MainDispatcherRule()
 
     /**
-     * The test [UserDataRepository] user data repository for managing user preferences.
+     * The test [UserDataRepository] repository for managing user preferences.
      */
     private val userDataRepository = TestUserDataRepository()
 
@@ -79,8 +79,9 @@ class SettingsViewModelTest {
      * Test that the state of the ViewModel is [Success] after user data is loaded.
      * It also verifies that the loaded user data matches the expected values.
      *
-     * We launch a coroutine in the [TestScope.backgroundScope] using it [CoroutineScope.launch]
-     * in which we call the [StateFlow.collect] method of the [SettingsViewModel.settingsUiState]
+     * We launch a coroutine in the [TestScope.backgroundScope] using its [CoroutineScope.launch]
+     * method with the `context` [UnconfinedTestDispatcher], and in its `block` suspend lambda
+     * argument we call the [StateFlow.collect] method of the [SettingsViewModel.settingsUiState]
      * property of our [SettingsViewModel] property [viewModel] to collect the flow but ignore all
      * emitted values. This is done to ensure that the initial state of the flow is [Loading].
      * Then we call the [UserDataRepository.setThemeBrand] method of our [UserDataRepository]

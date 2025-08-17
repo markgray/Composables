@@ -45,11 +45,14 @@ class SettingsDialogTest {
     @get:Rule
     val composeTestRule: AndroidComposeTestRule<
         ActivityScenarioRule<ComponentActivity>,
-        ComponentActivity
+        ComponentActivity,
         > = createAndroidComposeRule<ComponentActivity>()
 
     /**
-     * Convenience function to get a string resource.
+     * Convenience function to get a string resource whose ID is our [Int] parameter [id].
+     *
+     * @param id the resource ID of the [String] to return.
+     * @return the [String] whose resource ID is [id].
      */
     private fun getString(id: Int): String = composeTestRule.activity.resources.getString(id)
 
@@ -63,7 +66,7 @@ class SettingsDialogTest {
      *  - `onChangeThemeBrand`: is a lambda that does nothing
      *  - `onChangeDarkThemeConfig`: is a lambda that does nothing
      *
-     * The we use the [AndroidComposeTestRule.onNodeWithText] method to find the node with the text
+     * Then we use the [AndroidComposeTestRule.onNodeWithText] method to find the node with the text
      * "Loading...". We then use the [SemanticsNodeInteraction.assertExists] method of the node
      * returned to check that the node is displayed.
      */
@@ -100,15 +103,15 @@ class SettingsDialogTest {
      *  - `onChangeDarkThemeConfig`: is a lambda that does nothing
      *
      * Then we check that all the possible settings are displayed:
-     *  - The [String] whose resource ID is `R.string.feature_settings_brand_default` ("Default")
-     *  should exist in the hierarchy.
-     *  - The [String] whose resource ID is `R.string.feature_settings_brand_android` ("Android")
-     *  should exist in the hierarchy.
-     *  - The [String] whose resource ID is `R.string.feature_settings_dark_mode_config_system_default`
+     *  - A node with the [String] whose resource ID is `R.string.feature_settings_brand_default`
+     *  ("Default") should exist in the hierarchy.
+     *  - A node with the [String] whose resource ID is `R.string.feature_settings_brand_android`
+     *  ("Android") should exist in the hierarchy.
+     *  - A node with the [String] whose resource ID is `R.string.feature_settings_dark_mode_config_system_default`
      *  ("System Default") should exist in the hierarchy.
-     *  - The [String] whose resource ID is `R.string.feature_settings_dark_mode_config_light`
+     *  - A node with the [String] whose resource ID is `R.string.feature_settings_dark_mode_config_light`
      *  ("Light") should exist in the hierarchy.
-     *  - The [String] whose resource ID is `R.string.feature_settings_dark_mode_config_dark`
+     *  - A node with the [String] whose resource ID is `R.string.feature_settings_dark_mode_config_dark`
      *  ("Dark") should exist in the hierarchy.
      *
      * And finally we check that the correct settings are selected: "Android" and "Dark".

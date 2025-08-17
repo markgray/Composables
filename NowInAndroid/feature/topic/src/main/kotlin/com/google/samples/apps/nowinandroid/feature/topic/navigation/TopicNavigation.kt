@@ -24,12 +24,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.feature.topic.TopicScreen
 import com.google.samples.apps.nowinandroid.feature.topic.TopicViewModel
 import kotlinx.serialization.Serializable
 
 /**
- * Type for navigating to the Topic screen.
+ * @[Serializable] Type for navigating to the Topic screen to display the [Topic] whose [Topic.id]
+ * is our [id] property.
  *
  * @param id The ID of the topic to display.
  */
@@ -37,7 +39,8 @@ import kotlinx.serialization.Serializable
 data class TopicRoute(val id: String)
 
 /**
- * Navigates to the Topic screen.
+ * Navigates to the Topic screen to display the [Topic] whose [Topic.id] is our [String] parameter
+ * [topicId].
  *
  * @param topicId The ID of the topic to display.
  * @param navOptions Optional navigation options to apply to this navigation call.
@@ -52,8 +55,9 @@ fun NavController.navigateToTopic(topicId: String, navOptions: NavOptionsBuilder
  * Adds the Topic screen to the navigation graph. We call the [NavGraphBuilder.composable] method of
  * our [NavGraphBuilder] receiver to add the screen to the navigation graph, and in its
  * [AnimatedContentScope] `content` composable lambda argument we first initialize our [String]
- * variable `id` using the [NavBackStackEntry.toRoute] to retrieve the [TopicRoute.id] then
- * compose a [TopicScreen] whose arguments are:
+ * variable `id` using the [NavBackStackEntry.toRoute] method of the [NavBackStackEntry] passed the
+ * lambda in variable `entry` to retrieve the [TopicRoute.id] then compose a [TopicScreen] whose
+ * arguments are:
  *  - `showBackButton`: our [Boolean] parameter [showBackButton].
  *  - `onBackClick`: our lambda parameter [onBackClick].
  *  - `onTopicClick`: our lambda parameter [onTopicClick].
@@ -61,7 +65,7 @@ fun NavController.navigateToTopic(topicId: String, navOptions: NavOptionsBuilder
  *  [String] variable `id`, and in its `creationCallback` lambda argument we capture the
  *  [TopicViewModel.Factory] passed the lambda in variable `factory` and then return the
  *  [TopicViewModel] created by the [TopicViewModel.Factory.create] method of `factory` when
- *  called with the `topicId` our [String] variable `id`.
+ *  called with the `topicId` argument our [String] variable `id`.
  *
  * @param showBackButton Whether to show the back button.
  * @param onBackClick Called when the back button is clicked.
