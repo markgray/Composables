@@ -18,16 +18,20 @@ package com.google.samples.apps.nowinandroid.feature.topic
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +41,33 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 /**
  * A placeholder for the topic detail screen.
  * This is shown when no topic is selected.
- * TODO: Continue here.
+ *
+ * Our root composable is a [Card] whose arguments are:
+ *  - `modifier`: our [Modifier] parameter [modifier].
+ *  - `colors`: a [CardDefaults.cardColors] with its `containerColor` the [ColorScheme.surfaceVariant]
+ *  of our custom [MaterialTheme.colorScheme].
+ *  - `shape`: a [RoundedCornerShape] with its `topStart` `24.dp, `topEnd` `24.dp`, `bottomEnd` `0.dp`
+ *  and `bottomStart` `0.dp`.
+ *
+ * In its [ColumnScope] `content` composable lambda argument we compose a [Column] whose arguments
+ * are:
+ *  - `modifier`: a [Modifier.fillMaxSize].
+ *  - `horizontalAlignment`: [Alignment.CenterHorizontally].
+ *  - `verticalArrangement`: an [Arrangement.spacedBy] whose `space` is `20.dp` and `alignment` is
+ *  [Arrangement.Center].
+ *
+ * In the [ColumnScope] `content` composable lambda argument of the [Column] we first compose an
+ * [Icon] whose arguments are:
+ *  - `painter`: the [Painter] returned by the [painterResource] for the drawable with resource ID
+ *  `R.drawable.feature_topic_ic_topic_placeholder`.
+ *  - `contentDescription`: `null`.
+ *  - `tint`: the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme].
+ *
+ * Next we compose a [Text] whose arguments are:
+ *  - `text`: the string with resource ID `R.string.feature_topic_select_an_interest`
+ *  ("Select an Interest").
+ *  - `style`: the [Typography.titleLarge] of our custom [MaterialTheme.typography].
+ *
  * @param modifier The modifier to be applied to the placeholder.
  */
 @Composable
@@ -73,6 +103,10 @@ fun TopicDetailPlaceholder(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * A preview of the [TopicDetailPlaceholder] composable. It is wrapped in a [NiaTheme] and displays
+ * the placeholder with a width of 200dp and height of 300dp.
+ */
 @Preview(widthDp = 200, heightDp = 300)
 @Composable
 fun TopicDetailPlaceholderPreview() {
