@@ -106,7 +106,7 @@ class TopicViewModel @AssistedInject constructor(
         viewModelScope.launch {
             userDataRepository.setNewsResourceBookmarked(
                 newsResourceId = newsResourceId,
-                bookmarked = bookmarked
+                bookmarked = bookmarked,
             )
         }
     }
@@ -115,7 +115,7 @@ class TopicViewModel @AssistedInject constructor(
         viewModelScope.launch {
             userDataRepository.setNewsResourceViewed(
                 newsResourceId = newsResourceId,
-                viewed = viewed
+                viewed = viewed,
             )
         }
     }

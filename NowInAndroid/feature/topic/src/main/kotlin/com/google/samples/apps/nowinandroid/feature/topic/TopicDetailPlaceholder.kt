@@ -58,8 +58,8 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
  *
  * In the [ColumnScope] `content` composable lambda argument of the [Column] we first compose an
  * [Icon] whose arguments are:
- *  - `painter`: the [Painter] returned by the [painterResource] for the drawable with resource ID
- *  `R.drawable.feature_topic_ic_topic_placeholder`.
+ *  - `painter`: the [Painter] returned by the [painterResource] methid for the drawable with
+ *  resource ID `R.drawable.feature_topic_ic_topic_placeholder`.
  *  - `contentDescription`: `null`.
  *  - `tint`: the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme].
  *

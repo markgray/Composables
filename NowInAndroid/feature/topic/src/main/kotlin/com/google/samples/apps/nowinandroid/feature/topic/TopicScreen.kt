@@ -165,18 +165,19 @@ fun TopicScreen(
  *  the [String] resource with id `string.feature_topic_loading` ("Loading topic").
  *  - If [TopicUiState.Error] we have not decided what to do here.
  *  - If [TopicUiState.Success] we compose a [LazyListScope.item] holding a [TopicToolbar] whose
- *  `showBackButton` argument is our [Boolean] parameter [showBackButton], `onBackClick` argument
- *  is our lambda parameter [onBackClick], `onFollowClick` is our lambda parameter [onFollowClick],
- *  and whose `uiState` argument is the [TopicUiState.Success.followableTopic] property of our
- *  [TopicUiState] parameter [topicUiState]. Then we compose a [LazyListScope.topicBody] whose `name`
- *  argument is the [Topic.name] property of the [TopicUiState.Success.followableTopic] property of
- *  our [TopicUiState] parameter [topicUiState], `description` argument is the [Topic.longDescription]
- *  property of the [TopicUiState.Success.followableTopic] property of our [TopicUiState] parameter
- *  [topicUiState], `news` argument is our [NewsUiState] parameter [newsUiState], `imageUrl` argument
- *  is the [Topic.imageUrl] property of the [TopicUiState.Success.followableTopic] property of our
- *  [TopicUiState] parameter [topicUiState], `onBookmarkChanged` argument is our lambda parameter
- *  [onBookmarkChanged], `onNewsResourceViewed` argument is our lambda parameter [onNewsResourceViewed],
- *  and whose `onTopicClick` argument is our lambda parameter [onTopicClick].
+ *  `showBackButton` argument is our [Boolean] parameter [showBackButton], whose `onBackClick`
+ *  argument is our lambda parameter [onBackClick], whose `onFollowClick` is our lambda parameter
+ *  [onFollowClick], and whose `uiState` argument is the [TopicUiState.Success.followableTopic]
+ *  property of our [TopicUiState] parameter [topicUiState]. Then we compose a [LazyListScope.topicBody]
+ *  whose `name` argument is the [Topic.name] property of the [TopicUiState.Success.followableTopic]
+ *  property of our [TopicUiState] parameter [topicUiState], whose `description` argument is the
+ *  [Topic.longDescription] property of the [TopicUiState.Success.followableTopic] property of our
+ *  [TopicUiState] parameter [topicUiState], whose `news` argument is our [NewsUiState] parameter
+ *  [newsUiState], whose `imageUrl` argument is the [Topic.imageUrl] property of the
+ *  [TopicUiState.Success.followableTopic] property of our [TopicUiState] parameter [topicUiState],
+ *  whose `onBookmarkChanged` argument is our lambda parameter [onBookmarkChanged], whose
+ *  `onNewsResourceViewed` argument is our lambda parameter [onNewsResourceViewed], and whose
+ *  `onTopicClick` argument is our lambda parameter [onTopicClick].
  *
  * At the bottom of the [LazyColumn] we compose a [LazyListScope.item] whose `content` lambda
  * argument is a [Spacer] whose `modifier` argument is a [Modifier.windowInsetsBottomHeight] whose
@@ -269,7 +270,7 @@ internal fun TopicScreen(
         }
         val itemsAvailable: Int = topicItemsSize(
             topicUiState = topicUiState,
-            newsUiState = newsUiState
+            newsUiState = newsUiState,
         )
         val scrollbarState: ScrollbarState = state.scrollbarState(
             itemsAvailable = itemsAvailable,
@@ -319,13 +320,13 @@ private fun topicItemsSize(
  * Adds the body of the topic screen to the [LazyListScope] of the calling [LazyColumn].
  *
  * It starts with a [LazyListScope.item] whose `content` lambda argument is a [TopicHeader] whose
- * `name` argument is our [String] parameter [name], `description` argument is our [String] parameter
- * [description], and whose `imageUrl` argument is our [String] parameter [imageUrl].
+ * `name` argument is our [String] parameter [name], whose `description` argument is our [String]
+ * parameter [description], and whose `imageUrl` argument is our [String] parameter [imageUrl].
  *
  * Then it calls the [LazyListScope.userNewsResourceCards] method with its `news` argument our
- * [NewsUiState] parameter [news], `onBookmarkChanged` argument our lambda parameter [onBookmarkChanged],
- * `onNewsResourceViewed` argument our lambda parameter [onNewsResourceViewed], and `onTopicClick`
- * argument our lambda parameter [onTopicClick].
+ * [NewsUiState] parameter [news], its `onBookmarkChanged` argument our lambda parameter
+ * [onBookmarkChanged], its `onNewsResourceViewed` argument our lambda parameter
+ * [onNewsResourceViewed], and its `onTopicClick` argument our lambda parameter [onTopicClick].
  *
  * @param name the name of the [Topic] we are displaying.
  * @param description the description of the [Topic] we are displaying.
@@ -355,7 +356,7 @@ private fun LazyListScope.topicBody(
         news = news,
         onBookmarkChanged = onBookmarkChanged,
         onNewsResourceViewed = onNewsResourceViewed,
-        onTopicClick = onTopicClick
+        onTopicClick = onTopicClick,
     )
 }
 
@@ -405,8 +406,6 @@ private fun TopicHeader(name: String, description: String, imageUrl: String) {
 }
 
 // TODO: Could/should this be replaced with [LazyGridScope.newsFeed]?
-
-
 /**
  * Displays the news resources associated with a topic, either as a list of cards, a loading wheel,
  * or an error message.
@@ -417,9 +416,9 @@ private fun TopicHeader(name: String, description: String, imageUrl: String) {
  *  of news resource cards. The `onToggleBookmark` argument is a lambda which calls our lambda
  *  parameter `onBookmarkChanged` with the [UserNewsResource.id] of the [UserNewsResource] whose
  *  bookmark is being toggled and the inverse of its [UserNewsResource.isSaved] property (current
- *  bookmarked state). The `onNewsResourceViewed` argument is our lambda parameter `onNewsResourceViewed`,
- *  the `onTopicClick` argument is our lambda parameter `onTopicClick`, and the `itemModifier` argument
- *  is a [Modifier.padding] that adds `24.dp` to `all` sides of the card.
+ *  bookmarked state). The `onNewsResourceViewed` argument is our lambda parameter
+ *  `onNewsResourceViewed`, the `onTopicClick` argument is our lambda parameter `onTopicClick`, and
+ *  the `itemModifier` argument is a [Modifier.padding] that adds `24.dp` to `all` sides of the card.
  *  - [NewsUiState.Loading]: it composes a [LazyListScope.item] which holds a [NiaLoadingWheel] whose
  *  `contentDesc` argument is the [String] "Loading news".
  *  - else branch (ie. [NewsUiState.Error]): it composes a [LazyListScope.item] which holds a [Text]
@@ -495,7 +494,7 @@ private fun TopicBodyPreview() {
 /**
  * This Composable displays the toolbar for the Topic screen. The toolbar consists of a "Back" button
  * which is only displayed if its [Boolean] parameter [showBackButton] is `true` (if it is `false` a
- * 1.dp wide [Spacer] is displayed instead to keep the [NiaFilterChip] aligned to the end of the
+ * `1.dp` wide [Spacer] is displayed instead to keep the [NiaFilterChip] aligned to the end of the
  * [Row]), and a [NiaFilterChip] which displays either the [String] "FOLLOWING" or "NOT FOLLOWING"
  * depending on whether the [FollowableTopic.isFollowed] property of our [FollowableTopic] parameter
  * [uiState] is `true` or `false`. When the [NiaFilterChip] is clicked our lambda parameter
@@ -506,13 +505,13 @@ private fun TopicBodyPreview() {
  * [Arrangement.SpaceBetween] (space is placed between children), whose `verticalAlignment` argument
  * is [Alignment.CenterVertically] (its children are centered vertically), and whose `modifier`
  * argument is our [Modifier] parameter [modifier] chained to a [Modifier.fillMaxWidth] (the [Row]
- * will occupy its entire incoming width constraint) chained to a [Modifier.padding] that adds
+ * will occupy its entire incoming width constraint), chained to a [Modifier.padding] that adds
  * `32.dp` to its `bottom`.
  *
  * In the [RowScope] `content` composable lambda argument of the [Row] **if** [showBackButton] is
  * `true` we compose an [IconButton] whose `onClick` argument is a lambda that calls our lambda
  * parameter [onBackClick]. The `content` of the [IconButton] is an [Icon] whose `imageVector` is
- * [NiaIcons.ArrowBack] and whose `contentDescription` is the [String] resource with id
+ * [NiaIcons.ArrowBack] and whose `contentDescription` is the [String] whose resource id is
  * `R.string.core_ui_back` ("Back").
  *
  * If [showBackButton] is `false` we compose a [Spacer] whose `modifier` argument is a
@@ -600,7 +599,7 @@ fun TopicScreenPopulated(
         NiaBackground {
             TopicScreen(
                 topicUiState = TopicUiState.Success(
-                    followableTopic = userNewsResources[0].followableTopics[0]
+                    followableTopic = userNewsResources[0].followableTopics[0],
                 ),
                 newsUiState = NewsUiState.Success(news = userNewsResources),
                 showBackButton = true,
