@@ -23,6 +23,9 @@ import com.google.samples.apps.nowinandroid.lint.TestMethodNameDetector.Companio
 import com.google.samples.apps.nowinandroid.lint.TestMethodNameDetector.Companion.PREFIX
 import org.junit.Test
 
+/**
+ * Tests for [TestMethodNameDetector]. REALLY BROKEN DUE TO CHANGES IN [kotlin] code fragments.
+ */
 class TestMethodNameDetectorTest {
 
     @Test
@@ -32,7 +35,6 @@ class TestMethodNameDetectorTest {
                 JUNIT_TEST_STUB,
                 kotlin(
                     """
-                    import org.junit.Test
                     class Test {
                         @Test
                         fun foo() = Unit
@@ -78,7 +80,6 @@ class TestMethodNameDetectorTest {
                 kotlin(
                     "src/androidTest/com/example/Test.kt",
                     """
-                    import org.junit.Test
                     class Test {
                         @Test
                         fun when_then() = Unit
@@ -115,7 +116,6 @@ class TestMethodNameDetectorTest {
     private companion object {
         private val JUNIT_TEST_STUB: TestFile = kotlin(
             """
-                package org.junit
                 annotation class Test
                 """,
         ).indented()

@@ -21,6 +21,10 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.google.samples.apps.nowinandroid.sync.workers.SyncWorker
 
+/**
+ * Helper class to [initialize] the sync work.
+ * TODO: Continue here.
+ */
 object Sync {
     // This method is initializes sync, the process that keeps the app's data current.
     // It is called from the app module's Application.onCreate() and should be only done once.

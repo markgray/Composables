@@ -29,32 +29,96 @@ import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UQualifiedReferenceExpression
 
 /**
- * A detector that checks for incorrect usages of Compose Material APIs over equivalents in
- * the Now in Android design system module.
+ * This detector checks for incorrect usages of Compose Material APIs like `MaterialTheme`, `Button`,
+ * or `Scaffold` when equivalents are available in the Now in Android design system module.
+ *
+ * It flags usages of Material components that should be replaced by their `Nia` counterparts
+ * (e.g., `NiaTheme`, `NiaButton`, `NiaScaffold`) to ensure a consistent look and feel across the app.
  */
 class DesignSystemDetector : Detector(), Detector.UastScanner {
 
+    /**
+     * This lint check is interested in visiting call expressions (method calls)
+     * and qualified reference expressions (like `MaterialTheme.typography`)
+     * in the UAST - the Universal Abstract Syntax Tree.
+     *
+     * @return a list of UAST element types that this check is interested in.
+     */
     override fun getApplicableUastTypes(): List<Class<out UElement>> = listOf(
         UCallExpression::class.java,
         UQualifiedReferenceExpression::class.java,
     )
 
+    /**
+     * This handler is called by Lint when it encounters a UAST element of a type that we're
+     * interested in. The handler then needs to inspect the node to see if it matches our criteria.
+     *
+     * In this case, we're looking for call expressions that are named like Material components
+     * (e.g., "Button", "Text", "Scaffold") or qualified reference expressions that are named
+     * like Material objects (e.g., "MaterialTheme.typography", "MaterialTheme.shapes").
+     *
+     * If we find a match, we report an issue to Lint.
+     *
+     * @param context The context of the lint check.
+     * @return A UElementHandler that will be called by Lint when it encounters a UAST element.
+     */
     override fun createUastHandler(context: JavaContext): UElementHandler =
         object : UElementHandler() {
+            /**
+             * This function is called when a `UCallExpression` (a method call in the UAST)
+             * is visited.
+             *
+             * It checks if the method call's name is in the `METHOD_NAMES` map, which
+             * contains mappings from Material components to their Nia equivalents.
+             *
+             * If a mapping is found, it means a Material component is being used instead
+             * of its Nia counterpart. In this case, an issue is reported using `reportIssue`.
+             *
+             * @param node The `UCallExpression` node being visited.
+             */
             override fun visitCallExpression(node: UCallExpression) {
-                val name = node.methodName ?: return
-                val preferredName = METHOD_NAMES[name] ?: return
-                reportIssue(context, node, name, preferredName)
+                val name: String = node.methodName ?: return
+                val preferredName: String = METHOD_NAMES[name] ?: return
+                reportIssue(
+                    context = context,
+                    node = node,
+                    name = name,
+                    preferredName = preferredName
+                )
             }
 
+            /**
+             * This method is called when a qualified reference expression is visited.
+             *
+             * A qualified reference expression is a reference that is qualified by a receiver,
+             * such as `MaterialTheme.typography` or `MaterialTheme.shapes`.
+             *
+             * This method checks if the receiver of the qualified reference expression
+             * is a Material API that has an equivalent in the Now in Android design system.
+             *
+             * If it is, it reports an issue.
+             *
+             * @param node the qualified reference expression to visit.
+             */
             override fun visitQualifiedReferenceExpression(node: UQualifiedReferenceExpression) {
-                val name = node.receiver.asRenderString()
-                val preferredName = RECEIVER_NAMES[name] ?: return
-                reportIssue(context, node, name, preferredName)
+                val name: String = node.receiver.asRenderString()
+                val preferredName: String = RECEIVER_NAMES[name] ?: return
+                reportIssue(
+                    context = context,
+                    node = node,
+                    name = name,
+                    preferredName = preferredName
+                )
             }
         }
 
     companion object {
+        /**
+         * The issue detected by this lint check.
+         *
+         * It identifies usages of Compose Material components that have equivalents in the
+         * Now in Android design system module and suggests replacing them.
+         */
         @JvmField
         val ISSUE: Issue = Issue.create(
             id = "DesignSystem",
@@ -74,7 +138,19 @@ class DesignSystemDetector : Detector(), Detector.UastScanner {
         // Unfortunately :lint is a Java module and thus can't depend on the :core-designsystem
         // Android module, so we can't use composable function references (eg. ::Button.name)
         // instead of hardcoded names.
-        val METHOD_NAMES = mapOf(
+        /**
+         * A map of Material method names to their corresponding `Nia` equivalents.
+         *
+         * This map is used by the `DesignSystemDetector` to identify Material components
+         * that should be replaced by their `Nia` counterparts. The keys of the map are
+         * the names of the Material methods, and the values are the names of the
+         * corresponding `Nia` methods.
+         *
+         * For example, the entry `"Button" to "NiaButton"` indicates that usages of
+         * the Material `Button` composable should be replaced with the `NiaButton`
+         * composable.
+         */
+        val METHOD_NAMES: Map<String, String> = mapOf(
             "MaterialTheme" to "NiaTheme",
             "Button" to "NiaButton",
             "OutlinedButton" to "NiaOutlinedButton",
@@ -96,10 +172,29 @@ class DesignSystemDetector : Detector(), Detector.UastScanner {
             "MediumTopAppBar" to "NiaTopAppBar",
             "LargeTopAppBar" to "NiaTopAppBar",
         )
-        val RECEIVER_NAMES = mapOf(
+
+        /**
+         * A map of Material API names to their Nia equivalents.
+         *
+         * This is used by the `visitQualifiedReferenceExpression` method to check if a
+         * qualified reference expression is using a Material API that has an equivalent
+         * in the Now in Android design system.
+         *
+         * For example, if the code contains `MaterialTheme.typography`, this map will
+         * be used to find the Nia equivalent, which is `NiaTheme.typography`.
+         */
+        val RECEIVER_NAMES: Map<String, String> = mapOf(
             "Icons" to "NiaIcons",
         )
 
+        /**
+         * Reports an issue to Lint.
+         *
+         * @param context The context of the lint check.
+         * @param node The UAST node that the issue is associated with.
+         * @param name The name of the Material component that was used.
+         * @param preferredName The name of the Nia component that should be used instead.
+         */
         fun reportIssue(
             context: JavaContext,
             node: UElement,
@@ -107,10 +202,10 @@ class DesignSystemDetector : Detector(), Detector.UastScanner {
             preferredName: String,
         ) {
             context.report(
-                ISSUE,
-                node,
-                context.getLocation(node),
-                "Using $name instead of $preferredName",
+                issue = ISSUE,
+                scope = node,
+                location = context.getLocation(element = node),
+                message = "Using $name instead of $preferredName",
             )
         }
     }

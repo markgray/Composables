@@ -21,7 +21,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
+/**
+ * Test implementation of [SyncManager] which never syncs.
+ */
 internal class NeverSyncingSyncManager @Inject constructor() : SyncManager {
-    override val isSyncing: Flow<Boolean> = flowOf(false)
+    /**
+     * [Flow] of [Boolean] representing the current sync status. We return
+     * a [Flow] that always emits false, as this [SyncManager] never syncs.
+     */
+    override val isSyncing: Flow<Boolean> = flowOf(value = false)
+
+    /**
+     * Requests that a sync be performed. This function does nothing as this
+     * [SyncManager] never syncs.
+     */
     override fun requestSync() = Unit
 }

@@ -144,21 +144,27 @@ class DesignSystemDetectorTest {
 
     private companion object {
 
+
+        /**
+         * Stub of Composable annotation for test purposes.
+         */
         private val COMPOSABLE_STUB: TestFile = kotlin(
-            """
-            package androidx.compose.runtime
-            annotation class Composable
-            """.trimIndent(),
+            source = """
+                        annotation class Composable
+                        """.trimIndent(),
         ).indented()
 
+        /**
+         * Stub of Composable functions and objects that should be replaced with their Nia counterparts.
+         */
         private val STUBS: TestFile = kotlin(
-            """
-            |import androidx.compose.runtime.Composable
-            |
-            ${METHOD_NAMES.keys.joinToString("\n") { "|@Composable fun $it() = {}" }}
-            ${RECEIVER_NAMES.keys.joinToString("\n") { "|object $it" }}
-            |
-            """.trimMargin(),
+            source = """
+                        |import androidx.compose.runtime.Composable
+                        |
+                        ${METHOD_NAMES.keys.joinToString("\n") { "|@Composable fun $it() = {}" }}
+                        ${RECEIVER_NAMES.keys.joinToString("\n") { "|object $it" }}
+                        |
+                        """.trimMargin(),
         ).indented()
     }
 }
