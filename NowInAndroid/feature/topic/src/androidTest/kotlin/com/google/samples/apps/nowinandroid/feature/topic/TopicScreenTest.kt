@@ -50,7 +50,7 @@ class TopicScreenTest {
     @get:Rule
     val composeTestRule: AndroidComposeTestRule<
         ActivityScenarioRule<ComponentActivity>,
-        ComponentActivity
+        ComponentActivity,
         > = createAndroidComposeRule<ComponentActivity>()
 
     /**
@@ -224,7 +224,8 @@ class TopicScreenTest {
      *
      * Then we find all the nodes that have a scroll to node action, take the first one, and scroll
      * to the node that has text matching the title of the first item in our [userNewsResourcesTestData]
-     * global property.
+     * global property ([SemanticsNodeInteraction.performScrollToNode] will throw an [AssertionError]
+     * if it does not find the node).
      */
     @Test
     fun news_whenSuccessAndTopicIsSuccess_isShown() {

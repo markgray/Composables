@@ -77,10 +77,9 @@ class TopicViewModel @AssistedInject constructor(
      * when called with its `topicId` argument our [String] property [topicId], its
      * `userDataRepository` argument our [UserDataRepository] property [userDataRepository], and its
      * `topicsRepository` argument our [TopicsRepository] property [topicsRepository] to convert it
-     * to a [StateFlow] of [TopicUiState] whose `scope` argument is our [ViewModel] property
-     * [viewModelScope], whose `started` argument is [SharingStarted.WhileSubscribed] for a
-     * `stopTimeoutMillis` of 5,000 milliseconds, and whose `initialValue` argument is
-     * [TopicUiState.Loading].
+     * to a [StateFlow] of [TopicUiState] whose [CoroutineScope] `scope` argument is [viewModelScope],
+     * whose `started` argument is [SharingStarted.WhileSubscribed] for a `stopTimeoutMillis` of
+     * 5,000 milliseconds, and whose `initialValue` argument is [TopicUiState.Loading].
      */
     val topicUiState: StateFlow<TopicUiState> = topicUiState(
         topicId = topicId,
@@ -102,10 +101,9 @@ class TopicViewModel @AssistedInject constructor(
      * property [topicId], its `userDataRepository` argument our [UserDataRepository] property
      * [userDataRepository], and its `userNewsResourceRepository` argument our
      * [UserNewsResourceRepository] property [userNewsResourceRepository] to convert it to a
-     * [StateFlow] of [NewsUiState] whose `scope` argument is our [ViewModel] property
-     * [viewModelScope], whose `started` argument is [SharingStarted.WhileSubscribed] for a
-     * `stopTimeoutMillis` of 5,000 milliseconds, and whose `initialValue` argument is
-     * [NewsUiState.Loading].
+     * [StateFlow] of [NewsUiState] whose [CoroutineScope] `scope` argument is our [viewModelScope],
+     * whose `started` argument is [SharingStarted.WhileSubscribed] for a `stopTimeoutMillis` of
+     * 5,000 milliseconds, and whose `initialValue` argument is [NewsUiState.Loading].
      */
     val newsUiState: StateFlow<NewsUiState> = newsUiState(
         topicId = topicId,
