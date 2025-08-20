@@ -124,10 +124,10 @@ class TopicViewModelTest {
      * 1. Launching a coroutine that collects the [TopicViewModel.topicUiState] `StateFlow`.
      * 2. Having our [TestTopicsRepository.sendTopics] method emit the [Topic] objects that are
      * contained in our [testInputTopics] list.
-     * 3. Having our [TestUserDataRepository.setFollowedTopicIds] method emit a [Set] of the [Topic.id]
-     * of the second entry in our [testInputTopics] list (this makes the first entry in our
-     * [testInputTopics] list to be considered unfollowed, and the second entry to be considered
-     * followed).
+     * 3. Having our [TestUserDataRepository.setFollowedTopicIds] method emit a [Set] of the
+     * [Topic.id] of the second entry in our [testInputTopics] list (this makes the first entry
+     * in our [testInputTopics] list to be considered unfollowed, and the second entry to be
+     * considered followed).
      * 4. It then retrieves the current value of the [TopicViewModel.topicUiState] `StateFlow` into
      * its `val item` variable and asserts that this is a [TopicUiState.Success].
      * 5. It then retrieves the [Topic] with the same [Topic.id] as the first entry in our
@@ -159,8 +159,8 @@ class TopicViewModelTest {
      * fetched or processed.
      *
      * The test is performed by:
-     * 1. Accessing the current value of `viewModel.newsUiState`.
-     * 2. Asserting that this value is equal to `NewsUiState.Loading`.
+     *  1. Accessing the current value of `viewModel.newsUiState`.
+     *  2. Asserting that this value is equal to `NewsUiState.Loading`.
      *
      * This test uses `runTest` to execute in an [EmptyCoroutineContext] coroutine context suitable
      * for testing suspend functions and Flows.
@@ -216,10 +216,10 @@ class TopicViewModelTest {
      *  1. Launching a coroutine that collects the [TopicViewModel.topicUiState] `StateFlow`.
      *  2. Having our [TestTopicsRepository.sendTopics] method emit the [Topic] objects that are
      *  contained in our [testInputTopics] list.
-     *  3. Having our [TestUserDataRepository.setFollowedTopicIds] method emit a [Set] of the [Topic.id]
-     *  of the second entry in our [testInputTopics] list (this makes the first entry in our
-     *  [testInputTopics] list to be considered unfollowed, and the second entry to be considered
-     *  followed).
+     *  3. Having our [TestUserDataRepository.setFollowedTopicIds] method emit a [Set] of the
+     *  [Topic.id] of the second entry in our [testInputTopics] list (this makes the first entry
+     *  in our [testInputTopics] list to be considered unfollowed, and the second entry to be
+     *  considered followed).
      *  4. It then retrieves the current value of the [TopicViewModel.topicUiState] `StateFlow` into
      *  its `val topicUiState` variable and the current value of the [TopicViewModel.newsUiState]
      *  `StateFlow` into its `val newsUiState` variable.
@@ -291,8 +291,8 @@ class TopicViewModelTest {
      * [TopicViewModel.topicUiState] is updated to reflect that change.
      *
      * It does this by:
-     *  1. Launching a coroutine that collects the [TopicViewModel.topicUiState] `StateFlow`. This is
-     *  necessary because `topicUiState` is a `stateIn` Flow, which only starts emitting when
+     *  1. Launching a coroutine that collects the [TopicViewModel.topicUiState] `StateFlow`. This
+     *  is necessary because `topicUiState` is a `stateIn` Flow, which only starts emitting when
      *  there's a collector.
      *  2. Having our [TestTopicsRepository.sendTopics] method emit the [Topic] objects that are
      *  contained in our [testInputTopics] list.

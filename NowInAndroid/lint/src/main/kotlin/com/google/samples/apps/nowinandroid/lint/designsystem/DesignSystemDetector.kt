@@ -83,7 +83,7 @@ class DesignSystemDetector : Detector(), Detector.UastScanner {
                     context = context,
                     node = node,
                     name = name,
-                    preferredName = preferredName
+                    preferredName = preferredName,
                 )
             }
 
@@ -107,7 +107,7 @@ class DesignSystemDetector : Detector(), Detector.UastScanner {
                     context = context,
                     node = node,
                     name = name,
-                    preferredName = preferredName
+                    preferredName = preferredName,
                 )
             }
         }

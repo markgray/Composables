@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("TestFunctionName")
+
 package com.google.samples.apps.nowinandroid.lint.designsystem
 
 import com.android.tools.lint.checks.infrastructure.TestFile
@@ -24,6 +26,9 @@ import com.google.samples.apps.nowinandroid.lint.designsystem.DesignSystemDetect
 import com.google.samples.apps.nowinandroid.lint.designsystem.DesignSystemDetector.Companion.RECEIVER_NAMES
 import org.junit.Test
 
+/**
+ * Test for the DesignSystemDetector -- Very broken due to [kotlin] running lint on its argument?
+ */
 class DesignSystemDetectorTest {
 
     @Test
