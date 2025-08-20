@@ -32,8 +32,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
  * Configures the Kotlin Android settings for the project.
  *
  * This function applies common Kotlin Android configurations, including:
- *  - Setting the `compileSdk` to 35.
- *  - Setting the `minSdk` in `defaultConfig` to 21.
+ *  - Setting the `compileSdk` to 36.
+ *  - Setting the `minSdk` in `defaultConfig` to 23.
  *  - Configuring `compileOptions` to use Java 11 source and target compatibility, and enabling core
  *  library desugaring.
  *  - Applying specific Kotlin configurations using [configureKotlin].
@@ -47,10 +47,10 @@ internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
 ) {
     commonExtension.apply {
-        compileSdk = 35
+        compileSdk = 36
 
         defaultConfig {
-            minSdk = 21
+            minSdk = 23
         }
 
         compileOptions {

@@ -27,6 +27,7 @@ import androidx.navigation.toRoute
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
 import com.google.samples.apps.nowinandroid.feature.topic.TopicScreen
 import com.google.samples.apps.nowinandroid.feature.topic.TopicViewModel
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 
 /**
@@ -35,6 +36,7 @@ import kotlinx.serialization.Serializable
  *
  * @param id The ID of the topic to display.
  */
+@OptIn(InternalSerializationApi::class)
 @Serializable
 data class TopicRoute(val id: String)
 

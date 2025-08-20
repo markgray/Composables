@@ -18,6 +18,7 @@ package com.google.samples.apps.nowinandroid.feature.interests.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 
 /**
@@ -28,6 +29,7 @@ import kotlinx.serialization.Serializable
  * @param initialTopicId The ID of the topic to be initially selected when navigating to this
  * destination. If `null`, no specific topic will be selected initially.
  */
+@OptIn(InternalSerializationApi::class)
 @Serializable
 data class InterestsRoute(
     // The ID of the topic which will be initially selected at this destination
