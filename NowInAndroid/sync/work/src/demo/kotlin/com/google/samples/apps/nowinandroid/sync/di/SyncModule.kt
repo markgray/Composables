@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.nowinandroid.sync.di
 
 import com.google.samples.apps.nowinandroid.core.data.util.SyncManager
@@ -25,14 +27,25 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+/**
+ * Dagger module that provides implementations for sync scheduling and sync status.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class SyncModule {
+    /**
+     * Binds [WorkManagerSyncManager] to [SyncManager] as the [SyncManager] implementation.
+     */
     @Binds
     internal abstract fun bindsSyncStatusMonitor(
         syncStatusMonitor: WorkManagerSyncManager,
     ): SyncManager
 
+    /**
+     * Binds [StubSyncSubscriber] to [SyncSubscriber] as the [SyncSubscriber] implementation.
+     * This binding is used for the no-op version of the app, where sync functionality is
+     * not available.
+     */
     @Binds
     internal abstract fun bindsSyncSubscriber(
         syncSubscriber: StubSyncSubscriber,

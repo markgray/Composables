@@ -19,14 +19,23 @@ package com.google.samples.apps.nowinandroid.sync.workers
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsEvent
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 
+/**
+ * Logs the start of a sync operation.
+ */
 internal fun AnalyticsHelper.logSyncStarted() =
     logEvent(
-        AnalyticsEvent(type = "network_sync_started"),
+        event = AnalyticsEvent(type = "network_sync_started"),
     )
 
+/**
+ * Logs a sync finished event.
+ *
+ * @param syncedSuccessfully Whether the sync was successful or not.
+ */
 internal fun AnalyticsHelper.logSyncFinished(syncedSuccessfully: Boolean) {
-    val eventType = if (syncedSuccessfully) "network_sync_successful" else "network_sync_failed"
+    val eventType: String =
+        if (syncedSuccessfully) "network_sync_successful" else "network_sync_failed"
     logEvent(
-        AnalyticsEvent(type = eventType),
+        event = AnalyticsEvent(type = eventType),
     )
 }

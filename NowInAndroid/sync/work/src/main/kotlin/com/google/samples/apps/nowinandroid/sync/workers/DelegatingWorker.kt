@@ -21,6 +21,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ForegroundInfo
+import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -37,6 +38,9 @@ interface HiltWorkerFactoryEntryPoint {
     fun hiltWorkerFactory(): HiltWorkerFactory
 }
 
+/**
+ * The name of the worker class used to delegate work to.
+ */
 private const val WORKER_CLASS_NAME = "RouterWorkerDelegateClassName"
 
 /**
@@ -45,7 +49,7 @@ private const val WORKER_CLASS_NAME = "RouterWorkerDelegateClassName"
  */
 internal fun KClass<out CoroutineWorker>.delegatedData() =
     Data.Builder()
-        .putString(WORKER_CLASS_NAME, qualifiedName)
+        .putString(key = WORKER_CLASS_NAME, value = qualifiedName)
         .build()
 
 /**
@@ -56,25 +60,55 @@ internal fun KClass<out CoroutineWorker>.delegatedData() =
  *
  * In other words, it allows for custom workers in a library module without having to own
  * configuration of the WorkManager singleton.
+ *
+ * @property appContext The application [Context].
+ * @property workerParams Parameters to contruct the [CoroutineWorker].
  */
 class DelegatingWorker(
     appContext: Context,
     workerParams: WorkerParameters,
-) : CoroutineWorker(appContext, workerParams) {
+) : CoroutineWorker(appContext = appContext, params = workerParams) {
 
-    private val workerClassName =
-        workerParams.inputData.getString(WORKER_CLASS_NAME) ?: ""
+    /**
+     * The fully qualified class name of the CoroutineWorker to delegate to.
+     */
+    private val workerClassName: String =
+        workerParams.inputData.getString(key = WORKER_CLASS_NAME) ?: ""
 
-    private val delegateWorker =
-        EntryPointAccessors.fromApplication<HiltWorkerFactoryEntryPoint>(appContext)
+    /**
+     * The [CoroutineWorker] that this [DelegatingWorker] is delegating to.
+     * It uses a [HiltWorkerFactory] to construct it.
+     */
+    private val delegateWorker: CoroutineWorker =
+        EntryPointAccessors.fromApplication<HiltWorkerFactoryEntryPoint>(context = appContext)
             .hiltWorkerFactory()
             .createWorker(appContext, workerClassName, workerParams)
             as? CoroutineWorker
             ?: throw IllegalArgumentException("Unable to find appropriate worker")
 
+    /**
+     * The [ForegroundInfo] instance that will be used to run the [CoroutineWorker] in the
+     * foreground.
+     *
+     * This method is only called if the WorkRequest is marked as expedited.
+     *
+     * By default, this method throws an [IllegalStateException]. You must override this
+     * method if you intend to run your Worker in the foreground.
+     *
+     * @return The [ForegroundInfo] instance that will be used to run the [CoroutineWorker] in the
+     * foreground.
+     */
     override suspend fun getForegroundInfo(): ForegroundInfo =
         delegateWorker.getForegroundInfo()
 
+    /**
+     * Does the work required for this [CoroutineWorker].
+     *
+     * The work is delegated to the [delegateWorker].
+     *
+     * @return The [Result] of the computation; note that dependent work will not execute if
+     * this method returns [Result.failure]
+     */
     override suspend fun doWork(): Result =
         delegateWorker.doWork()
 }

@@ -19,12 +19,19 @@ package com.google.samples.apps.nowinandroid.sync.status
 import android.util.Log
 import javax.inject.Inject
 
+/**
+ * Tag used for logging in [StubSyncSubscriber]
+ */
 private const val TAG = "StubSyncSubscriber"
 
 /**
  * Stub implementation of [SyncSubscriber]
  */
 class StubSyncSubscriber @Inject constructor() : SyncSubscriber {
+    /**
+     * Subscribes to the sync status.
+     * In this stub implementation, it logs a message indicating the subscription.
+     */
     override suspend fun subscribe() {
         Log.d(TAG, "Subscribing to sync")
     }

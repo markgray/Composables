@@ -32,24 +32,46 @@ import javax.inject.Inject
 
 /**
  * [SyncManager] backed by [WorkInfo] from [WorkManager]
+ *
+ * @property context The application context, injected by Hilt.
  */
 internal class WorkManagerSyncManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) : SyncManager {
+    /**
+     * A [Flow] that emits `true` if the sync work is currently running, and `false` otherwise.
+     *
+     * This flow is obtained by observing the [WorkInfo] for the unique work name [SYNC_WORK_NAME]
+     * from [WorkManager]. The flow is conflated, meaning that it only emits the latest value.
+     */
     override val isSyncing: Flow<Boolean> =
-        WorkManager.getInstance(context).getWorkInfosForUniqueWorkFlow(SYNC_WORK_NAME)
-            .map(List<WorkInfo>::anyRunning)
+        WorkManager.getInstance(context)
+            .getWorkInfosForUniqueWorkFlow(uniqueWorkName = SYNC_WORK_NAME)
+            .map(transform = List<WorkInfo>::anyRunning)
             .conflate()
 
+    /**
+     * Requests a new sync operation.
+     *
+     * This function enqueues a new sync worker to perform the synchronization.
+     * It uses [ExistingWorkPolicy.KEEP] to ensure that if a sync operation is already pending or running,
+     * a new one will not be started.
+     */
     override fun requestSync() {
-        val workManager = WorkManager.getInstance(context)
+        val workManager = WorkManager.getInstance(context = context)
         // Run sync on app startup and ensure only one sync worker runs at any time
         workManager.enqueueUniqueWork(
-            SYNC_WORK_NAME,
-            ExistingWorkPolicy.KEEP,
-            SyncWorker.startUpSyncWork(),
+            uniqueWorkName = SYNC_WORK_NAME,
+            existingWorkPolicy = ExistingWorkPolicy.KEEP,
+            request = SyncWorker.startUpSyncWork(),
         )
     }
 }
 
-private fun List<WorkInfo>.anyRunning() = any { it.state == State.RUNNING }
+/**
+ * Summarizes the [List] of [WorkInfo] into a single boolean indicating whether any of the
+ * jobs are running.
+ */
+private fun List<WorkInfo>.anyRunning() = any { workInfo: WorkInfo ->
+    workInfo.state == State.RUNNING
+}

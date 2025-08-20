@@ -27,35 +27,62 @@ import androidx.work.ForegroundInfo
 import androidx.work.NetworkType
 import com.google.samples.apps.nowinandroid.sync.R
 
-const val SYNC_TOPIC = "sync"
+/**
+ * The name of the Fcm topic to subscribe to for sync.
+ */
+@Suppress("unused") // It is used by FirebaseSyncSubscriber
+const val SYNC_TOPIC: String = "sync"
+
+/**
+ * Notification ID for the sync foreground service
+ */
 private const val SYNC_NOTIFICATION_ID = 0
+
+/**
+ * Notification Channel ID for the sync foreground service
+ */
 private const val SYNC_NOTIFICATION_CHANNEL_ID = "SyncNotificationChannel"
 
-// All sync work needs an internet connectionS
-val SyncConstraints
+/**
+ * Constraints for sync tasks:
+ * - Requires a network connection.
+ */
+val SyncConstraints: Constraints
     get() = Constraints.Builder()
-        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .setRequiredNetworkType(networkType = NetworkType.CONNECTED)
         .build()
 
 /**
  * Foreground information for sync on lower API levels when sync workers are being
  * run with a foreground service
  */
-fun Context.syncForegroundInfo() = ForegroundInfo(
+fun Context.syncForegroundInfo(): ForegroundInfo = ForegroundInfo(
     SYNC_NOTIFICATION_ID,
     syncWorkNotification(),
 )
 
 /**
  * Notification displayed on lower API levels when sync workers are being
- * run with a foreground service
+ * run with a foreground service.
+ *
+ * If the [Build.VERSION.SDK_INT] is greater than or equal to [Build.VERSION_CODES.O], we construct
+ * a [NotificationChannel] with `id` [SYNC_NOTIFICATION_CHANNEL_ID], `name` "Sync"  `importance`
+ * [NotificationManager.IMPORTANCE_DEFAULT] and `description` "Background tasks for Now in Android"
+ * and use the [NotificationManager] to create the notification channel. In any case we construct
+ * a [NotificationCompat.Builder] whose `context` is `this` and whose `channelId` is
+ * [SYNC_NOTIFICATION_CHANNEL_ID], use is [NotificationCompat.Builder.setSmallIcon] method to set
+ * its small icon to `R.drawable.core_notifications_ic_nia_notification`, use its
+ * [NotificationCompat.Builder.setContentTitle] method to set its title to "Now in Android", use
+ * the [NotificationCompat.Builder.setPriority] method to set its priority to
+ * [NotificationCompat.PRIORITY_DEFAULT] then use its [NotificationCompat.Builder.build] to build it
+ * and return the [Notification] it builds.
  */
 private fun Context.syncWorkNotification(): Notification {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val channel = NotificationChannel(
-            SYNC_NOTIFICATION_CHANNEL_ID,
-            getString(R.string.sync_work_notification_channel_name),
-            NotificationManager.IMPORTANCE_DEFAULT,
+            /* id = */ SYNC_NOTIFICATION_CHANNEL_ID,
+            /* name = */ getString(R.string.sync_work_notification_channel_name),
+            /* importance = */ NotificationManager.IMPORTANCE_DEFAULT,
         ).apply {
             description = getString(R.string.sync_work_notification_channel_description)
         }
