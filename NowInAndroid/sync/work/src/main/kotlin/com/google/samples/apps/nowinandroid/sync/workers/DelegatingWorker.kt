@@ -21,7 +21,6 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ForegroundInfo
-import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -35,6 +34,9 @@ import kotlin.reflect.KClass
 @EntryPoint
 @InstallIn(SingletonComponent::class)
 interface HiltWorkerFactoryEntryPoint {
+    /**
+     * Returns the [HiltWorkerFactory]
+     */
     fun hiltWorkerFactory(): HiltWorkerFactory
 }
 

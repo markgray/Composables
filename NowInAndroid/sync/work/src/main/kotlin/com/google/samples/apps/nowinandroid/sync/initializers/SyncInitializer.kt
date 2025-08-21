@@ -25,7 +25,6 @@ import com.google.samples.apps.nowinandroid.sync.workers.SyncWorker
  * Helper class to [initialize] the sync work.
  */
 object Sync {
-
     /**
      * Initializes the background synchronization work for the application, the process that keeps
      * the app's data current.

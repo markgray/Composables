@@ -66,11 +66,11 @@ fun Context.syncForegroundInfo(): ForegroundInfo = ForegroundInfo(
  * run with a foreground service.
  *
  * If the [Build.VERSION.SDK_INT] is greater than or equal to [Build.VERSION_CODES.O], we construct
- * a [NotificationChannel] with `id` [SYNC_NOTIFICATION_CHANNEL_ID], `name` "Sync"  `importance`
+ * a [NotificationChannel] with `id` [SYNC_NOTIFICATION_CHANNEL_ID], `name` "Sync",  `importance`
  * [NotificationManager.IMPORTANCE_DEFAULT] and `description` "Background tasks for Now in Android"
  * and use the [NotificationManager] to create the notification channel. In any case we construct
  * a [NotificationCompat.Builder] whose `context` is `this` and whose `channelId` is
- * [SYNC_NOTIFICATION_CHANNEL_ID], use is [NotificationCompat.Builder.setSmallIcon] method to set
+ * [SYNC_NOTIFICATION_CHANNEL_ID], use its [NotificationCompat.Builder.setSmallIcon] method to set
  * its small icon to `R.drawable.core_notifications_ic_nia_notification`, use its
  * [NotificationCompat.Builder.setContentTitle] method to set its title to "Now in Android", use
  * the [NotificationCompat.Builder.setPriority] method to set its priority to

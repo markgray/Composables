@@ -74,11 +74,10 @@ internal class SyncWorker @AssistedInject constructor(
     private val analyticsHelper: AnalyticsHelper,
     private val syncSubscriber: SyncSubscriber,
 ) : CoroutineWorker(appContext = appContext, params = workerParams), Synchronizer {
-
     /**
      * The [ForegroundInfo] that is needed when the worker is running in the foreground. This
-     * information is required when a [ListenableWorker] runs in
-     * the context of a foreground service.
+     * information is required when a [ListenableWorker] runs in the context of a foreground
+     * service.
      *
      * @return the [ForegroundInfo] that will be used to run in the foreground.
      */
@@ -94,8 +93,8 @@ internal class SyncWorker @AssistedInject constructor(
      *
      *  - call the [AnalyticsHelper.logSyncStarted] method of our [AnalyticsHelper] property
      *  [analyticsHelper] to log the start of the sync operation.
-     *  - call the [SyncSubscriber.subscribe] method of our [SyncSubscriber] property [syncSubscriber]
-     *  to subscribe to changes in the sync work state.
+     *  - call the [SyncSubscriber.subscribe] method of our [SyncSubscriber] property
+     *  [syncSubscriber] to subscribe to changes in the sync work state.
      *  - initialize our [Boolean] variable `syncedSuccessfully` to the result of launching and
      *  waiting for [async] calls to [TopicsRepository.sync] and [NewsRepository.sync] in parallel
      *  to return `true` if both calls return `true`.
@@ -139,11 +138,11 @@ internal class SyncWorker @AssistedInject constructor(
         niaPreferences.getChangeListVersions()
 
     /**
-     * Updates the [ChangeListVersions] in the [NiaPreferencesDataSource] by running the [update]
-     * lambda parameter on it.
+     * Updates the [ChangeListVersions] in the [NiaPreferencesDataSource] by using our [update]
+     * lambda parameter as its [ChangeListVersions] `update` lambda argument.
      *
-     * @param update a lambda which will be run on the current [ChangeListVersions] to produce the
-     * new [ChangeListVersions].
+     * @param update a lambda which will be run using the current [ChangeListVersions] as its
+     * receiver to produce the new [ChangeListVersions].
      */
     override suspend fun updateChangeListVersions(
         update: ChangeListVersions.() -> ChangeListVersions,

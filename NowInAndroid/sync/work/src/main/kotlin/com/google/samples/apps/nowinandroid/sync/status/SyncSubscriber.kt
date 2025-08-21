@@ -17,7 +17,7 @@
 package com.google.samples.apps.nowinandroid.sync.status
 
 /**
- * Subscribes to backend requested synchronization
+ * Subscribes to backend synchronization
  */
 interface SyncSubscriber {
     /**

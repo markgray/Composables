@@ -35,6 +35,9 @@ import dagger.hilt.components.SingletonComponent
 abstract class SyncModule {
     /**
      * Binds [WorkManagerSyncManager] to [SyncManager] as the [SyncManager] implementation.
+     *
+     * @param syncStatusMonitor the [WorkManagerSyncManager] to return as the [SyncManager].
+     * @return the [SyncManager] to use.
      */
     @Binds
     internal abstract fun bindsSyncStatusMonitor(
@@ -45,6 +48,9 @@ abstract class SyncModule {
      * Binds [StubSyncSubscriber] to [SyncSubscriber] as the [SyncSubscriber] implementation.
      * This binding is used for the no-op version of the app, where sync functionality is
      * not available.
+     *
+     * @param syncSubscriber the [StubSyncSubscriber] to return as the [SyncSubscriber].
+     * @return the [SyncSubscriber] to use.
      */
     @Binds
     internal abstract fun bindsSyncSubscriber(

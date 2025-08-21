@@ -20,7 +20,7 @@ import android.util.Log
 import javax.inject.Inject
 
 /**
- * Tag used for logging in [StubSyncSubscriber]
+ * Tag used for logging in the [SyncSubscriber.subscribe] override of [StubSyncSubscriber].
  */
 private const val TAG = "StubSyncSubscriber"
 
