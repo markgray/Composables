@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package androidx.compose.samples.crane.home
 
 import androidx.compose.animation.animateColor
