@@ -54,7 +54,7 @@ fun GameWonScreen(
  * [Alignment.CenterHorizontally] (the children are centered horizontally). The `content` of the
  * [Column] is an [Spacer] of 100dp, followed by an  [Image], followed by a [Spacer] of 100dp, and
  * a [Button] labeled "Next Match" whose `onClick` parameter uses our [navController] parameter to
- * navigate to the [Routes.Game.route] (the [GameScreen]) to allow the user to play another game.
+ * navigate to the `Routes.Game.route` (the [GameScreen]) to allow the user to play another game.
  *
  * @param modifier a [Modifier] instance that our caller could use to modify our Composables (but
  * they don't do so, so the default [Modifier] is used instead).

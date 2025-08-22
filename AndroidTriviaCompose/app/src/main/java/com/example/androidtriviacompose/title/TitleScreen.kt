@@ -51,7 +51,7 @@ fun TitleScreen(
  * parameter (horizontal alignment of the layout's children) is [Alignment.CenterHorizontally] (the
  * children are centered horizontally). The `content` of the [Column] is an [Spacer] of 100dp,
  * followed by an  [Image], followed by a [Spacer] of 100dp, and a [Button] labeled "Play" whose
- * `onClick` parameter uses our [navController] parameter to navigate to the [Routes.Game.route]
+ * `onClick` parameter uses our [navController] parameter to navigate to the `Routes.Game.route`
  * (the [GameScreen]) to allow the user to play a game.
  *
  * @param modifier a [Modifier] instance that our caller could use to modify our Composables (but

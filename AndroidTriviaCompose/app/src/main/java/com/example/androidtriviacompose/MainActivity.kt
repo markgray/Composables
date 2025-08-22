@@ -125,7 +125,7 @@ sealed class Routes(val route: String) {
  * @param navController the [NavHostController] that will be used by our [NavHost].
  * @param startDestination the route for the start destination that will be used by our [NavHost].
  */
-@Suppress("UNUSED_PARAMETER") // Suggested change would make function less reusable
+@Suppress("UNUSED_PARAMETER", "RedundantSuppression") // Suggested change would make function less reusable
 @Composable
 fun NavGraph(
     modifier: Modifier = Modifier,
