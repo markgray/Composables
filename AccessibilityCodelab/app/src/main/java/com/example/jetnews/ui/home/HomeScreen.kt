@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.jetnews.ui.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
