@@ -77,13 +77,13 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.core:core-ktx:1.17.0")
     //noinspection GradleDependency TODO: Newer version breaks compilation!
     implementation("androidx.paging:paging-common-ktx:3.1.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.3.2")
-    implementation("androidx.compose.ui:ui:1.8.3")
-    implementation("androidx.compose.material:material:1.8.3")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.8.3")
+    implementation("androidx.compose.ui:ui:1.9.0")
+    implementation("androidx.compose.material:material:1.9.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.9.0")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     //noinspection GradleDependency TODO: Newer version breaks compilation!
     implementation("androidx.paging:paging-compose:1.0.0-alpha17")
@@ -97,6 +97,6 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.9.0")
 }
