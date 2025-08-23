@@ -274,13 +274,13 @@ fun ToDestinationUserInput(onToDestinationChanged: (String) -> Unit) {
  * `vectorImageId` argument is the drawable with resource ID `R.drawable.ic_calendar` (a stylized
  * picture of a hanging calendar). It `onClick` argument is our [onDateSelectionClicked] lambda
  * parameter lambda parameter which traces back up the hierarchy to a lambda that calls the
- * [NavHostController.navigate] method to navigate to the `route` [Routes.Calendar.route] when
+ * [NavHostController.navigate] method to navigate to the `route` `Routes.Calendar.route` when
  * it is clicked to allow the user to select a new date range for [datesSelected].
  *
  * @param datesSelected the [String] representing the date range the user has selected.
  * @param onDateSelectionClicked a lambda to be called when our [CraneUserInput] is clicked. It
  * traces back up the hierarchy to a lambda that calls the [NavHostController.navigate] method to
- * navigate to the `route` [Routes.Calendar.route] when called.
+ * navigate to the `route` `Routes.Calendar.route` when called.
  */
 @Composable
 fun DatesUserInput(datesSelected: String, onDateSelectionClicked: () -> Unit) {

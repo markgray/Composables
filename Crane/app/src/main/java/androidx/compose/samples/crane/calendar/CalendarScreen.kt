@@ -63,7 +63,7 @@ import androidx.navigation.compose.NavHost
 import java.time.LocalDate
 
 /**
- * This is the composable that is used for the [Routes.Calendar.route] route of the [NavHost] that
+ * This is the composable that is used for the `Routes.Calendar.route` route of the [NavHost] that
  * is created in the `onCreate` override of [MainActivity]. It holds a [CalendarContent] which holds
  * a [Calendar] which renders all of the weeks of all of the months in our 24 month calendar in a
  * [LazyColumn]. We start by initializing and remembering our [CalendarState] variable
@@ -81,7 +81,7 @@ import java.time.LocalDate
  * caller (the [NavHost] in the `onCreate` override of [MainActivity]) passes us a lambda that calls
  * the [NavHostController.popBackStack] method of the `navController` of the [NavHost]).
  * @param mainViewModel the [MainViewModel] that is injected by the [hiltViewModel] method for the
- * [MainActivity] that is found in the [NavBackStackEntry] for the route [Routes.Home.route].
+ * [MainActivity] that is found in the [NavBackStackEntry] for the route `Routes.Home.route`.
  */
 @Composable
 fun CalendarScreen(

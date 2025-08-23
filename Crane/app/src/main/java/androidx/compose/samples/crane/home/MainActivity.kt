@@ -93,9 +93,9 @@ class MainActivity : ComponentActivity() {
      * [WindowWidthSizeClass] variable `val widthSizeClass` to the the [WindowWidthSizeClass] of our
      * window's [WindowSizeClass]. We initialize and remember our [NavHostController] variable
      * `val navController` to a new instance. Then we compose a [NavHost] whose `navController`
-     * argument is `navController`, and whose `startDestination` argument is [Routes.Home.route].
+     * argument is `navController`, and whose `startDestination` argument is `Routes.Home.route`.
      * The `builder` lambda argument consists of:
-     *  - A [NavGraphBuilder.composable] whose `route` argument is [Routes.Home.route], and in whose
+     *  - A [NavGraphBuilder.composable] whose `route` argument is `Routes.Home.route`, and in whose
      *  `content` lambda argument we initialize our [MainViewModel] variable `val mainViewModel` by
      *  the [hiltViewModel] method (Returns an existing HiltViewModel annotated [MainViewModel] or
      *  creates a new one scoped to the current navigation graph present on the [NavHostController]
@@ -104,11 +104,11 @@ class MainActivity : ComponentActivity() {
      *  lambda that calls the [launchDetailsActivity] with the `context` of this [MainActivity] and
      *  the [ExploreModel] that the lambda is called with, the `onDateSelectionClicked` lambda argument
      *  is a lambda that calls the [NavHostController.navigate] method of our [NavHostController]
-     *  variable `navController` to navigate to the `route` [Routes.Calendar.route], and its
+     *  variable `navController` to navigate to the `route` `Routes.Calendar.route`, and its
      *  `mainViewModel` argument is our [MainViewModel] variable `mainViewModel`.
-     *  - A [NavGraphBuilder.composable] whose `route` argument is [Routes.Calendar.route], and in
+     *  - A [NavGraphBuilder.composable] whose `route` argument is `Routes.Calendar.route`, and in
      *  whose `content` lambda argument we initialize and remember our [NavBackStackEntry] variable
-     *  `val parentEntry` to the topmost [NavBackStackEntry] for the route [Routes.Home.route],
+     *  `val parentEntry` to the topmost [NavBackStackEntry] for the route `Routes.Home.route`,
      *  then we initialize our [MainViewModel] variable `val parentViewModel` to the [MainViewModel]
      *  returned for the [NavBackStackEntry] variable `parentEntry` by the [hiltViewModel] method.
      *  Finally we compose a [CalendarScreen] whose `onBackPressed` lambda argument is a lambda
@@ -178,7 +178,7 @@ sealed class Routes(val route: String) {
 }
 
 /**
- * This is the screen that is displayed for the route [Routes.Home.route] that is defined in the
+ * This is the screen that is displayed for the route `Routes.Home.route` that is defined in the
  * `onCreate` override. Our root Composable is a [Surface] whose `modifier` argument is a
  * [Modifier.windowInsetsPadding] that adds padding for the navigation bar to the bottom of the
  * screen so that the content doesn't enter that space, and the `color` argument is the
@@ -228,7 +228,7 @@ sealed class Routes(val route: String) {
  * corresponds to the [ExploreModel] it is called with.
  * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
  * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
- * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * [NavController.navigate] method to navigate to the route `Routes.Calendar.route` which displays
  * the [CalendarScreen] Composable.
  * @param mainViewModel the [MainViewModel] for the app. It is injected using [hiltViewModel] in
  * the `onCreate` override.
@@ -319,7 +319,7 @@ fun MainScreen(
  * [ExploreModel] that [onExploreItemClicked] is called with.
  * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
  * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
- * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * [NavController.navigate] method to navigate to the route `Routes.Calendar.route` which displays
  * the [CalendarScreen] Composable.
  * @param viewModel the app's singleton [MainViewModel]. It is injected by [hiltViewModel] up in the
  * `onCreate` override.

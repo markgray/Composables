@@ -144,7 +144,7 @@ enum class CraneScreen {
  * to display a [GoogleMap] that corresponds to the [ExploreModel] it is called with.
  * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
  * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
- * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * [NavController.navigate] method to navigate to the route `Routes.Calendar.route` which displays
  * the [CalendarScreen] Composable.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [MainContent] passes the [Modifier] that is passed it by its parent
@@ -195,7 +195,7 @@ fun CraneHome(
  * [MainViewModel.updatePeople] method with the [Int] passed it. We initialize our [Array] of
  * [CraneScreen] to the [CraneScreen.entries] of [CraneScreen] ([CraneScreen.Fly], [CraneScreen.Sleep],
  * and [CraneScreen.Eat]). We initialize and remember our [PagerState] variable `val pagerState` to
- * a new instance whose `initialPage` is [CraneScreen.Fly.ordinal] setting its [PagerState.pageCount]
+ * a new instance whose `initialPage` is `CraneScreen.Fly.ordinal` setting its [PagerState.pageCount]
  * to the [Array.size] of array of [CraneScreen] variable `craneScreenValues`. We initialize and
  * remember our [CoroutineScope] variable `val coroutineScope` to a new instance.
  *
@@ -257,7 +257,7 @@ fun CraneHome(
  * to display a [GoogleMap] that corresponds to the [ExploreModel] it is called with.
  * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
  * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
- * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * [NavController.navigate] method to navigate to the route `Routes.Calendar.route` which displays
  * the [CalendarScreen] Composable.
  * @param openDrawer a lambda that we should call when the user indicates that they want to open the
  * [CraneDrawer] drawer of the [Scaffold] we are in. [CraneHome] calls us with a lambda which uses
@@ -471,7 +471,7 @@ private const val TAB_SWITCH_ANIM_DURATION = 300
  * [MainViewModel.updatePeople] method with the [Int] passed it.
  * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
  * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
- * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * [NavController.navigate] method to navigate to the route `Routes.Calendar.route` which displays
  * the [CalendarScreen] Composable.
  * @param onExploreItemClicked a lambda that we should call with the [ExploreModel] of the item that
  * the user has clicked. It traces up the hierarchy to a lambda created in the `onCreate` override
@@ -555,7 +555,7 @@ private fun SearchContent(
  * search for a new destination containing the [String] they are entering.
  * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
  * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
- * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * [NavController.navigate] method to navigate to the route `Routes.Calendar.route` which displays
  * the [CalendarScreen] Composable.
  * @param onExploreItemClicked a lambda that we should call with the [ExploreModel] of the item that
  * the user has clicked. It traces up the hierarchy to a lambda created in the `onCreate` override
@@ -577,7 +577,7 @@ data class FlySearchContentUpdates(
  * method with the [Int] passed it.
  * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
  * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
- * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * [NavController.navigate] method to navigate to the route `Routes.Calendar.route` which displays
  * the [CalendarScreen] Composable.
  * @param onExploreItemClicked a lambda that we should call with the [ExploreModel] of the item that
  * the user has clicked. It traces up the hierarchy to a lambda created in the `onCreate` override
@@ -598,7 +598,7 @@ data class SleepSearchContentUpdates(
  * method with the [Int] passed it.
  * @param onDateSelectionClicked a lambda that should be called when the user indicates that they
  * wish to select dates. It traces back to the `onCreate` override to be a lambda that calls the
- * [NavController.navigate] method to navigate to the route [Routes.Calendar.route] which displays
+ * [NavController.navigate] method to navigate to the route `Routes.Calendar.route` which displays
  * the [CalendarScreen] Composable.
  * @param onExploreItemClicked a lambda that we should call with the [ExploreModel] of the item that
  * the user has clicked. It traces up the hierarchy to a lambda created in the `onCreate` override
