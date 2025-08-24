@@ -89,7 +89,7 @@ class TopAppBarTest {
 
     /**
      * This test tests whether a node exists which contains text which matches the uppercase of
-     * [RallyScreen.Accounts.name]. It does this by by first initializing its [List] of [RallyScreen]
+     * `RallyScreen.Accounts.name`. It does this by by first initializing its [List] of [RallyScreen]
      * variable `val allScreens` to all of the [RallyScreen.values] (needed to call [RallyTopAppBar]).
      * It then calls the method [ComposeContentTestRule.setContent] method of our [composeTestRule]
      * field to have it set the [RallyTopAppBar] composable as a content of the current screen (Use
@@ -100,7 +100,7 @@ class TopAppBarTest {
      * of our field [composeTestRule], with its `matcher` argument the result of "and-ing" the
      * two [SemanticsMatcher]'s: [hasText] with a `text` argument of the uppercase version of the
      * [RallyScreen.name] of [RallyScreen.Accounts] (value to match), and a [hasParent] which matches
-     * the [hasContentDescription] of [RallyScreen.Accounts.name]. The `useUnmergedTree` argument of
+     * the [hasContentDescription] of `RallyScreen.Accounts.name`. The `useUnmergedTree` argument of
      * `onNode` is `true` to enable it to find within merged composables like `Button`. To the
      * `onNode` we chain an `assertExists` to assert that the component was found and is part of
      * the component tree.
