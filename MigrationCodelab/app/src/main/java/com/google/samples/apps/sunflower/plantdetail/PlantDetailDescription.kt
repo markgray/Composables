@@ -54,6 +54,7 @@ import com.google.accompanist.themeadapter.material.MdcTheme
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
+import androidx.compose.ui.platform.LocalResources
 
 /**
  * This Composable exists in order to "hoist" the [State] wrapped [PlantDetailViewModel.plant] field
@@ -178,7 +179,7 @@ private fun PlantWatering(wateringInterval: Int) {
             modifier = centerWithPaddingModifier.padding(top = normalPadding)
         )
 
-        val wateringIntervalText: String = LocalContext.current.resources.getQuantityString(
+        val wateringIntervalText: String = LocalResources.current.getQuantityString(
             R.plurals.watering_needs_suffix, wateringInterval, wateringInterval
         )
         Text(
