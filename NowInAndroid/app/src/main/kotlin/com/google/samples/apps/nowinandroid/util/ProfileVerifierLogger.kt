@@ -50,7 +50,7 @@ import javax.inject.Inject
  * @see androidx.profileinstaller.ProfileVerifier.CompilationStatus.ResultCode
  */
 class ProfileVerifierLogger @Inject constructor(
-    @ApplicationScope private val scope: CoroutineScope,
+    @param:ApplicationScope private val scope: CoroutineScope,
 ) {
     companion object {
         private const val TAG = "ProfileInstaller"
