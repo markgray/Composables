@@ -102,6 +102,7 @@ import com.example.baselineprofiles_codelab.ui.theme.JetsnackColors
 import com.example.baselineprofiles_codelab.ui.theme.JetsnackTheme
 import com.example.baselineprofiles_codelab.ui.utils.formatPrice
 import kotlinx.coroutines.flow.StateFlow
+import androidx.compose.ui.platform.LocalResources
 
 /**
  * Stateful composable that Displays the contents of our cart, by calling its Stateless override.
@@ -298,7 +299,7 @@ private fun CartContent(
     /**
      * The [Resources] used to provide string resources to the app.
      */
-    val resources: Resources = LocalContext.current.resources
+    val resources: Resources = LocalResources.current
 
     /**
      * The formatted [String] of the number of items in our cart.

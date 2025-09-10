@@ -43,6 +43,7 @@ import com.example.baselineprofiles_codelab.ui.home.HomeSections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.LocalResources
 
 /**
  * Destinations used in the [JetsnackMain].
@@ -257,5 +258,5 @@ private tailrec fun findStartDestination(graph: NavDestination): NavDestination 
 @ReadOnlyComposable
 private fun resources(): Resources {
     LocalConfiguration.current
-    return LocalContext.current.resources
+    return LocalResources.current
 }
