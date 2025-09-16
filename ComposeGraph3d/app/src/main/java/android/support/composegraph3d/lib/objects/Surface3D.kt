@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceJavaStaticMethodWithKotlinAnalog", "KotlinConstantConditions", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "KotlinConstantConditions",
+    "MemberVisibilityCanBePrivate"
+)
 
 package android.support.composegraph3d.lib.objects
 
@@ -24,12 +28,29 @@ import android.support.composegraph3d.lib.Object3D
  */
 class Surface3D(private val mFunction: Function) : Object3D() {
     private val mZoomZ = 1f
+
     /**
-     * TODO: Add kdoc
+     * The resolution of the surface grid. This determines the number of vertices used to represent
+     * the surface. The surface is rendered as a grid of `mSize` x `mSize` quads. A higher value
+     * results in a smoother, more detailed surface at the cost of performance. The total number of
+     * vertices in the surface will be (`mSize` + 1) * (`mSize` + 1).
      */
     var mSize: Int = 100
+
     /**
-     * TODO: Add kdoc
+     * Sets the axis-aligned bounding box for the surface plot. This defines the domain
+     * and range for the x, y, and z coordinates. After setting the range, the surface
+     * is recomputed.
+     *
+     * @param minX The minimum value on the X-axis.
+     * @param maxX The maximum value on the X-axis.
+     * @param minY The minimum value on the Y-axis.
+     * @param maxY The maximum value on the Y-axis.
+     * @param minZ The minimum value on the Z-axis. If `Float.NaN` is provided, the z-range
+     *             will be automatically calculated based on the function's output and scaled
+     *             to fit the x/y range.
+     * @param maxZ The maximum value on the Z-axis. If `Float.NaN` is provided, the z-range
+     *             will be automatically calculated.
      */
     fun setRange(minX: Float, maxX: Float, minY: Float, maxY: Float, minZ: Float, maxZ: Float) {
         mMinX = minX
@@ -38,39 +59,83 @@ class Surface3D(private val mFunction: Function) : Object3D() {
         mMaxY = maxY
         mMinZ = minZ
         mMaxZ = maxZ
-        computeSurface(java.lang.Float.isNaN(mMinZ))
+        computeSurface(resetZ = java.lang.Float.isNaN(mMinZ))
     }
 
     /**
-     * TODO: Add kdoc
+     * Sets the resolution of the surface grid.
+     *
+     * This determines the number of vertices used to represent the surface. The surface is rendered
+     * as a grid of `size` x `size` quads. A higher value results in a smoother, more detailed
+     * surface at the cost of increased computation. The total number of vertices will be
+     * (`size` + 1) * (`size` + 1). After setting the new size, the surface is recomputed.
+     *
+     * @param size The new grid size. For a `size` of N, the grid will be N x N quads.
+     * @see mSize
      */
     fun setArraySize(size: Int) {
         mSize = size
-        computeSurface(false)
+        computeSurface(resetZ = false)
     }
 
     /**
-     * TODO: Add kdoc
+     * Defines a mathematical function of two variables, z = f(x, y), used to generate
+     * the surface plot. Implement this interface to specify the shape of the 3D surface.
      */
     interface Function {
         /**
-         * TODO: Add kdoc
+         * Defines the mathematical function `z = f(x, y)` to be plotted.
+         * This function will be called for each point (x, y) on the grid
+         * to determine its corresponding z-coordinate.
+         *
+         * @param x The x-coordinate.
+         * @param y The y-coordinate.
+         * @return The z-coordinate corresponding to the given (x, y) point.
          */
         fun eval(x: Float, y: Float): Float
     }
 
     /**
-     * TODO: Add kdoc
+     * Recomputes the entire surface geometry.
+     *
+     * This function orchestrates the process of generating the 3D surface. It first allocates
+     * the necessary memory for vertices and indices based on the current grid size (`mSize`). It then
+     * calls `calcSurface` to populate these buffers with the actual coordinate data derived from the
+     * mathematical function. This method should be called whenever a property that affects the
+     * surface's geometry, such as the grid size or axis ranges, is changed.
+     *
+     * @param resetZ If true, the Z-axis range will be automatically recalculated based on the
+     *               output of the function. If false, the existing `mMinZ` and `mMaxZ` values
+     *               will be used.
+     * @see setArraySize
+     * @see setRange
+     * @see calcSurface
      */
     fun computeSurface(resetZ: Boolean) {
         val n = (mSize + 1) * (mSize + 1)
-        makeVert(n)
-        makeIndexes(mSize * mSize * 2)
-        calcSurface(resetZ)
+        makeVert(n = n)
+        makeIndexes(n = mSize * mSize * 2)
+        calcSurface(resetZ = resetZ)
     }
 
     /**
-     * TODO: Add kdoc
+     * Calculates the vertices, normals, and indices for the 3D surface mesh.
+     * TODO: Continue here.
+     * This function generates the geometry of the surface based on the provided [mFunction].
+     * It iterates over a grid defined by `mMinX`, `mMaxX`, `mMinY`, `mMaxY`, and `mSize`.
+     * For each point (x, y) on the grid, it computes the z-coordinate using `mFunction.eval(x, y)`.
+     *
+     * It also calculates the normal vector at each vertex using the central difference method
+     * to approximate the partial derivatives of the function. This is essential for correct lighting.
+     *
+     * If `resetZ` is true, the function will automatically determine the min/max z-values from
+     * the function's output and scale the z-coordinates to be proportional to the x/y range,
+     * preventing the surface from looking too "flat" or "spiky".
+     *
+     * Finally, it populates the `index` array to define the triangles that form the surface mesh.
+     *
+     * @param resetZ If true, the z-range is automatically calculated and scaled to fit the x/y range.
+     * If false, the existing `mMinZ` and `mMaxZ` values are used.
      */
     fun calcSurface(resetZ: Boolean) {
         val minX = mMinX
