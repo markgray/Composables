@@ -78,6 +78,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberUpdatedMarkerState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -357,12 +358,13 @@ fun CityMapView(
     }
 
     val cameraPositionState: CameraPositionState =
-        rememberCameraPositionState(key = cityLocation.toString()) {
+        rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(
                 /* target = */ cityLocation,
                 /* zoom = */ InitialZoom
             )
         }
+    val markerState = rememberUpdatedMarkerState(position = cityLocation)
 
     MapViewContainer(
         cameraPositionState = cameraPositionState,
@@ -371,7 +373,7 @@ fun CityMapView(
         },
         onZoomChanged = onZoomChanged
     ) {
-        Marker(state = MarkerState(position = cityLocation))
+        Marker(state = markerState)
     }
 }
 
@@ -414,7 +416,7 @@ fun MapViewContainer(
     cameraPositionState: CameraPositionState,
     onMapLoaded: () -> Unit = {},
     onZoomChanged: (() -> Unit)? = null,
-    content: (@Composable () -> Unit)? = null
+    content: (@Composable () -> Unit)
 ) {
     val mapProperties: MapProperties = remember {
         MapProperties(

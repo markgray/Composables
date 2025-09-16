@@ -61,7 +61,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavController
@@ -129,8 +129,11 @@ class MainActivity : ComponentActivity() {
 
                 val navController: NavHostController = rememberNavController()
                 NavHost(navController = navController, startDestination = Routes.Home.route) {
-                    composable(route = Routes.Home.route) {
-                        val mainViewModel: MainViewModel = hiltViewModel<MainViewModel>()
+                    composable(route = Routes.Home.route) { navBackStackEntry: NavBackStackEntry ->
+                        val mainViewModel: MainViewModel = hiltViewModel(
+                            viewModelStoreOwner = navBackStackEntry,
+                            key = null
+                        )
                         MainScreen(
                             widthSize = widthSizeClass,
                             onExploreItemClicked = {
@@ -142,12 +145,13 @@ class MainActivity : ComponentActivity() {
                             mainViewModel = mainViewModel
                         )
                     }
-                    composable(route = Routes.Calendar.route) {
-                        val parentEntry: NavBackStackEntry = remember(key1 = it) {
+                    composable(route = Routes.Calendar.route) { navBackStackEntry: NavBackStackEntry ->
+                        val parentEntry: NavBackStackEntry = remember(key1 = navBackStackEntry) {
                             navController.getBackStackEntry(route = Routes.Home.route)
                         }
                         val parentViewModel: MainViewModel = hiltViewModel<MainViewModel>(
-                            parentEntry
+                            viewModelStoreOwner = parentEntry,
+                            key = null
                         )
                         CalendarScreen(
                             onBackPressed = { navController.popBackStack() },
