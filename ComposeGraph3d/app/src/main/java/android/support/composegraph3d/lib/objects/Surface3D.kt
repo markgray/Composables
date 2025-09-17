@@ -27,6 +27,9 @@ import android.support.composegraph3d.lib.Object3D
  * Plots a surface based on Z = f(X,Y)
  */
 class Surface3D(private val mFunction: Function) : Object3D() {
+    /**
+     * Zoom factor in the Z axis (never changed).
+     */
     private val mZoomZ = 1f
 
     /**
@@ -99,10 +102,10 @@ class Surface3D(private val mFunction: Function) : Object3D() {
      * Recomputes the entire surface geometry.
      *
      * This function orchestrates the process of generating the 3D surface. It first allocates
-     * the necessary memory for vertices and indices based on the current grid size (`mSize`). It then
-     * calls `calcSurface` to populate these buffers with the actual coordinate data derived from the
-     * mathematical function. This method should be called whenever a property that affects the
-     * surface's geometry, such as the grid size or axis ranges, is changed.
+     * the necessary memory for vertices and indices based on the current grid size (`mSize`). It
+     * then calls `calcSurface` to populate these buffers with the actual coordinate data derived
+     * from the mathematical function. This method should be called whenever a property that affects
+     * the surface's geometry, such as the grid size or axis ranges, is changed.
      *
      * @param resetZ If true, the Z-axis range will be automatically recalculated based on the
      *               output of the function. If false, the existing `mMinZ` and `mMaxZ` values

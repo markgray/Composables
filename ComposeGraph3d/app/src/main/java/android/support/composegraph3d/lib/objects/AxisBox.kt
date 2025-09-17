@@ -34,7 +34,7 @@ import android.support.composegraph3d.lib.VectorUtil.dot
 import android.support.composegraph3d.lib.VectorUtil.triangleNormal
 
 /**
- * Draws box along the axis
+ * Draws a box displaying the axis that our 3D graph is drawn in.
  */
 class AxisBox : Object3D() {
     
@@ -102,9 +102,9 @@ class AxisBox : Object3D() {
     }
 
     /**
-     * Renders a wireframe representation of the axis box. This is an older rendering method and
-     * may be deprecated or used for specific legacy purposes. It iterates through the box's
-     * triangles and draws the first edge of each triangle.
+     * Renders a wireframe representation of the axis box. This is an older, simpler rendering
+     * method and is just kept for reference. It iterates through the box's triangles and draws
+     * the first edge of each triangle.
      *
      * This approach results in an incomplete wireframe, as it only draws one edge per triangle
      * (p1 to p2), missing the other two edges. It doesn't perform back-face culling, so all
