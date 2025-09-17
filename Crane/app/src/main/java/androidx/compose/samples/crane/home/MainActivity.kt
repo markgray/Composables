@@ -88,13 +88,15 @@ class MainActivity : ComponentActivity() {
      * display with the `statusBarStyle` argument a [SystemBarStyle.dark] whose `scrim` is
      * [Color.TRANSPARENT] (This lets the color of our app show through the system bar), then we
      * call our super's implementation of `onCreate`. We call [setContent] to compose its `content`
-     * lambda into the activity. We wrap it all in our [CraneTheme] custom [MaterialTheme] to have
-     * it supply values for the material widgets to use as their defaults. We initialize our
-     * [WindowWidthSizeClass] variable `val widthSizeClass` to the the [WindowWidthSizeClass] of our
-     * window's [WindowSizeClass]. We initialize and remember our [NavHostController] variable
-     * `val navController` to a new instance. Then we compose a [NavHost] whose `navController`
-     * argument is `navController`, and whose `startDestination` argument is `Routes.Home.route`.
-     * The `builder` lambda argument consists of:
+     * lambda into the activity. We wrap its `content` lambda in our [CraneTheme] custom
+     * [MaterialTheme] to have it supply values for the material widgets to use as their defaults.
+     * We initialize our [WindowWidthSizeClass] variable `val widthSizeClass` to the the
+     * [WindowWidthSizeClass] of our window's [WindowSizeClass]. We initialize and remember our
+     * [NavHostController] variable `val navController` to a new instance. Then we compose a
+     * [NavHost] whose `navController` argument is our `navController` variable, and whose
+     * `startDestination` argument is `Routes.Home.route`.
+     *
+     * The `builder` lambda argument of the [NavHost] consists of:
      *  - A [NavGraphBuilder.composable] whose `route` argument is `Routes.Home.route`, and in whose
      *  `content` lambda argument we initialize our [MainViewModel] variable `val mainViewModel` by
      *  the [hiltViewModel] method (Returns an existing HiltViewModel annotated [MainViewModel] or
@@ -102,10 +104,11 @@ class MainActivity : ComponentActivity() {
      *  back stack. Then we compose a [MainScreen] Composable with its `widthSize` our
      *  [WindowWidthSizeClass] variable `widthSize`, its `onExploreItemClicked` lambda argument a
      *  lambda that calls the [launchDetailsActivity] with the `context` of this [MainActivity] and
-     *  the [ExploreModel] that the lambda is called with, the `onDateSelectionClicked` lambda argument
-     *  is a lambda that calls the [NavHostController.navigate] method of our [NavHostController]
-     *  variable `navController` to navigate to the `route` `Routes.Calendar.route`, and its
-     *  `mainViewModel` argument is our [MainViewModel] variable `mainViewModel`.
+     *  the [ExploreModel] that the lambda is called with, the `onDateSelectionClicked` lambda
+     *  argument is a lambda that calls the [NavHostController.navigate] method of our
+     *  [NavHostController] variable `navController` to navigate to the `route`
+     *  `Routes.Calendar.route`, and its `mainViewModel` argument is our [MainViewModel] variable
+     *  `mainViewModel`.
      *  - A [NavGraphBuilder.composable] whose `route` argument is `Routes.Calendar.route`, and in
      *  whose `content` lambda argument we initialize and remember our [NavBackStackEntry] variable
      *  `val parentEntry` to the topmost [NavBackStackEntry] for the route `Routes.Home.route`,
