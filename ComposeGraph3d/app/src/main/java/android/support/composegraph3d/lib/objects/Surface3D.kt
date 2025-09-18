@@ -124,12 +124,13 @@ class Surface3D(private val mFunction: Function) : Object3D() {
     /**
      * Calculates the vertices, normals, and indices for the 3D surface mesh.
      *
-     * This function generates the geometry of the surface based on the provided [mFunction].
-     * It iterates over a grid defined by `mMinX`, `mMaxX`, `mMinY`, `mMaxY`, and `mSize`.
-     * For each point (x, y) on the grid, it computes the z-coordinate using `mFunction.eval(x, y)`.
+     * This function generates the geometry of the surface based on the [Function] property
+     * [mFunction]. It iterates over a grid defined by `mMinX`, `mMaxX`, `mMinY`, `mMaxY`, and
+     * `mSize`. For each point (x, y) on the grid, it computes the z-coordinate using
+     * `mFunction.eval(x, y)`.
      *
-     * It also calculates the normal vector at each vertex using the central difference method
-     * to approximate the partial derivatives of the function. This is essential for correct lighting.
+     * It also calculates the normal vector at each vertex using the central difference method to
+     * approximate the partial derivatives of the function. This is essential for correct lighting.
      *
      * If [resetZ] is true, the function will automatically determine the min/max z-values from
      * the function's output and scale the z-coordinates to be proportional to the x/y range,

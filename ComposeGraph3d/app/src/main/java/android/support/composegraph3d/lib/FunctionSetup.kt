@@ -373,7 +373,7 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
     fun tick(now: Long) {
         time += (now - nanoTime) * 1E-9f
         nanoTime = now
-        mSurface!!.calcSurface(false)
+        mSurface!!.calcSurface(resetZ = false)
         mScene3D.update()
     }
 
@@ -420,7 +420,7 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         mDownScreenWidth = mScene3D.screenWidth
         mLastTouchX0 = x
         mLastTouchY0 = y
-        mScene3D.trackBallDown(mLastTouchX0, mLastTouchY0)
+        mScene3D.trackBallDown(x = mLastTouchX0, y = mLastTouchY0)
         mLastTrackBallX = mLastTouchX0
         mLastTrackBallY = mLastTouchY0
     }
@@ -450,8 +450,8 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
         if (java.lang.Float.isNaN(mLastTouchX0)) {
             return
         }
-        val moveX = mLastTrackBallX - x
-        val moveY = mLastTrackBallY - y
+        val moveX: Float = mLastTrackBallX - x
+        val moveY: Float = mLastTrackBallY - y
         if (moveX * moveX + moveY * moveY < 4000f) {
             mScene3D.trackBallMove(x = x, y = y)
         }
@@ -526,11 +526,11 @@ class FunctionSetup(var mWidth: Int, var mHeight: Int) {
     /**
      * Renders a new frame of the 3D scene and returns the resulting image buffer.
      *
-     * This function orchestrates the process of generating a single frame of the graph.
-     * It first advances the animation state by calling `tick()` with the provided timestamp.
-     * Then, it ensures the scene's projection matrix is correctly configured for the current
-     * viewport dimensions. Finally, it triggers the `render()` process to draw the 3D scene
-     * into the `mImageBuff` and returns this buffer. The returned `IntArray` contains the
+     * This function orchestrates the process of generating a single frame of the graph. It first
+     * advances the animation state by calling `tick()` with the timestamp provided in its [Long]
+     * parameter [time]. Then, it ensures the scene's projection matrix is correctly configured for
+     * the current viewport dimensions. Finally, it triggers the `render()` process to draw the
+     * 3D scene into the `mImageBuff` and returns this buffer. The returned `IntArray` contains the
      * pixel data (colors) for the rendered image, which can then be displayed on a screen.
      *
      * @param time The current system time in nanoseconds, used to update animations.
