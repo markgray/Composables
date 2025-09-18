@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate",
+@file:Suppress(
+    "unused",
+    "UNUSED_PARAMETER",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "MemberVisibilityCanBePrivate",
     "RedundantSuppression"
 )
 
@@ -26,119 +31,241 @@ import android.support.composegraph3d.lib.Scene3D.Companion.trianglePhong
  */
 open class Object3D {
     /**
-     * TODO: Add kdoc
+     * A FloatArray that stores the vertices of the 3D object.
+     *
+     * Each vertex is represented by three consecutive float values for its x, y, and z coordinates.
+     * For example, the first vertex is at indices 0, 1, 2, the second at 3, 4, 5, and so on.
      */
     lateinit var vert: FloatArray
 
     /**
-     * TODO: Add kdoc
+     * A FloatArray that stores the normal vectors for each vertex of the 3D object.
+     *
+     * Normal vectors are used for lighting calculations to determine how a surface reflects light.
+     * Each normal vector is represented by three consecutive float values for its x, y, and z
+     * components, corresponding to a vertex in the `vert` array. For example, the normal for the
+     * first vertex is at indices 0, 1, 2, the second at 3, 4, 5, and so on.
      */
     lateinit var normal: FloatArray
 
     /**
-     * TODO: Add kdoc
+     * An IntArray that defines the faces of the 3D object as a list of triangles.
+     *
+     * Each triangle is represented by three consecutive integer values, which are indices
+     * into the `vert` and `normal` arrays. For example, the first triangle is formed by the
+     * vertices at `vert[index[0]]`, `vert[index[1]]`, and `vert[index[2]]`.
      */
     lateinit var index: IntArray
 
     /**
-     * TODO: Add kdoc
+     * A FloatArray that stores the transformed vertices of the 3D object.
+     *
+     * This array holds the vertex data from `vert` after a transformation matrix has been applied,
+     * typically moving the vertices from object space to world or screen space. This is used for
+     * rendering. Like [vert], each vertex is represented by three consecutive float values (x, y, z).
      */
-    lateinit var tVert  : FloatArray
+    lateinit var tVert: FloatArray
 
     /**
-     * TODO: Add kdoc
+     * The minimum x-coordinate of the object's bounding box. This is calculated from the
+     * vertices in the [vert] array and represents the extent of the object along the x-axis.
      */
     protected var mMinX: Float = 0f
 
     /**
-     * TODO: Add kdoc
+     * The maximum x-coordinate of the object's bounding box. This is calculated from the
+     * vertices in the [vert] array and represents the extent of the object along the x-axis.
      */
     protected var mMaxX: Float = 0f
 
     /**
-     * TODO: Add kdoc
+     * The minimum y-coordinate of the object's bounding box. This is calculated from the
+     * vertices in the [vert] array and represents the extent of the object along the y-axis.
      */
     protected var mMinY: Float = 0f
 
     /**
-     * TODO: Add kdoc
+     * The maximum y-coordinate of the object's bounding box. This is calculated from the
+     * vertices in the [vert] array and represents the extent of the object along the y-axis.
      */
     protected var mMaxY: Float = 0f
 
     /**
-     * TODO: Add kdoc
+     * The minimum z-coordinate of the object's bounding box. This is calculated from the
+     * vertices in the [vert] array and represents the extent of the object along the z-axis.
      */
-     var mMinZ: Float = 0f
+    var mMinZ: Float = 0f
 
     /**
-     * TODO: Add kdoc
+     * The maximum z-coordinate of the object's bounding box. This is calculated from the
+     * vertices in the [vert] array and represents the extent of the object along the z-axis.
      */
-     var mMaxZ: Float = 0f
+    var mMaxZ: Float = 0f
 
 // bounds in x,y & z
 
     /**
-     * TODO: Add kdoc
+     * An integer that specifies the rendering mode for the object. The [render] function
+     * uses this type to determine which rasterization method to call.
+     *
+     * Supported values and their corresponding rendering styles:
+     *  - 0: `rasterHeight` - Colors the object based on the height (z-coordinate) of its vertices.
+     *  - 1: `rasterOutline` - Renders the object as a filled shape with a wireframe outline.
+     *  - 2: `rasterColor` - Renders the object with colors based on lighting (defuse) and height (hue).
+     *  - 3: `rasterLines` - Renders the object as a wireframe with filled triangles colored by height.
+     *  - 4: `rasterPhong` - (Default) Renders the object with Phong shading for a smooth, realistic look.
+     *
+     * @see render
      */
     var type: Int = 4
 
     /**
-     * TODO: Add kdoc
+     * The ambient light component for the object's material.
+     *
+     * This value determines the base level of brightness for the object, representing light that
+     * is scattered in the scene and illuminates the object indirectly, independent of the main
+     * light source's direction. It is combined with the diffuse lighting component to calculate
+     * the final color of a surface.
+     *
+     * A value of 0.0 means no ambient light, while 1.0 represents full ambient light.
+     * The default is 0.3f.
+     *
+     * @see mDefuse
+     * @see rasterColor
+     * @see rasterPhong
      */
     var mAmbient: Float = 0.3f
 
     /**
-     * TODO: Add kdoc
+     * The diffuse light component for the object's material.
+     *
+     * This value represents how much the object reflects light from a direct light source. It is
+     * influenced by the angle between the surface normal and the light direction. A surface facing
+     * the light source directly will be brighter, while a surface at a steep angle will be darker.
+     * This property acts as a multiplier for the calculated diffuse reflection.
+     *
+     * A value of 0.0 means no diffuse reflection, while 1.0 represents full diffuse reflection.
+     * The default is 0.7f. It is combined with the ambient light component to determine the final
+     * surface brightness.
+     *
+     * @see mAmbient
+     * @see rasterColor
+     * @see rasterPhong
      */
     var mDefuse: Float = 0.7f
 
     /**
-     * TODO: Add kdoc
+     * The saturation component for the object's material color.
+     *
+     * This value controls the intensity of the color when rendering, particularly when using
+     * lighting models like Phong shading. It is used in conjunction with the hue (derived from
+     * vertex height) and brightness (calculated from [mAmbient] and [mDefuse] components) to
+     * determine the final color of a pixel.
+     *
+     * A value of 0.0 results in a grayscale (desaturated) appearance, while 1.0 represents full,
+     * vibrant color. The default is 0.6f.
+     *
+     * @see rasterPhong
+     * @see Scene3D.hsvToRgb
      */
     var mSaturation: Float = 0.6f
 
     /**
-     * TODO: Add kdoc
+     * Initializes the vertex, transformed vertex, and normal arrays for the 3D object.
+     *
+     * This function allocates memory for the arrays that store vertex positions, transformed vertex
+     * positions, and vertex normals. Each vertex and its corresponding normal requires three float
+     * values (x, y, z), so the total size of each array will be `n * 3`.
+     *
+     * @param n The number of vertices to allocate space for.
      */
     fun makeVert(n: Int) {
-        vert = FloatArray(n * 3)
-        tVert = FloatArray(n * 3)
-        normal = FloatArray(n * 3)
+        vert = FloatArray(size = n * 3)
+        tVert = FloatArray(size = n * 3)
+        normal = FloatArray(size = n * 3)
     }
 
     /**
-     * TODO: Add kdoc
+     * Initializes the index array for the 3D object.
+     *
+     * This function allocates memory for the [index] array, which defines the object's faces
+     * (triangles). Each triangle requires three integer indices to reference vertices in the
+     * [vert] array, so the total size of the array will be `n * 3`.
+     *
+     * @param n The number of triangles to allocate space for.
      */
     fun makeIndexes(n: Int) {
-        index = IntArray(n * 3)
+        index = IntArray(size = n * 3)
     }
 
     /**
-     * TODO: Add kdoc
+     * Transforms the object's vertices using the provided matrix.
+     *
+     * This function iterates through each vertex in the [vert] array, applies the transformation
+     * defined by the [Matrix] parameter [m], and stores the result in the [tVert] array. This is
+     * typically used to move the object from its local coordinate system (object space) to the
+     * scene's coordinate system (world space) or the screen's coordinate system (screen space)
+     * for rendering.
+     *
+     * @param m The transformation matrix to apply to each vertex. This matrix should not be null.
      */
     fun transform(m: Matrix?) {
         var i = 0
         while (i < vert.size) {
-            m!!.mult3(vert, i, tVert, i)
+            m!!.mult3(src = vert, off1 = i, dest = tVert, off2 = i)
             i += 3
         }
     }
 
     /**
-     * TODO: Add kdoc
+     * Renders the 3D object to a 2D image buffer based on the specified rendering `type`.
+     *
+     * This function acts as a dispatcher, calling the appropriate rasterization method
+     * (e.g., `rasterPhong`, `rasterHeight`) to draw the object's triangles. The chosen
+     * method determines the visual style, such as flat shading, wireframe, or smooth
+     * Phong shading.
+     *
+     * @param s The [Scene3D] object containing scene information like lighting and camera settings.
+     * @param zbuff The z-buffer used for depth testing to ensure correct occlusion of objects.
+     * @param img The integer array representing the image buffer where the object will be rendered.
+     * @param width The width of the image buffer.
+     * @param height The height of the image buffer.
+     * @see type
      */
     open fun render(s: Scene3D, zbuff: FloatArray, img: IntArray, width: Int, height: Int) {
         when (type) {
-            0 -> rasterHeight(s, zbuff, img, width, height)
-            1 -> rasterOutline(s, zbuff, img, width, height)
-            2 -> rasterColor(s, zbuff, img, width, height)
-            3 -> rasterLines(s, zbuff, img, width, height)
-            4 -> rasterPhong(this,s, zbuff, img, width, height)
+            0 -> rasterHeight(s = s, zbuff = zbuff, img = img, w = width, h = height)
+            1 -> rasterOutline(s = s, zBuff = zbuff, img = img, w = width, h = height)
+            2 -> rasterColor(s = s, zbuff = zbuff, img = img, w = width, h = height)
+            3 -> rasterLines(s = s, zbuff = zbuff, img = img, w = width, h = height)
+            4 -> rasterPhong(
+                mSurface = this,
+                s = s,
+                zbuff = zbuff,
+                img = img,
+                w = width,
+                h = height
+            )
         }
     }
 
     /**
-     * TODO: Add kdoc
+     * Renders the object's triangles filled with a color based on their height, and then draws
+     * a wireframe outline over them.
+     *
+     * This method iterates through each triangle of the object. For each triangle, it first
+     * calculates an average height from its vertices. This height is used to determine a fill
+     * color (a mix of blue and green, where higher vertices are greener).
+     *
+     * After filling the triangle, it draws the edges of the triangle using the scene's line color.
+     * The lines are drawn slightly in front of the filled triangle (by subtracting 0.01f from the
+     * z-coordinate) to ensure they are visible and not obscured by the fill.
+     *
+     * @param s The [Scene3D] object containing scene information, such as the line color.
+     * @param zbuff The z-buffer used for depth testing.
+     * @param img The integer array representing the image buffer to draw into.
+     * @param w The width of the image buffer.
+     * @param h The height of the image buffer.
      */
     private fun rasterLines(s: Scene3D, zbuff: FloatArray, img: IntArray, w: Int, h: Int) {
         var i = 0
@@ -149,27 +276,55 @@ open class Object3D {
             val height = (vert[p1 + 2] + vert[p3 + 2] + vert[p2 + 2]) / 3
             val `val` = (255 * Math.abs(height)).toInt()
             Scene3D.triangle(
-                zbuff, img, 0x10001 * `val` + 0x100 * (255 - `val`), w, h, tVert[p1], tVert[p1 + 1],
-                tVert[p1 + 2], tVert[p2], tVert[p2 + 1],
-                tVert[p2 + 2], tVert[p3], tVert[p3 + 1],
-                tVert[p3 + 2]
+                zbuff = zbuff,
+                img = img,
+                color = 0x10001 * `val` + 0x100 * (255 - `val`),
+                w = w,
+                h = h,
+                fx3 = tVert[p1],
+                fy3 = tVert[p1 + 1],
+                fz3 = tVert[p1 + 2],
+                fx2 = tVert[p2],
+                fy2 = tVert[p2 + 1],
+                fz2 = tVert[p2 + 2],
+                fx1 = tVert[p3],
+                fy1 = tVert[p3 + 1],
+                fz1 = tVert[p3 + 2]
             )
             Scene3D.drawline(
-                zbuff, img, s.lineColor, w, h,
-                tVert[p1], tVert[p1 + 1], tVert[p1 + 2] - 0.01f,
-                tVert[p2], tVert[p2 + 1], tVert[p2 + 2] - 0.01f
+                zbuff = zbuff, img = img, color = s.lineColor, w = w, h = h,
+                fx1 = tVert[p1], fy1 = tVert[p1 + 1], fz1 = tVert[p1 + 2] - 0.01f,
+                fx2 = tVert[p2], fy2 = tVert[p2 + 1], fz2 = tVert[p2 + 2] - 0.01f
             )
             Scene3D.drawline(
-                zbuff, img, s.lineColor, w, h,
-                tVert[p1], tVert[p1 + 1], tVert[p1 + 2] - 0.01f,
-                tVert[p3], tVert[p3 + 1], tVert[p3 + 2] - 0.01f
+                zbuff = zbuff, img = img, color = s.lineColor, w = w, h = h,
+                fx1 = tVert[p1], fy1 = tVert[p1 + 1], fz1 = tVert[p1 + 2] - 0.01f,
+                fx2 = tVert[p3], fy2 = tVert[p3 + 1], fz2 = tVert[p3 + 2] - 0.01f
             )
             i += 3
         }
     }
 
     /**
-     * TODO: Add kdoc
+     * Renders the object by coloring its triangles based on their height (z-coordinate).
+     *
+     * This method iterates through each triangle of the object. For each triangle, it calculates
+     * the average height of its three vertices. This height is then normalized to a 0-1 range using
+     * the object's minimum and maximum Z bounds (`mMinZ`, `mMaxZ`).
+     *
+     * The normalized height is used to determine a color from a hue-saturation-value (HSV) model:
+     * - **Hue** is set to the normalized height, creating a color gradient along the z-axis.
+     * - **Saturation** is calculated to be highest at the top and bottom and lowest in the middle.
+     * - **Value (Brightness)** is based on the square root of the height, making lower areas darker.
+     *
+     * The resulting color is then used to fill the triangle.
+     *
+     * @param s The [Scene3D] object, which is unused in this specific rendering mode but required
+     * by the interface.
+     * @param zbuff The z-buffer used for depth testing to ensure correct occlusion.
+     * @param img The integer array representing the image buffer to draw into.
+     * @param w The width of the image buffer.
+     * @param h The height of the image buffer.
      */
     fun rasterHeight(s: Scene3D?, zbuff: FloatArray, img: IntArray, w: Int, h: Int) {
         var i = 0
@@ -180,23 +335,56 @@ open class Object3D {
             var height = (vert[p1 + 2] + vert[p3 + 2] + vert[p2 + 2]) / 3
             height = (height - mMinZ) / (mMaxZ - mMinZ)
             val col: Int = Scene3D.hsvToRgb(
-                height,
-                Math.abs(2 * (height - 0.5f)),
-                Math.sqrt(height.toDouble()).toFloat()
+                hue = height,
+                saturation = Math.abs(2 * (height - 0.5f)),
+                value = Math.sqrt(height.toDouble()).toFloat()
             )
             Scene3D.triangle(
-                zbuff, img, col, w, h, tVert[p1], tVert[p1 + 1],
-                tVert[p1 + 2], tVert[p2], tVert[p2 + 1],
-                tVert[p2 + 2], tVert[p3], tVert[p3 + 1],
-                tVert[p3 + 2]
+                zbuff = zbuff,
+                img = img,
+                color = col,
+                w = w,
+                h = h,
+                fx3 = tVert[p1],
+                fy3 = tVert[p1 + 1],
+                fz3 = tVert[p1 + 2],
+                fx2 = tVert[p2],
+                fy2 = tVert[p2 + 1],
+                fz2 = tVert[p2 + 2],
+                fx1 = tVert[p3],
+                fy1 = tVert[p3 + 1],
+                fz1 = tVert[p3 + 2]
             )
             i += 3
         }
     }
 
     // float mSpec = 0.2f;
+
     /**
-     * TODO: Add kdoc
+     * Renders the object using flat shading, where each triangle is colored based on a combination
+     * of its orientation to the light source and its height.
+     *
+     * This method iterates through each triangle of the object and calculates a single color for
+     * the entire triangle. The color is determined using the HSV (Hue, Saturation, Value) model:
+     *
+     * - **Hue**: The hue is derived from the triangle's average height (z-coordinate), normalized
+     *   between the object's min and max Z bounds. This creates a color gradient that changes with
+     *   elevation.
+     * - **Saturation**: A fixed saturation value (`0.8f`) is used, providing a consistently vibrant
+     *   color.
+     * - **Value (Brightness)**: The brightness is calculated based on the angle between the triangle's
+     *   normal vector and the direction of the light source. This simulates diffuse lighting, where
+     *   faces pointing towards the light appear brighter. The final brightness is a blend of this
+     *   diffuse component and the object's ambient light property (`mAmbient`).
+     *
+     * The resulting color is then used to fill the triangle on the screen.
+     *
+     * @param s The [Scene3D] object, providing access to lighting information and temporary vectors.
+     * @param zbuff The z-buffer for depth testing, ensuring correct pixel occlusion.
+     * @param img The integer array representing the image buffer to render into.
+     * @param w The width of the image buffer.
+     * @param h The height of the image buffer.
      */
     open fun rasterColor(s: Scene3D, zbuff: FloatArray, img: IntArray, w: Int, h: Int) {
         var i = 0
@@ -204,39 +392,78 @@ open class Object3D {
             val p1 = index[i]
             val p2 = index[i + 1]
             val p3 = index[i + 2]
-            VectorUtil.triangleNormal(tVert, p1, p2, p3, s.tmpVec)
-            val defuse = VectorUtil.dot(s.tmpVec, s.mTransformedLight)
+            VectorUtil.triangleNormal(vert = tVert, p1 = p1, p2 = p2, p3 = p3, norm = s.tmpVec)
+            val defuse = VectorUtil.dot(a = s.tmpVec, b = s.mTransformedLight)
             var height = (vert[p1 + 2] + vert[p3 + 2] + vert[p2 + 2]) / 3
             height = (height - mMinZ) / (mMaxZ - mMinZ)
             val bright = Math.min(1f, Math.max(0f, mDefuse * defuse + mAmbient))
             val hue = (height - Math.floor(height.toDouble())).toFloat()
             val sat = 0.8f
-            val col: Int = Scene3D.hsvToRgb(hue, sat, bright)
+            val col: Int = Scene3D.hsvToRgb(hue = hue, saturation = sat, value = bright)
             Scene3D.triangle(
-                zbuff, img, col, w, h, tVert[p1], tVert[p1 + 1],
-                tVert[p1 + 2], tVert[p2], tVert[p2 + 1],
-                tVert[p2 + 2], tVert[p3], tVert[p3 + 1],
-                tVert[p3 + 2]
+                zbuff = zbuff,
+                img = img,
+                color = col,
+                w = w,
+                h = h,
+                fx3 = tVert[p1],
+                fy3 = tVert[p1 + 1],
+                fz3 = tVert[p1 + 2],
+                fx2 = tVert[p2],
+                fy2 = tVert[p2 + 1],
+                fz2 = tVert[p2 + 2],
+                fx1 = tVert[p3],
+                fy1 = tVert[p3 + 1],
+                fz1 = tVert[p3 + 2]
             )
             i += 3
         }
     }
 
     /**
-     * TODO: Add kdoc
+     * Converts HSV (Hue, Saturation, Value) color components to an RGB integer color.
+     *
+     * This is a convenience function that preprocesses the hue and brightness values
+     * before converting them to RGB.
+     * - The `hue` is normalized to the range [0, 1) to ensure it wraps around correctly.
+     * - The `bright` (value) is clamped to the range [0, 1].
+     *
+     * It then calls [Scene3D.hsvToRgb] to perform the final conversion.
+     *
+     * @param hue The hue component of the color, typically in the range [0, 1].
+     * @param sat The saturation component of the color, in the range [0, 1].
+     * @param bright The brightness (value) component of the color, in the range [0, 1].
+     * @return The integer representation of the RGB color, suitable for use in image buffers.
+     * @see hue
+     * @see bright
+     * @see Scene3D.hsvToRgb
      */
     private fun color(hue: Float, sat: Float, bright: Float): Int {
         var hueLocal = hue
         var brightLocal = bright
-        hueLocal = hue(hueLocal)
-        brightLocal = bright(brightLocal)
-        return Scene3D.hsvToRgb(hueLocal, sat, brightLocal)
+        hueLocal = hue(hue = hueLocal)
+        brightLocal = bright(bright = brightLocal)
+        return Scene3D.hsvToRgb(hue = hueLocal, saturation = sat, value = brightLocal)
     }
 
+    /**
+     * Normalizes a hue value to the range [0.0, 1.0).
+     *
+     * This function takes a hue value and wraps it to ensure it falls within the standard
+     * 0-to-1 range. For example, a hue of 1.3 becomes 0.3, and -0.2 becomes 0.8. This is
+     * useful for creating continuous or repeating color gradients where the hue value might
+     * exceed the standard bounds.
+     *
+     * @param hue The input hue value, which can be any floating-point number.
+     * @return The hue value wrapped to the range [0.0, 1.0).
+     */
     private fun hue(hue: Float): Float {
         return (hue - Math.floor(hue.toDouble())).toFloat()
     }
 
+    /**
+     * TODO: CONTINUE HERE.
+     */
     private fun bright(bright: Float): Float {
         return Math.min(1f, Math.max(0f, bright))
     }
@@ -270,9 +497,9 @@ open class Object3D {
             val col1Hue = hue((vert[p1 + 2] - mMinZ) / (mMaxZ - mMinZ))
             val col2Hue = hue((vert[p2 + 2] - mMinZ) / (mMaxZ - mMinZ))
             val col3Hue = hue((vert[p3 + 2] - mMinZ) / (mMaxZ - mMinZ))
-            val col1Bright =  bright(mDefuse * defuse1 + mAmbient)
-            val col2Bright =  bright(mDefuse * defuse2 + mAmbient)
-            val col3Bright =  bright(mDefuse * defuse3 + mAmbient)
+            val col1Bright = bright(mDefuse * defuse1 + mAmbient)
+            val col2Bright = bright(mDefuse * defuse2 + mAmbient)
+            val col3Bright = bright(mDefuse * defuse3 + mAmbient)
             trianglePhong(
                 zbuff, img,
                 col1Hue, col1Bright,
@@ -291,7 +518,14 @@ open class Object3D {
     /**
      * TODO: Add kdoc
      */
-    fun rasterPhong(mSurface: Object3D, s: Scene3D, zbuff: FloatArray?, img: IntArray?, w: Int, h: Int) {
+    fun rasterPhong(
+        mSurface: Object3D,
+        s: Scene3D,
+        zbuff: FloatArray?,
+        img: IntArray?,
+        w: Int,
+        h: Int
+    ) {
         var i = 0
         while (i < mSurface.index.size) {
             val p1: Int = mSurface.index[i]
@@ -366,10 +600,10 @@ open class Object3D {
     fun center(): DoubleArray {
         return doubleArrayOf(
             (
-                    (mMinX + mMaxX) / 2).toDouble(),
+                (mMinX + mMaxX) / 2).toDouble(),
             ((mMinY + mMaxY) / 2).toDouble(),
             ((mMinZ + mMaxZ) / 2
-                    ).toDouble()
+                ).toDouble()
         )
     }
 
