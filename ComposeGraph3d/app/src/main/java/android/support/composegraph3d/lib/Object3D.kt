@@ -462,19 +462,71 @@ open class Object3D {
     }
 
     /**
-     * TODO: CONTINUE HERE.
+     * Clamps a brightness value to the range [0.0, 1.0].
+     *
+     * This function ensures that the input brightness value falls within the valid
+     * 0-to-1 range. Values less than 0 are set to 0, and values greater than 1 are set to 1.
+     * This is typically used to ensure that brightness values used in color calculations
+     * do not exceed the displayable range.
+     *
+     * @param bright The input brightness value.
+     * @return The brightness value clamped to the range [0.0, 1.0].
      */
     private fun bright(bright: Float): Float {
         return Math.min(1f, Math.max(0f, bright))
     }
 
+    /**
+     * Calculates the diffuse reflection component for a given normal vector and light direction.
+     *
+     * The diffuse reflection is determined by the dot product of the surface normal vector and
+     * the light vector. This value represents how much light the surface reflects based on its
+     * orientation to the light source. The absolute value is taken to ensure the result is
+     * non-negative, as diffuse light cannot be negative.
+     *
+     * @param normals A [FloatArray] containing the normal vectors.
+     * @param off The starting offset in the [normals] array for the specific normal vector to use.
+     * This normal vector is assumed to be 3 floats (x, y, z) starting at this offset.
+     * @param light A [FloatArray] representing the light direction vector (x, y, z). Can be null,
+     * in which case the behavior of [VectorUtil.dot] will determine the outcome.
+     * @return The absolute value of the dot product of the specified normal and light vector,
+     * representing the diffuse reflection intensity. This value is typically between 0 and 1.
+     */
     private fun defuse(normals: FloatArray, off: Int, light: FloatArray?): Float {
         // s.mMatrix.mult3v(normal,off,s.tmpVec);
         return Math.abs(VectorUtil.dot(normal, off, light))
     }
 
     /**
-     * TODO: Add kdoc
+     * Renders the object using Phong shading, calculating color per vertex and interpolating
+     * across each triangle for smooth lighting effects.
+     *
+     * This method iterates through each triangle defined in the [index] array. For each vertex
+     * of the triangle, it calculates the following:
+     *  - **Diffuse Lighting**: The dot product between the vertex normal and the transformed light
+     *  direction ([Scene3D.mTransformedLight]) determines how much light the vertex surface
+     *  receives directly.
+     *  - **Hue**: The hue component of the vertex color is determined by its original z-coordinate
+     *  ([vert]), normalized using the object's minimum and maximum Z bounds ([mMinZ], [mMaxZ]).
+     *  This creates a color gradient based on height.
+     *  - **Brightness (Value)**: The brightness is calculated by combining the diffuse lighting
+     *  (scaled by [mDefuse]) and the object's ambient light component ([mAmbient]).
+     *
+     * These per-vertex hue and brightness values, along with the object's overall [mSaturation],
+     * are then passed to the [Scene3D.trianglePhong] function. This function rasterizes the
+     * triangle, interpolating the HSV color components across its surface to produce a smooth,
+     * shaded appearance.
+     *
+     * @param s The [Scene3D] object containing scene information, particularly the transformed
+     * light direction.
+     * @param zbuff The z-buffer used for depth testing to ensure correct occlusion.
+     * @param img The integer array representing the image buffer to draw into.
+     * @param w The width of the image buffer.
+     * @param h The height of the image buffer.
+     * @see Scene3D.trianglePhong
+     * @see hue
+     * @see bright
+     * @see defuse
      */
     fun rasterPhong1(s: Scene3D, zbuff: FloatArray, img: IntArray, w: Int, h: Int) {
         var i = 0
@@ -491,32 +543,59 @@ open class Object3D {
 //            float defuse1 = VectorUtil.dot(normal, p1, s.mTransformedLight);
 //            float defuse2 = VectorUtil.dot(normal, p2, s.mTransformedLight);
 //            float defuse3 = VectorUtil.dot(normal, p3, s.mTransformedLight);
-            val defuse1 = defuse(normal, p1, s.mTransformedLight)
-            val defuse2 = defuse(normal, p2, s.mTransformedLight)
-            val defuse3 = defuse(normal, p3, s.mTransformedLight)
-            val col1Hue = hue((vert[p1 + 2] - mMinZ) / (mMaxZ - mMinZ))
-            val col2Hue = hue((vert[p2 + 2] - mMinZ) / (mMaxZ - mMinZ))
-            val col3Hue = hue((vert[p3 + 2] - mMinZ) / (mMaxZ - mMinZ))
-            val col1Bright = bright(mDefuse * defuse1 + mAmbient)
-            val col2Bright = bright(mDefuse * defuse2 + mAmbient)
-            val col3Bright = bright(mDefuse * defuse3 + mAmbient)
+            val defuse1 = defuse(normals = normal, off = p1, light = s.mTransformedLight)
+            val defuse2 = defuse(normals = normal, off = p2, light = s.mTransformedLight)
+            val defuse3 = defuse(normals = normal, off = p3, light = s.mTransformedLight)
+            val col1Hue = hue(hue = (vert[p1 + 2] - mMinZ) / (mMaxZ - mMinZ))
+            val col2Hue = hue(hue = (vert[p2 + 2] - mMinZ) / (mMaxZ - mMinZ))
+            val col3Hue = hue(hue = (vert[p3 + 2] - mMinZ) / (mMaxZ - mMinZ))
+            val col1Bright = bright(bright = mDefuse * defuse1 + mAmbient)
+            val col2Bright = bright(bright = mDefuse * defuse2 + mAmbient)
+            val col3Bright = bright(bright = mDefuse * defuse3 + mAmbient)
             trianglePhong(
-                zbuff, img,
-                col1Hue, col1Bright,
-                col2Hue, col2Bright,
-                col3Hue, col3Bright,
-                mSaturation,
-                w, h,
-                tVert[p1], tVert[p1 + 1], tVert[p1 + 2],
-                tVert[p2], tVert[p2 + 1], tVert[p2 + 2],
-                tVert[p3], tVert[p3 + 1], tVert[p3 + 2]
+                zbuff = zbuff, img = img,
+                h3 = col1Hue, b3 = col1Bright,
+                h2 = col2Hue, b2 = col2Bright,
+                h1 = col3Hue, b1 = col3Bright,
+                sat = mSaturation,
+                w = w, h = h,
+                fx3 = tVert[p1], fy3 = tVert[p1 + 1], fz3 = tVert[p1 + 2],
+                fx2 = tVert[p2], fy2 = tVert[p2 + 1], fz2 = tVert[p2 + 2],
+                fx1 = tVert[p3], fy1 = tVert[p3 + 1], fz1 = tVert[p3 + 2]
             )
             i += 3
         }
     }
 
     /**
-     * TODO: Add kdoc
+     * Renders the object using Phong shading for smooth, realistic lighting effects.
+     *
+     * This method iterates through each triangle of the object and renders it using the
+     * [Scene3D.trianglePhong] function. For each vertex of the triangle, it calculates:
+     *  - **Diffuse Lighting**: The amount of light reflected from the surface, based on the dot
+     *  product of the vertex normal and the light direction. This uses the [defuse] helper
+     *  function.
+     *  - **Hue**: Determined by the vertex's z-coordinate (height), normalized between the object's
+     *  min and max Z bounds (`mMinZ`, `mMaxZ`). This creates a color gradient that changes with
+     *  elevation. The [hue] helper function normalizes this value.
+     *  - **Brightness (Value)**: Calculated by combining the diffuse lighting component (scaled by
+     *  `mDefuse`) with the object's ambient light property (`mAmbient`). The [bright] helper
+     *  function clamps this value to the [0, 1] range.
+     *
+     * These per-vertex color components (hue and brightness) are then passed to
+     * [Scene3D.trianglePhong], along with a fixed saturation value (0.6f in this implementation,
+     * though ideally it should use `mSurface.mSaturation`), which interpolates them across the
+     * triangle's surface to produce a smooth shading effect.
+     *
+     * @param mSurface The [Object3D] to be rendered. This parameter provides access to the
+     * object's geometry (vertices, normals, indices) and material properties.
+     * @param s The [Scene3D] object, providing access to scene-wide information like the
+     * transformed light direction.
+     * @param zbuff The z-buffer (FloatArray) used for depth testing. Can be null if depth testing
+     * is not required, but this is generally not recommended for correct rendering.
+     * @param img The integer array representing the image buffer to render into. Can be `null` if
+     * rendering to an off-screen buffer or not at all, though this is uncommon for this function.
+     * @param w The width of the image buffer.
      */
     fun rasterPhong(
         mSurface: Object3D,
@@ -538,35 +617,67 @@ open class Object3D {
 //            float defuse1 = VectorUtil.dot(normal, p1, s.mTransformedLight);
 //            float defuse2 = VectorUtil.dot(normal, p2, s.mTransformedLight);
 //            float defuse3 = VectorUtil.dot(normal, p3, s.mTransformedLight);
-            val defuse1 = defuse(mSurface.normal, p1, s.mTransformedLight)
-            val defuse2 = defuse(mSurface.normal, p2, s.mTransformedLight)
-            val defuse3 = defuse(mSurface.normal, p3, s.mTransformedLight)
+            val defuse1 = defuse(normals = mSurface.normal, off = p1, light = s.mTransformedLight)
+            val defuse2 = defuse(normals = mSurface.normal, off = p2, light = s.mTransformedLight)
+            val defuse3 = defuse(normals = mSurface.normal, off = p3, light = s.mTransformedLight)
             val col1Hue =
-                hue((mSurface.vert[p1 + 2] - mSurface.mMinZ) / (mSurface.mMaxZ - mSurface.mMinZ))
+                hue(hue = (mSurface.vert[p1 + 2] - mSurface.mMinZ) / (mSurface.mMaxZ - mSurface.mMinZ))
             val col2Hue =
-                hue((mSurface.vert[p2 + 2] - mSurface.mMinZ) / (mSurface.mMaxZ - mSurface.mMinZ))
+                hue(hue = (mSurface.vert[p2 + 2] - mSurface.mMinZ) / (mSurface.mMaxZ - mSurface.mMinZ))
             val col3Hue =
-                hue((mSurface.vert[p3 + 2] - mSurface.mMinZ) / (mSurface.mMaxZ - mSurface.mMinZ))
-            val col1Bright = bright(mDefuse * defuse1 + mAmbient)
-            val col2Bright = bright(mDefuse * defuse2 + mAmbient)
-            val col3Bright = bright(mDefuse * defuse3 + mAmbient)
+                hue(hue = (mSurface.vert[p3 + 2] - mSurface.mMinZ) / (mSurface.mMaxZ - mSurface.mMinZ))
+            val col1Bright = bright(bright = mDefuse * defuse1 + mAmbient)
+            val col2Bright = bright(bright = mDefuse * defuse2 + mAmbient)
+            val col3Bright = bright(bright = mDefuse * defuse3 + mAmbient)
             trianglePhong(
-                zbuff!!, img!!,
-                col1Hue, col1Bright,
-                col2Hue, col2Bright,
-                col3Hue, col3Bright,
-                0.6f,
-                w, h,
-                mSurface.tVert[p1], mSurface.tVert[p1 + 1], mSurface.tVert[p1 + 2],
-                mSurface.tVert[p2], mSurface.tVert[p2 + 1], mSurface.tVert[p2 + 2],
-                mSurface.tVert[p3], mSurface.tVert[p3 + 1], mSurface.tVert[p3 + 2]
+                zbuff = zbuff!!,
+                img = img!!,
+                h3 = col1Hue,
+                b3 = col1Bright,
+                h2 = col2Hue,
+                b2 = col2Bright,
+                h1 = col3Hue,
+                b1 = col3Bright,
+                sat = 0.6f,
+                w = w,
+                h = h,
+                fx3 = mSurface.tVert[p1],
+                fy3 = mSurface.tVert[p1 + 1],
+                fz3 = mSurface.tVert[p1 + 2],
+                fx2 = mSurface.tVert[p2],
+                fy2 = mSurface.tVert[p2 + 1],
+                fz2 = mSurface.tVert[p2 + 2],
+                fx1 = mSurface.tVert[p3],
+                fy1 = mSurface.tVert[p3 + 1],
+                fz1 = mSurface.tVert[p3 + 2]
             )
             i += 3
         }
     }
 
     /**
-     * TODO: Add kdoc
+     * Renders the object as a series of triangles filled with the scene's background color,
+     * effectively creating a silhouette or filled outline. It then draws the edges of these
+     * triangles using the scene's line color.
+     *
+     * This method iterates through each triangle of the object:
+     *  1. It first fills the triangle using [Scene3D.triangle] with the `s.background` color.
+     *  This creates the solid shape of the triangle.
+     *  2. Then, it draws the two edges of the triangle that are connected to the first vertex (p1)
+     *  using [Scene3D.drawline] with `s.lineColor`. Specifically, it draws lines from p1 to p2,
+     *  and from p1 to p3. Note: The edge between p2 and p3 is not explicitly drawn in this loop,
+     *  which might be an intentional optimization if triangles share edges or an oversight if
+     *  a complete wireframe is desired for each individual triangle.
+     *
+     * The lines are drawn on top of the filled triangles, using the same z-values, so they
+     * should be visible unless the line color is the same as the background color.
+     *
+     * @param s The [Scene3D] object, providing access to the background color and line color.
+     * @param zBuff The z-buffer (FloatArray) used for depth testing by the triangle and line
+     * drawing functions.
+     * @param img The integer array representing the image buffer to render into.
+     * @param w The width of the image buffer.
+     * @param h The height of the image buffer.
      */
     fun rasterOutline(s: Scene3D, zBuff: FloatArray, img: IntArray, w: Int, h: Int) {
         var i = 0
@@ -575,73 +686,148 @@ open class Object3D {
             val p2 = index[i + 1]
             val p3 = index[i + 2]
             Scene3D.triangle(
-                zBuff, img, s.background, w, h,
-                tVert[p1], tVert[p1 + 1], tVert[p1 + 2],
-                tVert[p2], tVert[p2 + 1], tVert[p2 + 2],
-                tVert[p3], tVert[p3 + 1], tVert[p3 + 2]
+                zbuff = zBuff, img = img, color = s.background, w = w, h = h,
+                fx3 = tVert[p1], fy3 = tVert[p1 + 1], fz3 = tVert[p1 + 2],
+                fx2 = tVert[p2], fy2 = tVert[p2 + 1], fz2 = tVert[p2 + 2],
+                fx1 = tVert[p3], fy1 = tVert[p3 + 1], fz1 = tVert[p3 + 2]
             )
             Scene3D.drawline(
-                zBuff, img, s.lineColor, w, h,
-                tVert[p1], tVert[p1 + 1], tVert[p1 + 2],
-                tVert[p2], tVert[p2 + 1], tVert[p2 + 2]
+                zbuff = zBuff, img = img, color = s.lineColor, w = w, h = h,
+                fx1 = tVert[p1], fy1 = tVert[p1 + 1], fz1 = tVert[p1 + 2],
+                fx2 = tVert[p2], fy2 = tVert[p2 + 1], fz2 = tVert[p2 + 2]
             )
             Scene3D.drawline(
-                zBuff, img, s.lineColor, w, h,
-                tVert[p1], tVert[p1 + 1], tVert[p1 + 2],
-                tVert[p3], tVert[p3 + 1], tVert[p3 + 2]
+                zbuff = zBuff, img = img, color = s.lineColor, w = w, h = h,
+                fx1 = tVert[p1], fy1 = tVert[p1 + 1], fz1 = tVert[p1 + 2],
+                fx2 = tVert[p3], fy2 = tVert[p3 + 1], fz2 = tVert[p3 + 2]
             )
             i += 3
         }
     }
 
     /**
-     * TODO: Add kdoc
+     * Calculates the geometric center of the object's bounding box.
+     *
+     * This function returns the midpoint of the object's extents along the x, y, and z axes,
+     * based on its minimum and maximum coordinate values ([mMinX], [mMaxX], etc.). The result
+     * is a `DoubleArray` containing the x, y, and z coordinates of the center point.
+     *
+     * @return A `DoubleArray` of size 3, where:
+     * - `[0]` is the x-coordinate of the center.
+     * - `[1]` is the y-coordinate of the center.
+     * - `[2]` is the z-coordinate of the center.
+     * @see centerX
+     * @see centerY
+     * @see mMinX
+     * @see mMaxX
+     * @see mMinY
+     * @see mMaxY
+     * @see mMinZ
+     * @see mMaxZ
      */
     fun center(): DoubleArray {
         return doubleArrayOf(
-            (
-                (mMinX + mMaxX) / 2).toDouble(),
+            ((mMinX + mMaxX) / 2).toDouble(),
             ((mMinY + mMaxY) / 2).toDouble(),
-            ((mMinZ + mMaxZ) / 2
-                ).toDouble()
+            ((mMinZ + mMaxZ) / 2).toDouble()
         )
     }
 
     /**
-     * TODO: Add kdoc
+     * Calculates the x-coordinate of the center of the object's bounding box.
+     *
+     * This is determined by averaging the minimum ([mMinX]) and maximum ([mMaxX])
+     * x-coordinates of the object's vertices.
+     *
+     * @return The x-coordinate of the bounding box center.
+     * @see mMinX
+     * @see mMaxX
+     * @see center
      */
     fun centerX(): Float {
         return (mMaxX + mMinX) / 2
     }
 
     /**
-     * TODO: Add kdoc
+     * Calculates the y-coordinate of the center of the object's bounding box.
+     *
+     * This is determined by averaging the minimum ([mMinY]) and maximum ([mMaxY])
+     * y-coordinates of the object's vertices.
+     *
+     * @return The y-coordinate of the bounding box center.
+     * @see mMinY
+     * @see mMaxY
+     * @see center
      */
     fun centerY(): Float {
         return (mMaxY + mMinY) / 2
     }
 
     /**
-     * TODO: Add kdoc
+     * Calculates half of the range (extent) of the object's bounding box along the x-axis.
+     *
+     * This value represents the distance from the center of the bounding box to its
+     * minimum or maximum x-coordinate. It is computed as `(mMaxX - mMinX) / 2`.
+     * This can be useful for scaling or positioning operations.
+     *
+     * @return Half the width of the object's bounding box.
+     * @see mMinX
+     * @see mMaxX
+     * @see rangeY
+     * @see size
      */
     fun rangeX(): Float {
         return (mMaxX - mMinX) / 2
     }
 
     /**
-     * TODO: Add kdoc
+     * Calculates half the extent of the object's bounding box along the y-axis.
+     *
+     * This represents the "radius" of the object in the y-dimension if it were centered at [centerY].
+     * It is computed as half the difference between the maximum ([mMaxY]) and minimum ([mMinY])
+     * y-coordinates of the object's vertices.
+     *
+     * @return Half the range of y-coordinates spanned by the object.
+     * @see mMinY
+     * @see mMaxY
+     * @see centerY
+     * @see size
      */
     fun rangeY(): Float {
         return (mMaxY - mMinY) / 2
     }
 
     /**
-     * TODO: Add kdoc
+     * Calculates a characteristic size of the object's bounding box, specifically half of its
+     * space diagonal.
+     *
+     * This method first computes the dimensions of the bounding box along each axis:
+     *  - `dx = mMaxX - mMinX`
+     *  - `dy = mMaxY - mMinY`
+     *  - `dz = mMaxZ - mMinZ`
+     *
+     * It then calculates the length of the space diagonal of this bounding box using the
+     * 3D Pythagorean theorem: `diagonal = sqrt(dx^2 + dy^2 + dz^2)`.
+     * The function returns half of this diagonal length. This value can be interpreted as a
+     * kind of "radius" of a sphere that would enclose the bounding box.
+     *
+     * @return Half the length of the space diagonal of the object's bounding box.
+     * @see mMinX
+     * @see mMaxX
+     * @see mMinY
+     * @see mMaxY
+     * @see mMinZ
+     * @see mMaxZ
+     * @see rangeX
+     * @see rangeY
      */
     fun size(): Double {
         return Math.hypot(
             (mMaxX - mMinX).toDouble(),
-            Math.hypot((mMaxY - mMinY).toDouble(), (mMaxZ - mMinZ).toDouble())
+            Math.hypot(
+                (mMaxY - mMinY).toDouble(),
+                (mMaxZ - mMinZ).toDouble()
+            )
         ) / 2
     }
 }

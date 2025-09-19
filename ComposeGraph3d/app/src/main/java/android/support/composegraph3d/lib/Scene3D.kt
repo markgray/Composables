@@ -25,22 +25,23 @@ import kotlin.math.sqrt
  */
 class Scene3D {
     /**
-     * TODO: Add kdoc
+     * The matrix used to transform the scene from world space to screen space.
      */
     var mMatrix: ViewMatrix = ViewMatrix()
 
     /**
-     * TODO: Add kdoc
+     * The inverse of the matrix used to transform the scene. This is used to transform the scene
+     * from world space to camera space.
      */
     var mInverse: Matrix? = Matrix()
 
     /**
-     * TODO: Add kdoc
+     * The main 3D object to be rendered.
      */
     var mObject3D: Object3D? = null
 
     /**
-     * TODO: Add kdoc
+     * TODO: Continue here.
      */
     var mPreObjects: ArrayList<Object3D> = arrayListOf()
 
