@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "UNUSED_PARAMETER",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "MemberVisibilityCanBePrivate"
+)
 
 package android.support.composegraph3d.lib
 
@@ -69,7 +73,8 @@ class Scene3D {
      *
      */
     @JvmField
-    var mTransformedLight: FloatArray = floatArrayOf(0f, 1f, 1f) // The direction of the light source
+    var mTransformedLight: FloatArray =
+        floatArrayOf(0f, 1f, 1f) // The direction of the light source
 
     /**
      * TODO: Add kdoc
@@ -594,17 +599,20 @@ class Scene3D {
             }
             // using maxmima
             // string(solve([x1*dx+y1*dy+zoff=z1,x2*dx+y2*dy+zoff=z2,x3*dx+y3*dy+zoff=z3],[dx,dy,zoff]));
-            val d = (fx1Local * (fy3 - fy2Local) - fx2Local * fy3 + fx3 * fy2Local + ((fx2Local - fx3)
+            val d =
+                (fx1Local * (fy3 - fy2Local) - fx2Local * fy3 + fx3 * fy2Local + ((fx2Local - fx3)
                     * fy1Local)).toDouble()
             if (d == 0.0) {
                 return
             }
-            val dx = (-(fy1Local * (fz3 - fz2Local) - fy2Local * fz3 + fy3 * fz2Local + ((fy2Local - fy3)
+            val dx =
+                (-(fy1Local * (fz3 - fz2Local) - fy2Local * fz3 + fy3 * fz2Local + ((fy2Local - fy3)
                     * fz1Local)) / d).toFloat()
-            val dy = ((fx1Local * (fz3 - fz2Local) - fx2Local * fz3 + fx3 * fz2Local + ((fx2Local - fx3)
+            val dy =
+                ((fx1Local * (fz3 - fz2Local) - fx2Local * fz3 + fx3 * fz2Local + ((fx2Local - fx3)
                     * fz1Local)) / d).toFloat()
             val zoff = (fx1Local * (fy3 * fz2Local - fy2Local * fz3) + (fy1Local
-                    * (fx2Local * fz3 - fx3 * fz2Local)) + (fx3 * fy2Local - fx2Local * fy3) * fz1Local / d).toFloat()
+                * (fx2Local * fz3 - fx3 * fz2Local)) + (fx3 * fy2Local - fx2Local * fy3) * fz1Local / d).toFloat()
 
             // 28.4 fixed-point coordinates
             val y1 = (16.0f * fy1Local + .5f).toInt()
@@ -725,29 +733,36 @@ class Scene3D {
             }
             // using maxmima
             // string(solve([x1*dx+y1*dy+zoff=z1,x2*dx+y2*dy+zoff=z2,x3*dx+y3*dy+zoff=z3],[dx,dy,zoff]));
-            val d = (fx1Local * (fy3 - fy2Local) - fx2Local * fy3 + fx3 * fy2Local + ((fx2Local - fx3)
+            val d =
+                (fx1Local * (fy3 - fy2Local) - fx2Local * fy3 + fx3 * fy2Local + ((fx2Local - fx3)
                     * fy1Local))
             if (d == 0.0f) {
                 return
             }
-            val dx = (-(fy1Local * (fz3 - fz2Local) - fy2Local * fz3 + fy3 * fz2Local + ((fy2Local - fy3)
+            val dx =
+                (-(fy1Local * (fz3 - fz2Local) - fy2Local * fz3 + fy3 * fz2Local + ((fy2Local - fy3)
                     * fz1Local)) / d)
-            val dy = ((fx1Local * (fz3 - fz2Local) - fx2Local * fz3 + fx3 * fz2Local + ((fx2Local - fx3)
+            val dy =
+                ((fx1Local * (fz3 - fz2Local) - fx2Local * fz3 + fx3 * fz2Local + ((fx2Local - fx3)
                     * fz1Local)) / d)
             val zoff = ((fx1Local * (fy3 * fz2Local - fy2Local * fz3) + (fy1Local
-                    * (fx2Local * fz3 - fx3 * fz2Local)) + (fx3 * fy2Local - fx2Local * fy3) * fz1Local) / d)
-            val dhx = (-(fy1Local * (h3 - h2Local) - fy2Local * h3 + fy3 * h2Local + ((fy2Local - fy3)
+                * (fx2Local * fz3 - fx3 * fz2Local)) + (fx3 * fy2Local - fx2Local * fy3) * fz1Local) / d)
+            val dhx =
+                (-(fy1Local * (h3 - h2Local) - fy2Local * h3 + fy3 * h2Local + ((fy2Local - fy3)
                     * h1Local)) / d)
-            val dhy = ((fx1Local * (h3 - h2Local) - fx2Local * h3 + fx3 * h2Local + ((fx2Local - fx3)
+            val dhy =
+                ((fx1Local * (h3 - h2Local) - fx2Local * h3 + fx3 * h2Local + ((fx2Local - fx3)
                     * h1Local)) / d)
             val hoff = ((fx1Local * (fy3 * h2Local - fy2Local * h3) + (fy1Local
-                    * (fx2Local * h3 - fx3 * h2Local)) + (fx3 * fy2Local - fx2Local * fy3) * h1Local) / d)
-            val dbx = (-(fy1Local * (b3 - b2Local) - fy2Local * b3 + fy3 * b2Local + ((fy2Local - fy3)
+                * (fx2Local * h3 - fx3 * h2Local)) + (fx3 * fy2Local - fx2Local * fy3) * h1Local) / d)
+            val dbx =
+                (-(fy1Local * (b3 - b2Local) - fy2Local * b3 + fy3 * b2Local + ((fy2Local - fy3)
                     * b1Local)) / d)
-            val dby = ((fx1Local * (b3 - b2Local) - fx2Local * b3 + fx3 * b2Local + ((fx2Local - fx3)
+            val dby =
+                ((fx1Local * (b3 - b2Local) - fx2Local * b3 + fx3 * b2Local + ((fx2Local - fx3)
                     * b1Local)) / d)
             val boff = ((fx1Local * (fy3 * b2Local - fy2Local * b3) + (fy1Local
-                    * (fx2Local * b3 - fx3 * b2Local)) + (fx3 * fy2Local - fx2Local * fy3) * b1Local) / d)
+                * (fx2Local * b3 - fx3 * b2Local)) + (fx3 * fy2Local - fx2Local * fy3) * b1Local) / d)
 
             // 28.4 fixed-point coordinates
             val lY1 = (16.0f * fy1Local + .5f).toInt()
