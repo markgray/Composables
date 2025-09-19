@@ -169,7 +169,7 @@ class Graph {
      * recalculates the graph's rotation angles based on the total drag distance
      * from the start of the gesture.
      *
-     * The `change` parameter is currently unused but is included to maintain a
+     * The [change]` parameter is currently unused but is included to maintain a
      * consistent signature with common pointer input handlers, making the function
      * more adaptable for future enhancements (e.g., handling multi-touch or
      * pressure).

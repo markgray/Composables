@@ -28,7 +28,7 @@ import java.text.DecimalFormat
 import java.util.*
 
 /**
- * Matrix math class.  (For the purposes of this application it is more efficient as has no JNI)
+ * Matrix math class.  (For the purposes of this application it is more efficient as it has no JNI)
  */
 open class Matrix {
     /**

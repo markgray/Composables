@@ -368,15 +368,15 @@ open class Object3D {
      * This method iterates through each triangle of the object and calculates a single color for
      * the entire triangle. The color is determined using the HSV (Hue, Saturation, Value) model:
      *
-     * - **Hue**: The hue is derived from the triangle's average height (z-coordinate), normalized
-     *   between the object's min and max Z bounds. This creates a color gradient that changes with
-     *   elevation.
-     * - **Saturation**: A fixed saturation value (`0.8f`) is used, providing a consistently vibrant
-     *   color.
-     * - **Value (Brightness)**: The brightness is calculated based on the angle between the triangle's
-     *   normal vector and the direction of the light source. This simulates diffuse lighting, where
-     *   faces pointing towards the light appear brighter. The final brightness is a blend of this
-     *   diffuse component and the object's ambient light property (`mAmbient`).
+     *  - **Hue**: The hue is derived from the triangle's average height (z-coordinate), normalized
+     *  between the object's min and max Z bounds. This creates a color gradient that changes with
+     *  elevation.
+     *  - **Saturation**: A fixed saturation value (`0.8f`) is used, providing a consistently vibrant
+     *  color.
+     *  - **Value (Brightness)**: The brightness is calculated based on the angle between the triangle's
+     *  normal vector and the direction of the light source. This simulates diffuse lighting, where
+     *  faces pointing towards the light appear brighter. The final brightness is a blend of this
+     *  diffuse component and the object's ambient light property (`mAmbient`).
      *
      * The resulting color is then used to fill the triangle on the screen.
      *
@@ -425,8 +425,8 @@ open class Object3D {
      *
      * This is a convenience function that preprocesses the hue and brightness values
      * before converting them to RGB.
-     * - The `hue` is normalized to the range [0, 1) to ensure it wraps around correctly.
-     * - The `bright` (value) is clamped to the range [0, 1].
+     *  - The `hue` is normalized to the range [0, 1) to ensure it wraps around correctly.
+     *  - The `bright` (value) is clamped to the range [0, 1].
      *
      * It then calls [Scene3D.hsvToRgb] to perform the final conversion.
      *
