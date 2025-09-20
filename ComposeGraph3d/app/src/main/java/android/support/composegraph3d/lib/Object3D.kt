@@ -661,13 +661,13 @@ open class Object3D {
      * triangles using the scene's line color.
      *
      * This method iterates through each triangle of the object:
-     *  1. It first fills the triangle using [Scene3D.triangle] with the `s.background` color.
-     *  This creates the solid shape of the triangle.
+     *  1. It first fills the triangle using [Scene3D.triangle] with the [Scene3D.background] color
+     *  of [Scene3D] parameter [s]. This creates the solid shape of the triangle.
      *  2. Then, it draws the two edges of the triangle that are connected to the first vertex (p1)
-     *  using [Scene3D.drawline] with `s.lineColor`. Specifically, it draws lines from p1 to p2,
-     *  and from p1 to p3. Note: The edge between p2 and p3 is not explicitly drawn in this loop,
-     *  which might be an intentional optimization if triangles share edges or an oversight if
-     *  a complete wireframe is desired for each individual triangle.
+     *  using [Scene3D.drawline] with the [Scene3D.lineColor] of [s]. Specifically, it draws lines
+     *  from p1 to p2, and from p1 to p3. Note: The edge between p2 and p3 is not explicitly drawn
+     *  in this loop, which might be an intentional optimization if triangles share edges or an
+     *  oversight if a complete wireframe is desired for each individual triangle.
      *
      * The lines are drawn on top of the filled triangles, using the same z-values, so they
      * should be visible unless the line color is the same as the background color.
@@ -710,12 +710,12 @@ open class Object3D {
      *
      * This function returns the midpoint of the object's extents along the x, y, and z axes,
      * based on its minimum and maximum coordinate values ([mMinX], [mMaxX], etc.). The result
-     * is a `DoubleArray` containing the x, y, and z coordinates of the center point.
+     * is a [DoubleArray] containing the x, y, and z coordinates of the center point.
      *
-     * @return A `DoubleArray` of size 3, where:
-     * - `[0]` is the x-coordinate of the center.
-     * - `[1]` is the y-coordinate of the center.
-     * - `[2]` is the z-coordinate of the center.
+     * @return A [DoubleArray] of size 3, where:
+     *  - `[0]` is the x-coordinate of the center.
+     *  - `[1]` is the y-coordinate of the center.
+     *  - `[2]` is the z-coordinate of the center.
      * @see centerX
      * @see centerY
      * @see mMinX

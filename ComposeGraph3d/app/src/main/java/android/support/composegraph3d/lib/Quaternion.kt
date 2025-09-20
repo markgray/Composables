@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "unused",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "MemberVisibilityCanBePrivate"
+)
 
 package android.support.composegraph3d.lib
 
@@ -24,7 +29,7 @@ package android.support.composegraph3d.lib
  */
 class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
     /**
-     * The components of the Quaternion are stored in a DoubleArray of size 4
+     * The components of the Quaternion are stored in a [DoubleArray] of size 4
      * The components are stored in the order of w,x,y,z
      * where w is the scalar component and x,y,z are the vector components
      */
@@ -32,8 +37,8 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
 
     /**
      * Sets the components of the Quaternion.
-     * The components are stored in the order of w,x,y,z
-     * where w is the scalar component and x,y,z are the vector components.
+     * The components are stored in the order of [w], [x], [y], [z]
+     * where [w] is the scalar component and [x], [y], [z] are the vector components.
      *
      * @param w the scalar component
      * @param x the first vector component
@@ -48,12 +53,12 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
     }
 
     /**
-     * Sets the quaternion to represent the rotation from vector v1 to vector v2.
+     * Sets the quaternion to represent the rotation from vector [v1] to vector [v2].
      * The vectors are normalized, and the rotation axis is calculated as the cross product
      * of the normalized vectors. The angle of rotation is the angle between the normalized vectors.
      *
-     * @param v1 The starting vector, represented as a DoubleArray of size 3 (x, y, z).
-     * @param v2 The ending vector, represented as a DoubleArray of size 3 (x, y, z).
+     * @param v1 The starting vector, represented as a [DoubleArray] of size 3 (x, y, z).
+     * @param v2 The ending vector, represented as a [DoubleArray] of size 3 (x, y, z).
      */
     operator fun set(v1: DoubleArray, v2: DoubleArray) {
         val vec1 = normal(a = v1)
@@ -64,8 +69,8 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
     }
 
     /**
-     * Sets the quaternion to represent a rotation by a given angle around a given axis.
-     * The axis vector is assumed to be normalized.
+     * Sets the quaternion to represent a rotation by a given [angle] around a given [axis].
+     * The [axis] vector is assumed to be normalized.
      *
      * @param angle The angle of rotation in radians.
      * @param axis The axis of rotation, represented as a normalized DoubleArray of size 3 (x, y, z).
@@ -155,9 +160,9 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
     }
 
     /**
-     * Divides quaternion b by this quaternion.
-     * This is equivalent to multiplying the inverse of this quaternion by quaternion b.
-     * The operation is a.inverse() * b.
+     * Divides quaternion [b] by this quaternion.
+     * This is equivalent to multiplying the inverse of this quaternion by quaternion [b].
+     * The operation is a.inverse() * [b].
      * Note that quaternion division is not commutative.
      *
      * @param b The quaternion to be divided by this quaternion (the dividend).
@@ -179,14 +184,14 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
      *
      * ```
      * Given q = (w, x, y, z) and v = (vx, vy, vz)
-     * Let s = x*vx + y*vy + z*vz
-     * Then the rotated vector components (v'x, v'y, v'z) are:
-     * v'x = 2 * (w * (vx*w - (y*vz - z*vy)) + s*x) - vx
-     * v'y = 2 * (w * (vy*w - (z*vx - x*vz)) + s*y) - vy
-     * v'z = 2 * (w * (vz*w - (x*vy - y*vx)) + s*z) - vz
+     *  Let s = x*vx + y*vy + z*vz
+     *  Then the rotated vector components (v'x, v'y, v'z) are:
+     *  v'x = 2 * (w * (vx*w - (y*vz - z*vy)) + s*x) - vx
+     *  v'y = 2 * (w * (vy*w - (z*vx - x*vz)) + s*y) - vy
+     *  v'z = 2 * (w * (vz*w - (x*vy - y*vx)) + s*z) - vz
      * ```
      *
-     * @param v The 3D vector to rotate, represented as a DoubleArray of size 3 (x, y, z).
+     * @param v The 3D vector to rotate, represented as a [DoubleArray] of size 3 (x, y, z).
      * This parameter can be `null`, but doing so will result in a [NullPointerException].
      * @return A new DoubleArray of size 3 representing the rotated vector.
      */
@@ -240,9 +245,9 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
          * is a vector c = (ay*bz - az*by, az*bx - ax*bz, ax*by - ay*bx).
          * The resulting vector is orthogonal to both input vectors.
          *
-         * @param a The first vector, represented as a DoubleArray of size 3 (x, y, z).
-         * @param b The second vector, represented as a DoubleArray of size 3 (x, y, z).
-         * @return A new DoubleArray of size 3 representing the cross product of a and b.
+         * @param a The first vector, represented as a [DoubleArray] of size 3 (x, y, z).
+         * @param b The second vector, represented as a [DoubleArray] of size 3 (x, y, z).
+         * @return A new [DoubleArray] of size 3 representing the cross product of [a] and [b].
          */
         private fun cross(a: DoubleArray, b: DoubleArray): DoubleArray {
             val out0 = a[1] * b[2] - b[1] * a[2]
@@ -257,8 +262,8 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
          * is a scalar value equal to ax*bx + ay*by + az*bz.
          * The dot product is related to the angle between the two vectors.
          *
-         * @param a The first vector, represented as a DoubleArray of size 3 (x, y, z).
-         * @param b The second vector, represented as a DoubleArray of size 3 (x, y, z).
+         * @param a The first vector, represented as a [DoubleArray] of size 3 (x, y, z).
+         * @param b The second vector, represented as a [DoubleArray] of size 3 (x, y, z).
          * @return The dot product of vectors a and b.
          */
         private fun dot(a: DoubleArray, b: DoubleArray): Double {
@@ -267,14 +272,14 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
 
         /**
          * Normalizes a 3D vector.
-         * 
+         *
          * The normalization is achieved by dividing each component of the vector by its magnitude
          * (norm). The magnitude is calculated as the square root of the dot product of the vector
          * with itself. If the input vector is the zero vector, this will result in division by zero
          * and produce NaN values.
          *
-         * @param a The 3D vector to normalize, represented as a DoubleArray of size 3 (x, y, z).
-         * @return A new DoubleArray of size 3 representing the normalized vector.
+         * @param a The 3D vector to normalize, represented as a [DoubleArray] of size 3 (x, y, z).
+         * @return A new [DoubleArray] of size 3 representing the normalized vector.
          */
         private fun normal(a: DoubleArray): DoubleArray {
             val norm = Math.sqrt(dot(a, a))
@@ -302,13 +307,13 @@ class Quaternion(x0: Double, x1: Double, x2: Double, x3: Double) {
         /**
          * Calculates the axis of rotation between two 3D vectors.
          *
-         *  - The input vectors `v1` and `v2` are first normalized to ensure they are unit vectors.
+         *  - The input vectors [v1] and [v2] are first normalized to ensure they are unit vectors.
          *  - The axis of rotation is then calculated as the cross product of the normalized `vec1`
          *  and `vec2`.
          *  - The resulting axis vector is then normalized to ensure it is a unit vector.
          *
-         * This axis represents the direction around which `v1` would need to rotate to align with
-         * `v2`.
+         * This axis represents the direction around which [v1] would need to rotate to align with
+         * [v2].
          *
          * @param v1 The first vector, represented as a DoubleArray of size 3 (x, y, z).
          * @param v2 The second vector, represented as a DoubleArray of size 3 (x, y, z).
