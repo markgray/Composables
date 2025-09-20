@@ -45,149 +45,206 @@ class Scene3D {
     var mObject3D: Object3D? = null
 
     /**
-     * TODO: Continue here.
+     * A list of objects that are rendered before the main object.
      */
     var mPreObjects: ArrayList<Object3D> = arrayListOf()
 
     /**
-     * TODO: Add kdoc
+     * An ArrayList that holds the post-processed 3D objects. These objects are rendered after the
+     * main object [mObject3D] has been rendered.
      */
     var mPostObjects: ArrayList<Object3D> = ArrayList()
 
     /**
-     * TODO: Add kdoc
+     * The z-buffer is used to store the depth of each pixel in the scene.
+     * This is used to determine which objects are in front of other objects.
      */
     var zBuff: FloatArray? = null
 
     /**
-     * TODO: Add kdoc
+     * The array of integers representing the image data.
+     * Each integer in the array corresponds to the color of a pixel in the image.
      */
     lateinit var img: IntArray
 
     /**
-     * TODO: Add kdoc
+     * The direction of the light source. It's an array of three floats representing the x, y,
+     * and z components of the light direction vector.
      */
     private val light = floatArrayOf(0f, 0f, 1f) // The direction of the light source
 
     /**
-     *
+     * The direction of the light source, transformed by the current camera view.
+     * This is an array of three floats representing the x, y, and z components of the
+     * transformed light direction vector. This is used in lighting calculations.
      */
     @JvmField
     var mTransformedLight: FloatArray =
         floatArrayOf(0f, 1f, 1f) // The direction of the light source
 
     /**
-     * TODO: Add kdoc
+     * Flag indicating whether the light source should move with the camera.
+     * If `true`, the light's direction will be transformed by the camera's view matrix.
+     * If `false`, the light's direction remains fixed in world space.
      */
     var mLightMovesWithCamera: Boolean = false
 
     /**
-     * TODO: Add kdoc
+     * The width of the scene, in pixels.
      */
     var width: Int = 0
 
     /**
-     * TODO: Add kdoc
+     * The height of the scene, in pixels.
      */
     var height: Int = 0
 
     /**
-     * TODO: Add kdoc
+     * A temporary [FloatArray] used for vector calculations. It has a size of 3 to store x, y,
+     * and z components of a vector.
      */
     @JvmField
     var tmpVec: FloatArray = FloatArray(3)
 
     /**
-     * TODO: Add kdoc
+     * The color used for drawing lines in the scene.
+     * This is an integer value representing an ARGB color.
+     * The default value is -0x1000000 (opaque black).
      */
     var lineColor: Int = -0x1000000
 
     /**
-     * TODO: Add kdoc
+     * A small epsilon value used to prevent division by zero or other floating-point inaccuracies
+     * when performing calculations along the x-axis.
      */
     private val epslonX = 0.000005232f
 
     /**
-     * TODO: Add kdoc
+     * A small epsilon value used to prevent division by zero or other floating-point inaccuracies
+     * when performing calculations along the y-axis.
      */
     private val epslonY = 0.00000898f
 
     /**
-     * TODO: Add kdoc
+     * An unused field of type [Function].
      */
     private val mFunction: Function? = null
 
     /**
-     * TODO: Add kdoc
+     * The zoom level of the scene.
+     * This value is used to calculate the size of the 3D object in the scene.
+     * A higher zoom value will make the object appear larger, while a lower value will
+     * make it appear smaller.
+     * The default value is 1f.
      */
     var zoom: Float = 1f
 
     /**
-     * TODO: Add kdoc
+     * The background color of the scene.
+     * This is an integer value representing an ARGB color.
+     * The default value is 0 (transparent).
      */
     var background: Int = 0
 
     /**
-     * TODO: Add kdoc
+     * Represents a 3D box defined by its vertices and edges.
+     * This class is used to draw the bounding box of a 3D object.
      */
     internal inner class Box {
         /**
-         * TODO: Add kdoc
+         * A 2D array of floats representing the coordinates of the box.
+         * The first dimension represents the two corners of the box (min and max).
+         * The second dimension represents the x, y, and z coordinates of each corner.
+         * For example, `mBox[0][0]` would be the x-coordinate of the minimum corner,
+         * and `mBox[1][2]` would be the z-coordinate of the maximum corner.
          */
         var mBox = arrayOf(floatArrayOf(1f, 1f, 1f), floatArrayOf(2f, 3f, 2f))
 
         /**
-         * TODO: Add kdoc
+         * An array of integers that defines the x-coordinates of the starting points
+         * of the edges of a 3D box. Each element in this array corresponds to an
+         * edge of the box, and its value is an index into the [mBox] array,
+         * indicating which x-coordinate to use for the starting point of that edge.
          */
         var mX1 = intArrayOf(0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0)
 
         /**
-         * TODO: Add kdoc
+         * An array of integers that defines the y-coordinates of the starting points
+         * of the edges of a 3D box. Each element in this array corresponds to an
+         * edge of the box, and its value is an index into the [mBox] array,
+         * indicating which y-coordinate to use for the starting point of that edge.
          */
         var mY1 = intArrayOf(0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1)
 
         /**
-         * TODO: Add kdoc
+         * An array of integers that defines the z-coordinates of the starting points
+         * of the edges of a 3D box. Each element in this array corresponds to an
+         * edge of the box, and its value is an index into the [mBox] array,
+         * indicating which z-coordinate to use for the starting point of that edge.
          */
         var mZ1 = intArrayOf(0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1)
 
         /**
-         * TODO: Add kdoc
+         * An array of integers that defines the x-coordinates of the ending points
+         * of the edges of a 3D box. Each element in this array corresponds to an
+         * edge of the box, and its value is an index into the [mBox] array,
+         * indicating which x-coordinate to use for the ending point of that edge.
          */
         var mX2 = intArrayOf(0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1)
 
         /**
-         * TODO: Add kdoc
+         * An array of integers that defines the y-coordinates of the ending points
+         * of the edges of a 3D box. Each element in this array corresponds to an
+         * edge of the box, and its value is an index into the [mBox] array,
+         * indicating which y-coordinate to use for the ending point of that edge.
          */
         var mY2 = intArrayOf(0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1)
 
         /**
-         * TODO: Add kdoc
+         * An array of integers that defines the z-coordinates of the ending points
+         * of the edges of a 3D box. Each element in this array corresponds to an
+         * edge of the box, and its value is an index into the [mBox] array,
+         * indicating which z-coordinate to use for the ending point of that edge.
          */
         var mZ2 = intArrayOf(1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1)
 
         /**
-         * TODO: Add kdoc
+         * A temporary [FloatArray] of size 3 used to store the 3D coordinates (x, y, z)
+         * of the first point of an edge when drawing the bounding box. This point is
+         * derived from the [mBox] array using indices from [mX1], [mY1], and [mZ1].
          */
-        var mPoint1 = FloatArray(3)
+        var mPoint1 = FloatArray(size = 3)
 
         /**
-         * TODO: Add kdoc
+         * A temporary [FloatArray] of size 3 used to store the 3D coordinates (x, y, z)
+         * of the second point of an edge when drawing the bounding box. This point is
+         * derived from the [mBox] array using indices from [mX2], [mY2], and [mZ2].
          */
-        var mPoint2 = FloatArray(3)
+        var mPoint2 = FloatArray(size = 3)
 
         /**
-         * TODO: Add kdoc
+         * A temporary [FloatArray] of size 3 used to store the screen-space coordinates
+         * (x, y, z) of the first point of an edge after transformation by the inverse
+         * view matrix [mInverse]. This is used for drawing the bounding box.
          */
-        var mDraw1 = FloatArray(3)
+        var mDraw1 = FloatArray(size = 3)
 
         /**
-         * TODO: Add kdoc
+         * A temporary [FloatArray] of size 3 used to store the screen-space coordinates (x, y, z)
+         * of the second transformed point of an edge when drawing the bounding box.
+         * This point is the result of transforming [mPoint2] by the inverse view matrix [mInverse].
          */
-        var mDraw2 = FloatArray(3)
+        var mDraw2 = FloatArray(size = 3)
 
         /**
-         * TODO: Add kdoc
+         * Draws the lines of the bounding box.
+         * This function iterates through the 12 edges of the box, defined by
+         * [mX1], [mY1], [mZ1] and [mX2], [mY2], [mZ2].
+         * For each edge, it retrieves the 3D coordinates of the start and end points
+         * from [mBox], transforms these points using the [mInverse] matrix,
+         * and then calls the [LineRender.draw] method to render the line in 2D.
+         *
+         * @param r The [LineRender] interface used to draw the lines.
          */
         fun drawLines(r: LineRender) {
             for (i in 0..11) {
@@ -197,51 +254,67 @@ class Scene3D {
                 mPoint2[0] = mBox[mX2[i]][0]
                 mPoint2[1] = mBox[mY2[i]][1]
                 mPoint2[2] = mBox[mZ2[i]][2]
-                mInverse!!.mult3(mPoint1, mDraw1)
-                mInverse!!.mult3(mPoint2, mDraw2)
+                mInverse!!.mult3(src = mPoint1, dest = mDraw1)
+                mInverse!!.mult3(src = mPoint2, dest = mDraw2)
                 r.draw(
-                    mDraw1[0].toInt(),
-                    mDraw1[1].toInt(),
-                    mDraw2[0].toInt(),
-                    mDraw2[1].toInt()
+                    x1 = mDraw1[0].toInt(),
+                    y1 = mDraw1[1].toInt(),
+                    x2 = mDraw2[0].toInt(),
+                    y2 = mDraw2[1].toInt()
                 )
             }
         }
     }
 
+    /**
+     * Our init just normalizes the [light] vector to make it a unit vector.
+     */
     init {
-        VectorUtil.normalize(light)
+        VectorUtil.normalize(a = light)
     }
 
     /**
-     * TODO: Add kdoc
+     * Transforms the triangles of the main 3D object and any pre/post objects by calling [transform].
      */
     fun transformTriangles() {
         transform()
     }
 
     /**
-     * TODO: Add kdoc
+     * Transforms the scene objects using the inverse view matrix.
+     *
+     * This function applies the inverse view matrix ([mInverse]) to the main 3D object ([mObject3D]),
+     * as well as to all pre-objects ([mPreObjects]) and post-objects ([mPostObjects]).
+     *
+     * If [mLightMovesWithCamera] is true, it also transforms the light direction vector ([light])
+     * by the view matrix ([mMatrix]) and normalizes it, storing the result in [mTransformedLight].
+     * Otherwise, it copies the original light direction to [mTransformedLight].
      */
     fun transform() {
         val m = mInverse
         if (mLightMovesWithCamera) {
-            mMatrix.mult3v(light, mTransformedLight)
-            VectorUtil.normalize(mTransformedLight)
+            mMatrix.mult3v(src = light, dest = mTransformedLight)
+            VectorUtil.normalize(a = mTransformedLight)
         } else {
             System.arraycopy(light, 0, mTransformedLight, 0, 3)
         }
-        mObject3D!!.transform(m)
+        mObject3D!!.transform(m = m)
         for (obj in mPreObjects) {
-            obj.transform(m)
+            obj.transform(m = m)
         }
         for (obj in mPostObjects) {
-            obj.transform(m)
+            obj.transform(m = m)
         }
     }
 
     /**
-     * TODO: Add kdoc
+     * The width of the screen in world coordinates.
+     * This value determines how much of the 3D scene is visible horizontally.
+     * Setting this property will:
+     *  1. Update the screen width in the underlying [ViewMatrix].
+     *  2. Recalculate the view matrix.
+     *  3. Calculate the inverse of the view matrix.
+     *  4. Transform all scene objects based on the new matrix.
      */
     var screenWidth: Double
         get() = mMatrix.screenWidth
@@ -253,40 +326,71 @@ class Scene3D {
         }
 
     /**
-     * TODO: Add kdoc
+     * Handles the initial touch down event for trackball rotation.
+     * This method records the starting position of the touch (x, y)
+     * in the view matrix ([mMatrix]) and then recalculates the
+     * inverse view matrix ([mInverse]).
+     *
+     * @param x The x-coordinate of the touch down event.
+     * @param y The y-coordinate of the touch down event.
      */
     fun trackBallDown(x: Float, y: Float) {
-        mMatrix.trackBallDown(x, y)
-        mMatrix.invers(mInverse!!)
+        mMatrix.trackBallDown(x = x, y = y)
+        mMatrix.invers(ret = mInverse!!)
     }
 
     /**
-     * TODO: Add kdoc
+     * Handles the trackball move event.
+     * This method updates the trackball position in the view matrix ([mMatrix])
+     * based on the current touch coordinates (x, y).
+     * After updating the trackball, it recalculates the inverse view matrix ([mInverse])
+     * and then calls [transform] to apply the updated transformation to all scene objects.
+     *
+     * @param x The current x-coordinate of the touch during the move event.
+     * @param y The current y-coordinate of the touch during the move event.
      */
     fun trackBallMove(x: Float, y: Float) {
-        mMatrix.trackBallMove(x, y)
-        mMatrix.invers(mInverse!!)
+        mMatrix.trackBallMove(x = x, y = y)
+        mMatrix.invers(ret = mInverse!!)
         transform()
     }
 
     /**
-     * TODO: Add kdoc
+     * Handles the end of a trackball interaction (touch up event).
+     * This method signals the view matrix ([mMatrix]) that the trackball
+     * interaction has ended at the given screen coordinates (x, y).
+     * It then recalculates the inverse view matrix ([mInverse]).
+     * Note: Unlike [trackBallMove], this method does not immediately trigger a scene transform.
+     * The transform is usually handled separately after the interaction sequence is complete.
+     *
+     * @param x The x-coordinate where the trackball interaction ended.
+     * @param y The y-coordinate where the trackball interaction ended.
      */
     fun trackBallUP(x: Float, y: Float) {
-        mMatrix.trackBallUP(x, y)
-        mMatrix.invers(mInverse!!)
+        mMatrix.trackBallUP(x = x, y = y)
+        mMatrix.invers(ret = mInverse!!)
     }
 
     /**
-     * TODO: Add kdoc
+     * Updates the scene by recalculating the inverse view matrix and then re-transforming all scene
+     * objects. This method should be called whenever the view matrix ([mMatrix]) has been modified
+     * directly (e.g., through direct manipulation of its properties, not through trackball or pan
+     * methods which handle this internally). It ensures that the [mInverse] matrix is up-to-date
+     * and that all scene objects are correctly transformed based on the current view.
      */
     fun update() {
-        mMatrix.invers(mInverse!!)
+        mMatrix.invers(ret = mInverse!!)
         transform()
     }
 
     /**
-     * TODO: Add kdoc
+     * Initiates a pan operation at the given screen coordinates.
+     * This method records the starting position of the pan (x, y)
+     * in the view matrix ([mMatrix]) and then recalculates the
+     * inverse view matrix ([mInverse]).
+     *
+     * @param x The x-coordinate of the pan start.
+     * @param y The y-coordinate of the pan start.
      */
     fun panDown(x: Float, y: Float) {
         mMatrix.panDown(x, y)
@@ -294,35 +398,48 @@ class Scene3D {
     }
 
     /**
-     * TODO: Add kdoc
+     * Handles a pan move event.
+     * This method updates the pan position in the view matrix ([mMatrix])
+     * based on the current touch coordinates (x, y).
+     * After updating the pan, it recalculates the inverse view matrix ([mInverse])
+     * and then calls [transform] to apply the updated transformation to all scene objects.
+     *
+     * @param x The current x-coordinate of the pan.
+     * @param y The current y-coordinate of the pan.
      */
     fun panMove(x: Float, y: Float) {
-        mMatrix.panMove(x, y)
-        mMatrix.invers(mInverse!!)
+        mMatrix.panMove(x = x, y = y)
+        mMatrix.invers(ret = mInverse!!)
         transform()
     }
 
     /**
-     * TODO: Add kdoc
+     * Finalizes the pan operation.
+     * This method signals to the view matrix ([mMatrix]) that the pan gesture has ended.
+     * It typically corresponds to a touch "up" event in a pan gesture.
+     * Unlike [panMove], this method does not immediately trigger a scene transform or
+     * recalculate the inverse matrix. The final state of the matrix after the pan
+     * should have been set by the preceding [panMove] calls.
      */
     fun panUP() {
         mMatrix.panUP()
     }
 
     /**
-     * TODO: Add kdoc
+     * Gets the current "look at" point of the camera in the 3D scene.
+     * The look point is the 3D coordinate (x, y, z) that the camera is directed towards.
+     * This property returns a string representation of the look point array (e.g., "[x, y, z]").
      */
-    @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
     val lookPoint: String
-        get() = Arrays.toString(mMatrix.lookPoint)
+        get() = mMatrix.lookPoint.contentToString()
 
     /**
-     * TODO: Add kdoc
+     * TODO: Continue here.
      */
     fun setScreenDim(width: Int, height: Int, img: IntArray, background: Int) {
-        mMatrix.setScreenDim(width, height)
-        setupBuffers(width, height, img, background)
-        setUpMatrix(width, height)
+        mMatrix.setScreenDim(x = width, y = height)
+        setupBuffers(w = width, h = height, img = img, background = background)
+        setUpMatrix(width = width, height = height)
         transform()
     }
 
