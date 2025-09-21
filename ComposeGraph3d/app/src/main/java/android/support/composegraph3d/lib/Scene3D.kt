@@ -50,7 +50,7 @@ class Scene3D {
     var mPreObjects: ArrayList<Object3D> = arrayListOf()
 
     /**
-     * An ArrayList that holds the post-processed 3D objects. These objects are rendered after the
+     * An ArrayList that holds the 3D objects that are rendered after the
      * main object [mObject3D] has been rendered.
      */
     var mPostObjects: ArrayList<Object3D> = ArrayList()
@@ -84,8 +84,8 @@ class Scene3D {
 
     /**
      * Flag indicating whether the light source should move with the camera.
-     * If `true`, the light's direction will be transformed by the camera's view matrix.
-     * If `false`, the light's direction remains fixed in world space.
+     *  - If `true`, the light's direction will be transformed by the camera's view matrix.
+     *  - If `false`, the light's direction remains fixed in world space.
      */
     var mLightMovesWithCamera: Boolean = false
 
@@ -104,7 +104,7 @@ class Scene3D {
      * and z components of a vector.
      */
     @JvmField
-    var tmpVec: FloatArray = FloatArray(3)
+    var tmpVec: FloatArray = FloatArray(size = 3)
 
     /**
      * The color used for drawing lines in the scene.
