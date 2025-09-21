@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "UNUSED_PARAMETER",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "MemberVisibilityCanBePrivate"
+)
 
 package android.support.composegraph3d.lib
 
@@ -25,22 +30,28 @@ import java.util.*
  */
 class ViewMatrix : Matrix() {
     /**
-     * TODO: Add kdoc
+     * The point in 3D space that the camera is looking at.
+     * This is a [DoubleArray] of 3 values representing the x, y, and z coordinates.
+     * Modifying this value will change the direction the camera is pointing.
      */
     var lookPoint: DoubleArray? = null
 
     /**
-     * TODO: Add kdoc
+     * The point in 3D space that the camera is located.
+     * This is a [DoubleArray] of 3 values representing the x, y, and z coordinates.
+     * Modifying this value will change the position of the camera.
      */
     var eyePoint: DoubleArray? = null
 
     /**
-     * TODO: Add kdoc
+     * The direction that is considered "up" in the 3D world.
+     * This is a [DoubleArray] of 3 values representing a vector in 3D space.
+     * Modifying this value will change the orientation of the camera.
      */
     var upVector: DoubleArray? = null
 
     /**
-     * TODO: Add kdoc
+     * TODO: Continue here.
      */
     var screenWidth: Double = 0.0
 
@@ -217,7 +228,7 @@ class ViewMatrix : Matrix() {
         )
         val zv = doubleArrayOf(-dx.toDouble(), -dy.toDouble(), -dz.toDouble())
         val rv =
-            doubleArrayOf(if (dx == 0) 1.0 else 0.0, if (dx == 0) 0.0 else 1.0 , 0.0)
+            doubleArrayOf(if (dx == 0) 1.0 else 0.0, if (dx == 0) 0.0 else 1.0, 0.0)
         val up = DoubleArray(3)
         VectorUtil.norm(zv)
         VectorUtil.norm(rv)
