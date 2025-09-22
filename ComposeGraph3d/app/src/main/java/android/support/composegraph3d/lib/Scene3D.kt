@@ -471,10 +471,13 @@ class Scene3D {
      * This function calculates and configures the view matrix ([mMatrix]) based on the
      * main 3D object ([mObject3D]), the specified screen dimensions, and the current zoom level.
      * It sets the look point to the center of the main object.
+     *
      * If [resetOrientation] is true, it also resets the camera's eye point and up vector
      * to a default orientation (looking down the z-axis, with y-axis as up, and positioned
      * based on the object's size and zoom).
+     *
      * If [resetOrientation] is false, it attempts to fix the up point of the existing matrix.
+     *
      * It then calculates the screen width in world coordinates based on the object's diagonal
      * and zoom, sets the screen dimensions in the matrix, calculates the main view matrix,
      * and finally computes its inverse.
@@ -508,12 +511,12 @@ class Scene3D {
     }
 
     /**
-     * Checks if the scene is not yet set up.
-     * The scene is considered not set up if the inverse matrix ([mInverse]) is null.
+     * Convenience function that checks if the scene is not yet set up.
+     * The scene is considered not set up if the inverse matrix ([mInverse]) is `null`.
      * This typically means that [setUpMatrix] or a similar initialization method
      * that calculates the inverse matrix has not been called or has failed.
      *
-     * @return `true` if the inverse matrix is null, indicating the scene is not set up;
+     * @return `true` if the inverse matrix is `null`, indicating the scene is not set up;
      * `false` otherwise.
      */
     fun notSetUp(): Boolean {
@@ -705,9 +708,9 @@ class Scene3D {
          * This version uses a `when` statement for determining the RGB components based on hue.
          * The alpha component is set to opaque (-0x1000000 or 0xFF000000).
          *
-         * @param hue The hue component of the color, expected to be in the range [0, 1).
-         * @param saturation The saturation component of the color, in the range [0, 1].
-         * @param value The value (brightness) component of the color, in the range [0, 1].
+         * @param hue The hue component of the color, expected to be in the range `[0, 1)`.
+         * @param saturation The saturation component of the color, in the range `[0, 1]`.
+         * @param value The value (brightness) component of the color, in the range `[0, 1]`.
          * @return An integer representing the ARGB color. If the hue calculation results in an
          * unexpected value, returns 0 (transparent black).
          */
@@ -735,11 +738,11 @@ class Scene3D {
          * This function uses a series of if statements to determine the RGB components
          * based on the hue.
          *
-         * @param hue The hue component of the color, expected to be in the range [0, 1).
+         * @param hue The hue component of the color, expected to be in the range `[0, 1)`.
          * A hue of 0 or 1 corresponds to red.
-         * @param saturation The saturation component of the color, in the range [0, 1].
+         * @param saturation The saturation component of the color, in the range `[0, 1]`.
          * A saturation of 0 results in a grayscale color.
-         * @param value The value (brightness) component of the color, in the range [0, 1].
+         * @param value The value (brightness) component of the color, in the range `[0, 1]`.
          * A value of 0 results in black.
          * @return An integer representing the ARGB color. If the hue calculation results in an
          * unexpected value (outside the 0-5 range for `h`), it returns 0 (transparent black).
@@ -858,10 +861,10 @@ class Scene3D {
         /**
          * Renders a flat-shaded triangle onto the screen.
          *
-         * This function implements a scanline rasterization algorithm to fill a triangle
-         * defined by three vertices (fx1, fy1, fz1), (fx2, fy2, fz2), and (fx3, fy3, fz3).
+         * This function implements a scanline rasterization algorithm to fill a triangle defined by
+         * three vertices ([fx1], [fy1], [fz1]), ([fx2], [fy2], [fz2]), and ([fx3], [fy3], [fz3]).
          * It performs z-buffering to ensure correct depth occlusion.
-         * The triangle is colored with a single specified `color`.
+         * The triangle is colored with a single specified [color].
          *
          * The process involves:
          *  1. Ensuring the triangle vertices are ordered in a counter-clockwise direction
@@ -897,6 +900,7 @@ class Scene3D {
          * @param fz2 The z-coordinate of the second vertex of the triangle.
          * @param fx1 The x-coordinate of the first vertex of the triangle.
          * @param fy1 The y-coordinate of the first vertex of the triangle.
+         * @param fz1 The z-coordinate of the first vertex of the triangle.
          */
         @JvmStatic
         fun triangle(

@@ -224,7 +224,8 @@ object VectorUtil {
      * @param b0 The x-coordinate of the second vector.
      * @param b1 The y-coordinate of the second vector.
      * @param b2 The z-coordinate of the second vector.
-     * @param out A [FloatArray] of at least size 3 where the resulting cross product vector will be stored.
+     * @param out A [FloatArray] of at least size 3 where the resulting cross product vector
+     * will be stored.
      */
     fun cross(a0: Float, a1: Float, a2: Float, b0: Float, b1: Float, b2: Float, out: FloatArray?) {
         val out0 = a1 * b2 - b1 * a2
