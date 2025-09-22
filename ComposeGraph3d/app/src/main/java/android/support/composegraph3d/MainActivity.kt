@@ -10,6 +10,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,14 +48,16 @@ import kotlin.coroutines.CoroutineContext
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call the [setContent] method to have it compose as our root view a Composable which
-     * consists of a [ComposeGraph3dTheme] custom [MaterialTheme] wrapped [Surface] whose `modifier`
-     * argument is a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraints,
-     * and whose `color` argument sets its background [Color] to the [Colors.background] color of
-     * [MaterialTheme.colors] (which is [Color.White] since [ComposeGraph3dTheme] does not override
-     * it. The `content` of the [Surface] is our [Greeting] Composable with its `name` argument the
-     * string "Android".
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge-to-edge,
+     * then we call our super's implementation of `onCreate`. We call the [setContent] method to have
+     * it compose as our root view a Composable which consists of a [ComposeGraph3dTheme] custom
+     * [MaterialTheme] wrapped [Box] whose `modifier` argument is a [Modifier.safeDrawingPadding] to
+     * add padding to accommodate the safe drawing insets. In the [BoxScope] `content` of the [Box]
+     * we compose a [Surface] whose `modifier` argument is a [Modifier.fillMaxSize] to have it occupy
+     * its entire incoming size constraints, and whose `color` argument sets its background [Color]
+     * to the [Colors.background] color of [MaterialTheme.colors] (which is [Color.White] since
+     * [ComposeGraph3dTheme] does not override it. The `content` of the [Surface] is our [Greeting]
+     * Composable with its `name` argument the string "Android".
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -186,12 +189,15 @@ fun Graph3D(modifier: Modifier) {ImageBitmap
 }
 
 /**
- * TODO: Add kdoc
+ * This is a Preview of our root Composable [Greeting] which is wrapped in our [ComposeGraph3dTheme]
+ * custom [MaterialTheme] and called with the `name` "Android". The [Preview] annotation enables us
+ * to preview our Composables in Android Studio. The `showBackground` argument of the [Preview] causes
+ * a default background to be added to the preview.
  */
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     ComposeGraph3dTheme {
-        Greeting("Android")
+        Greeting(name = "Android")
     }
 }

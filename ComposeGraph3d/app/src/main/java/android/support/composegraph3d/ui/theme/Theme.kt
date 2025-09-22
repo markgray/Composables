@@ -30,7 +30,14 @@ private val LightColorPalette = lightColors(
 )
 
 /**
- * TODO: Add kdoc
+ * Our custom [MaterialTheme].
+ *
+ * This function sets up the [MaterialTheme] with the appropriate color palette (dark or light),
+ * typography, and shapes defined for the `ComposeGraph3d` application.
+ *
+ * @param darkTheme Whether the dark theme should be used. Defaults to the system's dark
+ * theme setting.
+ * @param content The Composable content to which the theme will be applied.
  */
 @Composable
 fun ComposeGraph3dTheme(
