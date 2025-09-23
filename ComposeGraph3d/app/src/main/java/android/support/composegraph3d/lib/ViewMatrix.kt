@@ -88,9 +88,11 @@ class ViewMatrix : Matrix() {
 
     /**
      * Sets the dimensions of the screen in pixels.
-     * This method updates the internal representation of the screen's width and height.
-     * These dimensions are used in various calculations, particularly for transforming
-     * world coordinates to screen coordinates and for handling user input like touch gestures.
+     *
+     * This method updates the internal representation of the screen's width and height which is
+     * stored in [IntArray] property [mScreenDim]. These dimensions are used in various
+     * calculations, particularly for transforming world coordinates to screen coordinates
+     * and for handling user input like touch gestures.
      *
      * @param x The width of the screen in pixels.
      * @param y The height of the screen in pixels.
@@ -100,11 +102,11 @@ class ViewMatrix : Matrix() {
     }
 
     /**
-     * Resets the view matrix to an identity matrix.
-     * This effectively undoes any transformations (rotation, translation, scaling)
-     * that have been applied, returning the camera to its default state and orientation.
-     * This is useful for starting with a clean slate or resetting the view after
-     * a series of transformations. Unused apparently.
+     * This would be a good function name for a function that resets the view matrix to an identity
+     * matrix, effectively undoing any transformations (rotation, translation, scaling) that have
+     * been applied, returning the camera to its default state and orientation. This is would be
+     * useful for starting with a clean slate or resetting the view after a series of
+     * transformations. Unimplemented and apparently unused.
      */
     fun makeUnit() {}
 
@@ -116,9 +118,9 @@ class ViewMatrix : Matrix() {
      *
      * The process involves:
      *  1. Calculating the view vector (`zv`) from the eye point to the look point.
-     *  2. Normalizing the view vector.
-     *  3. Calculating the right vector (rv) by taking the cross product of the view vector and the
-     *  current up vector.
+     *  2. Normalizing the view vector (`zv`).
+     *  3. Calculating the right vector (`rv`) by taking the cross product of the view vector and
+     *  the current up vector.
      *  4. Recalculating the up vector by taking the cross product of the view vector and the right
      *  vector. This ensures the new up vector is orthogonal to both the view and right vectors.
      *  5. Normalizing the new up vector.
@@ -300,18 +302,18 @@ class ViewMatrix : Matrix() {
      *  5. Defining an initial right vector (`rv`) based on the direction vector.
      *  If `dx` is zero, `rv` is (1,0,0); otherwise, it's (0,1,0). This provides an initial
      *  orthogonal vector.
-     *  6. Calculating the [upVector] by taking the cross product of `zv` and `rv`, then `zv` and
+     *  6. Normalizing all calculated vectors (`zv`, `rv`, `up`).
+     *  7. Calculating the [upVector] by taking the cross product of `zv` and `rv`, then `zv` and
      *  the new `up`, and finally `zv` and the new `rv`. This ensures the [upVector] is
      *  orthogonal to the view direction and the right vector.
-     *  7. Normalizing all calculated vectors (`zv`, `rv`, `up`).
      *  8. Setting the [mScreenDim] with the provided width and height.
      *  9. Calling [calcMatrix] to update the view matrix with the new camera parameters.
      *
      * @param dir A character encoding the viewing direction:
      * ```
-     *  - Bits 0-3: dz component (0 for 0, 1 for positive, >1 for negative)
-     *  - Bits 4-7: dx component (0 for 0, 1 for positive, >1 for negative)
-     *  - Bits 8-11: dy component (0 for 0, 1 for positive, >1 for negative)
+     *  - Bits 0-3: dz component 0x001 for up (dz = +1), 0x002 for down (dz = -1)
+     *  - Bits 4-7: dx component 0x010 for right (dz = +1), 0x020 for left (dx = -1)
+     *  - Bits 8-11: dy component 0x100 for forward (dy = +1), 0x200 for behind (dy = -1)
      * ```
      * @param tri The 3D object ([Object3D]) whose vertices are used to determine the look point
      * and screen width.
@@ -359,7 +361,7 @@ class ViewMatrix : Matrix() {
      *
      * The process involves:
      *  1. Calculating the object's look point (center) and screen width using [calcLook],
-     *  considering the [voxelDim] for scaling.
+     *  considering the [FloatArray] parameter [voxelDim] for scaling.
      *  2. Setting the [eyePoint] by offsetting the [lookPoint] along a fixed diagonal
      *  direction (1, 1, 1), scaled by the [screenWidth]. This places the camera at a
      *  distance from the object, looking towards it from a general diagonal perspective.
@@ -543,16 +545,16 @@ class ViewMatrix : Matrix() {
      *  1. Checking if the touch position has actually changed. If not, the function returns.
      *  2. Converting the current 2D touch coordinates (x, y) to a 3D vector on the virtual
      *  trackball using [ballToVec], storing the result in [mMoveToV].
-     *  3. Calculating the angle of rotation between the starting trackball vector ([mStartV])
+     *  3. Calculating the `angle` of rotation between the starting trackball vector ([mStartV])
      *  and the current trackball vector ([mMoveToV]) using [Quaternion.calcAngle].
-     *  4. Calculating the axis of rotation between [mStartV] and [mMoveToV] using
+     *  4. Calculating the `axis` of rotation between [mStartV] and [mMoveToV] using
      *  [Quaternion.calcAxis].
-     *  5. Transforming the calculated rotation axis by the initial camera orientation
+     *  5. Transforming the calculated rotation `axis` by the initial camera orientation
      *  ([mStartMatrix]) to ensure the rotation is applied in the correct coordinate space.
-     *  6. Updating the internal quaternion ([mQ]) with the calculated angle and transformed axis.
+     *  6. Updating the internal quaternion ([mQ]) with the calculated `angle` and transformed `axis`.
      *  7. Calculating the initial vector from the look point to the eye point.
      *  8. Rotating this vector using the quaternion [mQ] to get the new direction from the
-     *  look point to the eye point.
+     *  look point to the eye point [eyePoint].
      *  9. Rotating the initial up vector ([mStartUpVector]) by the quaternion [mQ] to get the
      *  new up vector.
      *  10. Calculating the new [eyePoint] by subtracting the rotated direction vector from the
@@ -570,7 +572,7 @@ class ViewMatrix : Matrix() {
         val angle: Double = Quaternion.calcAngle(v1 = mStartV, v2 = mMoveToV)
         var axis: DoubleArray? = Quaternion.calcAxis(v1 = mStartV, v2 = mMoveToV)
         axis = mStartMatrix!!.vecmult(src = axis)
-        mQ[angle] = axis
+        mQ.set(angle = angle, axis = axis) // was: `mQ[angle] = axis` which is obscure to say the least
         VectorUtil.sub(a = lookPoint, b = mStartEyePoint, out = eyePoint)
         eyePoint = mQ.rotateVec(v = eyePoint)
         upVector = mQ.rotateVec(v = mStartUpVector)
@@ -649,7 +651,7 @@ class ViewMatrix : Matrix() {
      * Finalizes a pan gesture by resetting the starting pan coordinates.
      * This function is typically called when a touch "up" event occurs, signaling
      * the end of a pan operation. It sets [mPanStartX] and [mPanStartY] to
-     * `Float.NaN`, indicating that no pan gesture is currently active.
+     * [Float.NaN], indicating that no pan gesture is currently active.
      * This ensures that the next touch down event, if interpreted as a pan,
      * will correctly initialize its starting point.
      */
@@ -667,9 +669,9 @@ class ViewMatrix : Matrix() {
      *  1. Defining a `ballRadius` as 40% of the smaller screen dimension. This defines
      *  the size of the virtual trackball.
      *  2. Calculating the center of the screen (`cx`, `cy`).
-     *  3. Calculating the displacement (`dx`, `dy`) of the input coordinates (x, y)
+     *  3. Calculating the displacement (`dx`, `dy`) of the input coordinates ([x], [y])
      *  from the screen center, normalized by the `ballRadius`. `dx` is inverted
-     *  (center - x) which might be specific to the desired trackball behavior.
+     *  (center - [x]) which might be specific to the desired trackball behavior.
      *  4. Calculating the squared distance (`scale`) of the normalized displacement
      *  from the center of the trackball's projection on the screen.
      *  5. If `scale` is greater than 1 (meaning the touch point is outside the projected
@@ -680,8 +682,8 @@ class ViewMatrix : Matrix() {
      *  Pythagorean theorem: `dz = sqrt(1 - (dx^2 + dy^2))`. The absolute value is
      *  taken inside the square root to handle potential floating-point inaccuracies
      *  that might result in a negative value for points very close to the edge.
-     *  7. Storing the calculated `dx`, `dy`, and `dz` into the output vector `v`.
-     *  8. Normalizing the resulting vector `v` to ensure it's a unit vector.
+     *  7. Storing the calculated `dx`, `dy`, and `dz` into the output vector [v].
+     *  8. Normalizing the resulting vector [v] to ensure it's a unit vector.
      *
      * @param x The x-coordinate on the screen.
      * @param y The y-coordinate on the screen.
