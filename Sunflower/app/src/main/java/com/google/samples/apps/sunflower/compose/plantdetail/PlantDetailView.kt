@@ -21,8 +21,8 @@ import android.text.method.LinkMovementMethod
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -55,7 +55,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -81,8 +80,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.text.HtmlCompat
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.DataSource
@@ -111,7 +111,10 @@ data class PlantDetailsCallbacks(
 
 @Composable
 fun PlantDetailsScreen(
-    plantDetailsViewModel: PlantDetailViewModel = hiltViewModel(),
+    plantDetailsViewModel: PlantDetailViewModel = hiltViewModel(checkNotNull(
+        LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            }, null),
     onBackClick: () -> Unit,
     onShareClick: (String) -> Unit,
     onGalleryClick: (Plant) -> Unit,
@@ -164,7 +167,7 @@ fun PlantDetails(
     val toolbarState = plantScroller.getToolbarState(LocalDensity.current)
 
     // Transition that fades in/out the header with the image and the Toolbar
-    val transition = updateTransition(transitionState, label = "")
+    val transition = rememberTransition(transitionState, "")
     val toolbarAlpha = transition.animateFloat(
         transitionSpec = { spring(stiffness = Spring.StiffnessLow) }, label = ""
     ) { toolbarTransitionState ->
@@ -564,10 +567,19 @@ private fun PlantDetailContentPreview() {
     SunflowerTheme {
         Surface {
             PlantDetails(
-                Plant("plantId", "Tomato", "HTML<br>description", 6),
-                true,
-                true,
-                PlantDetailsCallbacks({ }, { }, { }, { })
+                plant = Plant(
+                    plantId = "plantId",
+                    name = "Tomato",
+                    description = "HTML<br>description",
+                    growZoneNumber = 6
+                ),
+                isPlanted = true,
+                hasValidUnsplashKey = true,
+                callbacks = PlantDetailsCallbacks(
+                    onFabClick = { },
+                    onBackClick = { },
+                    onShareClick = { },
+                    onGalleryClick = { })
             )
         }
     }
