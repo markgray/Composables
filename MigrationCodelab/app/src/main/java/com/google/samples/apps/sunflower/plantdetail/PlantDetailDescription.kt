@@ -18,20 +18,20 @@ package com.google.samples.apps.sunflower.plantdetail
 
 import android.content.Context
 import android.content.res.Configuration
+import android.content.res.Resources
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.method.MovementMethod
 import android.widget.TextView
-import android.content.res.Resources
-import android.text.Spanned
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Colors
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -40,7 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -50,11 +50,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.LiveData
-import com.google.accompanist.themeadapter.material.MdcTheme
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
+import com.google.samples.apps.sunflower.theme.SunflowerTheme
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
-import androidx.compose.ui.platform.LocalResources
 
 /**
  * This Composable exists in order to "hoist" the [State] wrapped [PlantDetailViewModel.plant] field
@@ -120,7 +119,7 @@ fun PlantDetailContent(plant: Plant) {
 private fun PlantName(name: String) {
     Text(
         text = name,
-        style = MaterialTheme.typography.h5,
+        style = MaterialTheme.typography.headlineSmall,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(R.dimen.margin_small))
@@ -143,8 +142,8 @@ private fun PlantName(name: String) {
  *
  * Next we have a [Text] Composable displaying as its `text` argument the [String] whose resource ID
  * is `R.string.watering_needs_prefix` ("Watering needs"), with its `color` argument the [Color] that
- * is specified for [Colors.primaryVariant] in the default [MaterialTheme.colors] (we use [MdcTheme]
- * as our custom [MaterialTheme] which parses our `R.style.Base_Theme_Sunflower` and uses the [Color]
+ * is specified for [ColorScheme.secondary] in the default [MaterialTheme.colorScheme] (we use
+ * [SunflowerTheme] as our custom [MaterialTheme] uses the [Color]
  * whose resource ID is `R.color.sunflower_green_700` (0x005d2b) for light mode and the [Color] whose
  * resource ID is `R.color.sunflower_green_200` (0x81ca9d) for night mode), for its `fontWeight`
  * argument we use [FontWeight.Bold], and for its `modifier` argument we chain a [Modifier.padding]
@@ -174,7 +173,7 @@ private fun PlantWatering(wateringInterval: Int) {
 
         Text(
             text = stringResource(R.string.watering_needs_prefix),
-            color = MaterialTheme.colors.primaryVariant,
+            color = MaterialTheme.colorScheme.secondary,
             fontWeight = FontWeight.Bold,
             modifier = centerWithPaddingModifier.padding(top = normalPadding)
         )
@@ -236,6 +235,7 @@ private fun PlantDescription(description: String) {
 @Preview
 @Composable
 private fun PlantDetailContentPreview() {
+    @Suppress("RedundantValueArgument")
     val plant = Plant(
         plantId = "id",
         name = "Apple",
@@ -244,7 +244,7 @@ private fun PlantDetailContentPreview() {
         wateringInterval = 30,
         imageUrl = ""
     )
-    MdcTheme {
+    SunflowerTheme {
         PlantDetailContent(plant)
     }
 }
@@ -257,6 +257,7 @@ private fun PlantDetailContentPreview() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PlantDetailContentDarkPreview() {
+    @Suppress("RedundantValueArgument")
     val plant = Plant(
         plantId = "id",
         name = "Apple",
@@ -265,7 +266,7 @@ private fun PlantDetailContentDarkPreview() {
         wateringInterval = 30,
         imageUrl = ""
     )
-    MdcTheme {
+    SunflowerTheme {
         PlantDetailContent(plant)
     }
 }
@@ -276,7 +277,7 @@ private fun PlantDetailContentDarkPreview() {
 @Preview
 @Composable
 private fun PlantNamePreview() {
-    MdcTheme {
+    SunflowerTheme {
         PlantName("Apple")
     }
 }
@@ -287,7 +288,7 @@ private fun PlantNamePreview() {
 @Preview
 @Composable
 private fun PlantWateringPreview() {
-    MdcTheme {
+    SunflowerTheme {
         PlantWatering(7)
     }
 }
@@ -298,7 +299,7 @@ private fun PlantWateringPreview() {
 @Preview
 @Composable
 private fun PlantDescriptionPreview() {
-    MdcTheme {
+    SunflowerTheme {
         PlantDescription("HTML<br><br>description")
     }
 }

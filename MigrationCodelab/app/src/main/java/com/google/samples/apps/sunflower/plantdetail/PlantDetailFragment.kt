@@ -39,7 +39,6 @@ import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.NavController
 import androidx.navigation.fragment.navArgs
-import com.google.accompanist.themeadapter.material.MdcTheme
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.appbar.AppBarLayout
@@ -54,6 +53,7 @@ import com.google.samples.apps.sunflower.adapters.PlantAdapter
 import com.google.samples.apps.sunflower.adapters.PlantAdapter.PlantViewHolder
 import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 import com.google.samples.apps.sunflower.data.PlantRepository
+import com.google.samples.apps.sunflower.theme.SunflowerTheme
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModelFactory
 
 /**
@@ -138,7 +138,7 @@ class PlantDetailFragment : Fragment() {
      *  its [ViewCompositionStrategy] to [ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed]
      *  in order to dispose the Composition when the Fragment view lifecycle is destroyed, instead
      *  of when the [ComposeView] is detached from the window. We then call [ComposeView.setContent]
-     *  to set the Jetpack Compose content of this [View] to an [MdcTheme] wrapped call to
+     *  to set the Jetpack Compose content of this [View] to an [SunflowerTheme] wrapped call to
      *  the [PlantDetailDescription] screen, with [plantDetailViewModel] as its `plantDetailViewModel`
      *  argument.
      *
@@ -228,7 +228,7 @@ class PlantDetailFragment : Fragment() {
 
                 // Add Jetpack Compose content to this View
                 setContent {
-                    MdcTheme {
+                    SunflowerTheme {
                         PlantDetailDescription(plantDetailViewModel = plantDetailViewModel)
                     }
                 }

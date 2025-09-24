@@ -86,8 +86,7 @@ dependencies {
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.compose.ui:ui-tooling-preview:1.9.1")
     debugImplementation("androidx.compose.ui:ui-tooling:1.9.1")
-
-    implementation("com.google.accompanist:accompanist-themeadapter-material:0.36.0")
+    implementation("androidx.compose.material3:material3:1.3.2")
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
