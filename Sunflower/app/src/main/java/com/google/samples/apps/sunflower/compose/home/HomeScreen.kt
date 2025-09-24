@@ -20,11 +20,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -48,7 +45,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.compose.garden.GardenScreen
 import com.google.samples.apps.sunflower.compose.plantlist.PlantListScreen
@@ -58,8 +56,8 @@ import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
 import kotlinx.coroutines.launch
 
 enum class SunflowerPage(
-    @StringRes val titleResId: Int,
-    @DrawableRes val drawableResId: Int
+    @param:StringRes val titleResId: Int,
+    @param:DrawableRes val drawableResId: Int
 ) {
     MY_GARDEN(R.string.my_garden_title, R.drawable.ic_my_garden_active),
     PLANT_LIST(R.string.plant_list_title, R.drawable.ic_plant_list_active)
@@ -70,8 +68,12 @@ enum class SunflowerPage(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onPlantClick: (Plant) -> Unit = {},
-    viewModel: PlantListViewModel = hiltViewModel(),
-    pages: Array<SunflowerPage> = SunflowerPage.values()
+    viewModel: PlantListViewModel = hiltViewModel(
+        viewModelStoreOwner = checkNotNull(value = LocalViewModelStoreOwner.current) {
+            "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+        }, key = null
+    ),
+    pages: Array<SunflowerPage> = SunflowerPage.entries.toTypedArray()
 ) {
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -195,7 +197,7 @@ private fun HomeTopAppBar(
 @Composable
 private fun HomeScreenPreview() {
     SunflowerTheme {
-        val pages = SunflowerPage.values()
+        val pages = SunflowerPage.entries.toTypedArray()
         HomePagerScreen(
             onPlantClick = {},
             pagerState = rememberPagerState(pageCount = { pages.size }),
