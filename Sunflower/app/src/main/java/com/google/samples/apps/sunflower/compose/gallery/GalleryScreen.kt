@@ -42,7 +42,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -59,7 +60,11 @@ import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun GalleryScreen(
-    viewModel: GalleryViewModel = hiltViewModel(),
+    viewModel: GalleryViewModel = hiltViewModel(
+        viewModelStoreOwner = checkNotNull(value = LocalViewModelStoreOwner.current) {
+            "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+        }, key = null
+    ),
     onPhotoClick: (UnsplashPhoto) -> Unit,
     onUpClick: () -> Unit,
 ) {

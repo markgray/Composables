@@ -17,9 +17,7 @@
 package com.google.samples.apps.sunflower.compose.plantlist
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -32,17 +30,22 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
+import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
 
 @Composable
 fun PlantListScreen(
     onPlantClick: (Plant) -> Unit,
 
     modifier: Modifier = Modifier,
-    viewModel: PlantListViewModel = hiltViewModel(),
+    viewModel: PlantListViewModel = hiltViewModel(
+        viewModelStoreOwner = checkNotNull(value = LocalViewModelStoreOwner.current) {
+            "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+        }, key = null
+    ),
 ) {
     val plants by viewModel.plants.observeAsState(initial = emptyList())
     PlantListScreen(plants = plants, modifier, onPlantClick = onPlantClick)

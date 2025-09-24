@@ -111,10 +111,13 @@ data class PlantDetailsCallbacks(
 
 @Composable
 fun PlantDetailsScreen(
-    plantDetailsViewModel: PlantDetailViewModel = hiltViewModel(checkNotNull(
-        LocalViewModelStoreOwner.current) {
-                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-            }, null),
+    plantDetailsViewModel: PlantDetailViewModel = hiltViewModel(
+        viewModelStoreOwner = checkNotNull(
+            value = LocalViewModelStoreOwner.current
+        ) {
+            "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+        }, key = null
+    ),
     onBackClick: () -> Unit,
     onShareClick: (String) -> Unit,
     onGalleryClick: (Plant) -> Unit,
