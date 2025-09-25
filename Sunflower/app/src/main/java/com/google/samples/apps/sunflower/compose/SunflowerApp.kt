@@ -18,10 +18,10 @@ package com.google.samples.apps.sunflower.compose
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ShareCompat
+import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -43,7 +43,7 @@ fun SunflowerApp() {
 fun SunFlowerNavHost(
     navController: NavHostController
 ) {
-    val activity = (LocalContext.current as Activity)
+    val activity = (LocalActivity.current as Activity)
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
             HomeScreen(
@@ -80,7 +80,7 @@ fun SunFlowerNavHost(
         ) {
             GalleryScreen(
                 onPhotoClick = {
-                    val uri = Uri.parse(it.user.attributionUrl)
+                    val uri = it.user.attributionUrl.toUri()
                     val intent = Intent(Intent.ACTION_VIEW, uri)
                     activity.startActivity(intent)
                 },

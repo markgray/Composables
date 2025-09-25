@@ -27,6 +27,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,6 +47,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -134,10 +136,10 @@ fun PlantDetailsScreen(
                 onDismissSnackbar = { plantDetailsViewModel.dismissSnackbar() }
             ) {
                 PlantDetails(
-                    plant,
-                    isPlanted,
-                    plantDetailsViewModel.hasValidUnsplashKey(),
-                    PlantDetailsCallbacks(
+                    plant = plant,
+                    isPlanted = isPlanted,
+                    hasValidUnsplashKey = plantDetailsViewModel.hasValidUnsplashKey(),
+                    callbacks = PlantDetailsCallbacks(
                         onBackClick = onBackClick,
                         onFabClick = {
                             plantDetailsViewModel.addPlantToGarden()
@@ -538,11 +540,15 @@ private fun PlantInformation(
                 )
             }
             if (hasValidUnsplashKey) {
+                val interactionSource = remember { MutableInteractionSource() }
                 Image(
                     painter = painterResource(id = R.drawable.ic_photo_library),
                     contentDescription = "Gallery Icon",
-                    Modifier
-                        .clickable { onGalleryClick() }
+                    modifier = Modifier
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = rememberRipple()
+                        ) { onGalleryClick() }
                         .align(Alignment.CenterEnd)
                 )
             }
