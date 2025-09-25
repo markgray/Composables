@@ -31,6 +31,15 @@ import retrofit2.http.Query
  */
 interface UnsplashService {
 
+    /**
+     * Search for photos on Unsplash.
+     *
+     * @param query The search terms.
+     * @param page Page number to retrieve. (Optional; default: 1)
+     * @param perPage Number of items per page. (Optional; default: 10)
+     * @param clientId Your Unsplash application’s access key. (Default: [BuildConfig.UNSPLASH_ACCESS_KEY])
+     * @return An [UnsplashSearchResponse] object containing the search results.
+     */
     @GET("search/photos")
     suspend fun searchPhotos(
         @Query("query") query: String,
@@ -40,13 +49,21 @@ interface UnsplashService {
     ): UnsplashSearchResponse
 
     companion object {
+        /**
+         * The base URL for the Unsplash API.
+         */
         private const val BASE_URL = "https://api.unsplash.com/"
 
+        /**
+         * Creates an instance of [UnsplashService].
+         *
+         * @return The created [UnsplashService] instance.
+         */
         fun create(): UnsplashService {
             val logger = HttpLoggingInterceptor().apply { level = Level.BASIC }
 
-            val client = OkHttpClient.Builder()
-                .addInterceptor(logger)
+            val client: OkHttpClient = OkHttpClient.Builder()
+                .addInterceptor(interceptor = logger)
                 .build()
 
             return Retrofit.Builder()

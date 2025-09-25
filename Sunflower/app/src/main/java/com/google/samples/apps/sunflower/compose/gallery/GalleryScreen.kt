@@ -58,6 +58,29 @@ import com.google.samples.apps.sunflower.viewmodels.GalleryViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
+/**
+ * Displays a gallery of Unsplash photos of plants.
+ *
+ * This composable function is the entry point for the gallery screen. It observes the
+ * [GalleryViewModel] for a list of [UnsplashPhoto]s and displays them in a vertically
+ * scrollable grid.
+ *
+ * We call our stateless [GalleryScreen] composable from this function with the arguments:
+ *   - `plantPictures`: The [Flow] of [PagingData] of [UnsplashPhoto]s returned by the
+ *   [GalleryViewModel.plantPictures] property of our [GalleryViewModel] parameter [viewModel].
+ *   - `onPhotoClick`: A lambda function that is called when a photo in the gallery is clicked,
+ *   our lambda parameter [onPhotoClick].
+ *   - `onUpClick`: A lambda function that is called when the "up" button in the top app bar
+ *   is clicked, our lambda parameter [onUpClick].
+ *   - `onPullToRefresh`: A lambda function that is called when the user initiates a pull-to-refresh
+ *   action, a function reference to the [GalleryViewModel.refreshData] of our [GalleryViewModel]
+ *   parameter [viewModel].
+ *
+ * @param viewModel The [GalleryViewModel] used to fetch plant photos. Injected by Hilt.
+ * @param onPhotoClick Called when a photo in the gallery is clicked. The clicked
+ * [UnsplashPhoto] is passed as a parameter.
+ * @param onUpClick Called when the "up" button in the top app bar is clicked.
+ */
 @Composable
 fun GalleryScreen(
     viewModel: GalleryViewModel = hiltViewModel(
@@ -75,6 +98,15 @@ fun GalleryScreen(
         onPullToRefresh = viewModel::refreshData,
     )
 }
+/**
+ * Shows a [LazyVerticalGrid] of plant pictures.
+ * TODO: Continue here.
+ *
+ * @param plantPictures Flow of PagingData holding the pictures to display
+ * @param onPhotoClick callback when a photo is clicked
+ * @param onUpClick callback when the Up button is clicked
+ * @param onPullToRefresh callback when the user pulls to refresh
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GalleryScreen(
@@ -87,12 +119,12 @@ private fun GalleryScreen(
         topBar = {
             GalleryTopBar(onUpClick = onUpClick)
         },
-    ) { padding ->
+    ) { padding: PaddingValues ->
 
         val pagingItems: LazyPagingItems<UnsplashPhoto> =
             plantPictures.collectAsLazyPagingItems()
 
-        var isRefreshing by remember { mutableStateOf(false) }
+        var isRefreshing: Boolean by remember { mutableStateOf(value = false) }
 
         // TODO: LaunchedEffect to set isRefreshing = false when pagingItems.loadState.refresh completes.
         //  This can't be done in the same way as before because PullToRefreshBox doesn't expose
@@ -100,7 +132,7 @@ private fun GalleryScreen(
 
         Box(
             modifier = Modifier
-                .padding(padding)
+                .padding(paddingValues = padding)
         ) {
             PullToRefreshBox(
                 isRefreshing = isRefreshing,
@@ -108,17 +140,17 @@ private fun GalleryScreen(
                     isRefreshing = true
                     onPullToRefresh()
                 },
-                modifier = Modifier.align(Alignment.TopCenter),
+                modifier = Modifier.align(alignment = Alignment.TopCenter),
             ) {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Fixed(count = 2),
                     contentPadding = PaddingValues(all = dimensionResource(id = R.dimen.card_side_margin))
                 ) {
                     items(
                         count = pagingItems.itemCount,
                         key = pagingItems.itemKey { it.id }
                     ) { index ->
-                        val photo = pagingItems[index] ?: return@items
+                        val photo: UnsplashPhoto = pagingItems[index] ?: return@items
                         PhotoListItem(photo = photo) {
                             onPhotoClick(photo)
                         }
@@ -137,13 +169,13 @@ private fun GalleryTopBar(
 ) {
     TopAppBar(
         title = {
-            Text(stringResource(id = R.string.gallery_title))
+            Text(text = stringResource(id = R.string.gallery_title))
         },
         modifier = modifier.statusBarsPadding(),
         navigationIcon = {
             IconButton(onClick = onUpClick) {
                 Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null
                 )
             }
@@ -154,7 +186,7 @@ private fun GalleryTopBar(
 @Preview
 @Composable
 private fun GalleryScreenPreview(
-    @PreviewParameter(GalleryScreenPreviewParamProvider::class) plantPictures: Flow<PagingData<UnsplashPhoto>>
+    @PreviewParameter(provider = GalleryScreenPreviewParamProvider::class) plantPictures: Flow<PagingData<UnsplashPhoto>>
 ) {
     GalleryScreen(plantPictures = plantPictures, onPullToRefresh = {})
 }
@@ -164,9 +196,9 @@ private class GalleryScreenPreviewParamProvider :
 
     override val values: Sequence<Flow<PagingData<UnsplashPhoto>>> =
         sequenceOf(
-            flowOf(
-                PagingData.from(
-                    listOf(
+            element = flowOf(
+                value = PagingData.from(
+                    data = listOf(
                         UnsplashPhoto(
                             id = "1",
                             urls = UnsplashPhotoUrls("https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?q=75&fm=jpg&w=400&fit=max"),
