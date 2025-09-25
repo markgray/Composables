@@ -70,14 +70,14 @@ dependencies {
     implementation("com.google.android.material:material:1.13.0")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.9.1")
-    implementation("androidx.compose.ui:ui:1.9.1")
-    implementation("androidx.compose.foundation:foundation:1.9.1")
-    implementation("androidx.compose.material:material:1.9.1")
+    implementation("androidx.compose.runtime:runtime:1.9.2")
+    implementation("androidx.compose.ui:ui:1.9.2")
+    implementation("androidx.compose.foundation:foundation:1.9.2")
+    implementation("androidx.compose.material:material:1.9.2")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.activity:activity-compose:1.11.0")
-    implementation("androidx.navigation:navigation-compose:2.9.4")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.9.1")
+    implementation("androidx.navigation:navigation-compose:2.9.5")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.9.2")
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
@@ -85,7 +85,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
     // Compose testing dependencies
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.1")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.9.1")
-    androidTestImplementation("androidx.navigation:navigation-testing:2.9.4")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.9.2")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.9.5")
 }
