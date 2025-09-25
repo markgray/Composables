@@ -102,6 +102,7 @@ dependencies {
   implementation(libs.androidx.room.ktx)
   implementation(libs.androidx.work.runtime.ktx)
   implementation(libs.material)
+  implementation(libs.androidx.compose.material.icons.extended)
   implementation(libs.gson)
   implementation(libs.okhttp3.logging.interceptor)
   implementation(libs.retrofit2.converter.gson)

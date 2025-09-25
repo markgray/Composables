@@ -30,13 +30,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +45,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -89,48 +89,42 @@ private fun GalleryScreen(
         },
     ) { padding ->
 
-        val pullToRefreshState = rememberPullToRefreshState()
-
-        if (pullToRefreshState.isRefreshing) {
-            onPullToRefresh()
-        }
-
         val pagingItems: LazyPagingItems<UnsplashPhoto> =
             plantPictures.collectAsLazyPagingItems()
 
-        LaunchedEffect(pagingItems.loadState) {
-            when (pagingItems.loadState.refresh) {
-                is  LoadState.Loading -> Unit
-                is LoadState.Error,is LoadState.NotLoading -> {
-                    pullToRefreshState.endRefresh()
-                }
-            }
-        }
+        var isRefreshing by remember { mutableStateOf(false) }
+
+        // TODO: LaunchedEffect to set isRefreshing = false when pagingItems.loadState.refresh completes.
+        //  This can't be done in the same way as before because PullToRefreshBox doesn't expose
+        //  a means of ending the refresh from outside the composable.
 
         Box(
             modifier = Modifier
                 .padding(padding)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(all = dimensionResource(id = R.dimen.card_side_margin))
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = {
+                    isRefreshing = true
+                    onPullToRefresh()
+                },
+                modifier = Modifier.align(Alignment.TopCenter),
             ) {
-                items(
-                    count = pagingItems.itemCount,
-                    key = pagingItems.itemKey { it.id }
-                ) { index ->
-                    val photo = pagingItems[index] ?: return@items
-                    PhotoListItem(photo = photo) {
-                        onPhotoClick(photo)
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(all = dimensionResource(id = R.dimen.card_side_margin))
+                ) {
+                    items(
+                        count = pagingItems.itemCount,
+                        key = pagingItems.itemKey { it.id }
+                    ) { index ->
+                        val photo = pagingItems[index] ?: return@items
+                        PhotoListItem(photo = photo) {
+                            onPhotoClick(photo)
+                        }
                     }
                 }
             }
-
-            PullToRefreshContainer(
-                modifier = Modifier.align(Alignment.TopCenter),
-                state = pullToRefreshState
-            )
         }
     }
 }

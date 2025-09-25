@@ -547,7 +547,7 @@ private fun PlantInformation(
                     modifier = Modifier
                         .clickable(
                             interactionSource = interactionSource,
-                            indication = rememberRipple()
+                            indication = null
                         ) { onGalleryClick() }
                         .align(Alignment.CenterEnd)
                 )
