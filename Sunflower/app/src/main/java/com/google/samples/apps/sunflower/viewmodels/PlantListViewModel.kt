@@ -24,6 +24,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -32,6 +33,7 @@ import javax.inject.Inject
 /**
  * The ViewModel for plant list.
  */
+@Suppress("MemberVisibilityCanBePrivate")
 @HiltViewModel
 class PlantListViewModel @Inject internal constructor(
     plantRepository: PlantRepository,
@@ -39,9 +41,10 @@ class PlantListViewModel @Inject internal constructor(
 ) : ViewModel() {
 
     private val growZone: MutableStateFlow<Int> = MutableStateFlow(
-        savedStateHandle.get(GROW_ZONE_SAVED_STATE_KEY) ?: NO_GROW_ZONE
+        savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] ?: NO_GROW_ZONE
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val plants: LiveData<List<Plant>> = growZone.flatMapLatest { zone ->
         if (zone == NO_GROW_ZONE) {
             plantRepository.getPlants()
@@ -81,7 +84,7 @@ class PlantListViewModel @Inject internal constructor(
          */
         viewModelScope.launch {
             growZone.collect { newGrowZone ->
-                savedStateHandle.set(GROW_ZONE_SAVED_STATE_KEY, newGrowZone)
+                savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] = newGrowZone
             }
         }
     }
@@ -94,15 +97,17 @@ class PlantListViewModel @Inject internal constructor(
         }
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     fun setGrowZoneNumber(num: Int) {
         growZone.value = num
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     fun clearGrowZoneNumber() {
         growZone.value = NO_GROW_ZONE
     }
 
-    fun isFiltered() = growZone.value != NO_GROW_ZONE
+    fun isFiltered(): Boolean = growZone.value != NO_GROW_ZONE
 
     companion object {
         private const val NO_GROW_ZONE = -1

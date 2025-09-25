@@ -127,6 +127,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.compose)
   implementation(libs.androidx.lifecycle.runtime.compose)
   implementation(libs.glide)
+  implementation(libs.glide.compose)
   implementation(libs.accompanist.systemuicontroller)
   debugImplementation(libs.androidx.compose.ui.tooling)
 
