@@ -17,10 +17,13 @@
 package com.google.samples.apps.sunflower.compose.gallery
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -32,12 +35,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -99,8 +104,34 @@ fun GalleryScreen(
     )
 }
 /**
- * Shows a [LazyVerticalGrid] of plant pictures.
- * TODO: Continue here.
+ * Shows a [LazyVerticalGrid] of plant pictures. Our root composable is a [Scaffold] whose `topBar`
+ * argument is a lambda that composes a [GalleryTopBar] whose `onUpClick` argument is our lambda
+ * parameter [onUpClick]. In the `content` composable lambda argument of the [Scaffold] we accept
+ * the [PaddingValues] passed the lambd in variable `padding`. We initialize our [LazyPagingItems]
+ * of [UnsplashPhoto] variable `pagingItems` by calling [collectAsLazyPagingItems] on our [Flow] of
+ * [PagingData] of [UnsplashPhoto] parameter [plantPictures]. We initialize and remember our
+ * [MutableState] wrapped [Boolean] variable `isRefreshing` to `false`.
+ *
+ * We then compose a [Box] whose `modifier` argument is a [Modifier.padding] whose `paddingValues`
+ * argument is `padding`. In the [BoxScope] `content` composable lambda argument of the [Box] we
+ * compose a [PullToRefreshBox] whose `isRefreshing` argument is our [MutableState] wrapped [Boolean]
+ * variable `isRefreshing`, whose `onRefresh` argument is a lambda that sets our [MutableState]
+ * wrapped [Boolean] variable `isRefreshing` to `true` and calls our lambda parameter
+ * [onPullToRefresh], and the `modifier` argument is a [BoxScope.align] whose `alignment` argument
+ * is [Alignment.TopCenter]. In the [BoxScope] `content` composable lambda argument of the
+ * [PullToRefreshBox] we compose a [LazyVerticalGrid] whose `columns` argument is a
+ * [GridCells.Fixed] whose `count` argument is `2`. In the [LazyGridScope] `content` composable
+ * lambda argument of the [LazyVerticalGrid] we compose a [LazyGridScope.items] whose `count`
+ * argument is the size of our [LazyPagingItems] of [UnsplashPhoto] variable `pagingItems`, and whose
+ * `key` is the value returned by the [LazyPagingItems.itemKey] extension function of our
+ * [LazyPagingItems] of [UnsplashPhoto] variable `pagingItems` for the [UnsplashPhoto.id] of the
+ * current [UnsplashPhoto]. In the [LazyGridItemScope] `itemContent` composable lambda argument of
+ * [LazyGridScope.items] we accept the [Int] passed the lambda in variable `index`. We initialize
+ * our [UnsplashPhoto] variable `photo` to the [UnsplashPhoto] at the index `index` of our
+ * [LazyPagingItems] of [UnsplashPhoto] variable `pagingItems`. We then compose a [PhotoListItem]
+ * whose `photo` argument is our [UnsplashPhoto] variable `photo`, and whose `onClick` argument
+ * is a lambda that calls our lambda parameter [onPhotoClick] with the [UnsplashPhoto] variable
+ * `photo`.
  *
  * @param plantPictures Flow of PagingData holding the pictures to display
  * @param onPhotoClick callback when a photo is clicked
@@ -148,8 +179,8 @@ private fun GalleryScreen(
                 ) {
                     items(
                         count = pagingItems.itemCount,
-                        key = pagingItems.itemKey { it.id }
-                    ) { index ->
+                        key = pagingItems.itemKey { photo: UnsplashPhoto -> photo.id }
+                    ) { index: Int ->
                         val photo: UnsplashPhoto = pagingItems[index] ?: return@items
                         PhotoListItem(photo = photo) {
                             onPhotoClick(photo)
@@ -161,6 +192,23 @@ private fun GalleryScreen(
     }
 }
 
+/**
+ * Top app bar for the gallery screen. Our root composable is a [TopAppBar] whose arguments are:
+ *   - `title`: The title of the screen, is a lambda that composes a [Text] whose `text` argument
+ *   is the string resource with id `R.string.gallery_title` ("Photos by Unsplash").
+ *   - `modifier`: The modifier for styling the app bar, chains to our [Modifier] parameter
+ *   [modifier] a [Modifier.statusBarsPadding] to add padding to accommodate the status bars insets.
+ *   - `navigationIcon`: The navigation icon for the app bar, is a lambda that composes an
+ *   [IconButton] whose `onClick` argument is our lambda parameter [onUpClick] and whose `content`
+ *   argument is a lambda that composes an [Icon] whose `imageVector` argument is the [ImageVector]
+ *   drawn from [Icons.AutoMirrored.Filled.ArrowBack] and whose `contentDescription` argument is
+ *   `null`.
+ *
+ * It displays the title of the screen and a back button.
+ *
+ * @param onUpClick Called when the back button is clicked.
+ * @param modifier Modifier for styling the app bar.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GalleryTopBar(
@@ -183,6 +231,17 @@ private fun GalleryTopBar(
     )
 }
 
+/**
+ * Previews the [GalleryScreen] composable.
+ *
+ * It uses a [GalleryScreenPreviewParamProvider] to provide sample data for the
+ * `plantPictures` parameter. The `onPullToRefresh` parameter is an empty lambda
+ * as it's not relevant for this preview.
+ *
+ * @param plantPictures A [Flow] of [PagingData] of [UnsplashPhoto] objects,
+ * representing the plant pictures to be displayed in the gallery. This parameter
+ * is provided by the [GalleryScreenPreviewParamProvider].
+ */
 @Preview
 @Composable
 private fun GalleryScreenPreview(
@@ -191,9 +250,21 @@ private fun GalleryScreenPreview(
     GalleryScreen(plantPictures = plantPictures, onPullToRefresh = {})
 }
 
+/**
+ * This [PreviewParameterProvider] is used to supply a [Flow] of [PagingData] of [UnsplashPhoto] to
+ * the [GalleryScreenPreview] Composable function for use by the `@Preview` annotation.
+ */
 private class GalleryScreenPreviewParamProvider :
     PreviewParameterProvider<Flow<PagingData<UnsplashPhoto>>> {
 
+    /**
+     * A [Sequence] of [Flow] of [PagingData] of [UnsplashPhoto] objects. This property is used
+     * to provide sample data for the `plantPictures` parameter of the [GalleryScreenPreview]
+     * composable function.
+     *
+     * The sequence contains a single element, which is a [Flow] that emits a single [PagingData]
+     * object. The [PagingData] object contains a list of two [UnsplashPhoto] objects.
+     */
     override val values: Sequence<Flow<PagingData<UnsplashPhoto>>> =
         sequenceOf(
             element = flowOf(

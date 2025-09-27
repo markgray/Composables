@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -45,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.Dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -59,6 +61,15 @@ import com.google.samples.apps.sunflower.viewmodels.GardenPlantingListViewModel
 import com.google.samples.apps.sunflower.viewmodels.PlantAndGardenPlantingsViewModel
 import java.util.Calendar
 
+/**
+ * Stateful [GardenScreen] that retrieves the garden plants and displays them.
+ * TODO: Continue here.
+ *
+ * @param modifier Modifier to be applied to the composable.
+ * @param viewModel [GardenPlantingListViewModel] that contains the list of [PlantAndGardenPlantings].
+ * @param onAddPlantClick Callback that is invoked when the "Add plant" button is clicked.
+ * @param onPlantClick Callback that is invoked when a plant in the garden is clicked.
+ */
 @Composable
 fun GardenScreen(
     modifier: Modifier = Modifier,
@@ -70,7 +81,10 @@ fun GardenScreen(
     onAddPlantClick: () -> Unit,
     onPlantClick: (PlantAndGardenPlantings) -> Unit
 ) {
-    val gardenPlants by viewModel.plantAndGardenPlantings.collectAsStateWithLifecycle()
+
+    val gardenPlants: List<PlantAndGardenPlantings>
+        by viewModel.plantAndGardenPlantings.collectAsStateWithLifecycle()
+
     GardenScreen(
         gardenPlants = gardenPlants,
         modifier = modifier,
@@ -87,7 +101,7 @@ fun GardenScreen(
     onPlantClick: (PlantAndGardenPlantings) -> Unit = {}
 ) {
     if (gardenPlants.isEmpty()) {
-        EmptyGarden(onAddPlantClick, modifier)
+        EmptyGarden(onAddPlantClick = onAddPlantClick, modifier = modifier)
     } else {
         GardenList(gardenPlants = gardenPlants, onPlantClick = onPlantClick, modifier = modifier)
     }
@@ -100,11 +114,11 @@ private fun GardenList(
     modifier: Modifier = Modifier,
 ) {
     // Call reportFullyDrawn when the garden list has been rendered
-    val gridState = rememberLazyGridState()
+    val gridState: LazyGridState = rememberLazyGridState()
     ReportDrawnWhen { gridState.layoutInfo.totalItemsCount > 0 }
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        modifier.imePadding(),
+        modifier = modifier.imePadding(),
         state = gridState,
         contentPadding = PaddingValues(
             horizontal = dimensionResource(id = R.dimen.card_side_margin),
@@ -113,26 +127,24 @@ private fun GardenList(
     ) {
         items(
             items = gardenPlants,
-            key = { it.plant.plantId }
-        ) {
-            GardenListItem(plant = it, onPlantClick = onPlantClick)
+            key = { planting: PlantAndGardenPlantings -> planting.plant.plantId }
+        ) { planting: PlantAndGardenPlantings ->
+            GardenListItem(plant = planting, onPlantClick = onPlantClick)
         }
     }
 }
 
-@OptIn(
-    ExperimentalGlideComposeApi::class
-)
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun GardenListItem(
     plant: PlantAndGardenPlantings,
     onPlantClick: (PlantAndGardenPlantings) -> Unit
 ) {
-    val vm = PlantAndGardenPlantingsViewModel(plant)
+    val vm = PlantAndGardenPlantingsViewModel(plantings = plant)
 
     // Dimensions
-    val cardSideMargin = dimensionResource(id = R.dimen.card_side_margin)
-    val marginNormal = dimensionResource(id = R.dimen.margin_normal)
+    val cardSideMargin: Dp = dimensionResource(id = R.dimen.card_side_margin)
+    val marginNormal: Dp = dimensionResource(id = R.dimen.margin_normal)
 
     ElevatedCard(
         onClick = { onPlantClick(plant) },
@@ -147,44 +159,44 @@ private fun GardenListItem(
             GlideImage(
                 model = vm.imageUrl,
                 contentDescription = plant.plant.description,
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .height(dimensionResource(id = R.dimen.plant_item_image_height)),
+                    .height(height = dimensionResource(id = R.dimen.plant_item_image_height)),
                 contentScale = ContentScale.Crop,
             )
 
             // Plant name
             Text(
                 text = vm.plantName,
-                Modifier
+                modifier = Modifier
                     .padding(vertical = marginNormal)
-                    .align(Alignment.CenterHorizontally),
+                    .align(alignment = Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.titleMedium,
             )
 
             // Planted date
             Text(
                 text = stringResource(id = R.string.plant_date_header),
-                Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.titleSmall
             )
             Text(
                 text = vm.plantDateString,
-                Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.labelSmall
             )
 
             // Last Watered
             Text(
                 text = stringResource(id = R.string.watered_date_header),
-                Modifier
-                    .align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
                     .padding(top = marginNormal),
                 style = MaterialTheme.typography.titleSmall
             )
             Text(
                 text = vm.waterDateString,
-                Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.labelSmall
             )
             Text(
@@ -193,8 +205,8 @@ private fun GardenListItem(
                     count = vm.wateringInterval,
                     vm.wateringInterval
                 ),
-                Modifier
-                    .align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
                     .padding(bottom = marginNormal),
                 style = MaterialTheme.typography.labelSmall
             )
@@ -208,7 +220,7 @@ private fun EmptyGarden(onAddPlantClick: () -> Unit, modifier: Modifier = Modifi
     ReportDrawn()
 
     Column(
-        modifier,
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
