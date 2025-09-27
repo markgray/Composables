@@ -18,6 +18,7 @@ package com.google.samples.apps.sunflower.api
 
 import com.google.samples.apps.sunflower.BuildConfig
 import com.google.samples.apps.sunflower.data.UnsplashSearchResponse
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
@@ -32,7 +33,11 @@ import retrofit2.http.Query
 interface UnsplashService {
 
     /**
-     * Search for photos on Unsplash.
+     * Search for photos on Unsplash. The @[GET] annotation causes okhttp3 to produce a GET request
+     * which has the string "search/photos" appended to it as the path. The @[Query] annotations
+     * appends to the url the Query parameters "?query=[query]", "?page=[page], "?per_page=[perPage]"
+     * and "?client_id=[clientId]" (the last defaulting to the value of `BuildConfig.UNSPLASH_ACCESS_KEY`")
+     * with each of the Query parameters separated by an Ampersand (&).
      *
      * @param query The search terms.
      * @param page Page number to retrieve. (Optional; default: 1)
@@ -55,7 +60,19 @@ interface UnsplashService {
         private const val BASE_URL = "https://api.unsplash.com/"
 
         /**
-         * Creates an instance of [UnsplashService].
+         * Creates an instance of [UnsplashService]. We initialize our [HttpLoggingInterceptor]
+         * variable `logger` to a new instance to which we chain an [apply] extension function which
+         * sets its [HttpLoggingInterceptor.level] property to [Level.BASIC]. To initialize our
+         * [OkHttpClient] variable `client` we use a [OkHttpClient.Builder] to which we chain a
+         * [OkHttpClient.Builder.addInterceptor] that adds `logger` as an [Interceptor] and then we
+         * use the [OkHttpClient.Builder.build] method to build the [OkHttpClient]. Finally we return
+         * the [UnsplashService] created using an instance of [Retrofit.Builder] to which we chain
+         * a [Retrofit.Builder.baseUrl] to set the API base URL to [BASE_URL], to which we chain a
+         * [Retrofit.Builder.client] that sets the HTTP client used for requests to `client`, to
+         * which we chain a [Retrofit.Builder.addConverterFactory] that adds a new instance of
+         * [GsonConverterFactory] as a converter factory, to which we chain a [Retrofit.Builder.build]
+         * to build the [Retrofit] instance and to this we chain a [Retrofit.create] to create a
+         * [UnsplashService] from the [Retrofit] instance.
          *
          * @return The created [UnsplashService] instance.
          */
