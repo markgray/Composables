@@ -45,9 +45,8 @@ android {
         )
     }
 
-    testOptions.managedDevices.devices {
-        @Suppress("UnstableApiUsage")
-        create<com.android.build.api.dsl.ManagedVirtualDevice>("pixel6Api33") {
+    testOptions.managedDevices.localDevices {
+        create("pixel6Api33") {
             device = "Pixel 6"
             apiLevel = 33
             systemImageSource = "aosp"
@@ -55,7 +54,6 @@ android {
     }
 
     targetProjectPath = ":app"
-    @Suppress("UnstableApiUsage")
     experimentalProperties["android.experimental.self-instrumenting"] = true
 }
 
