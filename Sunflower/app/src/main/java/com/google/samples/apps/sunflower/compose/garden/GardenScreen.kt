@@ -62,7 +62,8 @@ import com.google.samples.apps.sunflower.viewmodels.PlantAndGardenPlantingsViewM
 import java.util.Calendar
 
 /**
- * Stateful [GardenScreen] that retrieves the garden plants and displays them.
+ * Stateful [GardenScreen] that retrieves the garden plants from the [GardenPlantingListViewModel]
+ * and displays them in our stateless [GardenScreen] overload.
  * TODO: Continue here.
  *
  * @param modifier Modifier to be applied to the composable.

@@ -103,11 +103,12 @@ fun GalleryScreen(
         onPullToRefresh = viewModel::refreshData,
     )
 }
+
 /**
  * Shows a [LazyVerticalGrid] of plant pictures. Our root composable is a [Scaffold] whose `topBar`
  * argument is a lambda that composes a [GalleryTopBar] whose `onUpClick` argument is our lambda
  * parameter [onUpClick]. In the `content` composable lambda argument of the [Scaffold] we accept
- * the [PaddingValues] passed the lambd in variable `padding`. We initialize our [LazyPagingItems]
+ * the [PaddingValues] passed the lambda in variable `padding`. We initialize our [LazyPagingItems]
  * of [UnsplashPhoto] variable `pagingItems` by calling [collectAsLazyPagingItems] on our [Flow] of
  * [PagingData] of [UnsplashPhoto] parameter [plantPictures]. We initialize and remember our
  * [MutableState] wrapped [Boolean] variable `isRefreshing` to `false`.
