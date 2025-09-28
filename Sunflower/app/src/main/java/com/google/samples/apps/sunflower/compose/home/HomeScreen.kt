@@ -21,6 +21,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -31,9 +32,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -51,18 +52,48 @@ import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.compose.garden.GardenScreen
 import com.google.samples.apps.sunflower.compose.plantlist.PlantListScreen
 import com.google.samples.apps.sunflower.data.Plant
+import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import com.google.samples.apps.sunflower.ui.SunflowerTheme
 import com.google.samples.apps.sunflower.viewmodels.PlantListViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Used to represent the pages available in the Home screen.
+ *
+ * @param titleResId The string resource id for the title of this page.
+ * @param drawableResId The drawable resource id for the icon of this page.
+ */
 enum class SunflowerPage(
     @param:StringRes val titleResId: Int,
     @param:DrawableRes val drawableResId: Int
 ) {
-    MY_GARDEN(R.string.my_garden_title, R.drawable.ic_my_garden_active),
-    PLANT_LIST(R.string.plant_list_title, R.drawable.ic_plant_list_active)
+    MY_GARDEN(
+        titleResId = R.string.my_garden_title,
+        drawableResId = R.drawable.ic_my_garden_active
+    ),
+    PLANT_LIST(
+        titleResId = R.string.plant_list_title,
+        drawableResId = R.drawable.ic_plant_list_active
+    )
 }
 
+/**
+ * Composable function that represents the home screen of the Sunflower app.
+ *
+ * This screen displays a pager with two tabs: "My Garden" and "Plant List".
+ * The "My Garden" tab shows the plants that the user has added to their garden.
+ * The "Plant List" tab shows a list of all available plants.
+ *
+ * The user can navigate between the tabs by swiping or tapping on the tabs.
+ *
+ * TODO: Continue here.
+ *
+ * @param modifier The modifier to be applied to the HomeScreen.
+ * @param onPlantClick A callback that is invoked when a plant is clicked.
+ * @param viewModel The ViewModel that provides data for the screen.
+ * @param pages An array of SunflowerPage objects that represent the tabs in the pager.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
@@ -75,11 +106,11 @@ fun HomeScreen(
     ),
     pages: Array<SunflowerPage> = SunflowerPage.entries.toTypedArray()
 ) {
-    val pagerState = rememberPagerState(pageCount = { pages.size })
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val pagerState: PagerState = rememberPagerState(pageCount = { pages.size })
+    val scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(connection = scrollBehavior.nestedScrollConnection),
         topBar = {
             HomeTopAppBar(
                 pagerState = pagerState,
@@ -87,12 +118,12 @@ fun HomeScreen(
                 scrollBehavior = scrollBehavior
             )
         }
-    ) { contentPadding ->
+    ) { contentPadding: PaddingValues ->
         HomePagerScreen(
             onPlantClick = onPlantClick,
             pagerState = pagerState,
             pages = pages,
-            Modifier.padding(top = contentPadding.calculateTopPadding())
+            modifier = Modifier.padding(top = contentPadding.calculateTopPadding())
         )
     }
 }
@@ -105,18 +136,18 @@ fun HomePagerScreen(
     pages: Array<SunflowerPage>,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier) {
-        val coroutineScope = rememberCoroutineScope()
+    Column(modifier = modifier) {
+        val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
         // Tab Row
-        TabRow(
+        PrimaryTabRow(
             selectedTabIndex = pagerState.currentPage
         ) {
-            pages.forEachIndexed { index, page ->
-                val title = stringResource(id = page.titleResId)
+            pages.forEachIndexed { index: Int, page: SunflowerPage ->
+                val title: String = stringResource(id = page.titleResId)
                 Tab(
                     selected = pagerState.currentPage == index,
-                    onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
+                    onClick = { coroutineScope.launch { pagerState.animateScrollToPage(page = index) } },
                     text = { Text(text = title) },
                     icon = {
                         Icon(
@@ -131,21 +162,21 @@ fun HomePagerScreen(
 
         // Pages
         HorizontalPager(
-            modifier = Modifier.background(MaterialTheme.colorScheme.background),
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
             state = pagerState,
             verticalAlignment = Alignment.Top
-        ) { index ->
+        ) { index: Int ->
             when (pages[index]) {
                 SunflowerPage.MY_GARDEN -> {
                     GardenScreen(
-                        Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         onAddPlantClick = {
                             coroutineScope.launch {
-                                pagerState.scrollToPage(SunflowerPage.PLANT_LIST.ordinal)
+                                pagerState.scrollToPage(page = SunflowerPage.PLANT_LIST.ordinal)
                             }
                         },
-                        onPlantClick = {
-                            onPlantClick(it.plant)
+                        onPlantClick = { plantings: PlantAndGardenPlantings ->
+                            onPlantClick(plantings.plant)
                         })
                 }
 
@@ -197,7 +228,7 @@ private fun HomeTopAppBar(
 @Composable
 private fun HomeScreenPreview() {
     SunflowerTheme {
-        val pages = SunflowerPage.entries.toTypedArray()
+        val pages: Array<SunflowerPage> = SunflowerPage.entries.toTypedArray()
         HomePagerScreen(
             onPlantClick = {},
             pagerState = rememberPagerState(pageCount = { pages.size }),
