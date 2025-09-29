@@ -201,10 +201,10 @@ private fun HomeTopAppBar(
 ) {
     CenterAlignedTopAppBar(
         title = {
-                Text(
-                    text = stringResource(id = R.string.app_name),
-                    style = MaterialTheme.typography.headlineSmall
-                )
+            Text(
+                text = stringResource(id = R.string.app_name),
+                style = MaterialTheme.typography.headlineSmall
+            )
         },
         modifier = modifier,
         actions = {

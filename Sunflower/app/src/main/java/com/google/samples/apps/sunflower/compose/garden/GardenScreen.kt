@@ -78,10 +78,10 @@ import java.util.Calendar
  * of the [StateFlow] of [List] of [PlantAndGardenPlantings] property
  * [GardenPlantingListViewModel.plantAndGardenPlantings] of our [GardenPlantingListViewModel] parameter
  * [viewModel]. Then we compose our stateless [GardenScreen] overload with the arguments:
- *  - `gardenPlants:` our list of [PlantAndGardenPlantings] variable `gardenPlants`
- *  - `modifier:` our [Modifier] parameter [modifier].
- *  - `onAddPlantClick:` our [onAddPlantClick] lambda parameter.
- *  - `onPlantClick:` our [onPlantClick] lambda parameter.
+ *  - `gardenPlants`: our list of [PlantAndGardenPlantings] variable `gardenPlants`
+ *  - `modifier`: our [Modifier] parameter [modifier].
+ *  - `onAddPlantClick`: our [onAddPlantClick] lambda parameter.
+ *  - `onPlantClick`: our [onPlantClick] lambda parameter.
  *
  * @param modifier Modifier to be applied to the composable.
  * @param viewModel [GardenPlantingListViewModel] that contains the list of [PlantAndGardenPlantings].
@@ -121,14 +121,14 @@ fun GardenScreen(
  *
  * If our [List] of [PlantAndGardenPlantings] parameter [gardenPlants] is empty, we compose an
  * [EmptyGarden] with the arguments:
- *  - `onAddPlantClick:` our [onAddPlantClick] lambda parameter.
- *  - `modifier:` our [Modifier] parameter [modifier].
+ *  - `onAddPlantClick`: our [onAddPlantClick] lambda parameter.
+ *  - `modifier`: our [Modifier] parameter [modifier].
  *
  * If our [List] of [PlantAndGardenPlantings] parameter [gardenPlants] is not empty, we compose a
  * [GardenList] with the arguments:
- *  - `gardenPlants:` our [List] of [PlantAndGardenPlantings] parameter [gardenPlants]
- *  - `onPlantClick:` our [onPlantClick] lambda parameter.
- *  - `modifier:` our [Modifier] parameter [modifier].
+ *  - `gardenPlants`: our [List] of [PlantAndGardenPlantings] parameter [gardenPlants]
+ *  - `onPlantClick`: our [onPlantClick] lambda parameter.
+ *  - `modifier`: our [Modifier] parameter [modifier].
  *
  * @param gardenPlants A list of [PlantAndGardenPlantings] to display in the garden.
  * @param modifier A [Modifier] to apply to the composable.
@@ -160,21 +160,22 @@ fun GardenScreen(
  * variable `gridState` is greater than 0 (our [LazyVerticalGrid] has been rendered).
  *
  * Our root Composable is a [LazyVerticalGrid] whose arguments are:
- *  - `columns:` a [GridCells.Fixed] whose `count` argument is `2` (Defines a grid with `2` columns).
- *  - `modifier:` a [Modifier.imePadding] chained to our [Modifier] parameter [modifier] to add
+ *  - `columns`: a [GridCells.Fixed] whose `count` argument is `2` (Defines a grid with `2` columns).
+ *  - `modifier`: a [Modifier.imePadding] chained to our [Modifier] parameter [modifier] to add
  *  padding to accommodate the ime insets.
- *  - `state:` our [LazyGridState] variable `gridState`.
- *  - `contentPadding:` a [PaddingValues] that adds `horizontal` padding of `12.dp` (the
+ *  - `state`: our [LazyGridState] variable `gridState`.
+ *  - `contentPadding`: a [PaddingValues] that adds `horizontal` padding of `12.dp` (the
  *  [dimensionResource] whose id is `R.dimen.card_side_margin`) and a `vertical`
  *  padding of `16.dp` (the [dimensionResource] whose id is `R.dimen.margin_normal`).
  *
- * In the [LazyGridScope] `content` of our [LazyVerticalGrid], we compose a [LazyGridScope.items]
- * whose `items:` argument is our [List] of [PlantAndGardenPlantings] parameter [gardenPlants] and
- * whose `key` is the value of the [Plant.plantId] of the current [PlantAndGardenPlantings.plant].
- * In the [LazyGridItemScope] `itemContent` composable lambda argument of the [LazyGridScope.items]
- * we accept the [PlantAndGardenPlantings] passed the lambda in variable `planting` and compose a
- * [GardenListItem] whose `plant:` argument is the [PlantAndGardenPlantings] variable `planting`
- * and whose `onPlantClick:` argument is our [onPlantClick] lambda parameter.
+ * In the [LazyGridScope] `content` composable lambda argument of our [LazyVerticalGrid], we compose
+ * a [LazyGridScope.items] whose `items` argument is our [List] of [PlantAndGardenPlantings]
+ * parameter [gardenPlants] and whose `key` is the value of the [Plant.plantId] of the current
+ * [PlantAndGardenPlantings.plant]. In the [LazyGridItemScope] `itemContent` composable lambda
+ * argument of the [LazyGridScope.items] we accept the [PlantAndGardenPlantings] passed the lambda
+ * in variable `planting` and compose a [GardenListItem] whose `plant` argument is the
+ * [PlantAndGardenPlantings] variable `planting` and whose `onPlantClick` argument is our
+ * [onPlantClick] lambda parameter.
  *
  * @param gardenPlants the [List] of [PlantAndGardenPlantings] that are to be displayed.
  * @param onPlantClick a lambda that will be called with the [PlantAndGardenPlantings] that was
@@ -213,75 +214,75 @@ private fun GardenList(
  * and watering interval.
  *
  * It starts by initializing its [PlantAndGardenPlantingsViewModel] variable `vm` to a new
- * instance constructed to display our [PlantAndGardenPlantings] parameter [plant]. It initializes
+ * instance constructed to hold our [PlantAndGardenPlantings] parameter [plant]. It initializes
  * its [Dp] variable `cardSideMargin` to the [dimensionResource] whose id is `R.dimen.card_side_margin`
  * (12.dp). It initializes its [Dp] variable `marginNormal` to the [dimensionResource] whose id is
  * `R.dimen.margin_normal` (16.dp).
  *
  * The root Composable is an [ElevatedCard]. Its `onClick` argument is a lambda that calls our
- * [onPlantClick] lambda parameter with our [PlantAndGardenPlantings] parameter [plant]. Its `modifier`
- * argument is a `Modifier.padding` whose `start` and `end` padding are `cardSideMargin` (12.dp) and
- * whose `bottom` padding is the dimension with resource ID `R.dimen.card_bottom_margin` (26.dp). Its
- * `colors` argument is a [CardDefaults.cardColors] whose `containerColor` is the
+ * [onPlantClick] lambda parameter with our [PlantAndGardenPlantings] parameter [plant]. Its
+ * `modifier` argument is a `Modifier.padding` whose `start` and `end` padding are `cardSideMargin`
+ * (12.dp) and whose `bottom` padding is the dimension with resource ID `R.dimen.card_bottom_margin`
+ * (26.dp). Its `colors` argument is a [CardDefaults.cardColors] whose `containerColor` is the
  * [ColorScheme.secondaryContainer] of the [MaterialTheme.colorScheme] of our custom [MaterialTheme].
  *
  * In the [ColumnScope] `content` composable lambda argument of the [ElevatedCard], we compose a
- * [Column] whose `modifier:` argument is a [Modifier.fillMaxWidth]. In the [ColumnScope] `content`
+ * [Column] whose `modifier` argument is a [Modifier.fillMaxWidth]. In the [ColumnScope] `content`
  * composable lambda argument of the [Column], we compose:
  *
  * **First**: a [GlideImage] whose arguments are:
- *  - `model:` the [PlantAndGardenPlantingsViewModel.imageUrl] of our [PlantAndGardenPlantingsViewModel]
+ *  - `model`: the [PlantAndGardenPlantingsViewModel.imageUrl] of our [PlantAndGardenPlantingsViewModel]
  *  variable `vm`.
- *  - `contentDescription:` the [Plant.description] of our [PlantAndGardenPlantings] parameter
+ *  - `contentDescription`: the [Plant.description] of our [PlantAndGardenPlantings] parameter
  *  [plant].
- *  - `modifier:` a [Modifier.fillMaxWidth] chained to a [Modifier.height] whose `height` is the
+ *  - `modifier`: a [Modifier.fillMaxWidth] chained to a [Modifier.height] whose `height` is the
  *  [dimensionResource] whose id is `R.dimen.plant_item_image_height` (95.dp).
- *  - `contentScale:` [ContentScale.Crop].
+ *  - `contentScale`: [ContentScale.Crop].
  *
  * **Second**: a [Text] whose arguments are:
- *  - `text:` the [PlantAndGardenPlantingsViewModel.plantName] of our [PlantAndGardenPlantingsViewModel]
+ *  - `text`: the [PlantAndGardenPlantingsViewModel.plantName] of our [PlantAndGardenPlantingsViewModel]
  *  variable `vm`.
- *  - `modifier:` a [Modifier.padding] whose `vertical` padding is `marginNormal` (16.dp) chained to
+ *  - `modifier`: a [Modifier.padding] whose `vertical` padding is `marginNormal` (16.dp) chained to
  *  a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally].
- *  - `style:` the [Typography.titleMedium] of the [MaterialTheme.typography] of our custom
+ *  - `style`: the [Typography.titleMedium] of the [MaterialTheme.typography] of our custom
  *  [MaterialTheme].
  *
  * **Third**: a [Text] whose arguments are:
- *  - `text:` the string resource with ID `R.string.plant_date_header` ("Planted").
- *  - `modifier:` a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally].
- *  - `style:` the [Typography.titleSmall] of the [MaterialTheme.typography] of our custom
+ *  - `text`: the string resource with ID `R.string.plant_date_header` ("Planted").
+ *  - `modifier`: a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally].
+ *  - `style`: the [Typography.titleSmall] of the [MaterialTheme.typography] of our custom
  *  [MaterialTheme].
  *
  * **Fourth**: a [Text] whose arguments are:
- *  - `text:` the [PlantAndGardenPlantingsViewModel.plantDateString] of our
+ *  - `text`: the [PlantAndGardenPlantingsViewModel.plantDateString] of our
  *  [PlantAndGardenPlantingsViewModel] variable `vm`.
- *  - `modifier:` a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally].
- *  - `style:` the [Typography.labelSmall] of the [MaterialTheme.typography] of our custom
+ *  - `modifier`: a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally].
+ *  - `style`: the [Typography.labelSmall] of the [MaterialTheme.typography] of our custom
  *  [MaterialTheme].
  *
  * **Fifth**: a [Text] whose arguments are:
- *  - `text:` the string resource with ID `R.string.watered_date_header` ("Last watered").
- *  - `modifier:` a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally] chained
- *  to a [Modifier.padding] whose `top` padding is `marginNormal`.
- *  - `style:` the [Typography.titleSmall] of the [MaterialTheme.typography] of our custom
+ *  - `text`: the string resource with ID `R.string.watered_date_header` ("Last watered").
+ *  - `modifier`: a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally] chained
+ *  to a [Modifier.padding] whose `top` padding is `marginNormal` (16.dp).
+ *  - `style`: the [Typography.titleSmall] of the [MaterialTheme.typography] of our custom
  *  [MaterialTheme].
  *
  * **Sixth**: a [Text] whose arguments are:
- *  - `text:` the [PlantAndGardenPlantingsViewModel.waterDateString] of our
+ *  - `text`: the [PlantAndGardenPlantingsViewModel.waterDateString] of our
  *  [PlantAndGardenPlantingsViewModel] variable `vm`.
- *  - `modifier:` a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally].
- *  - `style:` the [Typography.labelSmall] of the [MaterialTheme.typography] of our custom
+ *  - `modifier`: a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally].
+ *  - `style`: the [Typography.labelSmall] of the [MaterialTheme.typography] of our custom
  *  [MaterialTheme].
  *
  * **Seventh**: a [Text] whose arguments are:
- *  - `text:` the plural string resource with `id` `R.plurals.watering_next`, with the `count`
+ *  - `text`: the plural string resource with `id` `R.plurals.watering_next`, with the `count`
  *  the [PlantAndGardenPlantingsViewModel.wateringInterval] of our [PlantAndGardenPlantingsViewModel]
- *  variable `vm` and whose `formatArgs:` argument is the
+ *  variable `vm` and whose `formatArgs` argument is the
  *  [PlantAndGardenPlantingsViewModel.wateringInterval] of our [PlantAndGardenPlantingsViewModel]
  *  variable `vm`.
- *  - `modifier:` a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally] chained
- *  to a [Modifier.padding] whose `bottom` padding is `marginNormal`.
- *  - `style:` the [Typography.labelSmall] of the [MaterialTheme.typography] of our custom
+ *  - `modifier`: a [ColumnScope.align] whose `alignment` is [Alignment.CenterHorizontally] chained
+ *  to a [Modifier.padding] whose `bottom` padding is `marginNormal` (16.dp).
+ *  - `style`: the [Typography.labelSmall] of the [MaterialTheme.typography] of our custom
  *  [MaterialTheme].
  *
  * @param plant The [PlantAndGardenPlantings] to display in the card.
@@ -381,7 +382,7 @@ private fun GardenListItem(
  *  `R.string.garden_empty`), and whose `style` argument is the [Typography.headlineSmall] of our
  *  custom [MaterialTheme.typography].
  *  - A [Button] whose `shape` argument is the [Shapes.medium] of the [MaterialTheme.shapes] of our
- *  custom [MaterialTheme], and whose `onClick` argument our [onAddPlantClick]
+ *  custom [MaterialTheme], and whose `onClick` argument is our [onAddPlantClick]
  *  lambda parameter. In its [RowScope] `content` Composable lambda it composes a [Text] whose
  *  `text` is the string "Add plant" (the [stringResource] whose ID is `R.string.add_plant`), and
  *  whose `style` argument is the [Typography.titleSmall] of our custom [MaterialTheme.typography].
