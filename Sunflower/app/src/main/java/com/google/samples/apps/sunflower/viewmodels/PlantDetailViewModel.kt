@@ -25,14 +25,17 @@ import androidx.lifecycle.viewModelScope
 import com.google.samples.apps.sunflower.BuildConfig
 import com.google.samples.apps.sunflower.data.GardenPlantingRepository
 import com.google.samples.apps.sunflower.data.PlantRepository
+import com.google.samples.apps.sunflower.compose.plantdetail.PlantDetailsScreen
+import com.google.samples.apps.sunflower.data.Plant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * The ViewModel used in [PlantDetailsScreen].
+ * The ViewModel used by [PlantDetailsScreen].
  */
 @HiltViewModel
 class PlantDetailViewModel @Inject constructor(
@@ -43,13 +46,13 @@ class PlantDetailViewModel @Inject constructor(
 
     val plantId: String = savedStateHandle.get<String>(PLANT_ID_SAVED_STATE_KEY)!!
 
-    val isPlanted = gardenPlantingRepository.isPlanted(plantId)
+    val isPlanted: StateFlow<Boolean> = gardenPlantingRepository.isPlanted(plantId)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             false
         )
-    val plant = plantRepository.getPlant(plantId).asLiveData()
+    val plant: LiveData<Plant> = plantRepository.getPlant(plantId).asLiveData()
 
     private val _showSnackbar = MutableLiveData(false)
     val showSnackbar: LiveData<Boolean>
@@ -66,7 +69,8 @@ class PlantDetailViewModel @Inject constructor(
         _showSnackbar.value = false
     }
 
-    fun hasValidUnsplashKey() = (BuildConfig.UNSPLASH_ACCESS_KEY != "null")
+    @Suppress("KotlinConstantConditions")
+    fun hasValidUnsplashKey(): Boolean = (BuildConfig.UNSPLASH_ACCESS_KEY != "null")
 
     companion object {
         private const val PLANT_ID_SAVED_STATE_KEY = "plantId"
