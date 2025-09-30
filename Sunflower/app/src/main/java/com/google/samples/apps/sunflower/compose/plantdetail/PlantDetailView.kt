@@ -112,9 +112,9 @@ import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
  *
  * @property onFabClick Callback invoked when the Floating Action Button (FAB) is clicked.
  * @property onBackClick Callback invoked when the back button is clicked.
- * @property onShareClick Callback invoked when the share button is clicked, providing the plant
+ * @property onShareClick Callback invoked when the share button is clicked, called with the plant
  * name as a [String].
- * @property onGalleryClick Callback invoked when the gallery icon is clicked, providing the
+ * @property onGalleryClick Callback invoked when the gallery icon is clicked, called with the
  * [Plant] object.
  */
 data class PlantDetailsCallbacks(

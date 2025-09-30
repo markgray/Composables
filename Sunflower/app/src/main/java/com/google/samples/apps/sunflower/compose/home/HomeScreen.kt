@@ -91,12 +91,14 @@ enum class SunflowerPage(
  *
  * The user can navigate between the tabs by swiping or tapping on the tabs.
  *
- * We start by initializing and remembering our [PagerState] variable `pagerState` with a `pageCount`
- * of the [Array.size] of our [Array] of [SunflowerPage] parameter [pages], and initializing our
- * [TopAppBarScrollBehavior] variable `scrollBehavior` to an instance of
- * [TopAppBarDefaults.enterAlwaysScrollBehavior].
+ * We start by initializing and remembering our [PagerState] variable `pagerState` to a [PagerState]
+ * instance with a `pageCount` of the [Array.size] of our [Array] of [SunflowerPage] parameter
+ * [pages], and initializing our [TopAppBarScrollBehavior] variable `scrollBehavior` to an instance
+ * of [TopAppBarDefaults.enterAlwaysScrollBehavior] (a top app bar that is set up with this
+ * [TopAppBarScrollBehavior] will immediately collapse when the content is pulled up, and will
+ * immediately appear when the content is pulled down).
  *
- * Our root composable is a [Scaffold] whose `modifier` argument chained to our [Modifier] parameter
+ * Our root composable is a [Scaffold] whose `modifier` argument chains to our [Modifier] parameter
  * [modifier] a [Modifier.nestedScroll] with the [TopAppBarScrollBehavior.nestedScrollConnection]
  * of our [TopAppBarScrollBehavior] variable `scrollBehavior` as its `connection`, and the `topBar`
  * argument is a lambda that composes a [HomeTopAppBar] whose `pagerState` argument is our [PagerState]
@@ -110,7 +112,8 @@ enum class SunflowerPage(
  *  - `pagerState`: is our [PagerState] variable `pagerState`.
  *  - `pages`: is our [Array] of [SunflowerPage] parameter [pages].
  *  - `modifier`: is a [Modifier.padding] with the `top` argument set to the value returned by the
- *  [PaddingValues.calculateTopPadding] method of our [PaddingValues] variable `contentPadding`.
+ *  [PaddingValues.calculateTopPadding] method of our [PaddingValues] variable `contentPadding`
+ *  (it just returns the `top` property of the [PaddingValues]).
  *
  * @param modifier The modifier to be applied to the HomeScreen.
  * @param onPlantClick A callback that is invoked when a plant is clicked.
@@ -161,17 +164,17 @@ fun HomeScreen(
  * Then we compose a [PrimaryTabRow] whose `selectedTabIndex` argument is the [PagerState.currentPage]
  * of our [PagerState] parameter [pagerState]. In the `tabs` composable lambda argument of the
  * [PrimaryTabRow] we use the [Array.forEachIndexed] method to iterate over each [SunflowerPage] in
- * our [Array] of [SunflowerPage] parameter [pages]. In the lambda body of the [Array.forEachIndexed]
- * we capture the [Int] passed the lambda in variable `index` and the [SunflowerPage] passed the
- * lambda in variable `page`. Then we initialize our [String] variable `title` to the [stringResource]
- * whose `id` argument is the [SunflowerPage.titleResId] of our [SunflowerPage] variable `page`.
- * Then we compose a [Tab] whose arguments are:
+ * our [Array] of [SunflowerPage] parameter [pages]. In the `action` lambda argument of the
+ * [Array.forEachIndexed] we capture the [Int] passed the lambda in variable `index` and the
+ * [SunflowerPage] passed the lambda in variable `page`. Then we initialize our [String] variable
+ * `title` to the [stringResource] whose `id` argument is the [SunflowerPage.titleResId] of our
+ * [SunflowerPage] variable `page`. Then we compose a [Tab] whose arguments are:
  *  - `selected`: is `true` if the [Int] variable `index` is equal to the [PagerState.currentPage]
- *  of our [PagerState] parameter [pager.
+ *  of our [PagerState] parameter [pagerState].
  *  - `onClick`: is a lambda that calls the [CoroutineScope.launch] method of our [CoroutineScope]
  *  variable `coroutineScope` to launch a coroutine that calls the [PagerState.animateScrollToPage]
  *  method of our [PagerState] parameter [pagerState] with the [Int] variable `index` as its `page`
- *  argument to scroll animate to the page corresponding to the [Tab].
+ *  argument to have it scroll animate to the page corresponding to this [Tab].
  *  - `text`: is a lambda that composes a [Text] whose `text` argument is our [String] variable
  *  `title`.
  *  - `icon`: is a lambda that composes an [Icon] whose `painter` argument is a [painterResource]
