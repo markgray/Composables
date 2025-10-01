@@ -35,7 +35,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 /**
- * Simple API to display a Snackbar with text on the screen
+ * A container that manages the display of a text-based [Snackbar].
+ *
+ * This composable wraps the provided [content] and shows a [Snackbar] with the given [snackbarText]
+ * when [showSnackbar] is true. The snackbar is automatically dismissed after a short duration,
+ * at which point [onDismissSnackbar] is called.
+ *
+ * TODO: Continue here.
+ *
+ * @param snackbarText The text to display in the snackbar.
+ * @param showSnackbar A boolean flag that triggers the display of the snackbar when true.
+ * @param onDismissSnackbar A lambda to be invoked when the snackbar is dismissed. This should
+ * typically reset the state that caused the snackbar to be shown.
+ * @param modifier The modifier to be applied to the container.
+ * @param snackbarHostState The [SnackbarHostState] used to manage the snackbar. A new instance
+ * is created and remembered by default.
+ * @param content The main content to be displayed within the container. The snackbar will be
+ * shown on top of this content.
  */
 @Composable
 fun TextSnackbarContainer(

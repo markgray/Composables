@@ -18,6 +18,7 @@ package com.google.samples.apps.sunflower.compose.plantdetail
 
 import android.graphics.drawable.Drawable
 import android.text.method.LinkMovementMethod
+import android.text.Spanned
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.Spring
@@ -36,6 +37,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -61,6 +63,7 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -72,6 +75,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -667,7 +671,26 @@ private fun PlantFab(
  * actions over the plant image or a more traditional, condensed TopAppBar.
  *
  * The transition between these two states is animated using alpha fades.
- * TODO: Continue here.
+ *
+ * We start by initializing our lambda variable `onShareClick` to a lambd which calls the
+ * [PlantDetailsCallbacks.onShareClick] method of our [PlantDetailsCallbacks] parameter [callbacks]
+ * with our [String] parameter [plantName]. If the [ToolbarState.isShown] property of our
+ * [ToolbarState] parameter [toolbarState] is `true` we compose a [PlantDetailsToolbar] with the
+ * arguments:
+ *  - `plantName`: is our [String] parameter [plantName].
+ *  - `onBackClick`: is the [PlantDetailsCallbacks.onBackClick] lambda property of our
+ *  [PlantDetailsCallbacks] parameter [callbacks].
+ *  - `onShareClick`: is our lambda variable `onShareClick`.
+ *  - `modifier`: is a [Modifier.alpha] whose `alpha` argument is the value returned by our lambda
+ *  parameter [toolbarAlpha].
+ *
+ * If the [ToolbarState.isShown] property of our [ToolbarState] parameter [toolbarState] is `false`
+ * we compose a [PlantHeaderActions] with the arguments:
+ *  - `onBackClick`: is the [PlantDetailsCallbacks.onBackClick] lambda property of our
+ *  [PlantDetailsCallbacks] parameter [callbacks].
+ *  - `onShareClick`: is our lambda variable `onShareClick`.
+ *  - `modifier`: is a [Modifier.alpha] whose `alpha` argument is the value returned by our lambda
+ *  parameter [contentAlpha].
  *
  * @param toolbarState The current state of the toolbar, which determines whether the full toolbar
  * ([PlantDetailsToolbar]) or just the header actions ([PlantHeaderActions]) should be shown.
@@ -705,6 +728,53 @@ private fun PlantToolbar(
     }
 }
 
+/**
+ * A toolbar that displays the plant name and action buttons.
+ *
+ * This composable is used when the user has scrolled past the initial header,
+ * providing a persistent [TopAppBar] with navigation and sharing actions.
+ *
+ * It consists of a back button, the plant name centered, and a share button.
+ * The entire toolbar is wrapped in a [Surface] and applies status bar padding
+ * to avoid overlapping with system UI elements.
+ *
+ * The arguments of the [TopAppBar] are:
+ *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.statusBarsPadding]
+ *  chained to a [Modifier.background] whose `color` argument is the [ColorScheme.surface] of
+ *  our custom [MaterialTheme.colorScheme].
+ *  - `title`: is a lambda that composes a [Row] whose.
+ *
+ * The in the [RowScope] `content` composable lambda argument of the [Row] we compose:
+ *
+ * **First** an [IconButton] whose `onClick` argument is our [onBackClick] lambda parameter,
+ * and whose `modifier` argument is a [RowScope.align] whose `alignment` argument is
+ * [Alignment.CenterVertically]. In the `content` composable lambda argument of the [IconButton]
+ * we compose an [Icon] whose `imageVector` argument is [Icons.AutoMirrored.Filled.ArrowBack],
+ * and whose `contentDescription` argument the [stringResource] with resource ID `R.string.a11y_back`
+ * ("Navigate up").
+ *
+ * **Second** a [Text] whose `text` argument is our [String] parameter [plantName], whose `style`
+ * argument is the [Typography.titleLarge] of our custom [MaterialTheme.typography], and whose
+ * `modifier` argument is a [RowScope.weight] whose `weight` is `1f`, chained to a
+ * [Modifier.fillMaxSize] chained to a [Modifier.wrapContentSize] whose `align` argument is
+ * [Alignment.Center].
+ *
+ * **Third** we initialize our [String] variable `shareContentDescription` to the string with the
+ * resource ID `R.string.menu_item_share_plant` ("Share") then compose an [IconButton] whose
+ * `onClick` argument is our [onShareClick] lambda parameter, and whose `modifier` argument is a
+ * [RowScope.align] whose `alignment` argument is [Alignment.CenterVertically], chained to a
+ * [Modifier.semantics] whose `contentDescription` argument is our [String] variable
+ * `shareContentDescription`. In the `content` composable lambda argument of the [IconButton]
+ * we compose an [Icon] whose `imageVector` argument is [Icons.Filled.Share], and whose
+ * `contentDescription` argument is `null`.
+ *
+ * @param plantName The name of the plant to be displayed as the title of the toolbar.
+ * @param onBackClick A lambda function to be invoked when the back button is clicked,
+ * typically for navigating back to the previous screen.
+ * @param onShareClick A lambda function to be invoked when the share button is clicked,
+ * used to trigger a sharing action for the plant.
+ * @param modifier A [Modifier] to be applied to the root [TopAppBar] container.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PlantDetailsToolbar(
@@ -758,6 +828,50 @@ private fun PlantDetailsToolbar(
     }
 }
 
+/**
+ * A row of actions that are displayed over the plant image in the initial state of the
+ * screen. It includes a back button and a share button.
+ *
+ * This composable is meant to be used when the main toolbar is not yet visible, providing
+ * essential actions in a way that integrates with the large header image.
+ * The icons are given a circular background to ensure they are visible against
+ * the plant image.
+ *
+ * Our root composable is a [Row] whose `modifier` argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.fillMaxSize], chained to a [Modifier.systemBarsPadding] to avoid drawing
+ * under the system bars, chained to a [Modifier.padding] that adds [Dimens.ToolbarIconPadding] to
+ * its `top`. The `horizontalArrangement` argument of the [Row] is [Arrangement.SpaceBetween] to
+ * place its children such that they are spaced evenly across the main axis, without free space
+ * before the first child or after the last child.
+ *
+ * In the [RowScope] `content` composable lambda argument of the [Row] we start by initializing our
+ * [Modifier] variable `iconModifier` to a [Modifier.sizeIn] whose `maxWidth` argument is
+ * [Dimens.ToolbarIconSize] and whose `maxHeight` argument is [Dimens.ToolbarIconSize], chained
+ * to a [Modifier.background] whose `color` argument is the [ColorScheme.surface] of our custom
+ * [MaterialTheme.colorScheme], and whose `shape` argument is [CircleShape]. Then we compose:
+ *
+ * **First** an [IconButton] whose `onClick` argument is our [onBackClick] lambda parameter,
+ * and whose `modifier` argument is a [Modifier.padding] that adds [Dimens.ToolbarIconPadding]
+ * to its `start`, chained to a [Modifier.then] whose `other` argument is our [Modifier]
+ * variable `iconModifier`. In the `content` composable lambda argument of the [IconButton] we
+ * compose an [Icon] whose `imageVector` argument is [Icons.AutoMirrored.Filled.ArrowBack],
+ * and whose `contentDescription` argument the [stringResource] with resource ID `R.string.a11y_back`
+ * ("Navigate up").
+ *
+ * **Second** we initialize our [String] variable `shareContentDescription` to the string with
+ * the resource ID `R.string.menu_item_share_plant` ("Share") then compose an [IconButton]
+ * whose `onClick` argument is our [onShareClick] lambda parameter, and whose `modifier` argument
+ * is a [Modifier.padding] that adds [Dimens.ToolbarIconPadding] to its `end`, chained to a
+ * [Modifier.then] whose `other` argument is our [Modifier] variable `iconModifier`, chained to a
+ * [Modifier.semantics] whose `contentDescription` argument is our [String] variable
+ * `shareContentDescription`. In the `content` composable lambda argument of the [IconButton] we
+ * compose an [Icon] whose `imageVector` argument is [Icons.Filled.Share], and whose
+ * `contentDescription` argument is `null`.
+ *
+ * @param onBackClick A lambda function to be invoked when the back button is clicked.
+ * @param onShareClick A lambda function to be invoked when the share button is clicked.
+ * @param modifier A [Modifier] to be applied to the root [Row].
+ */
 @Composable
 private fun PlantHeaderActions(
     onBackClick: () -> Unit,
@@ -811,6 +925,64 @@ private fun PlantHeaderActions(
     }
 }
 
+/**
+ * A composable function that displays detailed information about a plant.
+ * This includes the plant's name, its watering needs, and a gallery icon if applicable.
+ * The plant's name is only visible when the toolbar is hidden, and its position is reported
+ * for coordinating animations.
+ *
+ * Our root composable is a [Column] whose `modifier` argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.padding] that adds [Dimens.PaddingLarge] to all sides. In the [ColumnScope]
+ * `content` composable lambda argument of the [Column] we compose:
+ *
+ * **First** a [Text] whose `text` argument is our [String] parameter [name], whose `style` argument
+ * is the [Typography.displaySmall] of our custom [MaterialTheme.typography], and whose `modifier`
+ * argument is a [Modifier.padding] that adds [Dimens.PaddingSmall] to the `start` and `end` and
+ * [Dimens.PaddingNormal] to the `bottom`, chained to a [ColumnScope.align] whose `alignment`
+ * argument is [Alignment.CenterHorizontally], chained to a [Modifier.onGloballyPositioned] in whose
+ * `onGloballyPositioned` lambda argument we accept the [LayoutCoordinates] passed the lambda in
+ * variable `coord` then call our [onNamePosition] lambda parameter with the [Offset.y] of the
+ * value returned by [LayoutCoordinates.positionInWindow] property of `coord`, and at the end of the
+ * chain is a [Modifier.visible] whose `condition` argument is `true` if our [ToolbarState] parameter
+ * [toolbarState] is [ToolbarState.HIDDEN].
+ *
+ * **Second** a [Box] whose `modifier` argument is a [ColumnScope.align] whose `alignment` argument
+ * is [Alignment.CenterHorizontally], chained to a [Modifier.padding] that adds [Dimens.PaddingSmall]
+ * to the `start`, and `end` sides and [Dimens.PaddingNormal] to the `bottom` side. In the [BoxScope]
+ * `content` composable lambda argument of the [Box] we compose a [Column] whose `modifier` argument
+ * is a [Modifier.fillMaxWidth]. In the [ColumnScope] `content` composable lambda argument of the
+ * [Column] we compose a [Text] whose `text` argument is the string with resource ID
+ * `R.string.watering_needs_prefix` ("Watering needs"), and whose `fontWeight` argument is
+ * [FontWeight.Bold], and whose `modifier` argument is a [Modifier.padding] that adds
+ * [Dimens.PaddingSmall] to the `horizontal` sides. We initialize our [String] variable
+ * `wateringIntervalText` to the [pluralStringResource] whose `id` is `R.plurals.watering_needs_suffix`,
+ * whose `count` is our [Int] parameter [wateringInterval] and whose `formatArgs` is our
+ * [Int] parameter [wateringInterval] then we compose a [Text] whose `text` argument is our [String]
+ * variable `wateringIntervalText`, and whose `modifier` argument is a [ColumnScope.align] whose
+ * `alignment` argument is [Alignment.CenterHorizontally]. Then if our [Boolean] parameter
+ * [hasValidUnsplashKey] is `true` we initialize and remember our [MutableInteractionSource] variable
+ * `interactionSource` to a [MutableInteractionSource] instance and compose a [Image] whose arguments
+ * are:
+ *  - `painter`: is the [painterResource] with resource ID `R.drawable.ic_photo_library`,
+ *  - `contentDescription`: is `null`,
+ *  - `modifier`: is a [Modifier.clickable] whose `interactionSource` argument is our
+ *  [MutableInteractionSource] variable `interactionSource` and whose `indication` argument is
+ *  `null`, chained to a [ColumnScope.align] whose `alignment` argument is [Alignment.CenterEnd].
+ *
+ * **Third** underneath the [Box] we compose a [PlantDescription] whose `description` argument is
+ * our [String] parameter [description].
+ *
+ * Then we compose a [Text] whose `text` argument
+ *
+ * @param name The name of the plant.
+ * @param wateringInterval The interval at which the plant should be watered.
+ * @param description A description of the plant.
+ * @param hasValidUnsplashKey A flag indicating whether a valid Unsplash API key is available.
+ * @param onNamePosition A callback to use to report the position of the plant name.
+ * @param toolbarState The current state of the toolbar.
+ * @param onGalleryClick A callback to use to handle the click on the gallery icon.
+ * @param modifier The modifier to apply to this layout.
+ */
 @Composable
 private fun PlantInformation(
     name: String,
@@ -887,6 +1059,26 @@ private fun PlantInformation(
     }
 }
 
+/**
+ * A Composable that displays the plant's description.
+ *
+ * This function uses an [AndroidViewBinding] to embed a traditional Android [android.widget.TextView]
+ * into the Compose UI. This is necessary because Compose's `Text` composable does not yet support
+ * rendering HTML content, which is used for the plant description.
+ *
+ * We compose an [AndroidViewBinding] whose `factory` uses the [ItemPlantDescriptionBinding.inflate]
+ * method to inflate the xml file `R.layout.item_plant_description.xml` into a
+ * [ItemPlantDescriptionBinding] which it uses as the receiver of its `update` lambda argument in
+ * which we set the `text` property of the `plantDescription` `TextView` (the `TextView` whose
+ * resource ID is `R.id.plant_description`) to the [Spanned] returned by the [HtmlCompat.fromHtml]
+ * method for the `source` our [String] parameter [description] and the `flags`
+ * [HtmlCompat.FROM_HTML_MODE_COMPACT]. We also set the `movementMethod` property of the
+ * `plantDescription` `TextView` to a [LinkMovementMethod] (movement method that traverses links in
+ * the text buffer and scrolls if necessary) and set the `linksClickable` property of the
+ * `plantDescription` `TextView` to `true`.
+ *
+ * @param description The HTML-formatted string describing the plant.
+ */
 @Composable
 private fun PlantDescription(description: String) {
     // This remains using AndroidViewBinding because this feature is not in Compose yet
@@ -900,6 +1092,14 @@ private fun PlantDescription(description: String) {
     }
 }
 
+/**
+ * A preview of the [PlantDetails] composable, which represents the entire plant details screen.
+ * This preview is configured to display a sample "Tomato" plant that is already in the user's
+ * garden (`isPlanted = true`), so the Floating Action Button for adding the plant will not be
+ * visible. It also assumes a valid Unsplash key is present, so the gallery icon will be shown.
+ * The callbacks for user interactions are provided as empty lambdas, as they are not active
+ * in a static preview.
+ */
 @Preview
 @Composable
 private fun PlantDetailContentPreview() {
