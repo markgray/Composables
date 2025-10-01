@@ -150,16 +150,16 @@ data class PlantDetailsCallbacks(
  *
  * Then if both `plant` and `showSnackbar` are not null, we compose a [Surface] that holds a
  * [TextSnackbarContainer] whose `snackbarText` argument is the string resource with ID
- * `R.string.added_plant_to_garden` ("Added plant to garden"), whose `showSnackbar` argument our
- * `showSnackbar` variable, and whose `onDismissSnackbar` argument is a lambda function that
- * calls the [PlantDetailViewModel.dismissSnackbar] method of our [PlantDetailViewModel] parameter
- * [plantDetailsViewModel]. In the `content` comoposable lambda argument of the
+ * `R.string.added_plant_to_garden` ("Added plant to garden"), whose `showSnackbar` argument is our
+ * [Boolean] variable `showSnackbar`, and whose `onDismissSnackbar` argument is a lambda function
+ * that calls the [PlantDetailViewModel.dismissSnackbar] method of our [PlantDetailViewModel]
+ * parameter [plantDetailsViewModel]. In the `content` comoposable lambda argument of the
  * [TextSnackbarContainer] we compose a [PlantDetails] composable whose arguments are:
  *  - `plant`: is our [Plant] variable `plant`
  *  - `isPlanted`: is our [Boolean] variable `isPlanted`
- *  - `hadValidUnsplashKey`: is the value returned by the [PlantDetailViewModel.hasValidUnsplashKey]
+ *  - `hasValidUnsplashKey`: is the value returned by the [PlantDetailViewModel.hasValidUnsplashKey]
  *  property of our [PlantDetailViewModel] parameter [plantDetailsViewModel].
- *  - `callbacks`: is a [PlantDetailsCallbacks] instances whose [PlantDetailsCallbacks.onBackClick]
+ *  - `callbacks`: is a [PlantDetailsCallbacks] instance whose [PlantDetailsCallbacks.onBackClick]
  *  is our lambda parameter [onBackClick], whose [PlantDetailsCallbacks.onFabClick] is a lambda
  *  that calls the [PlantDetailViewModel.addPlantToGarden] method of our [PlantDetailViewModel]
  *  parameter [plantDetailsViewModel], whose [PlantDetailsCallbacks.onShareClick] is our lambda
@@ -221,9 +221,8 @@ fun PlantDetailsScreen(
  * plant information, a collapsing toolbar, and action buttons.
  *
  * This composable uses a [Box] to layer its children: [PlantDetailsContent] and [PlantToolbar].
- * It manages the scroll state and transitions to create a collapsing toolbar effect,
- * where the plant image and initial header fade out as the user scrolls, and a
- * persistent toolbar fades in.
+ * It manages the scroll state and transitions to create a collapsing toolbar effect, where the
+ * plant image and initial header fade out as the user scrolls, and a persistent toolbar fades in.
  *
  * We start by initializing and remembering our [ScrollState] variable `scrollState` to the value
  * returned by the [rememberScrollState] function. We initialize and remember our [MutableState]
@@ -231,7 +230,7 @@ fun PlantDetailsScreen(
  * whose `scrollState` argument is our [ScrollState] variable `scrollState` and whose `namePosition`
  * argument is set to [Float.MIN_VALUE]. We initialize and remember our [MutableTransitionState] of
  * [ToolbarState] variable `transitionState` to the value returned by the [remember] function for the
- * `key1` argument og our [PlantDetailsScroller] variable `plantScroller` with an initial value of
+ * `key1` argument of our [PlantDetailsScroller] variable `plantScroller` with an initial value of
  * the current value of the [PlantDetailsScroller.toolbarTransitionState] property of our
  * [PlantDetailsScroller] variable `plantScroller`. We initialize our [ToolbarState] variable
  * `toolbarState` to the value returned by the [PlantDetailsScroller.getToolbarState] method of our
@@ -255,7 +254,7 @@ fun PlantDetailsScreen(
  * set to [Spring.StiffnessLow] and the `label` argument set to an empty string. In the
  * `targetValueByState` lambda argument of the [Transition.animateFloat] function we accept the
  * [ToolbarState] passed the lambda in variable `toolbarTransitionState` and return the value
- * `0f` if the [ToolbarState] is [ToolbarState.HIDDEN] and `1f` otherwise.
+ * `1f` if the [ToolbarState] is [ToolbarState.HIDDEN] and `0f` otherwise.
  *
  * Our root composable is a [Box] whose `modifier` argument chains to our [Modifier] parameter
  * [modifier] a [Modifier.fillMaxSize]. In the [BoxScope] `content` composable lambda argument of
@@ -266,7 +265,7 @@ fun PlantDetailsScreen(
  *  - `toolbarState`: is our [ToolbarState] variable `toolbarState`
  *  - `onNamePosition`: is a lambda function that accepts the [Float] passed the lambda in variable
  *  `newNamePosition` and if the [PlantDetailsScroller.namePosition] property of [PlantDetailsScroller]
- *  variable `plantScroller` is [Float.MIN_VALUE] it sets `plantScoler` to a copy of itself with
+ *  variable `plantScroller` is [Float.MIN_VALUE] it sets `plantScroller` to a copy of itself with
  *  its [PlantDetailsScroller.namePosition] property set to `newNamePosition`.
  *  - `plant`: is our [Plant] parameter [plant].
  *  - `isPlanted`: is our [Boolean] parameter [isPlanted].
@@ -376,10 +375,10 @@ fun PlantDetails(
 }
 
 /**
- * The main content of the plant details screen. This composable is responsible for
- * displaying the plant image, the floating action button (FAB) for adding the plant to the garden,
- * and the detailed plant information. The content is scrollable and fades out as the
- * toolbar becomes visible.
+ * The main content of the plant details screen. This composable is responsible for displaying the
+ * plant image, the floating action button (FAB) for adding the plant to the garden, and the
+ * detailed plant information. The content is scrollable and fades out as the toolbar becomes
+ * visible.
  *
  * Our root composable is a [Column] whose `modifier` argument is a [Modifier.verticalScroll] whose
  * `state` argument is our [ScrollState] parameter [scrollState]. In the [ColumnScope] `content`
@@ -419,7 +418,7 @@ fun PlantDetails(
  *  - `onGalleryClick`: is our [onGalleryClick] lambda parameter.
  *  - `modifier`: is a [ConstraintLayoutScope.constrainAs] whose `ref` argument is the
  *  [ConstrainedLayoutReference] variable `info` with the [ConstrainScope] `constrainBlock`
- *  argument links its `top` to the `bottom` of [ConstrainedLayoutReference] variable `image`,
+ *  argument linking its `top` to the `bottom` of [ConstrainedLayoutReference] variable `image`.
  *
  * @param scrollState The [ScrollState] for the vertical scrolling behavior of the content.
  * @param toolbarState The current state of the toolbar, used to control the visibility of content.
@@ -429,7 +428,7 @@ fun PlantDetails(
  * @param hasValidUnsplashKey A boolean indicating if a valid Unsplash API key is available,
  * which determines whether the gallery icon is shown and is functional.
  * @param imageHeight The height of the plant image.
- * @param onNamePosition A callback that reports the vertical position of the plant name, used
+ * @param onNamePosition A callback to use to report the vertical position of the plant name, used
  * for coordinating the collapsing toolbar animation.
  * @param onFabClick A lambda to be invoked when the "Add to Garden" FAB is clicked.
  * @param onGalleryClick A lambda to be invoked when the gallery icon is clicked.
@@ -509,8 +508,8 @@ private fun PlantDetailsContent(
  * to an initial value of `true`. Our root composable is a [Box] whose `modifier` argument chains
  * to our [Modifier] parameter [modifier] a [Modifier.fillMaxWidth] and a [Modifier.height] whose
  * `height` argument is our [Dp] parameter [imageHeight]. In the [BoxScope] `content` composable
- * lambda argument of the [Box] is `isLoading` is `true` we compose a [Box] whose `modifier`
- * argument is a [Modifier.fillMaxSize] and a [Modifier.background] whose `color` argument is
+ * lambda argument of the [Box] if `isLoading` is `true` we compose a [Box] whose `modifier`
+ * argument is a [Modifier.fillMaxSize] chained to a [Modifier.background] whose `color` argument is
  * our [Color] parameter [placeholderColor]. In any case we compose a [GlideImage] whose arguments
  * are:
  *  - `model`: is our [String] parameter [imageUrl].
@@ -563,6 +562,23 @@ private fun PlantImage(
             contentScale = ContentScale.Crop,
         ) { builder: RequestBuilder<Drawable> ->
             builder.addListener(object : RequestListener<Drawable> {
+                /**
+                 * Called when an exception occurs during a load, immediately before
+                 * [Target.onLoadFailed]. Will only be called if we currently want to display an
+                 * image for the given [model] in the given [target]. It is recommended to create
+                 * a single instance per activity/fragment rather than instantiate a new object for
+                 * each call to [GlideImage] to avoid object churn.
+                 *
+                 * @param e The maybe `null` exception containing information about why the request
+                 * failed.
+                 * @param model The model we were trying to load when the exception occurred.
+                 * @param target The [Target] we were trying to load the image into.
+                 * @param isFirstResource `true` if this exception is for the first resource to load.
+                 * @return `true` to prevent [Target.onLoadFailed] from being called on [target],
+                 * typically because the listener wants to update the [target] or the object the
+                 * [target] wraps itself or `false` to allow [Target.onLoadFailed] to be called on
+                 * [target].
+                 */
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -573,6 +589,25 @@ private fun PlantImage(
                     return false
                 }
 
+                /**
+                 * Called when a load completes successfully, immediately before
+                 * [Target.onResourceReady].
+                 *
+                 * @param resource The resource that was loaded for the target. Non-1 because a
+                 * `null` resource will result in a call to [onLoadFailed] instead of this method.
+                 * @param model The specific model that was used to load the image. Non-`null`
+                 * because a `null` model will result in a call to [onLoadFailed] instead of
+                 * this method.
+                 * @param target The [Target] the model was loaded into.
+                 * @param dataSource The [DataSource] the resource was loaded from.
+                 * @param isFirstResource `true` if this is the first resource to in this load to be
+                 * loaded into the target. For example when loading a thumbnail and a full-sized
+                 * image, this will be `true` for the first image to load and `false` for the second.
+                 * @return `true` to prevent [Target.onResourceReady] from being called on [target],
+                 * typically because the listener wants to update the [target] or the object the
+                 * [target] wraps itself or `false` to allow [Target.onResourceReady] to be called
+                 * on [target].
+                 */
                 override fun onResourceReady(
                     resource: Drawable,
                     model: Any,
@@ -594,7 +629,7 @@ private fun PlantImage(
  * We start by initializing our [String] variable `addPlantContentDescription` to the string with
  * resource ID `R.string.add_plant` ("Add plant") and compose a [FloatingActionButton] whose
  * `onClick` argument is our [onFabClick] lambda parameter, whose `shape` argument is the
- * [Shapes.small] of our custom [MaterialTheme.shapes], and whose `modifier` argument is chains to
+ * [Shapes.small] of our custom [MaterialTheme.shapes], and whose `modifier` argument chains to
  * our [Modifier] parameter [modifier] a [Modifier.semantics] whose `contentDescription` is our
  * [String] variable `addPlantContentDescription`.
  *
