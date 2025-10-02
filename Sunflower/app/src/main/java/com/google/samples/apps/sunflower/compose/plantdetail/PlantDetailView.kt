@@ -672,7 +672,7 @@ private fun PlantFab(
  *
  * The transition between these two states is animated using alpha fades.
  *
- * We start by initializing our lambda variable `onShareClick` to a lambd which calls the
+ * We start by initializing our lambda variable `onShareClick` to a lambda which calls the
  * [PlantDetailsCallbacks.onShareClick] method of our [PlantDetailsCallbacks] parameter [callbacks]
  * with our [String] parameter [plantName]. If the [ToolbarState.isShown] property of our
  * [ToolbarState] parameter [toolbarState] is `true` we compose a [PlantDetailsToolbar] with the
@@ -742,7 +742,7 @@ private fun PlantToolbar(
  *  - `modifier`: chains to our [Modifier] parameter [modifier] a [Modifier.statusBarsPadding]
  *  chained to a [Modifier.background] whose `color` argument is the [ColorScheme.surface] of
  *  our custom [MaterialTheme.colorScheme].
- *  - `title`: is a lambda that composes a [Row] whose.
+ *  - `title`: is a lambda that composes a [Row].
  *
  * The in the [RowScope] `content` composable lambda argument of the [Row] we compose:
  *
@@ -932,29 +932,29 @@ private fun PlantHeaderActions(
  * for coordinating animations.
  *
  * Our root composable is a [Column] whose `modifier` argument chains to our [Modifier] parameter
- * [modifier] a [Modifier.padding] that adds [Dimens.PaddingLarge] to all sides. In the [ColumnScope]
- * `content` composable lambda argument of the [Column] we compose:
+ * [modifier] a [Modifier.padding] that adds [Dimens.PaddingLarge] (24.dp) to all sides. In the
+ * [ColumnScope] `content` composable lambda argument of the [Column] we compose:
  *
  * **First** a [Text] whose `text` argument is our [String] parameter [name], whose `style` argument
  * is the [Typography.displaySmall] of our custom [MaterialTheme.typography], and whose `modifier`
- * argument is a [Modifier.padding] that adds [Dimens.PaddingSmall] to the `start` and `end` and
- * [Dimens.PaddingNormal] to the `bottom`, chained to a [ColumnScope.align] whose `alignment`
- * argument is [Alignment.CenterHorizontally], chained to a [Modifier.onGloballyPositioned] in whose
- * `onGloballyPositioned` lambda argument we accept the [LayoutCoordinates] passed the lambda in
- * variable `coord` then call our [onNamePosition] lambda parameter with the [Offset.y] of the
- * value returned by [LayoutCoordinates.positionInWindow] property of `coord`, and at the end of the
- * chain is a [Modifier.visible] whose `condition` argument is `true` if our [ToolbarState] parameter
- * [toolbarState] is [ToolbarState.HIDDEN].
+ * argument is a [Modifier.padding] that adds [Dimens.PaddingSmall] (8.dp) to the `start` and `end`
+ * and [Dimens.PaddingNormal] (16.dp) to the `bottom`, chained to a [ColumnScope.align] whose
+ * `alignment` argument is [Alignment.CenterHorizontally], chained to a
+ * [Modifier.onGloballyPositioned] in whose `onGloballyPositioned` lambda argument we accept the
+ * [LayoutCoordinates] passed the lambda in variable `coord` then call our [onNamePosition] lambda
+ * parameter with the [Offset.y] of the value returned by [LayoutCoordinates.positionInWindow]
+ * property of `coord`, and at the end of the chain is a [Modifier.visible] whose `condition`
+ * argument is `true` if our [ToolbarState] parameter [toolbarState] is [ToolbarState.HIDDEN].
  *
  * **Second** a [Box] whose `modifier` argument is a [ColumnScope.align] whose `alignment` argument
  * is [Alignment.CenterHorizontally], chained to a [Modifier.padding] that adds [Dimens.PaddingSmall]
- * to the `start`, and `end` sides and [Dimens.PaddingNormal] to the `bottom` side. In the [BoxScope]
- * `content` composable lambda argument of the [Box] we compose a [Column] whose `modifier` argument
- * is a [Modifier.fillMaxWidth]. In the [ColumnScope] `content` composable lambda argument of the
- * [Column] we compose a [Text] whose `text` argument is the string with resource ID
- * `R.string.watering_needs_prefix` ("Watering needs"), and whose `fontWeight` argument is
+ * (8.dp) to the `start`, and `end` sides and [Dimens.PaddingNormal] (16.dp) to the `bottom` side.
+ * In the [BoxScope] `content` composable lambda argument of the [Box] we compose a [Column] whose
+ * `modifier` argument is a [Modifier.fillMaxWidth]. In the [ColumnScope] `content` composable
+ * lambda argument of the [Column] we compose a [Text] whose `text` argument is the string with
+ * resource ID `R.string.watering_needs_prefix` ("Watering needs"), whose `fontWeight` argument is
  * [FontWeight.Bold], and whose `modifier` argument is a [Modifier.padding] that adds
- * [Dimens.PaddingSmall] to the `horizontal` sides. We initialize our [String] variable
+ * [Dimens.PaddingSmall] (8.dp) to the `horizontal` sides. We initialize our [String] variable
  * `wateringIntervalText` to the [pluralStringResource] whose `id` is `R.plurals.watering_needs_suffix`,
  * whose `count` is our [Int] parameter [wateringInterval] and whose `formatArgs` is our
  * [Int] parameter [wateringInterval] then we compose a [Text] whose `text` argument is our [String]
@@ -966,13 +966,13 @@ private fun PlantHeaderActions(
  *  - `painter`: is the [painterResource] with resource ID `R.drawable.ic_photo_library`,
  *  - `contentDescription`: is `null`,
  *  - `modifier`: is a [Modifier.clickable] whose `interactionSource` argument is our
- *  [MutableInteractionSource] variable `interactionSource` and whose `indication` argument is
- *  `null`, chained to a [ColumnScope.align] whose `alignment` argument is [Alignment.CenterEnd].
+ *  [MutableInteractionSource] variable `interactionSource` whose `indication` argument is
+ *  `null`, and whose `onClick` lambda argument is a lambda that calls our lambda parameter
+ *  [onGalleryClick], chained to a [ColumnScope.align] whose `alignment` argument is
+ *  [Alignment.CenterEnd].
  *
  * **Third** underneath the [Box] we compose a [PlantDescription] whose `description` argument is
  * our [String] parameter [description].
- *
- * Then we compose a [Text] whose `text` argument
  *
  * @param name The name of the plant.
  * @param wateringInterval The interval at which the plant should be watered.

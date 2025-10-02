@@ -44,10 +44,10 @@ import androidx.compose.ui.unit.dp
  * TODO: Continue here.
  *
  * @param snackbarText The text to display in the snackbar.
- * @param showSnackbar A boolean flag that triggers the display of the snackbar when true.
+ * @param showSnackbar A boolean flag that triggers the display of the snackbar when `true`.
  * @param onDismissSnackbar A lambda to be invoked when the snackbar is dismissed. This should
  * typically reset the state that caused the snackbar to be shown.
- * @param modifier The modifier to be applied to the container.
+ * @param modifier The [Modifier] to be applied to the container.
  * @param snackbarHostState The [SnackbarHostState] used to manage the snackbar. A new instance
  * is created and remembered by default.
  * @param content The main content to be displayed within the container. The snackbar will be

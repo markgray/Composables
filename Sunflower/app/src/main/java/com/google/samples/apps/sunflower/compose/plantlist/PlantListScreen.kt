@@ -82,11 +82,12 @@ fun PlantListScreen(
  *
  * In the [LazyGridScope] `content` composable lambda argument of the [LazyVerticalGrid] we compose
  * a [LazyGridScope.items] whose `items` argument is our [List] of [Plant] variable [plants] and
- * whose `key` if a lambda that accepts the current [Plant] passed the lambda in variable `plant`
+ * whose `key` is a lambda that accepts the current [Plant] passed the lambda in variable `plant`
  * and returns the [Plant.plantId] of the `plant`. In the [LazyGridItemScope] `itemContent` composable
  * lambda argument of the [LazyGridScope.items] we accept the [Plant] passed the lambda in variable
- * `plant` and compose a [PlantListItem] whose `plant` argument is the `plant` and `onClick` lambda
- * argument is our lambda parameter [onPlantClick].
+ * `plant` and compose a [PlantListItem] whose `plant` argument is the [Plant] variable `plant` and
+ * whose `onClick` lambda argument is a lambda that calls our lambda parameter [onPlantClick] with
+ * the [Plant] variable `plant`.
  *
  * @param plants The list of plants to display.
  * @param modifier Modifier to be applied to the layout.
