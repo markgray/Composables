@@ -30,10 +30,17 @@ import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.compose.gallery.GalleryScreen
 import com.google.samples.apps.sunflower.compose.home.HomeScreen
 import com.google.samples.apps.sunflower.compose.plantdetail.PlantDetailsScreen
+import com.google.samples.apps.sunflower.data.Plant
+import com.google.samples.apps.sunflower.data.UnsplashPhoto
 
+/**
+ * Main entry point for the Sunflower app. Sets up the navigation controller and
+ * defines the navigation graph.
+ * TODO: Continue here.
+ */
 @Composable
 fun SunflowerApp() {
-    val navController = rememberNavController()
+    val navController: NavHostController = rememberNavController()
     SunFlowerNavHost(
         navController = navController
     )
@@ -43,14 +50,14 @@ fun SunflowerApp() {
 fun SunFlowerNavHost(
     navController: NavHostController
 ) {
-    val activity = (LocalActivity.current as Activity)
+    val activity: Activity = (LocalActivity.current as Activity)
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
             HomeScreen(
-                onPlantClick = {
+                onPlantClick = { plant: Plant ->
                     navController.navigate(
-                        Screen.PlantDetail.createRoute(
-                            plantId = it.plantId
+                        route = Screen.PlantDetail.createRoute(
+                            plantId = plant.plantId
                         )
                     )
                 }
@@ -62,13 +69,13 @@ fun SunFlowerNavHost(
         ) {
             PlantDetailsScreen(
                 onBackClick = { navController.navigateUp() },
-                onShareClick = {
-                    createShareIntent(activity, it)
+                onShareClick = { plantName: String ->
+                    createShareIntent(activity = activity, plantName = plantName)
                 },
-                onGalleryClick = {
+                onGalleryClick = { plant: Plant ->
                     navController.navigate(
-                        Screen.Gallery.createRoute(
-                            plantName = it.name
+                        route = Screen.Gallery.createRoute(
+                            plantName = plant.name
                         )
                     )
                 }
@@ -79,8 +86,8 @@ fun SunFlowerNavHost(
             arguments = Screen.Gallery.navArguments
         ) {
             GalleryScreen(
-                onPhotoClick = {
-                    val uri = it.user.attributionUrl.toUri()
+                onPhotoClick = { photo: UnsplashPhoto ->
+                    val uri = photo.user.attributionUrl.toUri()
                     val intent = Intent(Intent.ACTION_VIEW, uri)
                     activity.startActivity(intent)
                 },
@@ -94,7 +101,7 @@ fun SunFlowerNavHost(
 // Helper function for calling a share functionality.
 // Should be used when user presses a share button/menu item.
 private fun createShareIntent(activity: Activity, plantName: String) {
-    val shareText = activity.getString(R.string.share_text_plant, plantName)
+    val shareText: String = activity.getString(R.string.share_text_plant, plantName)
     val shareIntent = ShareCompat.IntentBuilder(activity)
         .setText(shareText)
         .setType("text/plain")

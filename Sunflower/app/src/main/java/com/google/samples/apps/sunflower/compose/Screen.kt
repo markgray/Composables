@@ -14,34 +14,73 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.sunflower.compose
 
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
+/**
+ * A sealed class that represents the different screens in the app.
+ *
+ * Each screen is defined as a data object or a class that extends this sealed class.
+ * It contains the route string and any navigation arguments required for the screen.
+ *
+ * @property route The route string used for navigation.
+ * @property navArguments A list of [NamedNavArgument]s that this screen requires.
+ */
 sealed class Screen(
     val route: String,
     val navArguments: List<NamedNavArgument> = emptyList()
 ) {
-    data object Home : Screen("home")
+    /**
+     * Represents the home screen of the app, which is composed of a [HorizontalPager]
+     * with two tabs: "My Garden" and "Plant List".
+     */
+    data object Home : Screen(route = "home")
 
+    /**
+     * Represents the plant detail screen.
+     *
+     * This screen displays detailed information about a specific plant.
+     * It requires a `plantId` [navArgument] argument to identify which plant to display.
+     */
     data object PlantDetail : Screen(
         route = "plantDetail/{plantId}",
         navArguments = listOf(navArgument("plantId") {
             type = NavType.StringType
         })
     ) {
-        fun createRoute(plantId: String) = "plantDetail/${plantId}"
+        /**
+         * Creates a route to the plant detail screen with the given [plantId].
+         *
+         * @param plantId The ID of the plant to display.
+         * @return The complete route string for the plant detail screen for the given [plantId].
+         */
+        fun createRoute(plantId: String): String = "plantDetail/${plantId}"
     }
 
+    /**
+     * Represents the gallery screen, which shows a list of photos for a specific plant.
+     *
+     * It requires a `plantName` [navArgument] argument to identify which plant to display.
+     */
     data object Gallery : Screen(
         route = "gallery/{plantName}",
         navArguments = listOf(navArgument("plantName") {
             type = NavType.StringType
         })
     ) {
-        fun createRoute(plantName: String) = "gallery/${plantName}"
+        /**
+         * Creates a route to the gallery screen with the given [plantName].
+         *
+         * @param plantName The name of the plant whose gallery is to be displayed.
+         * @return The complete route string for the gallery screen for the given [plantName].
+         */
+        fun createRoute(plantName: String): String = "gallery/${plantName}"
 
     }
 }

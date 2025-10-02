@@ -17,11 +17,13 @@
 package com.google.samples.apps.sunflower.compose.utils
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -33,6 +35,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * A container that manages the display of a text-based [Snackbar].
@@ -41,7 +44,25 @@ import androidx.compose.ui.unit.dp
  * when [showSnackbar] is true. The snackbar is automatically dismissed after a short duration,
  * at which point [onDismissSnackbar] is called.
  *
- * TODO: Continue here.
+ * Our root composable is a [Box] whose `modifier` argument is our [Modifier] parameter [modifier].
+ * In the [BoxScope] `content` composable lambda argument of the [Box] we first compose our
+ * composable lambda parameter [content]. Then we initialize and remember our [State] wrapped lambda
+ * variable `onDismissState` with our lambda parameter [onDismissSnackbar]. We compose a
+ * [LaunchedEffect] whose `key1` is our [Boolean] parameter [showSnackbar] and `key2` is our [String]
+ * parameter [snackbarText]. In the [CoroutineScope] `block` lambda argument of the [LaunchedEffect]
+ * if [showSnackbar] is `true` inside a `try-finally` we call the [SnackbarHostState.showSnackbar]
+ * method of our [SnackbarHostState] parameter [snackbarHostState] with the given [snackbarText]
+ * as its `message` argument and [SnackbarDuration.Short] as its `duration` argument, and in the
+ * `finally` block we call our lambda variable `onDismissState`.
+ *
+ * Finally wrapped in a [MaterialTheme] whose `shapes` argument is a new instance of [Shapes] we
+ * compose a [SnackbarHost] whose `hostState` argument is our [SnackbarHostState] parameter,
+ * and whose `modifier` argument chains to our [Modifier] parameter [modifier] a [BoxScope.align]
+ * whose `alignment` argument is [Alignment.BottomCenter], chained to a [Modifier.systemBarsPadding]
+ * to add padding to accommodate the system bars insets, and chained to a [Modifier.padding] to
+ * add 8.dp padding all sides. In the `snackbar` composable lambda argument of the [SnackbarHost]
+ * we accept the [SnackbarData] passed the lambda in variable `snackbarData` and compose a [Snackbar]
+ * whose `snackbarData` argument is our [SnackbarData] variable `snackbarData`.
  *
  * @param snackbarText The text to display in the snackbar.
  * @param showSnackbar A boolean flag that triggers the display of the snackbar when `true`.
@@ -62,11 +83,11 @@ fun TextSnackbarContainer(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     content: @Composable () -> Unit
 ) {
-    Box(modifier) {
+    Box(modifier = modifier) {
         content()
 
-        val onDismissState by rememberUpdatedState(onDismissSnackbar)
-        LaunchedEffect(showSnackbar, snackbarText) {
+        val onDismissState: () -> Unit by rememberUpdatedState(newValue = onDismissSnackbar)
+        LaunchedEffect(key1 = showSnackbar, key2 = snackbarText) {
             if (showSnackbar) {
                 try {
                     snackbarHostState.showSnackbar(
@@ -84,11 +105,11 @@ fun TextSnackbarContainer(
             SnackbarHost(
                 hostState = snackbarHostState,
                 modifier = modifier
-                    .align(Alignment.BottomCenter)
+                    .align(alignment = Alignment.BottomCenter)
                     .systemBarsPadding()
                     .padding(all = 8.dp),
-            ) {
-                Snackbar(it)
+            ) { snackbarData: SnackbarData ->
+                Snackbar(snackbarData = snackbarData)
             }
         }
     }

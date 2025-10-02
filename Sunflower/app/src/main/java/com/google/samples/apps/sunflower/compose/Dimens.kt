@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.sunflower.compose
 
 import androidx.compose.runtime.Composable
@@ -31,18 +33,42 @@ import com.google.samples.apps.sunflower.R
  */
 object Dimens {
 
+    /**
+     * A small padding value (8.dp). It is used for elements that should have a small amount of
+     * spacing between them.
+     */
     val PaddingSmall: Dp
-        @Composable get() = dimensionResource(R.dimen.margin_small)
+        @Composable get() = dimensionResource(id = R.dimen.margin_small)
 
+    /**
+     * A standard padding value (16.dp). This is the most commonly used padding size for spacing
+     * between UI elements.
+     */
     val PaddingNormal: Dp
-        @Composable get() = dimensionResource(R.dimen.margin_normal)
+        @Composable get() = dimensionResource(id = R.dimen.margin_normal)
 
+    /**
+     * A large padding value (24.dp). It is used for elements that should have a large amount of
+     * spacing between them, or for the main container padding.
+     */
     val PaddingLarge: Dp = 24.dp
 
+    /**
+     * The height of the app bar on the plant detail screen (278.dp). This is a fixed value used to
+     * size the top app bar correctly.
+     */
     val PlantDetailAppBarHeight: Dp
-        @Composable get() = dimensionResource(R.dimen.plant_detail_app_bar_height)
+        @Composable get() = dimensionResource(id = R.dimen.plant_detail_app_bar_height)
 
-    val ToolbarIconPadding = 12.dp
+    /**
+     * The padding around the icons in the toolbar (12.dp). This is used to ensure that the icons
+     * are not too close to the edge of the screen or other UI elements.
+     */
+    val ToolbarIconPadding: Dp = 12.dp
 
-    val ToolbarIconSize = 32.dp
+    /**
+     * The size of the icons used in the toolbar (32.dp). This is a fixed value used to ensure
+     * that all toolbar icons have a consistent size.
+     */
+    val ToolbarIconSize: Dp = 32.dp
 }
