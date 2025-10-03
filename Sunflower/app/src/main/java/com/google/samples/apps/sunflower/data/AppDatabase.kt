@@ -22,6 +22,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -31,7 +32,11 @@ import com.google.samples.apps.sunflower.workers.SeedDatabaseWorker
 import com.google.samples.apps.sunflower.workers.SeedDatabaseWorker.Companion.KEY_FILENAME
 
 /**
- * The Room database for this app
+ * The Room database for this app.
+ *
+ * This database stores the `Plant` and `GardenPlanting` information.
+ * It is pre-populated with plant data from `assets/plants.json`.
+ * TODO: Continue here.
  */
 @Database(entities = [GardenPlanting::class, Plant::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
@@ -42,26 +47,34 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
 
         // For Singleton instantiation
-        @Volatile private var instance: AppDatabase? = null
+        @Volatile
+        private var instance: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase {
-            return instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
+            return instance ?: synchronized(lock = this) {
+                instance ?: buildDatabase(context = context).also { instance = it }
             }
         }
 
-        // Create and pre-populate the database. See this article for more details:
-        // https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1#4785
+        /**
+         * Create and pre-populate the database. See this article for more details:
+         * https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1
+         */
         private fun buildDatabase(context: Context): AppDatabase {
-            return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
+            return Room.databaseBuilder(
+                context = context,
+                klass = AppDatabase::class.java,
+                name = DATABASE_NAME
+            )
                 .addCallback(
-                    object : RoomDatabase.Callback() {
+                    callback = object : Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
-                            super.onCreate(db)
-                            val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>()
-                                    .setInputData(workDataOf(KEY_FILENAME to PLANT_DATA_FILENAME))
+                            super.onCreate(db = db)
+                            val request: OneTimeWorkRequest =
+                                OneTimeWorkRequestBuilder<SeedDatabaseWorker>()
+                                    .setInputData(inputData = workDataOf(KEY_FILENAME to PLANT_DATA_FILENAME))
                                     .build()
-                            WorkManager.getInstance(context).enqueue(request)
+                            WorkManager.getInstance(context = context).enqueue(request = request)
                         }
                     }
                 )
