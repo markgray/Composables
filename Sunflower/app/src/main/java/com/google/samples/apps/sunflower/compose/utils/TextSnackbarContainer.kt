@@ -59,8 +59,8 @@ import kotlinx.coroutines.CoroutineScope
  * compose a [SnackbarHost] whose `hostState` argument is our [SnackbarHostState] parameter,
  * and whose `modifier` argument chains to our [Modifier] parameter [modifier] a [BoxScope.align]
  * whose `alignment` argument is [Alignment.BottomCenter], chained to a [Modifier.systemBarsPadding]
- * to add padding to accommodate the system bars insets, and chained to a [Modifier.padding] to
- * add 8.dp padding all sides. In the `snackbar` composable lambda argument of the [SnackbarHost]
+ * to add padding to accommodate the system bars insets, and chained to that is a [Modifier.padding]
+ * that adds 8.dp padding all sides. In the `snackbar` composable lambda argument of the [SnackbarHost]
  * we accept the [SnackbarData] passed the lambda in variable `snackbarData` and compose a [Snackbar]
  * whose `snackbarData` argument is our [SnackbarData] variable `snackbarData`.
  *

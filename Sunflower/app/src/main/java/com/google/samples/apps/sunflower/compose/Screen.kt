@@ -38,7 +38,7 @@ sealed class Screen(
 ) {
     /**
      * Represents the home screen of the app, which is composed of a [HorizontalPager]
-     * with two tabs: "My Garden" and "Plant List".
+     * with two tabs: "My Garden" and "Plant List". Its `route` is the [String] "home".
      */
     data object Home : Screen(route = "home")
 

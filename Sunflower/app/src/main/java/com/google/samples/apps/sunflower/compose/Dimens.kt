@@ -34,15 +34,15 @@ import com.google.samples.apps.sunflower.R
 object Dimens {
 
     /**
-     * A small padding value (8.dp). It is used for elements that should have a small amount of
-     * spacing between them.
+     * A small padding value resource ID `R.dimen.margin_small` (8.dp). It is used for elements that
+     * should have a small amount of spacing between them.
      */
     val PaddingSmall: Dp
         @Composable get() = dimensionResource(id = R.dimen.margin_small)
 
     /**
-     * A standard padding value (16.dp). This is the most commonly used padding size for spacing
-     * between UI elements.
+     * A standard padding value resource ID `R.dimen.margin_normal` (16.dp). This is the most commonly
+     * used padding size for spacing between UI elements.
      */
     val PaddingNormal: Dp
         @Composable get() = dimensionResource(id = R.dimen.margin_normal)
@@ -54,8 +54,8 @@ object Dimens {
     val PaddingLarge: Dp = 24.dp
 
     /**
-     * The height of the app bar on the plant detail screen (278.dp). This is a fixed value used to
-     * size the top app bar correctly.
+     * The height of the app bar on the plant detail screen resource ID `R.dimen.plant_detail_app_bar_height`
+     * (278.dp). This is a fixed value used to size the top app bar correctly.
      */
     val PlantDetailAppBarHeight: Dp
         @Composable get() = dimensionResource(id = R.dimen.plant_detail_app_bar_height)

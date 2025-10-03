@@ -41,9 +41,7 @@ fun Modifier.visible(isVisible: () -> Boolean): Modifier =
  * A [LayoutModifier] that controls the visibility of a composable. When [isVisible] is false,
  * the composable is not drawn, but it still occupies space in the layout.
  *
- * This is a private implementation detail of the `Modifier.visible` extension function.
- *
- * We start by
+ * This is a private implementation detail of the [Modifier.visible] extension function.
  *
  * @param isVisible A lambda that returns `true` if the composable should be visible, false otherwise.
  */
@@ -67,7 +65,7 @@ private data class VisibleModifier(
      * We initialize our [Placeable] variable `placeable` to the value returned by the
      * [Measurable.measure] method of our [Measurable] parameter [measurable] for the `constraints`
      * argument our [Constraints] parameter [constraints]. Then we return the [MeasureResult] that
-     * the [layout] method of [MeasureScope] produce for the `width` and `height` arguments the
+     * the [layout] method of [MeasureScope] produces for the `width` and `height` arguments the
      * [Placeable.width] and [Placeable.height] of our [Placeable] variable `placeable`. In the
      * [Placeable.PlacementScope] `placementBlock` of the [layout] if the [isVisible] lambda
      * argument is `true`, we call the [Placeable.PlacementScope.place] method of our [Placeable]
