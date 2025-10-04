@@ -41,12 +41,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
  * This database stores the [Plant] and [GardenPlanting] information.
  * It is pre-populated with plant data from `assets/plants.json`.
  *
- * The @[Database] annotation Marks the class as a [RoomDatabase]. The [Database.entities] property
- * is the list of "entities" included in the database. Each entity turns into a `table` in the
- * database. The [GardenPlanting] and [Plant] classes are `data class`'es which are annotated with
- * @[Entity], with the arguments of their annotation defining the table name, the indices into the
- * table as well as the relationship of the table to other tables in the database (ie. any
- * [ForeignKey]'s associated with the table). The @[TypeConverters] annotation specifies a
+ * The @[Database] annotation Marks the class as a [RoomDatabase]. The @[Database.entities] property
+ * of the annotation is the list of "entities" included in the database. Each entity turns into a
+ * `table` in the database. The [GardenPlanting] and [Plant] classes are `data class`'es which are
+ * annotated with @[Entity], with the arguments of their annotation defining the table name, the
+ * indices into thetable as well as the relationship of the table to other tables in the database
+ * (ie. any [ForeignKey]'s associated with the table). The @[TypeConverters] annotation specifies a
  * class which contains [TypeConverter]'s to allow Room to reference complex data types, in our
  * case [Converters.calendarToDatestamp] and [Converters.datestampToCalendar]
  */
@@ -74,9 +74,9 @@ abstract class AppDatabase : RoomDatabase() {
         private var instance: AppDatabase? = null
 
         /**
-         * Returns our [AppDatabase] field [instance] if it is not `null` or if it is `null` call
-         * our [buildDatabase] to build an [AppDatabase] instance, cache it in [instance] and return
-         * it.
+         * Returns our [AppDatabase] field [instance] if it is not `null` or if it is `null` calls
+         * our [buildDatabase] method to build an [AppDatabase] instance, caches it in [instance]
+         * and returns it.
          *
          * @param context the [Context] of the single, global [ApplicationContext] object of the
          * current process.

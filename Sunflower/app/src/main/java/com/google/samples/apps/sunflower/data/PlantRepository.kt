@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.sunflower.data
 
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -24,23 +25,25 @@ import javax.inject.Singleton
  *
  * Collecting from the Flows in [PlantDao] is main-safe.  Room supports Coroutines and moves the
  * query execution off of the main thread.
+ * TODO: Continue here.
  */
 @Singleton
 class PlantRepository @Inject constructor(private val plantDao: PlantDao) {
 
-    fun getPlants() = plantDao.getPlants()
+    fun getPlants(): Flow<List<Plant>> = plantDao.getPlants()
 
-    fun getPlant(plantId: String) = plantDao.getPlant(plantId)
+    fun getPlant(plantId: String): Flow<Plant> = plantDao.getPlant(plantId)
 
-    fun getPlantsWithGrowZoneNumber(growZoneNumber: Int) =
+    fun getPlantsWithGrowZoneNumber(growZoneNumber: Int): Flow<List<Plant>> =
         plantDao.getPlantsWithGrowZoneNumber(growZoneNumber)
 
     companion object {
 
         // For Singleton instantiation
-        @Volatile private var instance: PlantRepository? = null
+        @Volatile
+        private var instance: PlantRepository? = null
 
-        fun getInstance(plantDao: PlantDao) =
+        fun getInstance(plantDao: PlantDao): PlantRepository =
             instance ?: synchronized(this) {
                 instance ?: PlantRepository(plantDao).also { instance = it }
             }
