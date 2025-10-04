@@ -18,8 +18,11 @@ package com.google.samples.apps.sunflower.data
 
 import android.content.Context
 import androidx.room.Database
+import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.work.OneTimeWorkRequest
@@ -30,26 +33,55 @@ import com.google.samples.apps.sunflower.utilities.DATABASE_NAME
 import com.google.samples.apps.sunflower.utilities.PLANT_DATA_FILENAME
 import com.google.samples.apps.sunflower.workers.SeedDatabaseWorker
 import com.google.samples.apps.sunflower.workers.SeedDatabaseWorker.Companion.KEY_FILENAME
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 /**
  * The Room database for this app.
  *
- * This database stores the `Plant` and `GardenPlanting` information.
+ * This database stores the [Plant] and [GardenPlanting] information.
  * It is pre-populated with plant data from `assets/plants.json`.
- * TODO: Continue here.
+ *
+ * The @[Database] annotation Marks the class as a [RoomDatabase]. The [Database.entities] property
+ * is the list of "entities" included in the database. Each entity turns into a `table` in the
+ * database. The [GardenPlanting] and [Plant] classes are `data class`'es which are annotated with
+ * @[Entity], with the arguments of their annotation defining the table name, the indices into the
+ * table as well as the relationship of the table to other tables in the database (ie. any
+ * [ForeignKey]'s associated with the table). The @[TypeConverters] annotation specifies a
+ * class which contains [TypeConverter]'s to allow Room to reference complex data types, in our
+ * case [Converters.calendarToDatestamp] and [Converters.datestampToCalendar]
  */
 @Database(entities = [GardenPlanting::class, Plant::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
+    /**
+     * This method returns the [GardenPlantingDao] DAO for the [GardenPlanting] table.
+     */
     abstract fun gardenPlantingDao(): GardenPlantingDao
+
+    /**
+     * This method returns the [PlantDao] DAO for the [Plant] table.
+     */
     abstract fun plantDao(): PlantDao
 
     companion object {
 
-        // For Singleton instantiation
+        /**
+         * For Singleton instantiation, our [getInstance] method will return this [AppDatabase] if
+         * it is not `null`, or use the [buildDatabase] method to build one, cache it here and return
+         * the new [AppDatabase].         *
+         */
         @Volatile
         private var instance: AppDatabase? = null
 
+        /**
+         * Returns our [AppDatabase] field [instance] if it is not `null` or if it is `null` call
+         * our [buildDatabase] to build an [AppDatabase] instance, cache it in [instance] and return
+         * it.
+         *
+         * @param context the [Context] of the single, global [ApplicationContext] object of the
+         * current process.
+         * @return our singleton instance of [AppDatabase].
+         */
         fun getInstance(context: Context): AppDatabase {
             return instance ?: synchronized(lock = this) {
                 instance ?: buildDatabase(context = context).also { instance = it }
@@ -59,6 +91,27 @@ abstract class AppDatabase : RoomDatabase() {
         /**
          * Create and pre-populate the database. See this article for more details:
          * https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1
+         *
+         * We construct an instance of [RoomDatabase.Builder] by calling [Room.databaseBuilder] with
+         * the arguments:
+         *  - `context`: is our [Context] parameter [context].
+         *  - `klass`: is the java [Class] of [AppDatabase].
+         *  - `name`: is our [String] constant [DATABASE_NAME] ("sunflower-db")
+         *
+         * We chain to this [RoomDatabase.Builder], a [RoomDatabase.Builder.addCallback] whose
+         * `callback` argument is a [Callback] object which overrides its [Callback.onCreate]
+         * method that calls its super's implementation of `onCreate` with the [SupportSQLiteDatabase]
+         * passed the method then initializes its `request` variable with a [OneTimeWorkRequest] for
+         * [SeedDatabaseWorker] whose `inputData` is the [Pair] of [KEY_FILENAME]
+         * ("PLANT_DATA_FILENAME") to [PLANT_DATA_FILENAME] ("plants.json") which will cause it to
+         * parse the json in assets file "plants.json" and insert the data in the "plants" table of
+         * the database. It then has [WorkManager] enqueue the `request`. Finally the [buildDatabase]
+         * method uses the [RoomDatabase.Builder.build] method to build the [AppDatabase] and returns
+         * it to the caller.
+         *
+         * @param context the [Context] of the single, global [ApplicationContext] object of the
+         * current process.
+         * @return a new instance of [AppDatabase]
          */
         private fun buildDatabase(context: Context): AppDatabase {
             return Room.databaseBuilder(

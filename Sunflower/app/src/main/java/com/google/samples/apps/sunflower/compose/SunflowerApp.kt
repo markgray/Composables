@@ -44,7 +44,6 @@ import com.google.samples.apps.sunflower.data.UnsplashUser
  * We start by initializing and remembering our [NavHostController] variable `navController` using
  * the [rememberNavController] method. Then we compose a [SunFlowerNavHost] with its `navController`
  * argument our [NavHostController] variable `navController`.
- *
  */
 @Composable
 fun SunflowerApp() {
@@ -64,9 +63,9 @@ fun SunflowerApp() {
  * We start by initializing our [Activity] variable `activity` to the current [LocalActivity]. Then
  * we compose a [NavHost] whose `navController` argument is our [NavHostController] variable
  * `navController`, and whose `startDestination` argument is the route for the home screen, the
- * [Screen.route] of the [Screen.Home]. In the [NavGraphBuilder] `builder` lambda argument we:
+ * [Screen.route] of [Screen.Home]. In the [NavGraphBuilder] `builder` lambda argument we:
  *
- * **First** We use [NavGraphBuilder.composable] to add a destination for the `route` argument the
+ * **First** We use [NavGraphBuilder.composable] to add a destination for the `route` argument
  * [Screen.route] of [Screen.Home] ("home"). In its [AnimatedContentScope] `content` composable
  * lambda argument we compose a [HomeScreen] whose `onPlantClick` argument is a lambda that accepts
  * the [Plant] passed the lambda in variable `plant` and calls the [NavHostController.navigate]
@@ -74,7 +73,7 @@ fun SunflowerApp() {
  * returned by the [Screen.PlantDetail.createRoute] method of [Screen.PlantDetail] when called with
  * the [Plant.plantId] of [Plant] variable `plant`.
  *
- * **Second** We use [NavGraphBuilder.composable] to add a destination for the `route` argument the
+ * **Second** We use [NavGraphBuilder.composable] to add a destination for the `route` argument
  * [Screen.route] of [Screen.PlantDetail] with its `navArguments` argument the value of the
  * [Screen.navArguments] property of [Screen.PlantDetail]. In its [AnimatedContentScope] `content`
  * composable lambda argument we compose a [PlantDetailsScreen] whose arguments are:
@@ -82,16 +81,16 @@ fun SunflowerApp() {
  *  [NavHostController] variable `navController`.
  *  - `onShareClick`: A lambda that accepts the [String] passed the lambda in variable `plantName`
  *  and calls the [createShareIntent] method with its `activity` argument our [Activity] variable
- *  `activity` and its `plantName` argument [String] variable `plantName`.
+ *  `activity` and its `plantName` argument the [String] variable `plantName`.
  *  - `onGalleryClick`: A lambda that accepts the [Plant] passed the lambda in variable `plant`
  *  and calls the [NavHostController.navigate] method of [NavHostController] variable `navController`
  *  with its `route` argument the value returned by the [Screen.Gallery.createRoute] method of
  *  [Screen.Gallery] for the `plantName` argument the [Plant.name] of [Plant] variable `plant`.
  *
- * **Third** We use [NavGraphBuilder.composable] to add a destination for the `route` argument the
- * [Screen.route] of [Screen.Gallery] with its `navArguments` argument the value of the [Screen.navArguments]
- * property of [Screen.Gallery]. In its [AnimatedContentScope] `content` composable lambda argument we
- * compose a [GalleryScreen] whose arguments are:
+ * **Third** We use [NavGraphBuilder.composable] to add a destination for the `route` argument
+ * [Screen.route] of [Screen.Gallery] with its `navArguments` argument the value of the
+ * [Screen.navArguments] property of [Screen.Gallery]. In its [AnimatedContentScope] `content`
+ * composable lambda argument we compose a [GalleryScreen] whose arguments are:
  *  - `onPhotoClick`: A lambda that accepts the [UnsplashPhoto] passed the lambda in variable
  *  `photo` then initializes its [Uri] variable `uri` to the [UnsplashUser.attributionUrl] of the
  *  [UnsplashPhoto.user] of [UnsplashPhoto] variable `photo`. Then it initializes its [Intent]
