@@ -22,7 +22,7 @@ import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 /**
- * The Data Access Object for the Plant class (aka "plants" table in the database). The @[Dao]
+ * The Data Access Object for the [Plant] class (aka "plants" table in the database). The @[Dao]
  * annotation marks this class as a Data Access Object. Data Access Objects are the main classes
  * where you define your database interactions. At compile time, Room will generate an implementation
  * of this class when it is referenced by a Database (in our case this is `PlantDao_Impl`).
@@ -32,8 +32,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PlantDao {
     /**
-     * Returns a [Flow] of [List] of all of the [Plant] instances in the "plants" table
-     * sorted by its "name" column.
+     * Returns a [Flow] of [List] of all of the columns of all of the [Plant] instances in the
+     * "plants" table sorted by their "name" column.
      *
      * @return a [Flow] of [List] of all of the [Plant] instances in the "plants" table
      * sorted by its "name" column.
@@ -42,9 +42,9 @@ interface PlantDao {
     fun getPlants(): Flow<List<Plant>>
 
     /**
-     * Returns a [Flow] of [List] of all of the [Plant] instances in the "plants" table
-     * whose "growZoneNumber" column is equal to its [growZoneNumber] parameter, sorted by their
-     * "name" column.
+     * Returns a [Flow] of [List] of all of the columns of all of the [Plant] instances in the
+     * "plants" table whose "growZoneNumber" column is equal to its [growZoneNumber] parameter,
+     * sorted by their "name" column.
      *
      * @param growZoneNumber the grow zone number that we want to match the "growZoneNumber" column
      * of the [Plant]s selected to be returned.
@@ -56,8 +56,8 @@ interface PlantDao {
     fun getPlantsWithGrowZoneNumber(growZoneNumber: Int): Flow<List<Plant>>
 
     /**
-     * Returns the [Flow] of [Plant] instance in the "plants" table whose "id" column is
-     * equal to our [plantId] parameter.
+     * Returns all of the columns of a [Flow] of [Plant] instance from the "plants" table whose
+     * "id" column is equal to our [plantId] parameter.
      *
      * @param plantId the [String] that should match the "id" column of the [Plant] returned.
      * @return the [Flow] of [Plant] instance in the "plants" table whose "id" column is
@@ -68,7 +68,8 @@ interface PlantDao {
 
     /**
      * Inserts or updates all of the [Plant] instances in its [List] of [Plant] parameter [plants]
-     * into the "plants" table of the database.
+     * into the "plants" table of the database. The @[Upsert] annotation marks a method in a Dao
+     * annotated class as an upsert (insert or update) method.
      *
      * @param plants the [List] of [Plant] instances that should be inserted or updated into the
      * "plants" table of the database.

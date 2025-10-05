@@ -24,8 +24,8 @@ import java.util.Calendar
  */
 class Converters {
     /**
-     * Converts its [Calendar] parameter [calendar] to a [Long] value, the number of milliseconds
-     * since January 1, 1970, 00:00:00 GMT that is stored in the [Calendar.timeInMillis] property
+     * Converts its [Calendar] parameter [calendar] to a [Long] value, (the number of milliseconds
+     * since January 1, 1970, 00:00:00 GMT) that is stored in the [Calendar.timeInMillis] property
      * of [Calendar] parameter [calendar]. The @[TypeConverter] annotation marks the method as a
      * type converter for Room.
      *

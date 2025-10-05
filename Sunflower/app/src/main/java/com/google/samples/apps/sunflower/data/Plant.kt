@@ -64,7 +64,8 @@ data class Plant(
      */
     val wateringInterval: Int = 7, // how often the plant should be watered, in days
     /**
-     * This is the URL for a picture of the [Plant] that has uploaded to upload.wikimedia.org.
+     * This is the URL for a picture of the [Plant] that has uploaded to upload.wikimedia.org, it
+     * comes from the "value" of the "imageUrl" name in the JSON file assets/plants.json.
      */
     val imageUrl: String = ""
 ) {

@@ -78,7 +78,7 @@ interface GardenPlantingDao {
      * "id" column is in the list returned by the subquery. ROOM automagically populates instances
      * of [PlantAndGardenPlantings] with the [Plant] and [GardenPlanting] from the query into a
      * [Flow] of [List] of [PlantAndGardenPlantings]. This is due to a @[Relation] annotation
-     * in [PlantAndGardenPlantings] which can be used in a POJO to automatically fetch relation
+     * in [PlantAndGardenPlantings] which can be used in a POJO to automatically fetch related
      * entities. When the POJO is returned from a query, all of its relations are also fetched
      * by Room.
      *

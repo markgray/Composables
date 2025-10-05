@@ -53,7 +53,8 @@ import java.util.Calendar
 data class GardenPlanting(
     /**
      * This is the "id" column (field [Plant.plantId]) of the [Plant] row in the "plants" table that
-     * this [GardenPlanting] row references.
+     * this [GardenPlanting] row references. The @[ColumnInfo] annotation sets the column `name` in
+     * the database to "plant_id" (instead of the default "plantId")
      */
     @ColumnInfo(name = "plant_id")
     val plantId: String,
@@ -61,7 +62,9 @@ data class GardenPlanting(
     /**
      * Indicates when the [Plant] was planted. Used for showing notification when it's time
      * to harvest the plant. When our [GardenPlanting] is constructed it is initialized to
-     * a [Calendar] using the default time zone and locale with the current time.
+     * a [Calendar] using the default time zone and locale with the current time. The @[ColumnInfo]
+     * annotation sets the column `name` in the database to "plant_date" (instead of the default
+     * "plantDate")
      */
     @ColumnInfo(name = "plant_date")
     val plantDate: Calendar = Calendar.getInstance(),
@@ -69,7 +72,9 @@ data class GardenPlanting(
     /**
      * Indicates when the [Plant] was last watered. Used for showing notification when it's
      * time to water the plant. When our [GardenPlanting] is constructed it is initialized to
-     * a [Calendar] using the default time zone and locale with the current time.
+     * a [Calendar] using the default time zone and locale with the current time. The @[ColumnInfo]
+     * annotation sets the column `name` in the database to "last_watering_date" (instead of the
+     * default "lastWateringDate")
      */
     @ColumnInfo(name = "last_watering_date")
     val lastWateringDate: Calendar = Calendar.getInstance()
@@ -77,7 +82,8 @@ data class GardenPlanting(
     /**
      * This is the unique primary key for a row in the "garden_plantings" table. The @[PrimaryKey]
      * annotation Marks a field in an Entity as the primary key, and the `autoGenerate` argument
-     * set to `true` lets SQLite generate the unique id.
+     * set to `true` lets SQLite generate the unique id. The @[ColumnInfo] annotation sets the column
+     * `name` in the database to "id" (instead of the default "gardenPlantingId")
      */
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

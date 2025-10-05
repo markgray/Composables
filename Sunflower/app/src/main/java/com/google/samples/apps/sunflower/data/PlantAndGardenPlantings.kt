@@ -28,8 +28,8 @@ data class PlantAndGardenPlantings(
     /**
      * This is the [Plant] that was planted in the [GardenPlanting]. The @[Embedded] annotation
      * Marks a field of a POJO to allow nested fields (i.e. fields of the annotated field's class)
-     * to be referenced directly in the SQL queries. If the container is an [Entity], these sub fields
-     * will be columns in the [Entity]'s database table.
+     * to be referenced directly in the SQL queries. If the container is an [Entity], these sub
+     * fields will be columns in the [Entity]'s database table.
      */
     @Embedded
     val plant: Plant,
