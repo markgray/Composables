@@ -25,8 +25,19 @@ import com.google.gson.annotations.SerializedName
  * project are listed below. For a full list of fields, consult the API documentation
  * [here](https://unsplash.com/documentation#get-a-photo).
  */
+@Suppress("unused")
 data class UnsplashPhoto(
+    /**
+     * Unique photo ID.
+     */
     @field:SerializedName("id") val id: String,
+    /**
+     * Data class that represents URLs available for a Unsplash photo. Although several photo sizes
+     * are available, this project uses only uses the small sized photo. See [UnsplashPhotoUrls]
+     */
     @field:SerializedName("urls") val urls: UnsplashPhotoUrls,
+    /**
+     * Data class that represents the user associated with the photo. See [UnsplashUser]
+     */
     @field:SerializedName("user") val user: UnsplashUser
 )

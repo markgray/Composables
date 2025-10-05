@@ -23,10 +23,20 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Dagger module for providing network-related dependencies. The @[InstallIn] annotation tells Hilt
+ * to install this module in the [SingletonComponent], meaning the provided instances will be
+ * singletons and live as long as the application. The @[Module] annotation is used to mark this
+ * class as a Dagger module, a class that contributes to the object graph.
+ */
 @InstallIn(SingletonComponent::class)
 @Module
 class NetworkModule {
 
+    /**
+     * Creates a singleton instance of the [UnsplashService].
+     * TODO: Continue here.
+     */
     @Singleton
     @Provides
     fun provideUnsplashService(): UnsplashService {

@@ -26,5 +26,8 @@ import com.google.gson.annotations.SerializedName
  * [here](https://unsplash.com/documentation#example-image-use).
  */
 data class UnsplashPhotoUrls(
+    /**
+     * URL of the small sized photo.
+     */
     @field:SerializedName("small") val small: String
 )

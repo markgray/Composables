@@ -33,7 +33,7 @@ import javax.inject.Singleton
  *  - Containing business logic.
  *
  * The @[Singleton] annotation Identifies a type that the Hilt only instantiates once, the @[Inject]
- * annotation identifies our constructor as a injectable constructor to Hilt and Hilt generates a
+ * annotation identifies our constructor as an injectable constructor to Hilt and Hilt generates a
  * `GardenPlantingRepository_Factory` java class from this file which it will use when a
  * [GardenPlantingRepository] class injection is requested.
  *

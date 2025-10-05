@@ -22,8 +22,12 @@ import com.google.gson.annotations.SerializedName
  * Data class that represents a user from Unsplash.
  *
  * Not all of the fields returned from the API are represented here; only the ones used in this
- * project are listed below. For a full list of fields, consult the API documentation
+ * project are listed below. For a full list of fields, consult the Unsplash API documentation
  * [here](https://unsplash.com/documentation#get-a-users-public-profile).
+ *
+ * @property name The user's full name.
+ * @property username The user's username.
+ * @property attributionUrl An URL for attribution, as required by the Unsplash API.
  */
 data class UnsplashUser(
     @field:SerializedName("name") val name: String,
