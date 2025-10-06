@@ -24,6 +24,10 @@ import com.google.gson.annotations.SerializedName
  * Although several photo sizes are available, this project uses only uses the `small` sized photo.
  * For more details, consult the API documentation
  * [here](https://unsplash.com/documentation#example-image-use).
+ *
+ * The @[SerializedName] annotation that indicates the member should be serialized to JSON with the
+ * provided name value as its field name, the @`field` annotation is known as a "use-site target",
+ * and makes it clear that the annotation is applied to the backing field of the Kotlin property.
  */
 data class UnsplashPhotoUrls(
     /**

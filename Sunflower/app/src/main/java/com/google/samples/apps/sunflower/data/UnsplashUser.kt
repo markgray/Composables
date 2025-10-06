@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.sunflower.data
 
 import com.google.gson.annotations.SerializedName
@@ -24,6 +26,10 @@ import com.google.gson.annotations.SerializedName
  * Not all of the fields returned from the API are represented here; only the ones used in this
  * project are listed below. For a full list of fields, consult the Unsplash API documentation
  * [here](https://unsplash.com/documentation#get-a-users-public-profile).
+ *
+ * The @[SerializedName] annotation that indicates the member should be serialized to JSON with the
+ * provided name value as its field name, the @`field` annotation is known as a "use-site target",
+ * and makes it clear that the annotation is applied to the backing field of the Kotlin property.
  *
  * @property name The user's full name.
  * @property username The user's username.

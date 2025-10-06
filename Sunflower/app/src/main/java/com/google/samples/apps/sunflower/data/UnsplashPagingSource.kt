@@ -41,7 +41,7 @@ class UnsplashPagingSource(
 ) : PagingSource<Int, UnsplashPhoto>() {
 
     /**
-     * PagingSource.load() is a suspend function that is called by the Paging library to fetch
+     * [PagingSource.load] is a suspend function that is called by the Paging library to fetch
      * more data to be displayed in the UI. It takes a LoadParams object as a parameter, which
      * includes the key of the page to be loaded and the requested load size.
      *

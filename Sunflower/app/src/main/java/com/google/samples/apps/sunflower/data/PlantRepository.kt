@@ -24,7 +24,7 @@ import javax.inject.Singleton
  * Repository module for handling data operations. Collecting from the Flows in [PlantDao] is
  * main-safe.  Room supports Coroutines and moves the query execution off of the main thread.
  *
- * The @[Singleton] annotation Identifies a type that the Hilt only instantiates once, the @[Inject]
+ * The @[Singleton] annotation Identifies a type that Hilt only instantiates once, the @[Inject]
  * annotation identifies our constructor as an injectable constructor to Hilt and Hilt generates a
  * `PlantRepository_Factory` java class from this file which it will use when a
  * [PlantRepository] class injection is requested.
@@ -71,8 +71,8 @@ class PlantRepository @Inject constructor(private val plantDao: PlantDao) {
 
         /**
          * Called to fetch a reference to our singleton [PlantRepository]. If our [instance]
-         * field is not `null` we return it, otherwise in a block [synchronized] on `this` we construct
-         * a new instance of [PlantRepository] using our [PlantDao] parameter
+         * field is not `null` we return it, otherwise in a block [synchronized] on `this` we
+         * construct a new instance of [PlantRepository] using our [PlantDao] parameter
          * [plantDao] as its `plantDao` argument and return it after using the
          * [also] extension method to cache the new instance in our [instance] field.
          *

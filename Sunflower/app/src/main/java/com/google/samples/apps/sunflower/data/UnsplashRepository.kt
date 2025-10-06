@@ -26,9 +26,10 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
- * Repository class that works with Unsplash API. The @[Inject] annotation identifies our constructor
- * as an injectable constructor to Hilt and Hilt generates a `UnsplashRepository_Factory` java class
- * from this file which it will use when a [UnsplashRepository] class injection is requested.
+ * Repository class that works with the Unsplash API. The @[Inject] annotation identifies our
+ * constructor as an injectable constructor to Hilt and Hilt generates a `UnsplashRepository_Factory`
+ * java class from this file which it will use when a [UnsplashRepository] class injection is
+ * requested.
  *
  * @property service The [UnsplashService] instance used to make API calls, injected by Hilt.
  */

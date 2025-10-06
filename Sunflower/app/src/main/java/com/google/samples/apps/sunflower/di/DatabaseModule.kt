@@ -42,8 +42,9 @@ class DatabaseModule {
      *
      * This function is annotated with @[Singleton] to ensure that Dagger Hilt creates and provides
      * only one instance of the database throughout the application's lifecycle. The @[Provides]
-     * annotation tells Hilt how to create an instance of [AppDatabase]. The @[ApplicationContext]
-     * qualifier is used to inject the application context, which is required by the database builder.
+     * annotation tells Hilt that this method is how to create an instance of [AppDatabase].
+     * The @[ApplicationContext] qualifier is used to inject the application context, which is
+     * required by the database builder.
      *
      * @param context The application context, injected by Hilt.
      * @return A singleton instance of [AppDatabase].
