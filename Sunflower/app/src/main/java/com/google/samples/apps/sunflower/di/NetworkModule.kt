@@ -35,7 +35,14 @@ class NetworkModule {
 
     /**
      * Creates a singleton instance of the [UnsplashService].
-     * TODO: Continue here.
+     *
+     * This function is annotated with @[Singleton] to ensure that Dagger Hilt creates and provides
+     * only one instance of the database throughout the application's lifecycle.
+     * Dagger Hilt will inject this dependency wherever a [UnsplashService] is required.
+     * The @[Provides] annotation tells Hilt that this method is how to create an instance
+     * of [UnsplashService].
+     *
+     * @return A singleton instance of [UnsplashService].
      */
     @Singleton
     @Provides

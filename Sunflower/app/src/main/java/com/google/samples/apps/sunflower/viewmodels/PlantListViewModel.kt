@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.sunflower.viewmodels
 
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -23,6 +24,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantRepository
+import com.google.samples.apps.sunflower.compose.home.HomeScreen
+import com.google.samples.apps.sunflower.compose.plantlist.PlantListScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +34,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * The ViewModel for plant list.
+ * The ViewModel for the plant list used in [HomeScreen] and in [PlantListScreen].
+ *
+ * The @[HiltViewModel] annotation identifies a ViewModel for construction injection.
+ * The [ViewModel] annotated with [HiltViewModel] will be available for creation by the
+ * `HiltViewModelFactory` and can be retrieved by using the [hiltViewModel] method. The
+ * [HiltViewModel] containing a constructor annotated with @[Inject] will have its
+ * dependencies defined in the constructor parameters injected by Dagger's Hilt.
+ * TODO: Continue here.
  */
 @Suppress("MemberVisibilityCanBePrivate")
 @HiltViewModel

@@ -16,22 +16,24 @@
 
 package com.google.samples.apps.sunflower.ui
 
-import android.app.Activity
+import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+/**
+ * A light color scheme used in the Sunflower app.
+ *
+ * This color scheme is applied when the user's device is not in dark theme,
+ * and dynamic theming is not enabled or available.
+ */
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
@@ -65,6 +67,13 @@ private val LightColors = lightColorScheme(
 )
 
 
+/**
+ * Dark theme color scheme for the app.
+ *
+ * This color scheme is used when the app is in dark mode. It defines the set of colors
+ * that will be used for UI components like backgrounds, surfaces, text, and icons.
+ * These colors are designed to provide good contrast and readability in low-light environments.
+ */
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
@@ -97,6 +106,24 @@ private val DarkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
+/**
+ * The main theme for the Sunflower app.
+ *
+ * This composable function applies the appropriate color scheme, typography, and shapes
+ * to the content passed to it. It supports both light and dark themes, as well as
+ * dynamic theming on Android 12 and above.
+ *
+ * The color scheme is determined by the `darkTheme` and `dynamicColor` parameters.
+ *  - If `dynamicColor` is true and the device is running on Android 12+, the system's
+ *  dynamic color scheme is used.
+ *  - Otherwise, if `darkTheme` is true, the [DarkColors] scheme is used.
+ *  - Otherwise, the default [LightColors] scheme is used.
+ *
+ * @param darkTheme Whether the theme should be in dark mode. Defaults to the system's setting.
+ * @param dynamicColor Whether to use the dynamic color scheme, available on Android 12+.
+ * Defaults to false.
+ * @param content The composable content to which the theme will be applied.
+ */
 @Composable
 fun SunflowerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -104,30 +131,14 @@ fun SunflowerTheme(
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
+    val colorScheme: ColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
+            val context: Context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
         darkTheme -> DarkColors
         else -> LightColors
-    }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        val systemUiController = rememberSystemUiController()
-        val useDarkIcons = !isSystemInDarkTheme()
-        val window = (view.context as Activity).window
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        DisposableEffect(systemUiController, useDarkIcons) {
-            // Update all of the system bar colors to be transparent, and use
-            // dark icons if we're in light theme
-            systemUiController.setSystemBarsColor(
-                color = Color.Transparent,
-                darkIcons = useDarkIcons
-            )
-            onDispose {}
-        }
     }
 
     MaterialTheme(

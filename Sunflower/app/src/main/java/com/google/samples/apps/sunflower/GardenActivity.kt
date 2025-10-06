@@ -18,6 +18,7 @@ package com.google.samples.apps.sunflower
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.google.samples.apps.sunflower.compose.SunflowerApp
@@ -31,12 +32,17 @@ class GardenActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Displaying edge-to-edge
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                lightScrim = 0,
+                darkScrim = 0
+            )
+        )
         setContent {
             SunflowerTheme {
                 SunflowerApp()
             }
         }
-        
+
     }
 }

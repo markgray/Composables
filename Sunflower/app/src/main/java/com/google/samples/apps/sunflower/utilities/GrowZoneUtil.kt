@@ -31,8 +31,11 @@ import kotlin.math.abs
  * Negative latitude values are converted to positive with [Math.abs].
  *
  * For latitude values greater than max (90.0), zone 1 is returned.
+ *
+ * @param latitude The latitude to check.
+ * @return The zone for the given latitude.
  */
-fun getZoneForLatitude(latitude: Double) = when (abs(latitude)) {
+fun getZoneForLatitude(latitude: Double): Int = when (abs(x = latitude)) {
     in 0.0..7.0 -> 13
     in 7.0..14.0 -> 12
     in 14.0..21.0 -> 11

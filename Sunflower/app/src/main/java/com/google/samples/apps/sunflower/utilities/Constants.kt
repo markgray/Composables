@@ -19,7 +19,12 @@
 package com.google.samples.apps.sunflower.utilities
 
 /**
- * Constants used throughout the app.
+ * The name of the database file.
  */
 const val DATABASE_NAME: String = "sunflower-db"
+
+/**
+ * This is the name of the JSON file that contains the initial plant data to be loaded into
+ * the database.
+ */
 const val PLANT_DATA_FILENAME: String = "plants.json"

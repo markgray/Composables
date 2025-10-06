@@ -22,7 +22,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 
-val Typography = Typography(
+/**
+ * A [Typography] definition for the Sunflower app.
+ *
+ * This typography is used by the [SunflowerTheme] to style text throughout the application.
+ * It defines styles for various text categories like display, headline, title, and label,
+ * customizing their font weight, size, and letter spacing.
+ */
+val Typography: Typography = Typography(
     displaySmall = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 36.sp

@@ -16,26 +16,67 @@
 
 package com.google.samples.apps.sunflower.viewmodels
 
+import com.google.samples.apps.sunflower.data.GardenPlanting
+import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.data.PlantAndGardenPlantings
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+/**
+ * A ViewModel like class that is responsible for formatting and providing data to the UI for a
+ * specific [PlantAndGardenPlantings].
+ *
+ * @param plantings The data to be formatted and displayed in the UI.
+ */
 class PlantAndGardenPlantingsViewModel(plantings: PlantAndGardenPlantings) {
-    private val plant = checkNotNull(plantings.plant)
-    private val gardenPlanting = plantings.gardenPlantings[0]
+    /**
+     * The [Plant] associated with this instance of [PlantAndGardenPlantingsViewModel].
+     */
+    private val plant: Plant = checkNotNull(plantings.plant)
 
+    /**
+     * The [GardenPlanting] associated with this instance of [PlantAndGardenPlantingsViewModel].
+     */
+    private val gardenPlanting: GardenPlanting = plantings.gardenPlantings[0]
+
+    /**
+     * String representing the last time the plant was watered.
+     */
     val waterDateString: String = dateFormat.format(gardenPlanting.lastWateringDate.time)
-    val wateringInterval
+
+    /**
+     * The number of days between each watering.
+     */
+    val wateringInterval: Int
         get() = plant.wateringInterval
-    val imageUrl
+
+    /**
+     * URL for the plant image.
+     */
+    val imageUrl: String
         get() = plant.imageUrl
-    val plantName
+
+    /**
+     * The name of the plant.
+     */
+    val plantName: String
         get() = plant.name
+
+    /**
+     * String representing the date the plant was planted.
+     */
     val plantDateString: String = dateFormat.format(gardenPlanting.plantDate.time)
-    val plantId
+
+    /**
+     * The ID of the plant.
+     */
+    val plantId: String
         get() = plant.plantId
 
     companion object {
+        /**
+         * A [SimpleDateFormat] for formatting dates.
+         */
         private val dateFormat = SimpleDateFormat("MMM d, yyyy", Locale.US)
     }
 }
