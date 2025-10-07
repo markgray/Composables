@@ -65,7 +65,7 @@ class PlantDetailViewModel @Inject constructor(
     /**
      * A [StateFlow] that emits `true` if the plant is in the garden, `false` otherwise.
      * This flow is backed by the [GardenPlantingRepository.isPlanted] method and is observed
-     * within the `viewModelScope`. The state is shared and kept active for 5 seconds
+     * within the [viewModelScope]. The state is shared and kept active for 5 seconds
      * after the last observer unsubscribes, with an initial value of `false`.
      */
     val isPlanted: StateFlow<Boolean> = gardenPlantingRepository.isPlanted(plantId)

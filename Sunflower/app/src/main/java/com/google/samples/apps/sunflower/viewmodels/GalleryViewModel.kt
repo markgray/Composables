@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.sunflower.viewmodels
 
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -69,13 +71,13 @@ class GalleryViewModel @Inject constructor(
     /**
      * A mutable state flow that holds the paginated data of plant pictures.
      * This is a private property and is used to update the picture data from within the ViewModel.
-     * It is initialized with `null` and populated by the `refreshData` function.
+     * It is initialized with `null` and populated by the [refreshData] function.
      */
     private val _plantPictures: MutableStateFlow<PagingData<UnsplashPhoto>?> =
         MutableStateFlow(value = null)
 
     /**
-     * A public [Flow] of [PagingData] that represents the stream of plant pictures.
+     * A public [Flow] of [PagingData] that contains the stream of plant pictures.
      *
      * This flow is collected by the UI to display a paginated list of photos. It is derived
      * from the private [MutableStateFlow] of [PagingData] of [UnsplashPhoto] property
