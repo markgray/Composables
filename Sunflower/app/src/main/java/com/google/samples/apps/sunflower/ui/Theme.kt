@@ -32,7 +32,7 @@ import androidx.compose.ui.platform.LocalContext
  * A light color scheme used in the Sunflower app.
  *
  * This color scheme is applied when the user's device is not in dark theme,
- * and dynamic theming is not enabled or available.
+ * and dynamic theming is not enabled or is not available.
  */
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -70,9 +70,10 @@ private val LightColors = lightColorScheme(
 /**
  * Dark theme color scheme for the app.
  *
- * This color scheme is used when the app is in dark mode. It defines the set of colors
- * that will be used for UI components like backgrounds, surfaces, text, and icons.
- * These colors are designed to provide good contrast and readability in low-light environments.
+ * This color scheme is used when the app is in dark mode and dynamic theming is not enabled or is
+ * not available. It defines the set of colors that will be used for UI components like backgrounds,
+ * surfaces, text, and icons. These colors are designed to provide good contrast and readability in
+ * low-light environments.
  */
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
@@ -115,7 +116,8 @@ private val DarkColors = darkColorScheme(
  *
  * The color scheme is determined by the `darkTheme` and `dynamicColor` parameters.
  *  - If `dynamicColor` is true and the device is running on Android 12+, the system's
- *  dynamic color scheme is used.
+ *  dynamic color scheme is used, [dynamicDarkColorScheme] if [darkTheme] is `true` or
+ *  [dynamicLightColorScheme] if it is `false`.
  *  - Otherwise, if `darkTheme` is true, the [DarkColors] scheme is used.
  *  - Otherwise, the default [LightColors] scheme is used.
  *
