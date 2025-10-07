@@ -27,22 +27,52 @@ import com.google.samples.apps.sunflower.data.AppDatabase
 import com.google.samples.apps.sunflower.data.Plant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.InputStream
+import java.lang.reflect.Type
 
+/**
+ * A worker that seeds the database with a list of plants.
+ *
+ * This worker reads a JSON file from the assets folder, parses it into a list of [Plant] objects,
+ * and then inserts them into the database. This is a one-time operation that should be triggered
+ * when the application is first installed or when the database is created.
+ *
+ * The name of the JSON file to be read is passed as input data with the key [KEY_FILENAME].
+ *
+ * @param context The application context.
+ * @param workerParams Parameters to setup the worker, including input data.
+ */
 class SeedDatabaseWorker(
-        context: Context,
-        workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+    context: Context,
+    workerParams: WorkerParameters
+) : CoroutineWorker(appContext = context, params = workerParams) {
+
+    /**
+     * Reads a JSON file from the assets folder and inserts the [Plant] data into the database.
+     *
+     * This method is the main entry point for the worker's execution. It reads the filename
+     * from the input data, opens the corresponding JSON file from the assets, parses it into
+     * a list of [Plant] objects using Gson, and then inserts them into the database via the
+     * [AppDatabase.plantDao] Dao object.
+     *
+     * The operation is performed on the [Dispatchers.IO] context to avoid blocking the main thread.
+     *
+     * @return [Result.success] if the database is seeded successfully.
+     * @return [Result.failure] if the filename is not provided in the input data or if any
+     * exception occurs during the file reading, parsing, or database insertion.
+     */
+    override suspend fun doWork(): Result = withContext(context = Dispatchers.IO) {
         try {
-            val filename = inputData.getString(KEY_FILENAME)
+            val filename: String? = inputData.getString(key = KEY_FILENAME)
             if (filename != null) {
-                applicationContext.assets.open(filename).use { inputStream ->
-                    JsonReader(inputStream.reader()).use { jsonReader ->
-                        val plantType = object : TypeToken<List<Plant>>() {}.type
+                applicationContext.assets.open(filename).use { inputStream: InputStream ->
+                    JsonReader(inputStream.reader()).use { jsonReader: JsonReader ->
+                        val plantType: Type? = object : TypeToken<List<Plant>>() {}.type
                         val plantList: List<Plant> = Gson().fromJson(jsonReader, plantType)
 
-                        val database = AppDatabase.getInstance(applicationContext)
-                        database.plantDao().upsertAll(plantList)
+                        val database: AppDatabase =
+                            AppDatabase.getInstance(context = applicationContext)
+                        database.plantDao().upsertAll(plants = plantList)
 
                         Result.success()
                     }
@@ -58,7 +88,14 @@ class SeedDatabaseWorker(
     }
 
     companion object {
+        /**
+         * The tag used for logging purposes.
+         */
         private const val TAG = "SeedDatabaseWorker"
-        const val KEY_FILENAME = "PLANT_DATA_FILENAME"
+
+        /**
+         * The key used to retrieve the filename from the input data.
+         */
+        const val KEY_FILENAME: String = "PLANT_DATA_FILENAME"
     }
 }

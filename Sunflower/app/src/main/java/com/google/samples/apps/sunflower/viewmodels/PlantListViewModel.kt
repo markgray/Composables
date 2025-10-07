@@ -28,6 +28,7 @@ import com.google.samples.apps.sunflower.compose.home.HomeScreen
 import com.google.samples.apps.sunflower.compose.plantlist.PlantListScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -41,7 +42,10 @@ import javax.inject.Inject
  * `HiltViewModelFactory` and can be retrieved by using the [hiltViewModel] method. The
  * [HiltViewModel] containing a constructor annotated with @[Inject] will have its
  * dependencies defined in the constructor parameters injected by Dagger's Hilt.
- * TODO: Continue here.
+ *
+ * @param plantRepository The repository for fetching plant data from the database, injected by Hilt.
+ * @param savedStateHandle A handle to the saved state of the ViewModel, used to retrieve and store
+ * the current grow zone number from the navigation arguments.
  */
 @Suppress("MemberVisibilityCanBePrivate")
 @HiltViewModel
@@ -50,16 +54,31 @@ class PlantListViewModel @Inject internal constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    /**
+     * The current grow zone number.
+     *
+     * It can be set to [NO_GROW_ZONE] to show all plants. The value is backed by our
+     * [SavedStateHandle] property to survive process death.
+     */
     private val growZone: MutableStateFlow<Int> = MutableStateFlow(
-        savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] ?: NO_GROW_ZONE
+        value = savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] ?: NO_GROW_ZONE
     )
 
+    /**
+     * A list of plants that is filtered by the current grow zone.
+     *
+     * This [LiveData] is dynamically updated by observing the [MutableStateFlow] of [Int] property
+     * [growZone]. When [growZone] is set to [NO_GROW_ZONE], it fetches all plants from the repository.
+     * Otherwise, it fetches plants that match the specified grow zone number.
+     * The [Flow.flatMapLatest] operator ensures that whenever the [growZone] changes, the old
+     * database query is cancelled and a new one is started.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    val plants: LiveData<List<Plant>> = growZone.flatMapLatest { zone ->
+    val plants: LiveData<List<Plant>> = growZone.flatMapLatest { zone: Int ->
         if (zone == NO_GROW_ZONE) {
             plantRepository.getPlants()
         } else {
-            plantRepository.getPlantsWithGrowZoneNumber(zone)
+            plantRepository.getPlantsWithGrowZoneNumber(growZoneNumber = zone)
         }
     }.asLiveData()
 
@@ -93,12 +112,18 @@ class PlantListViewModel @Inject internal constructor(
          *    }.launchIn(viewModelScope)
          */
         viewModelScope.launch {
-            growZone.collect { newGrowZone ->
+            growZone.collect { newGrowZone: Int ->
                 savedStateHandle[GROW_ZONE_SAVED_STATE_KEY] = newGrowZone
             }
         }
     }
 
+    /**
+     * Toggles the filter state for the plant list.
+     *
+     * If the list is currently filtered by a grow zone, this function clears the filter,
+     * showing all plants. If the list is not filtered, it applies a filter for grow zone 9.
+     */
     fun updateData() {
         if (isFiltered()) {
             clearGrowZoneNumber()
@@ -107,20 +132,53 @@ class PlantListViewModel @Inject internal constructor(
         }
     }
 
+    /**
+     * Sets the grow zone number to filter the plant list.
+     *
+     * This function updates the [MutableStateFlow] of [Int] property [growZone], which in turn
+     * triggers a new database query to fetch plants matching the specified grow zone. The new value
+     * is also automatically saved to the [SavedStateHandle] to persist it across process death.
+     *
+     * @param num The grow zone number to filter by.
+     */
     @Suppress("MemberVisibilityCanBePrivate")
     fun setGrowZoneNumber(num: Int) {
         growZone.value = num
     }
 
+    /**
+     * Clears the current grow zone filter.
+     *
+     * This function resets the grow zone filter, causing the plant list to display all plants
+     * regardless of their grow zone. It achieves this by setting the grow zone number to
+     * [NO_GROW_ZONE].
+     */
     @Suppress("MemberVisibilityCanBePrivate")
     fun clearGrowZoneNumber() {
         growZone.value = NO_GROW_ZONE
     }
 
+    /**
+     * Returns `true` if the plant list is filtered by a grow zone, `false` otherwise.
+     *
+     * The list is considered filtered if the current grow zone is not set to [NO_GROW_ZONE].
+     *
+     * @return `true` if the plant list is filtered by a grow zone, `false` otherwise.
+     */
     fun isFiltered(): Boolean = growZone.value != NO_GROW_ZONE
 
     companion object {
+        /**
+         * A constant representing that no grow zone filter is applied.
+         *
+         * When the grow zone is set to this value, all plants are displayed.
+         */
         private const val NO_GROW_ZONE = -1
+
+        /**
+         * A key used to save and restore the selected grow zone number in the [SavedStateHandle].
+         * This key is used to persist the user's filter choice across process death.
+         */
         private const val GROW_ZONE_SAVED_STATE_KEY = "GROW_ZONE_SAVED_STATE_KEY"
     }
 }

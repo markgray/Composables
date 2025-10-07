@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantValueArgument")
+
 package com.google.samples.apps.sunflower.compose.plantdetail
 
 import android.content.ContentResolver
@@ -22,49 +24,74 @@ import androidx.annotation.RawRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.core.net.toUri
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.samples.apps.sunflower.compose.plantdetail.PlantDetails
-import com.google.samples.apps.sunflower.compose.plantdetail.PlantDetailsCallbacks
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.test.R
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * A test class for the [PlantDetails] composable.
+ *
+ * This class contains UI tests for the Plant Details screen, covering various states
+ * such as whether a plant is planted or not, and whether the gallery is displayed
+ * based on the Unsplash API key availability.
+ *
+ * The @[RunWith] annotation causes JUnit to invoke the [AndroidJUnit4] class to run the tests in
+ * this class instead of the runner built into JUnit.
+ */
 @RunWith(AndroidJUnit4::class)
 class PlantDetailComposeTest {
 
+    /**
+     * Rule for composing and testing UI components.
+     * This rule provides a way to launch and interact with Compose UI within a test.
+     * It is used to set the content of the test screen and to find and interact with UI elements.
+     *
+     * The @[Rule] annotation Annotates fields that reference rules or methods that return a rule.
+     * In Kotlin, @get:SomeAnnotation is used to specify that an annotation should be applied to
+     * the property's getter method, rather than the property itself.
+     */
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule: ComposeContentTestRule = createComposeRule()
 
+    /**
+     * Tests the Plant Details screen when the plant is not in the garden.
+     * It verifies that the plant's name ("Apple") is displayed and that the
+     * "Add plant" button (identified by its content description) is visible,
+     * indicating that the user has the option to add the plant to their garden.
+     * TODO: Continue here.
+     */
     @Test
     fun plantDetails_checkIsNotPlanted() {
         startPlantDetails(isPlanted = false)
-        composeTestRule.onNodeWithText("Apple").assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("Add plant").assertIsDisplayed()
+        composeTestRule.onNodeWithText(text = "Apple").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(label = "Add plant").assertIsDisplayed()
     }
 
     @Test
     fun plantDetails_checkIsPlanted() {
         startPlantDetails(isPlanted = true)
-        composeTestRule.onNodeWithText("Apple").assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("Add plant").assertDoesNotExist()
+        composeTestRule.onNodeWithText(text = "Apple").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(label = "Add plant").assertDoesNotExist()
     }
 
     @Test
     fun plantDetails_checkGalleryNotShown() {
         startPlantDetails(isPlanted = true, hasUnsplashKey = false)
-        composeTestRule.onNodeWithContentDescription("Gallery Icon").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription(label = "Gallery Icon").assertDoesNotExist()
     }
 
     @Test
     fun plantDetails_checkGalleryIsShown() {
         startPlantDetails(isPlanted = true, hasUnsplashKey = true)
-        composeTestRule.onNodeWithContentDescription("Gallery Icon").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(label = "Gallery Icon").assertIsDisplayed()
     }
 
     private fun startPlantDetails(isPlanted: Boolean, hasUnsplashKey: Boolean = false) {

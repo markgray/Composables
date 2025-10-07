@@ -25,9 +25,32 @@ import com.google.samples.apps.sunflower.compose.SunflowerApp
 import com.google.samples.apps.sunflower.ui.SunflowerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Main activity for the Sunflower app.
+ * This activity is the entry point of the application and hosts the main UI, which is
+ * built using Jetpack Compose.
+ *
+ * The @[AndroidEntryPoint] annotation Marks an Android component class to be setup for injection
+ * with the standard Hilt Dagger Android components. This will generate a base class that the
+ * annotated class should extend, either directly or via the Hilt Gradle Plugin (as we do). This
+ * base class will take care of injecting members into the Android class as well as handling
+ * instantiating the proper Hilt components at the right point in the lifecycle. The name of the
+ * base class will be "Hilt_GardenActivity.java".
+ */
 @AndroidEntryPoint
 class GardenActivity : ComponentActivity() {
 
+    /**
+     * Called when the activity is first created.
+     *
+     * This method is responsible for initializing the activity. It sets up the user interface
+     * to be displayed edge-to-edge, and then sets the main content view to the [SunflowerApp]
+     * composable, which is wrapped in the [SunflowerTheme].
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being
+     * shut down then this Bundle contains the data it most recently supplied in
+     * [onSaveInstanceState]. We do not override [onSaveInstanceState] so do not use.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
