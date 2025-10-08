@@ -31,12 +31,13 @@ import dagger.hilt.android.HiltAndroidApp
  * The application container is the parent container for the app, which means that other containers
  * can access the dependencies that it provides. All modules and entry points that should be
  * installed in the component by Dagger need to be transitive compilation dependencies of this
- * application. (i.e. they need to be dependencies of the dependencies of this application. */
+ * application. (i.e. they need to be dependencies of the dependencies of this application.
+ */
 @HiltAndroidApp
 class MainApplication : Application(), Configuration.Provider {
     /**
      * Create a custom configuration for WorkManager with a different logging level for debug builds.
-     * Our `get` constructs a [Configuration.Builder], the calls its
+     * Our `get` constructs a [Configuration.Builder], the calls its method
      * [Configuration.Builder.setMinimumLoggingLevel] to set its logging level to [Log.DEBUG]
      * for debug builds and [Log.ERROR] for release builds.
      *
