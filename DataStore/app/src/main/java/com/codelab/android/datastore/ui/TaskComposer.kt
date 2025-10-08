@@ -101,6 +101,7 @@ private val dateFormat = SimpleDateFormat("MMM d, yyyy", Locale.US)
 @Composable
 fun PreviewTaskComposer() {
     DataStoreTheme {
+        @Suppress("RedundantValueArgument")
         TaskComposer(Task(
             name = "Feel Better",
             deadline = Date(),
