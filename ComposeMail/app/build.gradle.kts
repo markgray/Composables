@@ -80,10 +80,10 @@ dependencies {
     implementation("androidx.core:core-ktx:1.17.0")
     //noinspection GradleDependency TODO: Newer version breaks compilation!
     implementation("androidx.paging:paging-common-ktx:3.1.1")
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.2")
-    implementation("androidx.compose.ui:ui:1.9.1")
-    implementation("androidx.compose.material:material:1.9.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.9.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.4.0")
+    implementation("androidx.compose.ui:ui:1.9.2")
+    implementation("androidx.compose.material:material:1.9.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.9.2")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     //noinspection GradleDependency TODO: Newer version breaks compilation!
     implementation("androidx.paging:paging-compose:1.0.0-alpha17")
@@ -91,12 +91,12 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha07")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
     implementation("androidx.activity:activity-compose:1.11.0")
-    implementation("androidx.window:window:1.4.0")
+    implementation("androidx.window:window:1.5.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.9.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.9.2")
 }
