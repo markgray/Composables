@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.sunflower.utilities
 
 import android.app.Application
@@ -21,9 +23,22 @@ import android.content.Context
 import androidx.test.runner.AndroidJUnitRunner
 import dagger.hilt.android.testing.HiltTestApplication
 
-// A custom runner to set up the instrumented application class for tests.
+/**
+ * A custom runner to set up the instrumented application class for tests.
+ */
 class MainTestRunner : AndroidJUnitRunner() {
 
+    /**
+     * Does initialization before creating the application.
+     *
+     * Note [newApplication] is called before [onCreate] on API > 15. For API <= 15, [onCreate] is
+     * called first.
+     *
+     * @param cl the class loader
+     * @param name the name of the application
+     * @param context the application context
+     * @return the new [Application]
+     */
     override fun newApplication(cl: ClassLoader?, name: String?, context: Context?): Application {
         return super.newApplication(cl, HiltTestApplication::class.java.name, context)
     }

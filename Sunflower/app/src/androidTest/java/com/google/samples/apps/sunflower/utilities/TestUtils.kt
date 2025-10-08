@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.google.samples.apps.sunflower.utilities
 
 import android.content.Intent
@@ -28,14 +30,18 @@ import org.hamcrest.Matchers.allOf
 import java.util.Calendar
 
 /**
- * [Plant] objects used for tests.
+ * [List] of [Plant] objects used for tests.
  */
-val testPlants = arrayListOf(
-    Plant("1", "Apple", "A red fruit", 1),
-    Plant("2", "B", "Description B", 1),
-    Plant("3", "C", "Description C", 2)
+val testPlants: ArrayList<Plant> = arrayListOf(
+    Plant(plantId = "1", name = "Apple", description = "A red fruit", growZoneNumber = 1),
+    Plant(plantId = "2", name = "B", description = "Description B", growZoneNumber = 1),
+    Plant(plantId = "3", name = "C", description = "Description C", growZoneNumber = 2)
 )
-val testPlant = testPlants[0]
+
+/**
+ * [Plant] object used for tests.
+ */
+val testPlant: Plant = testPlants[0]
 
 /**
  * [Calendar] object used for tests.
@@ -49,12 +55,18 @@ val testCalendar: Calendar = Calendar.getInstance().apply {
 /**
  * [GardenPlanting] object used for tests.
  */
-val testGardenPlanting = GardenPlanting(testPlant.plantId, testCalendar, testCalendar)
+val testGardenPlanting: GardenPlanting =
+    GardenPlanting(
+        plantId = testPlant.plantId,
+        plantDate = testCalendar,
+        lastWateringDate = testCalendar
+    )
 
 /**
  * [PlantAndGardenPlantings] object used for tests.
  */
-val testPlantAndGardenPlanting = PlantAndGardenPlantings(testPlant, listOf(testGardenPlanting))
+val testPlantAndGardenPlanting: PlantAndGardenPlantings =
+    PlantAndGardenPlantings(plant = testPlant, gardenPlantings = listOf(testGardenPlanting))
 
 /**
  * Simplify testing Intents with Chooser
