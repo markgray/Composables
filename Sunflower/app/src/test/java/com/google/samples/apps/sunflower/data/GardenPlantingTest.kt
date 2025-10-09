@@ -22,14 +22,29 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import java.util.Calendar
 
+/**
+ * Unit tests for the [GardenPlanting] data class.
+ */
 internal class GardenPlantingTest {
 
+    /**
+     * Tests that the [GardenPlanting] constructor sets default values.
+     */
     @Test
     fun testDefaultValues() {
-        val gardenPlanting = GardenPlanting("1")
+        val gardenPlanting = GardenPlanting(plantId = "1")
         val calendar = Calendar.getInstance()
-        assertThat(gardenPlanting.plantDate, equalTo(calendar))
-        assertThat(gardenPlanting.lastWateringDate, equalTo(calendar))
-        assertThat(gardenPlanting.gardenPlantingId, `is`(0L))
+        assertThat(
+            gardenPlanting.plantDate,
+            equalTo(calendar)
+        )
+        assertThat(
+            gardenPlanting.lastWateringDate,
+            equalTo(calendar)
+        )
+        assertThat(
+            gardenPlanting.gardenPlantingId,
+            `is`(0L)
+        )
     }
 }

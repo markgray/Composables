@@ -28,19 +28,24 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * This is a macrobenchmark for the Plant Detail screen.
+ * It measures the time it takes to scroll the plant list and navigate to the detail screen.
+ * TODO: Continue here.
+ */
 @RunWith(AndroidJUnit4::class)
 class PlantDetailBenchmarks {
     @get:Rule
-    val benchmarkRule = MacrobenchmarkRule()
+    val benchmarkRule: MacrobenchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun plantDetailCompilationNone() = benchmarkPlantDetail(CompilationMode.None())
+    fun plantDetailCompilationNone(): Unit = benchmarkPlantDetail(CompilationMode.None())
 
     @Test
-    fun plantDetailCompilationPartial() = benchmarkPlantDetail(CompilationMode.Partial())
+    fun plantDetailCompilationPartial(): Unit = benchmarkPlantDetail(CompilationMode.Partial())
 
     @Test
-    fun plantDetailCompilationFull() = benchmarkPlantDetail(CompilationMode.Full())
+    fun plantDetailCompilationFull(): Unit = benchmarkPlantDetail(CompilationMode.Full())
 
     private fun benchmarkPlantDetail(compilationMode: CompilationMode) =
         benchmarkRule.measureRepeated(
