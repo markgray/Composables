@@ -17,7 +17,8 @@
 package com.google.samples.apps.nowinandroid.feature.topic.navigation
 
 import androidx.compose.animation.AnimatedContentScope
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -84,8 +85,11 @@ fun NavGraphBuilder.topicScreen(
             showBackButton = showBackButton,
             onBackClick = onBackClick,
             onTopicClick = onTopicClick,
-            viewModel = hiltViewModel<TopicViewModel, TopicViewModel.Factory>(
-                key = id,
+            viewModel = hiltViewModel(
+                checkNotNull(LocalViewModelStoreOwner.current) {
+                    "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+                },
+                id,
             ) { factory: TopicViewModel.Factory ->
                 factory.create(topicId = id)
             },

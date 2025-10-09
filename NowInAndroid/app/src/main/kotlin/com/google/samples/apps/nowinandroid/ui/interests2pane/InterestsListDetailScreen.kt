@@ -53,8 +53,9 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.google.samples.apps.nowinandroid.feature.interests.InterestsRoute
@@ -110,7 +111,12 @@ fun NavGraphBuilder.interestsListDetailScreen() {
  */
 @Composable
 internal fun InterestsListDetailScreen(
-    viewModel: Interests2PaneViewModel = hiltViewModel(),
+    viewModel: Interests2PaneViewModel = hiltViewModel(
+        checkNotNull(LocalViewModelStoreOwner.current) {
+            "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+        },
+        null,
+    ),
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
     val selectedTopicId: String? by viewModel.selectedTopicId.collectAsStateWithLifecycle()
