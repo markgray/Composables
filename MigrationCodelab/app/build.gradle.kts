@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    ksp("androidx.room:room-compiler:2.8.1")
+    ksp("androidx.room:room-compiler:2.8.2")
     ksp("com.github.bumptech.glide:compiler:5.0.5")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
@@ -64,8 +64,8 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.9.5")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
-    implementation("androidx.room:room-runtime:2.8.1")
-    implementation("androidx.room:room-ktx:2.8.1")
+    implementation("androidx.room:room-runtime:2.8.2")
+    implementation("androidx.room:room-ktx:2.8.2")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("androidx.work:work-runtime-ktx:2.10.5")
     implementation("com.github.bumptech.glide:glide:5.0.5")
@@ -77,15 +77,15 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.9.2")
-    implementation("androidx.compose.ui:ui:1.9.2")
-    implementation("androidx.compose.foundation:foundation:1.9.2")
-    implementation("androidx.compose.foundation:foundation-layout:1.9.2")
-    implementation("androidx.compose.material:material:1.9.2")
-    implementation("androidx.compose.runtime:runtime-livedata:1.9.2")
+    implementation("androidx.compose.runtime:runtime:1.9.3")
+    implementation("androidx.compose.ui:ui:1.9.3")
+    implementation("androidx.compose.foundation:foundation:1.9.3")
+    implementation("androidx.compose.foundation:foundation-layout:1.9.3")
+    implementation("androidx.compose.material:material:1.9.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.9.3")
     implementation("com.google.android.material:material:1.13.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.9.2")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.9.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.9.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.9.3")
     implementation("androidx.compose.material3:material3:1.4.0")
 
     // Testing dependencies
@@ -97,6 +97,6 @@ dependencies {
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
     androidTestImplementation("androidx.work:work-testing:2.10.5")
     androidTestImplementation("com.google.truth:truth:1.4.5")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.3")
     testImplementation("junit:junit:4.13.2")
 }
