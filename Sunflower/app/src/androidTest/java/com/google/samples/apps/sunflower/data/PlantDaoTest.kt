@@ -23,6 +23,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
@@ -109,7 +110,7 @@ class PlantDaoTest {
     /**
      * Creates and initializes an in-memory database and the [PlantDao] for testing.
      *
-     * This method is annotated with @[Before], so it's executed before each test.
+     * This method is annotated with @[Before], so it's executed before each @[Test].
      * It sets up an in-memory version of the [AppDatabase] to ensure that tests are isolated
      * and don't affect the actual application database. It also pre-populates the database
      * with a set of test [Plant] objects.
@@ -195,9 +196,9 @@ class PlantDaoTest {
      * Tests that [PlantDao.getPlant] retrieves the correct [Plant] from the database
      * based on its `plantId`.
      *
-     * This test function calls `getPlant` with the ID of a known plant (`plantA`) and asserts
-     * that the returned `Flow` emits the correct `Plant` object. It uses `runBlocking` to
-     * synchronously execute the test logic and `first()` to get the initial value from the `Flow`.
+     * This test function calls [PlantDao.getPlant] with the ID of a known plant ([plantA]) and
+     * asserts that the returned [Flow] emits the correct [Plant] object. It uses [runBlocking] to
+     * synchronously execute the test logic and [Flow.first] to get the initial value from the `Flow`.
      */
     @Test
     fun testGetPlant(): Unit = runBlocking {

@@ -50,7 +50,7 @@ class GardenPlantingDaoTest {
     private lateinit var gardenPlantingDao: GardenPlantingDao
 
     /**
-     * The row Id os the [Plant] used for testing.
+     * The row Id of the [Plant] used for testing.
      */
     private var testGardenPlantingId: Long = 0
 
@@ -114,7 +114,10 @@ class GardenPlantingDaoTest {
             lastWateringDate = testCalendar
         ).also { planting: GardenPlanting -> planting.gardenPlantingId = 2 }
         gardenPlantingDao.insertGardenPlanting(gardenPlanting = gardenPlanting2)
-        assertThat(gardenPlantingDao.getGardenPlantings().first().size, equalTo(2))
+        assertThat(
+            gardenPlantingDao.getGardenPlantings().first().size,
+            equalTo(2)
+        )
     }
 
     /**
@@ -130,9 +133,15 @@ class GardenPlantingDaoTest {
             lastWateringDate = testCalendar
         ).also { planting: GardenPlanting -> planting.gardenPlantingId = 2 }
         gardenPlantingDao.insertGardenPlanting(gardenPlanting = gardenPlanting2)
-        assertThat(gardenPlantingDao.getGardenPlantings().first().size, equalTo(2))
+        assertThat(
+            gardenPlantingDao.getGardenPlantings().first().size,
+            equalTo(2)
+        )
         gardenPlantingDao.deleteGardenPlanting(gardenPlanting = gardenPlanting2)
-        assertThat(gardenPlantingDao.getGardenPlantings().first().size, equalTo(1))
+        assertThat(
+            gardenPlantingDao.getGardenPlantings().first().size,
+            equalTo(1)
+        )
     }
 
     /**
@@ -157,9 +166,9 @@ class GardenPlantingDaoTest {
 
     /**
      * Tests that [GardenPlantingDao.getPlantedGardens] returns a list of [PlantAndGardenPlantings],
-     * which correctly links [Plant]s with their corresponding [GardenPlanting]s.
-     * This test verifies that only plants which have been added to the garden are returned,
-     * and that the returned object contains the correct plant and its associated garden planting details.
+     * which correctly links [Plant]s with their corresponding [GardenPlanting]s. This test verifies
+     * that only plants which have been added to the garden are returned, and that the returned
+     * object contains the correct plant and its associated garden planting details.
      */
     @Test
     fun testGetPlantAndGardenPlantings(): Unit = runBlocking {
@@ -170,8 +179,17 @@ class GardenPlantingDaoTest {
         /**
          * Only the [testPlant] has been planted, and thus has an associated [GardenPlanting]
          */
-        assertThat(plantAndGardenPlantings[0].plant, equalTo(testPlant))
-        assertThat(plantAndGardenPlantings[0].gardenPlantings.size, equalTo(1))
-        assertThat(plantAndGardenPlantings[0].gardenPlantings[0], equalTo(testGardenPlanting))
+        assertThat(
+            plantAndGardenPlantings[0].plant,
+            equalTo(testPlant)
+        )
+        assertThat(
+            plantAndGardenPlantings[0].gardenPlantings.size,
+            equalTo(1)
+        )
+        assertThat(
+            plantAndGardenPlantings[0].gardenPlantings[0],
+            equalTo(testGardenPlanting)
+        )
     }
 }
