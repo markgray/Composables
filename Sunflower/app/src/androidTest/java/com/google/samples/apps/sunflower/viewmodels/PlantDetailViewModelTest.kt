@@ -82,10 +82,10 @@ class PlantDetailViewModelTest {
      * executes rules in a specific order: outer rules are executed before inner rules.
      *
      * In this case, the order is:
-     *  1. `hiltRule`: Manages the components' state and is used to perform injection on the test class.
-     *  2. `instantTaskExecutorRule`: Swaps the background executor used by Architecture Components with a
+     *  1. [hiltRule]: Manages the components' state and is used to perform injection on the test class.
+     *  2. [instantTaskExecutorRule]: Swaps the background executor used by Architecture Components with a
      *  synchronous one.
-     *  3. `coroutineRule`: Sets the main coroutines dispatcher to a test dispatcher.
+     *  3. [coroutineRule]: Sets the main coroutines dispatcher to a test dispatcher.
      *
      * The @[Rule] annotation Annotates fields that reference rules or methods that return a rule.
      * In Kotlin, @get:SomeAnnotation is used to specify that an annotation should be applied to
@@ -136,7 +136,7 @@ class PlantDetailViewModelTest {
     }
 
     /**
-     * Closes the in-memory database after each test.
+     * Closes the in-memory database @[After] each test.
      */
     @After
     fun tearDown() {

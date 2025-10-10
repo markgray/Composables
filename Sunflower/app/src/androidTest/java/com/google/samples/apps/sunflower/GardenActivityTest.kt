@@ -78,7 +78,7 @@ class GardenActivityTest {
     /**
      * Initializes the test environment before each test.
      *
-     * This method sets up a test-specific configuration for WorkManager to ensure that
+     * This method sets up a test-specific configuration for [WorkManager] to ensure that
      * background tasks can be tested synchronously and reliably. It uses a [SynchronousExecutor]
      * to execute [WorkManager] tasks immediately on the same thread, which simplifies testing
      * by removing the complexities of asynchronous operations.

@@ -84,11 +84,11 @@ class RefreshMainDataWorkTest {
     }
 
     /**
-     * Tests the `doWork()` method of the `SeedDatabaseWorker`. It creates an instance of the
-     * [SeedDatabaseWorker] using [TestListenableWorkerBuilder], providing the necessary input data.
-     * It then executes the worker's task synchronously and asserts that the work completes
-     * successfully, indicated by a [Result.Success] return value. This confirms that the worker
-     * can be instantiated and run without crashing.
+     * Tests the [SeedDatabaseWorker.doWork] method of the [SeedDatabaseWorker]. It creates an
+     * instance of the [SeedDatabaseWorker] using [TestListenableWorkerBuilder], providing th
+     * e necessary input data. It then executes the worker's task synchronously and asserts that
+     * the work completes successfully, indicated by a [Result.Success] return value. This confirms
+     * that the worker can be instantiated and run without crashing.
      */
     @Test
     fun testRefreshMainDataWork() {

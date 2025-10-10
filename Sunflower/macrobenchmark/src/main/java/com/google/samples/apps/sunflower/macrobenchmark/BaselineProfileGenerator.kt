@@ -57,8 +57,10 @@ class BaselineProfileGenerator {
      *  - Collecting performance data during the user journey defined in the test method.
      *  - Generating the baseline profile file (`baseline-prof.txt`) in the `app/src/main/` directory.
      *
-     * The `@get:Rule` annotation is necessary for JUnit to recognize this as a rule.
-     * The `@RequiresApi` annotation indicates that this rule and the associated tests
+     * The @get:[Rule] annotation is necessary for JUnit to recognize this as a rule.
+     * In Kotlin, @get:SomeAnnotation is used to specify that an annotation should be applied to
+     * the property's getter method, rather than the property itself.
+     * The @[RequiresApi] annotation indicates that this rule and the associated tests
      * require Android P (API 28) or higher to run, as baseline profiles are only supported
      * on these versions.
      */
