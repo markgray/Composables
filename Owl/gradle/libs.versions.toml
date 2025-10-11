@@ -44,7 +44,7 @@ maps-compose = "6.12.1"
 material = "1.13.0"
 # @keep
 minSdk = "21"
-okhttp = "5.2.0"
+okhttp = "5.2.1"
 robolectric = "4.16"
 rome = "2.1.0"
 room = "2.8.2"
