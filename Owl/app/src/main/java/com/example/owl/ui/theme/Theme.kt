@@ -18,6 +18,7 @@
 
 package com.example.owl.ui.theme
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -46,6 +47,7 @@ private val YellowThemeLight = lightColors(
 /**
  * Dark theme color palette for Yellow theme.
  */
+@SuppressLint("ConflictingOnColor")
 private val YellowThemeDark = darkColors(
     primary = yellow200,
     secondary = blue200,
@@ -113,6 +115,7 @@ fun BlueTheme(
 /**
  * Light theme color palette for Pink theme.
  */
+@SuppressLint("ConflictingOnColor")
 private val PinkThemeLight = lightColors(
     primary = pink500,
     secondary = pink500,
