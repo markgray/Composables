@@ -88,8 +88,7 @@ object InjectorUtils {
      */
     fun providePlantListViewModelFactory(fragment: Fragment): PlantListViewModelFactory {
         return PlantListViewModelFactory(
-            repository = getPlantRepository(context = fragment.requireContext()),
-            owner = fragment
+            repository = getPlantRepository(context = fragment.requireContext())
         )
     }
 
