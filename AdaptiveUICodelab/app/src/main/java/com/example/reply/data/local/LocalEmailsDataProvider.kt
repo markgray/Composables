@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantValueArgument")
+
 package com.example.reply.data.local
 
 import com.example.reply.R
