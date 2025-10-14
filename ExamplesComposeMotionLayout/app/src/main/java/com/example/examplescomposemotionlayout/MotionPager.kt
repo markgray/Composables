@@ -1,12 +1,17 @@
-@file:Suppress("DEPRECATION", "UNUSED_PARAMETER", "RedundantSuppression")
+@file:Suppress("UNUSED_PARAMETER", "RedundantSuppression")
 
 package com.example.examplescomposemotionlayout
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,8 +24,6 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import kotlin.random.Random
 
 
@@ -38,12 +41,12 @@ fun MotionPager() {
         graphs.add(Color.hsv((i * 142f) % 360, 0.5f, 0.6f))
     }
 
-    val pagerState = com.google.accompanist.pager.rememberPagerState()
+    val pagerState = rememberPagerState(pageCount = { count })
 
-    HorizontalPager(count = graphs.size, state = pagerState) { page ->
+    HorizontalPager(state = pagerState) { page: Int ->
         // Our page content
-        val pageOffset = calculateCurrentOffsetForPage(page)
-        DynamicPages(graphs[page], pagerProgress = pageOffset, pageNumber = page)
+        val pageOffset: Float = pagerState.currentPage - page + pagerState.currentPageOffsetFraction
+        DynamicPages(colorValue = graphs[page], pagerProgress = pageOffset, pageNumber = page)
     }
 }
 
