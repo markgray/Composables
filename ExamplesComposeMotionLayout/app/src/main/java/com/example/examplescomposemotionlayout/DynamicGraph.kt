@@ -23,11 +23,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintSetRef
+import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
+import androidx.constraintlayout.compose.MotionLayoutScope
 import androidx.constraintlayout.compose.MotionScene
+import androidx.constraintlayout.compose.MotionSceneScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlin.random.Random
 
 
@@ -93,7 +98,52 @@ fun ManyGraphs() {
  * We start by initializing our [List] of [Float] variable `scale` to the contents of our [List]
  * of [Float] parameter [values] scaled by 0.8f divided by our [Int] parameter [max]. We initialize
  * our [Int] variable `count` to the size of our [List] of [Float] parameter [values]. We initialize
- * our [Float] TODO: Continue here.
+ * our [Float] variable `widthPercent` to 1 / (`count` * 2f). We initialize our [Array] of
+ * [String] variable `tmpNames` to a new [Array] of [String] of size `count`. We loop over `i` for
+ * all of the [Array.indices] of `tmpNames` and set the value at index `i` to the [String] formed by
+ * "foo$i". We initialize our [List] of [String] variable `names` to the contents of `tmpNames` minus
+ * any `null` values. We initialize our [MotionScene] variable `scene` to a [MotionScene] in whose
+ * [MotionSceneScope] `motionSceneContent` lambda argument we:
+ *  - Initialize our [Array] of [ConstrainedLayoutReference] variable `cols` by using the
+ *  [Iterable.map] method of `names` to map each [String] in `names` to a [ConstrainedLayoutReference]
+ *  whose `id` is the [String] and converting the [List] to a typed array using
+ *  [Collection.toTypedArray] method.
+ *  - Initialize our [ConstraintSetRef] variable `start1` to a [ConstraintSetRef] in whose
+ *  [ConstraintSetScope] `constraintSet` lambda argument we create a horizontal chain of all of
+ *  layouts in `cols` then loop over `i` for all of the [Array.indices] of `names` and specify the
+ *  constraint for the `ref` at index `i` in `cols` to have a width of `widthPercent` and a height
+ *  of 1.dp and a link from its `bottom` to the parent's `bottom` with a margin of 16.dp.
+ *  - Initialize our [ConstraintSetRef] variable `end1` to a [ConstraintSetRef] in whose
+ *  [ConstraintSetScope] `constraintSet` lambda argument we create a horizontal chain of all of
+ *  layouts in `cols` then loop over `i` for all of the [Array.indices] of `names` and specify the
+ *  constraint for the `ref` at index `i` in `cols` to have a width of `widthPercent` and a height
+ *  of the value of the [Float] at index `i` in `scale`, and a link from its `bottom` to the parent's
+ *  `bottom` with a `margin` of 16.dp
+ *  - Finally we use [MotionSceneScope.transition] to add a transition `from` the [ConstraintSetRef]
+ *  variable `start1` to the [ConstraintSetRef] variable `end1` with the name "default".
+ *
+ * We initialize and remember our [MutableState] wrapped [Boolean] variable `animateToEnd` to `true`
+ * and initialize and remember our [Flow] of [Boolean] variable `animateToEndFlow` to the [Flow]
+ * returned by [snapshotFlow] whose `block` lambda argument is `animateToEnd`. Then we initialize
+ * and remember our [Animatable] variable `progress` to an [Animatable] whose initial value is 0f.
+ * We launch a [LaunchedEffect] in whose [CoroutineScope] `block` lambda argument we collect from
+ * `animateToEndFlow` and in the [FlowCollector] `collector` argument we call the [Animatable.animateTo]
+ * method of `progress` to animate to the target value of 1f if `animateToEnd` is `true` or 0f if
+ * `animateToEnd` is `false` with an `animationSpec` of [tween] with a duration of 800 milliseconds.
+ *
+ * Our root composable is a [MotionLayout] whose arguments are:
+ *  - `modifier`: is a [Modifier.background] whose `color` is a [Color] whose `color` is the hex
+ *  value `0xFF221010` chained to a [Modifier.fillMaxSize], chained to a [Modifier.clickable] whose
+ *  `onClick` lambda argument inverts the value of [Boolean] variable `animateToEnd`, and that is
+ *  chained to a [Modifier.padding] that adds 1.dp to all sides.
+ *  - `motionScene`: is the [MotionScene] variable `scene`.
+ *  - `progress`: is the value of [Animatable] variable `progress`.
+ *
+ * In the [MotionLayoutScope] `content` lambda argument we loop over `i` from `0` until `count` and
+ * compose a [Box] whose `modifier` argument is a [Modifier.layoutId] whose `layoutId` is the
+ * [String] formed by "foo$i", chained to a [Modifier.clip] whose `shape` is a [RoundedCornerShape]
+ * whose `size` is 20.dp, chained to a [Modifier.background] whose `color` is a [Color.hsv] whose
+ * `hue` is `i` * 240f / `count`, `saturation` is 0.6f, and `value` is 0.6f.
  *
  * @param values The list of floats to be represented as bars in the graph.
  * @param max The maximum value that any item in [values] can have. This is used to scale the bars'
@@ -113,7 +163,7 @@ fun DynamicGraph(values: List<Float> = listOf(12f, 32f, 21f, 32f, 2f), max: Int 
     val names: List<String> = tmpNames.filterNotNull()
     val scene = MotionScene {
         val cols: Array<ConstrainedLayoutReference> =
-            names.map { createRefFor(it) }.toTypedArray()
+            names.map { createRefFor(id = it) }.toTypedArray()
         val start1: ConstraintSetRef = constraintSet {
             createHorizontalChain(elements = cols)
             for (i in names.indices) {
@@ -166,11 +216,13 @@ fun DynamicGraph(values: List<Float> = listOf(12f, 32f, 21f, 32f, 2f), max: Int 
                 modifier = Modifier
                     .layoutId(layoutId = "foo$i")
                     .clip(shape = RoundedCornerShape(size = 20.dp))
-                    .background(color = Color.hsv(
-                        hue = i * 240f / count,
-                        saturation = 0.6f,
-                        value = 0.6f
-                    ))
+                    .background(
+                        color = Color.hsv(
+                            hue = i * 240f / count,
+                            saturation = 0.6f,
+                            value = 0.6f
+                        )
+                    )
             )
         }
     }
