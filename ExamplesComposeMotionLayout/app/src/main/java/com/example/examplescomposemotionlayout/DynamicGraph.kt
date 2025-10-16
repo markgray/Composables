@@ -118,7 +118,7 @@ fun ManyGraphs() {
  *  layouts in `cols` then loop over `i` for all of the [Array.indices] of `names` and specify the
  *  constraint for the `ref` at index `i` in `cols` to have a width of `widthPercent` and a height
  *  of the value of the [Float] at index `i` in `scale`, and a link from its `bottom` to the parent's
- *  `bottom` with a `margin` of 16.dp
+ *  `bottom` with a `margin` of 16.dp.
  *  - Finally we use [MotionSceneScope.transition] to add a transition `from` the [ConstraintSetRef]
  *  variable `start1` to the [ConstraintSetRef] variable `end1` with the name "default".
  *

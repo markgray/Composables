@@ -21,14 +21,14 @@ import androidx.compose.ui.unit.dp
  * for various Compose MotionLayout examples.
  *
  * This activity displays a menu of available examples. When an example is selected, it relaunches
- * itself with an `Intent` extra, which specifies which composable example to display. If no
+ * itself with an [Intent] extra, which specifies which composable example to display. If no
  * specific example is requested via the intent, it defaults to showing the main menu.
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Key for the Intent extra that specifies which composable function to display.
+     * Key for the [Intent] extra that specifies which composable function to display.
      * When an example is selected from the menu, the activity is relaunched with this key
-     * in the Intent's extras, and its value is the name of the composable to be displayed.
+     * in the [Intent]'s extras, and its value is the name of the composable to be displayed.
      */
     private val composeKey = "USE_COMPOSE"
 
@@ -63,13 +63,11 @@ class MainActivity : ComponentActivity() {
      *
      * This function sets up the main content view of the activity. It checks if the [Intent]
      * that started the activity contains an extra with the key [composeKey].
-     *
      *  - If the extra is found, it looks up the corresponding `ComposeFunc` from the `cmap` list
      *  and renders that specific composable example. This allows the activity to display a
      *  single example when selected from the menu.
-     *
      *  - If no such extra is present (e.g., on the initial launch of the app), it displays
-     *  the main menu defined by the `ComposableMenu`, which lists all available examples.
+     *  the main menu defined by the [ComposableMenu], which lists all available examples.
      *
      * We start by calling [enableEdgeToEdge] to enable edge-to-edge display, then we call our
      * super's implementation of `onCreate`. We initialize our [Bundle] variable `extra` to the
@@ -77,7 +75,7 @@ class MainActivity : ComponentActivity() {
      * our [ComposeFunc] variable `cfunc` to `null`. If `extra` is not `null` we initialize our
      * [String] variable `composeName` to the value stored in `extra` with the key `composeKey`.
      * We then loop through our `cmap` list to find a matching [ComposeFunc] based on the
-     * `composeName`. If a match is found, we set `cfunc` to that `ComposeFunc` and break out of
+     * `composeName`. If a match is found, we set `cfunc` to that [ComposeFunc] and break out of
      * the loop. If no match is found, we continue to the next iteration of the loop.
      *
      * We initialize our [ComposeView] variable `com` to a new [ComposeView] with the context of
