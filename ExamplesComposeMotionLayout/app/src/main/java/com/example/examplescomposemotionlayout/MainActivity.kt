@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 
-
 /**
  * The main activity of the application, which serves as the entry point and navigation hub
  * for various Compose MotionLayout examples.
@@ -57,7 +56,6 @@ class MainActivity : ComponentActivity() {
         get(name = "MultiState") { M3MultiState() },
     )
 
-
     /**
      * Called when the activity is first created.
      *
@@ -81,7 +79,17 @@ class MainActivity : ComponentActivity() {
      * We initialize our [ComposeView] variable `com` to a new [ComposeView] with the context of
      * `this` activity and set our content view to `com`. We call the [ComposeView.setContent]
      * method of `com` and in its `content` composable lambda argument we compose a [Box]
-     * TODO: Continue here.
+     * whose `modifier` argument is a [Modifier.safeDrawingPadding] to add padding to accommodate
+     * the safe drawing insets (insets that include areas where content may be covered by other
+     * drawn content. This includes all systemBars, displayCutout, and ime). In the [BoxScope]
+     * `content` composable lambda argument of the [Box] we compose a [Surface] whose `modifier`
+     * argument is a [Modifier.fillMaxSize] and whose `color` argument is a [Color] with a
+     * hexadecimal value of `0xFFF0E7FC`. In the `content` composable lambda argument of the
+     * [Surface] if our [ComposeFunc] variable `cfunc` is not `null` we log that we are running
+     * `cfunc`, and call the [ComposeFunc.run] method of `cfunc`, and if it is `null` we compose a
+     * [ComposableMenu] whose `map` argument is `cmap` and in whose `act` lambda argument we accept
+     * the [ComposeFunc] passed the lambda in variable `act` and call the [launch] method with that
+     * [ComposeFunc] as the `toRun` argument.
      *
      * @param savedInstanceState We do not override [onSaveInstanceState] so we do not use this.
      */
@@ -119,6 +127,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Relaunches the [MainActivity] to display a specific composable example.
+     *
+     * This function is called when a user selects an example from the [ComposableMenu]. It creates
+     * a new [Intent] to start the [MainActivity] again. It adds the selected [ComposeFunc] example's
+     * name as an extra to the intent, using [composeKey] as the key.
+     *
+     * When the activity restarts, the `onCreate` method will detect this extra and display the
+     * corresponding composable instead of the main menu.
+     *
+     * @param toRun The [ComposeFunc] object representing the example to be launched. The value
+     * returned by the `toString()` method of this object is used as the value for the intent extra.
+     */
     private fun launch(toRun: ComposeFunc) {
         Log.v("MAIN", " launch $toRun")
         val intent = Intent(this, MainActivity::class.java)
@@ -129,7 +150,45 @@ class MainActivity : ComponentActivity() {
 }
 
 /**
- * TODO: Add kdoc
+ * A Composable function that displays a two-column menu of buttons.
+ *
+ * This function takes a list of [ComposeFunc] objects and arranges them into a grid-like
+ * menu. Each item in the list becomes a button. The layout is structured as a [Column]
+ * containing multiple [Row]s. Each [Row] contains up to two buttons, creating a two-column
+ * effect. The buttons are spaced apart evenly within each row.
+ *
+ * When a button is clicked, the provided [act] lambda is invoked with the corresponding
+ * [ComposeFunc] object, allowing the caller to define the action to be taken, such as
+ * launching a new screen or example.
+ *
+ * The text for the first button in a row displays the full name of the [ComposeFunc]. The text for
+ * the second button in a row is shortened to display only the part of the name after the first
+ * space, which helps in differentiating related examples (e.g., "DSL" vs. "JSON").
+ *
+ * Our root composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth] chained
+ * to a [Modifier.padding] that adds 10.dp to `all` sides. In the [ColumnScope] `content` composable
+ * lambda argument of the [Column] we loop over `i` between 0 and half the size of the `map` list
+ * minus 1. Inside the loop we initialize [ComposeFunc] variable `cFunc1` to the entry at index `i * 2`
+ * of the `map` list, and initialize [ComposeFunc] variable `cFunc2` to the entry at index `i * 2 + 1`
+ * of the `map` list, if it exists otherwise `null`. The we compose a [Row] whose `modifier` argument
+ * is a [Modifier.fillMaxWidth] and whose `horizontalArrangement` argument is a
+ * [Arrangement.SpaceBetween]. In the [RowScope] `content` composable lambda argument of the [Row]
+ * we:
+ *  1. Compose a [Button] whose `onClick` argument is a lambda that calls the `act` lambda with
+ *  the value of `cFunc1`. In the [RowScope] `content` composable lambda argument of the [Button]
+ *  we compose a [Text] whose `text` argument is the [String] value of `cFunc1` and whose `modifier`
+ *  argument is a [Modifier.padding] that adds 2.dp to `all` sides
+ *  2. If `cFunc2` is not `null` we compose another [Button] whose `onClick` argument is a lambda
+ *  that calls the `act` lambda with the value of `cFunc2`. In the [RowScope] `content` composable
+ *  lambda argument of the [Button] we initialize our [String] variable `s` to the [String] value of
+ *  `cFunc2` starting 1 character after the first space character. Then we compose a [Text] whose
+ *  `text` argument is `s` and whose `modifier` argument is a [Modifier.padding] that adds 2.dp
+ *  to `all` sides.
+ *
+ * @param map A [List] of [ComposeFunc] objects, where each object represents a menu item.
+ * Each item will be displayed as a button.
+ * @param act A lambda function that will be executed when a button in the menu is clicked.
+ * The lambda receives the [ComposeFunc] associated with the clicked button as its parameter.
  */
 @Composable
 fun ComposableMenu(map: List<ComposeFunc>, act: (act: ComposeFunc) -> Unit) {
@@ -163,15 +222,45 @@ fun ComposableMenu(map: List<ComposeFunc>, act: (act: ComposeFunc) -> Unit) {
 }
 
 /**
- * TODO: Add kdoc
+ * A factory function that creates an instance of the [ComposeFunc] interface.
+ *
+ * This function simplifies the creation of runnable composable examples for the main menu.
+ * It takes a human-readable [name] and a composable lambda [cRun], and wraps them in an
+ * anonymous object that implements the [ComposeFunc] interface.
+ *
+ * The `toString()` method of the returned object is overridden to return the provided [name],
+ * which is used for display in the UI (e.g., button text) and for identification in intents.
+ * The `Run()` method simply invokes the [cRun] composable lambda, rendering the actual example UI.
+ *
+ * @param name The [String] name of the composable example. This is used as the unique identifier
+ * and display text for the menu item.
+ * @param cRun A composable lambda function (`@Composable () -> Unit`) that contains the UI
+ * code for the example. This lambda will be executed when the example is run.
+ * @return An object that implements the [ComposeFunc] interface, ready to be added to the
+ * list of examples.
  */
 fun get(name: String, cRun: @Composable () -> Unit): ComposeFunc {
     return object : ComposeFunc {
+        /**
+         * A composable function that executes and displays the UI for this specific example.
+         * When this function is called, it will render the user interface defined by the
+         * [cRun] composable lambda that was provided when this [ComposeFunc] instance was created
+         * using the [get] factory function.
+         */
         @Composable
         override fun Run() {
             cRun()
         }
 
+        /**
+         * Returns the name of the composable example.
+         *
+         * This name is used as a unique identifier for the example. It is displayed in the UI
+         * (e.g., as button text in the main menu) and is used as an extra in the [Intent]
+         * to specify which example to launch.
+         *
+         * @return The [String] name of the example.
+         */
         override fun toString(): String {
             return name
         }
@@ -179,13 +268,35 @@ fun get(name: String, cRun: @Composable () -> Unit): ComposeFunc {
 }
 
 /**
- * TODO: Add kdoc
+ * An interface that represents a runnable composable example.
+ *
+ * This interface provides a common structure for all the MotionLayout examples displayed in the
+ * main menu. It allows each example to be treated as a self-contained unit with a name
+ * and a composable function to execute.
+ *
+ * The [toString] method provides a human-readable name for the example, which is used for
+ * display in the UI (e.g., button labels) and as a unique key when launching the example via an [Intent].
+ *
+ * The [Run] method is a composable function that contains the actual UI implementation of the example.
  */
 interface ComposeFunc {
+
     /**
-     * TODO: Add kdoc
+     * A composable function that executes and displays the UI for the specific example.
+     * When this function is called, it will render the user interface defined by the
+     * composable lambda provided when the [ComposeFunc] instance was created.
      */
     @Composable
     fun Run()
+
+    /**
+     * Provides a human-readable name for the example.
+     *
+     * This name is used for display in the UI (e.g., as button text in the main menu)
+     * and serves as a unique identifier when launching the example via an [Intent].
+     * The `MainActivity` uses this string to look up and display the correct composable.
+     *
+     * @return A [String] representing the unique name of the composable example.
+     */
     override fun toString(): String
 }
