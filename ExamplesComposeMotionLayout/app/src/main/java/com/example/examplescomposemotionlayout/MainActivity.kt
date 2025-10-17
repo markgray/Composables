@@ -76,15 +76,15 @@ class MainActivity : ComponentActivity() {
      * `composeName`. If a match is found, we set `cfunc` to that [ComposeFunc] and break out of
      * the loop. If no match is found, we continue to the next iteration of the loop.
      *
-     * We initialize our [ComposeView] variable `com` to a new [ComposeView] with the context of
-     * `this` activity and set our content view to `com`. We call the [ComposeView.setContent]
-     * method of `com` and in its `content` composable lambda argument we compose a [Box]
-     * whose `modifier` argument is a [Modifier.safeDrawingPadding] to add padding to accommodate
-     * the safe drawing insets (insets that include areas where content may be covered by other
-     * drawn content. This includes all systemBars, displayCutout, and ime). In the [BoxScope]
-     * `content` composable lambda argument of the [Box] we compose a [Surface] whose `modifier`
-     * argument is a [Modifier.fillMaxSize] and whose `color` argument is a [Color] with a
-     * hexadecimal value of `0xFFF0E7FC`. In the `content` composable lambda argument of the
+     * We initialize our [ComposeView] variable `com` to a new instance of [ComposeView] with the
+     * context of `this` activity and set our content view to `com`. We call the
+     * [ComposeView.setContent] method of `com` and in its `content` composable lambda argument we
+     * compose a [Box] whose `modifier` argument is a [Modifier.safeDrawingPadding] to add padding
+     * to accommodate the safe drawing insets (insets that include areas where content may be
+     * covered by other drawn content. This includes all systemBars, displayCutout, and ime).
+     * In the [BoxScope] `content` composable lambda argument of the [Box] we compose a [Surface]
+     * whose `modifier` argument is a [Modifier.fillMaxSize] and whose `color` argument is a [Color]
+     * with a hexadecimal value of `0xFFF0E7FC`. In the `content` composable lambda argument of the
      * [Surface] if our [ComposeFunc] variable `cfunc` is not `null` we log that we are running
      * `cfunc`, and call the [ComposeFunc.run] method of `cfunc`, and if it is `null` we compose a
      * [ComposableMenu] whose `map` argument is `cmap` and in whose `act` lambda argument we accept
@@ -168,10 +168,10 @@ class MainActivity : ComponentActivity() {
  * Our root composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth] chained
  * to a [Modifier.padding] that adds 10.dp to `all` sides. In the [ColumnScope] `content` composable
  * lambda argument of the [Column] we loop over `i` between 0 and half the size of the `map` list
- * minus 1. Inside the loop we initialize [ComposeFunc] variable `cFunc1` to the entry at index `i * 2`
- * of the `map` list, and initialize [ComposeFunc] variable `cFunc2` to the entry at index `i * 2 + 1`
- * of the `map` list, if it exists otherwise `null`. The we compose a [Row] whose `modifier` argument
- * is a [Modifier.fillMaxWidth] and whose `horizontalArrangement` argument is a
+ * minus 1. Inside the loop we initialize [ComposeFunc] variable `cFunc1` to the entry at index
+ * `i * 2` of the `map` list, and initialize [ComposeFunc] variable `cFunc2` to the entry at index
+ * `i * 2 + 1` of the `map` list, if it exists otherwise `null`. The we compose a [Row] whose
+ * `modifier` argument is a [Modifier.fillMaxWidth] and whose `horizontalArrangement` argument is a
  * [Arrangement.SpaceBetween]. In the [RowScope] `content` composable lambda argument of the [Row]
  * we:
  *  1. Compose a [Button] whose `onClick` argument is a lambda that calls the `act` lambda with
@@ -230,7 +230,7 @@ fun ComposableMenu(map: List<ComposeFunc>, act: (act: ComposeFunc) -> Unit) {
  *
  * The `toString()` method of the returned object is overridden to return the provided [name],
  * which is used for display in the UI (e.g., button text) and for identification in intents.
- * The `Run()` method simply invokes the [cRun] composable lambda, rendering the actual example UI.
+ * The `Run()` method simply invokes the [cRun] composable lambda, rendering the actual example.
  *
  * @param name The [String] name of the composable example. This is used as the unique identifier
  * and display text for the menu item.
@@ -274,10 +274,11 @@ fun get(name: String, cRun: @Composable () -> Unit): ComposeFunc {
  * main menu. It allows each example to be treated as a self-contained unit with a name
  * and a composable function to execute.
  *
- * The [toString] method provides a human-readable name for the example, which is used for
- * display in the UI (e.g., button labels) and as a unique key when launching the example via an [Intent].
+ * The [toString] method provides a human-readable name for the example, which is used for display
+ * in the UI (e.g., button labels) and as a unique key when launching the example via an [Intent].
  *
- * The [Run] method is a composable function that contains the actual UI implementation of the example.
+ * The [Run] method is a composable function that contains the actual UI implementation of the
+ * example.
  */
 interface ComposeFunc {
 
