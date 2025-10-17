@@ -22,13 +22,25 @@ import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 
 /**
- * A demo of using MotionLayout as a collapsing Toolbar using JSON to define the MotionScene
+ * A demo of a collapsing toolbar effect built with [MotionLayout].
+ *
+ * This Composable demonstrates how to use a [MotionScene] defined in a JSON5 string
+ * to transition between a fully expanded toolbar (with a large image and title)
+ * and a collapsed one. The transition is driven by the scroll position of a
+ * vertical scrolling [Column].
+ *
+ * The [MotionLayout] contains an image, a title, and an icon. The progress of the
+ * transition is calculated based on the scroll state, causing the layout to
+ * animate between its `start` and `end` constraint sets.
+ *
+ * @see MotionLayout
+ * @see MotionScene
  */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
 @Composable
 fun ToolBarExample() {
-    val scroll = rememberScrollState(0)
+    val scroll = rememberScrollState(initial = 0)
 
     val scene = """
       {
@@ -85,15 +97,15 @@ fun ToolBarExample() {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.verticalScroll(scroll)
+        modifier = Modifier.verticalScroll(state = scroll)
     ) {
-        Spacer(Modifier.height(250.dp))
-        repeat(5) {
+        Spacer(modifier = Modifier.height(height = 250.dp))
+        repeat(times = 5) {
             Text(
-                text = LoremIpsum(222).values.first(),
+                text = LoremIpsum(words = 222).values.first(),
                 modifier = Modifier
-                    .background(Color.White)
-                    .padding(16.dp)
+                    .background(color = Color.White)
+                    .padding(all = 16.dp)
             )
         }
     }
@@ -106,24 +118,24 @@ fun ToolBarExample() {
         progress = progress
     ) {
         Image(
-            modifier = Modifier.layoutId("image"),
-            painter = painterResource(R.drawable.bridge),
+            modifier = Modifier.layoutId(layoutId = "image"),
+            painter = painterResource(id = R.drawable.bridge),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
         Box(
             modifier = Modifier
-                .layoutId("image")
-                .background(customProperties("image").color("cover"))
+                .layoutId(layoutId = "image")
+                .background(color = customProperties(id = "image").color(name = "cover"))
         ) {
         }
         Image(
-            modifier = Modifier.layoutId("icon"),
-            painter = painterResource(R.drawable.menu),
+            modifier = Modifier.layoutId(layoutId = "icon"),
+            painter = painterResource(id = R.drawable.menu),
             contentDescription = null
         )
         Text(
-            modifier = Modifier.layoutId("title"),
+            modifier = Modifier.layoutId(layoutId = "title"),
             text = "San Francisco",
             fontSize = 30.sp,
             color = Color.White

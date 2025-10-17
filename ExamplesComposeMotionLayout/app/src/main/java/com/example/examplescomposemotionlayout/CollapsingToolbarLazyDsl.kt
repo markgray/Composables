@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -22,8 +23,11 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
+import androidx.constraintlayout.compose.ConstraintSetRef
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
@@ -50,85 +54,88 @@ import androidx.constraintlayout.compose.MotionScene
  *
  * When the onPreScroll of the NestedScrollConnection is called It returns the amount of "offset" to
  * absorb and uses the offset to collapse the MotionLayout.
+ *
+ * We start by initializing our [Dp] variable `big` to `250.dp` and [Dp] variable `small` to `50.dp`.
+ * TODO: Continue here.
  */
 @SuppressLint("Range")
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
 @Composable
 fun ToolBarLazyExampleDsl() {
-    val big = 250.dp
-    val small = 50.dp
+    val big: Dp = 250.dp
+    val small: Dp = 50.dp
     val scene = MotionScene {
-        val title = createRefFor("title")
-        val image = createRefFor("image")
-        val icon = createRefFor("icon")
+        val title: ConstrainedLayoutReference = createRefFor(id = "title")
+        val image: ConstrainedLayoutReference = createRefFor(id = "image")
+        val icon: ConstrainedLayoutReference = createRefFor(id = "icon")
 
-        val start1 = constraintSet {
-            constrain(title) {
-                bottom.linkTo(image.bottom)
-                start.linkTo(image.start)
+        val start1: ConstraintSetRef = constraintSet {
+            constrain(ref = title) {
+                bottom.linkTo(anchor = image.bottom)
+                start.linkTo(anchor = image.start)
             }
-            constrain(image) {
+            constrain(ref = image) {
                 width = Dimension.matchParent
-                height = Dimension.value(big)
-                top.linkTo(parent.top)
-                customColor("cover", Color(0x000000FF))
+                height = Dimension.value(dp = big)
+                top.linkTo(anchor = parent.top)
+                customColor(name = "cover", value = Color(color = 0x000000FF))
             }
-            constrain(icon) {
-                top.linkTo(image.top, 16.dp)
-                start.linkTo(image.start, 16.dp)
+            constrain(ref = icon) {
+                top.linkTo(anchor = image.top, margin = 16.dp)
+                start.linkTo(anchor = image.start, margin = 16.dp)
                 alpha = 0f
             }
         }
 
-        val end1 = constraintSet {
-            constrain(title) {
-                bottom.linkTo(image.bottom)
-                start.linkTo(icon.end)
-                centerVerticallyTo(image)
+        val end1: ConstraintSetRef = constraintSet {
+            constrain(ref = title) {
+                bottom.linkTo(anchor = image.bottom)
+                start.linkTo(anchor = icon.end)
+                centerVerticallyTo(other = image)
                 scaleX = 0.7f
                 scaleY = 0.7f
             }
-            constrain(image) {
+            constrain(ref = image) {
                 width = Dimension.matchParent
-                height = Dimension.value(small)
-                top.linkTo(parent.top)
-                customColor("cover", Color(0xFF0000FF))
+                height = Dimension.value(dp = small)
+                top.linkTo(anchor = parent.top)
+                customColor(name = "cover", value = Color(color = 0xFF0000FF))
             }
-            constrain(icon) {
-                top.linkTo(image.top, 16.dp)
-                start.linkTo(image.start, 16.dp)
+            constrain(ref = icon) {
+                top.linkTo(anchor = image.top, margin = 16.dp)
+                start.linkTo(anchor = image.start, margin = 16.dp)
             }
         }
-        transition(start1, end1, "default") {}
+        transition(from = start1, to = end1, name = "default") {}
     }
 
-    val maxPx = with(LocalDensity.current) { big.roundToPx().toFloat() }
-    val minPx = with(LocalDensity.current) { small.roundToPx().toFloat() }
-    val toolbarHeight = remember { mutableFloatStateOf(maxPx) }
+    val maxPx: Float = with(LocalDensity.current) { big.roundToPx().toFloat() }
+    val minPx: Float = with(LocalDensity.current) { small.roundToPx().toFloat() }
+    val toolbarHeight: MutableFloatState = remember { mutableFloatStateOf(value = maxPx) }
 
-    val nestedScrollConnection = remember {
+    val nestedScrollConnection: NestedScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val height = toolbarHeight.floatValue
+                val height: Float = toolbarHeight.floatValue
 
                 if (height + available.y > maxPx) {
                     toolbarHeight.floatValue = maxPx
-                    return Offset(0f, maxPx - height)
+                    return Offset(x = 0f, y = maxPx - height)
                 }
 
                 if (height + available.y < minPx) {
                     toolbarHeight.floatValue = minPx
-                    return Offset(0f, minPx - height)
+                    return Offset(x = 0f, y = minPx - height)
                 }
 
                 toolbarHeight.floatValue += available.y
-                return Offset(0f, available.y)
+                return Offset(x = 0f, y = available.y)
             }
         }
     }
 
-    val progress = 1 - (toolbarHeight.floatValue - minPx) / (maxPx - minPx)
+    val progress: Float = 1 - (toolbarHeight.floatValue - minPx) / (maxPx - minPx)
 
     Column {
         MotionLayout(
@@ -137,19 +144,19 @@ fun ToolBarLazyExampleDsl() {
         ) {
             Image(
                 modifier = Modifier
-                    .layoutId("image")
-                    .background(customColor("image", "cover")),
-                painter = painterResource(R.drawable.bridge),
+                    .layoutId(layoutId = "image")
+                    .background(color = customColor(id = "image", name = "cover")),
+                painter = painterResource(id = R.drawable.bridge),
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
             Image(
-                modifier = Modifier.layoutId("icon"),
-                painter = painterResource(R.drawable.menu),
+                modifier = Modifier.layoutId(layoutId = "icon"),
+                painter = painterResource(id = R.drawable.menu),
                 contentDescription = null
             )
             Text(
-                modifier = Modifier.layoutId("title"),
+                modifier = Modifier.layoutId(layoutId = "title"),
                 text = "San Francisco",
                 fontSize = 30.sp,
                 color = Color.White
@@ -158,10 +165,10 @@ fun ToolBarLazyExampleDsl() {
         LazyColumn(
             Modifier
                 .fillMaxWidth()
-                .nestedScroll(nestedScrollConnection)
+                .nestedScroll(connection = nestedScrollConnection)
         ) {
-            items(100) {
-                Text(text = "item $it", modifier = Modifier.padding(4.dp))
+            items(count = 100) {
+                Text(text = "item $it", modifier = Modifier.padding(all = 4.dp))
             }
         }
     }
