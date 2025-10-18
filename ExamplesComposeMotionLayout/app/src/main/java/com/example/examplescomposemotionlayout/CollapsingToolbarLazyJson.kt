@@ -1,6 +1,7 @@
 package com.example.examplescomposemotionlayout
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,14 +32,21 @@ import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 
 /**
- * A demo of using MotionLayout as a collapsing Toolbar using JSON to define the MotionScene
+ * A demo of a collapsing toolbar created with [MotionLayout], with the scroll driven by a
+ * [LazyColumn].
+ *
+ * The [MotionScene] is defined using a JSON string. The animation progress is manually controlled
+ * by listening to scroll events from the [LazyColumn] through a [NestedScrollConnection].
+ * The height of the toolbar is adjusted based on the scroll delta, and this height change is
+ * then converted into a progress value (from 0.0 to 1.0) to drive the [MotionLayout] transition.
+ * TODO: Continue here.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
 @Composable
 fun ToolBarLazyExample() {
-    @Suppress("UNUSED_VARIABLE")
-    val scroll = rememberScrollState(0)
+    @Suppress("UNUSED_VARIABLE", "unused")
+    val scroll: ScrollState = rememberScrollState(initial = 0)
 
     val scene = """
       {
@@ -92,11 +101,11 @@ fun ToolBarLazyExample() {
       }
       """
 
-    val maxPx = with(LocalDensity.current) { 250.dp.roundToPx().toFloat() }
-    val minPx = with(LocalDensity.current) { 50.dp.roundToPx().toFloat() }
-    val toolbarHeight = remember { mutableFloatStateOf(maxPx) }
+    val maxPx: Float = with(receiver = LocalDensity.current) { 250.dp.roundToPx().toFloat() }
+    val minPx: Float = with(receiver = LocalDensity.current) { 50.dp.roundToPx().toFloat() }
+    val toolbarHeight: MutableFloatState = remember { mutableFloatStateOf(value = maxPx) }
 
-    val nestedScrollConnection = remember {
+    val nestedScrollConnection: NestedScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val height = toolbarHeight.floatValue
@@ -118,45 +127,46 @@ fun ToolBarLazyExample() {
         }
     }
 
-    val progress = 1 - (toolbarHeight.floatValue - minPx) / (maxPx - minPx)
+    val progress: Float = 1 - (toolbarHeight.floatValue - minPx) / (maxPx - minPx)
 
     Column {
         MotionLayout(
-            modifier = Modifier.background(Color.Green),
+            modifier = Modifier.background(color = Color.Green),
             motionScene = MotionScene(content = scene),
             progress = progress
         ) {
             Image(
-                modifier = Modifier.layoutId("image"),
-                painter = painterResource(R.drawable.bridge),
+                modifier = Modifier.layoutId(layoutId = "image"),
+                painter = painterResource(id = R.drawable.bridge),
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
             Box(
                 modifier = Modifier
-                    .layoutId("image")
-                    .background(customProperties("image").color("cover"))
+                    .layoutId(layoutId = "image")
+                    .background(color = customProperties(id = "image").color(name = "cover"))
             ) {
             }
             Image(
-                modifier = Modifier.layoutId("icon"),
-                painter = painterResource(R.drawable.menu),
+                modifier = Modifier.layoutId(layoutId = "icon"),
+                painter = painterResource(id = R.drawable.menu),
                 contentDescription = null
             )
             Text(
-                modifier = Modifier.layoutId("title"),
+                modifier = Modifier.layoutId(layoutId = "title"),
                 text = "San Francisco",
                 fontSize = 30.sp,
                 color = Color.White
             )
         }
         Box(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .nestedScroll(nestedScrollConnection)) {
+                .nestedScroll(connection = nestedScrollConnection)
+        ) {
             LazyColumn {
-                items(100) {
-                    Text(text = "item $it", modifier = Modifier.padding(4.dp))
+                items(count = 100) {
+                    Text(text = "item $it", modifier = Modifier.padding(all = 4.dp))
                 }
             }
         }

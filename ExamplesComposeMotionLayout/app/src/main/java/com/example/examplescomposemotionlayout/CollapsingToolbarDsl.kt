@@ -56,7 +56,7 @@ import androidx.constraintlayout.compose.MotionSceneScope
  *  the result of calling  `createRefsFor("title", "image", "icon")`.
  *  - We initialize our [ConstraintSetRef] variable `start1` to a new instance in whose
  *  [ConstraintSetScope] `constraintSetContent` lambda argument we [ConstraintSetScope.constrain]
- *  the [ConstrainedLayoutReference] variable `ref` by linking its `bottom` to the `anchor` of the
+ *  the [ConstrainedLayoutReference] variable `title` by linking its `bottom` to the `anchor` of the
  *  `bottom` of [ConstrainedLayoutReference] `image`, and linking its `start` to the `start` of
  *  [ConstrainedLayoutReference] `image`. We [ConstraintSetScope.constrain] the
  *  [ConstrainedLayoutReference] variable `image` by setting its `width` to [Dimension.matchParent],
@@ -77,7 +77,7 @@ import androidx.constraintlayout.compose.MotionSceneScope
  *  by setting its `width` to [Dimension.matchParent], setting its `height` to the [Dimension.value]
  *  of `dp` equal to [Dp] variable `small`, linking its `top` to the `anchor` of its `parent`'s
  *  `top`, and setting its `customColor` to the `name` "cover" and `value` a [Color] whose `color`
- *  if the hex value `0xFF0000FF`. We [ConstraintSetScope.constrain] the [ConstrainedLayoutReference]
+ *  is the hex value `0xFF0000FF`. We [ConstraintSetScope.constrain] the [ConstrainedLayoutReference]
  *  variable `icon` by linking its `top` to the `anchor` of [ConstrainedLayoutReference] `image`
  *  with a margin of `16.dp`, and linking its `start` to the `start` of [ConstrainedLayoutReference]
  *  `image` with a margin of `16.dp`.
