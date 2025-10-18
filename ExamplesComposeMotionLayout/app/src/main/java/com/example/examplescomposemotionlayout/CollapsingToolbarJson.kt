@@ -1,6 +1,7 @@
 package com.example.examplescomposemotionlayout
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
+import java.lang.Float
 
 /**
  * A demo of a collapsing toolbar effect built with [MotionLayout].
@@ -33,6 +35,9 @@ import androidx.constraintlayout.compose.MotionScene
  * transition is calculated based on the scroll state, causing the layout to
  * animate between its `start` and `end` constraint sets.
  *
+ * The constraints set up in the JSON5 string are the same as those set up using kotlin code in the
+ * file `CollapsingToolbarDsl.kt` ([ToolBarExampleDsl]) so I won't bother to decribe them again here.
+ *
  * @see MotionLayout
  * @see MotionScene
  */
@@ -40,7 +45,7 @@ import androidx.constraintlayout.compose.MotionScene
 @Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
 @Composable
 fun ToolBarExample() {
-    val scroll = rememberScrollState(initial = 0)
+    val scroll: ScrollState = rememberScrollState(initial = 0)
 
     val scene = """
       {
@@ -110,7 +115,7 @@ fun ToolBarExample() {
         }
     }
 
-    val progress = java.lang.Float.min(scroll.value / (3f * (250 - 50)), 1f)
+    val progress = Float.min(scroll.value / (3f * (250 - 50)), 1f)
 
     MotionLayout(
         modifier = Modifier.fillMaxSize(),
