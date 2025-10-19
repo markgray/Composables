@@ -112,16 +112,16 @@ fun ToolBarLazyExample() {
 
                 if (height + available.y > maxPx) {
                     toolbarHeight.floatValue = maxPx
-                    return Offset(0f, maxPx - height)
+                    return Offset(x = 0f, y = maxPx - height)
                 }
 
                 if (height + available.y < minPx) {
                     toolbarHeight.floatValue = minPx
-                    return Offset(0f, minPx - height)
+                    return Offset(x = 0f, y = minPx - height)
                 }
 
                 toolbarHeight.floatValue += available.y
-                return Offset(0f, available.y)
+                return Offset(x = 0f, y = available.y)
             }
 
         }

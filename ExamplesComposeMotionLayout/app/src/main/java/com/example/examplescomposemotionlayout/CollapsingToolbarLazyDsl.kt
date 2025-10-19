@@ -59,8 +59,8 @@ import androidx.constraintlayout.compose.MotionSceneScope
  * A NestedScrollConnection object is passed to a LazyColumn Composable via a modifier
  * (Modifier.nestedScroll(nestedScrollConnection)).
  *
- * When the onPreScroll of the NestedScrollConnection is called It returns the amount of "offset" to
- * absorb and uses the offset to collapse the MotionLayout.
+ * When the [NestedScrollConnection.onPreScroll] override of the [NestedScrollConnection] is called
+ * it returns the amount of "offset" to absorb and uses the offset to collapse the [MotionLayout].
  *
  * We start by initializing our [Dp] variable `big` to `250.dp` and [Dp] variable `small` to `50.dp`.
  * We initialize our [MotionScene] variable `scene` to a new instance in whose [MotionSceneScope]
@@ -98,19 +98,23 @@ import androidx.constraintlayout.compose.MotionSceneScope
  *   variable `icon` by linking its `top` to the `anchor` of [ConstrainedLayoutReference] `image`
  *   with a margin of `16.dp`, and linking its `start` to the `start` of [ConstrainedLayoutReference]
  *   `image` with a margin of `16.dp`.
- *   - We use [MotionSceneScope.transition] to transition `from` [ConstraintSetRef] variable `start1`
- *   to [ConstraintSetRef] variable `end1` with the `name` "default".
+ *   - We use [MotionSceneScope.transition] to create a transition `from` [ConstraintSetRef]
+ *   variable `start1` to [ConstraintSetRef] variable `end1` with the `name` "default"
+ *   ([MotionLayout] will animate between these two [ConstraintSetRef] based on the current value
+ *   of its `progress` argument).
  *
  * We initialize our [Float] variable `maxPx` to the value of [Dp] variable `big` converted to pixels,
  * and initialize our [Float] variable `minPx` to the value of [Dp] variable `small` converted to
  * pixels. We initialize and remember our [MutableState] wrapped [Float] variable `toolbarHeight`
  * to an initial value of `maxPx`. We initialize and remember our [NestedScrollConnection] variable
- * `nestedScrollConnection` to an anonymous instance which overrides the
+ * `nestedScrollConnection` to an anonymous instance which overrides the method
  * [NestedScrollConnection.onPreScroll] to return an appropriate [Offset] for the current value of
  * `toolbarHeight`.
  *
  * We initialize our [Float] variable `progress` to `1` minus the current value of `toolbarHeight`
- * minus `minPx` divided by the quantity `maxPx` minus `minPx`.
+ * minus `minPx` divided by the quantity `maxPx` minus `minPx` (this is used as the `progress`
+ * argument argument of our [MotionLayout] and represents the fraction of the space between `minPx`
+ * and `maxPx` currently occupied by the height of the toolbar).
  *
  * Our root composable is a [Column] in whose [ColumnScope] `content` composable lambda argument
  * we compose a [MotionLayout] whose `motionScene` is our [MotionScene] variable `scene`, and whose
