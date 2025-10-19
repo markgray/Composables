@@ -265,7 +265,7 @@ fun ToolBarLazyExampleDsl() {
             )
         }
         LazyColumn(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .nestedScroll(connection = nestedScrollConnection)
         ) {

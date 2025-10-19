@@ -3,7 +3,6 @@ package com.example.examplescomposemotionlayout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,7 +38,10 @@ import androidx.constraintlayout.compose.MotionScene
  * by listening to scroll events from the [LazyColumn] through a [NestedScrollConnection].
  * The height of the toolbar is adjusted based on the scroll delta, and this height change is
  * then converted into a progress value (from 0.0 to 1.0) to drive the [MotionLayout] transition.
- * TODO: Continue here.
+ *
+ * Apart from the use of JSON instead of kotlin to define the `ConstraintSets` and  `Transitions`
+ * this example is identical to [ToolBarLazyExampleDsl] in the file `CollapsingToolbarLazyDsl.kt`
+ * so I won't repeat the comments here.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
@@ -141,12 +143,6 @@ fun ToolBarLazyExample() {
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
-            Box(
-                modifier = Modifier
-                    .layoutId(layoutId = "image")
-                    .background(color = customProperties(id = "image").color(name = "cover"))
-            ) {
-            }
             Image(
                 modifier = Modifier.layoutId(layoutId = "icon"),
                 painter = painterResource(id = R.drawable.menu),
@@ -159,15 +155,13 @@ fun ToolBarLazyExample() {
                 color = Color.White
             )
         }
-        Box(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .nestedScroll(connection = nestedScrollConnection)
         ) {
-            LazyColumn {
-                items(count = 100) {
-                    Text(text = "item $it", modifier = Modifier.padding(all = 4.dp))
-                }
+            items(count = 100) {
+                Text(text = "item $it", modifier = Modifier.padding(all = 4.dp))
             }
         }
     }
