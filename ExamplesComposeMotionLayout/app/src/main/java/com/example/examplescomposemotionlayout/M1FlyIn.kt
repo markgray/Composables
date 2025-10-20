@@ -6,6 +6,7 @@ import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.*
 import androidx.constraintlayout.compose.ConstraintSetScope
+import kotlinx.coroutines.CoroutineScope
 import kotlin.math.abs
 
 /**
@@ -103,7 +105,38 @@ import kotlin.math.abs
  * `painter` to a [painterResource] for the jpg with resource ID [R.drawable.pepper]. We initialize
  * and remember our [MutableState] wrapped [Boolean] variable `animateToEnd` to `true`. We initialize
  * and remember our [Animatable] of [Float] variable `progress` to an [Animatable] with an initial
- * value of `0f`. TODO: Continue here.
+ * value of `0f`.
+ *
+ * We compose a [LaunchedEffect] whose `key1` is our [MutableState] wrapped [Boolean] variable
+ * `animateToEnd` (it will be re-run whenever `animateToEnd` changes value). In the
+ * [CoroutineScope] `block` argument we use [Animatable.animateTo] to animate our [Animatable] of
+ * [Float] variable `progress` to a value of `1f` if `animateToEnd` is `true`, or `0f` if
+ * `animateToEnd` is `false`, with an `animationSpec` of [tween] with a duration of `5_000`
+ * miliseconds.
+ *
+ * Then our root composable is a [MotionLayout] whose `modifier` argument is a [Modifier.background]
+ * whose `color` is the hex value `0xFF221010`, chained to a [Modifier.fillMaxSize], chained to a
+ * [Modifier.padding] that adds `1.dp` to all sides. The `motionScene` argument is our [MotionScene]
+ * variable `scene`, and the `progress` argument is the current value of our [Animatable] of [Float]
+ * variable `progress`.
+ *
+ * In the [MotionLayoutScope] `content` composable lambda argument of the [MotionLayout] we first
+ * compose a [MotionImage] whose arguments are:
+ *  - `painter`: is our [Painter] variable `painter`.
+ *  - `brightness`: is the value of our [MotionLayoutScope.customFloat] whose `id` is `imgId`, and
+ *  whose `name` is `"bright"`.
+ *  - `saturation`: is the value of our [MotionLayoutScope.customFloat] whose `id` is `imgId`, and
+ *  whose `name` is `"sat"`.
+ *  - `rotate`: is the value of our [MotionLayoutScope.customFloat] whose `id` is `imgId`, and whose
+ *  `name` is `"rot"`.
+ *  - `modifier`: is a [Modifier.layoutId] whose `layoutId` is `imgId`.
+ *
+ * We then loop over `i` for all the indices of our [Array] of [String] variable `id` and compose a
+ * [Box] whose `modifier` argument is a [Modifier.layoutId] whose `layoutId` is the value of the
+ * entry in the [Array] of [String] variable `id` at index `i`, chained to a [Modifier.clip] whose
+ * `shape` is a [RoundedCornerShape] with a `size` of `20.dp`. In the [BoxScope] `content` composable
+ * lambda argument of the [Box] we compose a [Text] whose `text` is the [String] entry in [List] of
+ * [String] variable `emojis` at index `i`.
  */
 @SuppressLint("Range")
 @OptIn(ExperimentalMotionApi::class)
@@ -208,7 +241,7 @@ fun M1FlyIn() {
     LaunchedEffect(key1 = animateToEnd) {
         progress.animateTo(
             targetValue = if (animateToEnd) 1f else 0f,
-            animationSpec = tween(durationMillis = 5000)
+            animationSpec = tween(durationMillis = 5_000)
         )
     }
     MotionLayout(
