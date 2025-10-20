@@ -91,22 +91,23 @@ fun ManyGraphs() {
  * [MotionScene] that is dynamically generated based on the number of values provided.
  *
  * The bars are horizontally chained and their widths are calculated to fill the available space.
- * Their heights are proportional to the corresponding value in the list, scaled by the [max] value.
+ * Their heights are proportional to the corresponding value in the list, scaled by the [Int]
+ * parameter [max].
  *
  * Clicking on the graph will toggle the animation, causing the bars to grow or shrink.
  *
  * We start by initializing our [List] of [Float] variable `scale` to the contents of our [List]
  * of [Float] parameter [values] scaled by 0.8f divided by our [Int] parameter [max]. We initialize
  * our [Int] variable `count` to the size of our [List] of [Float] parameter [values]. We initialize
- * our [Float] variable `widthPercent` to 1 / (`count` * 2f). We initialize our [Array] of
- * [String] variable `tmpNames` to a new [Array] of [String] of size `count`. We loop over `i` for
- * all of the [Array.indices] of `tmpNames` and set the value at index `i` to the [String] formed by
- * "foo$i". We initialize our [List] of [String] variable `names` to the contents of `tmpNames` minus
- * any `null` values. We initialize our [MotionScene] variable `scene` to a [MotionScene] in whose
- * [MotionSceneScope] `motionSceneContent` lambda argument we:
+ * our [Float] variable `widthPercent` to 1 divided by the quantity `count` times `2f`. We initialize
+ * our [Array] of [String] variable `tmpNames` to a new [Array] of [String] of size `count`. We loop
+ * over `i` for all of the [Array.indices] of `tmpNames` and set the value at index `i` to the
+ * [String] formed by "foo$i". We initialize our [List] of [String] variable `names` to the contents
+ * of `tmpNames` minus any `null` values. We initialize our [MotionScene] variable `scene` to a
+ * [MotionScene] in whose [MotionSceneScope] `motionSceneContent` lambda argument we:
  *  - Initialize our [Array] of [ConstrainedLayoutReference] variable `cols` by using the
  *  [Iterable.map] method of `names` to map each [String] in `names` to a [ConstrainedLayoutReference]
- *  whose `id` is the [String] and converting the [List] to a typed array using
+ *  whose `id` is the [String] and converting the [List] to a typed array using the
  *  [Collection.toTypedArray] method.
  *  - Initialize our [ConstraintSetRef] variable `start1` to a [ConstraintSetRef] in whose
  *  [ConstraintSetScope] `constraintSet` lambda argument we create a horizontal chain of all of
@@ -126,6 +127,7 @@ fun ManyGraphs() {
  * and initialize and remember our [Flow] of [Boolean] variable `animateToEndFlow` to the [Flow]
  * returned by [snapshotFlow] whose `block` lambda argument is `animateToEnd`. Then we initialize
  * and remember our [Animatable] variable `progress` to an [Animatable] whose initial value is 0f.
+ *
  * We launch a [LaunchedEffect] in whose [CoroutineScope] `block` lambda argument we collect from
  * `animateToEndFlow` and in the [FlowCollector] `collector` argument we call the [Animatable.animateTo]
  * method of `progress` to animate to the target value of 1f if `animateToEnd` is `true` or 0f if

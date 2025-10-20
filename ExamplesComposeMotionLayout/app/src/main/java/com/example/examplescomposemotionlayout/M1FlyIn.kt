@@ -42,7 +42,7 @@ import kotlin.math.abs
  *  - [TransitionScope.keyCycles] `KeyCycles`: Creating an oscillating motion (wobble) for the
  *  central image in a [KeyCyclesScope] lambda argument.
  *
- * We start by initializing our [String] variable `imgId` with the [String] value `"image"`. We
+ * We start by initializing our [String] variable `imgId` with the [String] value `"image". We
  * initialize our [Array] of [String] variable `id` with the [String] values `"w1"`, `"w2"`,
  * `"w3"`, `"w4"`, `"w5"`, and `"w6"`. We also initialize [List] of [String] variable `emojis` with
  * the [String] values `"😀"`, `"🙂"`, `"🤨"`, `"😐"`, `"😒"`, and `"😬"`.
@@ -59,9 +59,9 @@ import kotlin.math.abs
  *  to have a [ConstrainScope.height] of `10.dp`, to have a [ConstrainScope.alpha] of `0f`, to
  *  [ConstrainScope.centerHorizontallyTo] to the `other` parent, to have its `top` linked to its
  *  `parent`'s `top`, to have its `bottom` linked to its `parent`'s `bottom` with a margin of
- *  `100.dp`, declare a [MotionSceneScope.customFloat] with the name `"sat"` and value `0f`,
- *  declare a [MotionSceneScope.customFloat] with the name `"bright"` and value `0f`, and declare a
- *  [MotionSceneScope.customFloat] with the name `"rot"` and value `-360f`.
+ *  `100.dp`, declare a [MotionSceneScope.customFloat] with the `name` "sat" and value `0f`,
+ *  declare a [MotionSceneScope.customFloat] with the `name` "bright" and value `0f`, and declare a
+ *  [MotionSceneScope.customFloat] with the `name` "rot" and `value` `-360f`.
  *  We loop over `i` for all the indices of our [Array] of [ConstrainedLayoutReference] variable
  *  `refs` and use [ConstraintSetScope.constrain] to constrain each entry in `refs` to have a
  *  [ConstrainScope.width] of `32.dp`, to have a [ConstrainScope.height] of `32.dp`, to link its
@@ -76,9 +76,9 @@ import kotlin.math.abs
  *  [Dimension.fillToConstraints], to have a [ConstrainScope.height] of [Dimension.fillToConstraints],
  *  to [ConstrainScope.centerHorizontallyTo] to the `other` parent, to have its `top` linked to its
  *  `parent`'s `top`, to have its `bottom` linked to its `parent`'s `bottom` with a margin of
- *  `100.dp`, declare a [MotionSceneScope.customFloat] with the name `"sat"` and value `1f` declare
- *  a [MotionSceneScope.customFloat] with the name `"bright"` and value `1f`, and declare a
- *  [MotionSceneScope.customFloat] with the name `"rot"` and value `0f`. We use the method
+ *  `100.dp`, declare a [MotionSceneScope.customFloat] with the `name` "sat" and `value` `1f` declare
+ *  a [MotionSceneScope.customFloat] with the `name` `bright" and `value` `1f`, and declare a
+ *  [MotionSceneScope.customFloat] with the name "rot" and `value` `0f`. We use the method
  *  [ConstraintSetScope.createHorizontalChain] to create a horizontal chain of the `elements` in
  *  [Array] of [ConstrainedLayoutReference] variable `refs`.
  *  We loop over `i` for all the indices of our [Array] of [ConstrainedLayoutReference] variable
@@ -87,9 +87,9 @@ import kotlin.math.abs
  *  `bottom` to its `parent`'s `bottom` with a `margin` of `16.dp`.
  *  - Finally we use [MotionSceneScope.transition] to add a transition `from` the [ConstraintSetRef]
  *  variable `start1` to the [ConstraintSetRef] variable `end1` with the name "default", and in its
- *  [TransitionScope] `transitionContent` lambda argument we set the [TransitionScope.motionArc] to
- *  [Arc.StartHorizontal] (This makes the elements move along a curved path instead of a straight
- *  line. We use [TransitionScope.keyPositions] for the `targets` in `refs` to have it at the
+ *  [TransitionScope] `transitionContent` lambda argument we set [TransitionScope.motionArc] to
+ *  [Arc.StartHorizontal] (this makes the elements move along a curved path instead of a straight
+ *  line). We use [TransitionScope.keyPositions] for the `targets` in `refs` to have it at the
  *  50% mark of the animation (frame(50)), move the emojis up slightly (percentY = 0.1f), creating
  *  a bounce effect. We use [TransitionScope.keyAttributes] to at the 50% mark, scale the emojis
  *  up to 6 times their size (scaleX = 6f, scaleY = 6f) before shrinking back to their final size.
