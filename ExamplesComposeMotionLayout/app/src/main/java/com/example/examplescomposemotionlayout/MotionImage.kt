@@ -1,4 +1,8 @@
-@file:Suppress("LocalVariableName", "JoinDeclarationAndAssignment", "ReplaceJavaStaticMethodWithKotlinAnalog")
+@file:Suppress(
+    "LocalVariableName",
+    "JoinDeclarationAndAssignment",
+    "ReplaceJavaStaticMethodWithKotlinAnalog"
+)
 
 package com.example.examplescomposemotionlayout
 
@@ -15,10 +19,31 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.constraintlayout.compose.MotionLayout
 
 
 /**
- * TODO: Add kdoc
+ * A Composable that displays an image with various transformations and color adjustments,
+ * suitable for use within [MotionLayout]. This overload accepts a drawable resource ID.
+ *
+ * The image can be panned, zoomed, and rotated. Additionally, its contrast, brightness,
+ * saturation, and warmth can be adjusted. These parameters are typically driven by the
+ * progress of a [MotionLayout] transition.
+ *
+ * @param panX The horizontal panning of the image, where 0.0f is the left edge and 1.0f is the
+ * right edge.
+ * @param panY The vertical panning of the image, where 0.0f is the top edge and 1.0f is the
+ * bottom edge.
+ * @param zoom The zoom level of the image. 1.0f is the default, fitting the image within the
+ * bounds while preserving aspect ratio. Values greater than 1.0f zoom in.
+ * @param rotate The rotation of the image in degrees.
+ * @param contrast The contrast of the image. 1.0f is the default (no change).
+ * @param brightness The brightness of the image. 1.0f is the default (no change).
+ * @param saturation The saturation of the image. 1.0f is the default (no change).
+ * 0.0f is grayscale.
+ * @param warmth The color temperature warmth of the image. 1.0f is the default (no change).
+ * @param id The drawable resource ID for the image to be displayed.
+ * @param modifier The modifier to be applied to the canvas that draws the image.
  */
 @Suppress("unused")
 @Composable
@@ -33,26 +58,46 @@ fun MotionImage(
     warmth: Float = 1f,
     @DrawableRes id: Int,
     @SuppressLint("ModifierParameter")
-    modifier: Modifier = Modifier
-        .fillMaxSize()
+    modifier: Modifier = Modifier.fillMaxSize()
 ) {
     MotionImage(
-        panX =  panX,
+        panX = panX,
         panY = panY,
-        zoom =  zoom,
+        zoom = zoom,
         rotate = rotate,
-        contrast =  contrast,
+        contrast = contrast,
         brightness = brightness,
         saturation = saturation,
         warmth = warmth,
-        painter = painterResource(id),
+        painter = painterResource(id = id),
         modifier = modifier
     )
 }
 
-
 /**
- * TODO: Add kdoc
+ * A Composable that displays an image with various transformations applied.
+ * This allows for dynamic control over the image's position, scale, rotation,
+ * and color properties, making it suitable for animations and interactive views.
+ * The image is drawn on a `Canvas` and clipped to the bounds of the composable.
+ * This overload accepts a [Painter] instead of a drawable resource ID.
+ * TODO: Continue here.
+ *
+ * @param panX Horizontal pan of the image. A value of 0.0 aligns the left edge of the image
+ * with the left edge of the view, while 1.0 aligns the right edges.
+ * @param panY Vertical pan of the image. A value of 0.0 aligns the top edge of the image
+ * with the top edge of the view, while 1.0 aligns the bottom edges.
+ * @param zoom The zoom level of the image. A value of 1.0 means the image is scaled to fit
+ * within the view bounds while maintaining its aspect ratio. Values greater than 1.0 zoom in.
+ * @param rotate The rotation of the image in degrees.
+ * @param contrast The contrast of the image. A value of 1.0 means no change.
+ * @param brightness The brightness of the image. A value of 1.0 means no change.
+ * @param saturation The saturation of the image. A value of 1.0 means no change, while 0.0
+ * results in a grayscale image.
+ * @param warmth The color temperature of the image. A value of 1.0 means no change.
+ * Values greater than 1.0 make the image appear warmer (more orange/red), while values
+ * less than 1.0 make it appear cooler (more blue).
+ * @param painter The [Painter] to draw.
+ * @param modifier The modifier to be applied to the `Canvas`.
  */
 @Composable
 fun MotionImage(
@@ -77,23 +122,27 @@ fun MotionImage(
             val sh: Float = painter.intrinsicSize.height
 
             val scale: Float = (if (iw * sh < ih * sw) sw / iw else sh / ih)
-            val sx = zoom * sw / iw / scale
-            val sy = zoom * sh / ih / scale
+            val sx: Float = zoom * sw / iw / scale
+            val sy: Float = zoom * sh / ih / scale
             val tx: Float = (sw - sx * iw) * panX
             val ty: Float = (sh - sy * ih) * panY
             @Suppress("ReplacePrintlnWithLogging")
             println("pan = $tx,$ty")
             val cf = ColorMatrix()
-            updateMatrix(cf, brightness = brightness, saturation = saturation, contrast = contrast, warmth = warmth)
-            with(painter) {
-                withTransform({
-                    rotate(rotate)
-                    translate(tx, ty)
-                    scale(sx, sy)
-
-
+            updateMatrix(
+                out = cf,
+                brightness = brightness,
+                saturation = saturation,
+                contrast = contrast,
+                warmth = warmth
+            )
+            with(receiver = painter) {
+                withTransform(transformBlock = {
+                    rotate(degrees = rotate)
+                    translate(left = tx, top = ty)
+                    scale(scaleX = sx, scaleY = sy)
                 }) {
-                    draw(size, colorFilter = ColorFilter.colorMatrix(cf))
+                    draw(size = size, colorFilter = ColorFilter.colorMatrix(colorMatrix = cf))
                 }
             }
         }
@@ -101,15 +150,14 @@ fun MotionImage(
 
 }
 
-
 private fun saturation(mMatrix: FloatArray, saturationStrength: Float) {
     val Rf = 0.2999f
     val Gf = 0.587f
     val Bf = 0.114f
     val ms = 1.0f - saturationStrength
-    val Rt = Rf * ms
-    val Gt = Gf * ms
-    val Bt = Bf * ms
+    val Rt: Float = Rf * ms
+    val Gt: Float = Gf * ms
+    val Bt: Float = Bf * ms
     mMatrix[0] = Rt + saturationStrength
     mMatrix[1] = Gt
     mMatrix[2] = Bt
@@ -133,21 +181,21 @@ private fun saturation(mMatrix: FloatArray, saturationStrength: Float) {
 }
 
 private fun warmth(matrix: FloatArray, warmth: Float) {
-    var warmthVar = warmth
+    var warmthVar: Float = warmth
     val baseTemperature = 5000f
     if (warmthVar <= 0) warmthVar = .01f
     var tmpColor_r: Float
     var tmpColor_g: Float
     var tmpColor_b: Float
-    var kelvin = baseTemperature / warmthVar
+    var kelvin: Float = baseTemperature / warmthVar
     run {
         // simulate a black body radiation
-        val centiKelvin = kelvin / 100
+        val centiKelvin: Float = kelvin / 100
         val colorR: Float
         val colorG: Float
         val colorB: Float
         if (centiKelvin > 66) {
-            val tmp = centiKelvin - 60f
+            val tmp: Float = centiKelvin - 60f
             // Original statements (all decimal values)
             // colorR = (329.698727446f * (float) Math.pow(tmp, -0.1332047592f))
             // colorG = (288.1221695283f * (float) Math.pow(tmp, 0.0755148492f))
@@ -163,9 +211,7 @@ private fun warmth(matrix: FloatArray, warmth: Float) {
             if (centiKelvin > 19) {
                 // Original statements (all decimal values)
                 // 138.5177312231f * (float) Math.log(centiKelvin - 10) - 305.0447927307f);
-                (138.51773f
-                        * Math.log((centiKelvin - 10).toDouble())
-                    .toFloat() - 305.0448f)
+                (138.51773f * Math.log((centiKelvin - 10).toDouble()).toFloat() - 305.0448f)
             } else {
                 0f
             }
@@ -176,18 +222,18 @@ private fun warmth(matrix: FloatArray, warmth: Float) {
         tmpColor_g = Math.min(255f, Math.max(colorG, 0f))
         tmpColor_b = Math.min(255f, Math.max(colorB, 0f))
     }
-    var color_r = tmpColor_r
-    var color_g = tmpColor_g
-    var color_b = tmpColor_b
+    var color_r: Float = tmpColor_r
+    var color_g: Float = tmpColor_g
+    var color_b: Float = tmpColor_b
     kelvin = baseTemperature
 
     // simulate a black body radiation
-    val centiKelvin = kelvin / 100
+    val centiKelvin: Float = kelvin / 100
     val colorR: Float
     val colorG: Float
     val colorB: Float
     if (centiKelvin > 66) {
-        val tmp = centiKelvin - 60f
+        val tmp: Float = centiKelvin - 60f
         // Original statements (all decimal values)
         //  colorR = (329.698727446f * (float) Math.pow(tmp, -0.1332047592f));
         //  colorG = (288.1221695283f * (float) Math.pow(tmp, 0.0755148492f));
@@ -203,8 +249,7 @@ private fun warmth(matrix: FloatArray, warmth: Float) {
         if (centiKelvin > 19) {
             // Original statements (all decimal values)
             //float of (138.5177312231 * Math.log(centiKelvin - 10) - 305.0447927307);
-            138.51773f * Math.log((centiKelvin - 10).toDouble())
-                .toFloat() - 305.0448f
+            138.51773f * Math.log((centiKelvin - 10).toDouble()).toFloat() - 305.0448f
         } else {
             0f
         }
@@ -277,33 +322,42 @@ fun updateMatrix(
     val tmp = ColorMatrix()
     out.reset()
     if (saturation != 1.0f) {
-        saturation(tmp.values, saturation)
-        tmp.values.copyInto(out.values)
+        saturation(mMatrix = tmp.values, saturationStrength = saturation)
+        tmp.values.copyInto(destination = out.values)
         used = true
     }
     if (contrast != 1.0f) {
         if (!used) {
-            out.setToScale(contrast, contrast, contrast, 1f)
+            out.setToScale(
+                redScale = contrast,
+                greenScale = contrast,
+                blueScale = contrast,
+                alphaScale = 1f
+            )
         } else {
-            tmp.setToScale(contrast, contrast, contrast, 1f)
-            out.timesAssign(tmp)
+            tmp.setToScale(
+                redScale = contrast,
+                greenScale = contrast,
+                blueScale = contrast,
+                alphaScale = 1f
+            )
+            out.timesAssign(colorMatrix = tmp)
         }
         used = true
     }
     if (warmth != 1.0f) {
         if (!used) {
-            warmth(out.values, warmth)
+            warmth(matrix = out.values, warmth = warmth)
         } else {
-            warmth(tmp.values, warmth)
-            out.timesAssign(tmp)
+            warmth(matrix = tmp.values, warmth = warmth)
+            out.timesAssign(colorMatrix = tmp)
         }
         used = true
     }
     if (brightness != 1.0f) {
 
         if (!used) {
-            brightness(out.values, brightness)
-
+            brightness(matrix = out.values, brightness = brightness)
         } else {
             brightness(tmp.values, brightness)
             out.timesAssign(tmp)

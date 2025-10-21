@@ -106,7 +106,7 @@ import androidx.constraintlayout.compose.*
  * animation to have its saturation `sat` change to `0f` and have its brightness `bright` change to
  * `1.6f`.
  *
- * Having defined our [MotionScene] we initialize our [Painter] variable `painter` to a the [Painter]
+ * Having defined our [MotionScene] we initialize our [Painter] variable `painter` to the [Painter]
  * returned by [painterResource] for the jpg with resource ID `R.drawable.pepper`.
  *
  * Our root composable is a [MotionLayout] whose `modifier` argument is a [Modifier.background]
