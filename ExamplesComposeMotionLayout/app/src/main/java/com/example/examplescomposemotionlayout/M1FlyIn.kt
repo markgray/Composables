@@ -234,16 +234,18 @@ fun M1FlyIn() {
             }
         }
     }
-    val painter: Painter = painterResource(id = R.drawable.pepper)
 
+    val painter: Painter = painterResource(id = R.drawable.pepper)
     val animateToEnd: Boolean by remember { mutableStateOf(value = true) }
     val progress: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0f) }
+
     LaunchedEffect(key1 = animateToEnd) {
         progress.animateTo(
             targetValue = if (animateToEnd) 1f else 0f,
             animationSpec = tween(durationMillis = 5_000)
         )
     }
+
     MotionLayout(
         modifier = Modifier
             .background(color = Color(color = 0xFF221010))

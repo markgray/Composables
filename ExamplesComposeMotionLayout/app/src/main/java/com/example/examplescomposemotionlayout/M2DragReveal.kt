@@ -61,31 +61,32 @@ import androidx.constraintlayout.compose.*
  *  "bright", and whose `value` is `1f`.
  *  - [ConstraintSetScope.constrain] the [ConstrainedLayoutReference] variable `titleRef` to have
  *  a [ConstrainScope.width] of [Dimension.wrapContent], a [ConstrainScope.height] of
- *  [Dimension.wrapContent], to have if [ConstrainScope.centerHorizontallyTo] the `other` its
+ *  [Dimension.wrapContent], to have if [ConstrainScope.centerHorizontallyTo] to the `other` its
  *  `parent`, and to link its `top` to the `bottom` of [ConstrainedLayoutReference] variable
  *  `imageRef` with a `margin` of `2.dp`.
  *  - [ConstraintSetScope.constrain] the [ConstrainedLayoutReference] variable `wordsRef` to have
  *  a [ConstrainScope.width] of [Dimension.fillToConstraints], a [ConstrainScope.height] of
- *  [Dimension.wrapContent], to have if [ConstrainScope.centerHorizontallyTo] the `other`
- *  its `parent`, to link its `top` to the `bottom` of [ConstrainedLayoutReference] variable
+ *  [Dimension.wrapContent], to have if [ConstrainScope.centerHorizontallyTo] to the `other`
+ *  its `parent`, and to link its `top` to the `bottom` of [ConstrainedLayoutReference] variable
  *  `titleRef`.
  *
  * We initialize our [ConstraintSetRef] variable `end1` to a new instance in whose
  * [ConstraintSetScope] `constraintSetContent` lambda argument we:
  *  - [ConstraintSetScope.constrain] the [ConstrainedLayoutReference] variable `imageRef` to have
  *  a [ConstrainScope.width] of `80.dp`, a [ConstrainScope.height] of `80.dp`, to have it
- *  [ConstrainScope.centerHorizontallyTo] the `other` its `parent`, to link its `top` to the `top`
- *  of its `parent`, to declare a `customFloat` whose `name` is "sat", and whose `value` is `0.8f`,
- *  and to declare a `customFloat` whose `name` is "bright", and whose `value` is `0.8f`.
+ *  [ConstrainScope.centerHorizontallyTo] to the `other` its `parent` with a `bias` of `0f`, to link
+ *  its `top` to the `top` of its `parent`, to declare a `customFloat` whose `name` is "sat", and
+ *  whose `value` is `0.8f`, and to declare a `customFloat` whose `name` is "bright", and whose
+ *  `value` is `0.8f`.
  *  - [ConstraintSetScope.constrain] the [ConstrainedLayoutReference] variable `titleRef` to have
  *  a [ConstrainScope.width] of [Dimension.wrapContent], a [ConstrainScope.height] of
- *  [Dimension.wrapContent], to have if [ConstrainScope.centerHorizontallyTo] the `other` its
- *  `parent`, and to link its `top` to the `bottom` of [ConstrainedLayoutReference] variable
- *  `imageRef`.
+ *  [Dimension.wrapContent], to have if [ConstrainScope.centerHorizontallyTo] to the `other` its
+ *  `parent`, to link its `top` to the `top` of `imageRef`, and to link its `bottom` to the `bottom`
+ *  of [ConstrainedLayoutReference] variable `imageRef`.
  *  - [ConstraintSetScope.constrain] the [ConstrainedLayoutReference] variable `wordsRef` to have
  *  a [ConstrainScope.width] of [Dimension.fillToConstraints], a [ConstrainScope.height] of
- *  [Dimension.wrapContent], to have if [ConstrainScope.centerHorizontallyTo] the `other`
- *  its `parent`, to link its `top` to the `bottom` of [ConstrainedLayoutReference] variable
+ *  [Dimension.wrapContent], to have if [ConstrainScope.centerHorizontallyTo] to the `other`
+ *  its `parent`, and to link its `top` to the `bottom` of [ConstrainedLayoutReference] variable
  *  `imageRef`.
  *
  * Next we use [MotionSceneScope.transition] to define a transition `from` our [ConstraintSetRef]
@@ -102,7 +103,7 @@ import androidx.constraintlayout.compose.*
  * straight line.
  *
  * We use [TransitionScope.keyAttributes] to modify the `imageRef` at 70% of the way through the
- * animation to have its saturation `sat` change to `0f` and havits brightness `bright` change to
+ * animation to have its saturation `sat` change to `0f` and have its brightness `bright` change to
  * `1.6f`.
  *
  * Having defined our [MotionScene] we initialize our [Painter] variable `painter` to a the [Painter]
@@ -133,7 +134,7 @@ import androidx.constraintlayout.compose.*
  * is the [String] variable `wordsId`, chained to a [Modifier.clip] whose `shape` is a
  * [RoundedCornerShape] of `size` `20.dp`. In the [BoxScope] `content` composable lambda argument we
  * compose a [Text] whose arguments are:
- *  - `text`: is the [String] returned by [LoremIpsum] with `words` `222`.
+ *  - `text`: is the [String] returned by [LoremIpsum] with its `words` argument equal to `222`.
  *  - `modifier`: is a [Modifier.background] whose `color` is [Color.White], chained to a
  *  [Modifier.padding] that adds `8.dp` to all sides, chained to a [Modifier.layoutId] whose
  *  `layoutId` is the [String] variable `titleId`.
@@ -152,7 +153,6 @@ fun M2DragReveal() {
         val titleRef: ConstrainedLayoutReference = createRefFor(id = titleId)
         val wordsRef: ConstrainedLayoutReference = createRefFor(id = wordsId)
 
-
         val start1: ConstraintSetRef = constraintSet {
             constrain(ref = imageRef) {
                 width = Dimension.fillToConstraints
@@ -164,14 +164,14 @@ fun M2DragReveal() {
                 customFloat(name = "bright", value = 1f)
             }
             constrain(ref = titleRef) {
-                width =  Dimension.wrapContent
-                height =  Dimension.wrapContent
+                width = Dimension.wrapContent
+                height = Dimension.wrapContent
                 centerHorizontallyTo(other = parent)
                 top.linkTo(anchor = imageRef.bottom, margin = 2.dp)
             }
             constrain(ref = wordsRef) {
-                width =  Dimension.fillToConstraints
-                height =  Dimension.wrapContent
+                width = Dimension.fillToConstraints
+                height = Dimension.wrapContent
                 centerHorizontallyTo(other = parent)
                 top.linkTo(anchor = titleRef.bottom)
             }
@@ -180,35 +180,35 @@ fun M2DragReveal() {
         val end1: ConstraintSetRef = constraintSet {
             constrain(ref = imageRef) {
                 width = Dimension.value(dp = 80.dp)
-                height =Dimension.value(dp = 80.dp)
+                height = Dimension.value(dp = 80.dp)
                 centerHorizontallyTo(other = parent, bias = 0f)
                 top.linkTo(anchor = parent.top)
                 customFloat(name = "sat", value = 0.8f)
                 customFloat(name = "bright", value = 0.8f)
             }
             constrain(ref = titleRef) {
-                width =  Dimension.wrapContent
-                height =  Dimension.wrapContent
+                width = Dimension.wrapContent
+                height = Dimension.wrapContent
                 centerHorizontallyTo(other = parent)
                 top.linkTo(anchor = imageRef.top)
                 bottom.linkTo(anchor = imageRef.bottom)
             }
             constrain(ref = wordsRef) {
-                width =  Dimension.fillToConstraints
-                height =  Dimension.wrapContent
+                width = Dimension.fillToConstraints
+                height = Dimension.wrapContent
                 centerHorizontallyTo(other = parent)
                 top.linkTo(anchor = imageRef.bottom)
             }
         }
         transition(from = start1, to = end1, name = "default") {
-             onSwipe =  OnSwipe(
+            onSwipe = OnSwipe(
                 side = SwipeSide.Top,
                 direction = SwipeDirection.Up,
                 anchor = wordsRef,
-                 mode = SwipeMode.Spring(damping = 40f),
+                mode = SwipeMode.Spring(damping = 40f),
             )
-            keyPositions(titleRef){
-                frame(frame = 40){
+            keyPositions(titleRef) {
+                frame(frame = 40) {
                     percentY = 0.3f
                     type = RelativePosition.Path
                 }
@@ -223,6 +223,7 @@ fun M2DragReveal() {
 
         }
     }
+
     val painter: Painter = painterResource(id = R.drawable.pepper)
 
     MotionLayout(
