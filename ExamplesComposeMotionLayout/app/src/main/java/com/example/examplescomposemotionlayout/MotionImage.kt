@@ -15,12 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.DrawTransform
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.constraintlayout.compose.MotionLayout
-
 
 /**
  * A Composable that displays an image with various transformations and color adjustments,
@@ -81,7 +82,45 @@ fun MotionImage(
  * and color properties, making it suitable for animations and interactive views.
  * The image is drawn on a `Canvas` and clipped to the bounds of the composable.
  * This overload accepts a [Painter] instead of a drawable resource ID.
- * TODO: Continue here.
+ * The image can be panned, zoomed, and rotated. Additionally, its contrast, brightness,
+ * saturation, and warmth can be adjusted.
+ *
+ * Our root composable is a [Canvas] whose `modifier` argument is our [Modifier] parameter
+ * [modifier]. In the [DrawScope] `onDraw` lambda argument of the [Canvas] we call [DrawScope.clipRect]
+ * with all of its default values (clips the rect to the bounds of the [Canvas]). In the [DrawScope]
+ * `block` argument of the [DrawScope.clipRect] we:
+ *  - initialize our [Float] variable `iw` to the width of the [Canvas]
+ *  - initialize our [Float] variable `ih` to the height of the [Canvas]
+ *  - initialize our [Float] variable `sw` to the intrinsic width of the [Painter]
+ *  - initialize our [Float] variable `sh` to the intrinsic height of the [Painter]
+ *  - initialize our [Float] variable `scale` to `sw / iw` if `sw * ih < iw * sh` or `sh / ih`
+ *  if it is not (the `scale` scales by the ratio of the width of the [Painter] to the width of the
+ *  [Canvas] or the height of the [Painter] to the height of the [Canvas] depending on whether
+ *  the width of the [Canvas] times the height of the [Painter] is less than the height of the
+ *  [Canvas] times the width of the [Painter] **don't know why yet**).
+ *  - initialize our [Float] variable `sx` to [Float] parameter [zoom] `* sw / iw / scale`
+ *  - initialize our [Float] variable `sy` to [Float] parameter [zoom] `* sh / ih / scale`
+ *  - initialize our [Float] variable `tx` to `(sw - sx * iw) *` [panX]
+ *  - initialize our [Float] variable `ty` to `(sh - sy * ih) *` [panY]
+ *
+ * We print some debugging info, then initialize our [ColorMatrix] variable `cf` to a new instance.
+ * We call our [updateMatrix] method with the following arguments:
+ *  - `out`: [ColorMatrix] variable `cf`
+ *  - `brightness`: [Float] parameter [brightness]
+ *  - `saturation`: [Float] parameter [saturation]
+ *  - `contrast`: [Float] parameter [contrast]
+ *  - `warmth`: [Float] parameter [warmth]
+ *
+ * We use [with] on the `receiver` [Painter] parameter [painter] and in its [Painter] `block` lambda
+ * argument we use the [DrawScope.withTransform] method and in its [DrawTransform] `transformBlock`
+ * we [DrawTransform.rotate] the [Painter] by [Float] parameter [rotate] degrees, then
+ * [DrawTransform.translate] the [Painter] `left` by `tx` and `top` by `ty`, then
+ * [DrawTransform.scale] the [Painter] `scaleX` by `sx` and `scaleY` by `sy`. In the [DrawScope]
+ * `drawBlock` argument of the [DrawScope.withTransform] we call the [Painter.draw] method with the
+ * following arguments:
+ *  - `size`: [DrawScope.size] of the [Canvas]
+ *  - `colorFilter`: a [ColorFilter.colorMatrix] whose `colorMatrix` is the [ColorMatrix]
+ *  variable `cf`
  *
  * @param panX Horizontal pan of the image. A value of 0.0 aligns the left edge of the image
  * with the left edge of the view, while 1.0 aligns the right edges.
@@ -148,9 +187,26 @@ fun MotionImage(
             }
         }
     }
-
 }
 
+/**
+ * Sets the provided [FloatArray] to a color matrix that adjusts the saturation of an image.
+ *
+ * This is achieved by creating a matrix that transforms colors towards their grayscale equivalent.
+ * A `saturationStrength` of 1.0 results in an identity matrix (no change), while a value of 0.0
+ * results in a matrix that converts the image to grayscale. Values between 0.0 and 1.0
+ * interpolate between these two states.
+ *
+ * The calculation is based on the standard luminance weights for RGB:
+ *  - Red: 0.2999
+ *  - Green: 0.587
+ *  - Blue: 0.114
+ *
+ * @param mMatrix The 20-element [FloatArray] (representing a 4x5 matrix) to populate with the
+ * saturation transformation.
+ * @param saturationStrength The desired saturation level. 1.0f means full color (no change),
+ * 0.0f means grayscale.
+ */
 private fun saturation(mMatrix: FloatArray, saturationStrength: Float) {
     val Rf = 0.2999f
     val Gf = 0.587f
@@ -181,6 +237,32 @@ private fun saturation(mMatrix: FloatArray, saturationStrength: Float) {
     mMatrix[19] = 0f
 }
 
+/**
+ * Modifies a color matrix to adjust the color temperature (warmth) of an image.
+ * This function simulates black-body radiation to calculate the RGB multipliers for a given
+ * color temperature, which is derived from the [Float] parameter [warmth].
+ *
+ * The [warmth] parameter is a multiplier for a base temperature of 5000K (D50 standard
+ * illuminant).
+ *  - `warmth` > 1.0 results in a lower, "warmer" color temperature (more orange/red).
+ *  - `warmth` < 1.0 results in a higher, "cooler" color temperature (more blue).
+ *  - `warmth` = 1.0 corresponds to the base 5000K, resulting in no change.
+ *
+ * The calculation involves two steps:
+ *  1. Calculate the RGB color for the target temperature derived from the [warmth] value.
+ *  2. Calculate the RGB color for the base temperature (5000K).
+ *
+ * The final matrix values are the ratio of the target RGB to the base RGB. This creates a
+ * scaling factor for each color channel (Red, Green, Blue) that shifts the image's colors
+ * towards the desired temperature.
+ *
+ * The algorithm for converting Kelvin to RGB is based on a well-known approximation originally
+ * by Tanner Helland.
+ *
+ * @param matrix The 20-element `FloatArray` representing the color matrix to be modified.
+ * The function will update the scaling factors for the R, G, and B channels (at indices 0, 6, 12).
+ * @param warmth A float value controlling the intensity of the warmth effect. 1.0 is neutral.
+ */
 private fun warmth(matrix: FloatArray, warmth: Float) {
     var warmthVar: Float = warmth
     val baseTemperature = 5000f
@@ -286,6 +368,24 @@ private fun warmth(matrix: FloatArray, warmth: Float) {
     matrix[19] = 0f
 }
 
+/**
+ * Sets the provided [FloatArray] to a color matrix that scales the brightness of an image.
+ *
+ * The brightness is adjusted by multiplying the R, G, and B color channels by the [Float] paramter
+ * [brightness]. This is a simple scaling operation.
+ *
+ *  - A `brightness` value of 1.0f results in an identity matrix (no change).
+ *  - Values greater than 1.0f increase brightness.
+ *  - Values between 0.0f and 1.0f decrease brightness.
+ *  - A value of 0.0f results in a black image.
+ *
+ * This function directly modifies the diagonal elements of the matrix corresponding to the
+ * red, green, and blue scale factors.
+ *
+ * @param matrix The 20-element [FloatArray] (representing a 4x5 matrix) to populate with the
+ * brightness transformation.
+ * @param brightness The scaling factor for brightness. 1.0f is the default (no change).
+ */
 private fun brightness(matrix: FloatArray, brightness: Float) {
     matrix[0] = brightness
     matrix[1] = 0f
@@ -310,7 +410,29 @@ private fun brightness(matrix: FloatArray, brightness: Float) {
 }
 
 /**
- * TODO: Add kdoc
+ * Updates a [ColorMatrix] to apply a combination of color adjustments.
+ *
+ * This function builds a composite color matrix by sequentially applying saturation, contrast,
+ * warmth, and brightness transformations. It only applies a transformation if its corresponding
+ * parameter value is different from the default (1.0f), optimizing performance by avoiding
+ * unnecessary calculations.
+ *
+ * The transformations are applied in a specific order:
+ *  1. Saturation
+ *  2. Contrast
+ *  3. Warmth
+ *  4. Brightness
+ *
+ * The resulting matrix combines all specified effects and is stored in the [ColorMatrix] parameter
+ * [out].
+ *
+ * @param out The [ColorMatrix] to be updated with the combined transformations. The matrix is
+ * reset before new transformations are applied.
+ * @param brightness The brightness multiplier. 1.0f is the default (no change).
+ * @param saturation The saturation level. 1.0f is full color, 0.0f is grayscale.
+ * @param contrast The contrast multiplier. 1.0f is the default (no change).
+ * @param warmth The color temperature warmth multiplier. 1.0f is the default (no change).
+ * Values > 1.0 make the image warmer (more orange/red), and values < 1.0 make it cooler (more blue).
  */
 fun updateMatrix(
     out: ColorMatrix,
@@ -366,5 +488,4 @@ fun updateMatrix(
         @Suppress("UNUSED_VALUE", "AssignedValueIsNeverRead")
         used = true
     }
-
 }
