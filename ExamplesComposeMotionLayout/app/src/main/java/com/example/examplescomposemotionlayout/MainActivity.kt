@@ -157,7 +157,7 @@ class MainActivity : ComponentActivity() {
  * containing multiple [Row]s. Each [Row] contains up to two buttons, creating a two-column
  * effect. The buttons are spaced apart evenly within each row.
  *
- * When a button is clicked, the provided [act] lambda is invoked with the corresponding
+ * When a button is clicked, the [act] lambda parameter is invoked with the corresponding
  * [ComposeFunc] object, allowing the caller to define the action to be taken, such as
  * launching a new screen or example.
  *
@@ -170,20 +170,21 @@ class MainActivity : ComponentActivity() {
  * lambda argument of the [Column] we loop over `i` between 0 and half the size of the `map` list
  * minus 1. Inside the loop we initialize [ComposeFunc] variable `cFunc1` to the entry at index
  * `i * 2` of the `map` list, and initialize [ComposeFunc] variable `cFunc2` to the entry at index
- * `i * 2 + 1` of the `map` list, if it exists otherwise `null`. The we compose a [Row] whose
+ * `i * 2 + 1` of the `map` list, if it exists otherwise `null`. Then we compose a [Row] whose
  * `modifier` argument is a [Modifier.fillMaxWidth] and whose `horizontalArrangement` argument is a
  * [Arrangement.SpaceBetween]. In the [RowScope] `content` composable lambda argument of the [Row]
  * we:
  *  1. Compose a [Button] whose `onClick` argument is a lambda that calls the `act` lambda with
- *  the value of `cFunc1`. In the [RowScope] `content` composable lambda argument of the [Button]
- *  we compose a [Text] whose `text` argument is the [String] value of `cFunc1` and whose `modifier`
- *  argument is a [Modifier.padding] that adds 2.dp to `all` sides
- *  2. If `cFunc2` is not `null` we compose another [Button] whose `onClick` argument is a lambda
- *  that calls the `act` lambda with the value of `cFunc2`. In the [RowScope] `content` composable
- *  lambda argument of the [Button] we initialize our [String] variable `s` to the [String] value of
- *  `cFunc2` starting 1 character after the first space character. Then we compose a [Text] whose
- *  `text` argument is `s` and whose `modifier` argument is a [Modifier.padding] that adds 2.dp
- *  to `all` sides.
+ *  the value of [ComposeFunc] variable `cFunc1`. In the [RowScope] `content` composable lambda
+ *  argument of the [Button] we compose a [Text] whose `text` argument is the [String] value of
+ *  [ComposeFunc] variable `cFunc1` and whose `modifier` argument is a [Modifier.padding] that
+ *  adds 2.dp to `all` sides
+ *  2. If [ComposeFunc] variable `cFunc2` is not `null` we compose another [Button] whose `onClick`
+ *  argument is a lambda that calls the `act` lambda with the value of [ComposeFunc] variable
+ *  `cFunc2`. In the [RowScope] `content` composable lambda argument of the [Button] we initialize
+ *  our [String] variable `s` to the [String] value of [ComposeFunc] variable `cFunc2` starting 1
+ *  character after the first space character. Then we compose a [Text] whose `text` argument is
+ *  `s` and whose `modifier` argument is a [Modifier.padding] that adds 2.dp to `all` sides.
  *
  * @param map A [List] of [ComposeFunc] objects, where each object represents a menu item.
  * Each item will be displayed as a button.
@@ -230,7 +231,7 @@ fun ComposableMenu(map: List<ComposeFunc>, act: (act: ComposeFunc) -> Unit) {
  *
  * The `toString()` method of the returned object is overridden to return the provided [name],
  * which is used for display in the UI (e.g., button text) and for identification in intents.
- * The `Run()` method simply invokes the [cRun] composable lambda, rendering the actual example.
+ * The `Run()` method simply invokes the [cRun] composable lambda, running the actual example.
  *
  * @param name The [String] name of the composable example. This is used as the unique identifier
  * and display text for the menu item.
@@ -281,7 +282,6 @@ fun get(name: String, cRun: @Composable () -> Unit): ComposeFunc {
  * example.
  */
 interface ComposeFunc {
-
     /**
      * A composable function that executes and displays the UI for the specific example.
      * When this function is called, it will render the user interface defined by the

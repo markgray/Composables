@@ -63,20 +63,20 @@ import kotlinx.coroutines.CoroutineScope
  * variable `a` to our [ConstraintSetRef] variable `b`, with a [String] `name` of "right", and in the
  * [TransitionScope] `transitionContent` lambda argument we use [TransitionScope.keyAttributes] to
  * modify the `titleRef` at 50% of the way through the animation to have its
- * [KeyAttributeScope.rotationY] set to `50f` degrees (a rotation around the `Y` axis).
+ * [KeyAttributeScope.rotationY] animate to `50f` degrees (a rotation around the `Y` axis).
  *
  * Next we use [MotionSceneScope.transition] to define a transition `from` our [ConstraintSetRef]
  * variable `b` to our [ConstraintSetRef] variable `c`, with a [String] `name` of "down", and in the
  * [TransitionScope] `transitionContent` lambda argument we use [TransitionScope.keyAttributes] to
  * modify the `titleRef` at 50% of the way through the animation to have its
- * [KeyAttributeScope.rotationZ]  set to `90f` degrees (a rotation around the `Z` axis).
+ * [KeyAttributeScope.rotationZ]  animate to `90f` degrees (a rotation around the `Z` axis).
  *
  * Next we use [MotionSceneScope.transition] to define a transition `from` our [ConstraintSetRef]
  * variable `c` to our [ConstraintSetRef] variable `d`, with a [String] `name` of "left", and in the
  * [TransitionScope] `transitionContent` lambda argument we use [TransitionScope.keyAttributes] to
  * modify the `titleRef` at 50% of the way through the animation to have its
- * [KeyAttributeScope.rotationX] set to `45f` degrees (a rotation around the `X` axis), and its
- * [KeyAttributeScope.scaleX] set to `2f`
+ * [KeyAttributeScope.rotationX] animate to `45f` degrees (a rotation around the `X` axis), and its
+ * [KeyAttributeScope.scaleX] animate to `2f`
  *
  * Having defined our [MotionScene] we initialize our [Painter] variable `painter` to the [Painter]
  * returned by [painterResource] for the jpg with resource ID `R.drawable.pepper` (but never use it),
@@ -114,7 +114,6 @@ import kotlinx.coroutines.CoroutineScope
  *  - `text`: our [MutableState] wrapped [String] variable `transitionName`.
  *  - `fontSize`: `30.sp`.
  *  - `color`: [Color.White]
- *
  */
 @SuppressLint("Range")
 @OptIn(ExperimentalMotionApi::class)

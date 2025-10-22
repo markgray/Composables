@@ -24,7 +24,8 @@ import androidx.constraintlayout.compose.MotionLayout
 
 /**
  * A Composable that displays an image with various transformations and color adjustments,
- * suitable for use within [MotionLayout]. This overload accepts a drawable resource ID.
+ * suitable for use within [MotionLayout]. This overload accepts a drawable resource ID and
+ * calls the overload that accepts a [Painter] created from that drawable resource.
  *
  * The image can be panned, zoomed, and rotated. Additionally, its contrast, brightness,
  * saturation, and warmth can be adjusted. These parameters are typically driven by the
