@@ -75,7 +75,7 @@ import androidx.constraintlayout.compose.MotionSceneScope
  *  `200.dp`, and by using the method [ConstrainScope.centerVerticallyTo] to center it vertically to
  *  its `parent`.
  *  - [ConstraintSetScope.constrain] our [ConstrainedLayoutReference] variable `icon` by linking its
- *  [ConstrainScope.top] to the `top` of its `parent` with a `margin` of `16, and linking its
+ *  [ConstrainScope.top] to the `top` of its `parent` with a `margin` of `16.dp`, and linking its
  *  [ConstrainScope.start] to the `start` of its `parent` with a `margin` of `16.dp`.
  *
  * We use [MotionSceneScope.transition] to create a transition `from` [ConstraintSetRef]

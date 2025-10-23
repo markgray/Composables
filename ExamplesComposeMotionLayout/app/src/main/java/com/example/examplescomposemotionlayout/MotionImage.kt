@@ -87,8 +87,8 @@ fun MotionImage(
  *
  * Our root composable is a [Canvas] whose `modifier` argument is our [Modifier] parameter
  * [modifier]. In the [DrawScope] `onDraw` lambda argument of the [Canvas] we call [DrawScope.clipRect]
- * with all of its default values (clips the rect to the bounds of the [Canvas]). In the [DrawScope]
- * `block` argument of the [DrawScope.clipRect] we:
+ * with all of its default values (clears the current clip if any, and clips the rect to the bounds
+ * of the [Canvas]). In the [DrawScope] `block` argument of the [DrawScope.clipRect] we:
  *  - initialize our [Float] variable `iw` to the width of the [Canvas]
  *  - initialize our [Float] variable `ih` to the height of the [Canvas]
  *  - initialize our [Float] variable `sw` to the intrinsic width of the [Painter]
