@@ -37,6 +37,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     testOptions.unitTests.isIncludeAndroidResources = true
@@ -63,20 +64,20 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.runtime:runtime:1.9.3")
-    implementation("androidx.compose.ui:ui:1.9.3")
+    implementation("androidx.compose.runtime:runtime:1.9.4")
+    implementation("androidx.compose.ui:ui:1.9.4")
     implementation("androidx.compose.material3:material3:1.4.0")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("androidx.compose.foundation:foundation-layout:1.9.3")
-    implementation("androidx.compose.foundation:foundation:1.9.3")
-    implementation("androidx.compose.animation:animation:1.9.3")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.9.3")
-    implementation("androidx.compose.runtime:runtime-livedata:1.9.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.9.3")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.9.3")
-    testImplementation("androidx.compose.ui:ui-test-junit4:1.9.3")
-    androidTestImplementation("androidx.compose.ui:ui-test:1.9.3")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.3")
+    implementation("androidx.compose.foundation:foundation-layout:1.9.4")
+    implementation("androidx.compose.foundation:foundation:1.9.4")
+    implementation("androidx.compose.animation:animation:1.9.4")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.9.4")
+    implementation("androidx.compose.runtime:runtime-livedata:1.9.4")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.9.4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.9.4")
+    testImplementation("androidx.compose.ui:ui-test-junit4:1.9.4")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.9.4")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.4")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
