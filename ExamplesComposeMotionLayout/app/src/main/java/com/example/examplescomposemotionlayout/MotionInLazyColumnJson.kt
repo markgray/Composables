@@ -1,6 +1,7 @@
 package com.example.examplescomposemotionlayout
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,7 +25,12 @@ import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 
 /**
- * A demo of using MotionLayout in a Lazy Column written using DSL Syntax
+ * A demo of using MotionLayout in a LazyColumn where each item can be expanded/collapsed.
+ * The state of each item is preserved when scrolling. The MotionScene is defined using JSON5.
+ *
+ * This demo is identical to the [MotionInLazyColumnDsl] in the file `MotionInLazyColumnDsl.kt`
+ * apart from the use of JSON5 for defining the MotionScene instead of kotlin code so I won't
+ * bother to comment it.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
@@ -80,46 +86,52 @@ fun MotionInLazyColumn() {
         },
       }
       """
-    val model = remember { BooleanArray(100) }
+    val model: BooleanArray = remember { BooleanArray(size = 100) }
 
     LazyColumn {
-        items(100) {
+        items(count = 100) {
             // Text(text = "item $it", modifier = Modifier.padding(4.dp))
-            Box(modifier = Modifier.padding(3.dp)) {
-                var animateToEnd by remember { mutableStateOf(model[it]) }
-                val progress = remember { Animatable(0f) }
-                LaunchedEffect(animateToEnd) {
+            Box(modifier = Modifier.padding(all = 3.dp)) {
+                var animateToEnd: Boolean by remember { mutableStateOf(value = model[it]) }
+                val progress: Animatable<Float, AnimationVector1D> = remember {
+                    Animatable(
+                        initialValue = 0f
+                    )
+                }
+
+                LaunchedEffect(key1 = animateToEnd) {
                     progress.animateTo(
-                        if (animateToEnd) 1f else 0f,
+                        targetValue = if (animateToEnd) 1f else 0f,
                         animationSpec = tween(700)
                     )
                 }
+
                 MotionLayout(
                     modifier = Modifier
-                        .background(Color(0xFF331B1B))
+                        .background(color = Color(color = 0xFF331B1B))
                         .fillMaxWidth()
-                        .padding(1.dp),
+                        .padding(all = 1.dp),
                     motionScene = MotionScene(content = scene),
                     progress = progress.value
                 ) {
                     Image(
-                        modifier = Modifier.layoutId("image"),
-                        painter = painterResource(R.drawable.bridge),
+                        modifier = Modifier.layoutId(layoutId = "image"),
+                        painter = painterResource(id = R.drawable.bridge),
                         contentDescription = null,
                         contentScale = ContentScale.Crop
                     )
                     Image(
                         modifier = Modifier
-                            .layoutId("icon")
+                            .layoutId(layoutId = "icon")
                             .clickable {
                                 animateToEnd = !animateToEnd
                                 model[it] = animateToEnd
                             },
-                        painter = painterResource(R.drawable.menu),
+                        painter = painterResource(id = R.drawable.menu),
                         contentDescription = null
                     )
                     Text(
-                        modifier = Modifier.layoutId("title"),
+                        modifier = Modifier.layoutId(layoutId = "title"),
                         text = "San Francisco $it",
                         fontSize = 30.sp,
                         color = Color.White
@@ -128,5 +140,4 @@ fun MotionInLazyColumn() {
             }
         }
     }
-
 }

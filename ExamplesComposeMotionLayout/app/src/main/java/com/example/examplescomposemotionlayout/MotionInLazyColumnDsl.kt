@@ -6,9 +6,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -27,6 +29,7 @@ import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
+import androidx.constraintlayout.compose.MotionLayoutScope
 import androidx.constraintlayout.compose.MotionScene
 import androidx.constraintlayout.compose.MotionSceneScope
 
@@ -85,8 +88,42 @@ import androidx.constraintlayout.compose.MotionSceneScope
  *
  * Having defined our [MotionScene], we initialize and remember [BooleanArray] variable `model` to
  * an instance whose `size` is `100`. Our root composable is a [LazyColumn] in whose [LazyListScope]
- * `content` lambda argument we compose a [LazyListScope.items] whose `count` is `100`.
- * TODO: Continue here.
+ * `content` lambda argument we compose a [LazyListScope.items] whose `count` is `100`. In the
+ * [LazyItemScope] `itemContent` Composable lambda argument of the [LazyListScope.items] we accept
+ * the [Int] passed the lambda in variable `index` and compose a [Box] whose `modifier` argument is
+ * a [Modifier.padding] that adds `3.dp` to `all` sides. In the [BoxScope] Composable lambda argument
+ * of the [Box] we initialize and remember our [MutableState] wrapped [Boolean] variable `animateToEnd`
+ * to the value of the entry in the [BooleanArray] variable `model` at index `index`. We initialize
+ * our animated [State] wrapped [Float] variable `progress` to the value returned by [animateFloatAsState]
+ * for a `targetValue` of `if` `animateToEnd` is `true` and `0f` if `animateToEnd` is `false`, an
+ * `animationSpec` of [tween] with a `durationMillis` of `700`, and a `label` of the empty [String].
+ *
+ * We then compose a [MotionLayout] whose `modifer` argument is a [Modifier.background] whose `color`
+ * is the [Color] with hex value `0xFF331B1B`, chained to a [Modifier.fillMaxWidth], chained to a
+ * [Modifier.padding] that adds `1.dp` to `all` sides. The `motionScene` argument is set to the
+ * [MotionScene] variable `scene`, and the `progress` argument is set to the value of the animated
+ * [State] wrapped [Float] variable `progress`. In the [MotionLayoutScope] `content` Composable lambda
+ * argument of the [MotionLayout] we:
+ *
+ * **First** compose an [Image] whose arguments are:
+ *  - `modifier`: a [Modifier.layoutId] whose `id` is the [String] "image".
+ *  - `painter`: a [painterResource] created from the jpg with resource ID `R.drawable.bridge`.
+ *  - `contentDescription`: the empty [String].
+ *  - `contentScale`: [ContentScale.Crop].
+ *
+ * **Second** compose an [Image] whose arguments are:
+ *  - `modifier`: a [Modifier.layoutId] whose `id` is the [String] "icon" chained to a [Modifier.clickable]
+ *  whose `onClick` argument is a lambda that inverts the value of the [MutableState] wrapped [Boolean]
+ *  variable `animateToEnd`, and sets the value of the entry in the [BooleanArray] variable `model` at
+ *  index `index` to the new value.
+ *  - `painter`: a [painterResource] created from the vector with resource ID `R.drawable.menu`.
+ *  - `contentDescription`: the empty [String].
+ *
+ * **Third** compose a [Text] whose arguments are:
+ *  -`modifier`: is a [Modifier.layoutId] whose `id` is the [String] "title".
+ *  - `text`: the [String] "San Francisco $index".
+ *  - `fontSize`: `30.sp`.
+ *  - `color`: [Color.White].
  */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")

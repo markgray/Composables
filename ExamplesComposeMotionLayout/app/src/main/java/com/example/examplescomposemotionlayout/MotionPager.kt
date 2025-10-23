@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerScope
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -20,6 +22,8 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
+import androidx.constraintlayout.compose.ConstraintSetRef
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
@@ -28,30 +32,80 @@ import kotlin.random.Random
 
 
 /**
- * A demo of using MotionLayout in a com.google.accompanist.pager.HorizontalPager
+ * A demonstration of integrating a [MotionLayout] within a [HorizontalPager].
+ *
+ * This composable sets up a [HorizontalPager] with a fixed number of pages. Each page
+ * contains a [DynamicPages] composable, which itself is a [MotionLayout]. The motion
+ * of the [DynamicPages] is driven by the pager's scroll progress (a rotatation around the
+ * `Z` axis), creating a dynamic, interactive transition as the user swipes between pages.
+ *
+ * A list of random colors is generated to give each page a unique background for its
+ * animated element.
+ *
+ * We start by initializing our [Random.Default] variable `rand` to a new instance of [Random]
+ * (but never use it). We initialize our [Int] variable `count` to a value of 100, and initialize
+ * our [MutableList] of [Color] variable `graphs` to an empty mutable list. We loop over `i` from
+ * 0 to `count` using the [MutableList.add] method of `graphs` to add a [Color] object to the list
+ * whose `hue` is calculated using the formula `i` times `142f` modulo `360`, its `saturation` is
+ * `0.5`, and its `value` is `0.6f`. We initialize and remember our [PagerState] variable `pagerState`
+ * to an instance whose `pageCount` is a lambda returning our [Int] variable `count`.
+ *
+ * Our root composable is a [HorizontalPager] whose `state` argument if our [PagerState] variable
+ * `pagerState`. In the [PagerScope] `pageContent` Composable lambda argument we accept the [Int]
+ * passed the lambda in variable `page`, and initialize our [Float] variable `pageOffset` to the
+ * [PagerState.currentPage] of our [PagerState] variable `pagerState` minus the [Int] variable `page`
+ * plus the [PagerState.currentPageOffsetFraction] of `pagerState`. Then we compose a [DynamicPages]
+ * whose arguments are:
+ *  - `colorValue`: is the [Color] at index `page` in our [MutableList] of [Color] variable `graphs`
+ *  - `pagerProgress`: is `pageOffset`
+ *  - `pageNumber`: is `page`
  */
 @Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
 @Composable
 fun MotionPager() {
     @Suppress("UNUSED_VARIABLE")
-    val rand = Random
+    val rand: Random.Default = Random
     val count = 100
-    val graphs = mutableListOf<Color>()
+    val graphs: MutableList<Color> = mutableListOf()
     for (i in 0..count) {
-        graphs.add(Color.hsv((i * 142f) % 360, 0.5f, 0.6f))
+        graphs.add(element = Color.hsv(hue = (i * 142f) % 360, saturation = 0.5f, value = 0.6f))
     }
 
-    val pagerState = rememberPagerState(pageCount = { count })
+    val pagerState: PagerState = rememberPagerState(pageCount = { count })
 
     HorizontalPager(state = pagerState) { page: Int ->
         // Our page content
-        val pageOffset: Float = pagerState.currentPage - page + pagerState.currentPageOffsetFraction
-        DynamicPages(colorValue = graphs[page], pagerProgress = pageOffset, pageNumber = page)
+        val pageOffset: Float =
+            pagerState.currentPage - page + pagerState.currentPageOffsetFraction
+        DynamicPages(
+            colorValue = graphs[page],
+            pagerProgress = pageOffset,
+            pageNumber = page
+        )
     }
 }
 
 /**
- * TODO: Add kdoc
+ * A composable representing a single page within a [HorizontalPager].
+ *
+ * This function uses [MotionLayout] to create an animation that is controlled by the pager's
+ * scroll progress. The animation consists of a colored [Box] that rotates 360 degrees as the
+ * user swipes to the next or previous page.
+ *
+ * The animation is defined by a [MotionScene] with a `start` and `end` [ConstraintSetRef].
+ * In the `start` set, the box has a `rotationZ` of 360 degrees. In the `end` set, the
+ * `rotationZ` is 0 (the default). The `progress` of the [MotionLayout] is driven by the
+ * `pagerProgress` parameter, which links the animation state directly to the scroll position
+ * of the pager.
+ *
+ * TODO: Continue here.
+ *
+ * @param colorValue The background color of the animated [Box].
+ * @param max The maximum number of pages, although this parameter is not used in the current
+ * implementation.
+ * @param pagerProgress The scroll progress of the pager, typically ranging from -1.0 to 1.0.
+ * This value is used to drive the [MotionLayout] animation.
+ * @param pageNumber The index of the current page, which is displayed as text inside the [Box].
  */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "scroll", device = "spec:width=480dp,height=800dp,dpi=440")
@@ -64,50 +118,47 @@ fun DynamicPages(
 ) {
     val boxId = "box"
     val scene = MotionScene {
-        val box = createRefFor(boxId)
-        val start1 = constraintSet {
-            constrain(box) {
-
-                width = Dimension.percent(.5f)
-                height = Dimension.percent(.5f)
+        val box: ConstrainedLayoutReference = createRefFor(id = boxId)
+        val start1: ConstraintSetRef = constraintSet {
+            constrain(ref = box) {
+                width = Dimension.percent(percent = .5f)
+                height = Dimension.percent(percent = .5f)
                 rotationZ = 360f
-
-                centerTo(parent)
+                centerTo(other = parent)
             }
         }
 
         val end1 = constraintSet {
-
-            constrain(box) {
-                width = Dimension.percent(.5f)
-                height = Dimension.percent(.5f)
-
-                centerTo(parent)
+            constrain(ref = box) {
+                width = Dimension.percent(percent = .5f)
+                height = Dimension.percent(percent = .5f)
+                centerTo(other = parent)
             }
         }
-        transition(start1, end1, "default") {
+
+        transition(from = start1, to = end1, name = "default") {
         }
     }
     MotionLayout(
         modifier = Modifier
-            .background(Color(0xFF221010))
+            .background(color = Color(color = 0xFF221010))
             .fillMaxWidth()
-            .height(300.dp)
-            .padding(1.dp),
+            .height(height = 300.dp)
+            .padding(all = 1.dp),
         motionScene = scene,
         progress = if (pagerProgress < 0) 1 + pagerProgress else pagerProgress
     ) {
 
         Box(
             modifier = Modifier
-                .layoutId(boxId)
-                .clip(RoundedCornerShape(20.dp))
-                .background(colorValue)
+                .layoutId(layoutId = boxId)
+                .clip(shape = RoundedCornerShape(size = 20.dp))
+                .background(color = colorValue)
         ) {
             Text(
                 text = "$pageNumber",
                 fontSize = 32.sp,
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier.align(alignment = Alignment.Center)
             )
         }
     }
