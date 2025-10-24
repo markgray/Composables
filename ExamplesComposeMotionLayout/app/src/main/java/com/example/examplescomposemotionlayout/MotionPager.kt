@@ -35,22 +35,22 @@ import kotlin.random.Random
  * A demonstration of integrating a [MotionLayout] within a [HorizontalPager].
  *
  * This composable sets up a [HorizontalPager] with a fixed number of pages. Each page
- * contains a [DynamicPages] composable, which itself is a [MotionLayout]. The motion
- * of the [DynamicPages] is driven by the pager's scroll progress (a rotatation around the
+ * contains a [DynamicPages] composable, which uses [MotionLayout]. The motion of the
+ * [DynamicPages] is driven by the pager's scroll progress (a rotatation around the
  * `Z` axis), creating a dynamic, interactive transition as the user swipes between pages.
  *
  * A list of random colors is generated to give each page a unique background for its
  * animated element.
  *
  * We start by initializing our [Random.Default] variable `rand` to a new instance of [Random]
- * (but never use it). We initialize our [Int] variable `count` to a value of 100, and initialize
+ * (but never use it). We initialize our [Int] variable `count` to a value of `100`, and initialize
  * our [MutableList] of [Color] variable `graphs` to an empty mutable list. We loop over `i` from
  * 0 to `count` using the [MutableList.add] method of `graphs` to add a [Color] object to the list
  * whose `hue` is calculated using the formula `i` times `142f` modulo `360`, its `saturation` is
  * `0.5`, and its `value` is `0.6f`. We initialize and remember our [PagerState] variable `pagerState`
- * to an instance whose `pageCount` is a lambda returning our [Int] variable `count`.
+ * to an instance whose `pageCount` argument is a lambda returning our [Int] variable `count`.
  *
- * Our root composable is a [HorizontalPager] whose `state` argument if our [PagerState] variable
+ * Our root composable is a [HorizontalPager] whose `state` argument is our [PagerState] variable
  * `pagerState`. In the [PagerScope] `pageContent` Composable lambda argument we accept the [Int]
  * passed the lambda in variable `page`, and initialize our [Float] variable `pageOffset` to the
  * [PagerState.currentPage] of our [PagerState] variable `pagerState` minus the [Int] variable `page`

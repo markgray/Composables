@@ -26,10 +26,10 @@ import androidx.constraintlayout.compose.MotionScene
 
 /**
  * A demo of using MotionLayout in a LazyColumn where each item can be expanded/collapsed.
- * The state of each item is preserved when scrolling. The MotionScene is defined using JSON5.
+ * The state of each item is preserved when scrolling. The [MotionScene] is defined using JSON5.
  *
- * This demo is identical to the [MotionInLazyColumnDsl] in the file `MotionInLazyColumnDsl.kt`
- * apart from the use of JSON5 for defining the MotionScene instead of kotlin code so I won't
+ * This demo is identical to the [MotionInLazyColumnDsl] demo in the file `MotionInLazyColumnDsl.kt`
+ * apart from the use of JSON5 for defining the [MotionScene] instead of kotlin code so I won't
  * bother to comment it.
  */
 @OptIn(ExperimentalMotionApi::class)
@@ -86,6 +86,7 @@ fun MotionInLazyColumn() {
         },
       }
       """
+
     val model: BooleanArray = remember { BooleanArray(size = 100) }
 
     LazyColumn {

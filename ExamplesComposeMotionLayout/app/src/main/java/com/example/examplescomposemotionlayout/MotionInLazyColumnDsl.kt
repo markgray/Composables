@@ -95,7 +95,7 @@ import androidx.constraintlayout.compose.MotionSceneScope
  * of the [Box] we initialize and remember our [MutableState] wrapped [Boolean] variable `animateToEnd`
  * to the value of the entry in the [BooleanArray] variable `model` at index `index`. We initialize
  * our animated [State] wrapped [Float] variable `progress` to the value returned by [animateFloatAsState]
- * for a `targetValue` of `if` `animateToEnd` is `true` and `0f` if `animateToEnd` is `false`, an
+ * for a `targetValue` of `1f` if `animateToEnd` is `true` and `0f` if `animateToEnd` is `false`, an
  * `animationSpec` of [tween] with a `durationMillis` of `700`, and a `label` of the empty [String].
  *
  * We then compose a [MotionLayout] whose `modifer` argument is a [Modifier.background] whose `color`
@@ -106,21 +106,21 @@ import androidx.constraintlayout.compose.MotionSceneScope
  * argument of the [MotionLayout] we:
  *
  * **First** compose an [Image] whose arguments are:
- *  - `modifier`: a [Modifier.layoutId] whose `id` is the [String] "image".
+ *  - `modifier`: a [Modifier.layoutId] whose `layoutId` is the [String] "image".
  *  - `painter`: a [painterResource] created from the jpg with resource ID `R.drawable.bridge`.
  *  - `contentDescription`: the empty [String].
  *  - `contentScale`: [ContentScale.Crop].
  *
  * **Second** compose an [Image] whose arguments are:
- *  - `modifier`: a [Modifier.layoutId] whose `id` is the [String] "icon" chained to a [Modifier.clickable]
- *  whose `onClick` argument is a lambda that inverts the value of the [MutableState] wrapped [Boolean]
- *  variable `animateToEnd`, and sets the value of the entry in the [BooleanArray] variable `model` at
- *  index `index` to the new value.
+ *  - `modifier`: a [Modifier.layoutId] whose `layoutId` is the [String] "icon" chained to a
+ *  [Modifier.clickable] whose `onClick` argument is a lambda that inverts the value of the
+ *  [MutableState] wrapped [Boolean] variable `animateToEnd`, and sets the value of the entry
+ *  in the [BooleanArray] variable `model` at index `index` to the new value.
  *  - `painter`: a [painterResource] created from the vector with resource ID `R.drawable.menu`.
  *  - `contentDescription`: the empty [String].
  *
  * **Third** compose a [Text] whose arguments are:
- *  -`modifier`: is a [Modifier.layoutId] whose `id` is the [String] "title".
+ *  -`modifier`: is a [Modifier.layoutId] whose `layoutId` is the [String] "title".
  *  - `text`: the [String] "San Francisco $index".
  *  - `fontSize`: `30.sp`.
  *  - `color`: [Color.White].
