@@ -4,6 +4,7 @@ package com.example.examplescomposemotionlayout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,12 +23,16 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstrainScope
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintSetRef
+import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
+import androidx.constraintlayout.compose.MotionLayoutScope
 import androidx.constraintlayout.compose.MotionScene
+import androidx.constraintlayout.compose.MotionSceneScope
 import kotlin.random.Random
 
 
@@ -98,7 +103,37 @@ fun MotionPager() {
  * `pagerProgress` parameter, which links the animation state directly to the scroll position
  * of the pager.
  *
- * TODO: Continue here.
+ * We start by initializing our [String] variable `boxId` to the string "box". We initialize our
+ * [MotionScene] variable `scene` with a new instance in whose [MotionSceneScope] `motionSceneContent`
+ * lambda argument we initialize our [ConstrainedLayoutReference] variable `box` to a new instance
+ * whose `id` argument is our [String] variable `boxId`. We initialize our [ConstraintSetRef]
+ * variable `start1` to a new instance in whose [ConstraintSetScope] `constraintSetContent` lambda
+ * argument we [ConstraintSetScope.constrain] the `box` [ConstrainedLayoutReference] to have a
+ * [ConstrainScope.width] of `.5f` `percent`, a [ConstrainScope.height] of `.5f` `percent`, a
+ * [ConstrainScope.rotationZ] of `360f`, and a [ConstrainScope.centerTo] the `parent`. We initialize
+ * our [ConstraintSetRef] variable `end1` to a new instance in whose [ConstraintSetScope]
+ * `constraintSetContent` lambda argument we [ConstraintSetScope.constrain] the `box`
+ * [ConstrainedLayoutReference] to have a [ConstrainScope.width] of `.5f` `percent`, a
+ * [ConstrainScope.height] of `.5f, and to have a [ConstrainScope.centerTo] the `parent`. We then
+ * add a transition to our [MotionScene] variable `scene` `from` the `start1` [ConstraintSetRef] to
+ * the `end1` [ConstraintSetRef] with the name "default".
+ *
+ * Our root composable is a [MotionLayout] whose arguments are:
+ *  - `modifier`: is a [Modifier.background] whose `color` is the [Color] whose hex value `0xFF221010`,
+ *  chained to a [Modifier.fillMaxWidth], chained to a [Modifier.height] whose `height` is `300.dp`,
+ *  chained to a [Modifier.padding] that adds `1.dp` to `all` sides.
+ *  - `motionScene`: is our [MotionScene] variable `scene`.
+ *  - `progress`: is our [Float] parameter [pagerProgress].
+ *
+ * In the [MotionLayoutScope] `content` Composable lambda argument of the [MotionLayout] we compose
+ * a [Box] whose `modifier` argument is a [Modifier.layoutId] whose `layoutId` argument is our
+ * [String] variable `boxId`, chained to a [Modifier.clip] whose `shape` is a [RoundedCornerShape]
+ * whose `size` is `20.dp`, chained to a [Modifier.background] whose `color` is our [Color] parameter
+ * [colorValue]. In the [BoxScope] `content` Composable lambda argument of the [Box] we compose a
+ * [Text] whose arguments are:
+ *  - `text`: is our [Int] parameter [pageNumber] converted to a [String].
+ *  - `fontSize`: is `32.sp`.
+ *  - `modifier`: is a [BoxScope.align] whose `alignment` is [Alignment.Center].
  *
  * @param colorValue The background color of the animated [Box].
  * @param max The maximum number of pages, although this parameter is not used in the current
