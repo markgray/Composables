@@ -123,7 +123,8 @@ fun MotionPager() {
  *  chained to a [Modifier.fillMaxWidth], chained to a [Modifier.height] whose `height` is `300.dp`,
  *  chained to a [Modifier.padding] that adds `1.dp` to `all` sides.
  *  - `motionScene`: is our [MotionScene] variable `scene`.
- *  - `progress`: is our [Float] parameter [pagerProgress].
+ *  - `progress`: is `1` plus our [Float] parameter [pagerProgress] if it is less than `0` or just
+ *  [pagerProgress] if it is not.
  *
  * In the [MotionLayoutScope] `content` Composable lambda argument of the [MotionLayout] we compose
  * a [Box] whose `modifier` argument is a [Modifier.layoutId] whose `layoutId` argument is our
