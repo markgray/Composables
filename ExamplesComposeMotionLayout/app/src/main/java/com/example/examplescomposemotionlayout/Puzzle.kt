@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
@@ -180,7 +181,83 @@ fun Puzzle() {
  *
  * We initialize and remember keyed on `animateToEnd` our [MotionScene] variable `scene` to a new
  * instance in whose [MotionSceneScope] `motionSceneContent` lambda argument we:
- * TODO: Continue here.
+ *  - initialize our [Array] of [ConstrainedLayoutReference] variable `ordered` to the [Array] of
+ *  [ConstrainedLayoutReference] created by using the [Array.map] method of `refId` with a `transform`
+ *  lambda argument that calls [ConstraintSetScope.createRefFor] with each entry in `refId` feeding
+ *  the resulting [List] of [ConstrainedLayoutReference] to the [Collection.toTypedArray] method to
+ *  transform the [List] into an [Array].
+ *  - initialize our [Array] of [ConstrainedLayoutReference] variable `shuffle` to the [Array] of
+ *  [ConstrainedLayoutReference] created by using the [Array.map] method of `index` with a `transform`
+ *  lambda argument that returns the [ConstrainedLayoutReference] whose entry in `ordered` has the
+ *  index of the entry in `index` feeding the resulting [List] of [ConstrainedLayoutReference] to the
+ *  [Collection.toTypedArray] method to transform the [List] into an [Array] (this results in a
+ *  shuffled version of `ordered` because `index` is a shuffled array of its indices).
+ *
+ * Next we initialize our [ConstraintSetRef] variable `set1` to a new instance in whose
+ * [ConstraintSetScope] `constraintSetContent` lambda argument we:
+ *  - initialize our [ConstrainedLayoutReference] variable `flow` to the [ConstrainedLayoutReference]
+ *  created by the [ConstraintSetScope.createFlow] method called with the `elements` argument our
+ *  [Array] of [ConstrainedLayoutReference] variable `ordered`, the `maxElement` argument our [Int]
+ *  variable `grid`, and the `wrapMode` argument set to [Wrap.Aligned].
+ *  - [ConstraintSetScope.constrain] the [ConstrainedLayoutReference] variable `flow` to
+ *  [ConstrainScope.centerTo] the `other` its `parent` and set its [ConstrainScope.width] to the
+ *  `ratio` "1:1" and its [ConstrainScope.height] to the `ratio` "1:1".
+ *  - we then use the [Array.forEach] method of [Array] of [ConstrainedLayoutReference] variable
+ *  `ordered` to loop through its entries capturing the current [ConstrainedLayoutReference] in the
+ *  variable `itemRef`, then we call the [ConstraintSetScope.constrain] method to constrain each
+ *  `itemRef` to have a [ConstrainScope.width] of `percent` `1f` divided by `grid` and a
+ *  [ConstrainScope.height] of the `ratio` "1:1".
+ *
+ *.Next we initialize our [ConstraintSetRef] variable `set2` to a new instance in whose
+ * [ConstraintSetScope] `constraintSetContent` lambda argument we:
+ *  - initialize our [ConstrainedLayoutReference] variable `flow` to the [ConstrainedLayoutReference]
+ *  created by the [ConstraintSetScope.createFlow] method called with the `elements` argument our
+ *  [Array] of [ConstrainedLayoutReference] variable `shuffle`, the `maxElement` argument our [Int]
+ *  variable `grid`, and the `wrapMode` argument set to [Wrap.Aligned].
+ *  - [ConstraintSetScope.constrain] the [ConstrainedLayoutReference] variable `flow` to
+ *  [ConstrainScope.centerTo] the `other` its `parent` and set its [ConstrainScope.width] to the
+ *  `ratio` "1:1" and its [ConstrainScope.height] to the `ratio` "1:1".
+ *  - we then use the [Array.forEach] method of [Array] of [ConstrainedLayoutReference] variable
+ *  `ordered` to loop through its entries capturing the current [ConstrainedLayoutReference] in the
+ *  variable `itemRef`, then we call the [ConstraintSetScope.constrain] method to constrain each
+ *  `itemRef` to have a [ConstrainScope.width] of `percent` `1f` divided by `grid` and a
+ *  [ConstrainScope.height] of the `ratio` "1:1".
+ *
+ *  Next we define a [MotionSceneScope.transition] `from` [ConstraintSetRef] variable `set1` to
+ *  [ConstraintSetRef] variable `set2` with the `name` "default" in whose [TransitionScope]
+ *  `transitionContent` lambda argument we:
+ *   - set the [TransitionScope.motionArc] to [Arc.StartHorizontal].
+ *   - call [TransitionScope.keyAttributes] with a `vararg` of all the [ConstrainedLayoutReference]
+ *   in [Array] of [ConstrainedLayoutReference] variable `ordered` and in its [KeyAttributesScope]
+ *   `keyAttributesContent` lambda argument we use [KeyAttributesScope.frame] at `frame` `40`
+ *   to set its [KeyAttributeScope.rotationZ] to -90f, its [KeyAttributeScope.scaleX] to 0.1f, and
+ *   its [KeyAttributeScope.scaleY] to 0.1f. Then we use [KeyAttributesScope.frame] at `frame` `70`
+ *   to set its [KeyAttributeScope.rotationZ] to 90f, its [KeyAttributeScope.scaleX] to 0.1f, and
+ *   its [KeyAttributeScope.scaleY] to 0.1f.
+ *
+ * Having defined our [MotionScene] variable `scene` we initialize our [State] wrapped animated
+ * [Float] variable `progress` by using [animateFloatAsState] with a `targetValue` of `1f` if
+ * `animateToEnd` is `true` or `0f` if it is `false`, with an `animationSpec` of a [tween] with a
+ * `durationMillis` of `800`, and a `label` of an empty string.
+ *
+ *  Our root composable is a [MotionLayout] whose arguments are:
+ *   - `motionScene`: is our [MotionScene] variable `scene`.
+ *   - `modifier`: is a [Modifier.clickable] in whose `onClick` lambda we set `animateToEnd` to
+ *   its inverse, then call the [Array.shuffle] method of `index` to shuffle its contents, chained
+ *   to a [Modifier.background] whose `color` is [Color.Red], chained to a [Modifier.fillMaxSize].
+ *   - `progress`: is our [State] wrapped animated [Float] variable `progress`.
+ *
+ * In the [MotionLayoutScope] `content` Composable lambda argument of the [MotionLayout] we initialize
+ * our [Painter] variable `painter` to the [Painter] created by [painterResource] from the jpg with
+ * resource ID `R.drawable.pepper`. Then we use the [Array.forEachIndexed] method of [Array] of [Int]
+ *  variable `index` to loop through its entries capturing the index in [Int] variable `i`, and the
+ *  entry in [Int] variable `id`, then we compose a [PuzzlePiece] whose arguments are:
+ *   - `x`: is `i` modulo `grid`.
+ *   - `y`: is `i` divided by `grid`.
+ *   - `gridSize`: is `grid`.
+ *   - `painter`: is our [Painter] variable `painter`.
+ *   - `modifier`: is a [Modifier.layoutId] whose `id` is the [String] at index `id` in our [Array]
+ *   of [String] variable `refId`.
  *
  * @see PuzzlePiece for the composable that draws each individual piece.
  * @see Puzzle for an alternative implementation using `ConstraintLayout(animateChanges = true)`.
@@ -235,8 +312,8 @@ fun MPuzzle() {
                     width = Dimension.ratio(ratio = "1:1")
                     height = Dimension.ratio(ratio = "1:1")
                 }
-                ordered.forEach { gridCell: ConstrainedLayoutReference ->
-                    constrain(ref = gridCell) {
+                ordered.forEach { itemRef: ConstrainedLayoutReference ->
+                    constrain(ref = itemRef) {
                         width = Dimension.percent(percent = 1f / grid)
                         height = Dimension.ratio(ratio = "1:1")
                     }
@@ -293,8 +370,32 @@ fun MPuzzle() {
 }
 
 /**
- * Composable that displays a fragment of the given surface (provided through [painter]) based on
- * the given position ([x], [y]) of a square grid of size [gridSize].
+ * A Composable that displays a single piece of a puzzle.
+ *
+ * This function takes a [painter] which represents the full image of the puzzle. It then calculates
+ * which fragment of the image to display based on its coordinates ([x], [y]) within a grid of a
+ * given [gridSize].
+ *
+ * The implementation uses a [Canvas]. It translates the canvas by a negative offset corresponding
+ * to the piece's position and then draws the full painter, which is scaled to the size of the entire
+ * grid. A `clipRect` ensures that only the portion of the painter corresponding to the current
+ * Composable's bounds is visible, effectively creating a single puzzle piece.
+ *
+ * Our root composable is a [Canvas] whose `modifier` argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.fillMaxSize]. In the [DrawScope] `onDraw` lambda argument of the [Canvas]
+ * we use [DrawScope.clipRect] with the default arguments to clip the drawing to the bounds of the
+ * Composable. Then we use [DrawScope.translate] with a `left` of `-x` times the width of the [Canvas] and a `top`
+ * of `-y` times the height of the [Canvas] to translate the canvas by a negative offset corresponding
+ * to the piece's position. Then in the [DrawScope] `block` lambda argument of the [DrawScope.translate]
+ * we use `with` with a `receiver` of our [Painter] parameter [painter] to call [Painter.draw] with a
+ * `size` of the [Canvas] times the [gridSize] of the grid (only the clipped and translated portion
+ * of the painter will be visible).
+ *
+ * @param x The horizontal position (column index) of the piece in the grid, starting from 0.
+ * @param y The vertical position (row index) of the piece in the grid, starting from 0.
+ * @param gridSize The total number of columns (and rows) in the square puzzle grid.
+ * @param painter The [Painter] for the full puzzle image.
+ * @param modifier The [Modifier] to be applied to this composable.
  */
 @Composable
 fun PuzzlePiece(
