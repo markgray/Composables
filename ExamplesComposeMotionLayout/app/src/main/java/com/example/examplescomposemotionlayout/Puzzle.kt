@@ -30,20 +30,20 @@ import androidx.constraintlayout.compose.*
  *
  * We start by initializing our [Int] variable `grid` to `5`, and initializing our [Int] variable
  * `blocks` to `grid` times `grid`. We initialize and remember our [MutableState] wrapped [Array] of
- * [Int] variable `data` to an [Array] of `size` `blocks` with each entry initialized to its index
- * in the [Array]. We initialize and remember our [MutableState] wrapped [Boolean] variable `toggle`
- * to an initial `value` of `true`. We initialize and remember keyed on `data` our [List] of [String]
- * variable `refId` to the [List] of [String] produced by the [Array.map] method of `data` with its
- * `transform` lambda generating a [String] formed by concatenating the string value of the entry in
- * `data` to the character "w".
+ * [Int] variable `data` to an [Array] of `size` [Int] variable `blocks` with each entry initialized
+ * to its index in the [Array]. We initialize and remember our [MutableState] wrapped [Boolean]
+ * variable `toggle` to an initial `value` of `true`. We initialize and remember keyed on `data` our
+ * [List] of [String] variable `refId` to the [List] of [String] produced by the [Array.map] method
+ * of `data` with its `transform` lambda generating a [String] formed by concatenating the string
+ * value of the entry in `data` to the character "w".
  *
  * We initialize and remember keyed on `data` our [ConstraintSet] variable `set` to a new instance in
  * whose [ConstraintSetScope] `description` lambda argument we:
  *  - initialize our [Array] of [ConstrainedLayoutReference] variable `ref` to the [Array] of
- *  [ConstrainedLayoutReference] created by the [Iterable.map] method called with the `transform`
- *  lamdba argument that calls [ConstraintSetScope.createRefFor] with each entry in `refId` feeding
- *  the resulting [List] of [ConstrainedLayoutReference] to the [Collection.toTypedArray] method to
- *  transform the [List] into an [Array].
+ *  [ConstrainedLayoutReference] created by the [Iterable.map] method of `refId` called with a
+ *  `transform` lamdba argument that calls [ConstraintSetScope.createRefFor] with each entry in
+ *  `refId` feeding the resulting [List] of [ConstrainedLayoutReference] to the
+ *  [Collection.toTypedArray] method to transform the [List] into an [Array].
  *  - initialize our [ConstrainedLayoutReference] variable `flow` to the [ConstrainedLayoutReference]
  *  created by the [ConstraintSetScope.createFlow] method called with the `elements` argument our
  *  [Array] of [ConstrainedLayoutReference] variable `ref`, the `maxElement` argument set to `grid`
@@ -66,14 +66,14 @@ import androidx.constraintlayout.compose.*
  *  [Modifier.clickable] in whose `onClick` lambda we set the [MutableState] wrapped [Array] of [Int]
  *  variable `data` to a `clone` of itself and if the [MutableState] wrapped [Boolean] variable
  *  `toggle` is `true` we call the [Array.shuffle] method of `data` to shuffle its entries, otherwise
- *  we call the [Array.sort] method of `data` to sort its entries, and the we invert the value of
+ *  we call the [Array.sort] method of `data` to sort its entries, and then we invert the value of
  *  `toggle`.
  *
  * In the `content` Composable lambda argument of the [ConstraintLayout] we initialize our [Painter]
  * variable `painter` to the instance created by [painterResource] from the jpg with resource ID
  * `R.drawable.pepper`. Then we use the [Array.forEachIndexed] method of [Array] of [Int] variable
- * `data` to loop through its entries capturing the index in the variable `i`, and the entry in the
- * variable `id`, then we compose a [PuzzlePiece] whose arguments are:
+ * `data` to loop through its entries capturing the index in [Int] variable `i`, and the entry in
+ * [Int] variable `id`, then we compose a [PuzzlePiece] whose arguments are:
  *  - `x`: is `i` modulo `grid`.
  *  - `y`: is `i` divided by `grid`.
  *  - `gridSize`: is `grid`.
@@ -151,7 +151,7 @@ fun Puzzle() {
 }
 
 /**
- * Shows how to animate moving pieces of a puzzle using MotionLayout.
+ * Shows how to animate moving pieces of a puzzle using [MotionLayout].
  *
  * This version of the puzzle uses [MotionLayout] to animate the shuffling and reordering of the
  * puzzle pieces. It defines two [ConstraintSet]s within a [MotionScene]: one for the ordered
@@ -163,7 +163,7 @@ fun Puzzle() {
  *
  * When clicked, the `animateToEnd` boolean state is toggled, and the array of indices is
  * re-shuffled. This triggers a recomposition where a new [MotionScene] is created with the new
- * shuffled order, and the `animateFloatAsState` animates the `progress` of the [MotionLayout],
+ * shuffled order, and `animateFloatAsState` animates the `progress` of the [MotionLayout],
  * resulting in a smooth transition between the ordered and shuffled states.
  *
  * Keyframes (`keyAttributes`) are used to add effects like rotation and scaling to the pieces
@@ -172,11 +172,11 @@ fun Puzzle() {
  * We start by initializing our [Int] variable `grid` to `5`, and initializing our [Int] variable
  * `blocks` to `grid` times `grid`. We initialize and remember our [MutableState] wrapped [Boolean]
  * variable `animateToEnd` to an initial `value` of `true`. We initialize and remember our [Array]
- * of [Int] variable `index` to an [Array] of `size` `blocks` with each entry initialized to its
- * index in the [Array] to which we use the [apply] extension function to shuffle its entries.
- * We initialize and remember our [Array] of [String] variable `refId` to an [Array] of `size`
- * `blocks` with each entry initialized to the [String] formed by concatenating the string value
- * of the index of the entry to the character "W".
+ * of [Int] variable `index` to an [Array] of `size` [Int] variable `blocks` with each entry
+ * initialized to its index in the [Array] to which we use the [apply] extension function to shuffle
+ * its entries. We initialize and remember our [Array] of [String] variable `refId` to an [Array] of
+ * `size` [Int] variable `blocks` with each entry initialized to the [String] formed by concatenating
+ * the string value of the index of the entry to the character "W".
  *
  * We initialize and remember keyed on `animateToEnd` our [MotionScene] variable `scene` to a new
  * instance in whose [MotionSceneScope] `motionSceneContent` lambda argument we:
