@@ -182,10 +182,10 @@ fun Puzzle() {
  * We initialize and remember keyed on `animateToEnd` our [MotionScene] variable `scene` to a new
  * instance in whose [MotionSceneScope] `motionSceneContent` lambda argument we:
  *  - initialize our [Array] of [ConstrainedLayoutReference] variable `ordered` to the [Array] of
- *  [ConstrainedLayoutReference] created by using the [Array.map] method of `refId` with a `transform`
- *  lambda argument that calls [ConstraintSetScope.createRefFor] with each entry in `refId` feeding
- *  the resulting [List] of [ConstrainedLayoutReference] to the [Collection.toTypedArray] method to
- *  transform the [List] into an [Array].
+ *  [ConstrainedLayoutReference] created by using the [Array.map] method of [Array] of [String]
+ *  variable `refId` with a `transform` lambda argument that calls [ConstraintSetScope.createRefFor]
+ *  with each entry in `refId` feeding the resulting [List] of [ConstrainedLayoutReference] to the
+ *  [Collection.toTypedArray] method to transform the [List] into an [Array].
  *  - initialize our [Array] of [ConstrainedLayoutReference] variable `shuffle` to the [Array] of
  *  [ConstrainedLayoutReference] created by using the [Array.map] method of `index` with a `transform`
  *  lambda argument that returns the [ConstrainedLayoutReference] whose entry in `ordered` has the
@@ -242,9 +242,10 @@ fun Puzzle() {
  *
  *  Our root composable is a [MotionLayout] whose arguments are:
  *   - `motionScene`: is our [MotionScene] variable `scene`.
- *   - `modifier`: is a [Modifier.clickable] in whose `onClick` lambda we set `animateToEnd` to
- *   its inverse, then call the [Array.shuffle] method of `index` to shuffle its contents, chained
- *   to a [Modifier.background] whose `color` is [Color.Red], chained to a [Modifier.fillMaxSize].
+ *   - `modifier`: is a [Modifier.clickable] in whose `onClick` lambda argument we set `animateToEnd`
+ *   to its inverse, then call the [Array.shuffle] method of `index` to shuffle its contents, and that
+ *   is chained to a [Modifier.background] whose `color` is [Color.Red], chained to a
+ *   [Modifier.fillMaxSize].
  *   - `progress`: is our [State] wrapped animated [Float] variable `progress`.
  *
  * In the [MotionLayoutScope] `content` Composable lambda argument of the [MotionLayout] we initialize
@@ -384,12 +385,12 @@ fun MPuzzle() {
  * Our root composable is a [Canvas] whose `modifier` argument chains to our [Modifier] parameter
  * [modifier] a [Modifier.fillMaxSize]. In the [DrawScope] `onDraw` lambda argument of the [Canvas]
  * we use [DrawScope.clipRect] with the default arguments to clip the drawing to the bounds of the
- * Composable. Then we use [DrawScope.translate] with a `left` of `-x` times the width of the [Canvas] and a `top`
- * of `-y` times the height of the [Canvas] to translate the canvas by a negative offset corresponding
- * to the piece's position. Then in the [DrawScope] `block` lambda argument of the [DrawScope.translate]
- * we use `with` with a `receiver` of our [Painter] parameter [painter] to call [Painter.draw] with a
- * `size` of the [Canvas] times the [gridSize] of the grid (only the clipped and translated portion
- * of the painter will be visible).
+ * [Canvas]. Then we use [DrawScope.translate] with a `left` of `-x` times the width of the [Canvas]
+ * and a `top` of `-y` times the height of the [Canvas] to translate the canvas by a negative offset
+ * corresponding to the piece's position. Then in the [DrawScope] `block` lambda argument of the
+ * [DrawScope.translate] we use `with` with a `receiver` of our [Painter] parameter [painter] to call
+ * [Painter.draw] with a `size` of the [Canvas] times the [gridSize] of the grid (only the clipped
+ * and translated portion of the painter will be visible).
  *
  * @param x The horizontal position (column index) of the piece in the grid, starting from 0.
  * @param y The vertical position (row index) of the piece in the grid, starting from 0.
