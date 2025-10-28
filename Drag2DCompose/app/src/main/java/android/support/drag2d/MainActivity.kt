@@ -19,33 +19,37 @@ package android.support.drag2d
 import android.os.Bundle
 import android.support.drag2d.ui.theme.Drag2DComposeTheme
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 
 /**
  * This is the main activity of the demo.
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call the [setContent] method to have it compose into our activity the Composable that
-     * consists of our [Drag2DComposeTheme] custom [MaterialTheme] wrapping a [Surface] whose
-     * `modifier` argument is a [Modifier.fillMaxSize] (causes it to occupy its entire incoming size
-     * constraints), and whose `color` argument sets its background [Color] to the
-     * [ColorScheme.background] color of the [MaterialTheme.colorScheme]
-     * Color(red = 28, green = 27, blue = 31) for dark theme (a shade of black) and
-     * Color(red = 255, green = 251, blue = 254) for light theme (a shade of white).
-     * The `content` of the [Surface] is our [Material2DMotionPreview] Composable.
+     * Called when the activity is starting. This is where most initialization should go.
      *
-     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     * First, we call [enableEdgeToEdge] to allow our content to draw behind the system bars.
+     * Then, we call our super's implementation of `onCreate`.
+     *
+     * Finally, we call [setContent] to define our UI using Jetpack Compose. The layout consists of:
+     *  - [Drag2DComposeTheme]: Our custom [MaterialTheme].
+     *  - [Box]: A container that respects safe drawing areas using [Modifier.safeDrawingPadding],
+     *    ensuring content doesn't overlap with system UI like status bars or navigation bars.
+     *  - [Surface]: A container that fills the entire screen ([Modifier.fillMaxSize]) and uses the
+     *    `background` color from our theme.
+     *  - [Material2DMotionPreview]: The main Composable for this demo, which is the content of the
+     *    [Surface].
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being
+     * shut down then this [Bundle] contains the data it most recently supplied in
+     * [onSaveInstanceState]. **Note: We do not override [onSaveInstanceState] so this is not used.**
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()

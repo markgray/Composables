@@ -20,6 +20,7 @@ import android.support.drag2d.compose.materialVelocity2D
 import android.support.drag2d.lib.MaterialEasing
 import android.support.drag2d.lib.MaterialVelocity
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -38,6 +39,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -49,27 +52,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.input.pointer.util.addPointerInputChange
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 /**
- * TODO: Add kdoc.
+ * A Composable preview that demonstrates and allows interactive testing of the
+ * `materialVelocity2D` animation spec.
+ *
+ * This preview consists of:
+ *  1. A draggable `Box` that, upon release, animates back to its center origin using the
+ *  `materialVelocity2D` animation. The path of the drag and subsequent animation is drawn
+ *  on the screen.
+ *  2. Sliders to control the `duration`, `maxVelocity`, and `maxAcceleration` parameters of the
+ *  animation.
+ *  3. A dropdown menu to select different `Easing` functions to apply to the animation.
+ *
+ * This allows for real-time visualization and tweaking of how different parameters affect the
+ * Material Design-style fling animation in a 2D space.
+ * TODO: Continue here.
  */
 @Preview
 @Composable
 fun Material2DMotionPreview() {
-    val duration: MutableState<Float> = remember { mutableFloatStateOf(1200f) }
-    val maxVelocity: MutableState<Float> = remember { mutableFloatStateOf(2000f) }
-    val maxAcceleration = remember { mutableFloatStateOf( 2000f) }
-    val currentEasing = remember { mutableStateOf("EaseOutBack") }
+    val duration: MutableState<Float> = remember { mutableFloatStateOf(value = 1200f) }
+    val maxVelocity: MutableState<Float> = remember { mutableFloatStateOf(value = 2000f) }
+    val maxAcceleration: MutableFloatState = remember { mutableFloatStateOf(value = 2000f) }
+    val currentEasing: MutableState<String> = remember { mutableStateOf(value = "EaseOutBack") }
     val nameToEasing: Map<String, MaterialVelocity.Easing> = remember {
         mapOf(
             "Decelerate" to MaterialEasing.DECELERATE,
@@ -90,57 +110,75 @@ fun Material2DMotionPreview() {
         Modifier
             .fillMaxWidth()
     ) {
-        val touchUpIndex = remember { mutableIntStateOf(Integer.MAX_VALUE) }
-        val accumulator = remember { arrayListOf<Offset>() }
-        val offset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
-        val referenceOffset = remember { mutableStateOf(Offset.Zero) }
+        val touchUpIndex: MutableIntState =
+            remember { mutableIntStateOf(value = Integer.MAX_VALUE) }
+        val accumulator: ArrayList<Offset> = remember { arrayListOf() }
+        val offset: Animatable<Offset, AnimationVector2D> = remember {
+            Animatable(
+                initialValue = Offset.Zero,
+                typeConverter = Offset.VectorConverter
+            )
+        }
+        val referenceOffset: MutableState<Offset> = remember {
+            mutableStateOf(value = Offset.Zero)
+        }
 
         // Box that includes the draggable item and touch input drawing
         Box(
             Modifier
                 .fillMaxWidth()
-                .weight(1f, true)
+                .weight(weight = 1f, fill = true)
                 .drawWithContent {
                     drawContent()
                     // Draw recorded touch input points to reflect the behavior
                     // TODO: Draw curves from Velocity2D
                     offset.value // Trigger recomposition
 
-                    @Suppress("UsePropertyAccessSyntax", "RedundantSuppression") // TODO: Gradle considers `isEmpty` property an error
+                    @Suppress(
+                        "UsePropertyAccessSyntax",
+                        "RedundantSuppression"
+                    ) // TODO: Gradle considers `isEmpty` property an error
                     if (accumulator.isEmpty()) {
                         return@drawWithContent
                     }
                     for (i in 0 until accumulator.size) {
                         drawLine(
                             color = if (i > touchUpIndex.intValue) Color.Red else Color.Blue,
-                            start = (accumulator.getOrNull(i - 1)
+                            start = (accumulator.getOrNull(index = i - 1)
                                 ?: Offset.Zero) + referenceOffset.value,
                             end = accumulator[i] + referenceOffset.value,
                             strokeWidth = 2f
                         )
                     }
                 },
-            contentAlignment = { size, space, _ ->
+            contentAlignment = { size: IntSize, space: IntSize, _ ->
                 Offset(
-                    (space.width / 2f) - (size.width / 2f),
-                    (space.height / 2f) - (size.height / 2f)
+                    x = (space.width / 2f) - (size.width / 2f),
+                    y = (space.height / 2f) - (size.height / 2f)
                 ).round()
             }
         ) {
-            val color = remember { Color.hsv(IntRange(0, 360).random().toFloat(), 0.5f, 0.8f) }
-            val velocityTracker = remember { VelocityTracker() }
-            val scope = rememberCoroutineScope()
+            val color: Color = remember {
+                Color.hsv(
+                    hue = IntRange(start = 0, endInclusive = 360).random().toFloat(),
+                    saturation = 0.5f,
+                    value = 0.8f
+                )
+            }
+            val velocityTracker: VelocityTracker = remember { VelocityTracker() }
+            val scope: CoroutineScope = rememberCoroutineScope()
             Box(
                 modifier = Modifier
-                    .onPlaced { layoutCoordinates ->
-                        val parentSize = layoutCoordinates.parentCoordinates?.size ?: IntSize.Zero
+                    .onPlaced { layoutCoordinates: LayoutCoordinates ->
+                        val parentSize: IntSize =
+                            layoutCoordinates.parentCoordinates?.size ?: IntSize.Zero
                         referenceOffset.value = Offset(
-                            parentSize.width / 2f,
-                            parentSize.height / 2f
+                            x = parentSize.width / 2f,
+                            y = parentSize.height / 2f
                         )
                     }
                     .offset { offset.value.round() }
-                    .pointerInput(Unit) {
+                    .pointerInput(key1 = Unit) {
                         detectDragGestures(
                             onDragStart = {
                                 touchUpIndex.intValue = Integer.MAX_VALUE
@@ -149,20 +187,21 @@ fun Material2DMotionPreview() {
                             onDragEnd = {
                                 scope.launch {
                                     touchUpIndex.intValue = accumulator.size - 1
-                                    val initialVelocity = velocityTracker.calculateVelocity()
+                                    val initialVelocity: Velocity =
+                                        velocityTracker.calculateVelocity()
 
                                     offset.animateTo(
                                         targetValue = Offset.Zero,
                                         animationSpec = materialVelocity2D(
-                                            duration.value.roundToInt(),
-                                            maxVelocity.value,
-                                            maxAcceleration.floatValue,
-                                            nameToEasing[currentEasing.value]
+                                            durationMs = duration.value.roundToInt(),
+                                            maxVelocity = maxVelocity.value,
+                                            maxAcceleration = maxAcceleration.floatValue,
+                                            easing = nameToEasing[currentEasing.value]
                                                 ?: nameToEasing.values.first()
                                         ),
                                         initialVelocity = Offset(
-                                            initialVelocity.x,
-                                            initialVelocity.y
+                                            x = initialVelocity.x,
+                                            y = initialVelocity.y
                                         )
                                     ) {
                                         accumulator.add(this.value)
@@ -170,17 +209,17 @@ fun Material2DMotionPreview() {
                                     velocityTracker.resetTracking()
                                 }
                             }
-                        ) { change, dragAmount ->
-                            velocityTracker.addPointerInputChange(change)
-                            val position = offset.value + dragAmount
+                        ) { change: PointerInputChange, dragAmount: Offset ->
+                            velocityTracker.addPointerInputChange(event = change)
+                            val position: Offset = offset.value + dragAmount
                             accumulator.add(position)
                             scope.launch {
-                                offset.snapTo(position)
+                                offset.snapTo(targetValue = position)
                             }
                         }
                     }
-                    .size(80.dp)
-                    .background(color, CardDefaults.shape),
+                    .size(size = 80.dp)
+                    .background(color = color, shape = CardDefaults.shape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(text = "Drag Me")
@@ -188,18 +227,18 @@ fun Material2DMotionPreview() {
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Duration: ${duration.value.roundToInt()}ms")
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(width = 8.dp))
             Slider(
                 value = duration.value,
                 onValueChange = { duration.value = it },
                 valueRange = 100f..4000f,
                 steps = ((4000f - 100f) / 100f).roundToInt() - 1,
-                modifier = Modifier.weight(1f, true)
+                modifier = Modifier.weight(weight = 1f, fill = true)
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "MaxVelocity: ${maxVelocity.value.roundToInt()}")
-            Spacer(Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(width = 8.dp))
             Slider(
                 value = maxVelocity.value,
                 onValueChange = { maxVelocity.value = it },
@@ -210,17 +249,17 @@ fun Material2DMotionPreview() {
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "MaxAcceleration: ${maxAcceleration.floatValue.roundToInt()}")
-            Spacer(Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(width = 8.dp))
             Slider(
                 value = maxAcceleration.floatValue,
                 onValueChange = { maxAcceleration.floatValue = it },
                 valueRange = remember { 100f..4000f },
                 steps = remember { ((4000f - 100f) / 100f).roundToInt() - 1 },
-                modifier = Modifier.weight(1f, true)
+                modifier = Modifier.weight(weight = 1f, fill = true)
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            val isExpanded = remember { mutableStateOf(false) }
+            val isExpanded: MutableState<Boolean> = remember { mutableStateOf(value = false) }
             Button(onClick = {
                 isExpanded.value = true
             }) {
