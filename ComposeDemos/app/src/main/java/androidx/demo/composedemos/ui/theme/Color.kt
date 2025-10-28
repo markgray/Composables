@@ -10,15 +10,18 @@ import androidx.compose.ui.graphics.Color
  * Used as the [Colors.primary] of the [darkColors] used by our [ComposeDemosTheme] custom [MaterialTheme].
  */
 val Purple200: Color = Color(0xFFBB86FC)
+
 /**
  * Used as the [Colors.primary] of the [lightColors] used by our [ComposeDemosTheme] custom [MaterialTheme].
  */
 val Purple500: Color = Color(0xFF6200EE)
+
 /**
  * Used as the [Colors.primaryVariant] of both the [darkColors] and the [lightColors] used by our
  * [ComposeDemosTheme] custom [MaterialTheme].
  */
 val Purple700: Color = Color(0xFF3700B3)
+
 /**
  * Used as the [Colors.secondary] of both the [darkColors] and the [lightColors] used by our
  * [ComposeDemosTheme] custom [MaterialTheme].
