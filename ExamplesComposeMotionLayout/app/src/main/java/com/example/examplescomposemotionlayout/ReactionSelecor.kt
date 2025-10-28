@@ -72,7 +72,7 @@ import kotlinx.coroutines.flow.Flow
  * then we call [ConstraintSetScope.constrain] to constrain `title` to have its `top` linked to
  * the `bottom` of the `0th` entry in `emojiIds`, its `start` linked to the `start` of the `index`
  * entry in `emojiIds`, its `end` linked to the `end` of the `index` entry in `emojiIds`, its
- * `bottom` linked to its `parent` `bottom with a `margin` of `10.dp`, its [ConstrainScope.scaleX]
+ * `bottom` linked to its `parent` `bottom` with a `margin` of `10.dp`, its [ConstrainScope.scaleX]
  * set to `0.1f`, and its [ConstrainScope.alpha] set to `0f`.
  *
  * Next we initialize our [List] of [ConstraintSetRef] variable `ends` by using the [Array.map] method
@@ -190,6 +190,7 @@ fun ReactionSelector() {
             }
         }
     }
+
     val progress: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0f) }
     val selectedFlow: Flow<Int> = snapshotFlow { selected }
 
