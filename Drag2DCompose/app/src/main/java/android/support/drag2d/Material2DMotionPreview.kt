@@ -25,7 +25,9 @@ import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -67,24 +70,70 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-/**
- * A Composable preview that demonstrates and allows interactive testing of the
- * `materialVelocity2D` animation spec.
- *
- * This preview consists of:
- *  1. A draggable `Box` that, upon release, animates back to its center origin using the
- *  `materialVelocity2D` animation. The path of the drag and subsequent animation is drawn
- *  on the screen.
- *  2. Sliders to control the `duration`, `maxVelocity`, and `maxAcceleration` parameters of the
- *  animation.
- *  3. A dropdown menu to select different `Easing` functions to apply to the animation.
- *
- * This allows for real-time visualization and tweaking of how different parameters affect the
- * Material Design-style fling animation in a 2D space.
- * TODO: Continue here.
- */
 @Preview
 @Composable
+    /**
+     * A Composable preview that demonstrates and allows interactive testing of the
+     * `materialVelocity2D` animation spec.
+     *
+     * This preview consists of:
+     *  1. A draggable `Box` that, upon release, animates back to its center origin using the
+     *  `materialVelocity2D` animation. The path of the drag and subsequent animation is drawn
+     *  on the screen.
+     *  2. Sliders to control the `duration`, `maxVelocity`, and `maxAcceleration` parameters of the
+     *  animation.
+     *  3. A dropdown menu to select different `Easing` functions to apply to the animation.
+     *
+     * This allows for real-time visualization and tweaking of how different parameters affect the
+     * Material Design-style fling animation in a 2D space.
+     *
+     * We start by initializing and remembering our [MutableState] of [Float] variable `duration` to an
+     * initial value of `1200f` initializing and remembering our [MutableState] of [Float] variable
+     * `maxVelocity` to an initial value of `2000f` initializing and remembering our [MutableState] of
+     * [Float] variable `maxAcceleration` to an initial value of `2000f`, and initializing and
+     * remembering our [MutableState] of [String] variable `currentEasing` to an initial value of
+     * `"EaseOutBack"`. We then initialize and remember our [Map] of [String] to [MaterialVelocity.Easing]
+     * variable `nameToEasing` to a [Map] which contains all of the [MaterialVelocity.Easing] choices
+     * keyed by their names.
+     *
+     * Our root composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth]. In the
+     * [ColumnScope] `content` composable lambda argument of the [Column] we initialize and remember our
+     * [MutableIntState] variable `touchUpIndex` to the `value` [Integer.MAX_VALUE]. We initialize and
+     * remember our [ArrayList] of [Offset] to a new instance. We initialize and remember our [Animatable]
+     * of [Offset] variable `offset` to an initial value of [Offset.Zero] and a type converter of
+     * [Offset.Companion.VectorConverter]. We initialize and remember our [MutableState] of [Offset]
+     * variable `referenceOffset` to an initial value of [Offset.Zero].
+     *
+     * Next we compose a [Box] to contain the draggable item and touch input drawing, whose `modifier`
+     * argument is a [Modifier.fillMaxWidth], chained to a [ColumnScope.weight] whose `weight` is `1f`
+     * and whose `fill` is `true`, chained to a [Modifier.drawWithContent]. In the [ContentDrawScope]
+     * `onDraw` lambda argument we:
+     *  - call the [ContentDrawScope.drawContent] method to cause the content of the [Box] to be drawn.
+     *  - reference the `value` of our [Animatable] of [Offset] variable `offset` to trigger
+     *  recomposition.
+     *  - if our [ArrayList] of [Offset] variable `accumulator` is empty we return.
+     *  - otherwise we iterate over the indices of our [ArrayList] of [Offset] variable `accumulator`
+     *  and call the [ContentDrawScope.drawLine] method with its `color` argument the [Color.Red] if
+     *  our current index is greater than our [MutableIntState] variable `touchUpIndex`, or [Color.Blue]
+     *  if it is less than it. The `start` argument is the previous [Offset] in our [ArrayList] of
+     *  [Offset] variable `accumulator` if it exists, or [Offset.Zero] if it does not, and the `end`
+     *  argument is the current [Offset] in our [ArrayList] of [Offset] variable `accumulator`. The
+     *  `strokeWidth` argument is `2f`.
+     *
+     * The `contentAlignment` argument of the [Box] is a lambda which accepts the [IntSize] of the
+     * [Box] and the [IntSize] of its parent, and returns an [Offset] whose `x` is the [IntSize.width]
+     * of the parent divided by two minus the [IntSize.width] of the [Box] divided by two, and whose
+     * `y` is the [IntSize.height] of the parent divided by two minus the [IntSize.height] of the
+     * [Box] divided by two.
+     *
+     * In the [BoxScope] `content` composable lambda argument of the [Box] we initialize and remember
+     * our [Color] variable `color` to the [Color] returned by [Color.hsv] for the `hue` which is
+     * a random value between `0` and `360`, for the `saturation` of `0.5f`, and the `value` of `0.8f`.
+     * We initialize and remember our [VelocityTracker] variable `velocityTracker` to a new instance.
+     * We initialize and remember our [CoroutineScope] variable `scope` to a new instance.
+     *
+     *
+     */
 fun Material2DMotionPreview() {
     val duration: MutableState<Float> = remember { mutableFloatStateOf(value = 1200f) }
     val maxVelocity: MutableState<Float> = remember { mutableFloatStateOf(value = 2000f) }
@@ -107,7 +156,7 @@ fun Material2DMotionPreview() {
         )
     }
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
     ) {
         val touchUpIndex: MutableIntState =
@@ -125,7 +174,7 @@ fun Material2DMotionPreview() {
 
         // Box that includes the draggable item and touch input drawing
         Box(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .weight(weight = 1f, fill = true)
                 .drawWithContent {
@@ -133,11 +182,6 @@ fun Material2DMotionPreview() {
                     // Draw recorded touch input points to reflect the behavior
                     // TODO: Draw curves from Velocity2D
                     offset.value // Trigger recomposition
-
-                    @Suppress(
-                        "UsePropertyAccessSyntax",
-                        "RedundantSuppression"
-                    ) // TODO: Gradle considers `isEmpty` property an error
                     if (accumulator.isEmpty()) {
                         return@drawWithContent
                     }
