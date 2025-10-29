@@ -70,70 +70,88 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+/**
+ * A Composable preview that demonstrates and allows interactive testing of the
+ * `materialVelocity2D` animation spec.
+ *
+ * This preview consists of:
+ *  1. A draggable `Box` that, upon release, animates back to its center origin using the
+ *  `materialVelocity2D` animation. The path of the drag and subsequent animation is drawn
+ *  on the screen.
+ *  2. Sliders to control the `duration`, `maxVelocity`, and `maxAcceleration` parameters of the
+ *  animation.
+ *  3. A dropdown menu to select different `Easing` functions to apply to the animation.
+ *
+ * This allows for real-time visualization and tweaking of how different parameters affect the
+ * Material Design-style fling animation in a 2D space.
+ *
+ * We start by initializing and remembering our [MutableState] of [Float] variable `duration` to an
+ * initial value of `1200f` initializing and remembering our [MutableState] of [Float] variable
+ * `maxVelocity` to an initial value of `2000f` initializing and remembering our [MutableState] of
+ * [Float] variable `maxAcceleration` to an initial value of `2000f`, and initializing and
+ * remembering our [MutableState] of [String] variable `currentEasing` to an initial value of
+ * `"EaseOutBack"`. We then initialize and remember our [Map] of [String] to [MaterialVelocity.Easing]
+ * variable `nameToEasing` to a [Map] which contains all of the [MaterialVelocity.Easing] choices
+ * keyed by their names.
+ *
+ * Our root composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth]. In the
+ * [ColumnScope] `content` composable lambda argument of the [Column] we initialize and remember our
+ * [MutableIntState] variable `touchUpIndex` to the `value` [Integer.MAX_VALUE]. We initialize and
+ * remember our [ArrayList] of [Offset] to a new instance. We initialize and remember our [Animatable]
+ * of [Offset] variable `offset` to an initial value of [Offset.Zero] and a type converter of
+ * [Offset.Companion.VectorConverter]. We initialize and remember our [MutableState] of [Offset]
+ * variable `referenceOffset` to an initial value of [Offset.Zero].
+ *
+ * Next we compose a [Box] to contain the draggable item and touch input drawing, whose `modifier`
+ * argument is a [Modifier.fillMaxWidth], chained to a [ColumnScope.weight] whose `weight` is `1f`
+ * and whose `fill` is `true`, chained to a [Modifier.drawWithContent]. In the [ContentDrawScope]
+ * `onDraw` lambda argument we:
+ *  - call the [ContentDrawScope.drawContent] method to cause the content of the [Box] to be drawn.
+ *  - reference the `value` of our [Animatable] of [Offset] variable `offset` to trigger
+ *  recomposition.
+ *  - if our [ArrayList] of [Offset] variable `accumulator` is empty we return.
+ *  - otherwise we iterate over the indices of our [ArrayList] of [Offset] variable `accumulator`
+ *  and call the [ContentDrawScope.drawLine] method with its `color` argument the [Color.Red] if
+ *  our current index is greater than our [MutableIntState] variable `touchUpIndex`, or [Color.Blue]
+ *  if it is less than it. The `start` argument is the previous [Offset] in our [ArrayList] of
+ *  [Offset] variable `accumulator` if it exists, or [Offset.Zero] if it does not, and the `end`
+ *  argument is the current [Offset] in our [ArrayList] of [Offset] variable `accumulator`. The
+ *  `strokeWidth` argument is `2f`.
+ *
+ * The `contentAlignment` argument of the [Box] is a lambda which accepts the [IntSize] of the
+ * [Box] and the [IntSize] of its parent, and returns an [Offset] whose `x` is the [IntSize.width]
+ * of the parent divided by two minus the [IntSize.width] of the [Box] divided by two, and whose
+ * `y` is the [IntSize.height] of the parent divided by two minus the [IntSize.height] of the
+ * [Box] divided by two.
+ *
+ * In the [BoxScope] `content` composable lambda argument of the [Box] we initialize and remember
+ * our [Color] variable `color` to the [Color] returned by [Color.hsv] for the `hue` which is
+ * a random value between `0` and `360`, for the `saturation` of `0.5f`, and the `value` of `0.8f`.
+ * We initialize and remember our [VelocityTracker] variable `velocityTracker` to a new instance.
+ * We initialize and remember our [CoroutineScope] variable `scope` to a new instance.
+ *
+ * Next we compose another [Box] whose `modifer` argument is a [Modifier.dragToAnimate] whose
+ * `offset` argument is our [Animatable] of [Offset] variable `offset`, whose `accumulator` argument
+ * is our [ArrayList] of [Offset] variable `accumulator`, whose `touchUpIndex` argument is our
+ * [MutableIntState] variable `touchUpIndex`, whose `referenceOffset` argument is our [MutableState]
+ * wrapped [Offset] variable `referenceOffset`, whose `scope` argument is our [CoroutineScope]
+ * variable `scope`, whose `velocityTracker` argument is our [VelocityTracker] variable
+ * `velocityTracker`, whose `duration` argument is our [MutableState] of [Float] variable `duration`,
+ * whose `maxVelocity` argument is our [MutableState] of [Float] variable `maxVelocity`, whose
+ * `maxAcceleration` argument is our [MutableFloatState] variable `maxAcceleration`, and whose
+ * `easing` argument is the [MaterialVelocity.Easing] in [Map] of [String] to [MaterialVelocity.Easing]
+ * variable `nameToEasing` whose key is our [MutableState] of [String] variable `currentEasing` if
+ * that is not `null` or the `first` entry in `nameToEasing` if it is. Chanined to that is a
+ * [Modifier.size] whose `size` is `80.dp`, chained to a [Modifier.background] whose whose `color`
+ * is our [Color] variable `color` and whose `shape` is [CardDefaults.shape].
+ *
+ * In the [BoxScope] `content` composable lambda argument of this [Box] we compose a [Text] whose
+ * `text` argument is `"Drag Me"`.
+ * TODO: Continue here.
+ *
+ */
 @Preview
 @Composable
-    /**
-     * A Composable preview that demonstrates and allows interactive testing of the
-     * `materialVelocity2D` animation spec.
-     *
-     * This preview consists of:
-     *  1. A draggable `Box` that, upon release, animates back to its center origin using the
-     *  `materialVelocity2D` animation. The path of the drag and subsequent animation is drawn
-     *  on the screen.
-     *  2. Sliders to control the `duration`, `maxVelocity`, and `maxAcceleration` parameters of the
-     *  animation.
-     *  3. A dropdown menu to select different `Easing` functions to apply to the animation.
-     *
-     * This allows for real-time visualization and tweaking of how different parameters affect the
-     * Material Design-style fling animation in a 2D space.
-     *
-     * We start by initializing and remembering our [MutableState] of [Float] variable `duration` to an
-     * initial value of `1200f` initializing and remembering our [MutableState] of [Float] variable
-     * `maxVelocity` to an initial value of `2000f` initializing and remembering our [MutableState] of
-     * [Float] variable `maxAcceleration` to an initial value of `2000f`, and initializing and
-     * remembering our [MutableState] of [String] variable `currentEasing` to an initial value of
-     * `"EaseOutBack"`. We then initialize and remember our [Map] of [String] to [MaterialVelocity.Easing]
-     * variable `nameToEasing` to a [Map] which contains all of the [MaterialVelocity.Easing] choices
-     * keyed by their names.
-     *
-     * Our root composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth]. In the
-     * [ColumnScope] `content` composable lambda argument of the [Column] we initialize and remember our
-     * [MutableIntState] variable `touchUpIndex` to the `value` [Integer.MAX_VALUE]. We initialize and
-     * remember our [ArrayList] of [Offset] to a new instance. We initialize and remember our [Animatable]
-     * of [Offset] variable `offset` to an initial value of [Offset.Zero] and a type converter of
-     * [Offset.Companion.VectorConverter]. We initialize and remember our [MutableState] of [Offset]
-     * variable `referenceOffset` to an initial value of [Offset.Zero].
-     *
-     * Next we compose a [Box] to contain the draggable item and touch input drawing, whose `modifier`
-     * argument is a [Modifier.fillMaxWidth], chained to a [ColumnScope.weight] whose `weight` is `1f`
-     * and whose `fill` is `true`, chained to a [Modifier.drawWithContent]. In the [ContentDrawScope]
-     * `onDraw` lambda argument we:
-     *  - call the [ContentDrawScope.drawContent] method to cause the content of the [Box] to be drawn.
-     *  - reference the `value` of our [Animatable] of [Offset] variable `offset` to trigger
-     *  recomposition.
-     *  - if our [ArrayList] of [Offset] variable `accumulator` is empty we return.
-     *  - otherwise we iterate over the indices of our [ArrayList] of [Offset] variable `accumulator`
-     *  and call the [ContentDrawScope.drawLine] method with its `color` argument the [Color.Red] if
-     *  our current index is greater than our [MutableIntState] variable `touchUpIndex`, or [Color.Blue]
-     *  if it is less than it. The `start` argument is the previous [Offset] in our [ArrayList] of
-     *  [Offset] variable `accumulator` if it exists, or [Offset.Zero] if it does not, and the `end`
-     *  argument is the current [Offset] in our [ArrayList] of [Offset] variable `accumulator`. The
-     *  `strokeWidth` argument is `2f`.
-     *
-     * The `contentAlignment` argument of the [Box] is a lambda which accepts the [IntSize] of the
-     * [Box] and the [IntSize] of its parent, and returns an [Offset] whose `x` is the [IntSize.width]
-     * of the parent divided by two minus the [IntSize.width] of the [Box] divided by two, and whose
-     * `y` is the [IntSize.height] of the parent divided by two minus the [IntSize.height] of the
-     * [Box] divided by two.
-     *
-     * In the [BoxScope] `content` composable lambda argument of the [Box] we initialize and remember
-     * our [Color] variable `color` to the [Color] returned by [Color.hsv] for the `hue` which is
-     * a random value between `0` and `360`, for the `saturation` of `0.5f`, and the `value` of `0.8f`.
-     * We initialize and remember our [VelocityTracker] variable `velocityTracker` to a new instance.
-     * We initialize and remember our [CoroutineScope] variable `scope` to a new instance.
-     *
-     *
-     */
 fun Material2DMotionPreview() {
     val duration: MutableState<Float> = remember { mutableFloatStateOf(value = 1200f) }
     val maxVelocity: MutableState<Float> = remember { mutableFloatStateOf(value = 2000f) }
@@ -213,55 +231,18 @@ fun Material2DMotionPreview() {
             val scope: CoroutineScope = rememberCoroutineScope()
             Box(
                 modifier = Modifier
-                    .onPlaced { layoutCoordinates: LayoutCoordinates ->
-                        val parentSize: IntSize =
-                            layoutCoordinates.parentCoordinates?.size ?: IntSize.Zero
-                        referenceOffset.value = Offset(
-                            x = parentSize.width / 2f,
-                            y = parentSize.height / 2f
-                        )
-                    }
-                    .offset { offset.value.round() }
-                    .pointerInput(key1 = Unit) {
-                        detectDragGestures(
-                            onDragStart = {
-                                touchUpIndex.intValue = Integer.MAX_VALUE
-                                accumulator.clear()
-                            },
-                            onDragEnd = {
-                                scope.launch {
-                                    touchUpIndex.intValue = accumulator.size - 1
-                                    val initialVelocity: Velocity =
-                                        velocityTracker.calculateVelocity()
-
-                                    offset.animateTo(
-                                        targetValue = Offset.Zero,
-                                        animationSpec = materialVelocity2D(
-                                            durationMs = duration.value.roundToInt(),
-                                            maxVelocity = maxVelocity.value,
-                                            maxAcceleration = maxAcceleration.floatValue,
-                                            easing = nameToEasing[currentEasing.value]
-                                                ?: nameToEasing.values.first()
-                                        ),
-                                        initialVelocity = Offset(
-                                            x = initialVelocity.x,
-                                            y = initialVelocity.y
-                                        )
-                                    ) {
-                                        accumulator.add(this.value)
-                                    }
-                                    velocityTracker.resetTracking()
-                                }
-                            }
-                        ) { change: PointerInputChange, dragAmount: Offset ->
-                            velocityTracker.addPointerInputChange(event = change)
-                            val position: Offset = offset.value + dragAmount
-                            accumulator.add(position)
-                            scope.launch {
-                                offset.snapTo(targetValue = position)
-                            }
-                        }
-                    }
+                    .dragToAnimate(
+                        offset = offset,
+                        accumulator = accumulator,
+                        touchUpIndex = touchUpIndex,
+                        referenceOffset = referenceOffset,
+                        scope = scope,
+                        velocityTracker = velocityTracker,
+                        duration = duration.value,
+                        maxVelocity = maxVelocity.value,
+                        maxAcceleration = maxAcceleration.floatValue,
+                        easing = nameToEasing[currentEasing.value] ?: nameToEasing.values.first()
+                    )
                     .size(size = 80.dp)
                     .background(color = color, shape = CardDefaults.shape),
                 contentAlignment = Alignment.Center
@@ -269,6 +250,7 @@ fun Material2DMotionPreview() {
                 Text(text = "Drag Me")
             }
         }
+        // ... The rest of the Sliders and DropdownMenu code remains unchanged
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Duration: ${duration.value.roundToInt()}ms")
             Spacer(Modifier.width(width = 8.dp))
@@ -325,3 +307,87 @@ fun Material2DMotionPreview() {
         }
     }
 }
+
+
+/**
+ * A Modifier extension function that enables drag-and-animate behavior for a Composable.
+ *
+ * When applied, the Composable can be dragged around the screen. Upon release, it will animate
+ * back to its original position (Offset.Zero) using a physics-based animation defined by
+ * `materialVelocity2D`.
+ *
+ * This function handles touch input for dragging, tracks velocity to provide a natural fling
+ * motion upon release, and launches the animation coroutine.
+ *
+ * @param offset The animatable offset of the composable. This is what gets updated during
+ *               the drag and subsequent animation.
+ * @param accumulator A list to store the path of the drag and animation for drawing purposes.
+ * @param touchUpIndex The index in the accumulator where the drag gesture ended.
+ * @param referenceOffset The center offset of the parent, used to calculate the drawing path correctly.
+ * @param scope The coroutine scope to launch the animation.
+ * @param velocityTracker The VelocityTracker to calculate the fling velocity on release.
+ * @param duration The duration of the return animation in milliseconds.
+ * @param maxVelocity The maximum velocity for the animation.
+ * @param maxAcceleration The maximum acceleration for the animation.
+ * @param easing The easing function to be used for the animation.
+ */
+fun Modifier.dragToAnimate(
+    offset: Animatable<Offset, AnimationVector2D>,
+    accumulator: ArrayList<Offset>,
+    touchUpIndex: MutableIntState,
+    referenceOffset: MutableState<Offset>,
+    scope: CoroutineScope,
+    velocityTracker: VelocityTracker,
+    duration: Float,
+    maxVelocity: Float,
+    maxAcceleration: Float,
+    easing: MaterialVelocity.Easing
+): Modifier = this
+    .onPlaced { layoutCoordinates: LayoutCoordinates ->
+        val parentSize: IntSize =
+            layoutCoordinates.parentCoordinates?.size ?: IntSize.Zero
+        referenceOffset.value = Offset(
+            x = parentSize.width / 2f,
+            y = parentSize.height / 2f
+        )
+    }
+    .offset { offset.value.round() }
+    .pointerInput(key1 = Unit) {
+        detectDragGestures(
+            onDragStart = {
+                touchUpIndex.intValue = Integer.MAX_VALUE
+                accumulator.clear()
+            },
+            onDragEnd = {
+                scope.launch {
+                    touchUpIndex.intValue = accumulator.size - 1
+                    val initialVelocity: Velocity =
+                        velocityTracker.calculateVelocity()
+
+                    offset.animateTo(
+                        targetValue = Offset.Zero,
+                        animationSpec = materialVelocity2D(
+                            durationMs = duration.roundToInt(),
+                            maxVelocity = maxVelocity,
+                            maxAcceleration = maxAcceleration,
+                            easing = easing
+                        ),
+                        initialVelocity = Offset(
+                            x = initialVelocity.x,
+                            y = initialVelocity.y
+                        )
+                    ) {
+                        accumulator.add(this.value)
+                    }
+                    velocityTracker.resetTracking()
+                }
+            }
+        ) { change: PointerInputChange, dragAmount: Offset ->
+            velocityTracker.addPointerInputChange(event = change)
+            val position: Offset = offset.value + dragAmount
+            accumulator.add(position)
+            scope.launch {
+                offset.snapTo(targetValue = position)
+            }
+        }
+    }
