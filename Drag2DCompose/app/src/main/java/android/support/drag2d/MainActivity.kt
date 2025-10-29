@@ -41,11 +41,11 @@ class MainActivity : ComponentActivity() {
      * Finally, we call [setContent] to define our UI using Jetpack Compose. The layout consists of:
      *  - [Drag2DComposeTheme]: Our custom [MaterialTheme].
      *  - [Box]: A container that respects safe drawing areas using [Modifier.safeDrawingPadding],
-     *    ensuring content doesn't overlap with system UI like status bars or navigation bars.
+     *  ensuring content doesn't overlap with system UI like status bars or navigation bars.
      *  - [Surface]: A container that fills the entire screen ([Modifier.fillMaxSize]) and uses the
-     *    `background` color from our theme.
+     *  `background` color from our theme.
      *  - [Material2DMotionPreview]: The main Composable for this demo, which is the content of the
-     *    [Surface].
+     *  [Surface].
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being
      * shut down then this [Bundle] contains the data it most recently supplied in
