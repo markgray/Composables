@@ -27,21 +27,61 @@ import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.AnimationVector3D
 import androidx.compose.animation.core.AnimationVector4D
 import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.FloatTweenSpec
 import androidx.compose.animation.core.TwoWayConverter
 import androidx.compose.animation.core.VectorizedFiniteAnimationSpec
 import kotlin.math.roundToLong
 
-// TODO: Consider changing to composition locals, so that users can use their desired defaults
-//  across their codebase
+/**
+ * Default maximum velocity.
+ *
+ * This value has been tuned to provide smooth animations.
+ */
 private const val DEFAULT_MAX_VELOCITY = 1000f
+
+/**
+ * Default maximum acceleration.
+ *
+ * This value has been tuned to provide smooth animations.
+ */
 private const val DEFAULT_MAX_ACCELERATION = 1000f
-private val defaultEasing: MaterialVelocity.Easing by lazy(LazyThreadSafetyMode.NONE) {
+
+/**
+ * Default easing used for animations.
+ *
+ * This value has been tuned to provide smooth animations.
+ */
+private val defaultEasing: MaterialVelocity.Easing by lazy(mode = LazyThreadSafetyMode.NONE) {
     MaterialEasing.EASE_OUT_BACK
 }
 
 /**
- * TODO: Add kdoc
+ * Creates a [Material2DAnimationSpec] that can be used to animate any value.
+ *
+ * This animation spec is great for animations that feel "natural" since it's based on
+ * Material Design's motion principles. It's particularly well-suited for animations that are
+ * driven by user input, such as dragging, where the animation needs to smoothly take over from the
+ * user's velocity.
+ *
+ * The animation is powered by [Velocity2D], which calculates the animation path based on the
+ * initial and target values, initial velocity, and the provided constraints. This version of
+ * `materialVelocity2D` applies the same animation parameters to all dimensions of the animated
+ * value.
+ *
+ * For animating values with more than two dimensions (e.g., `AnimationVector3D` or
+ * `AnimationVector4D`), this spec uses two separate `Velocity2D` instances. The first instance
+ * animates the first and second dimensions, and the second instance animates the third and fourth.
+ *
+ * @param durationMs The desired duration of the animation in milliseconds. The actual duration may
+ * vary depending on the initial velocity and distance to the target.
+ * @param maxVelocity The maximum velocity that the animation can reach. This constraint helps
+ * prevent the animation from becoming too fast and jarring.
+ * @param maxAcceleration The maximum acceleration to be applied. This limits how quickly the
+ * velocity can change, contributing to a smoother motion.
+ * @param easing The easing curve to be applied to the animation. This determines the rate of
+ * change of the animation over time, for example, starting slow and speeding up.
+ *
+ * @return An [AnimationSpec] that can be used with Compose's animation APIs.
+ *
  */
 fun <T> materialVelocity2D(
     durationMs: Int = AnimationConstants.DefaultDurationMillis,
@@ -61,7 +101,31 @@ fun <T> materialVelocity2D(
 }
 
 /**
- * TODO: Add kdoc
+ * Creates a [Material2DAnimationSpec] with distinct animation parameters for different
+ * components of the animated value.
+ *
+ * This version of `materialVelocity2D` is useful for animations where different dimensions need
+ * to behave differently. For example, you might want a different easing curve or velocity limit
+ * for the x-axis compared to the y-axis.
+ *
+ * The animation is powered by two [Velocity2D] instances. The first instance (`A`) animates the
+ * first two dimensions of the value (e.g., x and y), while the second instance (`B`) animates the
+ * third and fourth dimensions (if they exist).
+ *
+ * This allows for fine-grained control over multi-dimensional animations, ensuring they feel
+ * natural and responsive according to Material Design's motion principles.
+ *
+ * @param T The type of the value to be animated.
+ * @param durationMs The desired duration of the animation in milliseconds. The actual duration
+ * may vary depending on the initial velocities and distances to the target.
+ * @param maxVelocityA The maximum velocity for the first animation component (dims 1 and 2).
+ * @param maxAccelerationA The maximum acceleration for the first animation component.
+ * @param easingA The easing curve for the first animation component.
+ * @param maxVelocityB The maximum velocity for the second animation component (dims 3 and 4).
+ * @param maxAccelerationB The maximum acceleration for the second animation component.
+ * @param easingB The easing curve for the second animation component.
+ *
+ * @return An [AnimationSpec] that can be used with Compose's animation APIs.
  */
 @Suppress("unused")
 fun <T> materialVelocity2D(
@@ -85,9 +149,30 @@ fun <T> materialVelocity2D(
 }
 
 /**
- * Animation spec that uses a [Velocity2D] for animating 2-dimensional values.
+ * An animation spec that uses one or two [Velocity2D] instances to animate values.
  *
- * Everything else is animated using a fallback [FloatTweenSpec] with similar attributes.
+ * This spec is designed to handle animations for values with up to four dimensions.
+ * It uses one `Velocity2D` instance (`A`) for the first two dimensions and a second
+ * instance (`B`) for the third and fourth dimensions. This allows for creating
+ * complex, multi-dimensional animations with distinct physical properties (like velocity,
+ * acceleration, and easing) for different components of the animated value.
+ *
+ * For values with one or two dimensions (e.g., `Float`, `Int`, `Dp`, `Offset`), only the
+ * first `Velocity2D` instance (`A`) is used.
+ *
+ * For values with three or four dimensions (e.g., `Size`, `Rect`), both instances are used.
+ *
+ * This class is not typically used directly. Instead, create an instance through the
+ * [materialVelocity2D] factory functions.
+ *
+ * @param T The type of the value to be animated.
+ * @property desiredDurationMs The desired duration of the animation in milliseconds.
+ * @property maxVelocityA The maximum velocity for the first animation component (dims 1-2).
+ * @property maxVelocityB The maximum velocity for the second animation component (dims 3-4).
+ * @property maxAccelerationA The maximum acceleration for the first animation component.
+ * @property maxAccelerationB The maximum acceleration for the second animation component.
+ * @property materialEasingA The easing curve for the first animation component.
+ * @property materialEasingB The easing curve for the second animation component.
  */
 class Material2DAnimationSpec<T>(
     private val desiredDurationMs: Int = AnimationConstants.DefaultDurationMillis,
@@ -101,7 +186,21 @@ class Material2DAnimationSpec<T>(
     private val velocity2DA: Velocity2D = Velocity2D()
     private val velocity2DB: Velocity2D = Velocity2D()
 
-    override fun <V : AnimationVector> vectorize(converter: TwoWayConverter<T, V>): VectorizedFiniteAnimationSpec<V> =
+    /**
+     * Creates a [VectorizedFiniteAnimationSpec] for the given [AnimationVector] type.
+     *
+     * This method is called by the animation system to get a vectorized version of this animation
+     * spec, which can then be used to animate different types of [AnimationVector]s (e.g.,
+     * [AnimationVector1D], [AnimationVector2D], etc.).
+     *
+     * @param converter A [TwoWayConverter] that can convert the animation's data type `T` to and
+     * from an [AnimationVector].
+     * @return A [VectorizedMaterial2DAnimationSpec] instance that contains the core animation logic
+     * and is configured with the parameters from this spec.
+     */
+    override fun <V : AnimationVector> vectorize(
+        converter: TwoWayConverter<T, V>
+    ): VectorizedFiniteAnimationSpec<V> =
         VectorizedMaterial2DAnimationSpec(
             velocity2DA = velocity2DA,
             velocity2DB = velocity2DB,
@@ -115,6 +214,33 @@ class Material2DAnimationSpec<T>(
         )
 }
 
+/**
+ * A vectorized animation spec that uses one or two [Velocity2D] instances to drive the animation.
+ * This class is the core implementation that handles the animation of [AnimationVector] types.
+ *
+ * It works by splitting the dimensions of an [AnimationVector] between two [Velocity2D] instances.
+ *  - `velocity2DA` animates the first and second dimensions.
+ *  - `velocity2DB` animates the third and fourth dimensions.
+ *
+ * This allows for independent control over different parts of a multi-dimensional animation. For
+ * example, in an animation of a `Rect`, the position (x, y) can have different physics parameters
+ * than its size (width, height).
+ *
+ * The `config` function is responsible for setting up the `Velocity2D` instances based on the
+ * initial/target values and velocities. It caches the last used parameters to avoid redundant
+ * re-configuration, improving performance.
+ *
+ * The total duration of the animation is determined by the longer of the two `Velocity2D`
+ * animations, ensuring that the entire animation completes before it's considered finished.
+ *
+ * @param V The type of [AnimationVector] to be animated.
+ * @property velocity2DA The [Velocity2D] instance for animating the first two dimensions.
+ * @property velocity2DB The [Velocity2D] instance for animating the third and fourth dimensions.
+ * @property desiredDurationMs The desired duration of the animation in milliseconds.
+ * @property maxVelocityA The maximum velocity for the first animation component.
+ * @property maxVelocityB The maximum velocity for the second animation component.
+ * @property maxAccelerationA The maximum acceleration for the first animation component.
+ */
 @Suppress("UNCHECKED_CAST")
 private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
     private val velocity2DA: Velocity2D,
@@ -138,17 +264,42 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
      * duration.
      */
     private var durationASecs = desiredDurationMs / 1000f
+
+    /**
+     * Actual duration of [velocity2DB], this is updated by the output of [Velocity2D.getDuration].
+     *
+     * It's necessary since [velocity2DA] and [velocity2DB] are not guaranteed to have the same
+     * duration.
+     */
     private var durationBSecs = desiredDurationMs / 1000f
 
+    /**
+     * Configures the underlying [Velocity2D] instances with the animation parameters.
+     *
+     * This function checks if the animation parameters have changed since the last call. If they
+     * have, it re-configures `velocity2DA` and `velocity2DB` with the new start/end values,
+     * velocities, and physical constraints. This caching mechanism prevents redundant
+     * calculations, improving performance when the animation state is updated frequently.
+     *
+     * The dimensions of the input arrays are mapped as follows:
+     *  - `velocity2DA` handles dimensions 0 and 1 (e.g., x and y).
+     *  - `velocity2DB` handles dimensions 2 and 3 (e.g., width and height).
+     *
+     * If a dimension is not present in the input arrays, a default value of `0f` is used.
+     *
+     * @param initialValue The starting value of the animation, as a `FloatArray`.
+     * @param targetValue The target value of the animation, as a `FloatArray`.
+     * @param initialVelocity The starting velocity of the animation, as a `FloatArray`.
+     */
     private fun config(
         initialValue: FloatArray,
         targetValue: FloatArray,
         initialVelocity: FloatArray
     ) {
-        if (!::lastInitial.isInitialized || !::lastTarget.isInitialized || !::lastVelocity.isInitialized ||
-            !lastInitial.contentEquals(initialValue) || !lastTarget.contentEquals(targetValue) || !lastVelocity.contentEquals(
-                initialVelocity
-            )
+        if (!::lastInitial.isInitialized || !::lastTarget.isInitialized ||
+            !::lastVelocity.isInitialized || !lastInitial.contentEquals(other = initialValue) ||
+            !lastTarget.contentEquals(other = targetValue) ||
+            !lastVelocity.contentEquals(other = initialVelocity)
         ) {
             lastInitial = initialValue
             lastTarget = targetValue
@@ -158,28 +309,28 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
             when (initialValue.size) {
                 1, 2, 3, 4 -> {
                     velocity2DA.configure(
-                        initialValue.getOrElse(0) { 0f },
-                        initialValue.getOrElse(1) { 0f },
-                        initialVelocity.getOrElse(0) { 0f },
-                        initialVelocity.getOrElse(1) { 0f },
-                        targetValue.getOrElse(0) { 0f },
-                        targetValue.getOrElse(1) { 0f },
-                        desiredDurationSecs,
-                        maxVelocityA,
-                        maxAccelerationA,
-                        materialEasingA
+                        /* posX = */ initialValue.getOrElse(0) { 0f },
+                        /* posY = */ initialValue.getOrElse(1) { 0f },
+                        /* velocityX = */ initialVelocity.getOrElse(0) { 0f },
+                        /* velocityY = */ initialVelocity.getOrElse(1) { 0f },
+                        /* destinationX = */ targetValue.getOrElse(0) { 0f },
+                        /* destinationY = */ targetValue.getOrElse(1) { 0f },
+                        /* duration = */ desiredDurationSecs,
+                        /* maxV = */ maxVelocityA,
+                        /* maxA = */ maxAccelerationA,
+                        /* easing = */ materialEasingA
                     )
                     velocity2DB.configure(
-                        initialValue.getOrElse(2) { 0f },
-                        initialValue.getOrElse(3) { 0f },
-                        initialVelocity.getOrElse(2) { 0f },
-                        initialVelocity.getOrElse(3) { 0f },
-                        targetValue.getOrElse(2) { 0f },
-                        targetValue.getOrElse(3) { 0f },
-                        desiredDurationSecs,
-                        maxVelocityB,
-                        maxAccelerationB,
-                        materialEasingB
+                        /* posX = */ initialValue.getOrElse(2) { 0f },
+                        /* posY = */ initialValue.getOrElse(3) { 0f },
+                        /* velocityX = */ initialVelocity.getOrElse(2) { 0f },
+                        /* velocityY = */ initialVelocity.getOrElse(3) { 0f },
+                        /* destinationX = */ targetValue.getOrElse(2) { 0f },
+                        /* destinationY = */ targetValue.getOrElse(3) { 0f },
+                        /* duration = */ desiredDurationSecs,
+                        /* maxV = */ maxVelocityB,
+                        /* maxA = */ maxAccelerationB,
+                        /* easing = */ materialEasingB
                     )
                 }
 
@@ -190,11 +341,14 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
         }
     }
 
+    /**
+     * TODO: Continue here.
+     */
     override fun getDurationNanos(initialValue: V, targetValue: V, initialVelocity: V): Long {
         return getDurationNanos(
-            FloatArrayConverter.convertFromVector(initialValue),
-            FloatArrayConverter.convertFromVector(targetValue),
-            FloatArrayConverter.convertFromVector(initialVelocity),
+            initialValue = FloatArrayConverter.convertFromVector(initialValue),
+            targetValue = FloatArrayConverter.convertFromVector(targetValue),
+            initialVelocity = FloatArrayConverter.convertFromVector(initialVelocity),
         )
     }
 

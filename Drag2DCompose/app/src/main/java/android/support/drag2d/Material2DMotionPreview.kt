@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -56,6 +57,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.input.pointer.util.addPointerInputChange
@@ -147,8 +149,58 @@ import kotlin.math.roundToInt
  *
  * In the [BoxScope] `content` composable lambda argument of this [Box] we compose a [Text] whose
  * `text` argument is `"Drag Me"`.
- * TODO: Continue here.
  *
+ * Having created the area for the draggable item and touch input drawing, we move on to widgets
+ * to allow the modification of the parameters controlling the animation:
+ *
+ * **First** we compose a [Row] whose `verticalAlignment` is [Alignment.CenterVertically]. In the
+ * [RowScope] `content` composable lambda argument of the [Row] we compose:
+ *  - A [Text] whose `text` argument displays the value of [MutableState] of [Float] variable
+ *  `duration` with the caption "Duration:".
+ *  - A [Spacer] whose `modifier` argument is a [Modifier.width] whose `width` is `8.dp`
+ *  - A [Slider] whose `value` argument is our [MutableState] of [Float] variable `duration`, whose
+ *  `onValueChange` argument is a lambda which accepts a [Float] and assigns it to our [MutableState]
+ *  of [Float] variable `duration`, whose `valueRange` argument is `100f..4000f`, and whose `steps`
+ *  argument is `4000f` minus `100f` divided by `100f`, rounded to the nearest integer, and whose
+ *  `modifier` argument is a [RowScope.weight] whose `weight` is `1f` and whose `fill` is `true`.
+ *
+ * **Second** we compose a [Row] whose `verticalAlignment` is [Alignment.CenterVertically]. In the
+ * [RowScope] `content` composable lambda argument of the [Row] we compose:
+ *  - A [Text] whose `text` argument displays the value of [MutableState] of [Float] variable
+ *  `maxVelocity` with the caption "MaxVelocity:".
+ *  - A [Spacer] whose `modifier` argument is a [Modifier.width] whose `width` is `8.dp`
+ *  - A [Slider] whose `value` argument is our [MutableState] of [Float] variable `maxVelocity`,
+ *  whose `onValueChange` argument is a lambda which accepts a [Float] and assigns it to our
+ *  [MutableState] of [Float] variable `maxVelocity`, whose `valueRange` argument is `100f..4000f`,
+ *  whose `steps` argument is `4000f` minus `100f` divided by `100f`, and whose `modifier` argument
+ *  is a [RowScope.weight] whose `weight` is `1f` and whose `fill` is `true`.
+ *
+ * **Third** we compose a [Row] whose `verticalAlignment` is [Alignment.CenterVertically]. In the
+ * [RowScope] `content` composable lambda argument of the [Row] we compose:
+ *  - A [Text] whose `text` argument displays the value of [MutableState] of [Float] variable
+ *  `maxAcceleration` with the caption "MaxAcceleration:".
+ *  - A [Spacer] whose `modifier` argument is a [Modifier.width] whose `width` is `8.dp`
+ *  - A [Slider] whose `value` argument is our [MutableFloatState] variable `maxAcceleration`,
+ *  whose `onValueChange` argument is a lambda which accepts a [Float] and assigns it to our
+ *  [MutableFloatState] variable `maxAcceleration`, whose `valueRange` argument is `100f..4000f`,
+ *  whose `steps` argument is `4000f` minus `100f` divided by `100f`, and whose `modifier` argument
+ *  is a [RowScope.weight] whose `weight` is `1f` and whose `fill` is `true`.
+ *
+ * **Fourth** we compose a [Row] whose `verticalAlignment` is [Alignment.CenterVertically]. In the
+ * [RowScope] `content` composable lambda argument of the [Row] we initialize and remember our
+ * [MutableState] of [Boolean] variable `isExpanded` to an initial value of `false`. Next:
+ *  - We compose a [Button] whose `onClick` argument is a lambda which sets `isExpanded` to `true`.
+ *  In the [RowScope] `content` Composable lambda argument we compose a [Text] whose `text` argument
+ *  displays the current value of our [MutableState] of [String] variable `currentEasing` with the
+ *  caption "Easing:".
+ *  - We compose a [DropdownMenu] whose `expanded` argument is the current value of our [MutableState]
+ *  of [Boolean] variable `isExpanded`, and whose `onDismissRequest` argument is a lambda which sets
+ *  `isExpanded` to `false. In the [ColumnScope] `content` composable lambda argument of the
+ *  [DropdownMenu] we use the [Iterable.forEach] method of the [Set] returned by the [Map.keys]
+ *  property of the [Map] of [String] to [MaterialVelocity.Easing] variable `nameToEasing` to
+ *  iterate over the keys and compose a [DropdownMenuItem] for each key whose `text` argument is
+ *  a [Text] whose `text` argument is the current key, and whose `onClick` argument is a lambda
+ *  which sets our [MutableState] of [String] variable `currentEasing` to the current key.
  */
 @Preview
 @Composable
@@ -250,10 +302,10 @@ fun Material2DMotionPreview() {
                 Text(text = "Drag Me")
             }
         }
-        // ... The rest of the Sliders and DropdownMenu code remains unchanged
+        // Sliders to control the animation parameters, and a DropdownMenu to choose MaterialEasing
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Duration: ${duration.value.roundToInt()}ms")
-            Spacer(Modifier.width(width = 8.dp))
+            Spacer(modifier = Modifier.width(width = 8.dp))
             Slider(
                 value = duration.value,
                 onValueChange = { duration.value = it },
@@ -286,16 +338,14 @@ fun Material2DMotionPreview() {
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             val isExpanded: MutableState<Boolean> = remember { mutableStateOf(value = false) }
-            Button(onClick = {
-                isExpanded.value = true
-            }) {
+            Button(onClick = { isExpanded.value = true }) {
                 Text(text = "Easing: ${currentEasing.value}")
             }
             DropdownMenu(
                 expanded = isExpanded.value,
                 onDismissRequest = { isExpanded.value = false }
             ) {
-                nameToEasing.keys.forEach { name ->
+                nameToEasing.keys.forEach { name: String ->
                     DropdownMenuItem(
                         text = { Text(text = name) },
                         onClick = {
@@ -319,8 +369,57 @@ fun Material2DMotionPreview() {
  * This function handles touch input for dragging, tracks velocity to provide a natural fling
  * motion upon release, and launches the animation coroutine.
  *
+ * We start by chaining a [Modifier.onPlaced] to our [Modifier] receiver (this will invoke onPlaced
+ * after the parent layout has been placed and before we are placed. This allows us to adjust oue
+ * placement based on where the parent is). In the `onPlaced` lambda argument we accept the
+ * [LayoutCoordinates] passed the lambda in variable `layoutCoordinates`. We initialize our [IntSize]
+ * variable `parentSize` to the [LayoutCoordinates.size] of the [LayoutCoordinates.parentCoordinates]
+ * property of our variable `layoutCoordinates` if that is not `null` or to [IntSize.Zero] if it is.
+ * Then we set the value of our [MutableState] of [Offset] parameter [referenceOffset] to an [Offset]
+ * whose `x` is the [IntSize.width] of `parentSize` divided by two and whose `y` is the [IntSize.height]
+ * of `parentSize` divided by two.
+ *
+ * Then we chain to the [Modifier.onPlaced] a [Modifier.offset] whose `offset` argument is the
+ * value of our [Animatable] of [Offset] parameter [offset].
+ *
+ * At the end of the chain we chain a [Modifier.pointerInput] whose `key1` argument is [Unit] and
+ * in the [PointerInputScope] `block` lambda argument we call the [PointerInputScope.detectDragGestures]
+ * method with the arguments:
+ *  - `onDragStart`: a lambda which sets the value of our [MutableIntState] parameter [touchUpIndex]
+ *  to [Integer.MAX_VALUE] and clears the value of our [ArrayList] parameter [accumulator].
+ *  - `onDragEnd`: a lambda which uses the [CoroutineScope.launch] method of [CoroutineScope]
+ *  parameter [scope] to launch a coroutine in which we:
+ *  - set the value of our [MutableIntState] parameter [touchUpIndex] to the size of our [ArrayList]
+ *  parameter [accumulator]
+ *  - initialize our [Velocity] variable `initialVelocity` to the value returned by the
+ *  [VelocityTracker.calculateVelocity] method of our [VelocityTracker] parameter [velocityTracker].
+ *  - animate the value of our [Animatable] of [Offset] parameter [offset] to the `targetValue`
+ *  [Offset.Zero], with an `animationSpec` of [materialVelocity2D] with its `durationMs` argument
+ *  set to the value of our [Float] parameter [duration], its `maxVelocity` argument set to the
+ *  value of our [Float] parameter [maxVelocity], its `maxAcceleration` argument set to the value
+ *  of our [Float] parameter [maxAcceleration], and its `easing` argument set to the value of our
+ *  [MaterialVelocity.Easing] parameter [easing], and the `initialVelocity` argument of the animation
+ *  an [Offset] constructed from the value of our [Offset] variable `initialVelocity`. An in the
+ *  [Animatable] of [Offset] `block` lambda argument we add the value of the [Offset] to our
+ *  [ArrayList] of [Offset] parameter [accumulator].
+ *  - call the [VelocityTracker.resetTracking] method of our [VelocityTracker] parameter
+ *  [velocityTracker] to clear the tracked positions added.
+ *
+ * In the `onDragEnd` lambda argument of the [PointerInputScope.detectDragGestures] we accept the
+ * [PointerInputChange] passed the lambda in variable `change` and the [Offset] passed the lambda
+ * in variable `dragAmount` then we:
+ *  - call the [VelocityTracker.addPointerInputChange] method with its `event` argument set to
+ *  the value of our [PointerInputChange] variable `change`.
+ *  - initialize our [Offset] variable `position` to the value of our [Animatable] of [Offset]
+ *  parameter [offset] plus our [Offset] variable `dragAmount`.
+ *  - add the value of our [Offset] variable `position` to our [ArrayList] of [Offset] parameter
+ *  [accumulator].
+ *  - use the [CoroutineScope.launch] method of [CoroutineScope] parameter [scope] to launch a
+ *  coroutine in which we call the [Animatable.snapTo] method of our [Animatable] of [Offset]
+ *  parameter [offset] with its `targetValue` argument our [Offset] variable `position`.
+ *
  * @param offset The animatable offset of the composable. This is what gets updated during
- *               the drag and subsequent animation.
+ * the drag and subsequent animation.
  * @param accumulator A list to store the path of the drag and animation for drawing purposes.
  * @param touchUpIndex The index in the accumulator where the drag gesture ended.
  * @param referenceOffset The center offset of the parent, used to calculate the drawing path correctly.
