@@ -86,8 +86,8 @@ import kotlin.math.roundToInt
  * Material Design-style fling animation in a 2D space.
  *
  * We start by initializing and remembering our [MutableState] of [Float] variable `duration` to an
- * initial value of `1200f` initializing and remembering our [MutableState] of [Float] variable
- * `maxVelocity` to an initial value of `2000f` initializing and remembering our [MutableState] of
+ * initial value of `1200f`, initializing and remembering our [MutableState] of [Float] variable
+ * `maxVelocity` to an initial value of `2000f`, initializing and remembering our [MutableState] of
  * [Float] variable `maxAcceleration` to an initial value of `2000f`, and initializing and
  * remembering our [MutableState] of [String] variable `currentEasing` to an initial value of
  * `"EaseOutBack"`. We then initialize and remember our [Map] of [String] to [MaterialVelocity.Easing]
@@ -97,10 +97,10 @@ import kotlin.math.roundToInt
  * Our root composable is a [Column] whose `modifier` argument is a [Modifier.fillMaxWidth]. In the
  * [ColumnScope] `content` composable lambda argument of the [Column] we initialize and remember our
  * [MutableIntState] variable `touchUpIndex` to the `value` [Integer.MAX_VALUE]. We initialize and
- * remember our [ArrayList] of [Offset] to a new instance. We initialize and remember our [Animatable]
- * of [Offset] variable `offset` to an initial value of [Offset.Zero] and a type converter of
- * [Offset.Companion.VectorConverter]. We initialize and remember our [MutableState] of [Offset]
- * variable `referenceOffset` to an initial value of [Offset.Zero].
+ * remember our [ArrayList] of [Offset] variable `accumulator` to a new instance. We initialize and
+ * remember our [Animatable] of [Offset] variable `offset` to an initial value of [Offset.Zero] and
+ * a type converter of [Offset.Companion.VectorConverter]. We initialize and remember our
+ * [MutableState] of [Offset] variable `referenceOffset` to an initial value of [Offset.Zero].
  *
  * Next we compose a [Box] to contain the draggable item and touch input drawing, whose `modifier`
  * argument is a [Modifier.fillMaxWidth], chained to a [ColumnScope.weight] whose `weight` is `1f`
@@ -108,10 +108,10 @@ import kotlin.math.roundToInt
  * `onDraw` lambda argument we:
  *  - call the [ContentDrawScope.drawContent] method to cause the content of the [Box] to be drawn.
  *  - reference the `value` of our [Animatable] of [Offset] variable `offset` to trigger
- *  recomposition.
+ *  recomposition when needed.
  *  - if our [ArrayList] of [Offset] variable `accumulator` is empty we return.
  *  - otherwise we iterate over the indices of our [ArrayList] of [Offset] variable `accumulator`
- *  and call the [ContentDrawScope.drawLine] method with its `color` argument the [Color.Red] if
+ *  and call the [ContentDrawScope.drawLine] method with its `color` argument [Color.Red] if
  *  our current index is greater than our [MutableIntState] variable `touchUpIndex`, or [Color.Blue]
  *  if it is less than it. The `start` argument is the previous [Offset] in our [ArrayList] of
  *  [Offset] variable `accumulator` if it exists, or [Offset.Zero] if it does not, and the `end`
