@@ -190,9 +190,9 @@ import kotlin.math.roundToInt
  * [RowScope] `content` composable lambda argument of the [Row] we initialize and remember our
  * [MutableState] of [Boolean] variable `isExpanded` to an initial value of `false`. Next:
  *  - We compose a [Button] whose `onClick` argument is a lambda which sets `isExpanded` to `true`.
- *  In the [RowScope] `content` Composable lambda argument we compose a [Text] whose `text` argument
- *  displays the current value of our [MutableState] of [String] variable `currentEasing` with the
- *  caption "Easing:".
+ *  In the [RowScope] `content` Composable lambda argument of the [Button] we compose a [Text] whose
+ *  `text` argument displays the current value of our [MutableState] of [String] variable
+ *  `currentEasing` with the caption "Easing:".
  *  - We compose a [DropdownMenu] whose `expanded` argument is the current value of our [MutableState]
  *  of [Boolean] variable `isExpanded`, and whose `onDismissRequest` argument is a lambda which sets
  *  `isExpanded` to `false. In the [ColumnScope] `content` composable lambda argument of the
@@ -370,7 +370,7 @@ fun Material2DMotionPreview() {
  * motion upon release, and launches the animation coroutine.
  *
  * We start by chaining a [Modifier.onPlaced] to our [Modifier] receiver (this will invoke onPlaced
- * after the parent layout has been placed and before we are placed. This allows us to adjust oue
+ * after the parent layout has been placed and before we are placed. This allows us to adjust our
  * placement based on where the parent is). In the `onPlaced` lambda argument we accept the
  * [LayoutCoordinates] passed the lambda in variable `layoutCoordinates`. We initialize our [IntSize]
  * variable `parentSize` to the [LayoutCoordinates.size] of the [LayoutCoordinates.parentCoordinates]
@@ -386,7 +386,7 @@ fun Material2DMotionPreview() {
  * in the [PointerInputScope] `block` lambda argument we call the [PointerInputScope.detectDragGestures]
  * method with the arguments:
  *  - `onDragStart`: a lambda which sets the value of our [MutableIntState] parameter [touchUpIndex]
- *  to [Integer.MAX_VALUE] and clears the value of our [ArrayList] parameter [accumulator].
+ *  to [Integer.MAX_VALUE] and clears the value of our [ArrayList] of [Offset] parameter [accumulator].
  *  - `onDragEnd`: a lambda which uses the [CoroutineScope.launch] method of [CoroutineScope]
  *  parameter [scope] to launch a coroutine in which we:
  *  - set the value of our [MutableIntState] parameter [touchUpIndex] to the size of our [ArrayList]
@@ -394,14 +394,14 @@ fun Material2DMotionPreview() {
  *  - initialize our [Velocity] variable `initialVelocity` to the value returned by the
  *  [VelocityTracker.calculateVelocity] method of our [VelocityTracker] parameter [velocityTracker].
  *  - animate the value of our [Animatable] of [Offset] parameter [offset] to the `targetValue`
- *  [Offset.Zero], with an `animationSpec` of [materialVelocity2D] with its `durationMs` argument
+ *  [Offset.Zero], with an `animationSpec` of a [materialVelocity2D] with its `durationMs` argument
  *  set to the value of our [Float] parameter [duration], its `maxVelocity` argument set to the
  *  value of our [Float] parameter [maxVelocity], its `maxAcceleration` argument set to the value
  *  of our [Float] parameter [maxAcceleration], and its `easing` argument set to the value of our
- *  [MaterialVelocity.Easing] parameter [easing], and the `initialVelocity` argument of the animation
- *  an [Offset] constructed from the value of our [Offset] variable `initialVelocity`. An in the
- *  [Animatable] of [Offset] `block` lambda argument we add the value of the [Offset] to our
- *  [ArrayList] of [Offset] parameter [accumulator].
+ *  [MaterialVelocity.Easing] parameter [easing]. The `initialVelocity` argument of the animation is
+ *  an [Offset] constructed from the values of the properties of our [Offset] variable
+ *  `initialVelocity`. Ann in the [Animatable] of [Offset] `block` lambda argument we add the value
+ *  of the [Offset] to our [ArrayList] of [Offset] parameter [accumulator].
  *  - call the [VelocityTracker.resetTracking] method of our [VelocityTracker] parameter
  *  [velocityTracker] to clear the tracked positions added.
  *
