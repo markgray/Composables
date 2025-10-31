@@ -1,4 +1,5 @@
-package android.support.drag2d.lib;
+@file:Suppress("unused")
 
-public class MyClass {
-}
+package android.support.drag2d.lib
+
+class MyClass 

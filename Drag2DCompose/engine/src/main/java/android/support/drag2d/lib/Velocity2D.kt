@@ -13,274 +13,287 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.support.drag2d.lib;
+package android.support.drag2d.lib
 
-import java.util.Arrays;
+import java.util.Arrays
+import kotlin.math.hypot
+import kotlin.math.max
+import kotlin.math.min
 
-@SuppressWarnings("JavadocDeclaration")
-public class Velocity2D {
-    final MaterialVelocity2D mvX = new MaterialVelocity2D();
-    final MaterialVelocity2D mvY = new MaterialVelocity2D();
+class Velocity2D {
+    val mvX: MaterialVelocity2D = MaterialVelocity2D()
+    val mvY: MaterialVelocity2D = MaterialVelocity2D()
 
-    public void configure(float posX,
-                          float posY,
-                          float velocityX,
-                          float velocityY,
-                          float destinationX,
-                          float destinationY,
-                          float duration,
-                          float maxV,
-                          float maxA, MaterialVelocity.Easing easing) {
-        double speed = Math.hypot(velocityX, velocityY);
+    fun configure(
+        posX: Float,
+        posY: Float,
+        velocityX: Float,
+        velocityY: Float,
+        destinationX: Float,
+        destinationY: Float,
+        duration: Float,
+        maxV: Float,
+        maxA: Float, easing: MaterialVelocity.Easing?
+    ) {
+        var velocityX = velocityX
+        var velocityY = velocityY
+        val speed: Double = hypot(velocityX, velocityY).toDouble()
         if (speed > maxV) {
-            //noinspection lossy-conversions
-            velocityX *= maxV / speed;
-            //noinspection lossy-conversions
-            velocityY *= maxV / speed;
+            velocityX *= (maxV / speed).toFloat()
+            velocityY *= (maxV / speed).toFloat()
         }
-        mvX.config(posX, destinationX, velocityX, duration, maxA, maxV, easing);
-        mvY.config(posY, destinationY, velocityY, duration, maxA, maxV, easing);
+        mvX.config(posX, destinationX, velocityX, duration, maxA, maxV, easing)
+        mvY.config(posY, destinationY, velocityY, duration, maxA, maxV, easing)
 
-        mvX.sync(mvY);
+        mvX.sync(mvY)
     }
 
-    private void checkCurves() {
-        System.out.println(" --------x-------");
-        dump(mvX);
-        System.out.println(" -------y--------");
+    @Suppress("unused")
+    private fun checkCurves() {
+        println(" --------x-------")
+        dump(mvX)
+        println(" -------y--------")
 
-        dump(mvY);
-        System.out.println("  ");
-
+        dump(mvY)
+        println("  ")
     }
 
-    private void dump(MaterialVelocity2D mv) {
-        System.out.println(" duration " + mv.getDuration());
-        System.out.println(" travel " + mv.getStartPos() + " -> " + mv.getEndPos());
-        System.out.println(" NumberOfStages " + mv.mNumberOfStages);
-        System.out.print("vel  ");
+    private fun dump(mv: MaterialVelocity2D) {
+        println(" duration " + mv.duration)
+        println(" travel " + mv.startPos + " -> " + mv.endPos)
+        println(" NumberOfStages " + mv.mNumberOfStages)
+        print("vel  ")
 
-        for (int i = 0; i < mv.mNumberOfStages; i++) {
-            System.out.print(" | " + mv.mStage[i].mStartV + "  -> " + mv.mStage[i].mEndV);
+        for (i in 0..<mv.mNumberOfStages) {
+            print(" | " + mv.mStage[i].mStartV + "  -> " + mv.mStage[i].mEndV)
         }
-        System.out.println();
-        System.out.print("pos  ");
+        println()
+        print("pos  ")
 
-        for (int i = 0; i < mv.mNumberOfStages; i++) {
-            System.out.print(" | " + mv.mStage[i].mStartPos + "  -> " + mv.mStage[i].mEndPos);
+        for (i in 0..<mv.mNumberOfStages) {
+            print(" | " + mv.mStage[i].mStartPos + "  -> " + mv.mStage[i].mEndPos)
         }
-        System.out.println();
-        System.out.print("pos* ");
-        for (int i = 0; i < mv.mNumberOfStages; i++) {
-            float t1 = mv.mStage[i].mStartTime + 0.001f;
-            float t2 = mv.mStage[i].mEndTime - 0.001f;
-            System.out.print(" | " + mv.getPos(t1) + "  -> " + mv.getPos(t2));
+        println()
+        print("pos* ")
+        for (i in 0..<mv.mNumberOfStages) {
+            val t1 = mv.mStage[i].mStartTime + 0.001f
+            val t2 = mv.mStage[i].endTime - 0.001f
+            print(" | " + mv.getPos(t1) + "  -> " + mv.getPos(t2))
         }
-        System.out.println();
-        System.out.print("time ");
+        println()
+        print("time ")
 
-        for (int i = 0; i < mv.mNumberOfStages; i++) {
-            System.out.print(" | " + mv.mStage[i].mStartTime + "  -> " + mv.mStage[i].mEndTime);
+        for (i in 0..<mv.mNumberOfStages) {
+            print(" | " + mv.mStage[i].mStartTime + "  -> " + mv.mStage[i].endTime)
         }
-        System.out.println();
-        System.out.print("dist ");
+        println()
+        print("dist ")
 
-        for (int i = 0; i < mv.mNumberOfStages; i++) {
-            float dist = mv.mStage[i].mEndPos - mv.mStage[i].mStartPos;
-            float dist2 = (mv.mStage[i].mStartV + mv.mStage[i].mEndV) * (mv.mStage[i].mEndTime - mv.mStage[i].mStartTime) / 2;
-            System.out.print(" | " + dist + "  == " + dist2);
+        for (i in 0..<mv.mNumberOfStages) {
+            val dist = mv.mStage[i].mEndPos - mv.mStage[i].mStartPos
+            val dist2 =
+                (mv.mStage[i].mStartV + mv.mStage[i].mEndV) * (mv.mStage[i].endTime - mv.mStage[i].mStartTime) / 2
+            print(" | $dist  == $dist2")
         }
-        System.out.println();
-
-
+        println()
     }
 
-    public float getX(float t) {
-        return mvX.getPos(t);
+    fun getX(t: Float): Float {
+        return mvX.getPos(t)
     }
 
-    public float getY(float t) {
-        return mvY.getPos(t);
+    fun getY(t: Float): Float {
+        return mvY.getPos(t)
     }
 
-    public float getVX(float t) {
-        return mvX.getV(t);
+    fun getVX(t: Float): Float {
+        return mvX.getV(t)
     }
 
-    public float getVY(float t) {
-        return mvY.getV(t);
+    fun getVY(t: Float): Float {
+        return mvY.getV(t)
     }
 
-    public boolean isStillMoving(float t) {
-        return mvX.getDuration() > t || mvY.getDuration() > t;
+    @Suppress("unused")
+    fun isStillMoving(t: Float): Boolean {
+        return mvX.duration > t || mvY.duration > t
     }
 
-    public float getDuration() {
-        return Math.max(mvX.getDuration(), mvY.mDuration);
-    }
+    val duration: Float
+        get() = max(mvX.duration, mvY.mDuration)
 
-    public int getPointOffsetX(int len, float fraction) {
-        int lines = (len  - 5 * 4)/8;
-        int off = (int) (((float) (len - 20) / 8) * fraction);
+    @Suppress("unused")
+    fun getPointOffsetX(len: Int, fraction: Float): Int {
+        val lines = (len - 5 * 4) / 8
+        var off = (((len - 20).toFloat() / 8) * fraction).toInt()
 
         if (off >= lines) {
-             off = lines-2;
+            off = lines - 2
         }
-        return 20 + 4*off;
+        return 20 + 4 * off
     }
 
-    public int getPointOffsetY(int len, float fraction) {
-
-        int lines = (len  - 5 * 4)/8;
-        int off = (int) (((float) (len - 20) / 8) * fraction);
+    @Suppress("unused")
+    fun getPointOffsetY(len: Int, fraction: Float): Int {
+        val lines = (len - 5 * 4) / 8
+        var off = (((len - 20).toFloat() / 8) * fraction).toInt()
 
         if (off >= lines) {
-            off = lines-2;
+            off = lines - 2
         }
-        return 20 + 4*(lines+off);
+        return 20 + 4 * (lines + off)
     }
-    public void getCurvesSegments(float[]t1,float[]t2) {
-        Arrays.fill(t1,Float.NaN);
-        Arrays.fill(t2,Float.NaN);
-        for (int i = 0; i <  mvY.mNumberOfStages; i++) {
-           t2[i] = mvY.mStage[i].mStartTime;
 
+    @Suppress("unused")
+    fun getCurvesSegments(t1: FloatArray, t2: FloatArray) {
+        Arrays.fill(t1, Float.NaN)
+        Arrays.fill(t2, Float.NaN)
+        for (i in 0..<mvY.mNumberOfStages) {
+            t2[i] = mvY.mStage[i].mStartTime
         }
-        for (int i = 0; i <  mvX.mNumberOfStages; i++) {
-            t1[i] = mvX.mStage[i].mStartTime;
-
+        for (i in 0..<mvX.mNumberOfStages) {
+            t1[i] = mvX.mStage[i].mStartTime
         }
     }
+
     /**
      * This builds a curves that can be displayed on the screen for debugging
      *
      * @param points        in the form (x1,y1,x2,y2),... as supported by canvas.drawLines()
      * @param w
      * @param h
-     * @param velocity_mode
+     * @param velocityMode
      */
-    public void getCurves(float[] points, int w, int h, boolean velocity_mode) {
-        int len = points.length;
-        float duration = getDuration();
-        int lines = (len  - 5 * 4)/8;
-        int p = 0;
+    @Suppress("unused")
+    fun getCurves(points: FloatArray, w: Int, h: Int, velocityMode: Boolean) {
+        val len = points.size
+        val duration = this.duration
+        val lines = (len - 5 * 4) / 8
+        var p = 0
 
-        int inset = 40;
-        int regionW = w - inset * 2;
-        int regionH = h - inset * 2;
-        points[p++] = inset;
-        points[p++] = inset;
-        points[p++] = inset;
-        points[p++] = inset + regionH;
+        val inset = 40
+        val regionW = w - inset * 2
+        val regionH = h - inset * 2
+        points[p++] = inset.toFloat()
+        points[p++] = inset.toFloat()
+        points[p++] = inset.toFloat()
+        points[p++] = (inset + regionH).toFloat()
 
-        points[p++] = inset + regionW;
-        points[p++] = inset;
-        points[p++] = inset + regionW;
-        points[p++] = inset + regionH;
+        points[p++] = (inset + regionW).toFloat()
+        points[p++] = inset.toFloat()
+        points[p++] = (inset + regionW).toFloat()
+        points[p++] = (inset + regionH).toFloat()
 
-        points[p++] = inset;
-        points[p++] = inset + regionH;
-        points[p++] = inset + regionW;
-        points[p++] = inset + regionH;
+        points[p++] = inset.toFloat()
+        points[p++] = (inset + regionH).toFloat()
+        points[p++] = (inset + regionW).toFloat()
+        points[p++] = (inset + regionH).toFloat()
 
-        float min = 0, max = 1;
-        float v;
-        if (velocity_mode) {
-            float startX = mvX.getStartV();
-            float startY = mvY.getStartV();
-            float endX = 0;
-            float endY = 0;
-            for (int i = 0; i < lines; i++) {
-                float t = i * duration / lines;
-                v = (mvY.getV(t) - startY) / (endY - startY);
-                min = Math.min(v, min);
-                max = Math.max(v, max);
-                v = (mvX.getV(t) - startX) / (endX - startX);
-                min = Math.min(v, min);
-                max = Math.max(v, max);
+        var min = 0f
+        var max = 1f
+        var v: Float
+        if (velocityMode) {
+            val startX = mvX.startV
+            val startY = mvY.startV
+            val endX = 0f
+            val endY = 0f
+            for (i in 0..<lines) {
+                val t = i * duration / lines
+                v = (mvY.getV(t) - startY) / (endY - startY)
+                min = min(v, min)
+                max = max(v, max)
+                v = (mvX.getV(t) - startX) / (endX - startX)
+                min = min(v, min)
+                max = max(v, max)
             }
 
-            float y0 = inset + regionH - regionH * ((0.0f - min) / (max - min));
-            points[p++] = inset;
-            points[p++] = y0;
-            points[p++] = inset + regionW;
-            points[p++] = y0;
-            y0 = inset + regionH - regionH * ((1.0f - min) / (max - min));
-            points[p++] = inset;
-            points[p++] = y0;
-            points[p++] = inset + regionW;
-            points[p++] = y0;
+            var y0 = inset + regionH - regionH * ((0.0f - min) / (max - min))
+            points[p++] = inset.toFloat()
+            points[p++] = y0
+            points[p++] = (inset + regionW).toFloat()
+            points[p++] = y0
+            y0 = inset + regionH - regionH * ((1.0f - min) / (max - min))
+            points[p++] = inset.toFloat()
+            points[p++] = y0
+            points[p++] = (inset + regionW).toFloat()
+            points[p++] = y0
 
 
-            for (int i = 0; i < lines; i++) {
-                float t = i * duration / lines;
-                float t2 = (i + 1) * duration / lines;
-                float xp1 = i / (float) lines;
-                float xp2 = (i + 1) / (float) lines;
-                points[p++] = inset + regionW * (xp1);
-                points[p++] = inset + regionH - regionH * ((mvY.getV(t) - startY) / (endY - startY) - min) / (max - min);
-                points[p++] = inset + regionW * (xp2);
-                points[p++] = inset + regionH - regionH * ((mvY.getV(t2) - startY) / (endY - startY) - min) / (max - min);
+            for (i in 0..<lines) {
+                val t = i * duration / lines
+                val t2 = (i + 1) * duration / lines
+                val xp1 = i / lines.toFloat()
+                val xp2 = (i + 1) / lines.toFloat()
+                points[p++] = inset + regionW * (xp1)
+                points[p++] =
+                    inset + regionH - regionH * ((mvY.getV(t) - startY) / (endY - startY) - min) / (max - min)
+                points[p++] = inset + regionW * (xp2)
+                points[p++] =
+                    inset + regionH - regionH * ((mvY.getV(t2) - startY) / (endY - startY) - min) / (max - min)
             }
-            for (int i = 0; i < lines; i++) {
-                float t = i * duration / lines;
-                float t2 = (i + 1) * duration / lines;
-                float xp1 = i / (float) lines;
-                float xp2 = (i + 1) / (float) lines;
-                points[p++] = inset + regionW * (xp1);
-                points[p++] = inset + regionH - regionH * ((mvX.getV(t) - startX) / (endX - startX) - min) / (max - min);
-                points[p++] = inset + regionW * (xp2);
-                points[p++] = inset + regionH - regionH * ((mvX.getV(t2) - startX) / (endX - startX) - min) / (max - min);
+            for (i in 0..<lines) {
+                val t = i * duration / lines
+                val t2 = (i + 1) * duration / lines
+                val xp1 = i / lines.toFloat()
+                val xp2 = (i + 1) / lines.toFloat()
+                points[p++] = inset + regionW * (xp1)
+                points[p++] =
+                    inset + regionH - regionH * ((mvX.getV(t) - startX) / (endX - startX) - min) / (max - min)
+                points[p++] = inset + regionW * (xp2)
+                points[p++] =
+                    inset + regionH - regionH * ((mvX.getV(t2) - startX) / (endX - startX) - min) / (max - min)
             }
-
         } else {
-            float startX = mvX.getStartPos();
-            float startY = mvY.getStartPos();
-            float endX = mvX.getEndPos();
-            float endY = mvY.getEndPos();
-            for (int i = 0; i < lines; i++) {
-                float t = i * duration / lines;
-                v = (mvY.getPos(t) - startY) / (endY - startY);
-                min = Math.min(v, min);
-                max = Math.max(v, max);
-                v = (mvX.getPos(t) - startX) / (endX - startX);
-                min = Math.min(v, min);
-                max = Math.max(v, max);
+            val startX = mvX.startPos
+            val startY = mvY.startPos
+            val endX = mvX.endPos
+            val endY = mvY.endPos
+            for (i in 0..<lines) {
+                val t = i * duration / lines
+                v = (mvY.getPos(t) - startY) / (endY - startY)
+                min = min(v, min)
+                max = max(v, max)
+                v = (mvX.getPos(t) - startX) / (endX - startX)
+                min = min(v, min)
+                max = max(v, max)
             }
 
-            float y0 = inset + regionH - regionH * ((0.0f - min) / (max - min));
-            points[p++] = inset;
-            points[p++] = y0;
-            points[p++] = inset + regionW;
-            points[p++] = y0;
-            y0 = inset + regionH - regionH * ((1.0f - min) / (max - min));
-            points[p++] = inset;
-            points[p++] = y0;
-            points[p++] = inset + regionW;
-            points[p++] = y0;
+            var y0 = inset + regionH - regionH * ((0.0f - min) / (max - min))
+            points[p++] = inset.toFloat()
+            points[p++] = y0
+            points[p++] = (inset + regionW).toFloat()
+            points[p++] = y0
+            y0 = inset + regionH - regionH * ((1.0f - min) / (max - min))
+            points[p++] = inset.toFloat()
+            points[p++] = y0
+            points[p++] = (inset + regionW).toFloat()
+            points[p++] = y0
 
 
-            for (int i = 0; i < lines; i++) {
-                float t = i * duration / lines;
-                float t2 = (i + 1) * duration / lines;
-                float xp1 = i / (float) lines;
-                float xp2 = (i + 1) / (float) lines;
-                points[p++] = inset + regionW * (xp1);
-                points[p++] = inset + regionH - regionH * ((mvY.getPos(t) - startY) / (endY - startY) - min) / (max - min);
-                points[p++] = inset + regionW * (xp2);
-                points[p++] = inset + regionH - regionH * ((mvY.getPos(t2) - startY) / (endY - startY) - min) / (max - min);
+            for (i in 0..<lines) {
+                val t = i * duration / lines
+                val t2 = (i + 1) * duration / lines
+                val xp1 = i / lines.toFloat()
+                val xp2 = (i + 1) / lines.toFloat()
+                points[p++] = inset + regionW * (xp1)
+                points[p++] =
+                    inset + regionH - regionH * ((mvY.getPos(t) - startY) / (endY - startY) - min) / (max - min)
+                points[p++] = inset + regionW * (xp2)
+                points[p++] =
+                    inset + regionH - regionH * ((mvY.getPos(t2) - startY) / (endY - startY) - min) / (max - min)
             }
-            for (int i = 0; i < lines; i++) {
-                float t = i * duration / lines;
-                float t2 = (i + 1) * duration / lines;
-                float xp1 = i / (float) lines;
-                float xp2 = (i + 1) / (float) lines;
-                points[p++] = inset + regionW * (xp1);
-                points[p++] = inset + regionH - regionH * ((mvX.getPos(t) - startX) / (endX - startX) - min) / (max - min);
-                points[p++] = inset + regionW * (xp2);
-                points[p++] = inset + regionH - regionH * ((mvX.getPos(t2) - startX) / (endX - startX) - min) / (max - min);
+            for (i in 0..<lines) {
+                val t = i * duration / lines
+                val t2 = (i + 1) * duration / lines
+                val xp1 = i / lines.toFloat()
+                val xp2 = (i + 1) / lines.toFloat()
+                points[p++] = inset + regionW * (xp1)
+                points[p++] =
+                    inset + regionH - regionH * ((mvX.getPos(t) - startX) / (endX - startX) - min) / (max - min)
+                points[p++] = inset + regionW * (xp2)
+                points[p++] =
+                    inset + regionH - regionH * ((mvX.getPos(t2) - startX) / (endX - startX) - min) / (max - min)
             }
-
         }
     }
 }

@@ -13,265 +13,293 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.support.drag2d.lib;
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn")
 
-public class MaterialVelocity {
-    float mStartPos, mStartVel;
-    float mEndPos;
-    float mDuration;
-    final Stage[] mStage = new Stage[]{new Stage(1), new Stage(2), new Stage(3)};
-    int mNumberOfStages;
-    Easing mEasing;
-    double mEasingAdapterDistance;
-    double mEasingAdapterA, mEasingAdapterB;
-    protected boolean oneDimension = true;
-    private float mTotalEasingDuration;
+package android.support.drag2d.lib
 
-    public float getDuration() {
-        if (mEasing != null) {
-            return mTotalEasingDuration;
-        }
-        return mDuration;
-    }
+import kotlin.math.abs
+import kotlin.math.sign
+import kotlin.math.sqrt
 
-    public float getEndPos() {
-        return mEndPos;
-    }
+open class MaterialVelocity {
+    open var startPos: Float = 0f
+    open var startV: Float = 0f
+    open var endPos: Float = 0f
+    open var mDuration: Float = 0f
+    open val mStage: Array<Stage> = arrayOf<Stage>(Stage(1), Stage(2), Stage(3))
+    open var mNumberOfStages: Int = 0
+    protected open var mEasing: Easing? = null
+    protected open var mEasingAdapterDistance: Double = 0.0
+    protected open var mEasingAdapterA: Double = 0.0
+    protected open var mEasingAdapterB: Double = 0.0
+    protected open var oneDimension: Boolean = true
+    private var mTotalEasingDuration = 0f
 
-    public float getStartPos() {
-        return mStartPos;
-    }
-    public float getStartV() {
-        return mStartVel;
-    }
-    protected static class Stage {
-        float mStartV;
-        float mStartPos;
-        float mStartTime;
-        float mEndV;
-        float mEndPos;
-        float mEndTime;
-        float mDeltaV;
-        float mDeltaT;
-        final int n;
 
-        public float getEndTime() {
-            return mEndTime;
+    @Suppress("unused")
+    val duration: Float
+        get() {
+            if (mEasing != null) {
+                return mTotalEasingDuration
+            }
+            return mDuration
         }
 
-        public Stage(int n) {
-            this.n = n;
+    @Suppress("unused")
+    class Stage(val n: Int) {
+        var mStartV: Float = 0f
+        var mStartPos: Float = 0f
+        var mStartTime: Float = 0f
+        var mEndV: Float = 0f
+        var mEndPos: Float = 0f
+        var endTime: Float = 0f
+        var mDeltaV: Float = 0f
+        var mDeltaT: Float = 0f
+
+        fun setUp(
+            startV: Float,
+            startPos: Float,
+            startTime: Float,
+            endV: Float,
+            endPos: Float,
+            endTime: Float
+        ) {
+            mStartV = startV
+            mStartPos = startPos
+            mStartTime = startTime
+            mEndV = endV
+            this.endTime = endTime
+            mEndPos = endPos
+            mDeltaV = mEndV - mStartV
+            mDeltaT = this.endTime - mStartTime
         }
 
-        public void setUp(
-                float startV,
-                float startPos,
-                float startTime,
-                float endV,
-                float endPos,
-                float endTime) {
-            mStartV = startV;
-            mStartPos = startPos;
-            mStartTime = startTime;
-            mEndV = endV;
-            mEndTime = endTime;
-            mEndPos = endPos;
-            mDeltaV = mEndV - mStartV;
-            mDeltaT = mEndTime - mStartTime;
+        fun getPos(t: Float): Float {
+            val dt = t - mStartTime
+            val pt = dt / (mDeltaT)
+            val v = mStartV + (mDeltaV) * pt
+            return dt * (mStartV + v) / 2 + mStartPos
         }
 
-        public float getPos(float t) {
-            float dt = t - mStartTime;
-            float pt = dt / (mDeltaT);
-            float v = mStartV + (mDeltaV) * pt;
-            return dt * (mStartV + v) / 2 + mStartPos;
-        }
-
-        public float getVel(float t) {
-            float dt = t - mStartTime;
-            float pt = dt / (mEndTime - mStartTime);
-            return mStartV + (mDeltaV) * pt;
+        fun getVel(t: Float): Float {
+            val dt = t - mStartTime
+            val pt = dt / (this.endTime - mStartTime)
+            return mStartV + (mDeltaV) * pt
         }
     }
 
-    public float getV(float t) {
+    fun getV(t: Float): Float {
         if (mEasing == null) {
-            for (int i = 0; i < mNumberOfStages; i++) {
-                if (mStage[i].mEndTime > t) {
-                    return mStage[i].getVel(t);
+            for (i in 0..<mNumberOfStages) {
+                if (mStage[i].endTime > t) {
+                    return mStage[i].getVel(t)
                 }
             }
-            return 0;
+            return 0f
         }
-        int lastStages = mNumberOfStages-1;
-        for (int i = 0; i < lastStages; i++) {
-            if (mStage[i].mEndTime > t) {
-                return mStage[i].getVel(t);
+        val lastStages = mNumberOfStages - 1
+        for (i in 0..<lastStages) {
+            if (mStage[i].endTime > t) {
+                return mStage[i].getVel(t)
             }
         }
-        return (float) getEasingDiff((t - mStage[lastStages].mStartTime));
+        return getEasingDiff((t - mStage[lastStages].mStartTime).toDouble()).toFloat()
     }
 
-    public float getPos(float t) {
+    fun getPos(t: Float): Float {
         if (mEasing == null) {
-            for (int i = 0; i < mNumberOfStages; i++) {
-                if (mStage[i].mEndTime > t) {
-                    return mStage[i].getPos(t);
+            for (i in 0..<mNumberOfStages) {
+                if (mStage[i].endTime > t) {
+                    return mStage[i].getPos(t)
                 }
             }
-            return mEndPos;
+            return this.endPos
         }
 
 
-        int lastStages = mNumberOfStages - 1;
+        val lastStages = mNumberOfStages - 1
 
-        for (int i = 0; i < lastStages; i++) {
-            if (mStage[i].mEndTime > t) {
-                return mStage[i].getPos(t);
+        for (i in 0..<lastStages) {
+            if (mStage[i].endTime > t) {
+                return mStage[i].getPos(t)
             }
         }
 
-        float ret = (float) getEasing(t - mStage[lastStages].mStartTime);
-        ret += mStage[lastStages].mStartPos;
-        return ret;
-
+        var ret = getEasing((t - mStage[lastStages].mStartTime).toDouble()).toFloat()
+        ret += mStage[lastStages].mStartPos
+        return ret
     }
 
-    @Override
-    public String toString() {
-        String s = " ";
-        for (int i = 0; i < mNumberOfStages; i++) {
-            Stage stage = mStage[i];
-            s += " " + i + " " + stage.toString();
+    override fun toString(): String {
+        var s = " "
+        for (i in 0..<mNumberOfStages) {
+            val stage = mStage[i]
+            s += " $i $stage"
         }
-        return s;
+        return s
     }
 
-    public interface Easing {
-        double get(double t);
+    interface Easing {
+        fun get(t: Double): Double
 
-        double getDiff(double t);
+        fun getDiff(t: Double): Double
 
-        Easing clone();
-
+        fun clone(): Easing?
     }
 
-    public void config(float currentPos, float destination, float currentVelocity,
-                       float maxTime, float maxAcceleration, float maxVelocity, Easing easing) {
-        if (currentPos  == destination) {
-            currentPos += 1;
+    fun config(
+        currentPos: Float, destination: Float, currentVelocity: Float,
+        maxTime: Float, maxAcceleration: Float, maxVelocity: Float, easing: Easing?
+    ) {
+        var currentPos = currentPos
+        var currentVelocity = currentVelocity
+        if (currentPos == destination) {
+            currentPos += 1f
         }
-        mStartPos = currentPos;
-        mEndPos = destination;
+        this.startPos = currentPos
+        this.endPos = destination
 
-        if (easing != null) {
-            mEasing = easing.clone();
-        } else {
-            mEasing = null;
+        mEasing = easing?.clone()
+
+
+        val dir: Float = (destination - currentPos) / abs(destination - currentPos)
+        val maxV = maxVelocity * dir
+        val maxA = maxAcceleration * dir
+
+        if (currentVelocity.toDouble() == 0.0) {
+            currentVelocity = 0.0001f * dir
         }
 
-
-        float dir = Math.signum(destination - currentPos);
-        float maxV = maxVelocity * dir;
-        float maxA = maxAcceleration * dir;
-
-        if (currentVelocity == 0.0) {
-            currentVelocity = 0.0001f * dir;
-        }
-
-        mStartVel = currentVelocity;
+        this.startV = currentVelocity
 
         if (!rampDown(currentPos, destination, currentVelocity, maxTime)) {
-            if (!(oneDimension && cruseThenRampDown(currentPos, destination, currentVelocity, maxTime, maxA, maxV))) {
-                if (!rampUpRampDown(currentPos, destination, currentVelocity, maxA, maxV, maxTime)) {
-                    rampUpCruseRampDown(currentPos, destination, currentVelocity, maxA, maxV, maxTime);
+            if (!(oneDimension && cruseThenRampDown(
+                    currentPos,
+                    destination,
+                    currentVelocity,
+                    maxTime,
+                    maxA,
+                    maxV
+                ))
+            ) {
+                if (!rampUpRampDown(
+                        currentPos,
+                        destination,
+                        currentVelocity,
+                        maxA,
+                        maxV,
+                        maxTime
+                    )
+                ) {
+                    rampUpCruseRampDown(
+                        currentPos,
+                        destination,
+                        currentVelocity,
+                        maxA,
+                        maxV,
+                        maxTime
+                    )
                 }
             }
         }
         if (oneDimension) {
-
-            configureEasingAdapter();
-
+            configureEasingAdapter()
         }
     }
 
-    private boolean rampDown(float currentPos, float destination, float currentVelocity,
-                             float maxTime) {
-        float timeToDestination = 2 * ((destination - currentPos) / currentVelocity);
+    private fun rampDown(
+        currentPos: Float, destination: Float, currentVelocity: Float,
+        maxTime: Float
+    ): Boolean {
+        val timeToDestination = 2 * ((destination - currentPos) / currentVelocity)
         if (timeToDestination > 0 && timeToDestination <= maxTime) { // hit the brakes
-            mNumberOfStages = 1;
-            mStage[0].setUp(currentVelocity, currentPos, 0, 0, destination, timeToDestination);
-            mDuration = timeToDestination;
-            return true;
+            mNumberOfStages = 1
+            mStage[0].setUp(currentVelocity, currentPos, 0f, 0f, destination, timeToDestination)
+            mDuration = timeToDestination
+            return true
         }
-        return false;
+        return false
     }
 
-    private boolean cruseThenRampDown(float currentPos, float destination, float currentVelocity,
-                                      float maxTime, float maxA, float maxV) {
-
-        float timeToBreak = currentVelocity / maxA;
-        float brakeDist = currentVelocity * timeToBreak / 2;
-        float cruseDist = (destination - currentPos) - brakeDist;
-        float cruseTime = cruseDist / currentVelocity;
-        float totalTime = cruseTime + timeToBreak;
+    @Suppress("unused")
+    private fun cruseThenRampDown(
+        currentPos: Float, destination: Float, currentVelocity: Float,
+        maxTime: Float, maxA: Float, maxV: Float
+    ): Boolean {
+        val timeToBreak = currentVelocity / maxA
+        val brakeDist = currentVelocity * timeToBreak / 2
+        val cruseDist = (destination - currentPos) - brakeDist
+        val cruseTime = cruseDist / currentVelocity
+        val totalTime = cruseTime + timeToBreak
 
 
         if (totalTime > 0 && totalTime < maxTime) {
-            mNumberOfStages = 2;
-            mStage[0].setUp(currentVelocity, currentPos, 0, currentVelocity, cruseDist, cruseTime);
-            mStage[1].setUp(currentVelocity, currentPos + cruseDist, cruseTime, 0, destination, cruseTime + timeToBreak);
-            mDuration = cruseTime + timeToBreak;
-            return true;
+            mNumberOfStages = 2
+            mStage[0].setUp(currentVelocity, currentPos, 0f, currentVelocity, cruseDist, cruseTime)
+            mStage[1].setUp(
+                currentVelocity,
+                currentPos + cruseDist,
+                cruseTime,
+                0f,
+                destination,
+                cruseTime + timeToBreak
+            )
+            mDuration = cruseTime + timeToBreak
+            return true
         }
-        return false;
+        return false
     }
 
-    private boolean rampUpRampDown(float currentPos, float destination, float currentVelocity,
-                                   float maxA, float maxVelocity, float maxTime) {
-        float peak_v = Math.signum(maxA) * (float) Math.sqrt(maxA * (destination - currentPos) + currentVelocity * currentVelocity / 2);
-        System.out.println(">>>>>>>>>  peak "+peak_v + " " +  maxVelocity);
-        if (maxVelocity / peak_v > 1) {
-            float t1 = (peak_v - currentVelocity) / maxA;
-            float d1 = (peak_v + currentVelocity) * t1 / 2 + currentPos;
-            float t2 = peak_v / maxA;
-            mNumberOfStages = 2;
-            mStage[0].setUp(currentVelocity, currentPos, 0, peak_v, d1, t1);
-            mStage[1].setUp(peak_v, d1, t1, 0, destination, t2 + t1);
-            mDuration = t2 + t1;
+    private fun rampUpRampDown(
+        currentPos: Float, destination: Float, currentVelocity: Float,
+        maxA: Float, maxVelocity: Float, maxTime: Float
+    ): Boolean {
+        var peakV: Float =
+            sign(maxA) * sqrt(maxA * (destination - currentPos) + currentVelocity * currentVelocity / 2)
+        println(">>>>>>>>>  peak $peakV $maxVelocity")
+        if (maxVelocity / peakV > 1) {
+            var t1 = (peakV - currentVelocity) / maxA
+            var d1 = (peakV + currentVelocity) * t1 / 2 + currentPos
+            var t2 = peakV / maxA
+            mNumberOfStages = 2
+            mStage[0].setUp(currentVelocity, currentPos, 0f, peakV, d1, t1)
+            mStage[1].setUp(peakV, d1, t1, 0f, destination, t2 + t1)
+            mDuration = t2 + t1
             if (mDuration > maxTime) {
-                return false;
+                return false
             }
-            System.out.println(">>>>>>>>>  rampUpRampDown "+mDuration+ "  "+maxTime);
+            println(">>>>>>>>>  rampUpRampDown $mDuration  $maxTime")
 
-            if (mDuration < maxTime/2) {
+            if (mDuration < maxTime / 2) {
+                t1 = mDuration / 2
+                t2 = t1
+                peakV = (2 * (destination - currentPos) / t1 - currentVelocity) / 2
+                d1 = (peakV + currentVelocity) * t1 / 2 + currentPos
 
-                  t1 = mDuration/2;
-                  t2 = t1;
-                  peak_v = (2*(destination-currentPos) / t1 - currentVelocity)/2;
-                  d1 = (peak_v + currentVelocity) * t1 / 2 + currentPos;
-
-                mNumberOfStages = 2;
-                mStage[0].setUp(currentVelocity, currentPos, 0, peak_v, d1, t1);
-                mStage[1].setUp(peak_v, d1, t1, 0, destination, t2 + t1);
-                mDuration = t2 + t1;
-                System.out.println(">>>>>>>>>f rampUpRampDown "+mDuration+ "  "+maxTime);
-                System.out.println(">>>>>>>>>f           peak "+peak_v + " " +  maxVelocity);
+                mNumberOfStages = 2
+                mStage[0].setUp(currentVelocity, currentPos, 0f, peakV, d1, t1)
+                mStage[1].setUp(peakV, d1, t1, 0f, destination, t2 + t1)
+                mDuration = t2 + t1
+                println(">>>>>>>>>f rampUpRampDown $mDuration  $maxTime")
+                println(">>>>>>>>>f           peak $peakV $maxVelocity")
 
                 if (mDuration > maxTime) {
-                    System.out.println(" fail ");
-                    return false;
+                    println(" fail ")
+                    return false
                 }
             }
 
-            return true;
+            return true
         }
-        return false;
+        return false
     }
 
 
-    private void rampUpCruseRampDown(float currentPos, float destination, float currentVelocity,
-                                     float maxA, float maxV, float maxTime) {
+    @Suppress("unused")
+    private fun rampUpCruseRampDown(
+        currentPos: Float, destination: Float, currentVelocity: Float,
+        maxA: Float, maxV: Float, maxTime: Float
+    ) {
 //        float t1 = (maxV - currentVelocity) / maxA;
 //        float d1 = (maxV + currentVelocity) * t1 / 2 + currentPos;
 //        float t3 = maxV / maxA;
@@ -284,65 +312,62 @@ public class MaterialVelocity {
 //        mStage[1].setUp(maxV, d1, t1, maxV, d2 + d1, t2 + t1);
 //        mStage[2].setUp(maxV, d1 + d2, t1 + t2, 0, destination, t2 + t1 + t3);
 //        mDuration = t3 + t2 + t1;
-        float t1 = maxTime/3;
-        float t2  = t1 * 2;
-        float duration = maxTime;
-        float distance = destination - currentPos;
-        float dt1 = t1;
-        float dt2 = t2 - t1;
-        float dt3 = duration - t2;
-        float v1 = (2 * distance - currentVelocity * dt1) / (dt1 + 2 * dt2 + dt3);
-        float peakV1 = v1, peakV2 = v1;
-        mDuration = duration;
-        float d1 = (currentVelocity + peakV1) * t1 / 2;
-        float d2 = (peakV1 + peakV2) * (t2 - t1) / 2;
-        mNumberOfStages = 3;
-        float acc = (v1-currentVelocity)/t1;
-        float dec = (v1)/dt3;
-        System.out.println(" >>>>>> "+acc+" /  "+v1+" \\ "+ dec);
+        val t1 = maxTime / 3
+        val t2 = t1 * 2
+        val distance = destination - currentPos
+        val dt2 = t2 - t1
+        val dt3 = maxTime - t2
+        val v1 = (2 * distance - currentVelocity * t1) / (t1 + 2 * dt2 + dt3)
+        mDuration = maxTime
+        val d1 = (currentVelocity + v1) * t1 / 2
+        val d2 = (v1 + v1) * (t2 - t1) / 2
+        mNumberOfStages = 3
+        val acc = (v1 - currentVelocity) / t1
+        val dec = (v1) / dt3
+        println(" >>>>>> $acc /  $v1 \\ $dec")
 
 
-        mStage[0].setUp(currentVelocity, currentPos, 0, peakV1, currentPos + d1, t1);
-        mStage[1].setUp(peakV1, currentPos + d1, t1, peakV2, currentPos + d1 + d2, t2);
-        mStage[2].setUp(peakV2, currentPos + d1 + d2, t2, 0, destination, duration);
-        mDuration = duration;
+        mStage[0].setUp(currentVelocity, currentPos, 0f, v1, currentPos + d1, t1)
+        mStage[1].setUp(v1, currentPos + d1, t1, v1, currentPos + d1 + d2, t2)
+        mStage[2].setUp(v1, currentPos + d1 + d2, t2, 0f, destination, maxTime)
+        mDuration = maxTime
     }
 
 
-    public double getEasing(double t) {
-        double gx = t * t * mEasingAdapterA + t * mEasingAdapterB;
+    fun getEasing(t: Double): Double {
+        val gx = t * t * mEasingAdapterA + t * mEasingAdapterB
         if (gx > 1) {
-            return mEasingAdapterDistance;
+            return mEasingAdapterDistance
         }
-        return mEasing.get(gx) * mEasingAdapterDistance;
+        return mEasing!!.get(gx) * mEasingAdapterDistance
     }
 
-    private double getEasingDiff(double t) {
-        double gx = t * t * mEasingAdapterA + t * mEasingAdapterB;
+    private fun getEasingDiff(t: Double): Double {
+        val gx = t * t * mEasingAdapterA + t * mEasingAdapterB
         if (gx > 1) {
-            return 0;
+            return 0.0
         }
-        return mEasing.getDiff(gx) * mEasingAdapterDistance*(t*mEasingAdapterA+mEasingAdapterB);
+        return mEasing!!.getDiff(gx) * mEasingAdapterDistance * (t * mEasingAdapterA + mEasingAdapterB)
     }
 
 
-    protected void configureEasingAdapter() {
+    protected fun configureEasingAdapter() {
         if (mEasing == null) {
-            return;
+            return
         }
-        int last = mNumberOfStages - 1;
-        float initialVelocity = mStage[last].mStartV;
-        float distance = mStage[last].mEndPos - mStage[last].mStartPos;
-        float duration = mStage[last].mEndTime - mStage[last].mStartTime;
-        double baseVel = mEasing.getDiff(0);
+        val last = mNumberOfStages - 1
+        val initialVelocity = mStage[last].mStartV
+        val distance = mStage[last].mEndPos - mStage[last].mStartPos
 
-        mEasingAdapterB = initialVelocity / (baseVel * distance);
-        mEasingAdapterA = 1 - mEasingAdapterB;
-        mEasingAdapterDistance = distance;
-        double easingDuration = (Math.sqrt(4 * mEasingAdapterA + mEasingAdapterB * mEasingAdapterB) - mEasingAdapterB) / (2 * mEasingAdapterA);
-        mTotalEasingDuration = (float) (easingDuration + mStage[last].mStartTime);
+        @Suppress("UnusedVariable", "unused")
+        val duration = mStage[last].endTime - mStage[last].mStartTime
+        val baseVel = mEasing!!.getDiff(0.0)
 
+        mEasingAdapterB = initialVelocity / (baseVel * distance)
+        mEasingAdapterA = 1 - mEasingAdapterB
+        mEasingAdapterDistance = distance.toDouble()
+        val easingDuration: Double =
+            (sqrt(4 * mEasingAdapterA + mEasingAdapterB * mEasingAdapterB) - mEasingAdapterB) / (2 * mEasingAdapterA)
+        mTotalEasingDuration = (easingDuration + mStage[last].mStartTime).toFloat()
     }
-
-
 }

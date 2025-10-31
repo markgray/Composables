@@ -13,252 +13,260 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.support.drag2d.lib;
+package android.support.drag2d.lib
 
-@SuppressWarnings({"FieldCanBeLocal", "MethodDoesntCallSuperMethod"})
-public class MaterialEasing implements MaterialVelocity.Easing {
+import kotlin.math.cos
+import kotlin.math.ln
+import kotlin.math.pow
+import kotlin.math.sin
 
-    private static final float[] STANDARD_COEFFICIENTS = {0.4f, 0.0f, 0.2f, 1f};
-    private static final float[] ACCELERATE_COEFFICIENTS = {0.4f, 0.05f, 0.8f, 0.7f};
-    private static final float[] DECELERATE_COEFFICIENTS = {0.0f, 0.0f, 0.2f, 0.95f};
-    private static final float[] LINEAR_COEFFICIENTS = {1f, 1f, 0f, 0f};
-    private static final float[] ANTICIPATE_COEFFICIENTS = {0.36f, 0f, 0.66f, -0.56f};
-    private static final float[] OVERSHOOT_COEFFICIENTS = {0.34f, 1.56f, 0.64f, 1f};
+@Suppress("unused")
+class MaterialEasing : MaterialVelocity.Easing {
+    internal class EaseOutElastic : MaterialVelocity.Easing {
+        val c4: Double = (2 * Math.PI) / 3
+        val log8: Double = ln(8.0)
 
-    public static final String DECELERATE_NAME = "decelerate";
-    public static final String ACCELERATE_NAME = "accelerate";
-    public static final String STANDARD_NAME = "standard";
-    public static final String LINEAR_NAME = "linear";
-    public static final String ANTICIPATE_NAME = "anticipate";
-    public static final String OVERSHOOT_NAME = "overshoot";
-
-    // public static final CubicEasing STANDARD = new CubicEasing(STANDARD_COEFFICIENTS);
-    // public static final CubicEasing ACCELERATE = new CubicEasing(ACCELERATE_COEFFICIENTS);
-    public static final MaterialEasing DECELERATE = new MaterialEasing(DECELERATE_COEFFICIENTS);
-    public static final MaterialEasing LINEAR = new MaterialEasing(LINEAR_COEFFICIENTS);
-    // public static final CubicEasing ANTICIPATE = new CubicEasing(ANTICIPATE_COEFFICIENTS);
-    public static final MaterialEasing OVERSHOOT = new MaterialEasing(OVERSHOOT_COEFFICIENTS);
-    public static final MaterialEasing EASE_OUT_SINE = new MaterialEasing(new float[]{0.61f, 1f, 0.88f, 1f});
-    public static final MaterialEasing EASE_OUT_CUBIC = new MaterialEasing(new float[]{0.33f, 1f, 0.68f, 1f});
-    public static final MaterialEasing EASE_OUT_QUINT = new MaterialEasing(new float[]{0.22f, 1f, 0.36f, 1f});
-    public static final MaterialEasing EASE_OUT_CIRC = new MaterialEasing(new float[]{0.02f, 0.55f, 0.45f, 1f});
-    public static final MaterialEasing EASE_OUT_QUAD = new MaterialEasing(new float[]{0.5f, 1f, 0.89f, 1f});
-    public static final MaterialEasing EASE_OUT_QUART = new MaterialEasing(new float[]{0.25f, 1f, 0.5f, 1f});
-    public static final MaterialEasing EASE_OUT_EXPO = new MaterialEasing(new float[]{0.16f, 1f, 0.3f, 1f});
-    public static final MaterialEasing EASE_OUT_BACK = new MaterialEasing(new float[]{0.34f, 1.56f, 0.64f, 1f});
-    public static final MaterialVelocity.Easing EASE_OUT_ELASTIC = new EaseOutElastic();
-
-
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    static class EaseOutElastic implements MaterialVelocity.Easing {
-
-        final double c4 = (2 * Math.PI) / 3;
-        final double TWENTY_PI = 20 * Math.PI;
-        final double log8 = Math.log(8);
-
-        @Override
-        public double get(double t) {
+        override fun get(t: Double): Double {
             if (t <= 0) {
-                return 0.0;
+                return 0.0
             }
             if (t >= 1) {
-                return 1.0;
+                return 1.0
             }
-            return Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+            return 2.0.pow(-10 * t) * sin((t * 10 - 0.75) * c4) + 1
         }
 
-        @Override
-        public double getDiff(double t) {
-            double c4 = (2 * Math.PI) / 3;
-            if (t < 0 || t > 1) {
-                return 0.0;
+        override fun getDiff(t: Double): Double {
+            @Suppress("UnusedVariable")
+            val c4 = (2 * Math.PI) / 3
+            if (t !in 0.0..1.0) {
+                return 0.0
             }
 
-            double v = 5 * Math.pow(2, 1 - 10 * t) *
-                    (log8 * Math.cos((TWENTY_PI * t) / 3) + 2 * Math.PI * Math.sin((TWENTY_PI * t) / 3)) / 3;
-            return v;
+            val v: Double = 5 * 2.0.pow(1 - 10 * t) *
+                (log8 * cos((TWENTY_PI * t) / 3) + 2 * Math.PI * sin((TWENTY_PI * t) / 3)) / 3
+            return v
         }
 
-        @Override
-        public EaseOutElastic clone() {
-            return new EaseOutElastic();
+        override fun clone(): EaseOutElastic {
+            return EaseOutElastic()
+        }
+
+        companion object {
+            const val TWENTY_PI: Double = 20 * Math.PI
         }
     }
 
-    public static final MaterialVelocity.Easing EASE_OUT_BOUNCE = new EaseOutBounce();
+    internal class EaseOutBounce : MaterialVelocity.Easing {
+        val n1: Double = 7.5625
+        val d1: Double = 2.75
 
-
-    static class EaseOutBounce implements MaterialVelocity.Easing {
-        final double n1 = 7.5625;
-        final double d1 = 2.75;
-
-        @Override
-        public double get(double t) {
-
+        override fun get(t: Double): Double {
+            var t = t
             if (t < 0) {
-                return 0;
+                return 0.0
             }
             if (t < 1 / d1) {
-                return (1 / (1 + 1 / d1)) * (n1 * t * t + t);
+                return (1 / (1 + 1 / d1)) * (n1 * t * t + t)
             } else if (t < 2 / d1) {
-                return n1 * (t -= 1.5 / d1) * t + 0.75;
+                return n1 * (1.5 / d1.let { t -= it; t }) * t + 0.75
             } else if (t < 2.5 / d1) {
-                return n1 * (t -= 2.25 / d1) * t + 0.9375;
+                return n1 * (2.25 / d1.let { t -= it; t }) * t + 0.9375
             } else if (t <= 1) {
-                return n1 * (t -= 2.625 / d1) * t + 0.984375;
+                return n1 * (2.625 / d1.let { t -= it; t }) * t + 0.984375
             }
-            return 1;
+            return 1.0
         }
 
-        @Override
-        public double getDiff(double t) {
-            double result;
+        override fun getDiff(t: Double): Double {
+            @Suppress("UnusedVariable", "unused")
+            var result: Double
             if (t < 0) {
-                return 0;
+                return 0.0
             }
             if (t < 1 / d1) {
-                return 2 * n1 * (t) / (1 + 1 / d1) + 1 / (1 + 1 / d1);
+                return 2 * n1 * (t) / (1 + 1 / d1) + 1 / (1 + 1 / d1)
             } else if (t < 2 / d1) {
-                return 2 * n1 * (t - 1.5 / d1);
+                return 2 * n1 * (t - 1.5 / d1)
             } else if (t < 2.5 / d1) {
-                return 2 * n1 * (t - 2.25 / d1);
+                return 2 * n1 * (t - 2.25 / d1)
             } else if (t <= 1) {
-                return 2 * n1 * (t - 2.625 / d1);
+                return 2 * n1 * (t - 2.625 / d1)
             }
-            return 0;
-
+            return 0.0
         }
 
-        @Override
-        public EaseOutBounce clone() {
-            return new EaseOutBounce();
+        override fun clone(): EaseOutBounce {
+            return EaseOutBounce()
         }
     }
 
 
-    private static final double sError = 0.001;
-    private static final double sDError = 0.0001;
-    private String mConfigString;
-    double mX1, mY1, mX2, mY2;
+    private var mConfigString: String? = null
+    var mX1: Double = 0.0
+    var mY1: Double = 0.0
+    var mX2: Double = 0.0
+    var mY2: Double = 0.0
 
-    MaterialEasing(String configString) {
+    internal constructor(configString: String) {
         // done this way for efficiency
-        mConfigString = configString;
-        int start = configString.indexOf('(');
-        int off1 = configString.indexOf(',', start);
-        mX1 = Double.parseDouble(configString.substring(start + 1, off1).trim());
-        int off2 = configString.indexOf(',', off1 + 1);
-        mY1 = Double.parseDouble(configString.substring(off1 + 1, off2).trim());
-        int off3 = configString.indexOf(',', off2 + 1);
-        mX2 = Double.parseDouble(configString.substring(off2 + 1, off3).trim());
-        int end = configString.indexOf(')', off3 + 1);
-        mY2 = Double.parseDouble(configString.substring(off3 + 1, end).trim());
+        mConfigString = configString
+        val start: Int = configString.indexOf('(')
+        val off1: Int = configString.indexOf(',', start)
+        mX1 = configString.substring(start + 1, off1).trim { it <= ' ' }.toDouble()
+        val off2: Int = configString.indexOf(',', off1 + 1)
+        mY1 = configString.substring(off1 + 1, off2).trim { it <= ' ' }.toDouble()
+        val off3: Int = configString.indexOf(',', off2 + 1)
+        mX2 = configString.substring(off2 + 1, off3).trim { it <= ' ' }.toDouble()
+        val end: Int = configString.indexOf(')', off3 + 1)
+        mY2 = configString.substring(off3 + 1, end).trim { it <= ' ' }.toDouble()
     }
 
-    MaterialEasing(float[] c) {
-        this(c[0], c[1], c[2], c[3]);
+    internal constructor(c: FloatArray) : this(
+        c[0].toDouble(),
+        c[1].toDouble(),
+        c[2].toDouble(),
+        c[3].toDouble()
+    )
+
+    internal constructor(x1: Double, y1: Double, x2: Double, y2: Double) {
+        setup(x1, y1, x2, y2)
     }
 
-    MaterialEasing(double x1, double y1, double x2, double y2) {
-        setup(x1, y1, x2, y2);
+
+    override fun clone(): MaterialEasing {
+        return MaterialEasing(mX1, mY1, mX2, mY2)
     }
 
-
-    public MaterialEasing clone() {
-        return new MaterialEasing(mX1, mY1, mX2, mY2);
+    fun setup(x1: Double, y1: Double, x2: Double, y2: Double) {
+        this.mX1 = x1
+        this.mY1 = y1
+        this.mX2 = x2
+        this.mY2 = y2
     }
 
-    void setup(double x1, double y1, double x2, double y2) {
-        this.mX1 = x1;
-        this.mY1 = y1;
-        this.mX2 = x2;
-        this.mY2 = y2;
-    }
-
-    private double getX(double t) {
-        double t1 = 1 - t;
+    private fun getX(t: Double): Double {
+        val t1 = 1 - t
         // no need for because start at 0,0 double f0 = (1 - t) * (1 - t) * (1 - t);
-        double f1 = 3 * t1 * t1 * t;
-        double f2 = 3 * t1 * t * t;
-        double f3 = t * t * t;
-        return mX1 * f1 + mX2 * f2 + f3;
+        val f1 = 3 * t1 * t1 * t
+        val f2 = 3 * t1 * t * t
+        val f3 = t * t * t
+        return mX1 * f1 + mX2 * f2 + f3
     }
 
-    private double getY(double t) {
-        double t1 = 1 - t;
+    private fun getY(t: Double): Double {
+        val t1 = 1 - t
         // no need for because start at 0,0 double f0 = (1 - t) * (1 - t) * (1 - t);
-        double f1 = 3 * t1 * t1 * t;
-        double f2 = 3 * t1 * t * t;
-        double f3 = t * t * t;
-        return mY1 * f1 + mY2 * f2 + f3;
+        val f1 = 3 * t1 * t1 * t
+        val f2 = 3 * t1 * t * t
+        val f3 = t * t * t
+        return mY1 * f1 + mY2 * f2 + f3
     }
 
 
-    private double getDiffX(double t) {
-        double t1 = 1 - t;
-        return 3 * t1 * t1 * mX1 + 6 * t1 * t * (mX2 - mX1) + 3 * t * t * (1 - mX2);
+    private fun getDiffX(t: Double): Double {
+        val t1 = 1 - t
+        return 3 * t1 * t1 * mX1 + 6 * t1 * t * (mX2 - mX1) + 3 * t * t * (1 - mX2)
     }
 
 
-    private double getDiffY(double t) {
-        double t1 = 1 - t;
-        return 3 * t1 * t1 * mY1 + 6 * t1 * t * (mY2 - mY1) + 3 * t * t * (1 - mY2);
+    private fun getDiffY(t: Double): Double {
+        val t1 = 1 - t
+        return 3 * t1 * t1 * mY1 + 6 * t1 * t * (mY2 - mY1) + 3 * t * t * (1 - mY2)
     }
 
     /**
      * binary search for the region
      * and linear interpolate the answer
      */
-
-    public double getDiff(double x) {
-        double t = 0.5;
-        double range = 0.5;
-        while (range > sDError) {
-            double tx = getX(t);
-            range *= 0.5;
-            if (tx < x) {
-                t += range;
+    override fun getDiff(t: Double): Double {
+        var timeParameter = 0.5
+        var range = 0.5
+        while (range > SD_ERROR) {
+            val tx = getX(timeParameter)
+            range *= 0.5
+            if (tx < t) {
+                timeParameter += range
             } else {
-                t -= range;
+                timeParameter -= range
             }
         }
 
-        double x1 = getX(t - range);
-        double x2 = getX(t + range);
-        double y1 = getY(t - range);
-        double y2 = getY(t + range);
-        return (y2 - y1) / (x2 - x1);
+        val x1 = getX(timeParameter - range)
+        val x2 = getX(timeParameter + range)
+        val y1 = getY(timeParameter - range)
+        val y2 = getY(timeParameter + range)
+        return (y2 - y1) / (x2 - x1)
     }
 
     /**
      * binary search for the region
      * and linear interpolate the answer
      */
-
-    public double get(double x) {
-        if (x <= 0.0) {
-            return 0;
+    override fun get(t: Double): Double {
+        if (t <= 0.0) {
+            return 0.0
         }
-        if (x >= 1.0) {
-            return 1.0;
+        if (t >= 1.0) {
+            return 1.0
         }
-        double t = 0.5;
-        double range = 0.5;
-        while (range > sError) {
-            double tx = getX(t);
-            range *= 0.5;
-            if (tx < x) {
-                t += range;
+        var time = 0.5
+        var range = 0.5
+        while (range > S_ERROR) {
+            val tx = getX(time)
+            range *= 0.5
+            if (tx < t) {
+                time += range
             } else {
-                t -= range;
+                time -= range
             }
         }
 
-        double x1 = getX(t - range);
-        double x2 = getX(t + range);
-        double y1 = getY(t - range);
-        double y2 = getY(t + range);
+        val x1 = getX(time - range)
+        val x2 = getX(time + range)
+        val y1 = getY(time - range)
+        val y2 = getY(time + range)
 
-        return (y2 - y1) * (x - x1) / (x2 - x1) + y1;
+        return (y2 - y1) * (t - x1) / (x2 - x1) + y1
+    }
+
+    companion object {
+        private val STANDARD_COEFFICIENTS = floatArrayOf(0.4f, 0.0f, 0.2f, 1f)
+        private val ACCELERATE_COEFFICIENTS = floatArrayOf(0.4f, 0.05f, 0.8f, 0.7f)
+        private val DECELERATE_COEFFICIENTS = floatArrayOf(0.0f, 0.0f, 0.2f, 0.95f)
+        private val LINEAR_COEFFICIENTS = floatArrayOf(1f, 1f, 0f, 0f)
+        private val ANTICIPATE_COEFFICIENTS = floatArrayOf(0.36f, 0f, 0.66f, -0.56f)
+        private val OVERSHOOT_COEFFICIENTS = floatArrayOf(0.34f, 1.56f, 0.64f, 1f)
+
+        const val DECELERATE_NAME: String = "decelerate"
+        const val ACCELERATE_NAME: String = "accelerate"
+        const val STANDARD_NAME: String = "standard"
+        const val LINEAR_NAME: String = "linear"
+        const val ANTICIPATE_NAME: String = "anticipate"
+        const val OVERSHOOT_NAME: String = "overshoot"
+
+        // public static final CubicEasing STANDARD = new CubicEasing(STANDARD_COEFFICIENTS);
+        // public static final CubicEasing ACCELERATE = new CubicEasing(ACCELERATE_COEFFICIENTS);
+        val DECELERATE: MaterialEasing = MaterialEasing(DECELERATE_COEFFICIENTS)
+        val LINEAR: MaterialEasing = MaterialEasing(LINEAR_COEFFICIENTS)
+
+        // public static final CubicEasing ANTICIPATE = new CubicEasing(ANTICIPATE_COEFFICIENTS);
+        val OVERSHOOT: MaterialEasing = MaterialEasing(OVERSHOOT_COEFFICIENTS)
+        val EASE_OUT_SINE: MaterialEasing = MaterialEasing(floatArrayOf(0.61f, 1f, 0.88f, 1f))
+        val EASE_OUT_CUBIC: MaterialEasing = MaterialEasing(floatArrayOf(0.33f, 1f, 0.68f, 1f))
+        val EASE_OUT_QUINT: MaterialEasing = MaterialEasing(floatArrayOf(0.22f, 1f, 0.36f, 1f))
+        val EASE_OUT_CIRC: MaterialEasing = MaterialEasing(floatArrayOf(0.02f, 0.55f, 0.45f, 1f))
+        val EASE_OUT_QUAD: MaterialEasing = MaterialEasing(floatArrayOf(0.5f, 1f, 0.89f, 1f))
+        val EASE_OUT_QUART: MaterialEasing = MaterialEasing(floatArrayOf(0.25f, 1f, 0.5f, 1f))
+        val EASE_OUT_EXPO: MaterialEasing = MaterialEasing(floatArrayOf(0.16f, 1f, 0.3f, 1f))
+        val EASE_OUT_BACK: MaterialEasing = MaterialEasing(floatArrayOf(0.34f, 1.56f, 0.64f, 1f))
+        val EASE_OUT_ELASTIC: MaterialVelocity.Easing = EaseOutElastic()
+
+
+        val EASE_OUT_BOUNCE: MaterialVelocity.Easing = EaseOutBounce()
+
+
+        private const val S_ERROR = 0.001
+        private const val SD_ERROR = 0.0001
     }
 }

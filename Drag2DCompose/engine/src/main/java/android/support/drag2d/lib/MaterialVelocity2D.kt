@@ -13,112 +13,116 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.support.drag2d.lib;
+package android.support.drag2d.lib
 
-public class MaterialVelocity2D extends MaterialVelocity {
+import kotlin.math.sign
 
-    public MaterialVelocity2D() {
-        oneDimension = false;
-    }
+class MaterialVelocity2D : MaterialVelocity() {
 
-    public void fixed(MaterialVelocity2D slower) {
-
-        float currentPos = mStartPos;
-        float destination = mEndPos;
-        float currentVelocity = mStartVel;
-        float duration = slower.mDuration;
-        float dir = Math.signum(destination - currentPos);
-        mDuration = slower.mDuration;
-        int stages = mNumberOfStages = slower.mNumberOfStages;
-        float t1 = mDuration / 2;
+    fun fixed(slower: MaterialVelocity2D) {
+        val currentPos = startPos
+        val destination = endPos
+        var currentVelocity = startV
+        val duration = slower.mDuration
+        val dir: Float = sign(destination - currentPos)
+        mDuration = slower.mDuration
+        mNumberOfStages = slower.mNumberOfStages
+        var stages = mNumberOfStages
+        var t1 = mDuration / 2
         if (stages == 1) {
-            stages = mNumberOfStages = 2;
+            mNumberOfStages = 2
+            stages = mNumberOfStages
         } else {
-            t1 = slower.mStage[0].getEndTime();
+            t1 = slower.mStage[0].endTime
         }
-        if (currentVelocity == 0.0) { // so we do not need to div by 0 all o ver the place
-            currentVelocity = 0.0001f * dir;
+        if (currentVelocity.toDouble() == 0.0) { // so we do not need to div by 0 all o ver the place
+            currentVelocity = 0.0001f * dir
         }
-        switch (stages) {
-            //noinspection DataFlowIssue
-            case 1 -> fixeRampDown(currentPos, destination, currentVelocity, duration);
-            case 2 -> fixeRampUpRampDown(currentPos,
-                    destination,
-                    currentVelocity,
-                    duration,
-                    t1);
-            case 3 -> fixe3Ramp(currentPos, destination, currentVelocity,
-                    duration,
-                    slower.mStage[0].getEndTime(),
-                    slower.mStage[1].getEndTime());
+        when (stages) {
+            1 -> fixeRampDown(currentPos, destination, currentVelocity, duration)
+            2 -> fixeRampUpRampDown(
+                currentPos,
+                destination,
+                currentVelocity,
+                duration,
+                t1
+            )
+
+            3 -> fixe3Ramp(
+                currentPos, destination, currentVelocity,
+                duration,
+                slower.mStage[0].endTime,
+                slower.mStage[1].endTime
+            )
         }
 
-        slower.configureEasingAdapter();
-        configureEasingAdapter();
-
-
+        slower.configureEasingAdapter()
+        configureEasingAdapter()
     }
 
-    private void fixeRampDown(float currentPos, float destination, float currentVelocity,
-                              float duration) {
-        float distance = 2 * duration / currentVelocity;
-        float timeToDestination = 2 * ((destination - currentPos) / currentVelocity);
-        mNumberOfStages = 1;
-        mStage[0].setUp(currentVelocity, currentPos, 0, 0, destination, timeToDestination);
-        mDuration = timeToDestination;
-
+    private fun fixeRampDown(
+        currentPos: Float, destination: Float, currentVelocity: Float,
+        duration: Float
+    ) {
+        @Suppress("UnusedVariable", "unused")
+        val distance = 2 * duration / currentVelocity
+        val timeToDestination = 2 * ((destination - currentPos) / currentVelocity)
+        mNumberOfStages = 1
+        mStage[0].setUp(currentVelocity, currentPos, 0f, 0f, destination, timeToDestination)
+        mDuration = timeToDestination
     }
 
 
-    private void fixeRampUpRampDown(float currentPos,
-                                    float destination,
-                                    float currentVelocity,
-                                    float duration,
-                                    float t1) {
+    private fun fixeRampUpRampDown(
+        currentPos: Float,
+        destination: Float,
+        currentVelocity: Float,
+        duration: Float,
+        t1: Float
+    ) {
+        val maxV = ((destination - currentPos) * 2 - currentVelocity * t1) / duration
+        val d1 = currentPos + (currentVelocity + maxV) * t1 / 2
 
-
-        float maxV = ((destination - currentPos) * 2 - currentVelocity * t1) / duration;
-        float d1 = currentPos + (currentVelocity + maxV) * t1 / 2;
-
-        mNumberOfStages = 2;
-        mStage[0].setUp(currentVelocity, currentPos, 0, maxV, d1, t1);
-        mStage[1].setUp(maxV, d1, t1, 0, destination, duration);
-        mDuration = duration;
-
+        mNumberOfStages = 2
+        mStage[0].setUp(currentVelocity, currentPos, 0f, maxV, d1, t1)
+        mStage[1].setUp(maxV, d1, t1, 0f, destination, duration)
+        mDuration = duration
     }
 
-    public void sync(MaterialVelocity2D m) {
+    fun sync(m: MaterialVelocity2D) {
         if (isDominant(m)) {
-            fixed(m);
+            fixed(m)
         } else {
-            m.fixed(this);
+            m.fixed(this)
         }
     }
 
-    public boolean isDominant(MaterialVelocity2D m) {
+    fun isDominant(m: MaterialVelocity2D): Boolean {
         if (m.mNumberOfStages == mNumberOfStages) {
-            return mDuration < m.mDuration;
+            return mDuration < m.mDuration
         }
-        return mNumberOfStages < m.mNumberOfStages;
+        return mNumberOfStages < m.mNumberOfStages
     }
 
-    private void fixe3Ramp(float currentPos, float destination, float currentVelocity,
-                           float duration, float t1, float t2) {
+    private fun fixe3Ramp(
+        currentPos: Float, destination: Float, currentVelocity: Float,
+        duration: Float, t1: Float, t2: Float
+    ) {
+        val distance = destination - currentPos
+        val dt2 = t2 - t1
+        val dt3 = duration - t2
+        val v1 = (2 * distance - currentVelocity * t1) / (t1 + 2 * dt2 + dt3)
 
-        float distance = destination - currentPos;
-        float dt1 = t1;
-        float dt2 = t2 - t1;
-        float dt3 = duration - t2;
-        float v1 = (2 * distance - currentVelocity * dt1) / (dt1 + 2 * dt2 + dt3);
-        float peakV1 = v1, peakV2 = v1;
-
-        float d1 = (currentVelocity + peakV1) * t1 / 2;
-        float d2 = (peakV1 + peakV2) * (t2 - t1) / 2;
-        mNumberOfStages = 3;
-        mStage[0].setUp(currentVelocity, currentPos, 0, peakV1, currentPos + d1, t1);
-        mStage[1].setUp(peakV1, currentPos + d1, t1, peakV2, currentPos + d1 + d2, t2);
-        mStage[2].setUp(peakV2, currentPos + d1 + d2, t2, 0, destination, duration);
-        mDuration = duration;
+        val d1 = (currentVelocity + v1) * t1 / 2
+        val d2 = (v1 + v1) * (t2 - t1) / 2
+        mNumberOfStages = 3
+        mStage[0].setUp(currentVelocity, currentPos, 0f, v1, currentPos + d1, t1)
+        mStage[1].setUp(v1, currentPos + d1, t1, v1, currentPos + d1 + d2, t2)
+        mStage[2].setUp(v1, currentPos + d1 + d2, t2, 0f, destination, duration)
+        mDuration = duration
     }
 
+    init {
+        oneDimension = false
+    }
 }
