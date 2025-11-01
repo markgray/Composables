@@ -24,21 +24,159 @@ import kotlin.math.abs
 import kotlin.math.sign
 import kotlin.math.sqrt
 
+/**
+ * This class calculates the velocity and position of an object over time,
+ * following a "material" motion profile.
+ *
+ * The motion is typically divided into several stages:
+ *  1.  Acceleration: The object speeds up.
+ *  2.  Cruise: The object moves at a constant velocity.
+ *  3.  Deceleration: The object slows down to a stop at the destination.
+ *
+ * This class can calculate the necessary motion profile based on constraints like
+ * maximum velocity, maximum acceleration, and a maximum time to reach the destination.
+ * It can also incorporate a custom Easing function for the final stage of motion.
+ *
+ * The primary methods are `config()` to set up the motion profile, and `getPos(t)`
+ * and `getV(t)` to get the position and velocity at a given time `t`.
+ */
 open class MaterialVelocity {
+    /**
+     * The starting position of the animation. This is typically set to the current position of the
+     * object being animated when the animation is configured.
+     */
     open var startPos: Float = 0f
+
+    /**
+     * The starting velocity of the object.
+     */
     open var startV: Float = 0f
+
+    /**
+     * The final position of the motion.
+     * This is typically the destination or target position for the object. It's configured
+     * in the `config` method and used to calculate the motion profile.
+     */
     open var endPos: Float = 0f
+
+    /**
+     * The duration of the motion in seconds.
+     * This is computed by the `config` method.
+     */
     open var mDuration: Float = 0f
-    open val mStage: Array<Stage> = arrayOf<Stage>(Stage(1), Stage(2), Stage(3))
+
+    /**
+     * An array of `Stage` objects that define the motion profile.
+     * The motion is broken down into a sequence of stages (acceleration, cruise, deceleration).
+     * Each stage defines the motion over a specific time interval. The number of
+     * stages used is determined by the `config` method and stored in `mNumberOfStages`.
+     * This array is pre-allocated with 3 stages, which is the maximum number typically used.
+     */
+    open val mStage: Array<Stage> = arrayOf<Stage>(Stage(n = 1), Stage(n = 2), Stage(n = 3))
+
+    /**
+     * The number of stages in the motion profile.
+     * This is computed by the `config` method and can be 1, 2, or 3, depending
+     * on the motion profile calculated (e.g., ramp-down only, ramp-up then ramp-down, etc.).
+     */
     open var mNumberOfStages: Int = 0
+
+    /**
+     * An optional Easing function to be applied to the motion.
+     * If provided, this easing function will be used to calculate the position
+     * and velocity for the final stage of the motion, replacing the default
+     * linear deceleration. The `config` method sets up an adapter to ensure
+     * the easing function starts with the correct initial velocity and covers
+     * the required distance.
+     */
     protected open var mEasing: Easing? = null
+
+    /**
+     * The total distance to be covered during the easing phase of the motion.
+     *
+     * When an `Easing` function is used, the final stage of the motion profile is adapted
+     * to smoothly transition from the previous stage's velocity into the easing curve.
+     * This property stores the total displacement that occurs during this final easing stage.
+     * It's calculated in `configureEasingAdapter` and used by `getEasing` to scale the
+     * output of the easing function to the correct distance.
+     *
+     * @see configureEasingAdapter
+     * @see getEasing
+     */
     protected open var mEasingAdapterDistance: Double = 0.0
+
+    /**
+     * The quadratic coefficient for the time-warping function applied to the easing curve.
+     *
+     * When an `Easing` function is used, a time-warping function `g(t) = At^2 + Bt` is
+     * applied to the input of the easing function to match the initial velocity of the
+     * motion's final stage. This ensures a smooth transition into the easing curve.
+     * `mEasingAdapterA` represents the 'A' coefficient in this quadratic equation.
+     * It is calculated in `configureEasingAdapter` to ensure that `g(t)` transitions
+     * from the correct starting velocity and covers the full range 0.0 to 1.0 over the
+     * adapted duration of the easing stage.
+     *
+     * @see configureEasingAdapter
+     * @see mEasingAdapterB
+     */
     protected open var mEasingAdapterA: Double = 0.0
+
+    /**
+     * The linear coefficient for the time-warping function applied to the easing curve.
+     *
+     * When an `Easing` function is used, a time-warping function `g(t) = At^2 + Bt` is
+     * applied to the input of the easing function to match the initial velocity of the
+     * motion's final stage. This ensures a smooth transition into the easing curve.
+     * `mEasingAdapterB` represents the 'B' coefficient in this quadratic equation.
+     * It is calculated in `configureEasingAdapter` to ensure that `g'(0)` matches the
+     * desired initial velocity for the easing portion of the animation.
+     *
+     * @see configureEasingAdapter
+     * @see mEasingAdapterA
+     */
     protected open var mEasingAdapterB: Double = 0.0
+
+    /**
+     * A flag that indicates if the motion should be constrained to one dimension,
+     * allowing for more complex motion profiles.
+     *
+     * When `true`, the `config` method will attempt to find a suitable motion profile
+     * using various strategies (e.g., `cruseThenRampDown`, `rampUpRampDown`, etc.).
+     *
+     * If set to `false`, the system will only use the simplest `rampDown` profile,
+     * which may not be suitable for all scenarios but can be useful for simpler
+     * or more controlled animations. This can also prevent the motion from
+     * temporarily moving in the opposite direction of the target.
+     */
     protected open var oneDimension: Boolean = true
+
+    /**
+     * The total duration of the animation when an easing function is applied.
+     *
+     * This value is calculated in `configureEasingAdapter` and represents the sum of the
+     * durations of the initial motion stages plus the adapted duration of the final
+     * easing stage. The easing stage's duration may be adjusted by a time-warping
+     * function to ensure a smooth velocity transition, so this property stores the
+     * final, potentially altered, total time.
+     *
+     * @see configureEasingAdapter
+     * @see duration
+     */
     private var mTotalEasingDuration = 0f
 
-    @Suppress("unused")
+    /**
+     * The total duration of the motion in seconds.
+     *
+     * This value is computed by the `config` method based on the calculated motion profile.
+     * If a custom `Easing` function is provided (`mEasing` is not null), the duration might be
+     * adjusted to account for the time-warping applied to the easing curve. In this case,
+     * this property will return the adjusted total duration (`mTotalEasingDuration`). Otherwise, it
+     * returns the duration calculated for the standard multi-stage motion profile (`mDuration`).
+     *
+     * @see mDuration
+     * @see mTotalEasingDuration
+     * @see config
+     */
     val duration: Float
         get() {
             if (mEasing != null) {
@@ -47,17 +185,86 @@ open class MaterialVelocity {
             return mDuration
         }
 
-    @Suppress("unused")
+    /**
+     * Represents a single stage of motion within the overall profile.
+     * A motion profile is typically composed of one or more stages, such as
+     * acceleration, cruise, and deceleration. Each stage defines a segment
+     * of motion with a constant acceleration (which can be zero).
+     *
+     * This class stores the start and end conditions (time, position, velocity)
+     * for its segment and provides methods to calculate the interpolated position
+     * and velocity at any given time `t` within that stage.
+     *
+     * @param n An identifier for the stage (e.g., 1, 2, or 3).
+     */
     class Stage(val n: Int) {
+        /**
+         * The initial velocity at the beginning of this motion stage.
+         * It's set in the `setUp` method and is used to calculate the velocity
+         * and position at any point within this stage's time interval.
+         */
         var mStartV: Float = 0f
+
+        /**
+         * The initial position at the beginning of this motion stage.
+         * It's set in the `setUp` method and serves as the starting point
+         * for position calculations within this stage's time interval.
+         */
         var mStartPos: Float = 0f
+
+        /**
+         * The start time of this stage in seconds, relative to the beginning of the entire motion.
+         * It's set in the `setUp` method and marks the point in time when this stage begins.
+         */
         var mStartTime: Float = 0f
+
+        /**
+         * The final velocity at the end of this motion stage.
+         * It's set in the `setUp` method and marks the target velocity for this
+         * stage's time interval.
+         */
         var mEndV: Float = 0f
+
+        /**
+         * The position at the end of this motion stage.
+         * It's set in the `setUp` method and marks the target position
+         * that the object will reach at the `endTime` of this stage.
+         */
         var mEndPos: Float = 0f
+
+        /**
+         * The end time of this stage in seconds, relative to the beginning of the entire motion.
+         * It's set in the `setUp` method and marks the point in time when this stage ends.
+         */
         var endTime: Float = 0f
+
+        /**
+         * The change in velocity over the duration of this stage.
+         * It is calculated as `mEndV - mStartV` in the `setUp` method.
+         */
         var mDeltaV: Float = 0f
+
+        /**
+         * The duration of this stage in seconds (`endTime` - `mStartTime`).
+         * This is calculated in the `setUp` method and is used in position and
+         * velocity calculations to determine the progress (`pt`) within the stage.
+         */
         var mDeltaT: Float = 0f
 
+        /**
+         * Sets up the parameters for this motion stage.
+         *
+         * This function initializes the start and end conditions (position, velocity, and time)
+         * for a specific segment of the overall motion profile. It also pre-calculates the
+         * change in velocity and time (`mDeltaV`, `mDeltaT`) for use in interpolation.
+         * TODO: Continue here.
+         * @param startV The velocity at the beginning of the stage.
+         * @param startPos The position at the beginning of the stage.
+         * @param startTime The time (relative to the total animation) when this stage begins.
+         * @param endV The velocity at the end of the stage.
+         * @param endPos The position at the end of the stage.
+         * @param endTime The time (relative to the total animation) when this stage ends.
+         */
         fun setUp(
             startV: Float,
             startPos: Float,
