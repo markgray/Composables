@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package android.support.drag2d.lib
 
 import kotlin.math.cos
@@ -38,7 +40,7 @@ class MaterialEasing : MaterialVelocity.Easing {
 
         override fun getDiff(t: Double): Double {
             @Suppress("UnusedVariable")
-            val c4 = (2 * Math.PI) / 3
+            val c4: Double = (2 * Math.PI) / 3
             if (t !in 0.0..1.0) {
                 return 0.0
             }
@@ -62,7 +64,7 @@ class MaterialEasing : MaterialVelocity.Easing {
         val d1: Double = 2.75
 
         override fun get(t: Double): Double {
-            var t = t
+            var t: Double = t
             if (t < 0) {
                 return 0.0
             }
@@ -123,19 +125,19 @@ class MaterialEasing : MaterialVelocity.Easing {
     }
 
     internal constructor(c: FloatArray) : this(
-        c[0].toDouble(),
-        c[1].toDouble(),
-        c[2].toDouble(),
-        c[3].toDouble()
+        x1 = c[0].toDouble(),
+        y1 = c[1].toDouble(),
+        x2 = c[2].toDouble(),
+        y2 = c[3].toDouble()
     )
 
     internal constructor(x1: Double, y1: Double, x2: Double, y2: Double) {
-        setup(x1, y1, x2, y2)
+        setup(x1 = x1, y1 = y1, x2 = x2, y2 = y2)
     }
 
 
     override fun clone(): MaterialEasing {
-        return MaterialEasing(mX1, mY1, mX2, mY2)
+        return MaterialEasing(x1 = mX1, y1 = mY1, x2 = mX2, y2 = mY2)
     }
 
     fun setup(x1: Double, y1: Double, x2: Double, y2: Double) {
@@ -146,32 +148,32 @@ class MaterialEasing : MaterialVelocity.Easing {
     }
 
     private fun getX(t: Double): Double {
-        val t1 = 1 - t
+        val t1: Double = 1 - t
         // no need for because start at 0,0 double f0 = (1 - t) * (1 - t) * (1 - t);
-        val f1 = 3 * t1 * t1 * t
-        val f2 = 3 * t1 * t * t
-        val f3 = t * t * t
+        val f1: Double = 3 * t1 * t1 * t
+        val f2: Double = 3 * t1 * t * t
+        val f3: Double = t * t * t
         return mX1 * f1 + mX2 * f2 + f3
     }
 
     private fun getY(t: Double): Double {
-        val t1 = 1 - t
+        val t1: Double = 1 - t
         // no need for because start at 0,0 double f0 = (1 - t) * (1 - t) * (1 - t);
-        val f1 = 3 * t1 * t1 * t
-        val f2 = 3 * t1 * t * t
-        val f3 = t * t * t
+        val f1: Double = 3 * t1 * t1 * t
+        val f2: Double = 3 * t1 * t * t
+        val f3: Double = t * t * t
         return mY1 * f1 + mY2 * f2 + f3
     }
 
 
     private fun getDiffX(t: Double): Double {
-        val t1 = 1 - t
+        val t1: Double = 1 - t
         return 3 * t1 * t1 * mX1 + 6 * t1 * t * (mX2 - mX1) + 3 * t * t * (1 - mX2)
     }
 
 
     private fun getDiffY(t: Double): Double {
-        val t1 = 1 - t
+        val t1: Double = 1 - t
         return 3 * t1 * t1 * mY1 + 6 * t1 * t * (mY2 - mY1) + 3 * t * t * (1 - mY2)
     }
 
@@ -192,10 +194,10 @@ class MaterialEasing : MaterialVelocity.Easing {
             }
         }
 
-        val x1 = getX(timeParameter - range)
-        val x2 = getX(timeParameter + range)
-        val y1 = getY(timeParameter - range)
-        val y2 = getY(timeParameter + range)
+        val x1: Double = getX(t = timeParameter - range)
+        val x2: Double = getX(t = timeParameter + range)
+        val y1: Double = getY(t = timeParameter - range)
+        val y2: Double = getY(t = timeParameter + range)
         return (y2 - y1) / (x2 - x1)
     }
 
@@ -213,7 +215,7 @@ class MaterialEasing : MaterialVelocity.Easing {
         var time = 0.5
         var range = 0.5
         while (range > S_ERROR) {
-            val tx = getX(time)
+            val tx: Double = getX(t = time)
             range *= 0.5
             if (tx < t) {
                 time += range
@@ -222,10 +224,10 @@ class MaterialEasing : MaterialVelocity.Easing {
             }
         }
 
-        val x1 = getX(time - range)
-        val x2 = getX(time + range)
-        val y1 = getY(time - range)
-        val y2 = getY(time + range)
+        val x1: Double = getX(t = time - range)
+        val x2: Double = getX(t = time + range)
+        val y1: Double = getY(t = time - range)
+        val y2: Double = getY(t = time + range)
 
         return (y2 - y1) * (t - x1) / (x2 - x1) + y1
     }
@@ -247,24 +249,23 @@ class MaterialEasing : MaterialVelocity.Easing {
 
         // public static final CubicEasing STANDARD = new CubicEasing(STANDARD_COEFFICIENTS);
         // public static final CubicEasing ACCELERATE = new CubicEasing(ACCELERATE_COEFFICIENTS);
-        val DECELERATE: MaterialEasing = MaterialEasing(DECELERATE_COEFFICIENTS)
-        val LINEAR: MaterialEasing = MaterialEasing(LINEAR_COEFFICIENTS)
+        val DECELERATE: MaterialEasing = MaterialEasing(c = DECELERATE_COEFFICIENTS)
+        val LINEAR: MaterialEasing = MaterialEasing(c = LINEAR_COEFFICIENTS)
 
         // public static final CubicEasing ANTICIPATE = new CubicEasing(ANTICIPATE_COEFFICIENTS);
-        val OVERSHOOT: MaterialEasing = MaterialEasing(OVERSHOOT_COEFFICIENTS)
-        val EASE_OUT_SINE: MaterialEasing = MaterialEasing(floatArrayOf(0.61f, 1f, 0.88f, 1f))
-        val EASE_OUT_CUBIC: MaterialEasing = MaterialEasing(floatArrayOf(0.33f, 1f, 0.68f, 1f))
-        val EASE_OUT_QUINT: MaterialEasing = MaterialEasing(floatArrayOf(0.22f, 1f, 0.36f, 1f))
-        val EASE_OUT_CIRC: MaterialEasing = MaterialEasing(floatArrayOf(0.02f, 0.55f, 0.45f, 1f))
-        val EASE_OUT_QUAD: MaterialEasing = MaterialEasing(floatArrayOf(0.5f, 1f, 0.89f, 1f))
-        val EASE_OUT_QUART: MaterialEasing = MaterialEasing(floatArrayOf(0.25f, 1f, 0.5f, 1f))
-        val EASE_OUT_EXPO: MaterialEasing = MaterialEasing(floatArrayOf(0.16f, 1f, 0.3f, 1f))
-        val EASE_OUT_BACK: MaterialEasing = MaterialEasing(floatArrayOf(0.34f, 1.56f, 0.64f, 1f))
+        val OVERSHOOT: MaterialEasing = MaterialEasing(c = OVERSHOOT_COEFFICIENTS)
+        val EASE_OUT_SINE: MaterialEasing = MaterialEasing(c = floatArrayOf(0.61f, 1f, 0.88f, 1f))
+        val EASE_OUT_CUBIC: MaterialEasing = MaterialEasing(c = floatArrayOf(0.33f, 1f, 0.68f, 1f))
+        val EASE_OUT_QUINT: MaterialEasing = MaterialEasing(c = floatArrayOf(0.22f, 1f, 0.36f, 1f))
+        val EASE_OUT_CIRC: MaterialEasing =
+            MaterialEasing(c = floatArrayOf(0.02f, 0.55f, 0.45f, 1f))
+        val EASE_OUT_QUAD: MaterialEasing = MaterialEasing(c = floatArrayOf(0.5f, 1f, 0.89f, 1f))
+        val EASE_OUT_QUART: MaterialEasing = MaterialEasing(c = floatArrayOf(0.25f, 1f, 0.5f, 1f))
+        val EASE_OUT_EXPO: MaterialEasing = MaterialEasing(c = floatArrayOf(0.16f, 1f, 0.3f, 1f))
+        val EASE_OUT_BACK: MaterialEasing =
+            MaterialEasing(c = floatArrayOf(0.34f, 1.56f, 0.64f, 1f))
         val EASE_OUT_ELASTIC: MaterialVelocity.Easing = EaseOutElastic()
-
-
         val EASE_OUT_BOUNCE: MaterialVelocity.Easing = EaseOutBounce()
-
 
         private const val S_ERROR = 0.001
         private const val SD_ERROR = 0.0001

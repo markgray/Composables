@@ -258,7 +258,7 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
     private lateinit var lastVelocity: FloatArray
 
     /**
-     * Actual duration of [velocity2DA], this is updated by the output of [Velocity2D.getDuration].
+     * Actual duration of [velocity2DA], this is updated by the output of [Velocity2D.duration].
      *
      * It's necessary since [velocity2DA] and [velocity2DB] are not guaranteed to have the same
      * duration.
@@ -266,7 +266,7 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
     private var durationASecs = desiredDurationMs / 1000f
 
     /**
-     * Actual duration of [velocity2DB], this is updated by the output of [Velocity2D.getDuration].
+     * Actual duration of [velocity2DB], this is updated by the output of [Velocity2D.duration].
      *
      * It's necessary since [velocity2DA] and [velocity2DB] are not guaranteed to have the same
      * duration.
@@ -344,10 +344,10 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
     /**
      * Calculates the expected duration of the animation in nanoseconds.
      *
-     * This function first converts the generic [AnimationVector] parameters (`initialValue`,
-     * `targetValue`, `initialVelocity`) into `FloatArray` representations. It then passes these
+     * This function first converts the generic [AnimationVector] parameters ([initialValue],
+     * [targetValue], [initialVelocity]) into [FloatArray] representations. It then passes these
      * arrays to the private `getDurationNanos` implementation, which configures the underlying
-     * `Velocity2D` instances and determines the total animation time.
+     * [Velocity2D] instances and determines the total animation time.
      *
      * @param initialValue The starting value of the animation.
      * @param targetValue The target value of the animation.
@@ -365,8 +365,8 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
     /**
      * Calculates the total duration of the animation in nanoseconds.
      *
-     * The duration is determined by the longer of the two `Velocity2D` animations (`velocity2DA`
-     * and `velocity2DB`). This ensures that the animation is considered finished only when all
+     * The duration is determined by the longer of the two [Velocity2D] animations ([velocity2DA]
+     * and [velocity2DB]). This ensures that the animation is considered finished only when all
      * its components have come to a complete stop.
      *
      * @param initialValue The starting value of the animation.
@@ -394,8 +394,8 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
      * Calculates the value of the animation at a given time.
      *
      * This function is an override that delegates to the private `getValueFromNanos` method,
-     * which works with `FloatArray` representations of the animation values. This is done to
-     * abstract the core logic away from the specific `AnimationVector` type.
+     * which works with [FloatArray] representations of the animation values. This is done to
+     * abstract the core logic away from the specific [AnimationVector] type.
      *
      * @param playTimeNanos The elapsed time in the animation, in nanoseconds.
      * @param initialValue The starting value of the animation.
@@ -422,17 +422,17 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
      *
      * This function first ensures the animation is configured using [config]. It then calculates
      * the current value for each dimension by querying the appropriate [Velocity2D] instance
-     * (`velocity2DA` for dimensions 1-2, `velocity2DB` for dimensions 3-4) at the specified
-     * `playTimeNanos`.
+     * ([velocity2DA] for dimensions 1-2, [velocity2DB] for dimensions 3-4) at the specified
+     * [playTimeNanos].
      *
-     * The `playTime` is clamped to the duration of each respective `Velocity2D` animation to
+     * The `playTime` is clamped to the duration of each respective [Velocity2D] animation to
      * ensure the value does not change after the animation has completed.
      *
      * @param playTimeNanos The elapsed time in the animation, in nanoseconds.
      * @param initialValue The starting value of the animation.
      * @param targetValue The target value of the animation.
      * @param initialVelocity The starting velocity of the animation.
-     * @return The animated value at the given `playTimeNanos`, converted to the vector type `V`.
+     * @return The animated value at the given [playTimeNanos], converted to the vector type [V].
      */
     private fun getValueFromNanos(
         playTimeNanos: Long,
@@ -490,7 +490,7 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
      * Calculates the velocity of the animation at a specific time.
      *
      * This function is a public entry point required by the [VectorizedFiniteAnimationSpec] interface.
-     * It converts the generic [AnimationVector] types into `FloatArray`s and delegates the
+     * It converts the generic [AnimationVector] types into [FloatArray]'s and delegates the
      * calculation to the private `getVelocityFromNanos` implementation, which performs the actual
      * computation using the [Velocity2D] instances.
      *
@@ -498,7 +498,7 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
      * @param initialValue The starting value of the animation.
      * @param targetValue The target value of the animation.
      * @param initialVelocity The starting velocity of the animation.
-     * @return The velocity of the animation at the specified `playTimeNanos` as an [AnimationVector].
+     * @return The velocity of the animation at the specified [playTimeNanos] as an [AnimationVector].
      */
     override fun getVelocityFromNanos(
         playTimeNanos: Long,
@@ -517,16 +517,16 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
     /**
      * Calculates the velocity of the animation at a given time.
      *
-     * This function first ensures the `Velocity2D` instances are configured correctly by calling
-     * `config`. It then converts the `playTimeNanos` to seconds and queries the velocity from
-     * `velocity2DA` and `velocity2DB`.
+     * This function first ensures the [Velocity2D] instances are configured correctly by calling
+     * [config]. It then converts the [playTimeNanos] to seconds and queries the velocity from
+     * [velocity2DA] and [velocity2DB].
      *
      * The `playTimeSecs` is coerced to be within the actual duration of each respective animation
      * (`durationASecs` and `durationBSecs`). This ensures that after an animation has completed, it
      * continues to report its final velocity (which should be zero) rather than an invalid value.
      *
-     * The results are combined into a `FloatArray` based on the number of dimensions, which is
-     * then converted back into an [AnimationVector] of type `V`.
+     * The results are combined into a [FloatArray] based on the number of dimensions, which is
+     * then converted back into an [AnimationVector] of type [V].
      *
      * @param playTimeNanos The elapsed time in the animation, in nanoseconds.
      * @param initialValue The starting value of the animation.
@@ -589,16 +589,16 @@ private class VectorizedMaterial2DAnimationSpec<V : AnimationVector>(
 }
 
 /**
- * A [TwoWayConverter] that facilitates the conversion between a `FloatArray` and an
+ * A [TwoWayConverter] that facilitates the conversion between a [FloatArray] and an
  * [AnimationVector].
  *
  * This is necessary because the underlying [Velocity2D] animation engine operates on raw float
- * values, while Compose's animation system works with `AnimationVector` types. This converter
+ * values, while Compose's animation system works with [AnimationVector] types. This converter
  * acts as a bridge between the two.
  *
- * It supports converting `FloatArray`s of size 1 to 4 into their corresponding `AnimationVector`
- * types (e.g., a `FloatArray` of size 2 becomes an `AnimationVector2D`). Similarly, it can
- * convert `AnimationVector1D` through `AnimationVector4D` back into a `FloatArray`.
+ * It supports converting [FloatArray]s of size 1 to 4 into their corresponding [AnimationVector]
+ * types (e.g., a [FloatArray] of size 2 becomes an [AnimationVector2D]). Similarly, it can
+ * convert [AnimationVector1D] through [AnimationVector4D] back into a [FloatArray].
  */
 private val FloatArrayConverter: TwoWayConverter<FloatArray, AnimationVector> = TwoWayConverter(
     convertToVector = {

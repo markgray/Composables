@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package android.support.drag2d.lib
 
 import kotlin.math.sign
@@ -20,42 +22,55 @@ import kotlin.math.sign
 class MaterialVelocity2D : MaterialVelocity() {
 
     fun fixed(slower: MaterialVelocity2D) {
-        val currentPos = startPos
-        val destination = endPos
-        var currentVelocity = startV
-        val duration = slower.mDuration
-        val dir: Float = sign(destination - currentPos)
+        val currentPos: Float = startPos
+        val destination: Float = endPos
+        var currentVelocity: Float = startV
+        val duration: Float = slower.mDuration
+        val dir: Float = sign(x = destination - currentPos)
         mDuration = slower.mDuration
         mNumberOfStages = slower.mNumberOfStages
-        var stages = mNumberOfStages
-        var t1 = mDuration / 2
+        var stages: Int = mNumberOfStages
+        var t1: Float = mDuration / 2
         if (stages == 1) {
             mNumberOfStages = 2
             stages = mNumberOfStages
         } else {
             t1 = slower.mStage[0].endTime
         }
-        if (currentVelocity.toDouble() == 0.0) { // so we do not need to div by 0 all o ver the place
+        if (currentVelocity.toDouble() == 0.0) { // so we do not need to div by 0 all over the place
             currentVelocity = 0.0001f * dir
         }
         when (stages) {
-            1 -> fixeRampDown(currentPos, destination, currentVelocity, duration)
-            2 -> fixeRampUpRampDown(
-                currentPos,
-                destination,
-                currentVelocity,
-                duration,
-                t1
-            )
+            1 -> {
+                fixeRampDown(
+                    currentPos = currentPos,
+                    destination = destination,
+                    currentVelocity = currentVelocity,
+                    duration = duration
+                )
+            }
 
-            3 -> fixe3Ramp(
-                currentPos, destination, currentVelocity,
-                duration,
-                slower.mStage[0].endTime,
-                slower.mStage[1].endTime
-            )
+            2 -> {
+                fixeRampUpRampDown(
+                    currentPos = currentPos,
+                    destination = destination,
+                    currentVelocity = currentVelocity,
+                    duration = duration,
+                    t1 = t1
+                )
+            }
+
+            3 -> {
+                fixe3Ramp(
+                    currentPos = currentPos,
+                    destination = destination,
+                    currentVelocity = currentVelocity,
+                    duration = duration,
+                    t1 = slower.mStage[0].endTime,
+                    t2 = slower.mStage[1].endTime
+                )
+            }
         }
-
         slower.configureEasingAdapter()
         configureEasingAdapter()
     }
@@ -65,13 +80,19 @@ class MaterialVelocity2D : MaterialVelocity() {
         duration: Float
     ) {
         @Suppress("UnusedVariable", "unused")
-        val distance = 2 * duration / currentVelocity
-        val timeToDestination = 2 * ((destination - currentPos) / currentVelocity)
+        val distance: Float = 2 * duration / currentVelocity
+        val timeToDestination: Float = 2 * ((destination - currentPos) / currentVelocity)
         mNumberOfStages = 1
-        mStage[0].setUp(currentVelocity, currentPos, 0f, 0f, destination, timeToDestination)
+        mStage[0].setUp(
+            startV = currentVelocity,
+            startPos = currentPos,
+            startTime = 0f,
+            endV = 0f,
+            endPos = destination,
+            endTime = timeToDestination
+        )
         mDuration = timeToDestination
     }
-
 
     private fun fixeRampUpRampDown(
         currentPos: Float,
@@ -80,20 +101,34 @@ class MaterialVelocity2D : MaterialVelocity() {
         duration: Float,
         t1: Float
     ) {
-        val maxV = ((destination - currentPos) * 2 - currentVelocity * t1) / duration
-        val d1 = currentPos + (currentVelocity + maxV) * t1 / 2
+        val maxV: Float = ((destination - currentPos) * 2 - currentVelocity * t1) / duration
+        val d1: Float = currentPos + (currentVelocity + maxV) * t1 / 2
 
         mNumberOfStages = 2
-        mStage[0].setUp(currentVelocity, currentPos, 0f, maxV, d1, t1)
-        mStage[1].setUp(maxV, d1, t1, 0f, destination, duration)
+        mStage[0].setUp(
+            startV = currentVelocity,
+            startPos = currentPos,
+            startTime = 0f,
+            endV = maxV,
+            endPos = d1,
+            endTime = t1
+        )
+        mStage[1].setUp(
+            startV = maxV,
+            startPos = d1,
+            startTime = t1,
+            endV = 0f,
+            endPos = destination,
+            endTime = duration
+        )
         mDuration = duration
     }
 
     fun sync(m: MaterialVelocity2D) {
         if (isDominant(m)) {
-            fixed(m)
+            fixed(slower = m)
         } else {
-            m.fixed(this)
+            m.fixed(slower = this)
         }
     }
 
@@ -108,17 +143,38 @@ class MaterialVelocity2D : MaterialVelocity() {
         currentPos: Float, destination: Float, currentVelocity: Float,
         duration: Float, t1: Float, t2: Float
     ) {
-        val distance = destination - currentPos
-        val dt2 = t2 - t1
-        val dt3 = duration - t2
-        val v1 = (2 * distance - currentVelocity * t1) / (t1 + 2 * dt2 + dt3)
+        val distance: Float = destination - currentPos
+        val dt2: Float = t2 - t1
+        val dt3: Float = duration - t2
+        val v1: Float = (2 * distance - currentVelocity * t1) / (t1 + 2 * dt2 + dt3)
 
-        val d1 = (currentVelocity + v1) * t1 / 2
-        val d2 = (v1 + v1) * (t2 - t1) / 2
+        val d1: Float = (currentVelocity + v1) * t1 / 2
+        val d2: Float = (v1 + v1) * (t2 - t1) / 2
         mNumberOfStages = 3
-        mStage[0].setUp(currentVelocity, currentPos, 0f, v1, currentPos + d1, t1)
-        mStage[1].setUp(v1, currentPos + d1, t1, v1, currentPos + d1 + d2, t2)
-        mStage[2].setUp(v1, currentPos + d1 + d2, t2, 0f, destination, duration)
+        mStage[0].setUp(
+            startV = currentVelocity,
+            startPos = currentPos,
+            startTime = 0f,
+            endV = v1,
+            endPos = currentPos + d1,
+            endTime = t1
+        )
+        mStage[1].setUp(
+            startV = v1,
+            startPos = currentPos + d1,
+            startTime = t1,
+            endV = v1,
+            endPos = currentPos + d1 + d2,
+            endTime = t2
+        )
+        mStage[2].setUp(
+            startV = v1,
+            startPos = currentPos + d1 + d2,
+            startTime = t2,
+            endV = 0f,
+            endPos = destination,
+            endTime = duration
+        )
         mDuration = duration
     }
 
