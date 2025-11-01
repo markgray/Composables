@@ -168,7 +168,7 @@ fun CraneEditableUserInput(
     onInputChanged: (String) -> Unit
 ) {
 
-    var textFieldState by rememberSaveable(stateSaver = TextFieldValue.Companion.Saver) {
+    var textFieldState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue()
         )
