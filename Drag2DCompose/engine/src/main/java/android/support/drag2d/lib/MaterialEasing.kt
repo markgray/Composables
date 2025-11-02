@@ -62,7 +62,7 @@ class MaterialEasing : MaterialVelocity.Easing {
      */
     internal class EaseOutElastic : MaterialVelocity.Easing {
         /**
-         * Constant value representing 2 * PI.
+         * Constant value representing `2` times `PI` divided by `3`.
          */
         val c4: Double = (2 * Math.PI) / 3
 
@@ -134,7 +134,7 @@ class MaterialEasing : MaterialVelocity.Easing {
 
         companion object {
             /**
-             * Constant value representing 20 * PI.
+             * Constant value representing `20` times `PI`.
              */
             const val TWENTY_PI: Double = 20 * Math.PI
         }
@@ -363,8 +363,11 @@ class MaterialEasing : MaterialVelocity.Easing {
      * point on the curve, which represents the animation's progress.
      *
      * The formula for the y-coordinate is:
+     *
      * `Y(t) = (1-t)³*P0y + 3(1-t)²*t*P1y + 3(1-t)*t²*P2y + t³*P3y`
+     *
      * Since P0y is 0 and P3y is 1, the formula simplifies to:
+     *
      * `Y(t) = 3(1-t)²*t*mY1 + 3(1-t)*t²*mY2 + t³`
      *
      * @param t The curve parameter, typically in the range 0.0 to 1.0.
