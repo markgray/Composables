@@ -58,7 +58,7 @@ class MaterialEasing : MaterialVelocity.Easing {
      *
      * The easing function is defined by the formula:
      * `f(t) = 2^(-10 * t) * sin((t * 10 - 0.75) * (2 * PI / 3)) + 1`
-     * for t in the range [0, 1].
+     * for t in the range 0.0 to 1.0
      */
     internal class EaseOutElastic : MaterialVelocity.Easing {
         /**
