@@ -29,7 +29,7 @@ import kotlin.math.min
  *
  * This allows for creating complex 2D animations (e.g., for drag and fling gestures)
  * that adhere to physical constraints like maximum velocity and acceleration.
- * The motion profiles for each axis are calculated independently by `MaterialVelocity2D`
+ * The motion profiles for each axis are calculated independently by [MaterialVelocity2D]
  * and then synchronized to ensure the total duration is consistent.
  *
  * It provides methods to get the position and velocity at any given time `t`
@@ -38,12 +38,12 @@ import kotlin.math.min
 class Velocity2D {
     /**
      * The motion profile for the X-axis. This is a 1D motion calculation
-     * that will be synchronized with `mvY`.
+     * that will be synchronized with [mvY].
      */
     val mvX: MaterialVelocity2D = MaterialVelocity2D()
-    
+
     /**
-     * The MaterialVelocity2D object responsible for calculating the motion along the Y-axis.
+     * The [MaterialVelocity2D] object responsible for calculating the motion along the Y-axis.
      * It computes the position and velocity for the vertical component of the 2D movement.
      * After configuration, it is synchronized with [mvX] to ensure a consistent
      * animation duration across both axes.
@@ -55,8 +55,8 @@ class Velocity2D {
      *
      * This function sets up the motion for both the X and Y axes based on the provided
      * initial conditions, destination, and physical constraints. It first ensures the initial
-     * velocity does not exceed the specified maximum velocity (`maxV`). Then, it configures
-     * the independent `MaterialVelocity2D` instances for each axis (`mvX` and `mvY`).
+     * velocity does not exceed the specified maximum velocity ([maxV]). Then, it configures
+     * the independent [MaterialVelocity2D] instances for each axis ([mvX] and [mvY]).
      * Finally, it synchronizes the two motion profiles to ensure they have the same total duration,
      * adjusting their acceleration/deceleration phases accordingly.
      *
@@ -83,7 +83,8 @@ class Velocity2D {
         destinationY: Float,
         duration: Float,
         maxV: Float,
-        maxA: Float, easing: MaterialVelocity.Easing?
+        maxA: Float,
+        easing: MaterialVelocity.Easing?
     ) {
         var velocityX: Float = velocityX
         var velocityY: Float = velocityY
@@ -179,62 +180,62 @@ class Velocity2D {
     }
 
     /**
-     * Gets the X position at a given time `t`.
-     * This function queries the motion profile for the X-axis (`mvX`) to determine
+     * Gets the X position at a given time [t].
+     * This function queries the motion profile for the X-axis ([mvX]) to determine
      * the object's horizontal position at the specified time in the animation.
      *
      * @param t The time in seconds from the start of the animation.
-     * @return The X coordinate at time `t`.
+     * @return The X coordinate at time [t].
      */
     fun getX(t: Float): Float {
         return mvX.getPos(t = t)
     }
 
     /**
-     * Gets the Y position at a given time `t`.
-     * This function queries the motion profile for the Y-axis (`mvY`) to determine
+     * Gets the Y position at a given time [t].
+     * This function queries the motion profile for the Y-axis ([mvY]) to determine
      * the object's vertical position at the specified time in the animation.
      *
      * @param t The time in seconds from the start of the animation.
-     * @return The Y coordinate at time `t`.
+     * @return The Y coordinate at time [t].
      */
     fun getY(t: Float): Float {
         return mvY.getPos(t = t)
     }
 
     /**
-     * Retrieves the velocity along the X-axis at a specific time `t`.
-     * This function queries the underlying `MaterialVelocity2D` instance for the X-axis (`mvX`)
+     * Retrieves the velocity along the X-axis at a specific time [t].
+     * This function queries the underlying `MaterialVelocity2D` instance for the X-axis ([mvX])
      * to get the horizontal component of the velocity at the given moment in the animation.
      *
      * @param t The time in seconds from the start of the animation.
-     * @return The velocity in the X direction at time `t`.
+     * @return The velocity in the X direction at time [t].
      */
     fun getVX(t: Float): Float {
         return mvX.getV(t = t)
     }
 
     /**
-     * Retrieves the velocity along the Y-axis at a specific time `t`.
-     * This function queries the underlying `MaterialVelocity2D` instance for the Y-axis (`mvY`)
+     * Retrieves the velocity along the Y-axis at a specific time [t].
+     * This function queries the underlying `MaterialVelocity2D` instance for the Y-axis ([mvY])
      * to get the vertical component of the velocity at the given moment in the animation.
      *
      * @param t The time in seconds from the start of the animation.
-     * @return The velocity in the Y direction at time `t`.
+     * @return The velocity in the Y direction at time [t].
      */
     fun getVY(t: Float): Float {
         return mvY.getV(t = t)
     }
 
     /**
-     * Checks if the animation is still in progress at a given time `t`.
-     * The animation is considered "still moving" if the given time `t` is less than the
+     * Checks if the animation is still in progress at a given time [t].
+     * The animation is considered "still moving" if the given time [t] is less than the
      * total duration of either the X or Y component's motion profile.
      * Since both profiles are synchronized to the same maximum duration, this effectively
-     * checks if `t` is within the bounds of the overall animation time.
+     * checks if [t] is within the bounds of the overall animation time.
      *
      * @param t The time in seconds to check, measured from the start of the animation.
-     * @return `true` if the animation has not yet completed at time `t`, `false` otherwise.
+     * @return `true` if the animation has not yet completed at time [t], `false` otherwise.
      */
     @Suppress("unused")
     fun isStillMoving(t: Float): Boolean {
@@ -255,7 +256,7 @@ class Velocity2D {
     /**
      * A utility function, likely for debugging, that calculates an X-axis offset.
      * The calculation seems tailored for positioning elements within a graphical representation,
-     * possibly a debug graph generated by `getCurves`. It takes a total length and a fraction
+     * possibly a debug graph generated by [getCurves]. It takes a total length and a fraction
      * to compute a pixel offset, likely for plotting a point or a line segment.
      * The internal constants (e.g., 5*4, 8, 20) suggest it's designed for a specific
      * layout structure.
@@ -276,7 +277,7 @@ class Velocity2D {
     }
 
     /**
-     * A utility function for debugging purposes, likely used in conjunction with `getCurves`
+     * A utility function for debugging purposes, likely used in conjunction with [getCurves]
      * to calculate a vertical offset for plotting points on a debug graph.
      * It seems to compute an offset based on a total length and a fraction, potentially
      * to position a point representing a specific stage or time in the motion profile.
@@ -303,12 +304,12 @@ class Velocity2D {
      * This function is typically used for debugging or visualization purposes to understand
      * the timing of the different acceleration and deceleration phases in the motion profiles.
      * It clears the provided arrays and then fills them with the start time of each stage
-     * from `mvX` and `mvY`. Unused elements in the arrays are set to `Float.NaN`.
+     * from [mvX] and [mvY]. Unused elements in the arrays are set to [Float.NaN].
      *
      * @param t1 An output array to be populated with the start times of the motion stages for the
-     * X-axis (`mvX`). The size of this array should be sufficient to hold all stage times.
+     * X-axis ([mvX]). The size of this array should be sufficient to hold all stage times.
      * @param t2 An output array to be populated with the start times of the motion stages for the
-     * Y-axis (`mvY`). The size of this array should be sufficient to hold all stage times.
+     * Y-axis ([mvY]). The size of this array should be sufficient to hold all stage times.
      */
     @Suppress("unused")
     fun getCurvesSegments(t1: FloatArray, t2: FloatArray) {
@@ -325,7 +326,7 @@ class Velocity2D {
     /**
      * Generates a set of line segments to visualize the motion profiles for debugging.
      *
-     * This function populates a `FloatArray` with (x, y) coordinates that represent the
+     * This function populates a [FloatArray] with (x, y) coordinates that represent the
      * position-time or velocity-time graphs for both the X and Y axes of the motion.
      * The output is formatted for direct use with `Canvas.drawLines()`. It plots two
      * curves: one for the X-axis motion and one for the Y-axis motion, scaled to fit

@@ -256,7 +256,7 @@ open class MaterialVelocity {
          *
          * This function initializes the start and end conditions (position, velocity, and time)
          * for a specific segment of the overall motion profile. It also pre-calculates the
-         * change in velocity and time (`mDeltaV`, `mDeltaT`) for use in interpolation.
+         * change in velocity and time ([mDeltaV], [mDeltaT]) for use in interpolation.
          *
          * @param startV The velocity at the beginning of the stage.
          * @param startPos The position at the beginning of the stage.
@@ -284,7 +284,7 @@ open class MaterialVelocity {
         }
 
         /**
-         * Calculates the position of the object at a specific time `t` within this stage.
+         * Calculates the position of the object at a specific time [t] within this stage.
          *
          * This function uses the formula for displacement under constant acceleration:
          *
@@ -292,28 +292,28 @@ open class MaterialVelocity {
          *
          * It first determines the elapsed time (`dt`) within the stage and the
          * corresponding velocity (`v`) at that instant. It then calculates the
-         * displacement during `dt` and adds it to the stage's starting position (`mStartPos`).
+         * displacement during `dt` and adds it to the stage's starting position ([mStartPos]).
          *
          * @param t The absolute time in seconds from the beginning of the entire animation.
-         * @return The calculated position at time `t`.
+         * @return The calculated position at time [t].
          */
         fun getPos(t: Float): Float {
             val dt: Float = t - mStartTime
             val pt: Float = dt / (mDeltaT)
             val v: Float = mStartV + (mDeltaV) * pt
-            return dt * (mStartV + v) / 2 + mStartPos
+            return ((dt * (mStartV + v)) / 2) + mStartPos
         }
 
         /**
-         * Calculates the velocity of the object at a specific time `t` within this stage.
+         * Calculates the velocity of the object at a specific time [t] within this stage.
          *
          * This function performs a linear interpolation of the velocity between the
-         * start velocity (`mStartV`) and the end velocity (`mEndV`) of the stage.
+         * start velocity ([mStartV]) and the end velocity ([mEndV]) of the stage.
          * It determines the progress within the stage as a fraction (`pt`) from 0.0 to 1.0
          * and uses it to calculate the velocity at that point in time.
          *
          * @param t The absolute time in seconds from the beginning of the entire animation.
-         * @return The calculated velocity at time `t`.
+         * @return The calculated velocity at time [t].
          */
         fun getVel(t: Float): Float {
             val dt: Float = t - mStartTime
@@ -323,23 +323,23 @@ open class MaterialVelocity {
     }
 
     /**
-     * Calculates the velocity of the object at a given time `t`.
+     * Calculates the velocity of the object at a given time [t].
      *
-     * This function determines the velocity by first identifying which motion stage `t` falls into.
+     * This function determines the velocity by first identifying which motion stage [t] falls into.
      *
-     * If a custom `Easing` function is provided (`mEasing` is not null), the calculation is split:
-     *  - For any time `t` that falls within the initial stages (before the final easing stage),
-     *  it returns the velocity from the corresponding `Stage`.
-     *  - For any time `t` within the final easing stage, it computes the velocity using the
-     *  derivative of the adapted easing function (`getEasingDiff`).
+     * If a custom [Easing] function is provided ([mEasing] is not `null`), the calculation is split:
+     *  - For any time [t] that falls within the initial stages (before the final easing stage),
+     *  it returns the velocity from the corresponding [Stage].
+     *  - For any time [t] within the final easing stage, it computes the velocity using the
+     *  derivative of the adapted easing function ([getEasingDiff]).
      *
-     * If no easing function is used, it iterates through the standard motion stages (`mStage`)
-     * and returns the velocity from the stage whose `endTime` is after `t`.
+     * If no easing function is used, it iterates through the standard motion stages ([mStage])
+     * and returns the velocity from the stage whose `endTime` is after [t].
      *
-     * If `t` is beyond the total duration of the motion, it returns 0f, as the object is at rest.
+     * If [t] is beyond the total duration of the motion, it returns 0f, as the object is at rest.
      *
      * @param t The time in seconds from the start of the motion.
-     * @return The velocity at time `t`.
+     * @return The velocity at time [t].
      */
     fun getV(t: Float): Float {
         if (mEasing == null) {
@@ -360,23 +360,23 @@ open class MaterialVelocity {
     }
 
     /**
-     * Calculates the position of the object at a given time `t`.
+     * Calculates the position of the object at a given time [t].
      *
      * This function determines the object's position by first identifying which motion
-     * stage corresponds to the given time `t`. It then calls the `getPos` method
+     * stage corresponds to the given time [t]. It then calls the [getPos] method
      * of that specific stage to compute the exact position.
      *
-     * If a custom `Easing` function is provided (`mEasing` is not null), this function
-     * handles the final stage of motion differently. For any time `t` falling within the
-     * initial stages (before the easing stage), it delegates to the appropriate `Stage`.
-     * For times within the final easing stage, it uses the adapted `getEasing` function
+     * If a custom [Easing] function is provided ([mEasing] is not null), this function
+     * handles the final stage of motion differently. For any time [t] falling within the
+     * initial stages (before the easing stage), it delegates to the appropriate [Stage].
+     * For times within the final easing stage, it uses the adapted [getEasing] function
      * to calculate the position.
      *
-     * If `t` is beyond the total duration of the motion, this function returns the
-     * final destination position (`endPos`).
+     * If [t] is beyond the total duration of the motion, this function returns the
+     * final destination position ([endPos]).
      *
      * @param t The time in seconds from the beginning of the motion.
-     * @return The position of the object at time `t`.
+     * @return The position of the object at time [t].
      */
     fun getPos(t: Float): Float {
         if (mEasing == null) {
@@ -430,8 +430,8 @@ open class MaterialVelocity {
      */
     interface Easing {
         /**
-         * Calculates the interpolated value of the easing curve at a given time `t`.
-         * The time `t` is expected to be in the range 0.0 to 1.0, representing the
+         * Calculates the interpolated value of the easing curve at a given time [t].
+         * The time [t] is expected to be in the range 0.0 to 1.0, representing the
          * normalized progress of the animation.
          *
          * @param t The normalized time, where 0.0 represents the beginning of the
@@ -441,16 +441,16 @@ open class MaterialVelocity {
         fun get(t: Double): Double
 
         /**
-         * Calculates the derivative (velocity) of the position defined by the adapted easing function
-         * at a given time `t`.
+         * Calculates the derivative (velocity) of the position defined by the adapted easing
+         * function at a given time [t].
          *
          * This function is used to compute the velocity during the final, easing-controlled stage of
          * the motion. It first applies the time-warping function `g(t) = At^2 + Bt` to the input
-         * time `t`. The result, `gx`, is then passed to the underlying easing function's derivative
+         * time [t]. The result, `gx`, is then passed to the underlying easing function's derivative
          * `mEasing.getDiff()`.
          *
          * The final velocity is obtained by scaling this result by two factors:
-         *  1. `mEasingAdapterDistance`: To ensure the motion covers the correct distance.
+         *  1. [mEasingAdapterDistance]: To ensure the motion covers the correct distance.
          *  2. The derivative of the time-warping function, `g'(t) = 2At + B`: To account for the
          *  time distortion and ensure a smooth velocity transition into the easing stage.
          *
@@ -458,7 +458,7 @@ open class MaterialVelocity {
          * velocity is clamped to 0.0.
          *
          * @param t The time in seconds relative to the start of the easing stage.
-         * @return The calculated velocity at time `t`.
+         * @return The calculated velocity at time [t].
          *
          * @see getEasing
          * @see configureEasingAdapter
@@ -466,13 +466,13 @@ open class MaterialVelocity {
         fun getDiff(t: Double): Double
 
         /**
-         * Creates and returns a copy of this `Easing` instance.
+         * Creates and returns a copy of this [Easing] instance.
          *
-         * This is used to allow `MaterialVelocity` to have its own mutable instance
+         * This is used to allow [MaterialVelocity] to have its own mutable instance
          * of an easing function without affecting the original object passed into
-         * the `config` method.
+         * the [config] method.
          *
-         * @return A new `Easing` instance that is a copy of the current one,
+         * @return A new [Easing] instance that is a copy of the current one,
          * or `null` if cloning is not supported.
          */
         fun clone(): Easing?
@@ -486,14 +486,14 @@ open class MaterialVelocity {
      * It tries different strategies to find a valid profile that respects the provided constraints.
      *
      * The strategies are attempted in the following order:
-     *  1.  **`rampDown`**: A simple deceleration to the destination. This is only possible if the
+     *  1.  **[rampDown]**: A simple deceleration to the destination. This is only possible if the
      *  object can reach the target within `maxTime` by only braking.
-     *  2.  **`cruseThenRampDown`**: A period of constant velocity followed by deceleration.
-     *  3.  **`rampUpRampDown`**: An acceleration phase followed immediately by a deceleration phase.
-     *  4.  **`rampUpCruseRampDown`**: The full profile of acceleration, constant velocity (cruise),
+     *  2.  **[cruseThenRampDown]**: A period of constant velocity followed by deceleration.
+     *  3.  **[rampUpRampDown]**: An acceleration phase followed immediately by a deceleration phase.
+     *  4.  **[rampUpCruseRampDown]**: The full profile of acceleration, constant velocity (cruise),
      *  and deceleration.
      *
-     * If a custom `easing` function is provided, this function also sets up an adapter
+     * If a custom [easing] function is provided, this function also sets up an adapter
      * to ensure the easing curve smoothly continues from the velocity of the preceding motion stage.
      *
      * @param currentPos The starting position of the object.
@@ -503,7 +503,7 @@ open class MaterialVelocity {
      * @param maxAcceleration The maximum acceleration to be applied.
      * @param maxVelocity The maximum velocity the object is allowed to reach.
      * @param easing An optional [Easing] function to apply to the final stage of the motion.
-     * If null, a standard deceleration profile is used.
+     * If `null`, a standard deceleration profile is used.
      */
     fun config(
         currentPos: Float,
@@ -572,14 +572,14 @@ open class MaterialVelocity {
     /**
      * Calculates a simple deceleration motion profile to reach the destination.
      *
-     * This function determines if it's possible to stop exactly at the `destination`
-     * by applying constant deceleration, given the `currentVelocity`. It calculates the
+     * This function determines if it's possible to stop exactly at the [destination]
+     * by applying constant deceleration, given the [currentVelocity]. It calculates the
      * time required for this maneuver (`timeToDestination`).
      *
-     * If this calculated time is positive and within the `maxTime` constraint, it configures
+     * If this calculated time is positive and within the [maxTime] constraint, it configures
      * a single motion stage for this ramp-down profile and returns `true`.
      *
-     * This is the simplest motion profile and is attempted first in the `config` method.
+     * This is the simplest motion profile and is attempted first in the [config] method.
      *
      * @param currentPos The starting position of the object.
      * @param destination The target position for the object.
@@ -615,14 +615,14 @@ open class MaterialVelocity {
      * Calculates a motion profile with a cruise phase followed by deceleration.
      *
      * This function attempts to create a two-stage motion profile:
-     *  1.  **Cruise**: The object travels at its `currentVelocity` for a calculated duration.
-     *  2.  **Ramp-down**: The object decelerates from `currentVelocity` to zero,
-     *  stopping exactly at the `destination`. The deceleration rate is derived from `maxA`.
+     *  1.  **Cruise**: The object travels at its [currentVelocity] for a calculated duration.
+     *  2.  **Ramp-down**: The object decelerates from [currentVelocity] to zero,
+     *  stopping exactly at the [destination]. The deceleration rate is derived from [maxA].
      *
      * It calculates the time and distance required for the deceleration phase (`timeToBreak`,
      * `brakeDist`). The remaining distance is covered during the cruise phase.
      *
-     * If the total calculated time for this profile is positive and within the `maxTime` constraint,
+     * If the total calculated time for this profile is positive and within the [maxTime] constraint,
      * it configures the two motion stages (`mStage[0]` for cruise, `mStage[1]` for ramp-down)
      * and returns `true`.
      *
@@ -679,18 +679,18 @@ open class MaterialVelocity {
      * Calculates a motion profile consisting of an acceleration phase followed by a deceleration phase.
      *
      * This function models a path where the object accelerates to a peak velocity and then
-     * immediately begins to decelerate, coming to a stop at the `destination`. This "triangular"
+     * immediately begins to decelerate, coming to a stop at the [destination]. This "triangular"
      * velocity profile is used when there is no time for a constant-velocity (cruise) phase.
      *
      * It first calculates the theoretical peak velocity (`peakV`) needed to cover the distance
-     * from `currentPos` to `destination` with the given `maxA`.
-     *  - If this `peakV` is achievable (i.e., less than `maxVelocity`), it computes the
+     * from [currentPos] to [destination] with the given [maxA].
+     *  - If this `peakV` is achievable (i.e., less than [maxVelocity]), it computes the
      *  durations of the acceleration (`t1`) and deceleration (`t2`) phases and configures
      *  a two-stage motion profile.
-     *  - It checks if the total calculated duration exceeds `maxTime`.
-     *  - As an optimization, if the calculated duration is very short (less than half of `maxTime`),
-     *  it recalculates the profile to use half the `maxTime`, resulting in a smoother,
-     *  less abrupt motion by lowering the peak velocity and acceleration.
+     *  - It checks if the total calculated duration exceeds [maxTime].
+     *  - As an optimization, if the calculated duration is very short (less than half of [maxTime]),
+     *  it recalculates the profile to use half the [maxTime], resulting in a smoother, less abrupt
+     *  motion by lowering the peak velocity and acceleration.
      *
      * @param currentPos The starting position of the object.
      * @param destination The target position for the object.
@@ -786,14 +786,14 @@ open class MaterialVelocity {
      * typically used as a fallback when simpler profiles (like `rampDown` or `rampUpRampDown`)
      * are not feasible within the given constraints.
      *
-     * The implementation divides the provided `maxTime` into three segments (e.g., thirds) for
+     * The implementation divides the provided [maxTime] into three segments (e.g., thirds) for
      * the ramp-up, cruise, and ramp-down phases. It then calculates the necessary peak velocity
      * (`v1`) to cover the total distance within this time structure.
      *
-     * This method is called as a last resort in the `config` function to ensure that a valid
-     * motion profile is always generated, even if it might not strictly adhere to the `maxA`
-     * or `maxV` constraints under all conditions. Its primary goal is to produce a smooth motion
-     * that completes within `maxTime`.
+     * This method is called as a last resort in the [config] function to ensure that a valid
+     * motion profile is always generated, even if it might not strictly adhere to the [maxA]
+     * or [maxV] constraints under all conditions. Its primary goal is to produce a smooth motion
+     * that completes within [maxTime].
      *
      * @param currentPos The starting position of the object.
      * @param destination The target position for the object.
@@ -869,14 +869,14 @@ open class MaterialVelocity {
     /**
      * Calculates the position during the final, easing-controlled stage of the motion.
      *
-     * This function applies a time-warping transformation to the input time `t` before
-     * passing it to the underlying `mEasing` function. The transformation is a quadratic
-     * function `g(t) = At^2 + Bt`, where `A` is `mEasingAdapterA` and `B` is `mEasingAdapterB`.
+     * This function applies a time-warping transformation to the input time [t] before
+     * passing it to the underlying [mEasing] function. The transformation is a quadratic
+     * function `g(t) = At^2 + Bt`, where `A` is [mEasingAdapterA] and `B` is [mEasingAdapterB].
      * This "warped" time, `gx`, ensures that the easing curve starts with a velocity that
      * smoothly matches the velocity from the end of the previous motion stage.
      *
      * The result from the easing function `mEasing.get(gx)` (which is typically in the range
-     * 0.0 to 1.0) is then scaled by `mEasingAdapterDistance` to cover the correct displacement
+     * 0.0 to 1.0) is then scaled by [mEasingAdapterDistance] to cover the correct displacement
      * for this final stage.
      *
      * If the warped time `gx` exceeds 1.0, it signifies that the easing portion of the
@@ -898,6 +898,29 @@ open class MaterialVelocity {
         return mEasing!!.get(t = gx) * mEasingAdapterDistance
     }
 
+    /**
+     * Calculates the derivative (velocity) of the position defined by the adapted easing
+     * function at a given time [t].
+     *
+     * This function is used to compute the velocity during the final, easing-controlled stage of
+     * the motion. It first applies the time-warping function `g(t) = At^2 + Bt` to the input
+     * time [t], where `A` is [mEasingAdapterA] and `B` is [mEasingAdapterB]. The result, `gx`,
+     * is then passed to the underlying easing function's derivative, `mEasing.getDiff()`.
+     *
+     * The final velocity is obtained by scaling this result by two factors using the chain rule:
+     *  1. [mEasingAdapterDistance]: To scale the normalized output of the easing function to the
+     *  correct physical distance.
+     *  2. The derivative of the time-warping function, `g'(t) = 2At + B`, to account for the
+     *  time distortion and ensure a smooth velocity transition into the easing stage.
+     *
+     * If the warped time `gx` exceeds 1.0, it means the animation has completed, so the
+     * velocity is clamped to 0.0.
+     *
+     * @param t The time in seconds relative to the start of the easing stage.
+     * @return The calculated velocity at time [t].
+     * @see getEasing
+     * @see configureEasingAdapter
+     */
     private fun getEasingDiff(t: Double): Double {
         val gx: Double = t * t * mEasingAdapterA + t * mEasingAdapterB
         if (gx > 1) {
@@ -909,24 +932,24 @@ open class MaterialVelocity {
     /**
      * Configures the adapter for the custom easing function to ensure a smooth transition.
      *
-     * When a custom `Easing` function is provided, it typically operates on a normalized time
+     * When a custom [Easing] function is provided, it typically operates on a normalized time
      * scale (0.0 to 1.0) and produces a normalized output (0.0 to 1.0). This function's purpose
      * is to create an "adapter" that maps the real-world physics of the animation's final stage
      * (initial velocity, distance to cover) to the normalized input of the easing curve.
      *
      * It does this by creating a time-warping function, `g(t) = At^2 + Bt`, where `t` is the
-     * time elapsed in the final stage. The coefficients `A` (`mEasingAdapterA`) and `B`
-     * (`mEasingAdapterB`) are calculated to satisfy two conditions:
+     * time elapsed in the final stage. The coefficients `A` ([mEasingAdapterA]) and `B`
+     * ([mEasingAdapterB]) are calculated to satisfy two conditions:
      *
-     *  1.  **Velocity Matching**: The derivative of the adapted easing curve at `t=0` must match
+     *  1. **Velocity Matching**: The derivative of the adapted easing curve at `t=0` must match
      *  the `initialVelocity` of the final motion stage. This ensures a C1 continuous
      *  (smooth) velocity transition.
-     *  2.  **Full Range**: The time-warping function `g(t)` must map the new, calculated duration
+     *  2. **Full Range**: The time-warping function `g(t)` must map the new, calculated duration
      *  of the easing stage to the full range 0.0 to 1.0, ensuring the easing animation
      *  completes fully.
      *
-     * This function calculates and sets `mEasingAdapterA`, `mEasingAdapterB`, and
-     * `mEasingAdapterDistance`. It also computes the new total duration of the animation,
+     * This function calculates and sets [mEasingAdapterA], [mEasingAdapterB], and
+     * [mEasingAdapterDistance]. It also computes the new total duration of the animation,
      */
     protected fun configureEasingAdapter() {
         if (mEasing == null) {

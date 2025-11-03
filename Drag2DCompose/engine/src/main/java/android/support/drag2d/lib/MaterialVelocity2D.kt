@@ -31,19 +31,19 @@ import kotlin.math.sign
 class MaterialVelocity2D : MaterialVelocity() {
 
     /**
-     * Adjusts the velocity profile of this `MaterialVelocity2D` instance to match the duration
-     * and number of stages of a "slower" animation.
+     * Adjusts the velocity profile of this [MaterialVelocity2D] instance to match the duration
+     * and number of stages of a [slower] animation.
      *
      * This function is typically called as part of a synchronization process (see [sync]) where one
-     * animation (the "dominant" one) dictates the timing for another (the "slower" one).
+     * animation (the "dominant" one) dictates the timing for another (the [slower] one).
      * This method modifies the current instance's animation parameters (like velocity peaks)
-     * to ensure it reaches its destination in the exact same duration as the `slower` instance,
+     * to ensure it reaches its destination in the exact same duration as the [slower] instance,
      * using the same number of acceleration/deceleration stages.
      *
      * It calculates the necessary velocities for 1, 2, or 3-stage ramps (ramp-down,
      * ramp-up/ramp-down, or ramp-up/coast/ramp-down) to fit the new time constraints.
      *
-     * @param slower The `MaterialVelocity2D` instance that provides the target duration and stage
+     * @param slower The [MaterialVelocity2D] instance that provides the target duration and stage
      * count. This instance's timing constraints will be imposed on the current instance.
      */
     fun fixed(slower: MaterialVelocity2D) {
@@ -105,11 +105,11 @@ class MaterialVelocity2D : MaterialVelocity() {
      * This is used when the animation needs to be synchronized with a dominant animation and the
      * profile consists of only deceleration.
      *
-     * The method calculates the time required to decelerate from the `currentVelocity` to zero,
-     * ending exactly at the `destination`. This calculated time then becomes the new duration
+     * The method calculates the time required to decelerate from the [currentVelocity] to zero,
+     * ending exactly at the [destination]. This calculated time then becomes the new duration
      * for this motion profile.
      *
-     * Note: The `duration` parameter is passed but not directly used to set the final duration.
+     * Note: The [duration] parameter is passed but not directly used to set the final duration.
      * Instead, the time is recalculated based on the physics of constant deceleration. The `distance`
      * variable is also calculated but currently unused.
      *
@@ -142,21 +142,21 @@ class MaterialVelocity2D : MaterialVelocity() {
     /**
      * Calculates and sets up a two-stage motion profile: acceleration followed by deceleration.
      *
-     * This function is used to ensure the object reaches the specified `destination` in the
-     * exact `duration` provided, by first ramping up the velocity and then ramping it down to zero.
-     * The transition from acceleration to deceleration happens at time `t1`.
+     * This function is used to ensure the object reaches the specified [destination] in the
+     * exact [duration] provided, by first ramping up the velocity and then ramping it down to zero.
+     * The transition from acceleration to deceleration happens at time [t1].
      *
      * The method calculates the peak velocity (`maxV`) required to cover the distance within the
-     * given time constraints. It then configures two `Stage` objects:
-     *  1.  An acceleration phase from the `currentVelocity` to `maxV`.
-     *  2.  A deceleration phase from `maxV` to zero.
+     * given time constraints. It then configures two [Stage] objects:
+     *  1. An acceleration phase from the [currentVelocity] to `maxV`.
+     *  2. A deceleration phase from `maxV` to zero.
      *
      * @param currentPos The starting position of the object.
      * @param destination The target position of the object.
      * @param currentVelocity The initial velocity of the object.
      * @param duration The total time the motion should take.
      * @param t1 The time at which the first stage (acceleration) ends and the second stage
-     *   (deceleration) begins.
+     * (deceleration) begins.
      */
     private fun fixeRampUpRampDown(
         currentPos: Float,
@@ -189,17 +189,17 @@ class MaterialVelocity2D : MaterialVelocity() {
     }
 
     /**
-     * Synchronizes the motion profiles of two `MaterialVelocity2D` instances.
+     * Synchronizes the motion profiles of two [MaterialVelocity2D] instances.
      *
      * This function determines which of the two animations (the current instance or the provided
-     * instance `m`) is "dominant" based on its duration and number of motion stages. The dominant
+     * instance [m]) is "dominant" based on its duration and number of motion stages. The dominant
      * animation is the one that takes longer to complete.
      *
      * The servient (non-dominant) animation's profile is then adjusted using the [fixed] method
      * to match the duration and stage count of the dominant one. This ensures that both animations
      * start and end at the same time, providing a synchronized 2D motion.
      *
-     * @param m The other `MaterialVelocity2D` instance to synchronize with.
+     * @param m The other [MaterialVelocity2D] instance to synchronize with.
      * @see isDominant
      * @see fixed
      */
@@ -212,7 +212,7 @@ class MaterialVelocity2D : MaterialVelocity() {
     }
 
     /**
-     * Determines if the provided `MaterialVelocity2D` instance `m` is "dominant" compared to this
+     * Determines if the provided [MaterialVelocity2D] instance [m] is "dominant" compared to this
      * instance.
      *
      * In the context of synchronizing two animations (e.g., for X and Y motion), the dominant
@@ -220,16 +220,16 @@ class MaterialVelocity2D : MaterialVelocity() {
      * hierarchy.
      *
      * The criteria for dominance are, in order of priority:
-     *  1.  **Number of Stages:** The animation with more motion stages (e.g., a 3-stage
+     *  1. **Number of Stages:** The animation with more motion stages (e.g., a 3-stage
      *  ramp-up/coast/ramp-down vs. a 2-stage ramp-up/ramp-down) is considered dominant.
-     *  2.  **Duration:** If both animations have the same number of stages, the one with the longer
-     *  `mDuration` is considered dominant.
+     *  2. **Duration:** If both animations have the same number of stages, the one with the longer
+     *  [mDuration] is considered dominant.
      *
-     * This function returns `true` if `m` is dominant over the current instance, and `false`
+     * This function returns `true` if [m] is dominant over the current instance, and `false`
      * otherwise.
      *
-     * @param m The other `MaterialVelocity2D` instance to compare against.
-     * @return `true` if `m` is the dominant animation, `false` otherwise.
+     * @param m The other [MaterialVelocity2D] instance to compare against.
+     * @return `true` if [m] is the dominant animation, `false` otherwise.
      */
     fun isDominant(m: MaterialVelocity2D): Boolean {
         if (m.mNumberOfStages == mNumberOfStages) {
@@ -242,15 +242,15 @@ class MaterialVelocity2D : MaterialVelocity() {
      * Calculates and sets up a three-stage motion profile: acceleration, constant velocity (coast),
      * and deceleration.
      *
-     * This function is used to ensure the object reaches the specified `destination` in the exact
-     * `duration` provided, fitting a profile with three distinct phases. The timing for these
-     * phases is dictated by `t1` and `t2`.
+     * This function is used to ensure the object reaches the specified [destination] in the exact
+     * [duration] provided, fitting a profile with three distinct phases. The timing for these
+     * phases is dictated by [t1] and [t2].
      *
      * The method calculates the peak velocity (`v1`) required during the coasting phase to cover
-     * the `distance` within the given time constraints. It then configures three `Stage` objects:
-     *  1. An acceleration phase from `currentVelocity` to `v1`, ending at time `t1`.
-     *  2. A coasting phase at a constant velocity `v1`, from time `t1` to `t2`.
-     *  3. A deceleration phase from `v1` to zero, from time `t2` to `duration`.
+     * the `distance` within the given time constraints. It then configures three [Stage] objects:
+     *  1. An acceleration phase from [currentVelocity] to `v1`, ending at time [t1].
+     *  2. A coasting phase at a constant velocity `v1`, from time [t1] to [t2].
+     *  3. A deceleration phase from `v1` to zero, from time [t2] to [duration].
      *
      * @param currentPos The starting position of the object.
      * @param destination The target position of the object.
