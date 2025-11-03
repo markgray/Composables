@@ -21,33 +21,24 @@ import java.time.Instant
 import androidx.core.net.toUri
 
 /**
- * TODO: Add kdoc
+ * A data class that holds a preview of a mail, to be displayed in a list of mails.
+ *
+ * @param id The unique identifier of the mail.
+ * @param from The [Contact] who sent the mail.
+ * @param timestamp The [Instant] the mail was sent.
+ * @param subject The subject of the mail.
+ * @param shortContent A short preview of the mail's content.
  */
 data class MailInfoPeek(
-    /**
-     * TODO: Add kdoc
-     */
     val id: Int,
-    /**
-     * TODO: Add kdoc
-     */
     val from: Contact,
-    /**
-     * TODO: Add kdoc
-     */
     val timestamp: Instant,
-    /**
-     * TODO: Add kdoc
-     */
     val subject: String,
-    /**
-     * TODO: Add kdoc
-     */
     val shortContent: String
 ) {
     companion object {
         /**
-         * TODO: Add kdoc
+         * A default [MailInfoPeek] to be used for previews and testing.
          */
         val Default: MailInfoPeek = MailInfoPeek(
             id = -1,
@@ -60,43 +51,37 @@ data class MailInfoPeek(
 }
 
 /**
- * TODO: Add kdoc
+ * A data class that holds the full content of a mail.
+ *
+ * @param id The unique identifier of the mail.
+ * @param from The [Contact] who sent the mail.
+ * @param to A list of [Contact]s who the mail was sent to.
+ * @param timestamp The [Instant] the mail was sent.
+ * @param subject The subject of the mail.
+ * @param content The full content of the mail.
+ * @param previousMailId The id of the previous mail in the thread, if it exists.
+ * @param attachments A list of [Attachment]s included in the mail.
  */
 data class MailInfoFull(
-    /**
-     * TODO: Add kdoc
-     */
     val id: Int,
-    /**
-     * TODO: Add kdoc
-     */
     val from: Contact,
-    /**
-     * TODO: Add kdoc
-     */
     val to: List<Contact>,
-    /**
-     * TODO: Add kdoc
-     */
     val timestamp: Instant,
-    /**
-     * TODO: Add kdoc
-     */
     val subject: String,
-    /**
-     * TODO: Add kdoc
-     */
     val content: String,
-    /**
-     * TODO: Add kdoc
-     */
     val previousMailId: Int?,
-    /**
-     * TODO: Add kdoc
-     */
     val attachments: List<Attachment>
 ) {
-    // IDs are guaranteed to be unique, no need to use everything else for equals/hash
+
+    /**
+     * Compares this [MailInfoFull] to another object for equality.
+     *
+     * Two [MailInfoFull] objects are considered equal if they have the same [id],
+     * as IDs are guaranteed to be unique.
+     *
+     * @param other The object to compare with.
+     * @return `true` if the objects are equal, `false` otherwise.
+     */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -106,13 +91,16 @@ data class MailInfoFull(
         return id == other.id
     }
 
+    /**
+     * The hash code of a [MailInfoFull] is only it's [id], as it is guaranteed to be unique.
+     */
     override fun hashCode(): Int {
         return id
     }
 
     companion object {
         /**
-         * TODO: Add kdoc
+         * A default [MailInfoFull] to be used for previews and testing.
          */
         val Default: MailInfoFull = MailInfoFull(
             id = -1,
@@ -133,53 +121,43 @@ data class MailInfoFull(
 }
 
 /**
- * TODO: Add kdoc
+ * A data class representing a file attached to an email.
+ *
+ * @param fileName The name of the file, including its extension.
+ * @param uri The [Uri] pointing to the location of the file.
  */
 data class Attachment(
-    /**
-     * TODO: Add kdoc
-     */
     val fileName: String,
-    /**
-     * TODO: Add kdoc
-     */
     val uri: Uri
 ) {
     /**
-     * TODO: Add kdoc
+     * The name of the attached file, without its extension.
      */
     val nameWithoutExtension: String = fileName.substringBefore(".")
 
     /**
-     * TODO: Add kdoc
+     * The file extension of the attached file.
      */
     val extension: String = fileName.substringAfter(".")
 }
 
 /**
- * TODO: Add kdoc
+ * A data class representing a contact with their name, profile picture, email, and phone number.
+ *
+ * @param name The full name of the contact.
+ * @param profilePic The [Uri] for the contact's profile picture.
+ * @param email The contact's email address.
+ * @param phone The contact's phone number.
  */
 data class Contact(
-    /**
-     * TODO: Add kdoc
-     */
     val name: String,
-    /**
-     * TODO: Add kdoc
-     */
     val profilePic: Uri,
-    /**
-     * TODO: Add kdoc
-     */
     val email: String,
-    /**
-     * TODO: Add kdoc
-     */
     val phone: String
 ) {
     companion object {
         /**
-         * TODO: Add kdoc
+         * A default [Contact] to be used for previews and testing.
          */
         val Default: Contact = Contact(
             name = "John Doe",
@@ -189,7 +167,7 @@ data class Contact(
         )
 
         /**
-         * TODO: Add kdoc
+         * A special [Contact] representing the current user of the application.
          */
         val Me: Contact = Contact(
             name = "Me",

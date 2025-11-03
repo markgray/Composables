@@ -30,6 +30,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
+import androidx.constraintlayout.compose.ConstraintLayoutBaseScope
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.ConstraintSetRef
 import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
@@ -44,10 +48,20 @@ import com.example.composemail.ui.mails.MailList
 import com.example.composemail.ui.mails.MailListState
 import com.example.composemail.ui.newmail.NewMailButton
 import com.example.composemail.ui.newmail.NewMailLayoutState
+import com.example.composemail.ui.newmail.NewMailState
 import com.example.composemail.ui.newmail.rememberNewMailState
 import com.example.composemail.ui.viewer.MailToolbar
 import com.example.composemail.ui.viewer.MailViewer
 
+/**
+ * The different home states that are supported by the [MotionLayout] in [ComposeMailHome].
+ *
+ * Each state is represented by a [ConstraintSet] and has a
+ * unique [tag] that is used to identify it.
+ *
+ * The current state is resolved in [resolveConstraintSet] based on the screen size, fold state,
+ * and whether a mail is open.
+ */
 private enum class HomeState(val tag: String) {
     ListOnly("listOnlyCompactAndExpanded"),
     MailOpenCompact("mailOpenCompact"),
@@ -55,9 +69,28 @@ private enum class HomeState(val tag: String) {
     MailOpenHalf("mailOpenHalf")
 }
 
+/**
+ * The [MotionScene] that models the animations and states of the home screen.
+ *
+ * It defines four states ([HomeState]):
+ *  1. [HomeState.ListOnly]: The default state where only the mail list is visible.
+ *  2. [HomeState.MailOpenCompact]: When a mail is opened on a compact screen, the viewer takes
+ *  up the full screen.
+ *  3. [HomeState.MailOpenExpanded]: On larger screens, opening a mail results in a split-pane view,
+ *  with thelist on the left and the viewer on the right.
+ *  4. [HomeState.MailOpenHalf]: On foldable devices in a half-opened (tabletop) posture, the mail
+ *  viewer is on the top half of the screen and the mail list is on the bottom half.
+ *
+ * Transitions between these states are managed by the [MotionLayout] in [ComposeMailHome].
+ */
 @OptIn(ExperimentalMotionApi::class)
 private val homeMotionScene = MotionScene {
-    val (listRef, toolbarRef, viewerRef, newMailButtonRef, mailToolbarRef) = createRefsFor(
+    val (listRef: ConstrainedLayoutReference,
+        toolbarRef: ConstrainedLayoutReference,
+        viewerRef: ConstrainedLayoutReference,
+        newMailButtonRef: ConstrainedLayoutReference,
+        mailToolbarRef: ConstrainedLayoutReference
+    ) = createRefsFor(
         "list",
         "toolbar",
         "viewer",
@@ -65,160 +98,155 @@ private val homeMotionScene = MotionScene {
         "mailToolbar",
     )
 
-    // Constant constraints across ConstraintSets
+    /**
+     * Sets the constraints for the `toolbarRef`
+     * TODO: CONTINUE HERE.
+     */
     val setToolbarConstraints: ConstraintSetScope.() -> Unit = {
-        constrain(toolbarRef) {
+        constrain(ref = toolbarRef) {
             width = Dimension.matchParent
             // Toolbar has unstable vertical wrap content, so we pick a size that works for both
             // components supported in the toolbar
-            height = Dimension.value(60.dp)
-
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
+            height = Dimension.value(dp = 60.dp)
+            top.linkTo(anchor = parent.top)
+            start.linkTo(anchor = parent.start)
         }
     }
 
     // Mail toolbar constraints for whenever a Mail is open
     val setVisibleMailToolbarConstraints: ConstraintSetScope.() -> Unit = {
-        constrain(mailToolbarRef) {
-            end.linkTo(parent.end, 12.dp)
-            bottom.linkTo(parent.bottom, 16.dp)
+        constrain(ref = mailToolbarRef) {
+            end.linkTo(anchor = parent.end, margin = 12.dp)
+            bottom.linkTo(anchor = parent.bottom, margin = 16.dp)
         }
     }
 
-    val listOnlyCSet = constraintSet(HomeState.ListOnly.tag) {
+    val listOnlyCSet: ConstraintSetRef = constraintSet(name = HomeState.ListOnly.tag) {
         constrain(listRef, viewerRef) {
-            width = Dimension.percent(1f)
+            width = Dimension.percent(percent = 1f)
             height = Dimension.fillToConstraints
 
-            top.linkTo(toolbarRef.bottom)
-            bottom.linkTo(parent.bottom)
+            top.linkTo(anchor = toolbarRef.bottom)
+            bottom.linkTo(anchor = parent.bottom)
         }
-        constrain(listRef) {
+        constrain(ref = listRef) {
             start.linkTo(parent.start)
         }
-        constrain(viewerRef) {
-            start.linkTo(parent.end)
+        constrain(ref = viewerRef) {
+            start.linkTo(anchor = parent.end)
         }
 
-        constrain(mailToolbarRef) {
-            top.linkTo(parent.bottom, 16.dp)
-            end.linkTo(parent.end)
+        constrain(ref = mailToolbarRef) {
+            top.linkTo(anchor = parent.bottom, margin = 16.dp)
+            end.linkTo(anchor = parent.end)
         }
 
-        constrain(newMailButtonRef) {
+        constrain(ref = newMailButtonRef) {
             width = Dimension.matchParent
             height = Dimension.matchParent
 
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
+            top.linkTo(anchor = parent.top)
+            start.linkTo(anchor = parent.start)
         }
-
         setToolbarConstraints()
     }
 
-    val mailCompactCSet = constraintSet(HomeState.MailOpenCompact.tag) {
+    val mailCompactCSet: ConstraintSetRef = constraintSet(name = HomeState.MailOpenCompact.tag) {
         constrain(listRef, viewerRef) {
-            width = Dimension.percent(1f)
+            width = Dimension.percent(percent = 1f)
             height = Dimension.fillToConstraints
 
-            top.linkTo(toolbarRef.bottom)
-            bottom.linkTo(parent.bottom)
+            top.linkTo(anchor = toolbarRef.bottom)
+            bottom.linkTo(anchor = parent.bottom)
         }
-        constrain(listRef) {
-            end.linkTo(parent.start)
-        }
-
-        constrain(viewerRef) {
-            start.linkTo(parent.start)
+        constrain(ref = listRef) {
+            end.linkTo(anchor = parent.start)
         }
 
-        constrain(newMailButtonRef) {
+        constrain(ref = viewerRef) {
+            start.linkTo(anchor = parent.start)
+        }
+
+        constrain(ref = newMailButtonRef) {
             width = Dimension.matchParent
             height = Dimension.fillToConstraints
 
-            start.linkTo(parent.start)
-            top.linkTo(parent.top)
-            bottom.linkTo(mailToolbarRef.top, 8.dp)
+            start.linkTo(anchor = parent.start)
+            top.linkTo(anchor = parent.top)
+            bottom.linkTo(anchor = mailToolbarRef.top, margin = 8.dp)
         }
-
         setToolbarConstraints()
         setVisibleMailToolbarConstraints()
     }
 
-    constraintSet(HomeState.MailOpenExpanded.tag) {
-        val midGuideline = createGuidelineFromAbsoluteLeft(0.5f)
+    constraintSet(name = HomeState.MailOpenExpanded.tag) {
+        val midGuideline: ConstraintLayoutBaseScope.VerticalAnchor =
+            createGuidelineFromAbsoluteLeft(fraction = 0.5f)
 
         constrain(listRef, viewerRef) {
             width = Dimension.fillToConstraints
             height = Dimension.fillToConstraints
-
-            top.linkTo(toolbarRef.bottom)
-            bottom.linkTo(parent.bottom)
+            top.linkTo(anchor = toolbarRef.bottom)
+            bottom.linkTo(anchor = parent.bottom)
         }
 
-        constrain(listRef) {
-            start.linkTo(parent.start)
-            end.linkTo(midGuideline)
+        constrain(ref = listRef) {
+            start.linkTo(anchor = parent.start)
+            end.linkTo(anchor = midGuideline)
         }
-        constrain(viewerRef) {
-            start.linkTo(midGuideline)
-            end.linkTo(parent.end)
+        constrain(ref = viewerRef) {
+            start.linkTo(anchor = midGuideline)
+            end.linkTo(anchor = parent.end)
         }
 
-        constrain(newMailButtonRef) {
+        constrain(ref = newMailButtonRef) {
             width = Dimension.matchParent
             height = Dimension.fillToConstraints
-
-            start.linkTo(parent.start)
-            top.linkTo(parent.top)
-            bottom.linkTo(mailToolbarRef.top, 8.dp)
+            start.linkTo(anchor = parent.start)
+            top.linkTo(anchor = parent.top)
+            bottom.linkTo(anchor = mailToolbarRef.top, margin = 8.dp)
         }
-
         setToolbarConstraints()
         setVisibleMailToolbarConstraints()
     }
 
-    constraintSet(HomeState.MailOpenHalf.tag) {
-        val midGuideline = createGuidelineFromTop(0.5f)
+    constraintSet(name = HomeState.MailOpenHalf.tag) {
+        val midGuideline: ConstraintLayoutBaseScope.HorizontalAnchor =
+            createGuidelineFromTop(fraction = 0.5f)
 
-        constrain(viewerRef) {
+        constrain(ref = viewerRef) {
             width = Dimension.matchParent
             height = Dimension.fillToConstraints
-
-            start.linkTo(parent.start)
-            top.linkTo(parent.top)
-            bottom.linkTo(midGuideline)
+            start.linkTo(anchor = parent.start)
+            top.linkTo(anchor = parent.top)
+            bottom.linkTo(anchor = midGuideline)
         }
 
-        constrain(toolbarRef) {
+        constrain(ref = toolbarRef) {
             width = Dimension.matchParent
             height = Dimension.wrapContent
-
-            top.linkTo(midGuideline)
-            start.linkTo(parent.start)
+            top.linkTo(anchor = midGuideline)
+            start.linkTo(anchor = parent.start)
         }
 
-        constrain(listRef) {
+        constrain(ref = listRef) {
             width = Dimension.matchParent
             height = Dimension.fillToConstraints
-
-            start.linkTo(parent.start)
-            top.linkTo(toolbarRef.bottom)
-            bottom.linkTo(parent.bottom)
+            start.linkTo(anchor = parent.start)
+            top.linkTo(anchor = toolbarRef.bottom)
+            bottom.linkTo(anchor = parent.bottom)
         }
 
-        constrain(newMailButtonRef) {
+        constrain(ref = newMailButtonRef) {
             width = Dimension.matchParent
             height = Dimension.fillToConstraints
-
-            start.linkTo(parent.start)
-            top.linkTo(parent.top)
-            bottom.linkTo(mailToolbarRef.top, 8.dp)
+            start.linkTo(anchor = parent.start)
+            top.linkTo(anchor = parent.top)
+            bottom.linkTo(anchor = mailToolbarRef.top, margin = 8.dp)
         }
         setVisibleMailToolbarConstraints()
     }
-    defaultTransition(listOnlyCSet, mailCompactCSet) {
+    defaultTransition(from = listOnlyCSet, to = mailCompactCSet) {
         // Do nothing
     }
 }
@@ -230,13 +258,14 @@ private val homeMotionScene = MotionScene {
 @Composable
 fun ComposeMailHome(modifier: Modifier) {
     val mailModel: ComposeMailModel = viewModel()
-    val listState = remember { MailListState() }
-    val newMailState = rememberNewMailState(initialLayoutState = NewMailLayoutState.Fab)
+    val listState: MailListState = remember { MailListState() }
+    val newMailState: NewMailState =
+        rememberNewMailState(initialLayoutState = NewMailLayoutState.Fab)
 
-    val isCompact = LocalWidthSizeClass.current == WindowWidthSizeClass.Compact
-    val isHalfOpen = LocalFoldableInfo.current.isHalfOpen
+    val isCompact: Boolean = LocalWidthSizeClass.current == WindowWidthSizeClass.Compact
+    val isHalfOpen: Boolean = LocalFoldableInfo.current.isHalfOpen
 
-    val currentConstraintSet = resolveConstraintSet(
+    val currentConstraintSet: HomeState = resolveConstraintSet(
         isMailOpen = mailModel.isMailOpen(),
         isCompact = isCompact,
         isHalfOpen = isHalfOpen
@@ -245,16 +274,16 @@ fun ComposeMailHome(modifier: Modifier) {
     MotionLayout(
         motionScene = homeMotionScene,
         constraintSetName = currentConstraintSet.tag,
-        animationSpec = tween(400),
+        animationSpec = tween(durationMillis = 400),
         modifier = modifier,
     ) {
         TopToolbar(
             modifier = Modifier
-                .layoutId("toolbar"),
+                .layoutId(layoutId = "toolbar"),
             selectionCountProvider = listState::selectedCount,
             onUnselectAll = listState::unselectAll
         )
-        Column(Modifier.layoutId("list")) {
+        Column(modifier = Modifier.layoutId(layoutId = "list")) {
             Text(
                 modifier = Modifier.padding(horizontal = 4.dp),
                 text = "Inbox",
@@ -263,7 +292,7 @@ fun ComposeMailHome(modifier: Modifier) {
             MailList(
                 modifier = Modifier
                     .padding(horizontal = 4.dp)
-                    .weight(1.0f, true)
+                    .weight(weight = 1.0f, fill = true)
                     .fillMaxWidth(),
                 listState = listState,
                 observableConversations = mailModel.conversations,
@@ -272,16 +301,16 @@ fun ComposeMailHome(modifier: Modifier) {
         }
         MailViewer(
             modifier = Modifier
-                .layoutId("viewer")
-                .padding(8.dp),
+                .layoutId(layoutId = "viewer")
+                .padding(all = 8.dp),
             mailInfoFull = mailModel.openedMail ?: MailInfoFull.Default
         )
         NewMailButton(
-            modifier = Modifier.layoutId("newMailButton"),
+            modifier = Modifier.layoutId(layoutId = "newMailButton"),
             state = newMailState
         )
         MailToolbar(
-            modifier = Modifier.layoutId("mailToolbar"),
+            modifier = Modifier.layoutId(layoutId = "mailToolbar"),
             onCloseMail = mailModel::closeMail
         )
     }

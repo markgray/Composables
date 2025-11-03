@@ -26,7 +26,14 @@ private const val PAGE_SIZE = 15
 private const val REFRESH_THRESHOLD = 5
 
 /**
- * TODO: Add kdoc
+ * Creates and configures a [Pager] for mail items.
+ *
+ * This pager is responsible for loading pages of mail data from the [MailRepository]
+ * using a [MailPagingSource]. It is configured with specific page sizes and prefetch
+ * distances to optimize performance for a mail list UI.
+ *
+ * @param mailRepository The repository from which to fetch mail data.
+ * @return A [Pager] instance that can be used to create a `PagingData` flow.
  */
 fun createMailPager(mailRepository: MailRepository): Pager<Int, MailInfoPeek> =
     Pager(
@@ -37,5 +44,5 @@ fun createMailPager(mailRepository: MailRepository): Pager<Int, MailInfoPeek> =
             prefetchDistance = REFRESH_THRESHOLD,
             initialLoadSize = INITIAL_LOAD_SIZE
         ),
-        pagingSourceFactory = { MailPagingSource(mailRepository) }
+        pagingSourceFactory = { MailPagingSource(mailRepo = mailRepository) }
     )

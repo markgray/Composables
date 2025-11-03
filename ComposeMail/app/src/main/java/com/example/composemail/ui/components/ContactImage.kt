@@ -27,7 +27,11 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 
 /**
- * TODO: Add kdoc
+ * A round image composable for displaying a contact's profile picture.
+ *
+ * @param modifier The [Modifier] to be applied to this composable.
+ * @param uri The [Uri] of the image to display.
+ * @param onClick A lambda to be invoked when the image is clicked.
  */
 @Composable
 fun ContactImage(modifier: Modifier, uri: Uri, onClick: () -> Unit) {

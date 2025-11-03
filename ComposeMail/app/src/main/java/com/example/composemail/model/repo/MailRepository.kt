@@ -20,35 +20,57 @@ import com.example.composemail.model.data.MailInfoFull
 import com.example.composemail.model.data.MailInfoPeek
 
 /**
- * TODO: Add kdoc
+ * A repository that handles fetching mail data.
+ *
+ * This interface defines the contract for interacting with a mail data source,
+ * abstracting the underlying implementation (e.g., network, local database).
  */
 interface MailRepository {
     /**
-     * TODO: Add kdoc
+     * Establishes a connection to the mail data source.
+     *
+     * This suspending function should be called before any other data-fetching operations
+     * to ensure the repository is ready to serve requests.
      */
     suspend fun connect()
 
     /**
-     * TODO: Add kdoc
+     * Fetches the next page of mail conversations.
+     *
+     * This function retrieves a paginated list of conversations, ideal for implementing
+     * infinite scrolling. Each call to this function will fetch the next consecutive
+     * set of conversations.
+     *
+     * @param amount The number of conversations to fetch in this page.
+     * @return A [MailConversationsResponse] containing the list of conversation peeks and the
+     * current page number.
      */
     suspend fun getNextSetOfConversations(amount: Int): MailConversationsResponse
 
     /**
-     * TODO: Add kdoc
+     * Fetches the complete content of a single email by its unique ID.
+     *
+     * This suspending function retrieves the full details of an email, including its
+     * body, attachments, and complete recipient list, unlike the preview version.
+     * If the email with the specified ID is not found, it returns `null`.
+     *
+     * @param id The unique identifier of the email to fetch.
+     * @return A [MailInfoFull] object containing the complete email details, or `null` if not found.
      */
     suspend fun getFullMail(id: Int): MailInfoFull?
 }
 
 /**
- * TODO: Add kdoc
+ * A data class representing a paginated response for mail conversations.
+ *
+ * This class is typically returned when fetching a list of conversations, providing both
+ * the data for the current page and metadata about the page itself.
+ *
+ * @param conversations A list of [MailInfoPeek] objects, representing the summary of each
+ * conversation on the current page.
+ * @param page The page number for this set of conversations.
  */
 data class MailConversationsResponse(
-    /**
-     * TODO: Add kdoc
-     */
     val conversations: List<MailInfoPeek>,
-    /**
-     * TODO: Add kdoc
-     */
     val page: Int
 )

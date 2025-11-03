@@ -33,45 +33,75 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * TODO: Add kdoc
+ * A [AndroidViewModel] that holds the app's state.
+ *
+ * This class has a few responsibilities:
+ *  - Expose the list of mails to the UI.
+ *  - Hold the currently opened mail.
+ *  - Expose methods to open and close a mail.
+ *
+ * @param application The [Application] that this [AndroidViewModel] is attached to.
  */
 class ComposeMailModel(application: Application) : AndroidViewModel(application) {
+    /**
+     * The repository that this [AndroidViewModel] uses to get its data.
+     */
     private val mailRepo: MailRepository =
         OfflineRepository(getApplication<Application>().resources)
 
-    private var _openedMail: MutableState<MailInfoFull?> = mutableStateOf(null)
+    /**
+     * The currently opened mail.
+     *
+     * This is a private [MutableState] of [MailInfoFull] that is exposed as a public, immutable
+     * value through the [openedMail] property. This is `null` when no mail is opened.
+     */
+    private var _openedMail: MutableState<MailInfoFull?> = mutableStateOf(value = null)
 
     /**
-     * TODO: Add kdoc
+     * The currently opened mail.
+     *
+     * This provides readonly access to our [MutableState] of [MailInfoFull] property [_openedMail].
+     * This is `null` when no mail is opened.
      */
     val openedMail: MailInfoFull?
         get() = _openedMail.value
 
     /**
-     * TODO: Add kdoc
+     * A [Flow] of [PagingData] of [MailInfoPeek] that can be collected to show a list of
+     * conversations.
      */
-    val conversations: Flow<PagingData<MailInfoPeek>> = createMailPager(mailRepo).flow
+    val conversations: Flow<PagingData<MailInfoPeek>> =
+        createMailPager(mailRepository = mailRepo).flow
 
     /**
-     * TODO: Add kdoc
+     * A utility function to check whether a mail is open or not.
+     *
+     * @return `true` if a mail is open, `false` otherwise.
      */
     fun isMailOpen(): Boolean = _openedMail.value != null
 
     /**
-     * TODO: Add kdoc
+     * Opens a mail given its [id].
+     *
+     * This function will retrieve the full mail content from the repository and update the
+     * [openedMail] state. This is a suspending function that executes on the `IO` dispatcher.
+     *
+     * @param id The id of the mail to open.
      */
     fun openMail(id: Int) {
         viewModelScope.launch {
             var openedMailInfo: MailInfoFull?
-            withContext(Dispatchers.IO) {
-                openedMailInfo = mailRepo.getFullMail(id)
+            withContext(context = Dispatchers.IO) {
+                openedMailInfo = mailRepo.getFullMail(id = id)
             }
             _openedMail.value = openedMailInfo
         }
     }
 
     /**
-     * TODO: Add kdoc
+     * Closes the currently opened mail.
+     *
+     * This function will update the [openedMail] state to `null`.
      */
     fun closeMail() {
         _openedMail.value = null

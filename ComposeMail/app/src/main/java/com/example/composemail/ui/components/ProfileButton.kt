@@ -25,7 +25,9 @@ import androidx.compose.ui.res.painterResource
 import com.example.composemail.R
 
 /**
- * TODO: Add kdoc
+ * A circular icon button with a generic profile icon.
+ *
+ * @param modifier a [Modifier] for this composable.
  */
 @Composable
 fun ProfileButton(modifier: Modifier = Modifier) {
@@ -33,6 +35,6 @@ fun ProfileButton(modifier: Modifier = Modifier) {
         modifier = modifier,
         painter = painterResource(id = R.drawable.ic_no_profile_pic),
         contentDescription = "Profile button",
-        colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+        colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onSurface)
     )
 }

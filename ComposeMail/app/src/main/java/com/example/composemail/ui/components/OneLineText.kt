@@ -20,6 +20,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -31,8 +32,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 /**
- * [Text] Composable constrained to one line with default Clip overflow behavior for better
- * animation performance.
+ * A [Text] Composable that is constrained to a single line.
+ *
+ * This composable is a wrapper around [Text] that sets `maxLines` to 1. By default, it uses
+ * [TextOverflow.Clip] for `overflow`, which is more performant than the default
+ * [TextOverflow.Ellipsis] used by [Text], especially in animations.
+ *
+ * @param text The text to be displayed.
+ * @param modifier The [Modifier] to be applied to this layout node.
+ * @param color [Color] to apply to the text. If [Color.Unspecified], and [style] has no color set,
+ * this will be [LocalContentColor].
+ * @param style Style configuration for the text such as font, letter spacing, and line height.
+ * @param overflow How visual overflow should be handled.
  */
 @Composable
 fun OneLineText(
@@ -52,24 +63,28 @@ fun OneLineText(
     )
 }
 
+/**
+ * A preview of the [OneLineText] Composable compared to the behavior of a regular [Text]
+ * Composable.
+ */
 @Preview
 @Composable
 private fun OneLineTextPreview() {
     Column(Modifier.fillMaxSize()) {
         Text(text = "Normal")
         Column(
-            Modifier
-                .width(40.dp)
-                .background(Color.LightGray)
+            modifier = Modifier
+                .width(width = 40.dp)
+                .background(color = Color.LightGray)
         ) {
             Text(text = "Hello \nWorld!")
             Text(text = "This is a very very long text")
         }
         Text(text = "Cheap")
         Column(
-            Modifier
-                .width(40.dp)
-                .background(Color.LightGray)
+            modifier = Modifier
+                .width(width = 40.dp)
+                .background(color = Color.LightGray)
         ) {
             OneLineText(text = "Hello \nWorld!")
             OneLineText(text = "This is a very very long text")

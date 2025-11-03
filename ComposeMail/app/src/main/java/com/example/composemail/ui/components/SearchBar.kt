@@ -35,13 +35,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 
 /**
- * TODO: Add kdoc
+ * A search bar composable that is displayed at the top of the mail app.
+ *
+ * This search bar is not functional and is for display purposes only. It will show a
+ * placeholder text "Search in mails", and when focused, it displays a message
+ * "I'm not implemented yet!".
+ *
+ * @param modifier The modifier to be applied to the search bar.
  */
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier
 ) {
-    var placeholder: String by remember { mutableStateOf("Search in mails") }
+    var placeholder: String by remember { mutableStateOf(value = "Search in mails") }
     OutlinedTextField(
         modifier = modifier
             .onFocusChanged {
@@ -66,10 +72,13 @@ fun SearchBar(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         ),
-        shape = MaterialTheme.shapes.small.copy(CornerSize(50))
+        shape = MaterialTheme.shapes.small.copy(all = CornerSize(percent = 50))
     )
 }
 
+/**
+ * A preview for the [SearchBar] composable.
+ */
 @Preview
 @Composable
 private fun SearchBarPreview() {

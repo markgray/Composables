@@ -22,13 +22,21 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 
 /**
- * TODO: Add kdoc
+ * CompositionLocal that provides the current [WindowHeightSizeClass]. This can be used to customize
+ * layouts for different window heights. For example, you might show a different UI for a
+ * [WindowHeightSizeClass.Compact] screen than for a [WindowHeightSizeClass.Expanded] screen.
+ *
+ * It defaults to [WindowHeightSizeClass.Compact].
  */
 val LocalHeightSizeClass: ProvidableCompositionLocal<WindowHeightSizeClass> =
     compositionLocalOf { WindowHeightSizeClass.Compact }
 
 /**
- * TODO: Add kdoc
+ * CompositionLocal that provides the current [WindowWidthSizeClass]. This can be used to customize
+ * layouts for different window widths. For example, you might show a different UI for a
+ * [WindowWidthSizeClass.Compact] screen than for a [WindowWidthSizeClass.Expanded] screen.
+ *
+ * It defaults to [WindowWidthSizeClass.Compact].
  */
 val LocalWidthSizeClass: ProvidableCompositionLocal<WindowWidthSizeClass> =
     compositionLocalOf { WindowWidthSizeClass.Compact }
