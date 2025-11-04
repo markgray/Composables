@@ -56,17 +56,35 @@ import com.example.composemail.ui.viewer.MailViewer
 /**
  * The different home states that are supported by the [MotionLayout] in [ComposeMailHome].
  *
- * Each state is represented by a [ConstraintSet] and has a
- * unique [tag] that is used to identify it.
+ * Each state represents a [ConstraintSet] and has a unique [tag] that is used to identify that
+ * [ConstraintSet] by the [ConstraintSetRef.name] property that points to it.
  *
  * The current state is resolved in [resolveConstraintSet] based on the screen size, fold state,
  * and whether a mail is open.
  */
 private enum class HomeState(val tag: String) {
-    ListOnly("listOnlyCompactAndExpanded"),
-    MailOpenCompact("mailOpenCompact"),
-    MailOpenExpanded("mailOpenExpanded"),
-    MailOpenHalf("mailOpenHalf")
+    /**
+     * The default state where only the mail list is visible and the mail viewer is hidden.
+     */
+    ListOnly(tag = "listOnlyCompactAndExpanded"),
+
+    /**
+     * When a mail is opened on a compact screen, the mail viewer takes up the full screen, hiding
+     * the mail list.
+     */
+    MailOpenCompact(tag = "mailOpenCompact"),
+
+    /**
+     * On larger screens, opening a mail results in a split-pane view, with the mail list on the
+     * left and the mail viewer on the right.
+     */
+    MailOpenExpanded(tag = "mailOpenExpanded"),
+
+    /**
+     * On foldable devices in a half-opened (tabletop) posture, the mail viewer is on the top
+     * half of the screen and the mail list is on the bottom half.
+     */
+    MailOpenHalf(tag = "mailOpenHalf")
 }
 
 /**

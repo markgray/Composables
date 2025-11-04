@@ -64,7 +64,7 @@ interface MailRepository {
  * A data class representing a paginated response for mail conversations.
  *
  * This class is typically returned when fetching a list of conversations, providing both
- * the data for the current page and metadata about the page itself.
+ * the data for the current page and the page number.
  *
  * @param conversations A list of [MailInfoPeek] objects, representing the summary of each
  * conversation on the current page.

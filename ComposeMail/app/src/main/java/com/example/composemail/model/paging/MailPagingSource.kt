@@ -21,6 +21,14 @@ import androidx.paging.PagingState
 import com.example.composemail.model.data.MailInfoPeek
 import com.example.composemail.model.repo.MailRepository
 
+/**
+ * Flag to determine whether to provide an initial placeholder for the list.
+ *
+ * When set to `true`, the [PagingSource] will return an empty list for the initial load,
+ * along with a placeholder count. This is useful for displaying shimmer-like loading
+ * indicators before the actual data is fetched. When `false`, the initial data is loaded
+ * directly.
+ */
 private const val PROVIDE_INITIAL_PLACEHOLDER = false
 
 /**
@@ -55,7 +63,7 @@ class MailPagingSource(private val mailRepo: MailRepository) : PagingSource<Int,
      * The [params] object contains the key for the page to load and the requested load size.
      *
      * For the initial load, `params.key` is `null`. In this case, we start loading from page 0.
-     * Optionally, if `PROVIDE_INITIAL_PLACEHOLDER` is true, an empty list with a placeholder
+     * Optionally, if [PROVIDE_INITIAL_PLACEHOLDER] is true, an empty list with a placeholder
      * is returned for the initial load to enable a shimmer-like UI.
      *
      * For subsequent loads, it fetches the next set of conversations from the repository

@@ -133,12 +133,12 @@ data class Attachment(
     /**
      * The name of the attached file, without its extension.
      */
-    val nameWithoutExtension: String = fileName.substringBefore(".")
+    val nameWithoutExtension: String = fileName.substringBefore(delimiter = ".")
 
     /**
      * The file extension of the attached file.
      */
-    val extension: String = fileName.substringAfter(".")
+    val extension: String = fileName.substringAfter(delimiter = ".")
 }
 
 /**

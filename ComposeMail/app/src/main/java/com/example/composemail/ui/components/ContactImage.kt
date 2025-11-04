@@ -24,10 +24,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 
 /**
  * A round image composable for displaying a contact's profile picture.
+ *
+ * Our root composable is an [Image] whose `modifier` argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.clip] that clips its `shape` to a [RoundedCornerShape] whose corners have
+ * the `size` `10.dp`, chained to a [Modifier.clickable] whose `onClick` argument is our lambda
+ * parameter [onClick]. The `painter` argument is a remembered [AsyncImagePainter] whose `model` is
+ * the [String] representation of our [Uri] parameter [uri], and the `contentDescription` argument
+ * is null.
  *
  * @param modifier The [Modifier] to be applied to this composable.
  * @param uri The [Uri] of the image to display.
@@ -37,7 +45,7 @@ import coil.compose.rememberAsyncImagePainter
 fun ContactImage(modifier: Modifier, uri: Uri, onClick: () -> Unit) {
     Image(
         modifier = modifier
-            .clip(RoundedCornerShape(10.dp))
+            .clip(shape = RoundedCornerShape(size = 10.dp))
             .clickable(onClick = onClick),
         painter = rememberAsyncImagePainter(model = uri.toString()),
         contentDescription = null

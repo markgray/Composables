@@ -17,15 +17,23 @@
 package com.example.composemail.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import com.example.composemail.R
 
 /**
  * A circular icon button with a generic profile icon.
+ *
+ * Our root composable is an [Image] whose `modifier` argument is our [Modifier] parameter [modifier],
+ * whose `painter` argument is the [Painter] returned by [painterResource] for the resource ID
+ * `R.drawable.ic_no_profile_pic`, whose `contentDescription` argument is the string "Profile button",
+ * and whose `colorFilter` argument is a [ColorFilter.tint] whose `color` is the [Colors.onSurface]
+ * of our custom [MaterialTheme.colors].
  *
  * @param modifier a [Modifier] for this composable.
  */

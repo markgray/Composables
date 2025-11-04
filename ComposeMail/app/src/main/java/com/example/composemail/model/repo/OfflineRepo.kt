@@ -217,7 +217,7 @@ class OfflineRepository(
     @Suppress("RedundantNullableReturnType") // Inherited nullability
     override suspend fun getFullMail(id: Int): MailInfoFull? {
         // Add delay?
-        return loadedMails[id] ?: kotlin.run {
+        return loadedMails[id] ?: run {
             Log.w(TAG, "findMail: no mails with id = $id")
             MailInfoFull.Default
         }
@@ -255,9 +255,9 @@ class OfflineRepository(
         } else {
             null
         }
-        val name = names.random()
-        val attachments = mutableListOf<Attachment>()
-        for (i in 0 until IntRange(0, 4).random()) {
+        val name: String = names.random()
+        val attachments: MutableList<Attachment> = mutableListOf()
+        for (i in 0 until IntRange(start = 0, endInclusive = 4).random()) {
             attachments.add(
                 Attachment(
                     fileName = "myFile" + (i + 1) + "." + fileExtensions.random(),

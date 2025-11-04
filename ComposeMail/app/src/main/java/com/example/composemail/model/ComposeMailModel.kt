@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * A [AndroidViewModel] that holds the app's state.
+ * An [AndroidViewModel] that holds the app's state.
  *
  * This class has a few responsibilities:
  *  - Expose the list of mails to the UI.
@@ -47,7 +47,7 @@ class ComposeMailModel(application: Application) : AndroidViewModel(application)
      * The repository that this [AndroidViewModel] uses to get its data.
      */
     private val mailRepo: MailRepository =
-        OfflineRepository(getApplication<Application>().resources)
+        OfflineRepository(resources = getApplication<Application>().resources)
 
     /**
      * The currently opened mail.
@@ -101,7 +101,7 @@ class ComposeMailModel(application: Application) : AndroidViewModel(application)
     /**
      * Closes the currently opened mail.
      *
-     * This function will update the [openedMail] state to `null`.
+     * This function updates the [MutableState] of [MailInfoFull] property [_openedMail] to `null`.
      */
     fun closeMail() {
         _openedMail.value = null

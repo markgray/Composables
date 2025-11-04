@@ -21,8 +21,29 @@ import androidx.paging.PagingConfig
 import com.example.composemail.model.data.MailInfoPeek
 import com.example.composemail.model.repo.MailRepository
 
+/**
+ * The number of items to load on the initial page load.
+ *
+ * This value is typically larger than [PAGE_SIZE] to ensure that the initial display
+ * is populated with a good amount of data, providing a better user experience.
+ */
 private const val INITIAL_LOAD_SIZE = 30
+
+/**
+ * The number of mail items to load per page.
+ *
+ * This value determines how many items are fetched at a time when the user scrolls
+ * to the end of the list.
+ */
 private const val PAGE_SIZE = 15
+
+/**
+ * The threshold for triggering a new page load.
+ *
+ * This value determines how many items from the end of the loaded list the user must scroll to
+ * before the Pager starts loading the next page. Setting this to a value greater than 0 helps
+ * to preload data and provide a smoother scrolling experience.
+ */
 private const val REFRESH_THRESHOLD = 5
 
 /**
