@@ -347,6 +347,7 @@ private val homeMotionScene = MotionScene {
         setToolbarConstraints()
         setVisibleMailToolbarConstraints()
     }
+
     /**
      * [ConstraintSet] that defines the constraints for the [HomeState.MailOpenHalf] state.
      * (Mail open on a foldable device in a half-opened posture) In the [ConstraintSetScope]
