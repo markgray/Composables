@@ -17,6 +17,7 @@
 package com.example.composemail.ui.home
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
@@ -54,7 +56,35 @@ import com.example.composemail.ui.components.SearchBar
 import com.example.composemail.ui.theme.Selection
 
 /**
- * TODO: Add kdoc
+ * A toolbar that displays a search bar by default, and transforms into a selection toolbar
+ * when one or more items are selected. The transition between the two states is animated.
+ *
+ * This composable uses its [selectionCountProvider] lambda parameter to get the number of selected
+ * items. This is a performance optimization to avoid recomposing the [AnimatedContent] every time
+ * the selection count changes. Instead, [AnimatedContent] only recomposes when its `targetState`
+ * (whether `selectionCount` > 0) changes. The [SelectionToolbar] then reads the latest count
+ * from the lambda when it is composed.
+ *
+ * We start by initializing and remembering our [State] wrapped [Boolean] variable `isInSelection`
+ * to the [derivedStateOf] checking if our lambda parameter [selectionCountProvider] returns a
+ * value greater than 0. Then we compose an [AnimatedContent] whose arguments are:
+ *  - `targetState`: The current value of `isInSelection`.
+ *  - `modifier`: is our [Modifier] parameter [modifier]
+ *  - `label`: is the [String] "AnimatedContent"
+ *
+ * In the [AnimatedContentScope] `content` composable lambda argument of the [AnimatedContent]
+ * we accept the [Boolean] passed the lambda in variable `isSelected`. If `isSelected` is `true`
+ * we compose a [SelectionToolbar] with the arguments:
+ *  - `modifier`: is an empty [Modifier] instance
+ *  - `selectionCountProvider`: is our lambda parameter [selectionCountProvider]
+ *  - `onUnselectAll`: is our lambda parameter [onUnselectAll].
+ *
+ * If `isSelected` is `false` we compose a [SearchToolbar] with the argument:
+ *  - `modifier`: is a [Modifier.padding] that adds `4.dp` to `all` sides.
+ *
+ * @param modifier The [Modifier] to be applied to the toolbar.
+ * @param selectionCountProvider A lambda that provides the current number of selected items.
+ * @param onUnselectAll A lambda to be invoked when the user wishes to clear the selection.
  */
 @Composable
 fun TopToolbar(
@@ -62,12 +92,12 @@ fun TopToolbar(
     selectionCountProvider: () -> Int, // Lambda to avoid recomposing AnimatedContent on every count change
     onUnselectAll: () -> Unit
 ) {
-    val isInSelection by remember { derivedStateOf { selectionCountProvider() > 0 } }
+    val isInSelection: Boolean by remember { derivedStateOf { selectionCountProvider() > 0 } }
     AnimatedContent(
         targetState = isInSelection,
-        modifier = modifier, label = "AnimatedContent"
-    ) { isSelected ->
-
+        modifier = modifier,
+        label = "AnimatedContent"
+    ) { isSelected: Boolean ->
         if (isSelected) {
             SelectionToolbar(
                 modifier = Modifier,
@@ -75,30 +105,36 @@ fun TopToolbar(
                 onUnselectAll = onUnselectAll
             )
         } else {
-            SearchToolbar(modifier = Modifier.padding(4.dp))
+            SearchToolbar(modifier = Modifier.padding(all = 4.dp))
         }
     }
 }
 
-private val searchToolbarConstraintSet = ConstraintSet {
-    val searchBar = createRefFor("searchBar")
-    val profileB = createRefFor("profileButton")
+/**
+ * [ConstraintSet] for the [SearchToolbar].
+ *
+ * It constraints the `searchBar` to fill the available width between the start of the parent and
+ * the `profileButton`, and constraints the `profileButton` to the end of the parent. Both views
+ * are centered vertically.
+ * TODO: Continue here.
+ */
+private val searchToolbarConstraintSet: ConstraintSet = ConstraintSet {
+    val searchBar: ConstrainedLayoutReference = createRefFor(id = "searchBar")
+    val profileB: ConstrainedLayoutReference = createRefFor(id = "profileButton")
 
-    constrain(searchBar) {
+    constrain(ref = searchBar) {
         width = Dimension.fillToConstraints.atLeastWrapContent
         height = Dimension.wrapContent
-
-        centerVerticallyTo(parent)
-        start.linkTo(parent.start)
-        end.linkTo(profileB.start)
+        centerVerticallyTo(other = parent)
+        start.linkTo(anchor = parent.start)
+        end.linkTo(anchor = profileB.start)
     }
 
-    constrain(profileB) {
-        height = Dimension.value(40.dp)
-        width = Dimension.value(40.dp)
-
-        centerVerticallyTo(searchBar)
-        end.linkTo(parent.end)
+    constrain(ref = profileB) {
+        height = Dimension.value(dp = 40.dp)
+        width = Dimension.value(dp = 40.dp)
+        centerVerticallyTo(other = searchBar)
+        end.linkTo(anchor = parent.end)
     }
 }
 
@@ -108,8 +144,8 @@ private fun SearchToolbar(modifier: Modifier) {
         modifier = modifier,
         constraintSet = searchToolbarConstraintSet
     ) {
-        SearchBar(Modifier.layoutId("searchBar"))
-        ProfileButton(Modifier.layoutId("profileButton"))
+        SearchBar(modifier = Modifier.layoutId(layoutId = "searchBar"))
+        ProfileButton(modifier = Modifier.layoutId(layoutId = "profileButton"))
     }
 }
 
@@ -122,10 +158,10 @@ private fun SelectionToolbar(
     Row(
         modifier = modifier
             .heightIn(min = 40.dp)
-            .background(Selection.backgroundColor)
+            .background(color = Selection.backgroundColor)
             .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(space = 8.dp)
     ) {
         Icon(
             modifier = Modifier.clickable {
@@ -135,7 +171,7 @@ private fun SelectionToolbar(
             contentDescription = null
         )
         Text(text = selectionCountProvider().toString())
-        Spacer(modifier = Modifier.weight(1.0f, true))
+        Spacer(modifier = Modifier.weight(weight = 1.0f, fill = true))
         Icon(imageVector = Icons.Default.Archive, contentDescription = null)
         Icon(imageVector = Icons.Default.Delete, contentDescription = null)
         Icon(imageVector = Icons.Default.MarkAsUnread, contentDescription = null)
@@ -148,7 +184,7 @@ private fun SelectionToolbar(
 private fun TopToolbarPreview() {
     Column {
         TopToolbar(
-            modifier = Modifier.width(IntrinsicSize.Min),
+            modifier = Modifier.width(intrinsicSize = IntrinsicSize.Min),
             selectionCountProvider = { 0 }
         ) {}
         TopToolbar(

@@ -20,10 +20,12 @@ package com.example.composemail.ui.home
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -43,8 +45,10 @@ import androidx.constraintlayout.compose.MotionLayoutScope
 import androidx.constraintlayout.compose.MotionScene
 import androidx.constraintlayout.compose.MotionSceneScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.PagingData
 import com.example.composemail.model.ComposeMailModel
 import com.example.composemail.model.data.MailInfoFull
+import com.example.composemail.model.data.MailInfoPeek
 import com.example.composemail.ui.compositionlocal.FoldableInfo
 import com.example.composemail.ui.compositionlocal.LocalFoldableInfo
 import com.example.composemail.ui.compositionlocal.LocalWidthSizeClass
@@ -56,6 +60,7 @@ import com.example.composemail.ui.newmail.NewMailState
 import com.example.composemail.ui.newmail.rememberNewMailState
 import com.example.composemail.ui.viewer.MailToolbar
 import com.example.composemail.ui.viewer.MailViewer
+import kotlinx.coroutines.flow.Flow
 
 /**
  * The different home states that are supported by the [MotionLayout] in [ComposeMailHome].
@@ -379,7 +384,7 @@ private val homeMotionScene = MotionScene {
      *  - sets the [ConstrainScope.width] to [Dimension.matchParent]
      *  - sets the [ConstrainScope.height] to [Dimension.fillToConstraints]
      *  - links its `start` to the parent's `start`
-     *  - links its `top` to the parent's `bottom`
+     *  - links its `top` to the [ConstrainedLayoutReference] `toolbarRef` `bottom`
      *  - links its `bottom` to the parent's `bottom`
      *
      * **Fifth** Calls the [ConstraintSetScope.constrain] method to constrain the `newMailButtonRef`
@@ -471,8 +476,8 @@ private val homeMotionScene = MotionScene {
  *  - `isHalfOpen`: the value of our [Boolean] variable `isHalfOpen`
  *
  * Our root composable is a [MotionLayout] whose arguments are:
- *  - `motionScene`: our [MotionScene] variable `homeMotionScene`
- *  - `constraintSetName`: the value of the [HomeState.tag] our our [HomeState] variable
+ *  - `motionScene`: our [MotionScene] property [homeMotionScene]
+ *  - `constraintSetName`: the value of the [HomeState.tag] of our [HomeState] variable
  *  `currentConstraintSet`.
  *  - `animationSpec`: a [tween] with a duration of 400 milliseconds.
  *  - `modifier`: our [Modifier] parameter [modifier].
@@ -481,15 +486,43 @@ private val homeMotionScene = MotionScene {
  *
  * **First** Compose a [TopToolbar] whose arguments are:
  *  - `modifier`: is a [Modifier.layoutId] whose `layoutId` is `"toolbar"`
- *  - `selectionCountProvider`: a function that returns the number of selected items in the [MailList]
- *  a function reference to the [MailListState.selectedCount] method of our [MailListState] variable
- *  `listState`.
- *  - `onUnselectAll`: a function that unselects all items in the [MailList] a function reference to
- *  the [MailListState.unselectAll] method of our [MailListState] variable `listState`
+ *  - `selectionCountProvider`: function that returns the number of selected items in the [MailList]
+ *  is a function reference to the [MailListState.selectedCount] method of our [MailListState]
+ *  variable `listState`.
+ *  - `onUnselectAll`: a function that unselects all items in the [MailList] is a function reference
+ *  to the [MailListState.unselectAll] method of our [MailListState] variable `listState`
  *
- * TODO: Continue here.
+ * **Second** Compose a [Column] whose `modifier argument is a [Modifier.layoutId] whose `layoutId`
+ * is `"list"`. In the [ColumnScope] `content` composable lambda argument of the [Column] we:
+ *  - Compose a [Text] whose `modifier` argument is a [Modifier.padding] that adds `4.dp` to the
+ *  horizontal sides, whose `text` argument is the [String] "Inbox", and whose `style` argument is
+ *  the [Typography.h6] of our custom [MaterialTheme.typography].
+ *  - Compose a [MailList] whose `modifier` argument is a [Modifier.padding] that adds `4.dp` to the
+ *  horizontal sides chained to a [ColumnScope.weight] whose `weight` argument is `1.0f` and whose
+ *  `fill` argument is `true`, chained to a [Modifier.fillMaxWidth]. The `listState` argument is our
+ *  [MailListState] variable `listState`. The `observableConversations` argument is the
+ *  [Flow] of [PagingData] of [MailInfoPeek] property [ComposeMailModel.conversations] of our
+ *  [ComposeMailModel] variable `mailModel`. The `onMailOpen` argument is a function reference to
+ *  the [ComposeMailModel.openMail] method of our [ComposeMailModel] variable `mailModel`.
  *
- * @param modifier A [Modifier] for this composable.
+ * **Third** Compose a [MailViewer] whose arguments are:
+ *  - `modifier`: is a [Modifier.layoutId] whose `layoutId` is `"viewer"`, chained to a
+ *  [Modifier.padding] that adds `8.dp` to all sides.
+ *  - `mailInfoFull`: the [MailInfoFull] property [ComposeMailModel.openedMail] of our
+ *  [ComposeMailModel] variable `mailModel` if that is not `null` or [MailInfoFull.Default] if it
+ *  is `null`.
+ *
+ * **Fourth** Compose a [NewMailButton] whose arguments are:
+ *  - `modifier`: is a [Modifier.layoutId] whose `layoutId` is `"newMailButton"`.
+ *  - `state`: our [NewMailState] variable `newMailState`.
+ *
+ * **Fifth** Compose a [MailToolbar] whose arguments are:
+ *  - `modifier`: is a [Modifier.layoutId] whose `layoutId` is `"mailToolbar"`.
+ *  - `onCloseMail`: a function reference to the [ComposeMailModel.closeMail] method of our
+ *  [ComposeMailModel] variable `mailModel`.
+ *
+ * @param modifier A [Modifier] for this composable that our caller can use to modify our appearance
+ * and or behavior.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Composable
@@ -552,6 +585,22 @@ fun ComposeMailHome(modifier: Modifier) {
     }
 }
 
+/**
+ * Resolves the [HomeState] for the home screen based on the screen configuration and app state.
+ *
+ * The [HomeState] is used by the [MotionLayout] to determine which [ConstraintSet] to apply.
+ *
+ * If our [Boolean] parameter [isMailOpen] is `true`, we check if our [Boolean] parameter
+ * [isCompact] is `true`. If it is, we return [HomeState.MailOpenCompact]. If it is `false`, we
+ * check if our [Boolean] parameter [isHalfOpen] is `true`. If it is, we return
+ * [HomeState.MailOpenHalf], and if it is not we return [HomeState.MailOpenExpanded]. If [isMailOpen]
+ * is `false` we return [HomeState.ListOnly].
+ *
+ * @param isMailOpen Whether a mail is currently open in the viewer.
+ * @param isCompact Whether the screen is of a compact width.
+ * @param isHalfOpen Whether the device is a foldable in a half-opened (tabletop) posture.
+ * @return The appropriate [HomeState] for the current context.
+ */
 @Composable
 private fun resolveConstraintSet(
     isMailOpen: Boolean,
