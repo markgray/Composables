@@ -31,7 +31,7 @@ import androidx.compose.runtime.remember
 inline fun rememberNewMailState(
     key: Any = Unit,
     initialLayoutState: NewMailLayoutState
-): NewMailState = remember(key) { NewMailState(initialLayoutState) }
+): NewMailState = remember(key1 = key) { NewMailState(initialLayoutState = initialLayoutState) }
 
 /**
  * TODO: Add kdoc

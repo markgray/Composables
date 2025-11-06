@@ -39,11 +39,13 @@ import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
+import androidx.constraintlayout.compose.MotionLayoutScope
 import androidx.constraintlayout.compose.MotionScene
 import androidx.constraintlayout.compose.MotionSceneScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composemail.model.ComposeMailModel
 import com.example.composemail.model.data.MailInfoFull
+import com.example.composemail.ui.compositionlocal.FoldableInfo
 import com.example.composemail.ui.compositionlocal.LocalFoldableInfo
 import com.example.composemail.ui.compositionlocal.LocalWidthSizeClass
 import com.example.composemail.ui.mails.MailList
@@ -364,7 +366,37 @@ private val homeMotionScene = MotionScene {
      *  - links its `start` to the parent's `start`
      *  - links its `top` to the parent's `top`
      *  - links its `bottom` to the `midGuideline`
-     *  TODO: Continue here.
+     *
+     * **Third** Calls the [ConstraintSetScope.constrain] method to constrain the `toolbarRef`
+     * [ConstrainedLayoutReference]. In the [ConstrainScope] `constrainBlock` lambda argument it:
+     *  - sets the [ConstrainScope.width] to [Dimension.matchParent]
+     *  - sets the [ConstrainScope.height] to [Dimension.wrapContent]
+     *  - links its `top` to the `midGuideline`
+     *  - links its `start` to the parent's `start`
+     *
+     * **Fourth** Calls the [ConstraintSetScope.constrain] method to constrain the `listRef`
+     * [ConstrainedLayoutReference]. In the [ConstrainScope] `constrainBlock` lambda argument it:
+     *  - sets the [ConstrainScope.width] to [Dimension.matchParent]
+     *  - sets the [ConstrainScope.height] to [Dimension.fillToConstraints]
+     *  - links its `start` to the parent's `start`
+     *  - links its `top` to the parent's `bottom`
+     *  - links its `bottom` to the parent's `bottom`
+     *
+     * **Fifth** Calls the [ConstraintSetScope.constrain] method to constrain the `newMailButtonRef`
+     * [ConstrainedLayoutReference]. In the [ConstrainScope] `constrainBlock` lambda argument it:
+     *  - sets the [ConstrainScope.width] to [Dimension.matchParent]
+     *  - sets the [ConstrainScope.height] to [Dimension.fillToConstraints]
+     *  - links its `start` to the parent's `start`
+     *  - links its `top` to the parent's `top`
+     *  - links its `bottom` to the `top` of [ConstrainedLayoutReference] `mailToolBarRef` with a
+     *  `margin` of `8.dp'
+     *
+     * **Sixth** calls the `setToolbarConstraints` method to set the constraints for the `toolbarRef`
+     * [ConstrainedLayoutReference].
+     *
+     * Having configured our [ConstraintSet]'s we call the [MotionSceneScope.defaultTransition]
+     * method to set the default transition from the `listOnlyCSet` [ConstraintSetRef] to the
+     * `mailCompactCSet` [ConstraintSetRef] to be a do-nothing lambda.
      */
     constraintSet(name = HomeState.MailOpenHalf.tag) {
         val midGuideline: ConstraintLayoutBaseScope.HorizontalAnchor =
@@ -405,7 +437,59 @@ private val homeMotionScene = MotionScene {
 }
 
 /**
- * TODO: Add kdoc
+ * The main screen of the application.
+ *
+ * It uses a [MotionLayout] to animate between different states of the UI based on user
+ * interaction, screen size, and device posture. The states are defined in [HomeState] and the
+ * transitions and constraints are in [homeMotionScene].
+ *
+ * The layout is composed of:
+ *  - [TopToolbar]: The top app bar.
+ *  - [MailList]: The list of emails in the inbox.
+ *  - [MailViewer]: The screen to view a single email.
+ *  - [NewMailButton]: A floating action button to compose a new email.
+ *  - [MailToolbar]: A toolbar with actions for an open email (like close).
+ *
+ * The current state is determined by [resolveConstraintSet], which considers whether an email is
+ * open, whether the screen is compact, and whether the device is a foldable in tabletop mode.
+ *
+ * We start by initializing our [ComposeMailModel] variable `mailModel` to the existing (or newly
+ * created if none exists yet) [ComposeMailModel] returned by the [viewModel] method. We initialize
+ * and remember our [MailListState] variable `listState` to a new instance of [MailListState]. We
+ * use the [rememberNewMailState] method to initialize and remember our [NewMailState] variable
+ * `newMailState` to a new instance whose `initialLayoutState` is set to [NewMailLayoutState.Fab].
+ * We initialize our [Boolean] variable `isCompact` to the result of checking if the current
+ * [LocalWidthSizeClass] is [WindowWidthSizeClass.Compact], and initialize our [Boolean] variable
+ * `isHalfOpen` to the result of checking if the current [LocalFoldableInfo] is
+ * [FoldableInfo.isHalfOpen].
+ *
+ * We initialize our [HomeState] variable `currentConstraintSet` to the result of calling the
+ * [resolveConstraintSet] method with the following arguments:
+ *  - `isMailOpen`: the value of the [ComposeMailModel.isMailOpen] property of our [ComposeMailModel]
+ *  variable `mailModel`
+ *  - `isCompact`: the value of our [Boolean] variable `isCompact`
+ *  - `isHalfOpen`: the value of our [Boolean] variable `isHalfOpen`
+ *
+ * Our root composable is a [MotionLayout] whose arguments are:
+ *  - `motionScene`: our [MotionScene] variable `homeMotionScene`
+ *  - `constraintSetName`: the value of the [HomeState.tag] our our [HomeState] variable
+ *  `currentConstraintSet`.
+ *  - `animationSpec`: a [tween] with a duration of 400 milliseconds.
+ *  - `modifier`: our [Modifier] parameter [modifier].
+ *
+ * In the [MotionLayoutScope] `content` composable lambda argument of the [MotionLayout] we:
+ *
+ * **First** Compose a [TopToolbar] whose arguments are:
+ *  - `modifier`: is a [Modifier.layoutId] whose `layoutId` is `"toolbar"`
+ *  - `selectionCountProvider`: a function that returns the number of selected items in the [MailList]
+ *  a function reference to the [MailListState.selectedCount] method of our [MailListState] variable
+ *  `listState`.
+ *  - `onUnselectAll`: a function that unselects all items in the [MailList] a function reference to
+ *  the [MailListState.unselectAll] method of our [MailListState] variable `listState`
+ *
+ * TODO: Continue here.
+ *
+ * @param modifier A [Modifier] for this composable.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Composable
@@ -431,8 +515,7 @@ fun ComposeMailHome(modifier: Modifier) {
         modifier = modifier,
     ) {
         TopToolbar(
-            modifier = Modifier
-                .layoutId(layoutId = "toolbar"),
+            modifier = Modifier.layoutId(layoutId = "toolbar"),
             selectionCountProvider = listState::selectedCount,
             onUnselectAll = listState::unselectAll
         )
