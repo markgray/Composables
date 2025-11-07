@@ -49,11 +49,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
+import androidx.constraintlayout.compose.ConstraintSetRef
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
@@ -65,18 +68,27 @@ import com.example.composemail.ui.theme.Selection
 import com.example.composemail.ui.utils.toHourMinutes
 
 /**
- * Composable to display a mail entry, given by [MailInfoPeek].
+ * A Composable that displays a mail entry item.
  *
- * When [info] is null, it will display a loading indicator, if the info
- * then changes to not-null it will animate the transition to show the info and
- * dismiss the loading indicator.
+ * This Composable is stateful. It manages the animated transition between the loading, normal,
+ * and selected states. When [info] is null, it displays a loading indicator. When the [info]
+ * is provided, it animates the transition to show the mail content. The item's appearance
+ * also changes when it is selected via the [state].
  *
- * @see PreviewConversationLoading
+ * TODO: Continue here.
+ *
+ * @param modifier The modifier to be applied to the `MailItem`.
+ * @param state The state of the `MailItem`, which includes whether it is selected.
+ * @param info The information to display in the mail item. If null, a loading indicator is shown.
+ * @param onMailOpen A callback invoked when the mail item is clicked.
+ *
+ * @see MotionLayoutMail where the layout and animations are defined.
+ * @see PreviewConversationLoading for a preview of the loading state transition.
  */
 @Composable
 fun MailItem(
     modifier: Modifier = Modifier,
-    state: MailItemState = MailItemState(-1) { _, _ -> },
+    state: MailItemState = MailItemState(id = -1) { _, _ -> },
     info: MailInfoPeek?,
     onMailOpen: (id: Int) -> Unit
 ) {
@@ -119,15 +131,17 @@ enum class MotionMailState(val tag: String) {
     /**
      * TODO: Add kdoc
      */
-    Loading("empty"),
+    Loading(tag = "empty"),
+
     /**
      * TODO: Add kdoc
      */
-    Normal("normal"),
+    Normal(tag = "normal"),
+
     /**
      * TODO: Add kdoc
      */
-    Selected("flipped")
+    Selected(tag = "flipped")
 }
 
 /**
@@ -143,36 +157,43 @@ fun MotionLayoutMail(
     onToggledMail: (id: Int) -> Unit,
     onOpenedMail: (id: Int) -> Unit
 ) {
-    val backgroundColor by animateColorAsState(
+    val backgroundColor: Color by animateColorAsState(
         targetValue = when (targetState) {
             MotionMailState.Selected -> Selection.backgroundColor
             else -> MaterialTheme.colors.background
         },
-        animationSpec = tween(ANIMATION_DURATION), label = ""
+        animationSpec = tween(durationMillis = ANIMATION_DURATION),
+        label = ""
     )
-    val initialStart = remember { targetState }
-    val initialEnd = remember {
+    val initialStart: MotionMailState = remember { targetState }
+
+    @Suppress("unused")
+    val initialEnd: MotionMailState = remember {
         when (initialStart) {
             MotionMailState.Loading -> MotionMailState.Normal
             else -> MotionMailState.Loading
         }
     }
-    val motionScene = remember {
+    val motionScene: MotionScene = remember {
         MotionScene {
-            val (pictureRef, checkRef, contentRef, loadingRef) = createRefsFor(
+            val (pictureRef: ConstrainedLayoutReference,
+                checkRef: ConstrainedLayoutReference,
+                contentRef: ConstrainedLayoutReference,
+                loadingRef: ConstrainedLayoutReference
+            ) = createRefsFor(
                 "picture",
                 "check",
                 "content",
                 "loading"
             )
-            val normalCSet = constraintSet(MotionMailState.Normal.tag) {
-                constrain(pictureRef) {
+            val normalCSet: ConstraintSetRef = constraintSet(name = MotionMailState.Normal.tag) {
+                constrain(ref = pictureRef) {
                     width = 60.dp.asDimension
                     height = 60.dp.asDimension
-                    centerVerticallyTo(parent)
-                    start.linkTo(parent.start)
+                    centerVerticallyTo(other = parent)
+                    start.linkTo(anchor = parent.start)
                 }
-                constrain(checkRef) {
+                constrain(ref = checkRef) {
                     width = 60.dp.asDimension
                     height = 60.dp.asDimension
                     centerVerticallyTo(parent)
@@ -182,195 +203,111 @@ fun MotionLayoutMail(
                     @SuppressLint("Range")
                     alpha = 0.0f
                 }
-                constrain(contentRef) {
+                constrain(ref = contentRef) {
                     width = Dimension.fillToConstraints
                     height = 60.dp.asDimension
-                    top.linkTo(pictureRef.top)
-                    start.linkTo(pictureRef.end, 8.dp)
-                    end.linkTo(parent.end, 8.dp)
+                    top.linkTo(anchor = pictureRef.top)
+                    start.linkTo(anchor = pictureRef.end, margin = 8.dp)
+                    end.linkTo(anchor = parent.end, margin = 8.dp)
                 }
-                constrain(loadingRef) {
+                constrain(ref = loadingRef) {
                     width = 60.dp.asDimension
                     height = 60.dp.asDimension
-                    centerVerticallyTo(parent)
-                    end.linkTo(parent.start, 32.dp)
+                    centerVerticallyTo(other = parent)
+                    end.linkTo(anchor = parent.start, margin = 32.dp)
                 }
             }
-            val selectedCSet = constraintSet(MotionMailState.Selected.tag, normalCSet) {
-                constrain(pictureRef) {
+            val selectedCSet: ConstraintSetRef = constraintSet(
+                name = MotionMailState.Selected.tag,
+                extendConstraintSet = normalCSet
+            ) {
+                constrain(ref = pictureRef) {
                     rotationY = -180f
                     @SuppressLint("Range")
                     alpha = 0.0f
                 }
-                constrain(checkRef) {
+                constrain(ref = checkRef) {
                     rotationY = 0f
                     @SuppressLint("Range")
                     alpha = 1f
                 }
             }
-            val loadingCSet = constraintSet(name = MotionMailState.Loading.tag) {
-                constrain(pictureRef) {
+            val loadingCSet: ConstraintSetRef = constraintSet(name = MotionMailState.Loading.tag) {
+                constrain(ref = pictureRef) {
                     width = 60.dp.asDimension
                     height = 60.dp.asDimension
-                    top.linkTo(contentRef.top)
-                    start.linkTo(parent.end, 8.dp)
+                    top.linkTo(anchor = contentRef.top)
+                    start.linkTo(anchor = parent.end, margin = 8.dp)
                 }
-                constrain(checkRef) {
+                constrain(ref = checkRef) {
                     width = 60.dp.asDimension
                     height = 60.dp.asDimension
-                    top.linkTo(contentRef.top)
-                    start.linkTo(parent.end, 8.dp)
-
+                    top.linkTo(anchor = contentRef.top)
+                    start.linkTo(anchor = parent.end, margin = 8.dp)
                     rotationY = 180f
                     @SuppressLint("Range")
                     alpha = 0.0f
                 }
-                constrain(contentRef) {
+                constrain(ref = contentRef) {
                     width = 120.dp.asDimension
                     height = 60.dp.asDimension
-                    centerVerticallyTo(parent)
-                    start.linkTo(pictureRef.end, 32.dp)
+                    centerVerticallyTo(other = parent)
+                    start.linkTo(anchor = pictureRef.end, margin = 32.dp)
                 }
-                constrain(loadingRef) {
+                constrain(ref = loadingRef) {
                     width = 60.dp.asDimension
                     height = 60.dp.asDimension
-                    centerTo(parent)
+                    centerTo(other = parent)
                 }
             }
-            val initialStartCSet = when (initialStart) {
+            val initialStartCSet: ConstraintSetRef = when (initialStart) {
                 MotionMailState.Normal -> normalCSet
                 MotionMailState.Loading -> loadingCSet
                 MotionMailState.Selected -> selectedCSet
             }
-            val initialEndCSet = when (initialStart) {
+            val initialEndCSet: ConstraintSetRef = when (initialStart) {
                 MotionMailState.Normal -> normalCSet
                 MotionMailState.Loading -> loadingCSet
                 MotionMailState.Selected -> selectedCSet
             }
-            defaultTransition(initialStartCSet, initialEndCSet) {
+            defaultTransition(from = initialStartCSet, to = initialEndCSet) {
                 // Do nothing
             }
         }
     }
 
-//    val motionSceneContent = remember {
-//        //language=json5
-//        """
-//{
-//  ConstraintSets: {
-//    ${MotionMailState.Normal.tag}: {
-//      picture: {
-//        width: 60, height: 60,
-//        centerVertically: 'parent',
-//        start: ['parent', 'start', 0],
-//      },
-//      check: {
-//        width: 60, height: 60,
-//        centerVertically: 'parent',
-//        start: ['parent', 'start', 0],
-//        rotationY: 180,
-//        alpha: 0.0
-//      },
-//      content: {
-//        width: 'spread', height: 60,
-//        top: ['picture', 'top', 0],
-//        start: ['picture', 'end', 8], end: ['parent', 'end', 8],
-//      },
-//      loading: {
-//        width: 60, height: 60,
-//        centerVertically: 'parent',
-//        end: ['parent', 'start', 32]
-//      }
-//    },
-//    ${MotionMailState.Selected.tag}: {
-//      Extends: '${MotionMailState.Normal.tag}',
-//      picture: {
-//        rotationY: -180,
-//        alpha: 0.0
-//      },
-//      check: {
-//        rotationY: 0,
-//        alpha: 1.0
-//      }
-//    },
-//    ${MotionMailState.Loading.tag}: {
-//      picture: {
-//        width: 60, height: 60,
-//        top: ['content', 'top', 0],
-//        start: ['parent', 'end', 8]
-//      },
-//      check: {
-//        width: 60, height: 60,
-//        top: ['content', 'top', 0],
-//        start: ['parent', 'end', 8],
-//        rotationY: 180,
-//        alpha: 0.0
-//      },
-//      content: {
-//        width: 120, height: 60,
-//        centerVertically: 'parent',
-//        start: ['picture', 'end', 32],
-//      },
-//      loading: {
-//        width: 60, height: 60,
-//        center: 'parent',
-//      }
-//    }
-//  },
-//  Transitions: {
-//    default: {
-//      from: '${initialStart.tag}',
-//      to: '${initialEnd.tag}',
-//    },
-//    flip: {
-//      from: '${MotionMailState.Normal.tag}',
-//      to: '${MotionMailState.Selected.tag}',
-//      KeyFrames: {
-//        KeyAttributes: [
-//          {
-//            target: ['picture', 'check'],
-//            frames: [50],
-//            scaleX: [0.6],
-//            scaleY: [0.6]
-//          },
-//        ]
-//      }
-//    }
-//  }
-//}"""
-//    }
-    val interactionSource = remember { MutableInteractionSource() }
+    val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     MotionLayout(
         modifier = modifier
             .fillMaxSize()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(shape = RoundedCornerShape(size = 8.dp))
             .background(color = backgroundColor)
             .indication(
-                interactionSource, // Consume MailContent's interactions
-                ripple(bounded = true)
+                interactionSource = interactionSource, // Consume MailContent's interactions
+                indication = ripple(bounded = true)
             )
-            .padding(8.dp),
+            .padding(all = 8.dp),
         constraintSetName = targetState.tag,
-        animationSpec = tween(ANIMATION_DURATION),
+        animationSpec = tween(durationMillis = ANIMATION_DURATION),
         motionScene = motionScene
     ) {
         ContactImage(
-            modifier = Modifier.layoutId("picture"),
+            modifier = Modifier.layoutId(layoutId = "picture"),
             uri = info.from.profilePic,
             onClick = { onToggledMail(info.id) }
         )
         Image(
             modifier = Modifier
-                .layoutId("check")
-                .clip(RoundedCornerShape(10.dp))
-                .background(MaterialTheme.colors.secondary),
+                .layoutId(layoutId = "check")
+                .clip(shape = RoundedCornerShape(size = 10.dp))
+                .background(color = MaterialTheme.colors.secondary),
             imageVector = Icons.Default.Check,
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSecondary),
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onSecondary),
             contentDescription = null
         )
         MailContent(
             modifier = Modifier
-                .layoutId("content")
+                .layoutId(layoutId = "content")
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null, // Show no indication, delegate it to the parent
@@ -379,13 +316,13 @@ fun MotionLayoutMail(
             info = info
         )
         Box(
-            modifier = Modifier.layoutId("loading"),
+            modifier = Modifier.layoutId(layoutId = "loading"),
             contentAlignment = Alignment.Center
         ) {
             // TODO: Consider leaving it until the transition from Loading to anything else finishes
             if (targetState == MotionMailState.Loading) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(size = 40.dp)
                 )
             }
         }
@@ -406,7 +343,7 @@ fun MailContent(
     ) {
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
             OneLineText(
-                modifier = Modifier.weight(1.0f, true),
+                modifier = Modifier.weight(weight = 1.0f, fill = true),
                 text = info.from.name,
                 style = MaterialTheme.typography.body1,
                 overflow = TextOverflow.Ellipsis
@@ -427,12 +364,12 @@ fun MailContent(
 @Preview
 @Composable
 private fun PreviewConversationLoading() {
-    var info: MailInfoPeek? by remember { mutableStateOf(null) }
+    var info: MailInfoPeek? by remember { mutableStateOf(value = null) }
     Column(
-        modifier = Modifier.size(300.dp, 200.dp)
+        modifier = Modifier.size(width = 300.dp, height = 200.dp)
     ) {
         Button(onClick = { info = MailInfoPeek.Default }) {
-            Text("Run")
+            Text(text = "Run")
         }
         MailItem(
             info = info,

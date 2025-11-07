@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -46,9 +47,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstrainScope
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.atLeastWrapContent
 import com.example.composemail.ui.components.ProfileButton
@@ -114,10 +117,32 @@ fun TopToolbar(
 /**
  * [ConstraintSet] for the [SearchToolbar].
  *
- * It constraints the `searchBar` to fill the available width between the start of the parent and
- * the `profileButton`, and constraints the `profileButton` to the end of the parent. Both views
+ * It constraints the "searchBar" to fill the available width between the start of the parent and
+ * the "profileButton", and constraints the "profileButton" to the end of the parent. Both views
  * are centered vertically.
- * TODO: Continue here.
+ *
+ * We initialize our [ConstraintSet] property [searchToolbarConstraintSet] to a new instance and in
+ * its [ConstraintSetScope] `description` lambda argument we initialize our [ConstrainedLayoutReference]
+ * variable `searchBar` to the instance returned by [ConstraintSetScope.createRefFor] for the `id`
+ * "searchBar", and initialize our [ConstrainedLayoutReference] variable `profileB` to the instance
+ * returned by [ConstraintSetScope.createRefFor] for the `id` "profileButton".
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain [ConstrainedLayoutReference] variable
+ * `searchBar` and in its [ConstrainScope] `constrainBlock` lambda argument we:
+ *  - set the [ConstrainScope.width] to [Dimension.fillToConstraints] (a Dimension that spreads to
+ *  match constraints) chained to a [Dimension.Coercible.atLeastWrapContent] (sets the lower bound
+ *  of the current Dimension to be the wrap content size of the child).
+ *  - set the [ConstrainScope.height] to [Dimension.wrapContent]
+ *  - use [ConstrainScope.centerVerticallyTo] to center it vertically to the `parent`
+ *  - link its `start` to the `start` of the parent
+ *  - link its `end` to the `start` of the `profileB`
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain [ConstrainedLayoutReference] variable
+ * `profileB` and in its [ConstrainScope] `constrainBlock` lambda argument we:
+ *  - set its [ConstrainScope.height] to `40.dp`
+ *  - set its [ConstrainScope.width] to `40.dp`
+ *  - use [ConstrainScope.centerVerticallyTo] to center it vertically to the `parent`
+ *  - link its `end` to the `end` of the parent
  */
 private val searchToolbarConstraintSet: ConstraintSet = ConstraintSet {
     val searchBar: ConstrainedLayoutReference = createRefFor(id = "searchBar")
@@ -139,6 +164,19 @@ private val searchToolbarConstraintSet: ConstraintSet = ConstraintSet {
     }
 }
 
+/**
+ * The default toolbar, which is displayed when no items are selected. It consists of a search
+ * bar and a profile button. The layout is handled by a [ConstraintLayout] and the constraints
+ * defined in [searchToolbarConstraintSet].
+ *
+ * Our root composable is a [ConstraintLayout] whose `modifier` argument is our [Modifier] parameter
+ * [modifier], and whose `constraintSet` argument is [searchToolbarConstraintSet]. In its `content`
+ * Composable lambda argument we compose a [SearchBar] whose `modifier` argument is a
+ * [Modifier.layoutId] with the `id` "searchBar", and we compose a [ProfileButton] whose `modifier`
+ * argument is a [Modifier.layoutId] with the `id` "profileButton"
+ *
+ * @param modifier The [Modifier] to be applied to the [ConstraintLayout].
+ */
 @Composable
 private fun SearchToolbar(modifier: Modifier) {
     ConstraintLayout(
@@ -150,6 +188,51 @@ private fun SearchToolbar(modifier: Modifier) {
     }
 }
 
+/**
+ * A toolbar that is displayed when one or more items are selected.
+ *
+ * It shows the number of selected items, an action to clear the selection, and other actions
+ * that can be performed on the selected items (e.g., archive, delete).
+ *
+ * Our root composable is a [Row] whose arguments are:
+ *  - `modifier`: is our [Modifier] parameter [modifier] chanined to a [Modifier.heightIn] whose
+ *  `min` is `40.dp`, chained to a [Modifier.background] whose `color` is [Selection.backgroundColor]
+ *  chained to a [Modifier.padding] that adds `8.dp` to the horizontal sides.
+ *  - `verticalAlignment`: is [Alignment.CenterVertically]
+ *  - `horizontalArrangement`: is [Arrangement.spacedBy] whose `space` is `8.dp`
+ *
+ * In the [RowScope] `content` Composable lambda argument of the [Row] we compose:
+ *
+ * **First** we compose an [Icon] whose arguments are:
+ *  - `modifier`: is a [Modifier.clickable] whose `onClick` argument is a lambda that calls our
+ *  lambda parameter [onUnselectAll]
+ *  - `imageVector`: is [Icons.AutoMirrored.Filled.ArrowBack]
+ *  - `contentDescription`: is `null`
+ *
+ * **Second** we compose a [Text] whose `text` argument is the result of calling our lambda
+ * parameter [selectionCountProvider] and converting the [Int] it returns to a [String].
+ *
+ * **Third** we compose a [Spacer] whose `modifier` argument is a [RowScope.weight] whose `weight`
+ * argument is `1.0f` and whose `fill` argument is `true`.
+ *
+ * **Fourth** we compose an [Icon] whose `imageVector` argument is [Icons.Filled.Archive], and
+ * whose `contentDescription` argument is `null`.
+ *
+ * **Fifth** we compose an [Icon] whose `imageVector` argument is [Icons.Filled.Delete], and
+ * whose `contentDescription` argument is `null`.
+ *
+ * **Sixth** we compose an [Icon] whose `imageVector` argument is [Icons.Filled.MarkAsUnread], and
+ * whose `contentDescription` argument is `null`.
+ *
+ * **Seventh** we compose an [Icon] whose `imageVector` argument is [Icons.Filled.MoreVert],
+ * and whose `contentDescription` argument is `null`.
+ *
+ * @param modifier The [Modifier] to be applied to the toolbar.
+ * @param selectionCountProvider A lambda that provides the current number of selected items. This
+ * count is displayed in the toolbar.
+ * @param onUnselectAll A lambda to be invoked when the user clicks the back arrow, signaling the
+ * desire to clear the selection and exit the selection mode.
+ */
 @Composable
 private fun SelectionToolbar(
     modifier: Modifier,
@@ -180,6 +263,17 @@ private fun SelectionToolbar(
     }
 }
 
+/**
+ * A preview of the [TopToolbar] in its various states.
+ *
+ * This preview displays multiple instances of the [TopToolbar] in a [Column] to demonstrate its
+ * appearance with and without an active selection, and with different width constraints.
+ *
+ *  - The first three toolbars show the "search" state (`selectionCount` is 0) with minimum
+ *  intrinsic width, default width, and fill-max-width.
+ *  - The last two toolbars show the "selection" state (`selectionCount` is 1) with minimum
+ *  intrinsic width and default width.
+ */
 @Preview
 @Composable
 private fun TopToolbarPreview() {
