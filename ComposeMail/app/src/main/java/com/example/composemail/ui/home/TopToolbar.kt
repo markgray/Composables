@@ -66,8 +66,9 @@ import com.example.composemail.ui.theme.Selection
  * from the lambda when it is composed.
  *
  * We start by initializing and remembering our [State] wrapped [Boolean] variable `isInSelection`
- * to the [derivedStateOf] checking if our lambda parameter [selectionCountProvider] returns a
- * value greater than 0. Then we compose an [AnimatedContent] whose arguments are:
+ * to a [derivedStateOf] whose `calculation` lambda argument is a lambda that returns `true` if
+ * our lambda parameter [selectionCountProvider] returns a value greater than 0. Then we compose an
+ * [AnimatedContent] whose arguments are:
  *  - `targetState`: The current value of `isInSelection`.
  *  - `modifier`: is our [Modifier] parameter [modifier]
  *  - `label`: is the [String] "AnimatedContent"
@@ -79,8 +80,8 @@ import com.example.composemail.ui.theme.Selection
  *  - `selectionCountProvider`: is our lambda parameter [selectionCountProvider]
  *  - `onUnselectAll`: is our lambda parameter [onUnselectAll].
  *
- * If `isSelected` is `false` we compose a [SearchToolbar] with the argument:
- *  - `modifier`: is a [Modifier.padding] that adds `4.dp` to `all` sides.
+ * If `isSelected` is `false` we compose a [SearchToolbar] whose `modifier` argument is a
+ * [Modifier.padding] that adds `4.dp` to `all` sides.
  *
  * @param modifier The [Modifier] to be applied to the toolbar.
  * @param selectionCountProvider A lambda that provides the current number of selected items.
