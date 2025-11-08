@@ -170,10 +170,11 @@ private val searchToolbarConstraintSet: ConstraintSet = ConstraintSet {
  * defined in [searchToolbarConstraintSet].
  *
  * Our root composable is a [ConstraintLayout] whose `modifier` argument is our [Modifier] parameter
- * [modifier], and whose `constraintSet` argument is [searchToolbarConstraintSet]. In its `content`
- * Composable lambda argument we compose a [SearchBar] whose `modifier` argument is a
- * [Modifier.layoutId] with the `id` "searchBar", and we compose a [ProfileButton] whose `modifier`
- * argument is a [Modifier.layoutId] with the `id` "profileButton"
+ * [modifier], and whose `constraintSet` argument is [ConstraintSet] property
+ * [searchToolbarConstraintSet]. In its `content` Composable lambda argument we compose a [SearchBar]
+ * whose `modifier` argument is a [Modifier.layoutId] with the `layoutId` "searchBar", and we compose
+ * a [ProfileButton] whose `modifier` argument is a [Modifier.layoutId] with the `layoutId`
+ * "profileButton".
  *
  * @param modifier The [Modifier] to be applied to the [ConstraintLayout].
  */

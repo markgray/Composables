@@ -73,7 +73,7 @@ import com.example.composemail.ui.utils.toHourMinutes
  * This Composable is stateful. It manages the animated transition between the loading, normal,
  * and selected states. When [info] is null, it displays a loading indicator. When the [info]
  * is provided, it animates the transition to show the mail content. The item's appearance
- * also changes when it is selected via the [state].
+ * also changes when it is selected via the [MailItemState] parameter [state].
  *
  * TODO: Continue here.
  *
