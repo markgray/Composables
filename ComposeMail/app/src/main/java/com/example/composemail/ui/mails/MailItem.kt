@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -55,12 +56,18 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstrainScope
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
+import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.ConstraintSetRef
+import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
+import androidx.constraintlayout.compose.MotionLayoutScope
 import androidx.constraintlayout.compose.MotionScene
+import androidx.constraintlayout.compose.MotionSceneScope
+import androidx.constraintlayout.compose.TransitionScope
 import com.example.composemail.model.data.MailInfoPeek
 import com.example.composemail.ui.components.ContactImage
 import com.example.composemail.ui.components.OneLineText
@@ -75,7 +82,22 @@ import com.example.composemail.ui.utils.toHourMinutes
  * is provided, it animates the transition to show the mail content. The item's appearance
  * also changes when it is selected via the [MailItemState] parameter [state].
  *
- * TODO: Continue here.
+ * We start by initializing our [MotionMailState] using a when expression:
+ *  - if our [MailInfoPeek] parameter [info] is `null` there is no info to display, so we show a
+ *  Loading state, ie. [MotionMailState.Loading]
+ *  - if the [MailItemState.isSelected] property of our [MailItemState] parameter [state] is `true`,
+ *  we show the selected state, ie. [MotionMailState.Selected]
+ *  - otherwise, we show the normal state, ie. [MotionMailState.Normal]
+ *
+ * Our root composable is a [MotionLayoutMail] whose arguments are:
+ *  - `modifier`: is our [Modifier] parameter [modifier]
+ *  - `info`: is our [MailInfoPeek] parameter [info] if it is not `null` or [MailInfoPeek.Default]
+ *  if it is `null`.
+ *  - `targetState`: is our [MotionMailState] variable `targetState`
+ *  - `onToggledMail`: is a lambda that calls the [MailItemState.setSelected] method of our
+ *  [MailItemState] parameter [state] with the negation of the value returned by its
+ *  [MailItemState.isSelected] method.
+ *  - `onOpenedMail`: is our lambda parameter [onMailOpen]
  *
  * @param modifier The modifier to be applied to the `MailItem`.
  * @param state The state of the `MailItem`, which includes whether it is selected.
@@ -115,37 +137,196 @@ fun MailItem(
     )
 }
 
-/**
- * TODO: Add kdoc
- */
 const val ANIMATION_DURATION: Int = 400
 
 /**
- * An enum that represents the different layout states of the Composable.
+ * An enum that represents the different layout states of the [MailItem] Composable.
  *
- * Each corresponds to a ConstraintSet in the MotionScene.
+ * Each state corresponds to a [ConstraintSet] in the [MotionScene] used by the [MotionLayoutMail]
+ * Composable, which is responsible for the animations between states.
  *
- * @param tag [String] to be used as the `name` of the `constraintSet`
+ * @param tag The [String] identifier used as the `name` for the corresponding `constraintSet` in
+ * the [MotionScene].
  */
 enum class MotionMailState(val tag: String) {
     /**
-     * TODO: Add kdoc
+     * The state where the `MailItem` is still loading its content. In this state, a
+     * placeholder UI is shown.
      */
     Loading(tag = "empty"),
 
     /**
-     * TODO: Add kdoc
+     * The state that displays the mail's information, such as the sender, a preview of the
+     * content, and the timestamp. This is the default state when the mail item is not being
+     * loaded and is not selected.
      */
     Normal(tag = "normal"),
 
     /**
-     * TODO: Add kdoc
+     * The state where a mail item is selected, usually triggered by a long press or by tapping
+     * the contact's picture. This state is visually distinct, for example by changing its
+     * background color and showing a checkmark instead of the contact's picture.
      */
     Selected(tag = "flipped")
 }
 
 /**
- * TODO: Add kdoc
+ * A composable that displays a mail item with animations between states using [MotionLayout].
+ *
+ * This composable defines the layout and transitions for a single mail item. It uses a
+ * [MotionScene] built with the Compose DSL to describe the constraints for three different
+ * states:
+ *  - [MotionMailState.Loading]: A loading indicator is shown in the center.
+ *  - [MotionMailState.Normal]: The default state, showing the sender's picture and mail content.
+ *  - [MotionMailState.Selected]: The sender's picture flips to reveal a checkmark icon, and the
+ *  background color changes to indicate selection.
+ *
+ * The transition between these states is animated based on the [targetState] parameter.
+ *
+ * We start by initializing our [State] wrapped animated [Color] variable `backgroundColor` to the
+ * value returned by [animateColorAsState] when called with the following arguments:
+ *  - `targetValue`: when our [MotionMailState] parameter [targetState] is [MotionMailState.Selected]
+ *  we pass [Selection.backgroundColor], otherwise we pass [Colors.background] of our custom
+ *  [MaterialTheme.colors]
+ *  - `animationSpec`: we pass a [tween] with a duration of [ANIMATION_DURATION] (400 miliseconds).
+ *  - `label`: we pass an empty [String].
+ *
+ * We initialize and remember our [MotionMailState] variable `initialStart` with the value of
+ * our [MotionMailState] parameter [targetState].
+ *
+ * We initialize and remember our [MotionMailState] variable `initialEnd` using a when expression:
+ *  - if our [MotionMailState] variable is [MotionMailState.Loading] we pass [MotionMailState.Normal]
+ *  - otherwise we pass [MotionMailState.Loading]
+ *
+ * We initialize and remember our [MotionScene] variable `motionScene` to a new instance in whose
+ * [MotionSceneScope] `motionSceneContent` lambda argument:
+ *
+ * **First** we initialize our [ConstrainedLayoutReference] variables `pictureRef`, `checkRef`,
+ * `contentRef` and `loadingRef` to the [ConstrainedLayoutReference]'s returned by
+ * [MotionSceneScope.createRefFor] for the strings "picture", "check", "content" and "loading"
+ * respectively.
+ *
+ * **Second** we initialize our [ConstraintSetRef] variable `normalCSet` to refer to the
+ * [ConstraintSet] created by [MotionSceneScope.constraintSet] for the `name` [MotionMailState.tag]
+ * of [MotionMailState.Normal]. In the [ConstraintSetScope] `constraintSetContent` lambda argument
+ * of [MotionSceneScope.constraintSet]:
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
+ * variable `pictureRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
+ *  - set the [ConstrainScope.width] to `60.dp`
+ *  - set the [ConstrainScope.height] to `60.dp`
+ *  - call [ConstrainScope.centerVerticallyTo] to center the [ConstrainedLayoutReference]
+ *  variable `pictureRef` vertically to the parent
+ *  - set the [ConstrainScope.start] to the start of the parent
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
+ * variable `checkRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
+ *  - set the [ConstrainScope.width] to `60.dp`
+ *  - set the [ConstrainScope.height] to `60.dp`
+ *  - call [ConstrainScope.centerVerticallyTo] to center the [ConstrainedLayoutReference]
+ *  variable `checkRef` vertically to the parent
+ *  - set the [ConstrainScope.start] to the start of the parent
+ *  - set the [ConstrainScope.rotationY] to `180f`
+ *  - set the [ConstrainScope.alpha] to `0.0f`
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
+ * variable `contentRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
+ *  - set the [ConstrainScope.width] to `fillConstraints`
+ *  - set the [ConstrainScope.height] to `60.dp`
+ *  - link its `top` to the `top` of the [ConstrainedLayoutReference] variable `pictureRef`
+ *  - link its `start` to the `end` of the [ConstrainedLayoutReference] variable `pictureRef`
+ *  with a `margin` of `8.dp`
+ *  - link its `end` to the `end` of the parent with a `margin` of `8.dp`
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
+ * variable `loadingRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
+ *  - set the [ConstrainScope.width] to `60.dp`
+ *  - set the [ConstrainScope.height] to `60.dp`
+ *  - call [ConstrainScope.centerVerticallyTo] to center the [ConstrainedLayoutReference]
+ *  variable `loadingRef` vertically to the parent
+ *  - link its `end` to the `start` of its parent with a margin of `32.dp`
+ *
+ * **Third** we initialize our [ConstraintSetRef] variable `loadingCSet` to refer to the
+ * [ConstraintSet] created by [MotionSceneScope.constraintSet] for the `name` [MotionMailState.tag]
+ * of [MotionMailState.Loading]. In the [ConstraintSetScope] `constraintSetContent` lambda argument
+ * of [MotionSceneScope.constraintSet]:
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
+ * variable `pictureRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
+ *  - set the [ConstrainScope.width] to `60.dp`
+ *  - set the [ConstrainScope.height] to `60.dp`
+ *  - link its `top` to the `top` of the [ConstrainedLayoutReference] variable `contentRef`
+ *  - link its `start` to the `end` of its parent with a `margin` of `8.dp`
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
+ * variable `checkRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
+ *  - set the [ConstrainScope.width] to `60.dp`
+ *  - set the [ConstrainScope.height] to `60.dp`
+ *  - link its `top` to the `top` of the [ConstrainedLayoutReference] variable `contentRef`
+ *  - link its `start` to the `end` of its parent with a `margin` of `8.dp`
+ *  - set the [ConstrainScope.rotationY] to `180f`
+ *  - set the [ConstrainScope.alpha] to `0.0f`
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
+ * variable `contentRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
+ *  - set the [ConstrainScope.width] to `120.dp`
+ *  - set the [ConstrainScope.height] to `60.dp`
+ *  - call [ConstrainScope.centerVerticallyTo] to center the [ConstrainedLayoutReference]
+ *  variable `contentRef` vertically to the parent
+ *  - link its `start` to the `end` of the [ConstrainedLayoutReference] variable `pictureRef`
+ *  with a `margin` of `32.dp`
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
+ * variable `loadingRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
+ *  - set the [ConstrainScope.width] to `60.dp`
+ *  - set the [ConstrainScope.height] to `60.dp`
+ *  - call [ConstrainScope.centerTo] to center the [ConstrainedLayoutReference] variable `loadingRef`
+ *  to the parent
+ *
+ * **Fourth** we initialize our [ConstraintSetRef] using a when expression:
+ *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Normal] we initialize
+ *  it to [ConstraintSetRef] variable `normalCSet`
+ *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Loading] we initialize
+ *  it to [ConstraintSetRef] variable `loadingCSet`
+ *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Selected] we initialize
+ *  it to [ConstraintSetRef] variable `selectedCSet`
+ *
+ * **Fifth** we initialize our [ConstraintSetRef] variable `initialEndCSet` using a when expression:
+ *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Normal] we initialize
+ *  it to [ConstraintSetRef] variable `normalCSet`
+ *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Loading] we initialize
+ *  it to [ConstraintSetRef] variable `loadingCSet`
+ *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Selected] we initialize
+ *  it to [ConstraintSetRef] variable `selectedCSet`
+ *
+ * **Sixth** we call the [MotionSceneScope.defaultTransition] method to define the default
+ * transition from `initialStartCSet` to `initialEndCSet` passing a do-nothing lambda as its
+ * [TransitionScope] `transitionContent` lambda argument.
+ *
+ * Having defined our [MotionScene] we initialize and remember our [MutableInteractionSource] variable
+ * `interactionSource` to a new instance.
+ *
+ * Our root composable is a [MotionLayout] whose arguments are:
+ *  - `modifier`: is our [Modifier] parameter [modifier] chained to a [Modifier.fillMaxSize] chained
+ *  to a [Modifier.clip] whose `shape` is a [RoundedCornerShape] with a `size` of `8.dp`, chained to
+ *  a [Modifier.background] whose `color` is our [State] wrapped [Color] variable `backgroundColor`,
+ *  chained to a [Modifier.indication] whose `interactionSource` is our [MutableInteractionSource]
+ *  variable `interactionSource` and whose `indication` is a [ripple] with a `bounded` argument of
+ *  `true`, chained to a [Modifier.padding] that adds `8.dp` padding to all sides.
+ *  - `constraintSetName`: is the [MotionMailState.tag] of our [MotionMailState] parameter [targetState]
+ *  - `animationSpec`: is a [tween] with a duration of [ANIMATION_DURATION] (400 miliseconds)
+ *  - `motionScene`: is our [MotionScene] variable `motionScene`.
+ *
+ * In the [MotionLayoutScope] `content` composable lambda argument of the [MotionLayout] we:
+ * TODO: Continue here.
+ *
+ * @param modifier The modifier to be applied to the [MotionLayout].
+ * @param info The [MailInfoPeek] data to be displayed in the mail item.
+ * @param targetState The target [MotionMailState] to which the layout should animate.
+ * @param onToggledMail A callback invoked with the mail ID when the sender's image is clicked,
+ * used to toggle the selection state.
+ * @param onOpenedMail A callback invoked with the mail ID when the main content area is clicked,
+ * used to open the mail.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Suppress("EXPERIMENTAL_API_USAGE")
@@ -198,7 +379,6 @@ fun MotionLayoutMail(
                     height = 60.dp.asDimension
                     centerVerticallyTo(parent)
                     start.linkTo(parent.start)
-
                     rotationY = 180f
                     @SuppressLint("Range")
                     alpha = 0.0f
