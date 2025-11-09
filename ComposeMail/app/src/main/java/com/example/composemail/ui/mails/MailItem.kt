@@ -137,6 +137,12 @@ fun MailItem(
     )
 }
 
+/**
+ * The duration of the animations in the [MailItem] composable, in milliseconds.
+ *
+ * This value is used in the `tween` specifications for animations like the background color change
+ * and the [MotionLayout] transitions between different [MotionMailState]s.
+ */
 const val ANIMATION_DURATION: Int = 400
 
 /**
@@ -191,12 +197,13 @@ enum class MotionMailState(val tag: String) {
  *  - `animationSpec`: we pass a [tween] with a duration of [ANIMATION_DURATION] (400 miliseconds).
  *  - `label`: we pass an empty [String].
  *
- * We initialize and remember our [MotionMailState] variable `initialStart` with the value of
- * our [MotionMailState] parameter [targetState].
+ * We initialize and remember our [MotionMailState] variable `initialStart` with the initial value
+ * of our [MotionMailState] parameter [targetState].
  *
  * We initialize and remember our [MotionMailState] variable `initialEnd` using a when expression:
- *  - if our [MotionMailState] variable is [MotionMailState.Loading] we pass [MotionMailState.Normal]
- *  - otherwise we pass [MotionMailState.Loading]
+ *  - if our [MotionMailState] variable is [MotionMailState.Loading] we initialize it to
+ *  [MotionMailState.Normal]
+ *  - otherwise we initialize it to [MotionMailState.Loading]
  *
  * We initialize and remember our [MotionScene] variable `motionScene` to a new instance in whose
  * [MotionSceneScope] `motionSceneContent` lambda argument:
@@ -209,29 +216,27 @@ enum class MotionMailState(val tag: String) {
  * **Second** we initialize our [ConstraintSetRef] variable `normalCSet` to refer to the
  * [ConstraintSet] created by [MotionSceneScope.constraintSet] for the `name` [MotionMailState.tag]
  * of [MotionMailState.Normal]. In the [ConstraintSetScope] `constraintSetContent` lambda argument
- * of [MotionSceneScope.constraintSet]:
+ * of the [MotionSceneScope.constraintSet]:
  *
  * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
  * variable `pictureRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
  *  - set the [ConstrainScope.width] to `60.dp`
  *  - set the [ConstrainScope.height] to `60.dp`
- *  - call [ConstrainScope.centerVerticallyTo] to center the [ConstrainedLayoutReference]
- *  variable `pictureRef` vertically to the parent
+ *  - call [ConstrainScope.centerVerticallyTo] to center it vertically to the parent
  *  - set the [ConstrainScope.start] to the start of the parent
  *
  * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
  * variable `checkRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
  *  - set the [ConstrainScope.width] to `60.dp`
  *  - set the [ConstrainScope.height] to `60.dp`
- *  - call [ConstrainScope.centerVerticallyTo] to center the [ConstrainedLayoutReference]
- *  variable `checkRef` vertically to the parent
- *  - set the [ConstrainScope.start] to the start of the parent
- *  - set the [ConstrainScope.rotationY] to `180f`
- *  - set the [ConstrainScope.alpha] to `0.0f`
+ *  - call [ConstrainScope.centerVerticallyTo] to center it vertically to the parent
+ *  - link its `start` to the `start` of the parent
+ *  - set its [ConstrainScope.rotationY] to `180f`
+ *  - set its [ConstrainScope.alpha] to `0.0f`
  *
  * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
  * variable `contentRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
- *  - set the [ConstrainScope.width] to `fillConstraints`
+ *  - set the [ConstrainScope.width] to [Dimension.fillToConstraints]
  *  - set the [ConstrainScope.height] to `60.dp`
  *  - link its `top` to the `top` of the [ConstrainedLayoutReference] variable `pictureRef`
  *  - link its `start` to the `end` of the [ConstrainedLayoutReference] variable `pictureRef`
@@ -246,7 +251,23 @@ enum class MotionMailState(val tag: String) {
  *  variable `loadingRef` vertically to the parent
  *  - link its `end` to the `start` of its parent with a margin of `32.dp`
  *
- * **Third** we initialize our [ConstraintSetRef] variable `loadingCSet` to refer to the
+ * **Third** we initialize our [ConstraintSetRef] variable `selectedCSet` to the  [ConstraintSet]
+ * created by [MotionSceneScope.constraintSet] for the `name` [MotionMailState.tag] of
+ * [MotionMailState.Selected], with its `extendConstraintSet` argument our [ConstraintSetRef]
+ * variable `normalCSet`. In the [ConstraintSetScope] `constraintSetContent` lambda argument
+ * of [MotionSceneScope.constraintSet]:
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
+ * variable `pictureRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
+ *  - set the [ConstrainScope.rotationY] to `-180f`
+ *  - set the [ConstrainScope.alpha] to `0.0f`
+ *
+ * We call the [ConstraintSetScope.constrain] method to constrain the [ConstrainedLayoutReference]
+ * variable `checkRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
+ *  - set the [ConstrainScope.rotationY] to `0f`
+ *  - set the [ConstrainScope.alpha] to `1f`
+ *
+ * **Fourth** we initialize our [ConstraintSetRef] variable `loadingCSet` to refer to the
  * [ConstraintSet] created by [MotionSceneScope.constraintSet] for the `name` [MotionMailState.tag]
  * of [MotionMailState.Loading]. In the [ConstraintSetScope] `constraintSetContent` lambda argument
  * of [MotionSceneScope.constraintSet]:
@@ -271,8 +292,7 @@ enum class MotionMailState(val tag: String) {
  * variable `contentRef` and in the [ConstrainScope] `constrainBlock` lambda argument, we:
  *  - set the [ConstrainScope.width] to `120.dp`
  *  - set the [ConstrainScope.height] to `60.dp`
- *  - call [ConstrainScope.centerVerticallyTo] to center the [ConstrainedLayoutReference]
- *  variable `contentRef` vertically to the parent
+ *  - call [ConstrainScope.centerVerticallyTo] to center it vertically to the parent
  *  - link its `start` to the `end` of the [ConstrainedLayoutReference] variable `pictureRef`
  *  with a `margin` of `32.dp`
  *
@@ -283,7 +303,7 @@ enum class MotionMailState(val tag: String) {
  *  - call [ConstrainScope.centerTo] to center the [ConstrainedLayoutReference] variable `loadingRef`
  *  to the parent
  *
- * **Fourth** we initialize our [ConstraintSetRef] using a when expression:
+ * **Fifth** we initialize our [ConstraintSetRef] variable `initialStartCSet` using a when expression:
  *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Normal] we initialize
  *  it to [ConstraintSetRef] variable `normalCSet`
  *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Loading] we initialize
@@ -291,7 +311,7 @@ enum class MotionMailState(val tag: String) {
  *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Selected] we initialize
  *  it to [ConstraintSetRef] variable `selectedCSet`
  *
- * **Fifth** we initialize our [ConstraintSetRef] variable `initialEndCSet` using a when expression:
+ * **Sixth** we initialize our [ConstraintSetRef] variable `initialEndCSet` using a when expression:
  *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Normal] we initialize
  *  it to [ConstraintSetRef] variable `normalCSet`
  *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Loading] we initialize
@@ -299,7 +319,7 @@ enum class MotionMailState(val tag: String) {
  *  - if our [MotionMailState] variable `initialStart` is [MotionMailState.Selected] we initialize
  *  it to [ConstraintSetRef] variable `selectedCSet`
  *
- * **Sixth** we call the [MotionSceneScope.defaultTransition] method to define the default
+ * **Seventh** we call the [MotionSceneScope.defaultTransition] method to define the default
  * transition from `initialStartCSet` to `initialEndCSet` passing a do-nothing lambda as its
  * [TransitionScope] `transitionContent` lambda argument.
  *
@@ -309,10 +329,11 @@ enum class MotionMailState(val tag: String) {
  * Our root composable is a [MotionLayout] whose arguments are:
  *  - `modifier`: is our [Modifier] parameter [modifier] chained to a [Modifier.fillMaxSize] chained
  *  to a [Modifier.clip] whose `shape` is a [RoundedCornerShape] with a `size` of `8.dp`, chained to
- *  a [Modifier.background] whose `color` is our [State] wrapped [Color] variable `backgroundColor`,
- *  chained to a [Modifier.indication] whose `interactionSource` is our [MutableInteractionSource]
- *  variable `interactionSource` and whose `indication` is a [ripple] with a `bounded` argument of
- *  `true`, chained to a [Modifier.padding] that adds `8.dp` padding to all sides.
+ *  a [Modifier.background] whose `color` is our [State] wrapped animated [Color] variable
+ *  `backgroundColor`, chained to a [Modifier.indication] whose `interactionSource` is our
+ *  [MutableInteractionSource] variable `interactionSource` and whose `indication` is a [ripple]
+ *  with a `bounded` argument of `true`, chained to a [Modifier.padding] that adds `8.dp` padding
+ *  to all sides.
  *  - `constraintSetName`: is the [MotionMailState.tag] of our [MotionMailState] parameter [targetState]
  *  - `animationSpec`: is a [tween] with a duration of [ANIMATION_DURATION] (400 miliseconds)
  *  - `motionScene`: is our [MotionScene] variable `motionScene`.
