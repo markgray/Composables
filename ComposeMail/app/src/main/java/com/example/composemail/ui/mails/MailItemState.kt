@@ -16,26 +16,34 @@
 
 package com.example.composemail.ui.mails
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
 /**
- * TODO: Add kdoc
+ * A state holder for a single mail item.
  *
- * @param id TODO: Add kdoc
- * @param onSelected TODO: Add kdoc
+ * @param id The unique id of the mail item.
+ * @param onSelected A callback invoked when the selection state of this item changes.
  */
 class MailItemState(val id: Int, private val onSelected: (id: Int, isSelected: Boolean) -> Unit) {
-    private val _isSelected = mutableStateOf(false)
     /**
-     * TODO: Add kdoc
+     * Private mutable state for whether this item is selected.
+     */
+    private val _isSelected: MutableState<Boolean> = mutableStateOf(value = false)
+
+    /**
+     * Whether this mail item is currently selected. Public read-only access to our private
+     * [MutableState] wrapped property [_isSelected].
      */
     val isSelected: Boolean
         get() = _isSelected.value
 
     /**
-     * TODO: Add kdoc
+     * Updates the selection state of this mail item.
      *
-     * @param isSelected TODO: Add kdoc
+     * This function will also invoke the [onSelected] callback with the new state.
+     *
+     * @param isSelected Whether the item is selected.
      */
     fun setSelected(isSelected: Boolean) {
         onSelected(id, isSelected)

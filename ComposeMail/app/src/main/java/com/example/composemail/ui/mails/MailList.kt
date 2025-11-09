@@ -34,15 +34,23 @@ import androidx.paging.compose.items
 import com.example.composemail.model.data.MailInfoPeek
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * The duration of the slide-in/slide-out transition when the mail list is shown after loading.
+ */
 private const val TRANSITION_DURATION_MS = 600
 
 /**
- * TODO: Add kdoc
+ * A [LazyColumn] that displays a list of emails.
  *
- * @param modifier TODO: Add kdoc
- * @param listState TODO: Add kdoc
- * @param observableConversations TODO: Add kdoc
- * @param onMailOpen TODO: Add kdoc
+ * This composable uses [PagingData] to display a list of [MailInfoPeek]s. It animates
+ * between a loading state and the list of mails. It also uses a custom [MailListState]
+ * to manage the state of individual mail items.
+ * TODO: Continue here.
+ * @param modifier The [Modifier] to be applied to this Composable.
+ * @param listState The state of the mail list, used to manage individual item states.
+ * @param observableConversations A [Flow] of [PagingData] of [MailInfoPeek] that contains the mail
+ * items to be displayed.
+ * @param onMailOpen A lambda to be called with the mail's ID when a mail item is clicked.
  */
 @Composable
 fun MailList(
@@ -63,27 +71,28 @@ fun MailList(
         transitionSpec = {
             // Equal duration for a pushing in/out effect
             slideInVertically(
-                animationSpec = tween(TRANSITION_DURATION_MS),
+                animationSpec = tween(durationMillis = TRANSITION_DURATION_MS),
                 initialOffsetY = { it }
-            ) togetherWith  slideOutVertically(
-                animationSpec = tween(TRANSITION_DURATION_MS),
+            ) togetherWith slideOutVertically(
+                animationSpec = tween(durationMillis = TRANSITION_DURATION_MS),
                 targetOffsetY = { -it }
             )
-        }, label = ""
-    ) { isListEmpty ->
+        },
+        label = ""
+    ) { isListEmpty: Boolean ->
         if (isListEmpty) {
             // MailItem with null info will act as a loading indicator
             MailItem(
                 info = null,
-                state = listState.stateFor(null),
+                state = listState.stateFor(id = null),
                 onMailOpen = onMailOpen
             )
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(space = 4.dp)
             ) {
-                items(lazyMailItems) { mailInfo ->
+                items(lazyMailItems) { mailInfo: MailInfoPeek? ->
                     // The Pager, configured with placeholders may initially provide
                     // a null mailInfo when it reaches the current end of the list,
                     // it will then provide a non-null mailInfo for the same Composable,

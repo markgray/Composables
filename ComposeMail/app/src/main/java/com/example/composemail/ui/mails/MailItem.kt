@@ -28,8 +28,11 @@ import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,6 +42,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.ripple
@@ -68,11 +72,13 @@ import androidx.constraintlayout.compose.MotionLayoutScope
 import androidx.constraintlayout.compose.MotionScene
 import androidx.constraintlayout.compose.MotionSceneScope
 import androidx.constraintlayout.compose.TransitionScope
+import com.example.composemail.model.data.Contact
 import com.example.composemail.model.data.MailInfoPeek
 import com.example.composemail.ui.components.ContactImage
 import com.example.composemail.ui.components.OneLineText
 import com.example.composemail.ui.theme.Selection
 import com.example.composemail.ui.utils.toHourMinutes
+import java.time.Instant
 
 /**
  * A Composable that displays a mail entry item.
@@ -339,7 +345,37 @@ enum class MotionMailState(val tag: String) {
  *  - `motionScene`: is our [MotionScene] variable `motionScene`.
  *
  * In the [MotionLayoutScope] `content` composable lambda argument of the [MotionLayout] we:
- * TODO: Continue here.
+ *
+ * **First** Compose a [ContactImage] whose arguments are:
+ *  - `modifier`: is a [Modifier.layoutId] whose `layoutId` is "picture"
+ *  - `uri`: is the [Contact.profilePic] of the [MailInfoPeek.from] property of our [MailInfoPeek]
+ *  parameter `info`.
+ *  - `onClick`: is a lambda that calls our [onToggledMail] lambda parameter with the [MailInfoPeek.id]
+ *  property of our [MailInfoPeek] parameter [info].
+ *
+ * **Second** Compose a [Image] whose arguments are:
+ *  - `modifier`: is a [Modifier.layoutId] whose `layoutId` is "check", chained to a [Modifier.clip]
+ *  whose `shape` is a [RoundedCornerShape] with a `size` of `10.dp`, chained to a [Modifier.background]
+ *  whose `color` is the [Colors.secondary] of our custom [MaterialTheme.colors]
+ *  - `imageVector`: is an [Icons.Filled.Check]
+ *  - `colorFilter`: is a [ColorFilter.tint] whose `color` is the [Colors.onSecondary] of our custom
+ *  [MaterialTheme.colors]
+ *  - `contentDescription`: is `null`
+ *
+ * **Third** Compose a [MailContent] whose arguments are:
+ *  - `modifier`: is a [Modifier.layoutId] whose `layoutId` is "content", chained to a [Modifier.clickable]
+ *  whose `interactionSource` is our [MutableInteractionSource] variable `interactionSource`, whose
+ *  `indication` is `null`, and whose `onClick` argument is a lambda that calls our [onOpenedMail]
+ *  lambda parameter with the [MailInfoPeek.id] property of our [MailInfoPeek] parameter [info]
+ *  - `info`: is our [MailInfoPeek] parameter [info]
+ *
+ * **Fourth** Compose a [Box] whose arguments are:
+ *  - `modifier`: is a [Modifier.layoutId] whose `layoutId` is "loading".
+ *  - `contentAlignment`: is [Alignment.Center]
+ *
+ * In the [BoxScope] `content` lambda argument of the [Box] if our [MotionMailState] parameter
+ * [targetState] is [MotionMailState.Loading] we compose a [CircularProgressIndicator] whose
+ * `modifier` is a [Modifier.size] whose `size` is `40.dp`.
  *
  * @param modifier The modifier to be applied to the [MotionLayout].
  * @param info The [MailInfoPeek] data to be displayed in the mail item.
@@ -531,7 +567,41 @@ fun MotionLayoutMail(
 }
 
 /**
- * TODO: Add kdoc
+ * A Composable that displays the main content of a mail item, including the sender, timestamp,
+ * and a short preview of the content.
+ *
+ * This layout consists of a `Column` containing two rows:
+ *  1. A `Row` that displays the sender's name on the left (truncated with an ellipsis if too long)
+ *  and the mail's timestamp on the right.
+ *  2. A `OneLineText` that shows a short preview of the mail's content, also truncated with an
+ *  ellipsis if it exceeds the available space.
+ *
+ * Our root composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier]
+ * chained to a [Modifier.padding] that adds `4.dp` to the vertical sides, and whose `verticalArrangement`
+ * is [Arrangement.SpaceBetween]. In the [ColumnScope] `content` composable lambda argument of the
+ * [Column] we:
+ *
+ * **First** compose a [Row] whose `horizontalArrangement` argument is [Arrangement.SpaceBetween].
+ * In the [RowScope] `content` composable lambda argument of the [Row] we:
+ *
+ * Compose a [OneLineText] whose arguments are:
+ *  - `modifier`: is a [RowScope.weight] whose `weight` is `1.0f` and whose `fill` is `true`.
+ *  - `text`: is the [Contact.name] of our [MailInfoPeek] parameter [info].
+ *  - `style`: is the [Typography.body1] of our custom [MaterialTheme.typography].
+ *  - `overflow`: is [TextOverflow.Ellipsis].
+ *
+ * Compose a second [OneLineText] whose arguments are:
+ *  - `text`: is the [MailInfoPeek.timestamp] of our [MailInfoPeek] parameter [info] converted to
+ *  a string using [Instant.toHourMinutes]
+ *  - `style`: is the [Typography.body2] of our custom [MaterialTheme.typography].
+ *
+ * **Second** compose a [OneLineText] whose arguments are:
+ *  - `text`: is the [MailInfoPeek.shortContent] of our [MailInfoPeek] parameter [info].
+ *  - `style`: is the [Typography.body2] of our custom [MaterialTheme.typography].
+ *  - `overflow`: is [TextOverflow.Ellipsis].
+ *
+ * @param modifier The modifier to be applied to the `Column` that holds the content.
+ * @param info The [MailInfoPeek] object containing the data to display.
  */
 @Composable
 fun MailContent(
@@ -562,6 +632,17 @@ fun MailContent(
     }
 }
 
+/**
+ * A preview Composable for demonstrating the transition of a [MailItem] from its loading state
+ * to the content-displayed state.
+ *
+ * This preview sets up a simple UI with a "Run" button and a [MailItem]. Initially, the
+ * [MailItem] is in a loading state because the `info` passed to it is `null`. When the
+ * "Run" button is clicked, the state is updated with default mail information, triggering
+ * the animated transition within the [MailItem] to show the mail content.
+ *
+ * @see MailItem
+ */
 @Preview
 @Composable
 private fun PreviewConversationLoading() {
@@ -579,6 +660,13 @@ private fun PreviewConversationLoading() {
     }
 }
 
+/**
+ * A preview of the [MailItem] Composable in its default, "normal" state.
+ *
+ * This preview displays a `MailItem` using the default `MailInfoPeek` data, representing a
+ * typical, unselected mail item in a list. The `onMailOpen` callback is a no-op for preview
+ * purposes.
+ */
 @Preview
 @Composable
 private fun PreviewConversation() {
