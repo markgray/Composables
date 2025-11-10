@@ -18,51 +18,100 @@
 
 package com.example.composemail.ui.mails
 
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 
 /**
- * TODO: Add kdoc
+ * A state holder for a list of mails.
+ *
+ * This class is responsible for managing the selection state of a list of mail items. It holds
+ * the state for each individual item and provides information about the overall selection, such as
+ * the count of selected items and their IDs.
+ *
+ * It is designed to be used with a [LazyColumn] or similar component, where [stateFor] can be
+ * called to retrieve or create a state object for each item by its ID.
  */
 class MailListState {
-    private val conversationStatesById = mutableMapOf<Int, MailItemState>()
-
-    private val selectedTracker = mutableSetOf<Int>()
-
-    private val _selectedCount = mutableIntStateOf(0)
+    /**
+     * A map of [MailItemState]s, keyed by the ID of the mail item.
+     *
+     * This allows us to persist the state of each mail item (e.g., whether it is selected)
+     * even when it is scrolled out of view and recycled by a [LazyColumn].
+     */
+    private val conversationStatesById: MutableMap<Int, MailItemState> = mutableMapOf()
 
     /**
-     * TODO: Add kdoc
+     * A mutable set that tracks the IDs of all selected mail items.
+     *
+     * This set is updated via the lambda passed to [MailItemState] when an item's selection state
+     * changes. It is used to calculate [selectedCount] and provide the list of [selectedIDs].
+     */
+    private val selectedTracker: MutableSet<Int> = mutableSetOf()
+
+    /**
+     * The number of selected mails, as a [MutableIntState].
+     *
+     * This state is updated whenever a mail item's selection state changes, and is used to drive
+     * recomposition in Composables that observe it. It is exposed externally as an immutable [Int]
+     * through the [selectedCount] property.
+     */
+    private val _selectedCount: MutableIntState = mutableIntStateOf(value = 0)
+
+    /**
+     * A collection of the IDs of all currently selected mail items.
+     *
+     * This provides a read-only view of the selected item IDs, derived from the internal
+     * [selectedTracker].
      */
     val selectedIDs: Collection<Int>
         get() = selectedTracker.toList()
 
     /**
-     * TODO: Add kdoc
+     * The number of currently selected mail items.
+     *
+     * This property provides a read-only count of the selected items and is derived from an
+     * internal [MutableIntState], ensuring that Composables observing this value will be
+     * recomposed when the selection changes.
      */
     val selectedCount: Int
         get() = _selectedCount.intValue
 
     /**
-     * TODO: Add kdoc
+     * Unselects all currently selected mail items.
+     *
+     * This function iterates through all known [MailItemState] objects and sets their
+     * selection status to `false`. This effectively clears the current selection and updates
+     * the [selectedCount] to zero.
      */
     fun unselectAll() {
-        conversationStatesById.values.forEach { it.setSelected(false) }
+        conversationStatesById.values.forEach { it.setSelected(isSelected = false) }
     }
 
     /**
-     * Returns an instance of [MailItemState] for the given [id].
+     * Retrieves or creates a [MailItemState] for a mail item with the given [id].
      *
-     * Repeated calls for the same [id] will return the same [MailItemState] instance.
+     * This function ensures that the state for each mail item is preserved, even when it is
+     * scrolled out of view and recycled by a [LazyColumn]. If a [MailItemState] for the
+     * specified [id] already exists, it is returned. Otherwise, a new [MailItemState] is
+     * created, stored, and then returned.
+     *
+     * Repeated calls for the same [id] will return the same instance of [MailItemState].
+     * If the provided [id] is `null`, a default state for an ID of `-1` is used.
+     * TODO: Continue here.
+     *
+     * @param id The unique identifier of the mail item. Can be `null`.
+     * @return The [MailItemState] for the corresponding mail item.
      */
     fun stateFor(id: Int?): MailItemState {
         val nextId = id ?: -1
         return conversationStatesById.computeIfAbsent(nextId) {
-            MailItemState(nextId) { id, isSelected ->
+            MailItemState(id = nextId) { id: Int, isSelected: Boolean ->
                 // Track which items are selected
                 if (isSelected) {
-                    selectedTracker.add(id)
+                    selectedTracker.add(element = id)
                 } else {
-                    selectedTracker.remove(id)
+                    selectedTracker.remove(element = id)
                 }
                 _selectedCount.intValue = selectedTracker.size
             }
