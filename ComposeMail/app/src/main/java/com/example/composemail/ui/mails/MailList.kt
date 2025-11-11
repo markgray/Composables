@@ -59,36 +59,37 @@ private const val TRANSITION_DURATION_MS = 600
  *  - `targetState`: is `true` when the list is empty, `false` otherwise.
  *  - `transitionSpec`: is a [AnimatedContentTransitionScope] of [Boolean] lambda in which we call
  *  [slideInVertically] with the `animationSpec` argument a [tween] with a duration of
- *  [TRANSITION_DURATION_MS], and an `initialOffsetY` a lambda that accepts the [Int] passed it
- *  in the variable `fullHeight` and returns it, then we use [togetherWith] to call
+ *  [TRANSITION_DURATION_MS], and its `initialOffsetY` argument is a lambda that accepts the [Int]
+ *  passed it in the variable `fullHeight` and returns it, then we use [togetherWith] to also call
  *  [slideOutVertically] with the `animationSpec` argument a [tween] with a duration of
- *  [TRANSITION_DURATION_MS], and an `targetOffsetY` a lambda that accepts the [Int] passed it
- *  in the variable `fullHeight` and returns the negative value of it.
+ *  [TRANSITION_DURATION_MS], and its `targetOffsetY` argument a lambda that accepts the [Int]
+ *  passed it in the variable `fullHeight` and returns the negative value of it.
  *  - `label`: is an empty string.
  *
  * In the [AnimatedContentScope] `content` composable lambda argument of the [AnimatedContent]
- * we accept the [Boolean] passed the lambda in variable `isListEmpty` and if it is true we compose
- * a [MailItem] whose arguments are:
+ * we accept the [Boolean] passed the lambda in variable `isListEmpty` and if it is `true` we
+ * compose a [MailItem] whose arguments are:
  *  - `info`: is `null`
  *  - `state`: is the result of calling the [MailListState.stateFor] function on our [MailListState]
- *  parameter [listState] with an `id` of `null`.
+ *  parameter [listState] with its `id` argument `null`.
  *  - `onMailOpen`: is our [onMailOpen] lambda parameter.
  *
  * If `isListEmpty` is false, we compose a [LazyColumn] whose arguments are:
- *  - `modifier`: is [Modifier.fillMaxSize()]
+ *  - `modifier`: is [Modifier.fillMaxSize]
  *  - `verticalArrangement`: is [Arrangement.spacedBy]
  *
  * In the [LazyListScope] `content` lambda argument of the [LazyColumn] we call [LazyListScope.items]
  * with its `items` argument our [LazyPagingItems] of [MailInfoPeek] variable `lazyMailItems` and in
  * its [LazyItemScope] `itemContent` composable lambda argument we accept the [MailInfoPeek] passed
  * the lambda in variable `mailInfo` and compose a [MailItem] whose arguments are:
- *  - `info`: is the value of the variable `mailInfo`
+ *  - `info`: is the current value of the variable `mailInfo`
  *  - `state`: is the result of calling the [MailListState.stateFor] function on our [MailListState]
- *  parameter [listState] with an `id` of the [MailInfoPeek.id] of `mailInfo`.
+ *  parameter [listState] with its `id` argument the [MailInfoPeek.id] of `mailInfo`.
  *  - `onMailOpen`: is our [onMailOpen] lambda parameter.
  *
  * @param modifier The [Modifier] to be applied to this Composable.
- * @param listState The state of the mail list, used to manage individual item states.
+ * @param listState holds the selection state of the mail list, used to manage the selection state
+ * of the individual [MailInfoPeek] based on their [MailInfoPeek.id].
  * @param observableConversations A [Flow] of [PagingData] of [MailInfoPeek] that contains the mail
  * items to be displayed.
  * @param onMailOpen A lambda to be called with the mail's ID when a mail item is clicked.
