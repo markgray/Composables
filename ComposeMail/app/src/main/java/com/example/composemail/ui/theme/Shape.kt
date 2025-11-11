@@ -21,7 +21,11 @@ import androidx.compose.material.Shapes
 import androidx.compose.ui.unit.dp
 
 /**
- * TODO: Add kdoc
+ * Defines the shapes for the application's components.
+ *
+ * This object configures the corner styles for different component sizes,
+ * following the Material Design guidelines. These shapes are then used
+ * throughout the app via [androidx.compose.material.MaterialTheme].
  */
 val Shapes: Shapes = Shapes(
     small = RoundedCornerShape(4.dp),

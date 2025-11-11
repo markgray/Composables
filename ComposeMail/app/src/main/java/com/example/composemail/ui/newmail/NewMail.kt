@@ -47,6 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -63,22 +64,32 @@ import androidx.constraintlayout.compose.MotionScene
 import com.example.composemail.ui.components.OneLineText
 
 /**
- * TODO: Add kdoc
+ * A preview for the new mail motion layout. It provides buttons to transition between the
+ * different states of the layout: [NewMailLayoutState.Fab], [NewMailLayoutState.Full], and
+ * [NewMailLayoutState.Mini].
+ *
+ * This allows for easy testing and visualization of the animations and constraint sets defined for
+ * the motion layout.
  */
 @Preview
 @Composable
 fun NewMotionMessagePreview() {
-    val newMailState = rememberNewMailState(initialLayoutState = NewMailLayoutState.Full)
+    /**
+     * The [NewMailState] is used to track the current state of the layout. It is used to
+     * determine which constraint set to use for the motion layout of our [NewMailButton].
+     */
+    val newMailState: NewMailState =
+        rememberNewMailState(initialLayoutState = NewMailLayoutState.Full)
     Column {
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(space = 10.dp)) {
             Button(onClick = newMailState::setToFab) {
-                Text("Fab")
+                Text(text = "Fab")
             }
             Button(onClick = newMailState::setToFull) {
-                Text("Full")
+                Text(text = "Full")
             }
             Button(onClick = newMailState::setToMini) {
-                Text("Mini")
+                Text(text = "Mini")
             }
         }
         NewMailButton(
@@ -88,28 +99,44 @@ fun NewMotionMessagePreview() {
     }
 }
 
+/**
+ * Creates a [MotionScene] for the new mail layout, defining the constraints for the different
+ * states ([NewMailLayoutState.Fab], [NewMailLayoutState.Full], and [NewMailLayoutState.Mini]) and
+ * the transitions between them.
+ *
+ * This function uses a JSON-like string format to define the `ConstraintSets` for each state
+ * and a default `Transition`. The constraints define the size, position, and custom properties
+ * (like background color) for each composable within the [MotionLayout].
+ *
+ * The colors are dynamically retrieved from the current [MaterialTheme] to ensure the UI is
+ * consistent with the app's theme.
+ *
+ * @param initialState The starting state of the motion layout. The default transition will be
+ * configured to animate from this state to the next logical state.
+ * @return A [MotionScene] instance configured for the new mail UI.
+ */
 @OptIn(ExperimentalMotionApi::class)
 @Composable
 private fun messageMotionScene(initialState: NewMailLayoutState): MotionScene {
-    val startStateName = remember { initialState.name }
-    val endStateName = remember {
+    val startStateName: String = remember { initialState.name }
+    val endStateName: String = remember {
         when (initialState) {
             NewMailLayoutState.Fab -> NewMailLayoutState.Full
             NewMailLayoutState.Mini -> NewMailLayoutState.Fab
             NewMailLayoutState.Full -> NewMailLayoutState.Fab
         }.name
     }
-    val primary = MaterialTheme.colors.primary.toHexString()
-    val primaryVariant = MaterialTheme.colors.primaryVariant.toHexString()
-    val onPrimary = MaterialTheme.colors.onPrimary.toHexString()
-    val secondary = MaterialTheme.colors.secondary.toHexString()
-    val onSecondary = MaterialTheme.colors.onSecondary.toHexString()
-    val surface = MaterialTheme.colors.surface.toHexString()
-    val onSurface = MaterialTheme.colors.onSurface.toHexString()
+    val primary: String = MaterialTheme.colors.primary.toHexString()
+    val primaryVariant: String = MaterialTheme.colors.primaryVariant.toHexString()
+    val onPrimary: String = MaterialTheme.colors.onPrimary.toHexString()
+    val secondary: String = MaterialTheme.colors.secondary.toHexString()
+    val onSecondary: String = MaterialTheme.colors.onSecondary.toHexString()
+    val surface: String = MaterialTheme.colors.surface.toHexString()
+    val onSurface: String = MaterialTheme.colors.onSurface.toHexString()
 
     return MotionScene(
         content =
-        """
+            """
         {
           ConstraintSets: {
             ${NewMailLayoutState.Fab.name}: {
@@ -266,33 +293,48 @@ private fun messageMotionScene(initialState: NewMailLayoutState): MotionScene {
     )
 }
 
+/**
+ * A composable that defines the content of the new mail dialog within a [MotionLayoutScope]. It
+ * arranges the UI elements like the title, icons, and the message composition area.
+ *
+ * The appearance and behavior of the elements change based on the current [NewMailLayoutState]
+ * provided by the [state] parameter. For example, the "close" icon changes to an "edit" icon when
+ * in the FAB state, and the dialog's title changes from "Message" to "Draft".
+ *
+ * The layout of these elements is controlled by the parent [MotionLayout] using the `layoutId`
+ * modifier. Custom properties like color are also driven by the [MotionLayout]'s `ConstraintSet`s
+ * via the [MotionLayoutScope.customColor] function.
+ *
+ * @param state The [NewMailState] that holds the current layout state and provides callbacks
+ * to transition to other states.
+ */
 @OptIn(ExperimentalMotionApi::class)
 @Composable
 internal fun MotionLayoutScope.MotionMessageContent(
     state: NewMailState
 ) {
-    val currentState = state.currentState
-    val focusManager = LocalFocusManager.current
-    val dialogName = remember(currentState) {
+    val currentState: NewMailLayoutState = state.currentState
+    val focusManager: FocusManager = LocalFocusManager.current
+    val dialogName: String = remember(key1 = currentState) {
         when (currentState) {
             NewMailLayoutState.Mini -> "Draft"
             else -> "Message"
         }
     }
     Surface(
-        modifier = Modifier.layoutId("box"),
+        modifier = Modifier.layoutId(layoutId = "box"),
         color = customColor(id = "box", name = "background"),
         elevation = 4.dp,
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(size = 8.dp)
     ) {}
-    val iconColor = customColor("editClose", "content")
-    Row(Modifier.layoutId("editClose")) {
+    val iconColor: Color = customColor(id = "editClose", name = "content")
+    Row(modifier = Modifier.layoutId(layoutId = "editClose")) {
         when (currentState) {
             NewMailLayoutState.Fab -> {
                 ColorableIconButton(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(1f, true),
+                        .weight(weight = 1f, fill = true),
                     imageVector = Icons.Default.Edit,
                     color = iconColor,
                     enabled = true
@@ -314,9 +356,9 @@ internal fun MotionLayoutScope.MotionMessageContent(
         }
     }
     ColorableIconButton(
-        modifier = Modifier.layoutId("minIcon"),
+        modifier = Modifier.layoutId(layoutId = "minIcon"),
         imageVector = Icons.Default.KeyboardArrowDown,
-        color = customColor("minIcon", "content"),
+        color = customColor(id = "minIcon", name = "content"),
         enabled = true
     ) {
         when (currentState) {
@@ -326,12 +368,12 @@ internal fun MotionLayoutScope.MotionMessageContent(
     }
     OneLineText(
         text = dialogName,
-        modifier = Modifier.layoutId("title"),
-        color = customColor("title", "content"),
+        modifier = Modifier.layoutId(layoutId = "title"),
+        color = customColor(id = "title", name = "content"),
         style = MaterialTheme.typography.h6
     )
     MessageWidget(
-        modifier = Modifier.layoutId("content"),
+        modifier = Modifier.layoutId(layoutId = "content"),
         onDelete = {
             focusManager.clearFocus()
             state.setToFab()
@@ -345,10 +387,19 @@ internal fun MotionLayoutScope.MotionMessageContent(
 }
 
 /**
- * TODO: Add kdoc
+ * A composable that acts as a container for the new mail UI, using a [MotionLayout] to animate
+ * between different states. The appearance and behavior of this button are determined by the
+ * provided [NewMailState].
  *
- * @param modifier TODO: Add kdoc
- * @param state TODO: Add kdoc
+ * The layout can transition between a floating action button ([NewMailLayoutState.Fab]), a
+ * full-screen dialog ([NewMailLayoutState.Full]), and a minimized view
+ * ([NewMailLayoutState.Mini]).
+ *
+ * The animations and constraints for these states are defined in the [MotionScene] returned by
+ * [messageMotionScene]. The content of the layout is provided by [MotionMessageContent].
+ *
+ * @param modifier The [Modifier] to be applied to the [MotionLayout].
+ * @param state The [NewMailState] that controls the current layout state and transitions.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Composable
@@ -356,10 +407,10 @@ fun NewMailButton(
     modifier: Modifier = Modifier,
     state: NewMailState
 ) {
-    val currentStateName = state.currentState.name
+    val currentStateName: String = state.currentState.name
     MotionLayout(
-        motionScene = messageMotionScene(state.currentState),
-        animationSpec = tween(700),
+        motionScene = messageMotionScene(initialState = state.currentState),
+        animationSpec = tween(durationMillis = 700),
         constraintSetName = currentStateName,
         modifier = modifier
     ) {
@@ -367,6 +418,19 @@ fun NewMailButton(
     }
 }
 
+/**
+ * A composable that displays an icon button with a customizable tint color.
+ *
+ * This button is built on top of [Surface] to allow for a transparent background and a
+ * specific `contentColor` to be applied to the [Icon].
+ *
+ * @param modifier The [Modifier] to be applied to this icon button.
+ * @param imageVector The [ImageVector] to be displayed inside the button.
+ * @param color The tint color to be applied to the `imageVector`.
+ * @param enabled Controls the enabled state of the button. When `false`, this button will not
+ * be clickable.
+ * @param onClick The lambda to be executed when this button is clicked.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun ColorableIconButton(
@@ -391,12 +455,21 @@ internal fun ColorableIconButton(
     }
 }
 
-// With column
+/**
+ * A composable that displays the UI for composing a new email message, arranged in a vertical
+ * [Column].
+ *
+ * This includes [TextField]s for recipients, subject, and the message body, along with "Send"
+ * and "Delete" buttons at the bottom. This is an alternative implementation to [MessageWidget]
+ * and is not currently used in the motion layout.
+ *
+ * @param modifier The [Modifier] to be applied to the layout.
+ */
 @Composable
 internal fun MessageWidgetCol(modifier: Modifier) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(space = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextField(
@@ -404,7 +477,7 @@ internal fun MessageWidgetCol(modifier: Modifier) {
             value = "",
             onValueChange = {},
             placeholder = {
-                Text("Recipients")
+                Text(text = "Recipients")
             }
         )
         TextField(
@@ -412,7 +485,7 @@ internal fun MessageWidgetCol(modifier: Modifier) {
             value = "",
             onValueChange = {},
             placeholder = {
-                Text("Subject")
+                Text(text = "Subject")
             }
         )
         TextField(
@@ -422,7 +495,7 @@ internal fun MessageWidgetCol(modifier: Modifier) {
             value = "",
             onValueChange = {},
             placeholder = {
-                Text("Message")
+                Text(text = "Message")
             }
         )
         Row(
@@ -432,7 +505,7 @@ internal fun MessageWidgetCol(modifier: Modifier) {
             Button(onClick = { /*TODO*/ }) {
                 Row {
                     Text(text = "Send")
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(width = 8.dp))
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Send,
                         contentDescription = "Send Mail",
@@ -449,13 +522,34 @@ internal fun MessageWidgetCol(modifier: Modifier) {
     }
 }
 
-// With ConstraintLayout
+/**
+ * A preview composable for the [MessageWidget].
+ *
+ * This preview displays the message composition interface, which includes fields for "To",
+ * "Subject", and "Message", along with "Send" and "Delete" buttons. It uses a [ConstraintLayout]
+ * to arrange these elements, filling the maximum available size to demonstrate its responsiveness.
+ */
 @Preview
 @Composable
 private fun MessageWidgetPreview() {
     MessageWidget(modifier = Modifier.fillMaxSize())
 }
 
+/**
+ * A composable that displays the UI for composing a new email message, using a [ConstraintLayout]
+ * to arrange the elements.
+ *
+ * This widget includes [OutlinedTextField]s for the recipient ("To"), subject, and message body.
+ * It also contains "Send" and "Delete" buttons at the bottom. The layout is defined using a
+ * JSON-based [ConstraintSet], which positions the elements relative to each other and the parent.
+ *
+ * A horizontal guideline (`gl1`) is used to separate the main message area from the bottom action
+ * buttons.
+ *
+ * @param modifier The [Modifier] to be applied to the [ConstraintLayout].
+ * @param onDelete A lambda to be executed when the "Delete" button is clicked. This is also
+ * temporarily used for the "Send" button.
+ */
 @Suppress("NOTHING_TO_INLINE")
 @Composable
 internal inline fun MessageWidget(
@@ -505,36 +599,36 @@ internal inline fun MessageWidget(
         constraintSet = constraintSet
     ) {
         OutlinedTextField(
-            modifier = Modifier.layoutId("recipient"),
+            modifier = Modifier.layoutId(layoutId = "recipient"),
             value = "",
             onValueChange = {},
             label = {
-                OneLineText("To")
+                OneLineText(text = "To")
             }
         )
         OutlinedTextField(
-            modifier = Modifier.layoutId("subject"),
+            modifier = Modifier.layoutId(layoutId = "subject"),
             value = "",
             onValueChange = {},
             label = {
-                OneLineText("Subject")
+                OneLineText(text = "Subject")
             }
         )
         OutlinedTextField(
             modifier = Modifier
-                .layoutId("message")
+                .layoutId(layoutId = "message")
                 .fillMaxHeight(),
             value = "",
             onValueChange = {},
             label = {
-                OneLineText("Message")
+                OneLineText(text = "Message")
             }
         )
         Button(
-            modifier = Modifier.layoutId("send"),
+            modifier = Modifier.layoutId(layoutId = "send"),
             onClick = onDelete // TODO: Do something different for Send onClick
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(space = 8.dp)) {
                 OneLineText(text = "Send")
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Send,
@@ -543,7 +637,7 @@ internal inline fun MessageWidget(
             }
         }
         Button(
-            modifier = Modifier.layoutId("delete"),
+            modifier = Modifier.layoutId(layoutId = "delete"),
             onClick = onDelete
         ) {
             Icon(
@@ -554,4 +648,14 @@ internal inline fun MessageWidget(
     }
 }
 
-private fun Color.toHexString() = toArgb().toUInt().toString(16)
+/**
+ * Converts a [Color] into a hexadecimal string representation.
+ *
+ * The method first converts the [Color] to its ARGB integer representation using [toArgb],
+ * then to an unsigned integer to handle the alpha channel correctly, and finally formats it
+ * as a hexadecimal string. This is primarily used for embedding color values directly into the
+ * [MotionScene] JSON string.
+ *
+ * @return A hexadecimal string representing the color (e.g., "ff0000ff" for opaque red).
+ */
+private fun Color.toHexString() = toArgb().toUInt().toString(radix = 16)

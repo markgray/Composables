@@ -29,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
@@ -43,34 +44,47 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composemail.ui.home.TopToolbar
 
-// It is a Compose constant of sorts
+/**
+ * A Material [lightColors] pallet for the light theme of the app.
+ */
 private val LightColorPalette = lightColors(
-    primary = Color(0xFF6200EE),
-    primaryVariant = Color(0xFF3700B3),
-    secondary = Color(0xFF03DAC5),
-    onSecondary = Color.White
-)
-
-// It is a Compose constant of sorts
-private val DarkColorPalette = darkColors(
-    primary = Color(0xFFBB86FC),
-    primaryVariant = Color(0xFF3700B3),
-    secondary = Color(0xFF03DAC5),
+    primary = Color(color = 0xFF6200EE),
+    primaryVariant = Color(color = 0xFF3700B3),
+    secondary = Color(color = 0xFF03DAC5),
     onSecondary = Color.White
 )
 
 /**
- * TODO: Add kdoc
+ * A Material [darkColors] pallet for the dark theme of the app.
+ */
+private val DarkColorPalette = darkColors(
+    primary = Color(color = 0xFFBB86FC),
+    primaryVariant = Color(color = 0xFF3700B3),
+    secondary = Color(color = 0xFF03DAC5),
+    onSecondary = Color.White
+)
+
+/**
+ * Defines colors for when items are selected.
+ *
+ * This is not part of the Material [Colors] system, but is used by custom components in this
+ * app, for example to indicate that a mail item in a list has been selected.
  */
 object Selection {
-    /**
-     * TODO: Add kdoc
-     */
-    val backgroundColor: Color = Color(0xFFADB7C5)
+    val backgroundColor: Color = Color(color = 0xFFADB7C5)
 }
 
 /**
- * TODO: Add kdoc
+ * The main theme of our app.
+ *
+ * This is a wrapper around [MaterialTheme] using the custom color palettes, typography, and shapes
+ * defined for this app.
+ *
+ * It defaults to either the light or dark theme based on the system's settings.
+ *
+ * @param darkTheme whether the theme should be in dark mode or not. Defaults to the result of
+ * [isSystemInDarkTheme].
+ * @param content the content to be displayed inside the theme.
  */
 @Composable
 fun ComposeMailTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
@@ -88,6 +102,18 @@ fun ComposeMailTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compo
     )
 }
 
+/**
+ * A preview of different components in the app, such as buttons, cards, and toolbars.
+ *
+ * This preview is useful to see how the components look in both light and dark mode, and how they
+ * are affected by the app's theme.
+ *
+ * It displays:
+ *  - A card with buttons on a default surface.
+ *  - A card with buttons on a secondary-colored surface.
+ *  - The top toolbar in its default state (no items selected).
+ *  - The top toolbar in its selection state (one or more items selected).
+ */
 @Preview(name = "Components-Light", group = "components")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
@@ -150,6 +176,14 @@ private fun ComponentsPreview() {
     }
 }
 
+/**
+ * A preview of the different text styles used in the app.
+ *
+ * This preview displays various typography styles defined in the app's theme,
+ * such as headers (H1 to H5) and body text. It is useful for visually verifying
+ * how text appears in both light and dark modes, ensuring readability and
+ * consistency with the Material Design guidelines.
+ */
 @Preview(name = "Text-Light", group = "text")
 @Preview(
     name = "Text-Night", group = "text",
@@ -196,7 +230,15 @@ private fun TextPreview() {
 }
 
 /**
- * TODO: Add kdoc
+ * A preview that displays a grid of `DumbThemedButton` Composables.
+ *
+ * This preview is useful for visualizing how buttons look with various
+ * background and content colors defined in the app's `MaterialTheme`. It showcases
+ * buttons styled with primary, secondary, background, surface, error, and variant
+ * colors, helping to ensure color combinations are legible and aesthetically
+ * pleasing in both light and dark themes.
+ *
+ * The buttons are arranged in a responsive grid that adapts to the available width.
  */
 @Preview(name = "Button-Light", group = "button")
 @Preview(
@@ -261,6 +303,17 @@ fun ButtonPreview() {
     }
 }
 
+/**
+ * A wrapper around [Text] that ensures the text color is appropriate for the current theme.
+ *
+ * This composable applies the `onSurface` color from the `MaterialTheme.colors` to the
+ * [Text] component, making it readable on the default surface background of both light and
+ * dark themes.
+ * TODO: Continue here.
+ * @param modifier The [Modifier] to be applied to this layout node.
+ * @param style The text style to be applied to the text. Defaults to [TextStyle.Default].
+ * @param text The text to be displayed.
+ */
 @Composable
 private fun ThemedText(
     modifier: Modifier = Modifier,
