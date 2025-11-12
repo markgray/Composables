@@ -2,8 +2,8 @@ package com.example.android.colorinm3
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,15 +35,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.example.android.colorinm3.ui.theme.ColorInM3Theme
 import com.example.android.colorinm3.ui.theme.DarkColorScheme
 import com.example.android.colorinm3.ui.theme.LightColorScheme
 
 /**
- * This app displays colors used for all of the [ColorScheme]'s used by Material3. [Button]'s in
- * the [AppBottombar] `bottomBar` of the [Scaffold] allow one to toggle between Dynamic and Static
- * [ColorScheme]'s and Dark Theme and Light Theme [ColorScheme]'s.
+ * This app displays the colors used for all of the [ColorScheme]'s used by Material3. [Button]'s
+ * in the [AppBottombar] `bottomBar` of the [Scaffold] allow one to toggle between Dynamic and
+ * Static [ColorScheme]'s and Dark Theme and Light Theme [ColorScheme]'s.
  */
 class MainActivity : ComponentActivity() {
     /**
@@ -149,7 +150,9 @@ fun MyApp(
         }
     ) { paddingValues: PaddingValues ->
         Greeting(
-            modifier = modifier.padding(paddingValues = paddingValues)
+            modifier = modifier.padding(paddingValues = paddingValues),
+            darkTheme = darkTheme,
+            dynamicColor = dynamicColor
         )
     }
 }
@@ -219,8 +222,12 @@ fun AppBottombar(
  */
 @Composable
 fun Greeting(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    darkTheme: Boolean,
+    dynamicColor: Boolean
 ) {
+    val currentThemeString = if(darkTheme) "Dark Theme" else "Light Theme"
+    val currentDynamicString = if(dynamicColor) "Dynamic" else "Static"
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -229,6 +236,11 @@ fun Greeting(
     ) {
         val textModifier: Modifier = modifier.padding(all = 8.dp)
         Spacer(modifier = Modifier.height(height = 6.dp))
+        ColorContainer(
+            colorBack = MaterialTheme.colorScheme.primary,
+            name = "primary\n$currentDynamicString $currentThemeString\n",
+            modifier = textModifier
+        )
         Surface(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.fillMaxWidth()
@@ -391,3 +403,28 @@ fun Greeting(
         }
     }
 }
+
+@Composable
+fun ColorContainer(colorBack: Color, name: String, modifier: Modifier) {
+    Surface(
+        color = colorBack,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "$name#${colorBack.toHexString()}\n",
+            modifier = modifier,
+            color = contentColorFor(backgroundColor = colorBack)
+        )
+    }
+}
+
+/**
+ * Converts a [Color] into a hexadecimal string representation.
+ *
+ * The method first converts the [Color] to its ARGB integer representation using [toArgb],
+ * then to an unsigned integer to handle the alpha channel correctly, and finally formats it
+ * as a hexadecimal string.
+ *
+ * @return A hexadecimal string representing the color (e.g., "ff0000ff" for opaque red).
+ */
+fun Color.toHexString() = toArgb().toUInt().toString(radix = 16)
