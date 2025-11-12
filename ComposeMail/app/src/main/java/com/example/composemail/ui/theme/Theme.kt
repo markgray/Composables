@@ -309,7 +309,7 @@ fun ButtonPreview() {
  * This composable applies the [Colors.onSurface] color from the [MaterialTheme.colors] to the
  * [Text] component, making it readable on the default surface background of both light and
  * dark themes.
- * TODO: Continue here.
+ *
  * @param modifier The [Modifier] to be applied to this layout node.
  * @param style The text style to be applied to the text. Defaults to [TextStyle.Default].
  * @param text The text to be displayed.
@@ -328,12 +328,35 @@ private fun ThemedText(
     )
 }
 
+/**
+ * A data class that holds the specifications for a [DumbThemedButton].
+ *
+ * This class is used to configure the appearance of a button, including its
+ * background color, the color of its content (like text), and the text itself.
+ * It's primarily used in previews to test different theme color combinations.
+ *
+ * @param backgroundColor The background [Color] of the button.
+ * @param contentColor The [Color] to be used for the button's content (e.g., text).
+ * @param text The [String] to be displayed inside the button. Defaults to "Default".
+ */
 private data class MyButtonSpec(
     val backgroundColor: Color,
     val contentColor: Color,
     val text: String = "Default"
 )
 
+/**
+ * A simple, non-interactive "dumb" button Composable used for theme visualization.
+ *
+ * This button's appearance is entirely determined by the [buttonSpec] parameter,
+ * which specifies its background color, content color, and text. It's considered
+ * "dumb" because its `onClick` action is a no-op, making it suitable for previews
+ * and visual testing where functionality is not required.
+ *
+ * @param modifier The [Modifier] to be applied to the button.
+ * @param buttonSpec A [MyButtonSpec] data class instance that defines the visual
+ * properties of the button, including `backgroundColor`, `contentColor`, and `text`.
+ */
 @Composable
 private fun DumbThemedButton(
     modifier: Modifier = Modifier,

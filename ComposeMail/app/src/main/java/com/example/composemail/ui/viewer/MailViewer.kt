@@ -19,6 +19,7 @@
 package com.example.composemail.ui.viewer
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -57,17 +58,22 @@ import com.example.composemail.ui.components.ContactImage
 import com.example.composemail.ui.utils.toHourMinutes
 
 /**
- * TODO: Add kdoc
+ * A Composable that displays the complete content of a mail, including the subject, sender,
+ * recipients, timestamp, content, and any attachments.
  *
- * @param modifier TODO: Add kdoc
- * @param mailInfoFull TODO: Add kdoc
+ * This function acts as a wrapper that remembers the last valid [mailInfoFull] object to prevent
+ * the view from becoming empty when a new mail is being loaded.
+ *
+ * @param modifier The [Modifier] to be applied to the layout.
+ * @param mailInfoFull The [MailInfoFull] object containing all details of the mail to display.
  */
 @Composable
 fun MailViewer(
     modifier: Modifier,
     mailInfoFull: MailInfoFull
 ) {
-    val validMailInfo = remember { Ref<MailInfoFull>().apply { value = mailInfoFull } }
+    val validMailInfo: Ref<MailInfoFull> =
+        remember { Ref<MailInfoFull>().apply { value = mailInfoFull } }
 
     if (mailInfoFull != MailInfoFull.Default) {
         validMailInfo.value = mailInfoFull
@@ -78,6 +84,13 @@ fun MailViewer(
     )
 }
 
+/**
+ * The main content of the mail viewer. It displays all the information of a [MailInfoFull],
+ * like the subject, the sender and recipients, the attachments and the content of the mail.
+ *
+ * @param modifier The [Modifier] to be applied to the component.
+ * @param mailInfoFull The [MailInfoFull] to be displayed.
+ */
 @Composable
 private fun MailViewerComponent(
     modifier: Modifier,
@@ -85,7 +98,7 @@ private fun MailViewerComponent(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(space = 8.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -101,18 +114,18 @@ private fun MailViewerComponent(
                 style = MaterialTheme.typography.body2
             )
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(space = 8.dp)) {
             ContactImage(
                 modifier = Modifier,
                 uri = mailInfoFull.from.profilePic,
                 onClick = {}
             )
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(space = 4.dp)) {
                 Text(
                     text = mailInfoFull.from.name,
                     fontWeight = FontWeight.Bold
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(space = 4.dp)) {
                     Text(
                         text = "to",
                         style = MaterialTheme.typography.body2
@@ -126,7 +139,7 @@ private fun MailViewerComponent(
         }
         if (mailInfoFull.attachments.isNotEmpty()) {
             AttachmentsView(
-                modifier = Modifier.height(40.dp),
+                modifier = Modifier.height(height = 40.dp),
                 attachments = mailInfoFull.attachments
             )
         }
@@ -138,26 +151,36 @@ private fun MailViewerComponent(
     }
 }
 
+/**
+ * A Composable that displays a horizontal list of attachments.
+ *
+ * This view shows a scrollable row of chips, each representing an attachment. Each chip
+ * displays the file name (without the extension for known file types) and an icon
+ * corresponding to the file type.
+ *
+ * @param modifier The [Modifier] to be applied to the layout.
+ * @param attachments A list of [Attachment] objects to be displayed.
+ */
 @Composable
 private fun AttachmentsView(
     modifier: Modifier,
     attachments: List<Attachment>
 ) {
-    val scrollState = rememberScrollState()
+    val scrollState: ScrollState = rememberScrollState()
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .horizontalScroll(scrollState),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .horizontalScroll(state = scrollState),
+        horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        attachments.forEach {
+        attachments.forEach { attachment: Attachment ->
             val isKnownFileType: Boolean
 
             // Note: using ImageVector since `rememberAsyncPainter` won't paint project
             // VectorDrawables defined with a URI
             val imageVector: ImageVector
-            when (it.extension) {
+            when (attachment.extension) {
                 "png" -> {
                     isKnownFileType = true
                     imageVector = Icons.Default.Image
@@ -183,35 +206,44 @@ private fun AttachmentsView(
                     .border(
                         width = 2.dp,
                         color = Color.LightGray,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(size = 8.dp)
                     )
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(shape = RoundedCornerShape(size = 8.dp))
                     .clickable { }
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    .padding(all = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(space = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (isKnownFileType) it.nameWithoutExtension else it.fileName,
+                    text = if (isKnownFileType) {
+                        attachment.nameWithoutExtension
+                    } else {
+                        attachment.fileName
+                    },
                     style = MaterialTheme.typography.caption
                 )
                 Image(
                     imageVector = imageVector,
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+                    colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onSurface)
                 )
             }
         }
     }
 }
 
+/**
+ * A preview of the [MailViewer] composable. This preview displays the mail viewer
+ * using default mail information, allowing for quick visual inspection in Android Studio's
+ * design view.
+ */
 @Preview
 @Composable
 private fun MailViewerPreview() {
     MailViewer(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(color = Color.White),
         mailInfoFull = MailInfoFull.Default
     )
 }

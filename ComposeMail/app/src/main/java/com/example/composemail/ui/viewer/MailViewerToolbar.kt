@@ -46,10 +46,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 /**
- * TODO: Add kdoc
+ * A toolbar composable for mail-specific actions.
  *
- * @param modifier TODO: Add kdoc
- * @param onCloseMail TODO: Add kdoc
+ * This toolbar is displayed as a floating [Surface] and contains buttons for common mail
+ * actions like "Reply", "Forward", "Archive", and "Close".
+ *
+ * @param modifier The modifier to be applied to the toolbar's root [Surface].
+ * @param onCloseMail A lambda function to be invoked when the "Close" button is clicked.
  */
 @Composable
 fun MailToolbar(
@@ -58,14 +61,14 @@ fun MailToolbar(
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(size = 8.dp),
         color = MaterialTheme.colors.primary,
         contentColor = MaterialTheme.colors.onPrimary,
         elevation = 4.dp
     ) {
         Row(
-            modifier = Modifier.padding(6.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.padding(all = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(space = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             VectorButton(
@@ -92,6 +95,18 @@ fun MailToolbar(
     }
 }
 
+/**
+ * A clickable icon button built around an [Image] composable.
+ *
+ * This composable displays an [ImageVector] with a ripple effect on click and applies a tint
+ * based on the [LocalContentColor]. It is designed to be a simple, reusable button component
+ * for toolbar actions.
+ *
+ * @param modifier The modifier to be applied to the button's root `Image`.
+ * @param imageVector The [ImageVector] to display inside the button.
+ * @param contentDescription Text used by accessibility services to describe what this icon represents.
+ * @param onClick The lambda to be executed when the button is clicked.
+ */
 @Composable
 private fun VectorButton(
     modifier: Modifier,
@@ -99,30 +114,36 @@ private fun VectorButton(
     contentDescription: String? = null,
     onClick: () -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
+    val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     Image(
         modifier = modifier
             .defaultMinSize(minWidth = 40.dp, minHeight = 40.dp)
-            .clip(RoundedCornerShape(8.dp))
+            .clip(shape = RoundedCornerShape(size = 8.dp))
             .clickable(
                 interactionSource = interactionSource,
                 indication = ripple(bounded = true),
                 onClick = onClick
             )
-            .padding(4.dp),
+            .padding(all = 4.dp),
         imageVector = imageVector,
         contentDescription = contentDescription,
-        colorFilter = ColorFilter.tint(LocalContentColor.current)
+        colorFilter = ColorFilter.tint(color = LocalContentColor.current)
     )
 }
 
+/**
+ * A preview composable for displaying the [MailToolbar].
+ *
+ * This preview places the [MailToolbar] within a [Column] aligned to the end (right side)
+ * of the screen to simulate its typical placement in a user interface.
+ */
 @Preview
 @Composable
 private fun MailToolbarPreview() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp),
+            .padding(all = 10.dp),
         horizontalAlignment = Alignment.End
     ) {
         MailToolbar(modifier = Modifier) {

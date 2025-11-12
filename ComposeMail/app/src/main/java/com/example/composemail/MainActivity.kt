@@ -26,10 +26,12 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,10 +39,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
+import androidx.window.layout.WindowLayoutInfo
 import com.example.composemail.ui.compositionlocal.FoldableInfo
 import com.example.composemail.ui.compositionlocal.LocalFoldableInfo
 import com.example.composemail.ui.compositionlocal.LocalHeightSizeClass
@@ -51,19 +55,32 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
- * TODO: Add kdoc
+ * Main activity for the Compose Mail application.
+ *
+ * This activity sets up the Jetpack Compose UI, collects window size and foldable
+ * state information, and provides this information to the composable hierarchy
+ * through [CompositionLocalProvider]. It serves as the main entry point for the app.
  */
 @ExperimentalMaterial3WindowSizeClassApi
 class MainActivity : ComponentActivity() {
     /**
-     * TODO: Add kdoc
+     * Called when the activity is first created.
+     *
+     * This function initializes the activity, enables edge-to-edge display, and sets up the
+     * Jetpack Compose content. It calculates the [WindowSizeClass] and collects information
+     * about the foldable state of the device. This information is then provided down to the
+     * composable tree using a [CompositionLocalProvider] to enable adaptive layouts.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being
+     * shut down, this Bundle contains the data it most recently supplied in [onSaveInstanceState].
+     * We do not override [onSaveInstanceState] so it is not used.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            val windowSizeClass = calculateWindowSizeClass(activity = this)
-            val foldableInfo by collectFoldableInfoAsState(activity = this)
+            val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(activity = this)
+            val foldableInfo: FoldableInfo by collectFoldableInfoAsState(activity = this)
             CompositionLocalProvider(
                 LocalWidthSizeClass provides windowSizeClass.widthSizeClass,
                 LocalHeightSizeClass provides windowSizeClass.heightSizeClass,
@@ -76,7 +93,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colors.background
                         ) {
-                            ComposeMailHome(Modifier.fillMaxSize())
+                            ComposeMailHome(modifier = Modifier.fillMaxSize())
                         }
                     }
                 }
@@ -85,17 +102,34 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Collects information about the foldable state of the device and returns it as a [State].
+ *
+ * This composable function uses [WindowInfoTracker] to listen for changes in the window layout.
+ * It specifically checks for the presence of a [FoldingFeature] and whether its state is
+ * [FoldingFeature.State.HALF_OPENED]. This information is encapsulated in a [FoldableInfo] object.
+ *
+ * The collection is managed within a [LaunchedEffect] and is tied to the lifecycle of the
+ * composable, starting when the lifecycle reaches the [Lifecycle.State.STARTED] state and
+ * stopping when it goes below it. This ensures that the collection is only active when the
+ * UI is visible to the user.
+ *
+ * @param activity The [ComponentActivity] used to access the [WindowInfoTracker] and lifecycle.
+ * @return A [State] holding the current [FoldableInfo], which updates whenever the foldable
+ * state changes. The initial value is [FoldableInfo.Default].
+ */
 @Composable
 private fun collectFoldableInfoAsState(activity: ComponentActivity): State<FoldableInfo> {
-    val lifecycleScope = LocalLifecycleOwner.current.lifecycleScope
-    val foldableInfo = remember { mutableStateOf(FoldableInfo.Default) }
+    val lifecycleScope: LifecycleCoroutineScope = LocalLifecycleOwner.current.lifecycleScope
+    val foldableInfo: MutableState<FoldableInfo> =
+        remember { mutableStateOf(FoldableInfo.Default) }
 
-    LaunchedEffect(lifecycleScope, activity) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            activity.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                WindowInfoTracker.getOrCreate(activity)
-                    .windowLayoutInfo(activity)
-                    .collect { newLayoutInfo ->
+    LaunchedEffect(key1 = lifecycleScope, key2 = activity) {
+        lifecycleScope.launch(context = Dispatchers.Main) {
+            activity.lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+                WindowInfoTracker.getOrCreate(context = activity)
+                    .windowLayoutInfo(activity = activity)
+                    .collect { newLayoutInfo: WindowLayoutInfo ->
                         foldableInfo.value = FoldableInfo(
                             isHalfOpen = newLayoutInfo.displayFeatures
                                 .filterIsInstance<FoldingFeature>()

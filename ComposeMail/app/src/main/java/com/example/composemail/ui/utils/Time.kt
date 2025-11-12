@@ -22,6 +22,10 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * E.g: 10:30AM
+ * Formats the [Instant] to a time string in the format "hh:mma" (e.g., "10:30AM").
+ * This conversion uses the US locale for consistent formatting.
+ *
+ * @return A [String] representing the time, such as "10:30AM".
  */
-internal fun Instant.toHourMinutes() = SimpleDateFormat("hh:mma", Locale.US).format(Date.from(this))
+internal fun Instant.toHourMinutes() =
+    SimpleDateFormat("hh:mma", Locale.US).format(Date.from(this))
