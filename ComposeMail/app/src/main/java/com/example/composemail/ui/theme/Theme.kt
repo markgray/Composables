@@ -47,7 +47,7 @@ import com.example.composemail.ui.home.TopToolbar
 /**
  * A Material [lightColors] pallet for the light theme of the app.
  */
-private val LightColorPalette = lightColors(
+private val LightColorPalette: Colors = lightColors(
     primary = Color(color = 0xFF6200EE),
     primaryVariant = Color(color = 0xFF3700B3),
     secondary = Color(color = 0xFF03DAC5),
@@ -57,7 +57,7 @@ private val LightColorPalette = lightColors(
 /**
  * A Material [darkColors] pallet for the dark theme of the app.
  */
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette: Colors = darkColors(
     primary = Color(color = 0xFFBB86FC),
     primaryVariant = Color(color = 0xFF3700B3),
     secondary = Color(color = 0xFF03DAC5),
@@ -306,7 +306,7 @@ fun ButtonPreview() {
 /**
  * A wrapper around [Text] that ensures the text color is appropriate for the current theme.
  *
- * This composable applies the `onSurface` color from the `MaterialTheme.colors` to the
+ * This composable applies the [Colors.onSurface] color from the [MaterialTheme.colors] to the
  * [Text] component, making it readable on the default surface background of both light and
  * dark themes.
  * TODO: Continue here.

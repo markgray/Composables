@@ -426,7 +426,7 @@ fun NewMailButton(
  *
  * @param modifier The [Modifier] to be applied to this icon button.
  * @param imageVector The [ImageVector] to be displayed inside the button.
- * @param color The tint color to be applied to the `imageVector`.
+ * @param color The tint color to be applied to the [imageVector].
  * @param enabled Controls the enabled state of the button. When `false`, this button will not
  * be clickable.
  * @param onClick The lambda to be executed when this button is clicked.
