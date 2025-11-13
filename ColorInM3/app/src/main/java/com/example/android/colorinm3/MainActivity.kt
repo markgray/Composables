@@ -227,11 +227,9 @@ fun AppBottombar(
 @Composable
 fun Greeting(
     modifier: Modifier = Modifier,
-    darkTheme: Boolean,
-    dynamicColor: Boolean
+    dynamicColor: Boolean,
+    darkTheme: Boolean
 ) {
-    val currentThemeString = if (darkTheme) "Dark Theme" else "Light Theme"
-    val currentDynamicString = if (dynamicColor) "Dynamic" else "Static"
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -242,183 +240,34 @@ fun Greeting(
             .padding(all = 8.dp)
             .wrapContentHeight()
         Spacer(modifier = Modifier.height(height = 6.dp))
-        ColorContainer(
-            colorInfo = ColorInfoList(),
-            name = "${ColorInfoList().colorName}\n$currentDynamicString $currentThemeString\n",
-            modifier = textModifier
-        )
-        Surface(
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "primary",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onPrimary
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.primaryContainer,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "primaryContainer",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.secondary,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "secondary",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onSecondary
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.secondaryContainer,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "secondaryContainer",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "tertiary",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onTertiary
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.tertiaryContainer,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "tertiaryContainer",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onTertiaryContainer
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.error,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "error",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onError
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.errorContainer,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "errorContainer",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onErrorContainer
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "background",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "surface",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "surfaceVariant",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.inverseSurface,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "inverseSurface",
-                modifier = textModifier,
-                color = MaterialTheme.colorScheme.inverseOnSurface
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.inversePrimary,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "inversePrimary",
-                modifier = textModifier,
-                color = contentColorFor(MaterialTheme.colorScheme.inversePrimary)
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.surfaceTint,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "surfaceTint",
-                modifier = textModifier,
-                color = contentColorFor(MaterialTheme.colorScheme.surfaceTint)
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.outlineVariant,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "outlineVariant",
-                modifier = textModifier,
-                color = contentColorFor(MaterialTheme.colorScheme.outlineVariant)
-            )
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.scrim,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "scrim",
-                fontWeight = FontWeight.Bold,
-                modifier = textModifier,
-                color = contentColorFor(MaterialTheme.colorScheme.scrim)
+        colorInfoList().forEach { colorInfo: ColorInfo ->
+            ColorContainer(
+                colorInfo = colorInfo,
+                name = colorInfo.colorName,
+                dynamic = dynamicColor,
+                darkTheme = darkTheme,
+                modifier = textModifier
             )
         }
     }
 }
 
 @Composable
-fun ColorContainer(colorInfo: ColorInfo, name: String, modifier: Modifier) {
+fun ColorContainer(
+    colorInfo: ColorInfo,
+    name: String,
+    dynamic: Boolean,
+    darkTheme: Boolean,
+    modifier: Modifier
+) {
     Surface(
         color = colorInfo.color,
         modifier = Modifier.fillMaxWidth()
     ) {
+        val dynamicString = if (dynamic) "Dynamic " else "Static "
+        val themeString = if (darkTheme) "Dark Theme" else "Light Theme"
         Text(
-            text = "${name}0x${colorInfo.color.toHexString()}\n",
+            text = "${name}\n${dynamicString}${themeString}\n0x${colorInfo.color.toHexString()}\n",
             fontWeight = FontWeight.Bold,
             maxLines = 3,
             modifier = modifier.wrapContentHeight(),
@@ -441,4 +290,4 @@ fun ColorContainer(colorInfo: ColorInfo, name: String, modifier: Modifier) {
  *
  * @return A hexadecimal string representing the color (e.g., "ff0000ff" for opaque red).
  */
-fun Color.toHexString() = toArgb().toUInt().toString(radix = 16)
+fun Color.toHexString(): String = toArgb().toUInt().toString(radix = 16)
