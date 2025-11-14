@@ -236,11 +236,18 @@ fun AppBottombar(
  * to loop through the [List] and in its `action` lambda argument we accept each [ColorInfo] passed
  * the lambda in variable `colorInfo` then compose a [ColorContainer] whose arguments are:
  *  - `colorInfo`: is the current [ColorInfo] in variable `colorInfo`
- *  TODO: Continue here.
+ *  - `name`: is the [ColorInfo.name] of `colorInfo`
+ *  - `dynamic`: is our [Boolean] parameter [dynamicColor]
+ *  - `darkTheme`: is our [Boolean] parameter [darkTheme]
+ *  - `modifier`: is our [Modifier] variable `textModifier`
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. The [Scaffold] that calls us passes us the [Modifier.padding] of the [PaddingValues]
  * that it passes to its Composable `content` lambda.
+ * @param dynamicColor a [Boolean] which if `true` indicates that our [ColorInM3Theme] custom
+ * [MaterialTheme] is currently using a dynamic [ColorScheme].
+ * @param darkTheme a [Boolean] which if `true` indicates that our [ColorInM3Theme] custom
+ * [MaterialTheme] is currently using a dark [ColorScheme]
  */
 @Composable
 fun Greeting(
@@ -261,7 +268,7 @@ fun Greeting(
         colorInfoList().forEach { colorInfo: ColorInfo ->
             ColorContainer(
                 colorInfo = colorInfo,
-                name = colorInfo.colorName,
+                name = colorInfo.name,
                 dynamic = dynamicColor,
                 darkTheme = darkTheme,
                 modifier = textModifier
@@ -270,6 +277,25 @@ fun Greeting(
     }
 }
 
+/**
+ * A Composable that displays a colored [Surface] with text information about the color.
+ * The [Surface] takes up the full width available to it, and its background color is set
+ * to the `color` property of the [colorInfo] parameter.
+ * Inside the [Surface], a [Text] composable displays three lines of information:
+ *  1. The [name] of the color.
+ *  2. The current theme configuration (e.g., "Dynamic Dark Theme" or "Static Light Theme"),
+ *  determined by the [dynamic] and [darkTheme] booleans.
+ *  3. The hexadecimal string representation of the color.
+ *
+ * The text color is automatically chosen to be legible against the background color using
+ * [contentColorFor].
+ *
+ * @param colorInfo The [ColorInfo] object containing the [Color] to display and its name.
+ * @param name The name of the color to be displayed in the first line of text.
+ * @param dynamic A boolean flag indicating whether the current theme is using dynamic colors.
+ * @param darkTheme A boolean flag indicating whether the current theme is a dark theme.
+ * @param modifier A [Modifier] to be applied to the [Text] composable within the container.
+ */
 @Composable
 fun ColorContainer(
     colorInfo: ColorInfo,
