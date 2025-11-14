@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -221,14 +222,21 @@ fun AppBottombar(
 
 /**
  * This [Composable] displays all of the different [Color]'s available from the [ColorScheme] of our
- * [ColorInM3Theme] custom [MaterialTheme]
- * TODO: Continue here.
- * using [Surface]'s which wrap a [Text] Composable which
- * gives the Material3 name for the [Color]. The [Surface]'s are surrounded by a [Column] whose
- * `modifier` argument adds a [Modifier.fillMaxSize] to our [modifier] parameter to have it occupy
- * its entire incoming size constraints, with a [Modifier.verticalScroll] chained to that to make it
- * scrollable. Its `verticalArrangement` argument uses a [Arrangement.spacedBy] to have its children
- * spaced by 6.dp.
+ * [ColorInM3Theme] custom [MaterialTheme]. Our root composable is a [Column] whose `modifier`
+ * argument adds a [Modifier.fillMaxSize] to our [modifier] parameter to have it occupy its entire
+ * incoming size constraints, with a [Modifier.verticalScroll] chained to that to make it scrollable.
+ * Its `verticalArrangement` argument uses a [Arrangement.spacedBy] to have its children spaced by
+ * 6.dp. In the [ColumnScope] `content` composable lambda argument of the [Column] we start by
+ * initializing our [Modifier] variable `textModifier` by chaining to our [Modifier] parameter
+ * [modifier] a [Modifier.padding] that adds `8.dp` to all sides, with a [Modifier.wrapContentHeight]
+ * chained to that.
+ *
+ * We compose a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `6.dp`.
+ * Then we use the [Iterable.forEach] method of the [List] of [ColorInfo] returned by [colorInfoList]
+ * to loop through the [List] and in its `action` lambda argument we accept each [ColorInfo] passed
+ * the lambda in variable `colorInfo` then compose a [ColorContainer] whose arguments are:
+ *  - `colorInfo`: is the current [ColorInfo] in variable `colorInfo`
+ *  TODO: Continue here.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. The [Scaffold] that calls us passes us the [Modifier.padding] of the [PaddingValues]
@@ -243,7 +251,7 @@ fun Greeting(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(state = rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(space = 6.dp)
     ) {
         val textModifier: Modifier = modifier
