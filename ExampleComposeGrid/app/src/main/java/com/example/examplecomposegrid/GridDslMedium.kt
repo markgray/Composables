@@ -30,33 +30,44 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 
 /**
- * TODO: Add kdoc
+ * A Composable function that demonstrates the use of the `createGrid` DSL helper within
+ * `ConstraintLayout` to build a keypad layout.
+ *
+ * This example showcases:
+ *  - A 5x3 grid containing a display `Box` and number `Button`s (0-9).
+ *  - **Spanning**: The display `Box` at the top spans across all 3 columns (`spans = "0:1x3"`).
+ *  - **Skipping**: An empty cell is created in the grid to position the '0' button correctly
+ *  (`skips = "12:1x1"`).
+ *  - **Weighting**: The rows are weighted, making the first row (the display) twice as tall as
+ *  the other rows (`rowWeights = weights`).
+ *  - Gaps between grid cells, both vertically and horizontally.
  */
 @Preview(group = "keypad")
 @Composable
 fun GridDslKeypad() {
     ConstraintLayout(
         ConstraintSet {
-            val btn1 = createRefFor("btn1")
-            val btn2 = createRefFor("btn2")
-            val btn3 = createRefFor("btn3")
-            val btn4 = createRefFor("btn4")
-            val btn5 = createRefFor("btn5")
-            val btn6 = createRefFor("btn6")
-            val btn7 = createRefFor("btn7")
-            val btn8 = createRefFor("btn8")
-            val btn9 = createRefFor("btn9")
-            val btn0 = createRefFor("btn0")
-            val box = createRefFor("box")
+            val btn1: ConstrainedLayoutReference = createRefFor(id = "btn1")
+            val btn2: ConstrainedLayoutReference = createRefFor(id = "btn2")
+            val btn3: ConstrainedLayoutReference = createRefFor(id = "btn3")
+            val btn4: ConstrainedLayoutReference = createRefFor(id = "btn4")
+            val btn5: ConstrainedLayoutReference = createRefFor(id = "btn5")
+            val btn6: ConstrainedLayoutReference = createRefFor(id = "btn6")
+            val btn7: ConstrainedLayoutReference = createRefFor(id = "btn7")
+            val btn8: ConstrainedLayoutReference = createRefFor(id = "btn8")
+            val btn9: ConstrainedLayoutReference = createRefFor(id = "btn9")
+            val btn0: ConstrainedLayoutReference = createRefFor(id = "btn0")
+            val box: ConstrainedLayoutReference = createRefFor(id = "box")
 
-            val weights = intArrayOf(2, 1, 1, 1, 1)
+            val weights: IntArray = intArrayOf(2, 1, 1, 1, 1)
 
-            val g1 = createGrid(
+            val g1: ConstrainedLayoutReference = createGrid(
                 box, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0,
                 rows = 5,
                 columns = 3,
@@ -67,55 +78,55 @@ fun GridDslKeypad() {
                 rowWeights = weights,
             )
 
-            constrain(g1) {
+            constrain(ref = g1) {
                 width = Dimension.matchParent
                 height = Dimension.matchParent
-                top.linkTo(parent.top, 20.dp)
-                bottom.linkTo(parent.bottom, 20.dp)
-                start.linkTo(parent.start, 20.dp)
-                end.linkTo(parent.end, 20.dp)
+                top.linkTo(anchor = parent.top, margin = 20.dp)
+                bottom.linkTo(anchor = parent.bottom, margin = 20.dp)
+                start.linkTo(anchor = parent.start, margin = 20.dp)
+                end.linkTo(anchor = parent.end, margin = 20.dp)
             }
-            constrain(btn1) {
+            constrain(ref = btn1) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn2) {
+            constrain(ref = btn2) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn3) {
+            constrain(ref = btn3) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn4) {
+            constrain(ref = btn4) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn5) {
+            constrain(ref = btn5) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn6) {
+            constrain(ref = btn6) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn7) {
+            constrain(ref = btn7) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn8) {
+            constrain(ref = btn8) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn9) {
+            constrain(ref = btn9) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn0) {
+            constrain(ref = btn0) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(box) {
+            constrain(ref = box) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
@@ -123,40 +134,57 @@ fun GridDslKeypad() {
 
         modifier = Modifier.fillMaxSize()
     ) {
-        val numArray = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+        val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(String.format("btn%s", num)),
+                modifier = Modifier.layoutId(layoutId = String.format("btn%s", num)),
                 onClick = {},
             ) {
                 Text(text = num, fontSize = 45.sp)
             }
         }
         Box(
-            modifier = Modifier.background(Color.Gray).layoutId("box"),
-            Alignment.BottomEnd
+            modifier = Modifier
+                .background(color = Color.Gray)
+                .layoutId(layoutId = "box"),
+            contentAlignment = Alignment.BottomEnd
         ) {
-            Text("100", fontSize = 80.sp)
+            Text(text = "100", fontSize = 80.sp)
         }
     }
 }
 
 /**
- * TODO: Add kdoc
+ * A Composable function that demonstrates a more complex grid layout to create a calculator UI
+ * using the `createGrid` DSL helper within `ConstraintLayout`.
+ *
+ * This example showcases:
+ *  - A 7x4 grid containing a display `Box` and various calculator `Button`s.
+ *  - **Spanning**:
+ *      - The display `Box` at the top spans two rows and four columns (`"0:2x4"`).
+ *      - The "equal" button at the bottom right spans one row and two columns (`"24:1x2"`).
+ *  - The creation of `ConstrainedLayoutReference`s programmatically in a loop.
+ *  - Mapping of internal string identifiers (e.g., "clear", "plus") to user-facing symbols
+ *  (e.g., "C", "+").
  */
 @Preview(group = "calculator")
 @Composable
 fun GridDslMediumCalculator() {
-    val numArray = arrayOf("0", "clear", "neg", "percent", "div", "7", "8", "9",
-        "mult", "4", "5", "6", "sub", "1", "2", "3", "plus", "dot", "equal")
+    val numArray: Array<String> = arrayOf(
+        "0", "clear", "neg", "percent", "div", "7", "8", "9",
+        "mult", "4", "5", "6", "sub", "1", "2", "3", "plus", "dot", "equal"
+    )
     ConstraintLayout(
         ConstraintSet {
-            val elem = Array(numArray.size + 1) { i -> createRefFor(i) }
-            elem[0] = createRefFor("box")
+            val elem: Array<ConstrainedLayoutReference> =
+                Array(size = numArray.size + 1) { i: Int ->
+                    createRefFor(id = i)
+                }
+            elem[0] = createRefFor(id = "box")
             for (i in numArray.indices) {
-                elem[i + 1] = createRefFor(String.format("btn_%s", numArray[i]))
+                elem[i + 1] = createRefFor(id = String.format("btn_%s", numArray[i]))
             }
-            val g1 = createGrid(
+            val g1: ConstrainedLayoutReference = createGrid(
                 elements = elem,
                 rows = 7,
                 columns = 4,
@@ -165,16 +193,16 @@ fun GridDslMediumCalculator() {
                 spans = "0:2x4,24:1x2",
             )
 
-            constrain(g1) {
+            constrain(ref = g1) {
                 width = Dimension.matchParent
                 height = Dimension.matchParent
-                top.linkTo(parent.top, 20.dp)
-                bottom.linkTo(parent.bottom, 20.dp)
-                start.linkTo(parent.start, 20.dp)
-                end.linkTo(parent.end, 20.dp)
+                top.linkTo(anchor = parent.top, margin = 20.dp)
+                bottom.linkTo(anchor = parent.bottom, margin = 20.dp)
+                start.linkTo(anchor = parent.start, margin = 20.dp)
+                end.linkTo(anchor = parent.end, margin = 20.dp)
             }
             for (e in elem) {
-                constrain(e) {
+                constrain(ref = e) {
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 }
@@ -182,59 +210,70 @@ fun GridDslMediumCalculator() {
         },
         modifier = Modifier.fillMaxSize()
     ) {
-        val symbolMap = mapOf("clear" to "C", "neg" to "+/-", "percent" to "%", "div" to "/",
-            "mult" to "*", "sub" to "-", "plus" to "+", "dot" to ".", "equal" to "=")
+        val symbolMap: Map<String, String> = mapOf(
+            "clear" to "C", "neg" to "+/-", "percent" to "%",
+            "div" to "/", "mult" to "*", "sub" to "-", "plus" to "+", "dot" to ".", "equal" to "="
+        )
         var text: String
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(String.format("btn_%s", num)),
+                modifier = Modifier.layoutId(layoutId = String.format("btn_%s", num)),
                 onClick = {},
             ) {
-                text =  if (symbolMap.containsKey(num)) symbolMap[num].toString() else num
+                text = if (symbolMap.containsKey(num)) symbolMap[num].toString() else num
                 Text(text = text, fontSize = 30.sp)
             }
         }
         Box(
-            modifier = Modifier.background(Color.Gray).layoutId("box"),
-            Alignment.BottomEnd
+            modifier = Modifier
+                .background(color = Color.Gray)
+                .layoutId(layoutId = "box"),
+            contentAlignment = Alignment.BottomEnd
         ) {
-            Text("100", fontSize = 80.sp)
+            Text(text = "100", fontSize = 80.sp)
         }
     }
 }
 
 /**
- * TODO: Add kdoc
+ * A Composable function that demonstrates the use of the `createRow` DSL helper within
+ * `ConstraintLayout`.
+ *
+ * This example arranges a series of `Button`s horizontally in a single row, with a specified
+ * gap between each button. The row itself is constrained to fill the parent layout.
  */
 @Preview(group = "row")
 @Composable
 fun GridDslMediumRow() {
-    val numArray = arrayOf("0", "1", "2", "3", "4")
+    val numArray: Array<String> = arrayOf("0", "1", "2", "3", "4")
     ConstraintLayout(
         ConstraintSet {
-            val elem = Array(numArray.size) { i -> createRefFor(i) }
+            val elem: Array<ConstrainedLayoutReference> =
+                Array(numArray.size) { i: Int ->
+                    createRefFor(id = i)
+                }
             for (i in numArray.indices) {
-                elem[i] = createRefFor(String.format("btn_%s", numArray[i]))
+                elem[i] = createRefFor(id = String.format("btn_%s", numArray[i]))
             }
-            val g1 = createRow(
+            val g1: ConstrainedLayoutReference = createRow(
                 elements = elem,
                 horizontalGap = 10.dp,
             )
 
-            constrain(g1) {
+            constrain(ref = g1) {
                 width = Dimension.matchParent
                 height = Dimension.matchParent
-                top.linkTo(parent.top, 20.dp)
-                bottom.linkTo(parent.bottom, 20.dp)
-                start.linkTo(parent.start, 20.dp)
-                end.linkTo(parent.end, 20.dp)
+                top.linkTo(anchor = parent.top, margin = 20.dp)
+                bottom.linkTo(anchor = parent.bottom, margin = 20.dp)
+                start.linkTo(anchor = parent.start, margin = 20.dp)
+                end.linkTo(anchor = parent.end, margin = 20.dp)
             }
         },
         modifier = Modifier.fillMaxSize()
     ) {
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(String.format("btn_%s", num)),
+                modifier = Modifier.layoutId(layoutId = String.format("btn_%s", num)),
                 onClick = {},
             ) {
                 Text(text = num, fontSize = 30.sp)
@@ -244,37 +283,44 @@ fun GridDslMediumRow() {
 }
 
 /**
- * TODO: Add kdoc
+ * A Composable function that demonstrates the use of the `createColumn` DSL helper within
+ * `ConstraintLayout`.
+ *
+ * This example arranges a series of `Button`s vertically in a single column, with a specified
+ * gap between each button. The column itself is constrained to fill the parent layout.
+ * TODO: Continue here.
  */
 @Preview(group = "column")
 @Composable
 fun GridDslMediumColumn() {
-    val numArray = arrayOf("0", "1", "2", "3", "4")
+    val numArray: Array<String> = arrayOf("0", "1", "2", "3", "4")
     ConstraintLayout(
         ConstraintSet {
-            val elem = Array(numArray.size) { i -> createRefFor(i) }
-            for (i in numArray.indices) {
-                elem[i] = createRefFor(String.format("btn_%s", numArray[i]))
+            val elem: Array<ConstrainedLayoutReference> = Array(numArray.size) { i: Int ->
+                createRefFor(id = i)
             }
-            val g1 = createColumn(
+            for (i in numArray.indices) {
+                elem[i] = createRefFor(id = String.format("btn_%s", numArray[i]))
+            }
+            val g1: ConstrainedLayoutReference = createColumn(
                 elements = elem,
                 verticalGap = 10.dp,
             )
 
-            constrain(g1) {
+            constrain(ref = g1) {
                 width = Dimension.matchParent
                 height = Dimension.matchParent
-                top.linkTo(parent.top, 20.dp)
-                bottom.linkTo(parent.bottom, 20.dp)
-                start.linkTo(parent.start, 20.dp)
-                end.linkTo(parent.end, 20.dp)
+                top.linkTo(anchor = parent.top, margin = 20.dp)
+                bottom.linkTo(anchor = parent.bottom, margin = 20.dp)
+                start.linkTo(anchor = parent.start, margin = 20.dp)
+                end.linkTo(anchor = parent.end, margin = 20.dp)
             }
         },
         modifier = Modifier.fillMaxSize()
     ) {
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(String.format("btn_%s", num)),
+                modifier = Modifier.layoutId(layoutId = String.format("btn_%s", num)),
                 onClick = {},
             ) {
                 Text(text = num, fontSize = 30.sp)
@@ -291,46 +337,48 @@ fun GridDslMediumColumn() {
 fun GridDslMediumNested() {
     ConstraintLayout(
         ConstraintSet {
-            val btn1 = createRefFor("btn1")
-            val btn2 = createRefFor("btn2")
-            val btn3 = createRefFor("btn3")
-            val btn4 = createRefFor("btn4")
-            val btn5 = createRefFor("btn5")
-            val btn6 = createRefFor("btn6")
-            val btn7 = createRefFor("btn7")
-            val btn8 = createRefFor("btn8")
-            val g1 = createGrid(
+            val btn1: ConstrainedLayoutReference = createRefFor(id = "btn1")
+            val btn2: ConstrainedLayoutReference = createRefFor(id = "btn2")
+            val btn3: ConstrainedLayoutReference = createRefFor(id = "btn3")
+            val btn4: ConstrainedLayoutReference = createRefFor(id = "btn4")
+            val btn5: ConstrainedLayoutReference = createRefFor(id = "btn5")
+            val btn6: ConstrainedLayoutReference = createRefFor(id = "btn6")
+            val btn7: ConstrainedLayoutReference = createRefFor(id = "btn7")
+            val btn8: ConstrainedLayoutReference = createRefFor(id = "btn8")
+            val g1: ConstrainedLayoutReference = createGrid(
                 btn5, btn6, btn7, btn8,
                 rows = 3,
                 columns = 3,
-                skips= "0:1x2,4:1x1,6:1x1",
+                skips = "0:1x2,4:1x1,6:1x1",
             )
-            val g2 = createGrid(
+            val g2: ConstrainedLayoutReference = createGrid(
                 g1, btn1, btn2, btn3, btn4,
                 rows = 3,
                 columns = 3,
                 skips = "1:1x1,4:1x1,6:1x1",
             )
 
-            constrain(g1) {
+            constrain(ref = g1) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(g2) {
+            constrain(ref = g2) {
                 width = Dimension.matchParent
                 height = Dimension.matchParent
-                top.linkTo(parent.top, 20.dp)
-                bottom.linkTo(parent.bottom, 20.dp)
-                start.linkTo(parent.start, 20.dp)
-                end.linkTo(parent.end, 20.dp)
+                top.linkTo(anchor = parent.top, margin = 20.dp)
+                bottom.linkTo(anchor = parent.bottom, margin = 20.dp)
+                start.linkTo(anchor = parent.start, margin = 20.dp)
+                end.linkTo(anchor = parent.end, margin = 20.dp)
             }
         },
         modifier = Modifier.fillMaxSize()
     ) {
-        val numArray = arrayOf("1", "2", "3", "4", "5", "6", "7", "8")
+        val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5", "6", "7", "8")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(String.format("btn%s", num)).size(50.dp),
+                modifier = Modifier
+                    .layoutId(layoutId = String.format("btn%s", num))
+                    .size(50.dp),
                 onClick = {},
             ) {
                 Text(text = num, fontSize = 25.sp)
@@ -347,65 +395,65 @@ fun GridDslMediumNested() {
 fun GridDslColumnInRow() {
     ConstraintLayout(
         ConstraintSet {
-            val btn0 = createRefFor("btn0")
-            val btn1 = createRefFor("btn1")
-            val btn2 = createRefFor("btn2")
-            val btn3 = createRefFor("btn3")
-            val btn4 = createRefFor("btn4")
-            val btn5 = createRefFor("btn5")
-            val btn6 = createRefFor("btn6")
-            val column = createColumn(
+            val btn0: ConstrainedLayoutReference = createRefFor(id = "btn0")
+            val btn1: ConstrainedLayoutReference = createRefFor(id = "btn1")
+            val btn2: ConstrainedLayoutReference = createRefFor(id = "btn2")
+            val btn3: ConstrainedLayoutReference = createRefFor(id = "btn3")
+            val btn4: ConstrainedLayoutReference = createRefFor(id = "btn4")
+            val btn5: ConstrainedLayoutReference = createRefFor(id = "btn5")
+            val btn6: ConstrainedLayoutReference = createRefFor(id = "btn6")
+            val column: ConstrainedLayoutReference = createColumn(
                 btn4, btn5, btn6,
                 verticalGap = 10.dp
             )
-            val row = createRow(
+            val row: ConstrainedLayoutReference = createRow(
                 btn0, column, btn1, btn2, btn3,
                 horizontalGap = 10.dp,
             )
 
-            constrain(column) {
+            constrain(ref = column) {
                 width = Dimension.fillToConstraints
                 height = Dimension.matchParent
             }
-            constrain(row) {
+            constrain(ref = row) {
                 width = Dimension.matchParent
                 height = Dimension.matchParent
             }
-            constrain(btn0) {
+            constrain(ref = btn0) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn1) {
+            constrain(ref = btn1) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn2) {
+            constrain(ref = btn2) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn3) {
+            constrain(ref = btn3) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn4) {
+            constrain(ref = btn4) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn5) {
+            constrain(ref = btn5) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(btn6) {
+            constrain(ref = btn6) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
         },
         modifier = Modifier.fillMaxSize()
     ) {
-        val numArray = arrayOf("0", "1", "2", "3", "4", "5", "6")
+        val numArray: Array<String> = arrayOf("0", "1", "2", "3", "4", "5", "6")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(String.format("btn%s", num)),
+                modifier = Modifier.layoutId(layoutId = String.format("btn%s", num)),
                 onClick = {},
             ) {
                 Text(text = num, fontSize = 40.sp)
