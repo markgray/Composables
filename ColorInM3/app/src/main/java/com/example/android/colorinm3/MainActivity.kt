@@ -53,14 +53,15 @@ import com.example.android.colorinm3.ui.theme.LightColorScheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of [onCreate],
-     * then we call [setContent] to Compose its `content` composable lambda argument into our activity.
-     * In that lambda we start by initializing and [rememberSaveable]'ing [MutableState] wrapped
-     * [Boolean] variable `var dynamicColor` to `true` and [MutableState] wrapped [Boolean] variable
-     * `var darkTheme` to `true`. Then wrapped in our [ColorInM3Theme] custom [MaterialTheme] whose
-     * `darkTheme` argument is our `darkTheme` variable and whose `dynamicColor` argument is our
-     * `dynamicColor` variable we have as our root Composable a [Box] whose `modifier` argument is
-     * a [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets. In the
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge-to-edge
+     * display then we call our super's implementation of [onCreate]. We call [setContent] to Compose
+     * its `content` composable lambda argument into our activity.  In that lambda we start by
+     * initializing and [rememberSaveable]'ing our [MutableState] wrapped [Boolean] variable
+     * `var dynamicColor` to `true` and our [MutableState] wrapped [Boolean] variable `var darkTheme`
+     * to `true`. Then wrapped in our [ColorInM3Theme] custom [MaterialTheme] whose `darkTheme`
+     * argument is our `darkTheme` variable and whose `dynamicColor` argument is our `dynamicColor`
+     * variable we have as our root Composable a [Box] whose `modifier` argument is
+     * [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets. In the
      * [BoxScope] `content` lambda argument of the [Box] we compose a [Surface] whose `modifier`
      * argument is a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraints,
      * and whose `color` argument is the [ColorScheme.background] color of [MaterialTheme.colorScheme].
@@ -112,7 +113,9 @@ class MainActivity : ComponentActivity() {
  * parameter, and whose `toggleDarkTheme` argument is our [toggleDarkTheme] parameter. The Composable
  * `content` lambda argument of the [Scaffold] is our [Greeting] Composable whose `modifier` argument
  * chains a [Modifier.padding] to our [Modifier] parameter [modifier] that adds the [PaddingValues]
- * that the [Scaffold] passes the `content` lambda to the [Greeting] Composable.
+ * that the [Scaffold] passes the `content` lambda to the [Greeting] Composable, whose `darkTheme`
+ * argument is our [darkTheme] parameter, and whose `dynamicColor` argument is our [dynamicColor]
+ * parameter.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
@@ -129,8 +132,9 @@ class MainActivity : ComponentActivity() {
  * is `true` or [LightColorScheme] if [dynamicColor] is `false`).
  * @param toggleDynamic a lambda that our caller passes us which when called will toggle the value
  * of our [Boolean] parameter [dynamicColor] thereby causing [ColorInM3Theme] to be recomposed as
- * well as all of the `content` that is wrapped in [ColorInM3Theme]. We pass it on to the [AppBottombar]
- * of our [Scaffold] where it is called in the `onClick` lambda of the "Static/Dynamic" [Button].
+ * well as all of the `content` that is wrapped in [ColorInM3Theme]. We pass it on to the
+ * [AppBottombar] of our [Scaffold] where it is called in the `onClick` lambda of the
+ * "Static/Dynamic" [Button].
  * @param toggleDarkTheme a lambda that our caller passes us which when called will toggle the value
  * of our [Boolean] parameter [darkTheme] thereby causing [ColorInM3Theme] to be recomposed as well
  * as all of the `content` that is wrapped in [ColorInM3Theme]. We pass it on to the [AppBottombar]
@@ -167,14 +171,15 @@ fun MyApp(
 /**
  * This Composable is used as the `bottomBar` argument of the [Scaffold] in the [MyApp] Composable.
  * Its root Composable is a [Row] whose `modifier` argument adds a [Modifier.fillMaxWidth] to our
- * [modifier] argument. The content of the [Row] consists of two [Button] Composables. Both [Button]
- * use as their `modifier` argument a [RowScope.weight] of 1f to have them occupy an equal part of
- * the [Row]'s incoming width constraint. The `onClick` argument of the first [Button] calls our
- * [toggleDynamic] lambda parameter, and the `onClick` argument of the second [Button] calls our
- * [toggleDarkTheme] lambda. The label content of the first [Button] displays in a [Text] the string
- * "Static" if our [Boolean] parameter [dynamicColor] is `true` and  the string "Dynamic" if it is
- * `false`. The label content of the second [Button] displays in a [Text] the string "Light Theme"
- * if our [Boolean] parameter [darkTheme] is `true` and  the string "Dark Theme" if it is `false`.
+ * [modifier] argument. The [RowScope] `content` composable lambda argument of the [Row] consists of
+ * two [Button] Composables. Both [Button] use as their `modifier` argument a [RowScope.weight] of
+ * `1f` to have them occupy an equal part of the [Row]'s incoming width constraint. The `onClick`
+ * argument of the first [Button] calls our [toggleDynamic] lambda parameter, and the `onClick`
+ * argument of the second [Button] calls our [toggleDarkTheme] lambda. The label content of the first
+ * [Button] displays in a [Text] the string "Static" if our [Boolean] parameter [dynamicColor] is
+ * `true` and  the string "Dynamic" if it is `false`. The label content of the second [Button]
+ * displays in a [Text] the string "Light Theme" if our [Boolean] parameter [darkTheme] is `true`
+ * and  the string "Dark Theme" if it is `false`.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller passes us the empty, default, or starter [Modifier] that contains no
