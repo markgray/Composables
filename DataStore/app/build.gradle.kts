@@ -66,7 +66,7 @@ dependencies {
 
     // ProtBuf
     implementation("androidx.datastore:datastore-core:1.1.7")
-    implementation("com.google.protobuf:protobuf-javalite:4.33.0")
+    implementation("com.google.protobuf:protobuf-javalite:4.33.1")
     implementation("androidx.datastore:datastore:1.1.7")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.13.0")
