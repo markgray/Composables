@@ -16,19 +16,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.examplecomposegrid.ui.theme.ExampleComposeGridTheme
 
 /**
- * TODO: Add kdoc
+ * The main entry point of the application.
+ *
+ * This activity sets up the Compose content for the entire app. It enables edge-to-edge
+ * display and hosts the main Composable, which currently showcases a demo for a
+ * grid layout ([ColumnWeightsJsonDemo]).
  */
 class MainActivity : ComponentActivity() {
     /**
-     * TODO: Add kdoc
+     * Called when the activity is first created.
+     *
+     * This method initializes the activity, enables edge-to-edge display for a modern UI,
+     * and sets the main content view to be a Compose UI. It uses the [ExampleComposeGridTheme]
+     * and displays the [ColumnWeightsJsonDemo] composable, which serves as the primary
+     * content for the application.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     * previously being shut down then this Bundle contains the data it most
+     * recently supplied in [onSaveInstanceState].  **Note: Otherwise it is null.**
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
             ExampleComposeGridTheme {
-                // A surface container using the 'background' color from the theme
                 Box(modifier = Modifier.safeDrawingPadding()) {
+                    // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
@@ -39,24 +52,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-/**
- * TODO: Add kdoc
- */
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-/**
- * TODO: Add kdoc
- */
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ExampleComposeGridTheme {
-        Greeting("Android")
     }
 }

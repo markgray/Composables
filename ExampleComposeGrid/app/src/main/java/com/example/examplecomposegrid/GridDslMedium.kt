@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintLayoutBaseScope
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
@@ -291,7 +292,6 @@ fun GridDslMediumRow() {
  *
  * This example arranges a series of [Button]'s vertically in a single column, with a specified
  * gap between each button. The column itself is constrained to fill the parent layout.
- * TODO: Continue here.
  */
 @Preview(group = "column")
 @Composable
@@ -333,7 +333,18 @@ fun GridDslMediumColumn() {
 }
 
 /**
- * TODO: Add kdoc
+ * A Composable function that demonstrates nesting a grid within another grid using the
+ * [ConstraintSetScope.createGrid] DSL helper within a [ConstraintLayout].
+ *
+ * This example showcases a complex layout by:
+ *  1. Creating an inner grid (`g1`) of 3x3, containing `Button`'s 5 through 8.
+ *     - This grid has several skipped cells to position the buttons in a specific pattern.
+ *  2. Creating an outer grid (`g2`) of 3x3, which contains the inner grid (`g1`) as one of its
+ *  elements, along with `Button`'s 1 through 4.
+ *     - This outer grid also has skipped cells.
+ *
+ * The result is a non-uniform grid where one of the cells is itself a smaller grid. This
+ * powerful technique allows for the creation of intricate and modular layouts.
  */
 @Preview(group = "nested")
 @Composable
@@ -391,7 +402,17 @@ fun GridDslMediumNested() {
 }
 
 /**
- * TODO: Add kdoc
+ * A Composable function that demonstrates nesting a [ConstraintSetScope.createColumn] helper within
+ * a [ConstraintSetScope.createRow] helper, using the [ConstraintLayout] DSL.
+ *
+ * This example showcases:
+ *  1. Creating a vertical `column` of `Button`s (`btn4`, `btn5`, `btn6`) with a vertical gap.
+ *  2. Creating a horizontal `row` that includes other `Button`s (`btn0`, `btn1`, etc.) as well as
+ *  the entire `column` helper as one of its elements.
+ *
+ * This demonstrates how `createRow` and `createColumn` can be composed to create more complex,
+ * non-uniform layouts. The `column` takes up one "cell" within the `row`, and its internal
+ * elements (`btn4`, `btn5`, `btn6`) are distributed vertically within that space.
  */
 @Preview(group = "cinr")
 @Composable

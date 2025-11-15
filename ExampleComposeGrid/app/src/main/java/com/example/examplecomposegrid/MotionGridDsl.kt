@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.examplecomposegrid
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -33,56 +36,65 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 
-
 /**
- * TODO: Add kdoc
+ * A demonstration of using the [ConstraintSetScope.createGrid] helper in a [MotionScene] DSL to
+ * animate a grid of [Button]s.
+ *
+ * The animation transitions between a 2x3 grid and a 3x2 grid. The transition is triggered by
+ * the "Run" button, which toggles the animation state.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "grid1")
 @Composable
 fun MotionGridDslDemo() {
-    val numArray = arrayOf("1", "2", "3", "4", "5", "6")
-    var animateToEnd by remember { mutableStateOf(false) }
-    val progress = remember { Animatable(0f) }
+    val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5", "6")
+    var animateToEnd: Boolean by remember { mutableStateOf(value = false) }
+    val progress: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0f) }
 
-    LaunchedEffect(animateToEnd) {
-        progress.animateTo(if (animateToEnd) 1f else 0f,
-            animationSpec = tween(3000))
+    LaunchedEffect(key1 = animateToEnd) {
+        progress.animateTo(
+            targetValue = if (animateToEnd) 1f else 0f,
+            animationSpec = tween(durationMillis = 3000)
+        )
     }
 
-    Column(modifier = Modifier.background(Color.White)) {
+    Column(modifier = Modifier.background(color = Color.White)) {
         val scene1 = MotionScene {
-            val elem = Array(numArray.size) { i -> createRefFor(i) }
+            val elem: Array<ConstrainedLayoutReference> =
+                Array(numArray.size) { i: Int -> createRefFor(id = i) }
             for (i in numArray.indices) {
-                elem[i] = createRefFor(String.format("btn%s", numArray[i]))
+                elem[i] = createRefFor(id = String.format("btn%s", numArray[i]))
             }
             // basic "default" transition
             defaultTransition(
                 // specify the starting layout
                 from = constraintSet { // this: ConstraintSetScope
-                    val grid = createGrid(
+                    val grid: ConstrainedLayoutReference = createGrid(
                         elements = elem,
                         rows = 2,
                         columns = 3,
                     )
-                    constrain(grid) {
+                    constrain(ref = grid) {
                         width = Dimension.matchParent
                         height = Dimension.matchParent
                     }
                 },
                 // specify the ending layout
                 to = constraintSet { // this: ConstraintSetScope
-                    val grid = createGrid(
+                    val grid: ConstrainedLayoutReference = createGrid(
                         elements = elem,
                         rows = 3,
                         columns = 2,
                     )
-                    constrain(grid) {
+                    constrain(ref = grid) {
                         width = Dimension.matchParent
                         height = Dimension.matchParent
                     }
@@ -93,139 +105,155 @@ fun MotionGridDslDemo() {
         MotionLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp),
+                .height(height = 400.dp),
             motionScene = scene1,
-            progress = progress.value) {
+            progress = progress.value
+        ) {
             for (num in numArray) {
                 Button(
-                    modifier = Modifier.layoutId(String.format("btn%s", num)),
+                    modifier = Modifier.layoutId(layoutId = String.format("btn%s", num)),
                     onClick = {},
                 ) {
                     Text(text = num, fontSize = 35.sp)
                 }
             }
         }
-        Button(onClick = { animateToEnd = !animateToEnd },
+        Button(
+            onClick = { animateToEnd = !animateToEnd },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(3.dp)) {
+                .padding(all = 3.dp)
+        ) {
             Text(text = "Run")
         }
     }
 }
 
 /**
- * TODO: Add kdoc
+ * A demonstration of using the [ConstraintSetScope.createRow] and [ConstraintSetScope.createColumn]
+ * helpers within a [MotionScene] DSL.
+ *
+ * This example showcases a complex layout animation where a group of [Button]s transitions
+ * between two distinct arrangements.
+ *
+ * In the starting state, the layout is primarily a vertical column containing some buttons and a
+ * horizontal row of other buttons. In the ending state, this is reversed: the layout becomes a
+ * horizontal row containing some buttons and a vertical column of the others.
+ *
+ * The animation is driven by a "Run" button, which toggles the progress of the [MotionLayout]
+ * between its start and end [ConstraintSet]'s.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "grid2")
 @Composable
 fun MotionDslDemo2() {
-    val numArray = arrayOf("1", "2", "3", "4", "5", "6", "7")
-    var animateToEnd by remember { mutableStateOf(false) }
-    val progress = remember { Animatable(0f) }
+    val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5", "6", "7")
+    var animateToEnd: Boolean by remember { mutableStateOf(false) }
+    val progress: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0f) }
 
-    LaunchedEffect(animateToEnd) {
-        progress.animateTo(if (animateToEnd) 1f else 0f,
-            animationSpec = tween(3000))
+    LaunchedEffect(key1 = animateToEnd) {
+        progress.animateTo(
+            targetValue = if (animateToEnd) 1f else 0f,
+            animationSpec = tween(durationMillis = 3000)
+        )
     }
 
     Column(modifier = Modifier.background(Color.White)) {
         val scene1 = MotionScene {
-            val btn1 = createRefFor("btn1")
-            val btn2 = createRefFor("btn2")
-            val btn3 = createRefFor("btn3")
-            val btn4 = createRefFor("btn4")
-            val btn5 = createRefFor("btn5")
-            val btn6 = createRefFor("btn6")
-            val btn7 = createRefFor("btn7")
+            val btn1: ConstrainedLayoutReference = createRefFor(id = "btn1")
+            val btn2: ConstrainedLayoutReference = createRefFor(id = "btn2")
+            val btn3: ConstrainedLayoutReference = createRefFor(id = "btn3")
+            val btn4: ConstrainedLayoutReference = createRefFor(id = "btn4")
+            val btn5: ConstrainedLayoutReference = createRefFor(id = "btn5")
+            val btn6: ConstrainedLayoutReference = createRefFor(id = "btn6")
+            val btn7: ConstrainedLayoutReference = createRefFor(id = "btn7")
 
             // basic "default" transition
             defaultTransition(
                 // specify the starting layout
                 from = constraintSet { // this: ConstraintSetScope
-                    val row = createRow(
+                    val row: ConstrainedLayoutReference = createRow(
                         btn5, btn6, btn7,
                         horizontalGap = 10.dp
                     )
-                    val column = createColumn(
+                    val column: ConstrainedLayoutReference = createColumn(
                         btn1, btn2, row, btn3, btn4,
                         verticalGap = 10.dp
                     )
-                    constrain(row) {
+                    constrain(ref = row) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     }
-                    constrain(column) {
+                    constrain(ref = column) {
                         width = Dimension.matchParent
                         height = Dimension.matchParent
                     }
-                    constrain(btn1) {
+                    constrain(ref = btn1) {
                         width = Dimension.fillToConstraints
                     }
-                    constrain(btn2) {
+                    constrain(ref = btn2) {
                         width = Dimension.fillToConstraints
                     }
-                    constrain(btn3) {
+                    constrain(ref = btn3) {
                         width = Dimension.fillToConstraints
                     }
-                    constrain(btn4) {
+                    constrain(ref = btn4) {
                         width = Dimension.fillToConstraints
                     }
-                    constrain(btn5) {
-                        width = Dimension.fillToConstraints
-                        height = Dimension.fillToConstraints
-                    }
-                    constrain(btn6) {
+                    constrain(ref = btn5) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     }
-                    constrain(btn7) {
+                    constrain(ref = btn6) {
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    }
+                    constrain(ref = btn7) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     }
                 },
                 // specify the ending layout
                 to = constraintSet { // this: ConstraintSetScope
-                    val column = createColumn(
+                    val column: ConstrainedLayoutReference = createColumn(
                         btn5, btn6, btn7,
                         verticalGap = 10.dp
                     )
-                    val row = createRow(
+                    val row: ConstrainedLayoutReference = createRow(
                         btn1, btn2, column, btn3, btn4,
                         horizontalGap = 10.dp
                     )
-                    constrain(row) {
+                    constrain(ref = row) {
                         width = Dimension.matchParent
                         height = Dimension.matchParent
                     }
-                    constrain(column) {
+                    constrain(ref = column) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     }
-                    constrain(btn1) {
+                    constrain(ref = btn1) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     }
-                    constrain(btn2) {
+                    constrain(ref = btn2) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     }
-                    constrain(btn3) {
+                    constrain(ref = btn3) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     }
-                    constrain(btn4) {
+                    constrain(ref = btn4) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     }
-                    constrain(btn5) {
+                    constrain(ref = btn5) {
                         height = Dimension.fillToConstraints
                     }
-                    constrain(btn6) {
+                    constrain(ref = btn6) {
                         height = Dimension.fillToConstraints
                     }
-                    constrain(btn7) {
+                    constrain(ref = btn7) {
                         height = Dimension.fillToConstraints
                     }
                 }
@@ -235,12 +263,13 @@ fun MotionDslDemo2() {
         MotionLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp),
+                .height(height = 400.dp),
             motionScene = scene1,
-            progress = progress.value) {
+            progress = progress.value
+        ) {
             for (num in numArray) {
                 Button(
-                    modifier = Modifier.layoutId(String.format("btn%s", num)),
+                    modifier = Modifier.layoutId(layoutId = String.format("btn%s", num)),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.Gray.copy(
                             alpha = 0.1F,
@@ -253,10 +282,12 @@ fun MotionDslDemo2() {
             }
         }
 
-        Button(onClick = { animateToEnd = !animateToEnd },
+        Button(
+            onClick = { animateToEnd = !animateToEnd },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(3.dp)) {
+                .padding(all = 3.dp)
+        ) {
             Text(text = "Run")
         }
     }

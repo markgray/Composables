@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.examplecomposegrid
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,60 +27,66 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
 
-
 /**
- * TODO: Add kdoc
+ * Demonstrates the [ConstraintSetScope.createRow] DSL to arrange multiple widgets horizontally.
+ * The widgets are spread across the available width, separated by a `horizontalGap`.
+ * In this example, five buttons are placed in a row with a gap of `10.dp` between them.
+ * TODO: Continue here.
  */
 @Preview(group = "row")
 @Composable
 fun RowDslDemo() {
     ConstraintLayout(
         ConstraintSet {
-            val a = createRefFor("1")
-            val b = createRefFor("2")
-            val c = createRefFor("3")
-            val d = createRefFor("4")
-            val e = createRefFor("5")
-            val g1 = createRow(
+            val a: ConstrainedLayoutReference = createRefFor(id = "1")
+            val b: ConstrainedLayoutReference = createRefFor(id = "2")
+            val c: ConstrainedLayoutReference = createRefFor(id = "3")
+            val d: ConstrainedLayoutReference = createRefFor(id = "4")
+            val e: ConstrainedLayoutReference = createRefFor(id = "5")
+            val g1: ConstrainedLayoutReference = createRow(
                 a, b, c, d, e,
                 horizontalGap = 10.dp,
             )
 
-            constrain(g1) {
+            constrain(ref = g1) {
                 width = Dimension.matchParent
                 height = Dimension.matchParent
             }
-            constrain(a) {
+            constrain(ref = a) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(b) {
+            constrain(ref = b) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(c) {
+            constrain(ref = c) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(d) {
+            constrain(ref = d) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(e) {
+            constrain(ref = e) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
         },
         modifier = Modifier.fillMaxSize()
     ) {
-        val numArray = arrayOf("1", "2", "3", "4", "5")
+        val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(num).width(120.dp),
+                modifier = Modifier
+                    .layoutId(layoutId = num)
+                    .width(width = 120.dp),
                 onClick = {},
             ) {
                 Text(text = String.format("btn%s", num))
@@ -95,49 +103,51 @@ fun RowDslDemo() {
 fun RowWeightsDslDemo() {
     ConstraintLayout(
         ConstraintSet {
-            val a = createRefFor("1")
-            val b = createRefFor("2")
-            val c = createRefFor("3")
-            val d = createRefFor("4")
-            val e = createRefFor("5")
-            val weights = intArrayOf(3, 3, 2, 2, 1)
-            val g1 = createRow(
+            val a: ConstrainedLayoutReference = createRefFor(id = "1")
+            val b: ConstrainedLayoutReference = createRefFor(id = "2")
+            val c: ConstrainedLayoutReference = createRefFor(id = "3")
+            val d: ConstrainedLayoutReference = createRefFor(id = "4")
+            val e: ConstrainedLayoutReference = createRefFor(id = "5")
+            val weights: IntArray = intArrayOf(3, 3, 2, 2, 1)
+            val g1: ConstrainedLayoutReference = createRow(
                 a, b, c, d, e,
                 horizontalGap = 10.dp,
                 columnWeights = weights,
             )
 
-            constrain(g1) {
+            constrain(ref = g1) {
                 width = Dimension.matchParent
                 height = Dimension.matchParent
             }
-            constrain(a) {
+            constrain(ref = a) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(b) {
+            constrain(ref = b) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(c) {
+            constrain(ref = c) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(d) {
+            constrain(ref = d) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(e) {
+            constrain(ref = e) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
         },
         modifier = Modifier.fillMaxSize()
     ) {
-        val numArray = arrayOf("1", "2", "3", "4", "5")
+        val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(num).width(120.dp),
+                modifier = Modifier
+                    .layoutId(layoutId = num)
+                    .width(120.dp),
                 onClick = {},
             ) {
                 Text(text = String.format("btn%s", num))
@@ -154,47 +164,49 @@ fun RowWeightsDslDemo() {
 fun ColumnDslDemo() {
     ConstraintLayout(
         ConstraintSet {
-            val a = createRefFor("1")
-            val b = createRefFor("2")
-            val c = createRefFor("3")
-            val d = createRefFor("4")
-            val e = createRefFor("5")
-            val g1 = createColumn(
+            val a: ConstrainedLayoutReference = createRefFor(id = "1")
+            val b: ConstrainedLayoutReference = createRefFor(id = "2")
+            val c: ConstrainedLayoutReference = createRefFor(id = "3")
+            val d: ConstrainedLayoutReference = createRefFor(id = "4")
+            val e: ConstrainedLayoutReference = createRefFor(id = "5")
+            val g1: ConstrainedLayoutReference = createColumn(
                 a, b, c, d, e,
                 verticalGap = 10.dp,
             )
 
-            constrain(g1) {
+            constrain(ref = g1) {
                 width = Dimension.matchParent
                 height = Dimension.matchParent
             }
-            constrain(a) {
+            constrain(ref = a) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(b) {
+            constrain(ref = b) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(c) {
+            constrain(ref = c) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(d) {
+            constrain(ref = d) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(e) {
+            constrain(ref = e) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
         },
         modifier = Modifier.fillMaxSize()
     ) {
-        val numArray = arrayOf("1", "2", "3", "4", "5")
+        val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(num).width(120.dp),
+                modifier = Modifier
+                    .layoutId(layoutId = num)
+                    .width(width = 120.dp),
                 onClick = {},
             ) {
                 Text(text = String.format("btn%s", num))
@@ -202,6 +214,7 @@ fun ColumnDslDemo() {
         }
     }
 }
+
 /**
  * TODO: Add kdoc
  */
@@ -210,49 +223,51 @@ fun ColumnDslDemo() {
 fun ColumnWeightsDslDemo() {
     ConstraintLayout(
         ConstraintSet {
-            val a = createRefFor("1")
-            val b = createRefFor("2")
-            val c = createRefFor("3")
-            val d = createRefFor("4")
-            val e = createRefFor("5")
-            val weights = intArrayOf(3, 3, 2, 2, 1)
-            val g1 = createColumn(
+            val a: ConstrainedLayoutReference = createRefFor(id = "1")
+            val b: ConstrainedLayoutReference = createRefFor(id = "2")
+            val c: ConstrainedLayoutReference = createRefFor(id = "3")
+            val d: ConstrainedLayoutReference = createRefFor(id = "4")
+            val e: ConstrainedLayoutReference = createRefFor(id = "5")
+            val weights: IntArray = intArrayOf(3, 3, 2, 2, 1)
+            val g1: ConstrainedLayoutReference = createColumn(
                 a, b, c, d, e,
                 verticalGap = 10.dp,
                 rowWeights = weights,
             )
 
-            constrain(g1) {
+            constrain(ref = g1) {
                 width = Dimension.matchParent
                 height = Dimension.matchParent
             }
-            constrain(a) {
+            constrain(ref = a) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(b) {
+            constrain(ref = b) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(c) {
+            constrain(ref = c) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(d) {
+            constrain(ref = d) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
-            constrain(e) {
+            constrain(ref = e) {
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             }
         },
         modifier = Modifier.fillMaxSize()
     ) {
-        val numArray = arrayOf("1", "2", "3", "4", "5")
+        val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(num).width(120.dp),
+                modifier = Modifier
+                    .layoutId(layoutId = num)
+                    .width(width = 120.dp),
                 onClick = {},
             ) {
                 Text(text = String.format("btn%s", num))

@@ -17,6 +17,7 @@
 package com.example.examplecomposegrid
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -37,77 +38,85 @@ import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 
-
 /**
- * TODO: Add kdoc
+ * A demo of a [MotionLayout] with a grid of 6 buttons.
+ *
+ * The buttons are laid out in a grid that animates from a 2x3 configuration to a 3x2
+ * configuration. The animation is triggered by a "Run" button. The [MotionScene] is defined
+ * using a JSON5 string.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "grid1")
 @Composable
 fun MotionGridDemo() {
-    var animateToEnd by remember { mutableStateOf(false) }
+    var animateToEnd: Boolean by remember { mutableStateOf(value = false) }
 
-    val progress = remember { Animatable(0f) }
+    val progress: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0f) }
 
-    LaunchedEffect(animateToEnd) {
-        progress.animateTo(if (animateToEnd) 1f else 0f,
-            animationSpec = tween(3000))
+    LaunchedEffect(key1 = animateToEnd) {
+        progress.animateTo(
+            targetValue = if (animateToEnd) 1f else 0f,
+            animationSpec = tween(durationMillis = 3000)
+        )
     }
 
-    Column(modifier = Modifier.background(Color.White)) {
+    Column(modifier = Modifier.background(color = Color.White)) {
 
-        val scene1 = MotionScene("""
-            {
-                Header: {
-                  name: 'splitDemo1'
-                },
-                
-                ConstraintSets: {
-                  start: {
-                    split: { 
-                        height: 'parent',
-                        width: 'parent',
-                        type: 'grid',
-                        orientation: 0,
-                        vGap: 10,
-                        hGap: 15,
-                        rows: 2,
-                        columns: 3,
-                        contains: ["btn1", "btn2", "btn3", "btn4", "btn5", "btn6"],
-                      },
-                  },
-                  
-                  end: {
-                    split: { 
-                        height: 'parent',
-                        width: 'parent',
-                        type: 'grid',
-                        orientation: 1,
-                        rows: 3,
-                        columns: 2,
-                        contains: ["btn1", "btn2", "btn3", "btn4", "btn5", "btn6"],
-                      },
-                  }
-                },
-                
-                Transitions: {
-                  default: {
-                    from: 'start', to: 'end',
-                  }
-                }
-            }
-            """)
+        val scene1 = MotionScene(
+            content = """
+                        {
+                            Header: {
+                              name: 'splitDemo1'
+                            },
+                            
+                            ConstraintSets: {
+                              start: {
+                                split: { 
+                                    height: 'parent',
+                                    width: 'parent',
+                                    type: 'grid',
+                                    orientation: 0,
+                                    vGap: 10,
+                                    hGap: 15,
+                                    rows: 2,
+                                    columns: 3,
+                                    contains: ["btn1", "btn2", "btn3", "btn4", "btn5", "btn6"],
+                                  },
+                              },
+                              
+                              end: {
+                                split: { 
+                                    height: 'parent',
+                                    width: 'parent',
+                                    type: 'grid',
+                                    orientation: 1,
+                                    rows: 3,
+                                    columns: 2,
+                                    contains: ["btn1", "btn2", "btn3", "btn4", "btn5", "btn6"],
+                                  },
+                              }
+                            },
+                            
+                            Transitions: {
+                              default: {
+                                from: 'start', to: 'end',
+                              }
+                            }
+                        }
+                        """
+        )
 
         MotionLayout(
-            modifier    = Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp),
+                .height(height = 400.dp),
             motionScene = scene1,
-            progress = progress.value) {
-            val numArray = arrayOf("1", "2", "3", "4", "5", "6")
+            progress = progress.value
+        ) {
+            val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5", "6")
             for (num in numArray) {
                 Button(
-                    modifier = Modifier.layoutId(String.format("btn%s", num)),
+                    modifier = Modifier.layoutId(layoutId = String.format("btn%s", num)),
                     onClick = {},
                 ) {
                     Text(text = num, fontSize = 35.sp)
@@ -115,158 +124,175 @@ fun MotionGridDemo() {
             }
         }
 
-        Button(onClick = { animateToEnd = !animateToEnd },
+        Button(
+            onClick = { animateToEnd = !animateToEnd },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(3.dp)) {
+                .padding(all = 3.dp)
+        ) {
             Text(text = "Run")
         }
     }
 }
 
 /**
- * TODO: Add kdoc
+ * A demo of a [MotionLayout] with a nested grid.
+ *
+ * This demo shows a complex layout animation with two grids, one of which is nested inside the other.
+ * The `start` constraint set defines a vertical grid (`split1`) containing `btn1`, `btn2`, a nested
+ * horizontal grid (`split2`), `btn3`, and `btn4`. The nested `split2` grid contains `btn5`, `btn6`,
+ * and `btn7`.
+ *
+ * The `end` constraint set transforms `split1` into a horizontal grid and `split2` into a vertical
+ * grid.
+ *
+ * The animation between the start and end states is triggered by the "Run" button.
  */
 @OptIn(ExperimentalMotionApi::class)
 @Preview(group = "grid2")
 @Composable
 fun MotionGridDemo2() {
-    var animateToEnd by remember { mutableStateOf(false) }
+    var animateToEnd: Boolean by remember { mutableStateOf(value = false) }
 
-    val progress = remember { Animatable(0f) }
+    val progress: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0f) }
 
-    LaunchedEffect(animateToEnd) {
-        progress.animateTo(if (animateToEnd) 1f else 0f,
-            animationSpec = tween(3000))
+    LaunchedEffect(key1 = animateToEnd) {
+        progress.animateTo(
+            targetValue = if (animateToEnd) 1f else 0f,
+            animationSpec = tween(durationMillis = 3000)
+        )
     }
 
-    Column(modifier = Modifier.background(Color.White)) {
+    Column(modifier = Modifier.background(color = Color.White)) {
 
-        val scene1 = MotionScene("""
-            {
-                Header: {
-                  name: 'splitDemo1'
-                },
-                
-                ConstraintSets: {
-                  start: {
-                    split1: { 
-                        height: 'parent',
-                        width: 'parent',
-                        type: 'grid',
-                        orientation: 0,
-                        hGap: 10,
-                        columns: 1,
-                        contains: ["btn1", "btn2", "split2", "btn3", "btn4"],
-                      },
-                      split2: { 
-                        height: 'spread',
-                        width: 'spread',
-                        type: 'grid',
-                        orientation: 0,
-                        hGap: 15,
-                        rows: 1,
-                        contains: ["btn5", "btn6", "btn7"],
-                      },
-                      btn1: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn2: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn3: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn4: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn5: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn6: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn7: {
-                        width: "spread",
-                        height: "spread",
-                      }
-                  },
-                  
-                  end: {
-                    split1: { 
-                        height: 'parent',
-                        width: 'parent',
-                        type: 'grid',
-                        orientation: 0,
-                        vGap: 10,
-                        hGap: 15,
-                        rows: 1,
-                        contains: ["btn1", "btn2", "split2", "btn3", "btn4"],
-                      },
-                      split2: { 
-                        height: 'spread',
-                        width: 'spread',
-                        type: 'grid',
-                        orientation: 0,
-                        hGap: 15,
-                        columns: 1,
-                        contains: ["btn5", "btn6", "btn7"],
-                      },
-                      btn1: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn2: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn3: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn4: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn5: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn6: {
-                        width: "spread",
-                        height: "spread",
-                      },
-                      btn7: {
-                        width: "spread",
-                        height: "spread",
-                      }
-                  }
-                },
-                
-                Transitions: {
-                  default: {
-                    from: 'start', to: 'end',
-                  }
-                }
-            }
-            """)
+        val scene1 = MotionScene(
+            content = """
+                        {
+                            Header: {
+                              name: 'splitDemo1'
+                            },
+                            
+                            ConstraintSets: {
+                              start: {
+                                split1: { 
+                                    height: 'parent',
+                                    width: 'parent',
+                                    type: 'grid',
+                                    orientation: 0,
+                                    hGap: 10,
+                                    columns: 1,
+                                    contains: ["btn1", "btn2", "split2", "btn3", "btn4"],
+                                  },
+                                  split2: { 
+                                    height: 'spread',
+                                    width: 'spread',
+                                    type: 'grid',
+                                    orientation: 0,
+                                    hGap: 15,
+                                    rows: 1,
+                                    contains: ["btn5", "btn6", "btn7"],
+                                  },
+                                  btn1: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn2: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn3: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn4: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn5: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn6: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn7: {
+                                    width: "spread",
+                                    height: "spread",
+                                  }
+                              },
+                              
+                              end: {
+                                split1: { 
+                                    height: 'parent',
+                                    width: 'parent',
+                                    type: 'grid',
+                                    orientation: 0,
+                                    vGap: 10,
+                                    hGap: 15,
+                                    rows: 1,
+                                    contains: ["btn1", "btn2", "split2", "btn3", "btn4"],
+                                  },
+                                  split2: { 
+                                    height: 'spread',
+                                    width: 'spread',
+                                    type: 'grid',
+                                    orientation: 0,
+                                    hGap: 15,
+                                    columns: 1,
+                                    contains: ["btn5", "btn6", "btn7"],
+                                  },
+                                  btn1: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn2: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn3: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn4: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn5: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn6: {
+                                    width: "spread",
+                                    height: "spread",
+                                  },
+                                  btn7: {
+                                    width: "spread",
+                                    height: "spread",
+                                  }
+                              }
+                            },
+                            
+                            Transitions: {
+                              default: {
+                                from: 'start', to: 'end',
+                              }
+                            }
+                        }
+                        """
+        )
 
         MotionLayout(
-            modifier    = Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp),
+                .height(height = 400.dp),
             motionScene = scene1,
-            progress = progress.value) {
-            val numArray = arrayOf("1", "2", "3", "4", "5", "6", "7")
+            progress = progress.value
+        ) {
+            val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5", "6", "7")
             for (num in numArray) {
                 Button(
-                    modifier = Modifier.layoutId(String.format("btn%s", num)),
+                    modifier = Modifier.layoutId(layoutId = String.format("btn%s", num)),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.Gray.copy(
                             alpha = 0.1F,
@@ -279,10 +305,12 @@ fun MotionGridDemo2() {
             }
         }
 
-        Button(onClick = { animateToEnd = !animateToEnd },
+        Button(
+            onClick = { animateToEnd = !animateToEnd },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(3.dp)) {
+                .padding(all = 3.dp)
+        ) {
             Text(text = "Run")
         }
     }
