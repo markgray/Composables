@@ -16,8 +16,9 @@ import androidx.compose.runtime.Composable
  * defaults for a dark theme, with specific overrides for primary and secondary colors.
  *
  *  - `primary`: The primary brand color, used for prominent elements like app bars and FABs.
- *  - `primaryVariant`: A darker/lighter variant of the primary color, used for status bars, for example.
- *  - `secondary`: The secondary brand color, used for accents and selection controls like sliders and switches.
+ *  - `primaryVariant`: A darker variant of the primary color, used for status bars, for example.
+ *  - `secondary`: The secondary brand color, used for accents and selection controls like sliders
+ *  and switches.
  */
 private val DarkColorPalette: Colors = darkColors(
     primary = Purple200,
@@ -35,7 +36,8 @@ private val DarkColorPalette: Colors = darkColors(
  *
  *  - `primary`: The primary brand color, used for prominent elements like app bars and FABs.
  *  - `primaryVariant`: A darker variant of the primary color, used for status bars, for example.
- *  - `secondary`: The secondary brand color, used for accents and selection controls like sliders and switches.
+ *  - `secondary`: The secondary brand color, used for accents and selection controls like sliders
+ *  and switches.
  */
 private val LightColorPalette: Colors = lightColors(
     primary = Purple500,
@@ -60,7 +62,7 @@ private val LightColorPalette: Colors = lightColors(
  * light or dark color palette, and applies the defined typography and shapes.
  *
  * @param darkTheme A boolean flag to determine if the dark theme should be used. By default,
- * it follows the system's dark theme setting via `isSystemInDarkTheme()`.
+ * it follows the system's dark theme setting via [isSystemInDarkTheme].
  * @param content The Composable content to which this theme will be applied. This is typically
  * the root of your application's UI hierarchy.
  */

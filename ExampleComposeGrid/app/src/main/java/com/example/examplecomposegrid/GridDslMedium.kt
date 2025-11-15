@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.examplecomposegrid
 
 import androidx.compose.foundation.background
@@ -33,15 +35,16 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.ConstraintSetScope
 import androidx.constraintlayout.compose.Dimension
 
 /**
- * A Composable function that demonstrates the use of the `createGrid` DSL helper within
- * `ConstraintLayout` to build a keypad layout.
+ * A Composable function that demonstrates the use of the [ConstraintSetScope.createGrid] DSL
+ * helper within a [ConstraintLayout] to build a keypad layout.
  *
  * This example showcases:
- *  - A 5x3 grid containing a display `Box` and number `Button`s (0-9).
- *  - **Spanning**: The display `Box` at the top spans across all 3 columns (`spans = "0:1x3"`).
+ *  - A 5x3 grid containing a display [Box] and number [Button]'s (0-9).
+ *  - **Spanning**: The display [Box] at the top spans across all 3 columns (`spans = "0:1x3"`).
  *  - **Skipping**: An empty cell is created in the grid to position the '0' button correctly
  *  (`skips = "12:1x1"`).
  *  - **Weighting**: The rows are weighted, making the first row (the display) twice as tall as
@@ -156,14 +159,14 @@ fun GridDslKeypad() {
 
 /**
  * A Composable function that demonstrates a more complex grid layout to create a calculator UI
- * using the `createGrid` DSL helper within `ConstraintLayout`.
+ * using the [ConstraintSetScope.createGrid] DSL helper within a [ConstraintLayout].
  *
  * This example showcases:
  *  - A 7x4 grid containing a display `Box` and various calculator `Button`s.
  *  - **Spanning**:
  *      - The display `Box` at the top spans two rows and four columns (`"0:2x4"`).
  *      - The "equal" button at the bottom right spans one row and two columns (`"24:1x2"`).
- *  - The creation of `ConstrainedLayoutReference`s programmatically in a loop.
+ *  - The creation of [ConstrainedLayoutReference]'s programmatically in a loop.
  *  - Mapping of internal string identifiers (e.g., "clear", "plus") to user-facing symbols
  *  (e.g., "C", "+").
  */
@@ -236,8 +239,8 @@ fun GridDslMediumCalculator() {
 }
 
 /**
- * A Composable function that demonstrates the use of the `createRow` DSL helper within
- * `ConstraintLayout`.
+ * A Composable function that demonstrates the use of the [ConstraintSetScope.createRow] DSL helper
+ * within a [ConstraintLayout].
  *
  * This example arranges a series of `Button`s horizontally in a single row, with a specified
  * gap between each button. The row itself is constrained to fill the parent layout.
@@ -283,10 +286,10 @@ fun GridDslMediumRow() {
 }
 
 /**
- * A Composable function that demonstrates the use of the `createColumn` DSL helper within
- * `ConstraintLayout`.
+ * A Composable function that demonstrates the use of the [ConstraintSetScope.createColumn] DSL
+ * helper within a [ConstraintLayout].
  *
- * This example arranges a series of `Button`s vertically in a single column, with a specified
+ * This example arranges a series of [Button]'s vertically in a single column, with a specified
  * gap between each button. The column itself is constrained to fill the parent layout.
  * TODO: Continue here.
  */
