@@ -2,17 +2,14 @@ package com.example.examplecomposegrid
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.examplecomposegrid.ui.theme.ExampleComposeGridTheme
 
 /**
@@ -26,14 +23,13 @@ class MainActivity : ComponentActivity() {
     /**
      * Called when the activity is first created.
      *
-     * This method initializes the activity, enables edge-to-edge display for a modern UI,
-     * and sets the main content view to be a Compose UI. It uses the [ExampleComposeGridTheme]
-     * and displays the [ColumnWeightsJsonDemo] composable, which serves as the primary
-     * content for the application.
+     * This method initializes the activity, enables edge-to-edge display for a modern UI, and sets
+     * the main content view to be a Compose UI. It uses [ExampleComposeGridTheme] to supply
+     * [MaterialTheme] values to the composables it wraps and their children and displays the
+     * [ColumnWeightsJsonDemo] composable inside of a [Box], which serves as the primary content
+     * for the application.
      *
-     * @param savedInstanceState If the activity is being re-initialized after
-     * previously being shut down then this Bundle contains the data it most
-     * recently supplied in [onSaveInstanceState].  **Note: Otherwise it is null.**
+     * @param savedInstanceState We do not override [onSaveInstanceState] so do not use this.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()

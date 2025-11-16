@@ -41,10 +41,10 @@ import androidx.constraintlayout.compose.*
  *
  * The layout consists of:
  *  - A 5x3 grid.
- *  - A display `Box` at the top, spanning all 3 columns of the first row.
- *  - Ten `Button`s for numbers 0-9.
+ *  - A display [Box] at the top, spanning all 3 columns of the first row.
+ *  - Ten [Button]'s for numbers 0-9.
  *  - One empty cell is skipped to position the '0' button correctly.
- *  - The display `Box` has a `rowWeight` of 2, making it twice as tall as the other rows.
+ *  - The display [Box] has a `rowWeight` of 2, making it twice as tall as the other rows.
  */
 @Preview(group = "keypad")
 @Composable
@@ -148,8 +148,8 @@ fun GridJsonKeypad() {
  *
  * The layout consists of:
  *  - A 7x4 grid.
- *  - A display `Box` at the top, spanning 4 columns across the first 2 rows (`spans: "0:2x4"`).
- *  - Various `Button`s for numbers, operators, and functions.
+ *  - A display [Box] at the top, spanning 4 columns across the first 2 rows (`spans: "0:2x4"`).
+ *  - Various [Button]'s for numbers, operators, and functions.
  *  - The "0" button spans 2 columns (`spans: "24:1x2"`), which is the first cell of the last row.
  *  - All components are defined to spread across their assigned grid cells.
  */
@@ -336,7 +336,7 @@ fun GridJsonRow() {
 }
 
 /**
- * Creates a simple vertical column of five [Button]s using [ConstraintLayout] and a JSON-based
+ * Creates a simple vertical column of five [Button]'s using [ConstraintLayout] and a JSON-based
  * [ConstraintSet].
  *
  * This demonstrates the `column` helper in a JSON [ConstraintSet]. The `column` is configured to
