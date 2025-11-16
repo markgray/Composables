@@ -27,48 +27,55 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.*
 
 /**
- * TODO: Add kdoc
+ * Demonstrates the `row` grid helper in a JSON-based [ConstraintSet].
+ *
+ * This Composable creates a [ConstraintLayout] where five [Button]s are arranged horizontally
+ * using a `row` helper. The buttons are spread evenly across the width of the parent,
+ * with a horizontal gap of 10dp between them.
  */
 @Preview(group = "row")
 @Composable
 fun RowJsonDemo() {
     ConstraintLayout(
-        ConstraintSet("""
-        {
-            grid: { 
-                height: "parent",
-                width: "parent",
-                type: "row",
-                hGap: 10,
-                contains: ["btn1", "btn2", "btn3", "btn4", "btn5"],
-              },
-              btn1: {
-              height: "spread",
-              width: "spread",
-             },
-             btn2: {
-              height: "spread",
-              width: "spread",
-             },
-             btn3: {
-              height: "spread",
-              width: "spread",
-             },
-             btn4: {
-              height: "spread",
-              width: "spread",
-             },
-             btn5: {
-              height: "spread",
-              width: "spread",
-             },
-        }
-        """.trimIndent()),
-        modifier = Modifier.fillMaxSize()) {
-        val numArray = arrayOf("1", "2", "3", "4", "5")
+        ConstraintSet(
+            jsonContent = """
+                    {
+                        grid: { 
+                            height: "parent",
+                            width: "parent",
+                            type: "row",
+                            hGap: 10,
+                            contains: ["btn1", "btn2", "btn3", "btn4", "btn5"],
+                          },
+                          btn1: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn2: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn3: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn4: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn5: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                    }
+                    """.trimIndent()
+        ),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(String.format("btn%s", num)),
+                modifier = Modifier.layoutId(layoutId = String.format("btn%s", num)),
                 onClick = {},
             ) {
                 Text(text = num, fontSize = 35.sp)
@@ -78,49 +85,57 @@ fun RowJsonDemo() {
 }
 
 /**
- * TODO: Add kdoc
+ * Demonstrates the `row` grid helper with `columnWeights` in a JSON-based [ConstraintSet].
+ *
+ * This Composable creates a [ConstraintLayout] where five [Button]s are arranged horizontally.
+ * The `columnWeights` property is used to distribute the available width among the buttons
+ * according to the specified weights (3, 2, 2, 1, 1). A horizontal gap of 10dp is maintained
+ * between them.
  */
 @Preview(group = "row")
 @Composable
 fun RowWeightsJsonDemo() {
     ConstraintLayout(
-        ConstraintSet("""
-        {
-            grid: { 
-                height: "parent",
-                width: "parent",
-                type: "row",
-                hGap: 10,
-                columnWeights: "3,2,2,1,1",
-                contains: ["btn1", "btn2", "btn3", "btn4", "btn5"],
-              },
-              btn1: {
-              height: "spread",
-              width: "spread",
-             },
-             btn2: {
-              height: "spread",
-              width: "spread",
-             },
-             btn3: {
-              height: "spread",
-              width: "spread",
-             },
-             btn4: {
-              height: "spread",
-              width: "spread",
-             },
-             btn5: {
-              height: "spread",
-              width: "spread",
-             },
-        }
-        """.trimIndent()),
-        modifier = Modifier.fillMaxSize()) {
-        val numArray = arrayOf("1", "2", "3", "4", "5")
+        ConstraintSet(
+            jsonContent = """
+                    {
+                        grid: { 
+                            height: "parent",
+                            width: "parent",
+                            type: "row",
+                            hGap: 10,
+                            columnWeights: "3,2,2,1,1",
+                            contains: ["btn1", "btn2", "btn3", "btn4", "btn5"],
+                          },
+                          btn1: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn2: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn3: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn4: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn5: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                    }
+                    """.trimIndent()
+        ),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(String.format("btn%s", num)),
+                modifier = Modifier.layoutId(layoutId = String.format("btn%s", num)),
                 onClick = {},
             ) {
                 Text(text = num, fontSize = 35.sp)
@@ -130,48 +145,55 @@ fun RowWeightsJsonDemo() {
 }
 
 /**
- * TODO: Add kdoc
+ * Demonstrates the `column` grid helper in a JSON-based [ConstraintSet].
+ *
+ * This Composable creates a [ConstraintLayout] where five [Button]s are arranged vertically
+ * using a `column` helper. The buttons are spread evenly down the height of the parent,
+ * with a vertical gap of 10dp between them.
  */
 @Preview(group = "column")
 @Composable
 fun ColumnJsonDemo() {
     ConstraintLayout(
-        ConstraintSet("""
-        {
-            grid: { 
-                height: "parent",
-                width: "parent",
-                type: "column",
-                vGap: 10,
-                contains: ["btn1", "btn2", "btn3", "btn4", "btn5"],
-              },
-              btn1: {
-              height: "spread",
-              width: "spread",
-             },
-             btn2: {
-              height: "spread",
-              width: "spread",
-             },
-             btn3: {
-              height: "spread",
-              width: "spread",
-             },
-             btn4: {
-              height: "spread",
-              width: "spread",
-             },
-             btn5: {
-              height: "spread",
-              width: "spread",
-             },
-        }
-        """.trimIndent()),
-        modifier = Modifier.fillMaxSize()) {
-        val numArray = arrayOf("1", "2", "3", "4", "5")
+        ConstraintSet(
+            jsonContent = """
+                    {
+                        grid: { 
+                            height: "parent",
+                            width: "parent",
+                            type: "column",
+                            vGap: 10,
+                            contains: ["btn1", "btn2", "btn3", "btn4", "btn5"],
+                          },
+                          btn1: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn2: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn3: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn4: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn5: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                    }
+                    """.trimIndent()
+        ),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(String.format("btn%s", num)),
+                modifier = Modifier.layoutId(layoutId = String.format("btn%s", num)),
                 onClick = {},
             ) {
                 Text(text = num, fontSize = 35.sp)
@@ -181,49 +203,57 @@ fun ColumnJsonDemo() {
 }
 
 /**
- * TODO: Add kdoc
+ * Demonstrates the `column` grid helper with `rowWeights` in a JSON-based [ConstraintSet].
+ *
+ * This Composable creates a [ConstraintLayout] where five [Button]s are arranged vertically.
+ * The `rowWeights` property is used to distribute the available height among the buttons
+ * according to the specified weights (3, 2, 2, 1, 1). A vertical gap of 10dp is maintained
+ * between them.
  */
 @Preview(group = "column")
 @Composable
 fun ColumnWeightsJsonDemo() {
     ConstraintLayout(
-        ConstraintSet("""
-        {
-            grid: { 
-                height: "parent",
-                width: "parent",
-                type: "column",
-                vGap: 10,
-                rowWeights: "3,2,2,1,1",
-                contains: ["btn1", "btn2", "btn3", "btn4", "btn5"],
-              },
-              btn1: {
-              height: "spread",
-              width: "spread",
-             },
-             btn2: {
-              height: "spread",
-              width: "spread",
-             },
-             btn3: {
-              height: "spread",
-              width: "spread",
-             },
-             btn4: {
-              height: "spread",
-              width: "spread",
-             },
-             btn5: {
-              height: "spread",
-              width: "spread",
-             },
-        }
-        """.trimIndent()),
-        modifier = Modifier.fillMaxSize()) {
-        val numArray = arrayOf("1", "2", "3", "4", "5")
+        ConstraintSet(
+            jsonContent = """
+                    {
+                        grid: { 
+                            height: "parent",
+                            width: "parent",
+                            type: "column",
+                            vGap: 10,
+                            rowWeights: "3,2,2,1,1",
+                            contains: ["btn1", "btn2", "btn3", "btn4", "btn5"],
+                          },
+                          btn1: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn2: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn3: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn4: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                         btn5: {
+                          height: "spread",
+                          width: "spread",
+                         },
+                    }
+                    """.trimIndent()
+        ),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val numArray: Array<String> = arrayOf("1", "2", "3", "4", "5")
         for (num in numArray) {
             Button(
-                modifier = Modifier.layoutId(String.format("btn%s", num)),
+                modifier = Modifier.layoutId(layoutId = String.format("btn%s", num)),
                 onClick = {},
             ) {
                 Text(text = num, fontSize = 35.sp)

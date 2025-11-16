@@ -37,7 +37,6 @@ import androidx.constraintlayout.compose.Dimension
  * Demonstrates the [ConstraintSetScope.createRow] DSL to arrange multiple widgets horizontally.
  * The widgets are spread across the available width, separated by a `horizontalGap`.
  * In this example, five buttons are placed in a row with a gap of `10.dp` between them.
- * TODO: Continue here.
  */
 @Preview(group = "row")
 @Composable
@@ -96,7 +95,12 @@ fun RowDslDemo() {
 }
 
 /**
- * TODO: Add kdoc
+ * Demonstrates the [ConstraintSetScope.createRow] DSL to arrange multiple widgets horizontally,
+ * distributing the available width according to the provided `columnWeights`.
+ * In this example, five buttons are placed in a row with a `horizontalGap` of `10.dp`.
+ * The widths are weighted with values of `[3, 3, 2, 2, 1]`, meaning the first two buttons
+ * will each take up 3 parts of the available space, the next two will take up 2 parts each,
+ * and the last button will take up 1 part.
  */
 @Preview(group = "row")
 @Composable
@@ -157,7 +161,9 @@ fun RowWeightsDslDemo() {
 }
 
 /**
- * TODO: Add kdoc
+ * Demonstrates the [ConstraintSetScope.createColumn] DSL to arrange multiple widgets vertically.
+ * The widgets are spread across the available height, separated by a `verticalGap`.
+ * In this example, five buttons are placed in a column with a gap of `10.dp` between them.
  */
 @Preview(group = "column")
 @Composable
@@ -216,7 +222,12 @@ fun ColumnDslDemo() {
 }
 
 /**
- * TODO: Add kdoc
+ * Demonstrates the [ConstraintSetScope.createColumn] DSL to arrange multiple widgets vertically,
+ * distributing the available height according to the provided `rowWeights`.
+ * In this example, five buttons are placed in a column with a `verticalGap` of `10.dp`.
+ * The heights are weighted with values of `[3, 3, 2, 2, 1]`, meaning the first two buttons
+ * will each take up 3 parts of the available space, the next two will take up 2 parts each,
+ * and the last button will take up 1 part.
  */
 @Preview(group = "column")
 @Composable
