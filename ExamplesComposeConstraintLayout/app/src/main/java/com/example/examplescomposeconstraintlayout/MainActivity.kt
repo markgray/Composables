@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
      * Initializes the activity.
      *
      * This method sets up the UI for the activity. It first checks the intent's extras
-     * for a `composeKey`.
+     * for an extra stored under the key [composeKey].
      *  - If a valid composable name is found, it finds the corresponding [ComposeFunc]
      *  from the [cmap] list and renders that specific composable.
      *  - If no composable name is provided in the intent, it displays the [ComposableMenu],

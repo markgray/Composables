@@ -53,7 +53,7 @@ fun CalendarList() {
  * A Composable that displays a single calendar month.
  * It uses [ConstraintLayout] with a [ConstraintSetScope.createFlow] helper to arrange the days of
  * the week and the dates in a grid. The calendar is "dynamic" in the sense that it can display any
- * month relative to the current one, specified by the `montOffset`.
+ * month relative to the current one, specified by the [Int] parameter [montOffset].
  *
  * The layout consists of:
  *  - A title displaying the month and year (e.g., "August 2023").
@@ -98,7 +98,7 @@ fun DynamicCalendar(montOffset: Int = 0) {
     ) {
         ConstraintLayout(
             ConstraintSet {
-                val date: ConstrainedLayoutReference = createRefFor("date")
+                val date: ConstrainedLayoutReference = createRefFor(id = "date")
                 val keys: Array<ConstrainedLayoutReference> = refId.map { id: String ->
                     createRefFor(id = id)
                 }.toTypedArray()
@@ -122,7 +122,7 @@ fun DynamicCalendar(montOffset: Int = 0) {
         ) {
             Text(text = calDate, fontSize = 22.sp, modifier = Modifier.layoutId(layoutId = "date"))
             refId.forEachIndexed { index, id ->
-                Text(text = days[index], modifier = Modifier.layoutId(id))
+                Text(text = days[index], modifier = Modifier.layoutId(layoutId = id))
             }
         }
     }

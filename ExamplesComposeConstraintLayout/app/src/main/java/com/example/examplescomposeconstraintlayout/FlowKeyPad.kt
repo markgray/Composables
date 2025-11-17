@@ -31,7 +31,7 @@ import androidx.constraintlayout.compose.Wrap
  * space.
  *
  * In this example:
- *  - A `ConstraintLayout` is used to arrange a series of `Button`s.
+ *  - A [ConstraintLayout] is used to arrange a series of `Button`s.
  *  - An array of `String`s (`"1"`, `"2"`, `"3"`, etc.) is used to create references for each button.
  *  - [ConstraintSetScope.createFlow] is used to arrange these button references.
  *      - `maxElement = 3` specifies that there should be at most 3 elements in a row.
