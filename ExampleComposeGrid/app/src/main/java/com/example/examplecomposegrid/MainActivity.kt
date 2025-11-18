@@ -42,12 +42,12 @@ class MainActivity : ComponentActivity() {
     private val composeKey = "USE_COMPOSE"
 
     /**
-     * A map that associates a string name with a Composable function.
+     * A map that associates a string `name` with a Composable function.
      * This list is used to build the main menu of available demos and to
      * launch a specific demo via an [Intent] extra.
      * Each entry is created using the [get] helper function.
      */
-    private var cmap = listOf(
+    private var cmap: List<ComposeFunc> = listOf(
         get(name = "GridDslKeypad") { GridDslKeypad() },
         get(name = "GridDslMediumCalculator") { GridDslMediumCalculator() },
         get(name = "GridDslMediumRow") { GridDslMediumRow() },
@@ -77,13 +77,14 @@ class MainActivity : ComponentActivity() {
     /**
      * Called when the activity is first created. This function sets up the user interface.
      *
-     * It checks if an [Intent] extra stored under the key [composeKey] is provided.
+     * It checks if an [Intent] extra is stored under the key [composeKey].
      * If a specific composable function name is passed, this function finds the corresponding
-     * [ComposeFunc] in the `cmap` list and displays it.
+     * [ComposeFunc] in the [List] of [ComposeFunc] property [cmap] and displays the composable
+     * associated with it.
      *
-     * If no specific composable is provided in the intent, it displays a menu ([ComposableMenu])
-     * of all available example composables. Clicking an item in the menu relaunches this
-     * activity with an intent extra to display that specific composable.
+     * If no specific composable `name` is provided in the intent, it displays a menu
+     * ([ComposableMenu]) of all available example composables. Clicking an item in the
+     * menu relaunches this activity with an intent extra to display that specific composable.
      *
      * The UI is built using Jetpack Compose within a [ComposeView].
      *
@@ -191,7 +192,7 @@ class MainActivity : ComponentActivity() {
  * purposes in the UI (e.g., button labels) and for identification in [Intent]'s.
  *
  * @param name The string identifier for the composable function. This is used as its display name
- * in the menu.
+ * in the menu and as an extra in the [Intent] used to relaunch [MainActivity].
  * @param cRun A lambda containing the Composable function to be executed.
  * @return An object implementing the [ComposeFunc] interface, which encapsulates the
  * given name and composable lambda.
