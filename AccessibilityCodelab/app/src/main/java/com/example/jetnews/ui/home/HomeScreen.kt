@@ -309,8 +309,8 @@ fun PreviewHomeScreen() {
     JetnewsTheme {
         HomeScreen(
             posts = PostsRepository().getPosts(),
-            navigateToArticle = { /*TODO*/ },
-            openDrawer = { /*TODO*/ },
+            navigateToArticle = { /*Navigate to Article*/ },
+            openDrawer = { /*Open Drawer*/ },
             scaffoldState = rememberScaffoldState()
         )
     }
