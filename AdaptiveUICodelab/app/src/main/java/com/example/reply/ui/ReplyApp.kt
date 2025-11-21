@@ -407,22 +407,22 @@ fun ReplyNavigationRail(
         )
         NavigationRailItem(
             selected = true,
-            onClick = { /*TODO*/ },
+            onClick = { /*navigate to INBOX*/ },
             icon = { Icon(imageVector = Icons.Default.Inbox, contentDescription = stringResource(id = R.string.tab_inbox)) }
         )
         NavigationRailItem(
             selected = false,
-            onClick = {/*TODO*/ },
+            onClick = {/*navigate to Article*/ },
             icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Article, stringResource(id = R.string.tab_article)) }
         )
         NavigationRailItem(
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = { /*navigate to Chat*/ },
             icon = { Icon(imageVector = Icons.AutoMirrored.Outlined.Chat, stringResource(id = R.string.tab_dm)) }
         )
         NavigationRailItem(
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = { /*navigate to People*/ },
             icon = { Icon(imageVector = Icons.Outlined.People, stringResource(id = R.string.tab_groups)) }
         )
     }
@@ -447,22 +447,22 @@ fun ReplyBottomNavigationBar() {
     NavigationBar(modifier = Modifier.fillMaxWidth()) {
         NavigationBarItem(
             selected = true,
-            onClick = { /*TODO*/ },
+            onClick = { /*navigate to INBOX*/ },
             icon = { Icon(imageVector = Icons.Default.Inbox, contentDescription = stringResource(id = R.string.tab_inbox)) }
         )
         NavigationBarItem(
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = { /*navigate to Article*/ },
             icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Article, contentDescription = stringResource(id = R.string.tab_inbox)) }
         )
         NavigationBarItem(
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = { /*navigate to Chat*/ },
             icon = { Icon(imageVector = Icons.AutoMirrored.Outlined.Chat, contentDescription = stringResource(id = R.string.tab_inbox)) }
         )
         NavigationBarItem(
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = { /*navigate to Videocam*/ },
             icon = { Icon(imageVector = Icons.Outlined.Videocam, contentDescription = stringResource(id = R.string.tab_inbox)) }
         )
     }
@@ -567,28 +567,28 @@ fun NavigationDrawerContent(
             label = { Text(text = stringResource(id = R.string.tab_inbox), modifier = Modifier.padding(horizontal = 16.dp)) },
             icon = { Icon(imageVector = Icons.Default.Inbox, contentDescription = stringResource(id = R.string.tab_inbox)) },
             colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-            onClick = { /*TODO*/ }
+            onClick = { /*navigate to INBOX*/ }
         )
         NavigationDrawerItem(
             selected = selectedDestination == ReplyDestinations.ARTICLES,
             label = { Text(text = stringResource(id = R.string.tab_article), modifier = Modifier.padding(horizontal = 16.dp)) },
             icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Article, contentDescription = stringResource(id = R.string.tab_article)) },
             colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-            onClick = { /*TODO*/ }
+            onClick = { /*navigate to ARTICLES*/ }
         )
         NavigationDrawerItem(
             selected = selectedDestination == ReplyDestinations.DM,
             label = { Text(text = stringResource(id = R.string.tab_dm), modifier = Modifier.padding(horizontal = 16.dp)) },
             icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Chat, contentDescription = stringResource(id = R.string.tab_dm)) },
             colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-            onClick = { /*TODO*/ }
+            onClick = { /*navigate to DM*/ }
         )
         NavigationDrawerItem(
             selected = selectedDestination == ReplyDestinations.GROUPS,
             label = { Text(text = stringResource(id = R.string.tab_groups), modifier = Modifier.padding(horizontal = 16.dp)) },
             icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Article, contentDescription = stringResource(id = R.string.tab_groups)) },
             colors = NavigationDrawerItemDefaults.colors(unselectedContainerColor = Color.Transparent),
-            onClick = { /*TODO*/ }
+            onClick = { /*navigate to GROUPS*/ }
         )
     }
 }

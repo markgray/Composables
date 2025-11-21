@@ -222,7 +222,7 @@ fun ReplyEmailListItem(
                     )
                 }
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { /*Mark as Favorite*/ },
                     modifier = Modifier
                         .clip(shape = CircleShape)
                         .background(color = MaterialTheme.colorScheme.surface)
@@ -310,7 +310,7 @@ fun ReplyEmailThreadItem(
                     )
                 }
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { /*Mark as Favorite*/ },
                     modifier = Modifier
                         .clip(shape = CircleShape)
                         .background(color = MaterialTheme.colorScheme.surface)
@@ -343,7 +343,7 @@ fun ReplyEmailThreadItem(
                 horizontalArrangement = Arrangement.spacedBy(space = 4.dp),
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { /*Reply*/ },
                     modifier = Modifier.weight(weight = 1f),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface)
                 ) {
@@ -353,7 +353,7 @@ fun ReplyEmailThreadItem(
                     )
                 }
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { /*Reply All*/ },
                     modifier = Modifier.weight(weight = 1f),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface)
                 ) {
