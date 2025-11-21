@@ -71,8 +71,8 @@ private const val SplashWaitTime: Long = 2000
 @Composable
 fun LandingScreen(modifier: Modifier = Modifier, onTimeout: () -> Unit) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        // TODO Codelab: LaunchedEffect and rememberUpdatedState step DONE
-        // TODO: Make LandingScreen disappear after loading data DONE
+        // TASK Codelab: LaunchedEffect and rememberUpdatedState step DONE
+        // TASK: Make LandingScreen disappear after loading data DONE
         // This will always refer to the latest onTimeout function that
         // LandingScreen was recomposed with
         val currentOnTimeout: () -> Unit by rememberUpdatedState(onTimeout)

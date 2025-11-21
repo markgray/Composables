@@ -157,7 +157,7 @@ fun CraneEditableUserInput(
     caption: String? = null,
     @DrawableRes vectorImageId: Int? = null
 ) {
-    // TODO Codelab: Encapsulate this state in a state holder DONE in state EditableUserInputState
+    // TASK Codelab: Encapsulate this state in a state holder DONE in state EditableUserInputState
     CraneBaseUserInput(
         caption = caption,
         tintIcon = { !state.isHint },

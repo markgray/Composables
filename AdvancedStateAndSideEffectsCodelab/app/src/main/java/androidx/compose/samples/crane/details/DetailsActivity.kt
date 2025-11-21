@@ -229,7 +229,7 @@ fun DetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailsViewModel = viewModel()
 ) {
-    // TODO Codelab: produceState step - Show loading screen while fetching city details DONE
+    // TASK Codelab: produceState step - Show loading screen while fetching city details DONE
     val uiState: DetailsUiState by produceState(initialValue = DetailsUiState(isLoading = true)) {
         val cityDetailsResult: Result<ExploreModel> = viewModel.cityDetails
         value = if (cityDetailsResult is Result.Success<ExploreModel>) {

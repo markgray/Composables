@@ -128,7 +128,7 @@ fun CraneHome(
             modifier = modifier.padding(padding),
             onExploreItemClicked = onExploreItemClicked,
             openDrawer = {
-                // TODO Codelab: rememberCoroutineScope step - open the navigation drawer DONE
+                // TASK Codelab: rememberCoroutineScope step - open the navigation drawer DONE
                 scope.launch {
                     scaffoldState.drawerState.open()
                 }
@@ -194,7 +194,7 @@ fun CraneHomeContent(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = viewModel(),
 ) {
-    // TODO Codelab: collectAsState step - consume stream of data from the ViewModel DONE
+    // TASK Codelab: collectAsState step - consume stream of data from the ViewModel DONE
     val suggestedDestinations: List<ExploreModel> by viewModel.suggestedDestinations.collectAsState()
 
     val onPeopleChanged: (Int) -> Unit = { viewModel.updatePeople(it) }
