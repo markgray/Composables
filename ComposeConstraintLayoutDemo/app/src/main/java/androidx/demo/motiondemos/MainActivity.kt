@@ -166,7 +166,7 @@ fun ProductScreen() {
             )
         }
         Button(modifier = Modifier.layoutId("getStarted"),
-            onClick = { /*TODO*/ }) {
+            onClick = { /* Get started */ }) {
             Text(text = "Get Started")
 
         }
@@ -202,7 +202,7 @@ fun ProductScreen() {
         )
 
         Button(modifier = Modifier.layoutId("addToCart"),
-            onClick = { /*TODO*/ }) {
+            onClick = { /* Add to Cart */ }) {
             Icon(
                 painter = painterResource(id = R.drawable.cart),
                 contentDescription = "cart"

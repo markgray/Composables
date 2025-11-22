@@ -42,15 +42,18 @@ import androidx.demo.motiondemos.ui.theme.MotionDemosTheme
  */
 class MainActivityStart : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call [setContent] to have it Compose the Composable we pass it as its `content`
-     * argument into our activity as our root view. That Composable is wrapped in our
-     * [MotionDemosTheme] custom [MaterialTheme] and consists of a [Surface] whose `modifier`
-     * argument is a [Modifier.fillMaxSize] to have it occupy its entire incoming [Constraints],
-     * and its `color` argument is the [Colors.background] color of [MaterialTheme.colors] which
-     * sets the background color of the [Surface] to the default [Color.White] since
-     * [MotionDemosTheme] does not override it. The `content` of the [Surface] is our [CycleScale]
-     * [Composable].
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to edge
+     * display, then we call  our super's implementation of `onCreate`. Next we call [setContent] to
+     * have it Compose the Composable we pass it as its `content` argument into our activity as our
+     * root view. That Composable is wrapped in our [MotionDemosTheme] custom [MaterialTheme] and
+     * consists of a [Box] whose `modifier` argument is a [Modifier.safeDrawingPadding] to add
+     * padding to accommodate the safe drawing insets (insets that include areas where content may
+     * be covered by other drawn content. This includes all system bars, display cutout, and soft
+     * keyboard). Inside the [Box] is a [Surface] whose `modifier` argument is a
+     * [Modifier.fillMaxSize] to have it occupy its entire incoming [Constraints], and whose `color`
+     * argument is the [Colors.background] color of [MaterialTheme.colors] which sets the background
+     * color of the [Surface] to the default [Color.White] since [MotionDemosTheme] does not override
+     * it. The `content` of the [Surface] is our [CycleScale] [Composable].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -175,7 +178,7 @@ fun CycleScale() {
             progress = progress) {
             Button(modifier = Modifier
                 .layoutId("run"),
-                onClick = { /*TODO*/ },
+                onClick = { /* Start Engine */ },
                 shape = RoundedCornerShape(40)
             ) {
                 Text(text = "Start\nEngine")
