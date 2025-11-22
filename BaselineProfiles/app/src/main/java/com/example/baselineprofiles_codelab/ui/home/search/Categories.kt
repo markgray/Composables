@@ -230,7 +230,7 @@ private fun SearchCategory(
             .shadow(elevation = 3.dp, shape = CategoryShape)
             .clip(shape = CategoryShape)
             .background(brush = Brush.horizontalGradient(colors = gradient))
-            .clickable { /* todo */ },
+            .clickable { /* select search category */ },
         content = {
             Text(
                 text = category.name,

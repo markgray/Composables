@@ -314,7 +314,7 @@ private fun SearchResult(
             }
         )
         JetsnackButton(
-            onClick = { /* todo */ },
+            onClick = { /* Add */ },
             shape = CircleShape,
             contentPadding = PaddingValues(all = 0.dp),
             modifier = Modifier

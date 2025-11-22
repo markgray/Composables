@@ -102,7 +102,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                     .align(alignment = Alignment.CenterVertically)
             )
             IconButton(
-                onClick = { /* todo */ },
+                onClick = { /* Expand */ },
                 modifier = Modifier.align(alignment = Alignment.CenterVertically)
             ) {
                 Icon(

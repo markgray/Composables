@@ -180,7 +180,7 @@ fun FilterScreen(
                     actions = {
                         val resetEnabled: Boolean = sortState != defaultFilter
                         IconButton(
-                            onClick = { /* TODO: Open search */ },
+                            onClick = { /* Open search */ },
                             enabled = resetEnabled
                         ) {
                             val alpha: Float = if (resetEnabled) {

@@ -772,7 +772,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = Modifier.width(width = 16.dp))
                 JetsnackButton(
-                    onClick = { /* todo */ },
+                    onClick = { /* Add to cart */ },
                     modifier = Modifier.weight(weight = 1f)
                 ) {
                     Text(

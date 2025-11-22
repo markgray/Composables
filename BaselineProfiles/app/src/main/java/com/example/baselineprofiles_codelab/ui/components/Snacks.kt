@@ -189,7 +189,7 @@ fun SnackCollection(
                     .wrapContentWidth(align = Alignment.Start)
             )
             IconButton(
-                onClick = { /* todo */ },
+                onClick = { /* Forward? */ },
                 modifier = Modifier.align(alignment = Alignment.CenterVertically)
             ) {
                 Icon(
