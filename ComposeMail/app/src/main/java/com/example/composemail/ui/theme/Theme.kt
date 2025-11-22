@@ -364,7 +364,7 @@ private fun DumbThemedButton(
 ) {
     Button(
         modifier = modifier,
-        onClick = { /*TODO*/ },
+        onClick = { /* Do nothing */ },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = buttonSpec.backgroundColor,
             contentColor = buttonSpec.contentColor

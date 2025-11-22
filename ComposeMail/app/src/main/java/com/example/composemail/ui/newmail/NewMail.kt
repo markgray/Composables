@@ -502,7 +502,7 @@ internal fun MessageWidgetCol(modifier: Modifier) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = { /* Send Mail */ }) {
                 Row {
                     Text(text = "Send")
                     Spacer(modifier = Modifier.width(width = 8.dp))
@@ -512,7 +512,7 @@ internal fun MessageWidgetCol(modifier: Modifier) {
                     )
                 }
             }
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = { /* Delete Draft */ }) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Delete Draft",
@@ -626,7 +626,7 @@ internal inline fun MessageWidget(
         )
         Button(
             modifier = Modifier.layoutId(layoutId = "send"),
-            onClick = onDelete // TODO: Do something different for Send onClick
+            onClick = onDelete // Do something different for Send onClick
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(space = 8.dp)) {
                 OneLineText(text = "Send")
