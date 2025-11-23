@@ -375,7 +375,7 @@ fun Home() {
      */
     val lazyListState: LazyListState = rememberLazyListState()
 
-    // TODO 1: Animate this color change. DONE
+    // TASK 1: Animate this color change. DONE
     /**
      * The background color. The value is changed by the current tab.
      */
@@ -506,7 +506,7 @@ private fun HomeFloatingActionButton(
                 contentDescription = null
             )
             // Toggle the visibility of the content with animation.
-            // TODO 2-1: Animate this visibility change. DONE
+            // TASK 2-1: Animate this visibility change. DONE
             AnimatedVisibility(visible = extended) {
                 Text(
                     text = stringResource(id = R.string.edit),
@@ -549,7 +549,7 @@ private fun HomeFloatingActionButton(
  */
 @Composable
 private fun EditMessage(shown: Boolean) {
-    // TODO 2-2: The message should slide down from the top on appearance and slide up on
+    // TASK 2-2: The message should slide down from the top on appearance and slide up on
     //           disappearance. DONE
     AnimatedVisibility(
         visible = shown,
@@ -690,7 +690,7 @@ private fun TopicRow(topic: String, expanded: Boolean, onClick: () -> Unit) {
         elevation = 2.dp,
         onClick = onClick
     ) {
-        // TODO 3: Animate the size change of the content. DONE
+        // TASK 3: Animate the size change of the content. DONE
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -846,7 +846,7 @@ private fun HomeTabIndicator(
     tabPositions: List<TabPosition>,
     tabPage: TabPage
 ) {
-    // TODO 4: Animate these value changes. DONE
+    // TASK 4: Animate these value changes. DONE
     val transition: Transition<TabPage> = updateTransition(
         targetState = tabPage,
         label = "Tab indicator"
@@ -1028,7 +1028,7 @@ private fun WeatherRow(
  */
 @Composable
 private fun LoadingRow() {
-    // TODO 5: Animate this value between 0f and 1f, then back to 0f repeatedly. DONE
+    // TASK 5: Animate this value between 0f and 1f, then back to 0f repeatedly. DONE
     // Creates an `InfiniteTransition` that runs infinite child animation values.
     val infiniteTransition: InfiniteTransition = rememberInfiniteTransition(label = "")
     val alpha: Float by infiniteTransition.animateFloat(
@@ -1174,7 +1174,7 @@ private fun TaskRow(task: String, onRemove: () -> Unit) {
 private fun Modifier.swipeToDismiss(
     onDismissed: () -> Unit
 ): Modifier = composed {
-    // TODO 6-1: Create an Animatable instance for the offset of the swiped element. DONE
+    // TASK 6-1: Create an Animatable instance for the offset of the swiped element. DONE
     // This `Animatable` stores the horizontal offset for the element.
     val offsetX: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0f) } // Add this line
     pointerInput(key1 = Unit) {
@@ -1185,7 +1185,7 @@ private fun Modifier.swipeToDismiss(
             while (true) {
                 // Wait for a touch down event. Track the pointerId based on the touch
                 val pointerId: PointerId = awaitPointerEventScope { awaitFirstDown().id }
-                // TODO 6-2: Touch detected; the animation should be stopped. DONE
+                // TASK 6-2: Touch detected; the animation should be stopped. DONE
                 // Interrupt any ongoing animation.
                 offsetX.stop() // Add this line to cancel any on-going animations
                 // Prepare for drag events and record velocity of a fling.
@@ -1193,7 +1193,7 @@ private fun Modifier.swipeToDismiss(
                 // Wait for drag events.
                 awaitPointerEventScope {
                     horizontalDrag(pointerId) { change: PointerInputChange ->
-                        // TODO 6-3: Apply the drag change to the Animatable offset. DONE
+                        // TASK 6-3: Apply the drag change to the Animatable offset. DONE
                         // Add these 4 lines
                         // Record the position after offset
                         // Get the drag amount change to offset the item with
@@ -1214,7 +1214,7 @@ private fun Modifier.swipeToDismiss(
                 }
                 // Dragging finished. Calculate the velocity of the fling.
                 val velocity: Float = velocityTracker.calculateVelocity().x
-                // TODO 6-4: Calculate the eventual position where the fling should settle
+                // TASK 6-4: Calculate the eventual position where the fling should settle
                 //           based on the current offset value and velocity DONE
                 // Add this line to calculate where it would end up with
                 // the current velocity and position
@@ -1223,7 +1223,7 @@ private fun Modifier.swipeToDismiss(
                     initialValue = offsetX.value,
                     initialVelocity = velocity
                 )
-                // TODO 6-5: Set the upper and lower bounds so that the animation stops when it
+                // TASK 6-5: Set the upper and lower bounds so that the animation stops when it
                 //           reaches the edge. DONE
                 // The animation should end as soon as it reaches these bounds.
                 offsetX.updateBounds(
@@ -1233,7 +1233,7 @@ private fun Modifier.swipeToDismiss(
                     upperBound = size.width.toFloat()
                 )
                 launch {
-                    // TODO 6-6: Slide back the element if the settling position does not go beyond
+                    // TASK 6-6: Slide back the element if the settling position does not go beyond
                     //           the size of the element. Remove the element if it does. DONE
                     if (targetOffsetX.absoluteValue <= size.width) {
                         // Not enough velocity; Slide back to the default position.
@@ -1250,7 +1250,7 @@ private fun Modifier.swipeToDismiss(
     }
         // Apply the horizontal offset to the element.
         .offset {
-            // TODO 6-7: Use the animating offset value here. DONE
+            // TASK 6-7: Use the animating offset value here. DONE
             IntOffset(x = offsetX.value.roundToInt(), y = 0)
         }
 }
