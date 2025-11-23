@@ -236,7 +236,7 @@ internal fun FlowDragAndDropExample() {
      * list is recomposed to reflect the change.
      */
     val onMove: (Int, Int) -> Unit = { from: Int, to: Int ->
-        // TODO: Implement a way that moves items directionally (moving up pushes items down) instead of in a Flow
+        // Idea: Implement a way that moves items directionally (moving up pushes items down) instead of in a Flow
         itemOrderByIndex.add(to, itemOrderByIndex.removeAt(from))
     }
 
@@ -420,7 +420,7 @@ internal fun FlowDragAndDropExample() {
             modifier = Modifier,
             dragHandler = dragHandler
         ) {
-            // TODO: Create placeholder dynamically, since dragStart might overlap with dragEnd
+            // Idea: Create placeholder dynamically, since dragStart might overlap with dragEnd
             if (dragHandler.draggedId != -1) {
                 movableItems[dragHandler.draggedId]()
             }
