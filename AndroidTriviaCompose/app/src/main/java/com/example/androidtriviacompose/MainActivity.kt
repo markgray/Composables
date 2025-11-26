@@ -53,11 +53,15 @@ import kotlinx.coroutines.launch
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call the [setContent] method to have it compose the composable passed in its `content`
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`.
+     *
+     * We call the [setContent] method to have it compose the composable passed in its `content`
      * lambda into the our activity. The content will become the root view of the activity. That
      * composable is our [AndroidTriviaApp] composable which is wrapped in the custom [MaterialTheme]
-     * defined by [AndroidTriviaComposeTheme].
+     * defined by [AndroidTriviaComposeTheme]. An additional [Box] whose `modifier` argument is
+     * a [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets
+     * wraps our [AndroidTriviaApp] composable as a kludge to adjust to the use of [enableEdgeToEdge]
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so we ignore it.
      */
