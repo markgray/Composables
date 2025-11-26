@@ -36,16 +36,19 @@ import com.example.jetnews.data.posts.PostsRepository
 class MainActivity : AppCompatActivity() {
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call the [WindowCompat.setDecorFitsSystemWindows] method with the current Window for
-     * the activity, and `false` for the `decorFitsSystemWindows` argument so that the framework
-     * will not fit the content view to the insets and will just pass through the [WindowInsetsCompat]
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of onCreate. Then we call the
+     * [WindowCompat.setDecorFitsSystemWindows] method with the current Window for the activity,
+     * and `false` for the `decorFitsSystemWindows` argument so that the framework will not
+     * fit the content view to the insets and will just pass through the [WindowInsetsCompat]
      * to the content view. We initialize our [AppContainer] variable `val appContainer` to the
      * [JetnewsApplication.container] singleton instance which holds the singleton [PostsRepository]
      * in its [AppContainer.postsRepository] field and the singleton [InterestsRepository] in its
      * [AppContainer.interestsRepository] field. We then call the [setContent] method to Compose
-     * the [JetnewsApp] composable into our activity using our `appContainer` variable as its
-     * `appContainer` argument . The content will become the root view of our activity.
+     * a [Box] Composable whose `modifier` argument is a [Modifier.safeDrawingPadding] to add
+     * padding to accommodate the safe drawing insets, holding the [JetnewsApp] composable into
+     * our activity using our `appContainer` variable as its `appContainer` argument . The content
+     * will become the root view of our activity.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
