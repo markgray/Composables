@@ -10,7 +10,7 @@ android {
     compileSdk = 36
     defaultConfig {
         applicationId = "com.example.compose.rally"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 1
@@ -78,16 +78,16 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.9")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.9.4")
-    implementation("androidx.compose.ui:ui:1.9.4")
-    implementation("androidx.compose.foundation:foundation:1.9.4")
-    implementation("androidx.compose.foundation:foundation-layout:1.9.4")
-    implementation("androidx.compose.material:material:1.9.4")
-    implementation("androidx.compose.runtime:runtime-livedata:1.9.4")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.9.4")
+    implementation("androidx.compose.runtime:runtime:1.9.5")
+    implementation("androidx.compose.ui:ui:1.9.5")
+    implementation("androidx.compose.foundation:foundation:1.9.5")
+    implementation("androidx.compose.foundation:foundation-layout:1.9.5")
+    implementation("androidx.compose.material:material:1.9.5")
+    implementation("androidx.compose.runtime:runtime-livedata:1.9.5")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.9.5")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("androidx.activity:activity-compose:1.11.0")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.9.4")
+    implementation("androidx.activity:activity-compose:1.12.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.9.5")
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
@@ -95,7 +95,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
     // Compose testing dependencies
-    androidTestImplementation("androidx.compose.ui:ui-test:1.9.4")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.9.4")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.9.5")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.5")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.9.5")
 }
