@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -48,12 +49,16 @@ import com.example.aboutmecompose.ui.theme.AboutMeComposeTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of [onCreate],
-     * then we call [setContent] to Compose the composable which consists of our [AboutMeComposeTheme]
-     * wrapped composable [AboutMeApp] into our activity. The content will become the root view of
-     * our activity. This is roughly equivalent to calling [ComponentActivity.setContentView] with a
-     * [ComposeView]. The [AboutMeComposeTheme] composable is our custom [MaterialTheme] which defines
-     * the default color palette, [Typography], and [Shapes] to be used by the [AboutMeApp] composable.
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's implementation of [onCreate].
+     * We call [setContent] to Compose a [Box] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] (to add padding to accommodate the safe drawing insets)
+     * into our activity. The [BoxScope] `content` composable lambda argument of the [Box] holds
+     * our [AboutMeComposeTheme] wrapped composable [AboutMeApp]. This content will become the root
+     * view of our activity. This is roughly equivalent to calling [ComponentActivity.setContentView]
+     * with a [ComposeView]. The [AboutMeComposeTheme] composable is our custom [MaterialTheme] which
+     * defines the default color palette, [Typography], and [Shapes] to be used by the [AboutMeApp]
+     * composable.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use, but it is
      * used by Compose to persist the values of several [MutableState] variables across configuration
