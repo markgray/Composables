@@ -33,10 +33,12 @@ import com.example.android.codelab.animation.ui.home.Home
 class MainActivity : ComponentActivity() {
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call [setContent] to have it Compose the composable [Home], wrapped by our
-     * [AnimationCodelabTheme] custom [MaterialTheme] into our activity. The content will become the
-     * root view of our activity.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of onCreate. Next we call [setContent]
+     * to have it Compose the composable [Home], wrapped by our [AnimationCodelabTheme] custom
+     * [MaterialTheme] into our activity. The content will become the root view of our activity.
+     * A [Box] whose `modifier` argument is a [Modifier.safeDrawingPadding] also wraps the
+     * [Home] composable as a kludge to adjust to the use of [enableEdgeToEdge].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
