@@ -26,6 +26,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -77,7 +78,8 @@ class MainActivity : ComponentActivity() {
     private val viewModel: ReplyHomeViewModel by viewModels()
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's implementation of `onCreate`.
      * Then we create a [StateFlow] of [DevicePosture] which is our sealed interface whose three
      * implementors [DevicePosture.NormalPosture] (has no special features that require consideration),
      * [DevicePosture.BookPosture] (device has a feature that describes a fold in its flexible
@@ -110,7 +112,9 @@ class MainActivity : ComponentActivity() {
      * (Sharing is started immediately and never stops), and its `initialValue` [DevicePosture.NormalPosture].
      * The resulting output of all of this is a [StateFlow] of [DevicePosture].
      *
-     * Finally we call [setContent] with a lambda block which wraps its `content` in our [ReplyTheme]
+     * Finally we call [setContent] with a lambda block consisting of a [Box] whose `modifier`
+     * argument is a [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing
+     * insets holding in its [BoxScope] `content` composable lambda our [ReplyTheme]
      * custom [MaterialTheme]. Inside of the [ReplyTheme] we initialize our [ReplyHomeUIState] variable
      * `val uiState` by using the [collectAsState] extension function on the [ReplyHomeViewModel.uiState]
      * field of [viewModel] using the [State.value] of the [State]. We initialize our [WindowSizeClass]
