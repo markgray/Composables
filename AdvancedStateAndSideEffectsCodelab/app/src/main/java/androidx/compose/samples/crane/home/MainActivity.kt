@@ -52,8 +52,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     /**
-     * Called when the activity is starting. First we call our super's implementatin of `onCreate`,
-     * then we call [WindowCompat.setDecorFitsSystemWindows] with `false` so the framework will not
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's implementatin of `onCreate`,
+     * Next we call [WindowCompat.setDecorFitsSystemWindows] with `false` so the framework will not
      * fit the content view to the insets and will just pass through the [WindowInsetsCompat] to the
      * content view. Finally we call [setContent] to have it Compose the composable we pass as its
      * `content` lambda argument into the our activity. The content will become the root view of our
@@ -61,6 +62,9 @@ class MainActivity : ComponentActivity() {
      * a lambda which calls [launchDetailsActivity] with the [ExploreModel] of the item that
      * was clicked. The [MainScreen] composable is wrapped in our [CraneTheme] custom [MaterialTheme]
      * which will cause our custom [Colors] and [Typography] to be used by material savy widgets.
+     * There is a [Box] whose `modifier` argument is [Modifier.safeDrawingPadding] to add padding to
+     * accommodate the safe drawing insets wrapped around [MainScreen] to adjust to the use of
+     * [enableEdgeToEdge].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
