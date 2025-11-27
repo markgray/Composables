@@ -53,7 +53,7 @@ class MainActivityStart : ComponentActivity() {
      * [Modifier.fillMaxSize] to have it occupy its entire incoming [Constraints], and whose `color`
      * argument is the [Colors.background] color of [MaterialTheme.colors] which sets the background
      * color of the [Surface] to the default [Color.White] since [MotionDemosTheme] does not override
-     * it. The `content` of the [Surface] is our [CycleScale] [Composable].
+     * it. The `content` of the [Surface] is our [CycleScale] Composable.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Colors
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -41,7 +42,16 @@ import androidx.demo.motiondemos.ui.theme.MotionDemosTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting.
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's implementation of `onCreate`.
+     * Next we call `setContent` to compose our [MotionDemosTheme] custom [MaterialTheme]
+     * into our activity (to provide style values for the composable functions it wraps),
+     * wrapping a [Box] whose `modifier` argument is a [Modifier.safeDrawingPadding] to add
+     * padding to accommodate the safe drawing insets, holding a [Surface] whose `modifier`
+     * argument is a [Modifier.fillMaxSize] to have it occupy its entire incoming size
+     * constraints, and whose `color` argument is the [Colors.background] of our custom
+     * [MaterialTheme.colors]. The `content` composable lambda argument of the [Surface]
+     * is our [ProductScreen] composable.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -50,8 +60,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MotionDemosTheme {
-                // A surface container using the 'background' color from the theme
                 Box(modifier = Modifier.safeDrawingPadding()) {
+                    // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
