@@ -34,9 +34,10 @@ import com.google.samples.apps.sunflower.databinding.ActivityGardenBinding
 class GardenActivity : AppCompatActivity() {
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call the [WindowCompat.setDecorFitsSystemWindows] method with the current [Window] of
-     * the activity and `false` for the `decorFitsSystemWindows` argument (set to false, the framework
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`. Next we call the
+     * [WindowCompat.setDecorFitsSystemWindows] method with the current [Window] of the activity
+     * and `false` for the `decorFitsSystemWindows` argument (set to false, the framework
      * will not fit the content view to the insets and will just pass through the [WindowInsetsCompat]
      * to the content view, ie "edge-to-edge mode"). Finally we call the [setContentView] method to
      * have it set our content view to the [ActivityGardenBinding] that [DataBindingUtil] inflates
