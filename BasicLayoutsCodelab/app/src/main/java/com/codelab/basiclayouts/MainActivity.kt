@@ -95,11 +95,17 @@ import com.codelab.basiclayouts.ui.theme.MySootheTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call [setContent] to have it Compose the composable `content` lambda wherein we
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's
+     * implementation of `onCreate`. Next we call [setContent] to have it Compose its
+     * composable `content` lambda argument into our activity wherein we
      * initialize our [WindowSizeClass] variable `val windowSizeClass` to the [WindowSizeClass]
      * calculated for our activity by the [calculateWindowSizeClass] method, then call our
      * [MySootheApp] Composable with `windowSizeClass` as its `windowSizeClass` argument.
+     *
+     * The [MySootheApp] composable is wrapped in a [Box] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets
+     * as kludge to adjust to the use of [enableEdgeToEdge].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
