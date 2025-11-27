@@ -21,6 +21,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -35,10 +36,14 @@ import com.codelab.layouts.ui.LayoutsCodelabTheme
  */
 class MainActivity : AppCompatActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call the [setContent] method to have it Compose the composable [LayoutsCodelab]
-     * (wrapped by our [LayoutsCodelabTheme] custom [MaterialTheme]) into our activity. The content
-     * will become the root view of our activity.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`. Next we call the
+     * [setContent] method to have it Compose our [LayoutsCodelabTheme] custom [MaterialTheme]
+     * into our activity (it will supply default values to the compose functions it wraps).
+     * The `content` composable lambda argument of the [LayoutsCodelabTheme] holds a [Box]
+     * whose `modifier` argument is a [Modifier.safeDrawingPadding] to add padding to accommodate
+     * the safe drawing insets, and in its [BoxScope] `content` composable lambda argument we
+     * compose our [LayoutsCodelab] composable.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
