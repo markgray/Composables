@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,10 +33,13 @@ import com.example.diceroller.ui.theme.DiceRollerTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call [setContent] to Compose the given composable into our activity. The content will
-     * become the root view of the given activity. This composable consists of our [DiceRollerTheme]
-     * app theme wrapping our [DiceRollerApp] composable.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`. Next we call
+     * [setContent] to have it Compose its `content` composable lambda argument into our activity.
+     * The content will become the root view of our activity. This composable consists of our
+     * [DiceRollerTheme] theme wrapping a [Box] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets, and in
+     * its [BoxScope] `content` composable lambda argument we compose our [DiceRollerApp] composable.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so we ignore it.
      */
