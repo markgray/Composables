@@ -22,13 +22,18 @@ import com.codelabs.basicstatecodelab.ui.theme.BasicStateCodelabTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call [setContent] to have it Compose its Composable lambda argument into our activity.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`. Next we call
+     * [setContent] to have it Compose its Composable lambda argument into our activity.
      * That lambda consists of our [BasicStateCodelabTheme] custom [MaterialTheme] wrapping a [Surface]
      * whose `modifier` parameter uses [Modifier.fillMaxSize] to have its content fill the incoming
      * measurement constraints, and uses the `background` of our [MaterialTheme.colors] ([Color.White]
      * in our case as its background [Color]. The `content` Composable of the [Surface] is our main
      * screen the [WellnessScreen] Composable.
+     *
+     * The [Surface] composable is wrapped in a [Box] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets
+     * as a kludge to adjust to the use of [enableEdgeToEdge].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
