@@ -53,9 +53,11 @@ class MainActivity : ComponentActivity() {
      * edge-to-edge display, applies the [ComposeDemosTheme], and displays the [Login]
      * composable within a `Surface` that fills the entire screen.
      *
-     * @param savedInstanceState If the activity is being re-initialized after previously being
-     * shut down then this Bundle contains the data it most recently supplied in
-     * `onSaveInstanceState(Bundle)`. Otherwise it is null.
+     * The [Surface] composable is wrapped in a [Box] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets
+     * as a kludge to adjust to the use of [enableEdgeToEdge].
+     *
+     * @param savedInstanceState we do not overrider [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
