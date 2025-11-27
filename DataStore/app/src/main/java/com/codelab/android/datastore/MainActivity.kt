@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.Colors
@@ -110,14 +111,15 @@ class MainActivity : ComponentActivity() {
     private lateinit var viewModel: TasksViewModel
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`.
-     * Then we initialize our [TasksViewModel] field [viewModel] to the singleton instance that is
-     * contructed using our [TasksViewModelFactory] from the [TasksRepository] singleton and the
+     *Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     *  edge display, then we call our super's implementation of `onCreate`. Next we initialize
+     *  our [TasksViewModel] field [viewModel] to the singleton instance that is contructed using
+     *  our [TasksViewModelFactory] from the [TasksRepository] singleton and the
      * [UserPreferencesRepository] constructed to use our apps [DataStore] of [UserPreferences]
      * extension property [userPreferencesStore]. Next we initialize our [TasksUiModel] variable
-     * `var initialTasksUiModel` to an empty instance, then add an observer to the [LiveData] wrapped
-     * [UserPreferences] property [TasksViewModel.initialSetupEvent] which will update the contents
-     * of `initialTasksUiModel` when a new value is available.
+     * `var initialTasksUiModel` to an empty instance, then add an observer to the [LiveData]
+     * wrapped [UserPreferences] property [TasksViewModel.initialSetupEvent] which will update
+     * the contents of `initialTasksUiModel` when a new value is available.
      *
      * With the initial setup taken care of we call the [setContent] method to have it compose its
      * Composable `content` into the activity. The content will become the root view of the activity.
@@ -125,20 +127,24 @@ class MainActivity : ComponentActivity() {
      * with its initial value `initialTasksUiModel`. Then we wrap our UI in [DataStoreTheme], where
      * we add an observer to the [TasksViewModel.tasksUiModel] field of [viewModel] which updates
      * `tasksUiModel` to the new value when the field changes value. Our root Composable is a
-     * [Surface] whose `modifier` argument is a [Modifier.fillMaxSize] that causes it to occupy the
-     * entire incoming constraints and its `color` argument is the [Colors.background] color of the
-     * [MaterialTheme.colors] (which is the default [Color.White] for light theme or `Color(0xFF121212)`
-     * for dark theme since [DataStoreTheme] does not override them). Inside the [Surface] we
-     * initialize our [Flow] of [List] of [Task] variable `val taskListFlow` using the [flow] function
-     * with the block argument of [flow] calling `emit` with its `value` argument the
-     * [TasksUiModel.tasks] field of our `tasksUiModel` variable. Next we initialize and remember our
-     * [Boolean] variable `var showStartupScreen` using a [MutableState] whose initial value is `true`.
-     * Then if `showStartupScreen` is `true` we compose a [StartUpScreen] whose `onTimeout` argument
-     * is a lambda which sets `showStartupScreen` to `false` ([StartUpScreen] will call this lambda
-     * after 2000 milliseconds causing us to be recomposed and the `else` branch of the `if` statement
-     * will be taken instead). If `showStartupScreen` is `false` we compose a [MainScreen] whose
-     * `viewModel` argument is our [viewModel] parameter, whose `tasksUiModel` argument is our
-     * `tasksUiModel` variable and whose `tasks` argument is our `taskListFlow` variable.
+     * [Box] whose `modifier` argument is a [Modifier.safeDrawingPadding] to add padding to
+     * accommodate the safe drawing insets, and whose [BoxScope] `content` composable lambda
+     * argument composes a  [Surface] whose `modifier` argument is a [Modifier.fillMaxSize] that
+     * causes it to occupy the entire incoming constraints and its `color` argument is the
+     * [Colors.background] color of the [MaterialTheme.colors] (which is the default [Color.White]
+     * for light theme or `Color(0xFF121212)` for dark theme since [DataStoreTheme] does not
+     * override them). Inside the [Surface] we initialize our [Flow] of [List] of [Task] variable
+     * `val taskListFlow` using the [flow] function with the block argument of [flow] calling
+     * `emit` with its `value` argument the [TasksUiModel.tasks] field of our `tasksUiModel`
+     * variable. Next we initialize and remember our [Boolean] variable `var showStartupScreen`
+     * using a [MutableState] whose initial value is `true`. Then if `showStartupScreen` is `true`
+     * we compose a [StartUpScreen] whose `onTimeout` argument is a lambda which sets
+     * `showStartupScreen` to `false` ([StartUpScreen] will call this lambda after 2000 milliseconds
+     * causing us to be recomposed and the `else` branch of the `if` statement will be taken
+     * instead). If `showStartupScreen` is `false` we compose a [MainScreen] whose `viewModel`
+     * argument is our [viewModel] parameter, whose `tasksUiModel` argument is our [TasksUiModel]
+     * variable `tasksUiModel` and whose `tasks` argument is our [Flow] of [List] of [Task]
+     * variable `taskListFlow`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so we ignore this.
      */
@@ -174,8 +180,8 @@ class MainActivity : ComponentActivity() {
                 viewModel.tasksUiModel.observe(this) { newtasksUiModel: TasksUiModel ->
                     tasksUiModel = newtasksUiModel
                 }
-                // A surface container using the 'background' color from the theme
                 Box(modifier = Modifier.safeDrawingPadding()) {
+                    // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
