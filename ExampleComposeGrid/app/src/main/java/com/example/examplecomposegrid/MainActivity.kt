@@ -94,7 +94,7 @@ class MainActivity : ComponentActivity() {
      * In the `content` composable lambda argument of the [Surface] we branch on whether `cfunc`
      * is `null` or not:
      *  - `cfunc` is **not** `null`: we log the fact we are about to run `cfunc` then call the
-     *  [ComposeFunc.run] method of `cfunc` to have it compose itself into the [Surface].
+     *  [ComposeFunc.Run] method of `cfunc` to have it compose itself into the [Surface].
      *  - `cfunc` is `null`: we compose a [ComposableMenu] with its `map` argument our [List]
      *  of [ComposeFunc] property [cmap], and whose `act` lambda argument calls the [launch]
      *  method with the [ComposeFunc] passed the lambda as its `toRun` argument.
