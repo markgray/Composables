@@ -8,12 +8,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -39,13 +41,17 @@ import com.example.dessertclickercompose.ui.theme.DessertClickerComposeTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * and then we call the [setContent] method to Compose the composable given in its composable
+     *Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     *  edge display, then we call our super's implementation of `onCreate`. Next we call the
+     *  [setContent] method to Compose the composable given in its `content` composable
      * lambda argument into the activity (the content will become the root view of the activity).
      * That composable lambda consists of our [DessertClickerComposeTheme] custom [MaterialTheme]
-     * wrapping a [Surface] whose `modifier` is a [Modifier.fillMaxSize] to have it fill the space
-     * allowed it, and whose background color is the 'background' color from our theme. The composable
-     * lambda of the [Surface] consists of a call to our [MainScreen] composable.
+     * wrapping a [Box] whose `modifier` argument is a [Modifier.safeDrawingPadding] to add padding
+     * to accommodate the safe drawing insets, and in its [BoxScope] `content` composable lambda
+     * argument we compose a [Surface] whose `modifier` is a [Modifier.fillMaxSize] to have it fill
+     * the space allowed it, and whose background color is the [Colors.background] color from our
+     * theme. The composable lambda of the [Surface] consists of a call to our [MainScreen]
+     * composable.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so ignore this.
      */
@@ -54,8 +60,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DessertClickerComposeTheme {
-                // A surface container using the 'background' color from the theme
                 Box(modifier = Modifier.safeDrawingPadding()) {
+                    // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
