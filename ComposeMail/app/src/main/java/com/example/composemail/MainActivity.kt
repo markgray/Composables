@@ -21,8 +21,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -71,6 +73,25 @@ class MainActivity : ComponentActivity() {
      * about the foldable state of the device. This information is then provided down to the
      * composable tree using a [CompositionLocalProvider] to enable adaptive layouts.
      *
+     * First we call [enableEdgeToEdge] to enable edge to edge display, then we call our super's
+     * implementation of `onCreate`. Then we call [setContent] to have it compose its `content`
+     * composable lambda argument into our activity. In that lambda we iniitialize our
+     * [WindowSizeClass] variable `windowSizeClass` to the value calculated by the
+     * [calculateWindowSizeClass] method, and initialize our [State] wrapped [FoldableInfo] to
+     * the value returned by our [collectFoldableInfoAsState] method. Then we compose a
+     * [CompositionLocalProvider] that has [LocalWidthSizeClass] provide the
+     * [WindowSizeClass.widthSizeClass] of `windowSizeClass`, [LocalHeightSizeClass] provide the
+     * [WindowSizeClass.heightSizeClass] of `windowSizeClass`, and [LocalFoldableInfo] provide
+     * [State] wrapped [FoldableInfo] variable `foldableInfo`. In the `content` composable lambda
+     * argument of the [CompositionLocalProvider] we compose [ComposeMailTheme] wrapping a [Box]
+     * whose `modifier` argument is a [Modifier.safeDrawingPadding] to add padding to accommodate
+     * the safe drawing insets, and in its [BoxScope] `content` composable lambda argument we
+     * compose a [Surface] whose `modifier` argument is a [Modifier.fillMaxSize] to have it occupy
+     * its entire incoming size constraints, and whose `color` argument is the [Colors.background]
+     * of our custom [MaterialTheme.colors]. Finally the `content` composable lambda argument
+     * of the [Surface] composes our [ComposeMailHome] composable with its `modifier` argument also
+     * a [Modifier.fillMaxSize].
+     *
      * @param savedInstanceState If the activity is being re-initialized after previously being
      * shut down, this Bundle contains the data it most recently supplied in [onSaveInstanceState].
      * We do not override [onSaveInstanceState] so it is not used.
@@ -87,8 +108,8 @@ class MainActivity : ComponentActivity() {
                 LocalFoldableInfo provides foldableInfo
             ) {
                 ComposeMailTheme {
-                    // A surface container using the 'background' color from the theme
                     Box(modifier = Modifier.safeDrawingPadding()) {
+                        // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colors.background
