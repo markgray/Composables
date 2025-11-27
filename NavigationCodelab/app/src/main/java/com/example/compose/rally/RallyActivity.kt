@@ -21,6 +21,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -44,9 +45,12 @@ import com.example.compose.rally.ui.theme.RallyTheme
  */
 class RallyActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call the [setContent] method to have it compose [RallyApp] into the activity. [RallyApp]
-     * will become the root view of the activity.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`. Next we call the
+     * [setContent] method to have it compose a [Box] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets.
+     * In its [BoxScope] `content` composable lambda argument we compose our [RallyApp] Composable
+     * into the activity.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
