@@ -65,26 +65,27 @@ import com.compose.performance.ui.theme.PerformanceWorkshopTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`
-     * then we call [enableEdgeToEdge] to enable edge-to-edge display. We call [setContent] to have
-     * it Compose its `content` composable lambda argument into our activity. In that lambda we
-     * initialize our [PerformanceCodeLabViewModel] variable `val viewModel` to an existing instance
-     * or a new instance if there is none whose `startFromStep` argument is the [String] stored under
-     * the key [EXTRA_START_TASK] ("EXTRA_START_TASK") that we have retrieved from the [Intent] that
-     * started the app to initialize our [String] variable `val startFromStep`. Then wrapped in our
-     * [PerformanceWorkshopTheme] custom [MaterialTheme] we compose a [Surface] whose `modifier`
-     * argument is a [Modifier.fillMaxSize] to have it take up its entire incoming size constraints,
-     * with a [Modifier.semantics] chained to that sets the [SemanticsPropertyReceiver.testTagsAsResourceId]
-     * property to `true` to map testTags to resource-id to make them available to tests. The
-     * background `color` argument of the [Surface] is the [ColorScheme.background] of our custom
-     * [MaterialTheme.colorScheme]. In the `content` composable lambda argument we compose our
-     * [PerformanceCodeLabScreen] composable with its `selectedPage` argument the [MutableState.value]
-     * of the [MutableState] wrapped [TaskScreen] property [PerformanceCodeLabViewModel.selectedPage]
-     * of our [PerformanceCodeLabViewModel] variable `viewModel`, and with its `onPageSelected`
-     * argument a lambda which accepts the [TaskScreen] passed it in the variable `taskScreen`, then
-     * sets the [MutableState.value] of the [MutableState] wrapped [TaskScreen] property
-     * [PerformanceCodeLabViewModel.selectedPage] of our [PerformanceCodeLabViewModel] variable
-     * `viewModel` to the [TaskScreen] in the `taskScreen` variable.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`. We call [setContent]
+     * to have it Compose its `content` composable lambda argument into our activity. In that
+     * lambda we initialize our [PerformanceCodeLabViewModel] variable `val viewModel` to an
+     * existing instance or a new instance if there is none whose `startFromStep` argument is the
+     * [String] stored under the key [EXTRA_START_TASK] ("EXTRA_START_TASK") that we have retrieved
+     * from the [Intent] that started the app to initialize our [String] variable `val startFromStep`.
+     * Then wrapped in our [PerformanceWorkshopTheme] custom [MaterialTheme] we compose a [Surface]
+     * whose `modifier` argument is a [Modifier.fillMaxSize] to have it take up its entire incoming
+     * size constraints, with a [Modifier.semantics] chained to that sets the
+     * [SemanticsPropertyReceiver.testTagsAsResourceId] property to `true` to map testTags to
+     * resource-id to make them available to tests. The background `color` argument of the [Surface]
+     * is the [ColorScheme.background] of our custom [MaterialTheme.colorScheme]. In the `content`
+     * composable lambda argument we compose our [PerformanceCodeLabScreen] composable with its
+     * `selectedPage` argument the [MutableState.value] of the [MutableState] wrapped [TaskScreen]
+     * property [PerformanceCodeLabViewModel.selectedPage] of our [PerformanceCodeLabViewModel]
+     * variable `viewModel`, and with its `onPageSelected` argument a lambda which accepts the
+     * [TaskScreen] passed it in the variable `taskScreen`, then sets the [MutableState.value] of
+     * the [MutableState] wrapped [TaskScreen] property [PerformanceCodeLabViewModel.selectedPage]
+     * of our [PerformanceCodeLabViewModel] variable `viewModel` to the [TaskScreen] in the
+     * `taskScreen` variable.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use this.
      */
