@@ -2,8 +2,8 @@ package com.example.colormyviewscompose
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -46,13 +46,19 @@ import com.example.colormyviewscompose.ui.theme.ColorMyViewsComposeTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of [onCreate],
-     * then we call [setContent] to Compose the composable which consists of our custom material
-     * theme [ColorMyViewsComposeTheme] wrapped composable [ColorMyViewApp] into our activity. The
-     * content will become the root view of our activity. This is roughly equivalent to calling
-     * [ComponentActivity.setContentView] with a [ComposeView]. The [ColorMyViewsComposeTheme]
-     * composable is our custom [MaterialTheme] which defines the default color palette, [Typography],
-     * and [Shapes] to be used by the [ColorMyViewApp] composable.
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's
+     * implementation of `onCreate`. Next we call [setContent] to Compose the composable which
+     * consists of our custom material theme [ColorMyViewsComposeTheme] wrapped composable
+     * [ColorMyViewApp] into our activity. The content will become the root view of our activity.
+     * This is roughly equivalent to calling [ComponentActivity.setContentView] with a [ComposeView].
+     * The [ColorMyViewsComposeTheme] composable is our custom [MaterialTheme] which defines the
+     * default color palette, [Typography], and [Shapes] to be used by the [ColorMyViewApp]
+     * composable.
+     *
+     * The [ColorMyViewApp] composable is wrapped in a [Box] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets
+     * as a kludge to adjust to the use of [enableEdgeToEdge].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -70,8 +76,8 @@ class MainActivity : ComponentActivity() {
 }
 
 /**
- * This Composable exists only to provide some flexibility in case I needed to hoist some variabales
- * when I was writing the app. I also decreases the amount of indentation. Its content composes
+ * This Composable exists only to provide some flexibility in case I needed to hoist some variables
+ * when I was writing the app. It also decreases the amount of indentation. Its content composes
  * [ColumnAndRowLayout] into the UI, passing it a [Modifier] which uses [Modifier.fillMaxSize] to
  * have [ColumnAndRowLayout] occupy the entire space allowed it, and [Modifier.wrapContentSize] to
  * have it align its children to the top center of its space.
