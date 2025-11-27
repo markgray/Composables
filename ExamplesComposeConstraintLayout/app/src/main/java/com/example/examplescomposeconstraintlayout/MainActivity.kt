@@ -46,19 +46,30 @@ class MainActivity : ComponentActivity() {
     )
 
     /**
-     * Initializes the activity.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`. We initialize our
+     * [Bundle] variable `extra` to the [Intent.getExtras] of the intent that started this
+     * activity, and initialize our [ComposeFunc] variable `cfunc` to `null`. If `extra` is not
+     * `null` we initialize our [String] variable `composeName` to the [String] stored under the
+     * key [composeKey] in `extra`, then we loop through all of the `composeFunc` in [List] of
+     * [ComposeFunc] property [cmap] looking for a [ComposeFunc] whose [String] version matches
+     * and when we find one we set `cfunc` to that [ComposeFunc] and break from the loop.
+     * Next we initialize our [ComposeView] variable `com` to a new instance and call
+     * [setContentView] to set the activity content to it. Then we call the [ComposeView.setContent]
+     * method of `com` with its `content` composable lambda argument composing a [Box] whose
+     * `modifier` argument is a [Modifier.safeDrawingPadding] to add padding to accommodate the
+     * safe drawing insets, and in its [BoxScope] `content` composable lambda argument we compose
+     * a [Surface] whose `modifier` argument is a [Modifier.fillMaxSize] to have it occupy its
+     * entire incoming size constraints, and whose `color` argument is the [Color] `0xFFF0E7FC`.
+     * In the `content` composable lambda argument of the [Surface] we branch on whether `cfunc`
+     * is `null` or not:
+     *  - `cfunc` is **not** `null`: we log the fact we are about to run `cfunc` then call the
+     *  [ComposeFunc.Run] method of `cfunc` to have it compose itself into the [Surface].
+     *  - `cfunc` is `null`: we compose a [ComposableMenu] with its `map` argument our [List]
+     *  of [ComposeFunc] property [cmap], and whose `act` lambda argument calls the [launch]
+     *  method with the [ComposeFunc] passed the lambda as its `toRun` argument.
      *
-     * This method sets up the UI for the activity. It first checks the intent's extras
-     * for an extra stored under the key [composeKey].
-     *  - If a valid composable name is found, it finds the corresponding [ComposeFunc]
-     *  from the [cmap] list and renders that specific composable.
-     *  - If no composable name is provided in the intent, it displays the [ComposableMenu],
-     *  which allows the user to select an example to view.
-     *
-     * The entire UI is built using Jetpack Compose within a [ComposeView]. Edge-to-edge
-     * display is enabled for a modern, immersive layout.
-     *
-     * @param savedInstanceState  We do not override [onSaveInstanceState] so do not use.
+     * @param savedInstanceState We do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
