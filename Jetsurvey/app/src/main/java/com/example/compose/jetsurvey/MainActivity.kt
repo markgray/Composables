@@ -20,6 +20,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.MaterialTheme
 import com.example.compose.jetsurvey.theme.JetsurveyTheme
 
 /**
@@ -35,9 +36,10 @@ class MainActivity : AppCompatActivity() {
      *
      * Always followed by [onStart].
      *
-     * We enable edge-to-edge display mode, call our super's implementation of `onCreate`, then
-     * call [setContent] to have it Compose its Composable content lambda into our activity.
-     * That lambda consists of our [JetsurveyTheme] wrapping our [JetsurveyNavHost] Composable.
+     * First we call [enableEdgeToEdge] to enable edge-to-edge display mode, then we call our
+     * super's implementation of `onCreate`. Next we call [setContent] to have it Compose its
+     * Composable `content` lambda into our activity. That lambda consists of our [JetsurveyTheme]
+     * custom [MaterialTheme] wrapping our [JetsurveyNavHost] Composable.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
