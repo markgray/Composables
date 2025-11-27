@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,12 +48,15 @@ import com.example.android.composetutorial.ui.theme.ComposeTutorialTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`.
-     * Then we call [setContent] to have it compose the lambda we pass as its `content` argument into
-     * our activity. That lambda consists of our [ComposeTutorialTheme] custom [MaterialTheme] wrapping
-     * our [Conversation] Composable which is called with the [List] of [Message] that is to be found
-     * in [SampleData.conversationSample]. It will display each [Message] in the [List] using a
-     * [MessageCard] in a [LazyColumn].
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`. Next we call
+     * [setContent] to have it compose the lambda we pass as its `content` argument into
+     * our activity. That lambda consists of our [ComposeTutorialTheme] custom [MaterialTheme]
+     * wrapping a [Box] whose `modifier` argument is a [Modifier.safeDrawingPadding] to add padding
+     * to accommodate the safe drawing insets, and in the [BoxScope] `content` composable lambda
+     * argument of the [Box] we compose our [Conversation] Composable which is called with the
+     * [List] of [Message] that is to be found in [SampleData.conversationSample]. It will display
+     * each [Message] in the [List] using a [MessageCard] in a [LazyColumn].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use this.
      */
