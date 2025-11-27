@@ -67,10 +67,15 @@ import com.codelab.basics.ui.Navy
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call [setContent] to have it Compose its Composable lambda argument into our activity.
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's implementation of `onCreate`.
+     * Next we call [setContent] to have it Compose its Composable lambda argument into our activity.
      * That lambda consists of our [MyApp] Composable wrapped by our [BasicsCodelabTheme] custom
      * [MaterialTheme].
+     *
+     * The [MyApp] composable is wrapped in a [Box] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets
+     * as kludge to adjust to the use of [enableEdgeToEdge].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use here. It is
      * used by [rememberSaveable] though to remember the value of the `var shouldShowOnboarding`
