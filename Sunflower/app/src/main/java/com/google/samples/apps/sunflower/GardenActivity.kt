@@ -21,6 +21,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.MaterialTheme
 import com.google.samples.apps.sunflower.compose.SunflowerApp
 import com.google.samples.apps.sunflower.ui.SunflowerTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,11 +42,12 @@ import dagger.hilt.android.AndroidEntryPoint
 class GardenActivity : ComponentActivity() {
 
     /**
-     * Called when the activity is first created.
-     *
-     * This method is responsible for initializing the activity. It sets up the user interface
-     * to be displayed edge-to-edge, and then sets the main content view to the [SunflowerApp]
-     * composable, which is wrapped in the [SunflowerTheme].
+     * Called when the activity is first created. First we call our super's implementation of
+     * `onCreate` then we call [enableEdgeToEdge] with its `statusBarStyle` argument a
+     * [SystemBarStyle.auto] whose `lightScrim` and `darkScrim` arguments are both 0. Then we
+     * call the [setContent] method of the [ComponentActivity] to set the main content view to the
+     * [SunflowerApp] composable, which is wrapped in the [SunflowerTheme] to supply default
+     * values to the [MaterialTheme] composables within it.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being
      * shut down then this Bundle contains the data it most recently supplied in
