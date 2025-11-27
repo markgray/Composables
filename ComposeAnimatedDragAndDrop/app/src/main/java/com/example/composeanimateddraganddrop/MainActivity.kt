@@ -35,14 +35,19 @@ import com.example.composeanimateddraganddrop.ui.theme.ComposeAnimatedDragAndDro
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call [setContent] to have it Compose the composable which consists of our
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge
+     * to edge display, then we call our super's implementation of `onCreate`. Next we call
+     * [setContent] to have it Compose the composable which consists of our
      * [ComposeAnimatedDragAndDropTheme] custom [MaterialTheme] wrapping a [Surface] whose
      * `modifier` argument is a [Modifier.fillMaxSize] that causes it to fill its entire
      * incoming constraints and whose `color` argument is the [ColorScheme.background] color of
      * the [MaterialTheme.colorScheme] which sets the background color of the [Surface] to the
      * default `Color(0xFFFFFBFE)` since [ComposeAnimatedDragAndDropTheme] does not override it.
      * The `content` of the [Surface] is our [FlowDragAndDropExample] composable.
+     *
+     * The [Surface] composable is wrapped in a [Box] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets
+     * as a kludge to adjust to the use of [enableEdgeToEdge].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use it.
      */
