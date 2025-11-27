@@ -53,23 +53,23 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.activity:activity-compose:1.11.0")
-    implementation("androidx.compose.ui:ui:1.9.4")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.9.4")
-    implementation("androidx.compose.material:material:1.9.4")
+    implementation("androidx.activity:activity-compose:1.12.0")
+    implementation("androidx.compose.ui:ui:1.9.5")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.9.5")
+    implementation("androidx.compose.material:material:1.9.5")
 
     // Room dependencies
-    implementation("androidx.room:room-runtime:2.8.3")
-    annotationProcessor("androidx.room:room-compiler:2.8.3")
-    ksp("androidx.room:room-compiler:2.8.3")
+    implementation("androidx.room:room-runtime:2.8.4")
+    annotationProcessor("androidx.room:room-compiler:2.8.4")
+    ksp("androidx.room:room-compiler:2.8.4")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.4")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.9.4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.9.4")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.5")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.9.5")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.9.5")
 }
