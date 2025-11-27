@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
      * whose `modifier` argument is a [Modifier.fillMaxSize] and whose `color` argument is a [Color]
      * with a hexadecimal value of `0xFFF0E7FC`. In the `content` composable lambda argument of the
      * [Surface] if our [ComposeFunc] variable `cfunc` is not `null` we log that we are running
-     * `cfunc`, and call the [ComposeFunc.run] method of `cfunc`, and if it is `null` we compose a
+     * `cfunc`, and call the [ComposeFunc.Run] method of `cfunc`, and if it is `null` we compose a
      * [ComposableMenu] whose `map` argument is `cmap` and in whose `act` lambda argument we accept
      * the [ComposeFunc] passed the lambda in variable `act` and call the [launch] method with that
      * [ComposeFunc] as the `toRun` argument.
