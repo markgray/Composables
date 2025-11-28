@@ -30,8 +30,11 @@ import androidx.compose.ui.Modifier
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call [setContent] to have it Compose a [Surface] wrapped [Home] Composable into our
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`. Next we call
+     * [setContent] to have it Compose a [Surface] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing insets, and
+     * whose `content` composable lambda argument composes our [Home] Composable into our
      * activity. This will become the root view our activity.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use it here.
