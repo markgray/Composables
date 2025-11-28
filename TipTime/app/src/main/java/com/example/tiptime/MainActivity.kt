@@ -23,6 +23,7 @@ import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -69,24 +70,20 @@ import java.text.NumberFormat
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. This is where most initialization should go: calling
-     * [setContent] to Compose the given composable into our given activity. The content will become
-     * the root view of the given activity. This is roughly equivalent to calling
-     * [ComponentActivity.setContentView] with a ComposeView.
-     *
-     * First we call our super's implementation of `onCreate` then we call [setContent] to Compose a
-     * composable consisting of our [TipTimeTheme] custom [MaterialTheme] wrapping a [Surface] which
-     * uses [Modifier.fillMaxSize] as its modifier to have it totally fill the screen with the
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of onCreate. Next we call [setContent]
+     * to Compose a composable consisting our [TipTimeTheme] custom [MaterialTheme] (supplies
+     * default values to the [MaterialTheme] widgets it wraps) holding  a [Box] whose `modifier`
+     * argument is a [Modifier.safeDrawingPadding] to add padding to accommodate the safe drawing
+     * insets, and in its [BoxScope] `content` composable argument is a [Surface] which
+     * uses [Modifier.fillMaxSize] as its `modifier` to have it totally fill the screen with the
      * [TipTimeScreen] composable which is its `content` (Material surface is the central metaphor
      * in material design. Each surface exists at a given elevation, which influences how that piece
      * of surface visually relates to other surfaces and how that surface casts shadows).
      *
      * See the code for [TipTimeScreen] to understand what the resulting UI looks like.
      *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut
-     * down then this [Bundle] contains the data it most recently supplied in [onSaveInstanceState],
-     * as well as recomposition triggering values persisted by [rememberSaveable]. Note: Otherwise
-     * it is `null`.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
