@@ -40,14 +40,15 @@ import com.example.android.trackmysleepquality.ui.theme.TrackMySleepQualityTheme
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`.
-     * We initialize our [Application] variable `val application` to the application that owns this
-     * activity. We initialize our [SleepDatabaseDao] variable `val dataSource` to the
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`. We initialize our
+     * [Application] variable `val application` to the application that owns this activity.
+     * We initialize our [SleepDatabaseDao] variable `val dataSource` to the
      * [SleepDatabase.sleepDatabaseDao] field of the singleton [SleepDatabase] instance returned by
      * the [SleepDatabase.getInstance] method when passed our [Application] variable `application`.
-     * We then initialize our [SleepTrackerViewModelFactory] variable `val viewModelFactory` to a
+     * We initialize our [SleepTrackerViewModelFactory] variable `val viewModelFactory` to a
      * new instance constructed to use `dataSource` and `application` when asked to build a
-     * [SleepTrackerViewModel]., and then we initialize our [SleepTrackerViewModel] variable
+     * [SleepTrackerViewModel], and then we initialize our [SleepTrackerViewModel] variable
      * `val sleepTrackerViewModel` by calling [ViewModelProvider] with `viewModelFactory` as its
      * `factory` argument and `this` as its [ViewModelStoreOwner]. We initialize our [MutableState]
      * wrapped [List] of [SleepNight] variable `var sleepNightList` by the [mutableStateOf] method.
@@ -59,23 +60,25 @@ class MainActivity : ComponentActivity() {
      * initialize and remember our [MutableState] wrapped [Boolean] variables `var showDetail`, and
      * `var showQuality` to `false` (when `true` they cause the Composables [SleepDetailScreen] and
      * [SleepQualityScreen] respectively to be composed over our [SleepTrackerScreen] main screen).
-     * Then our root Composable is a [Surface] whose `modifier` argument is a [Modifier.fillMaxSize]
-     * to cause it to occupy its entire incoming constraints, and whose `color` argument set its
-     * background color to the [Colors.background] color of [MaterialTheme.colors] (in our case this
-     * is the default [Color.White]). The `content` of the [Surface] is our [SleepTrackerScreen] with
-     * its `viewModel` argument our [SleepTrackerViewModel] variable `sleepTrackerViewModel`, its
-     * `sleepNightList` argument our [List] of [SleepNight] variable `sleepNightList`. Its
-     * `onSleepNightClicked` argument is a lambda which sets `showDetail` to `true` (which will cause
-     * the [SleepDetailScreen] to be composed atop the [SleepTrackerScreen]) and set `sleepNightClicked`
-     * to the [SleepNight] passed the lambda by the [SleepNightItem] that was clicked in the
-     * [LazyVerticalGrid] of [SleepTrackerScreen], [SleepDetailScreen] will display the details of
-     * this [SleepNight]). Its `onStartClicked` argument is a lambda that calls the
-     * [SleepTrackerViewModel.initializeTonight] method of `sleepTrackerViewModel` to initialize the
-     * [SleepTrackerViewModel.tonight] field of `sleepTrackerViewModel` with the newest [SleepNight]
-     * entry in the database thus starting the "recording" of tonight's sleep duration. Its
-     * `onStopClicked` argument is a lambda which sets our [Boolean] variable `showQuality` to `true`
-     * causing the [SleepQualityScreen] to be composed atop the [SleepTrackerScreen] to allow the
-     * user to assign a quality rating to the [SleepNight] whose duration has just been recorded.
+     * Then our root Composable is a [Surface] whose `modifier` argument is a
+     * [Modifier.safeDrawingPadding] to add padding accommodate the safe drawing insets, chained to
+     * a [Modifier.fillMaxSize] to cause it to occupy its entire incoming constraints, and whose
+     * `color` argument sets its background color to the [Colors.background] color of
+     * [MaterialTheme.colors] (in our case this is the default [Color.White]). The `content` of the
+     * [Surface] is our [SleepTrackerScreen] with its `viewModel` argument our [SleepTrackerViewModel]
+     * variable `sleepTrackerViewModel`, its `sleepNightList` argument our [List] of [SleepNight]
+     * variable `sleepNightList`. Its `onSleepNightClicked` argument is a lambda which sets
+     * `showDetail` to `true` (which will cause the [SleepDetailScreen] to be composed atop the
+     * [SleepTrackerScreen]) and set `sleepNightClicked` to the [SleepNight] passed the lambda by
+     * the [SleepNightItem] that was clicked in the [LazyVerticalGrid] of [SleepTrackerScreen],
+     * [SleepDetailScreen] will display the details of this [SleepNight]). Its `onStartClicked`
+     * argument is a lambda that calls the [SleepTrackerViewModel.initializeTonight] method of
+     * `sleepTrackerViewModel` to initialize the [SleepTrackerViewModel.tonight] field of
+     * `sleepTrackerViewModel` with the newest [SleepNight] entry in the database thus starting the
+     * "recording" of tonight's sleep duration. Its `onStopClicked` argument is a lambda which sets
+     * our [Boolean] variable `showQuality` to `true` causing the [SleepQualityScreen] to be
+     * composed atop the [SleepTrackerScreen] to allow the user to assign a quality rating to the
+     * [SleepNight] whose duration has just been recorded.
      *
      * Following the call to [SleepTrackerScreen] are two if statements. The first checks if
      * `showDetail` is `true` and if it is will compose [SleepDetailScreen] into the UI with its
