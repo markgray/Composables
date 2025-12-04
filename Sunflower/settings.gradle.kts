@@ -23,10 +23,11 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-  repositories {
-    google()
-    mavenCentral()
-  }
+    @Suppress("UnstableApiUsage")
+    repositories {
+      google()
+      mavenCentral()
+    }
 }
 
 include(":app")

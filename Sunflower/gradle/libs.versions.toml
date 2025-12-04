@@ -22,7 +22,7 @@ benchmark = "1.4.1"
 compileSdk = "36"
 # @keep
 compose-compiler = "1.5.13"
-composeBom = "2025.11.01"
+composeBom = "2025.12.00"
 composeLatest = "1.7.0-alpha01"
 constraintLayoutCompose = "1.1.1"
 coreTesting = "2.2.0"

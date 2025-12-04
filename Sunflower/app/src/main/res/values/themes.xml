@@ -20,5 +20,5 @@
     <style name="Base.Theme.Sunflower" parent="Theme.MaterialComponents.DayNight.NoActionBar">
     </style>
 
-    <style name="Theme.Sunflower" parent="Base.Theme.Sunflower"></style>
+    <style name="Theme.Sunflower" parent="Base.Theme.Sunflower" />
 </resources>
