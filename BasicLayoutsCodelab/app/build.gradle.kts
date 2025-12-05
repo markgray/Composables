@@ -53,7 +53,7 @@ android {
 }
 
 dependencies {
-    val composeBom: Dependency = platform("androidx.compose:compose-bom:2025.11.00")
+    val composeBom: Dependency = platform("androidx.compose:compose-bom:2025.12.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
@@ -65,7 +65,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
-    implementation("androidx.activity:activity-compose:1.12.0")
+    implementation("androidx.activity:activity-compose:1.12.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
