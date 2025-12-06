@@ -78,15 +78,15 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.9.5")
-    implementation("androidx.compose.ui:ui:1.9.5")
-    implementation("androidx.compose.foundation:foundation:1.9.5")
-    implementation("androidx.compose.foundation:foundation-layout:1.9.5")
-    implementation("androidx.compose.material:material:1.9.5")
-    implementation("androidx.compose.runtime:runtime-livedata:1.9.5")
+    implementation("androidx.compose.runtime:runtime:1.10.0")
+    implementation("androidx.compose.ui:ui:1.10.0")
+    implementation("androidx.compose.foundation:foundation:1.10.0")
+    implementation("androidx.compose.foundation:foundation-layout:1.10.0")
+    implementation("androidx.compose.material:material:1.10.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.10.0")
     implementation("com.google.android.material:material:1.13.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.9.5")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.9.5")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.10.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.10.0")
     implementation("androidx.compose.material3:material3:1.4.0")
 
     // Testing dependencies
@@ -98,6 +98,6 @@ dependencies {
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
     androidTestImplementation("androidx.work:work-testing:2.11.0")
     androidTestImplementation("com.google.truth:truth:1.4.5")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.5")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.10.0")
     testImplementation("junit:junit:4.13.2")
 }
