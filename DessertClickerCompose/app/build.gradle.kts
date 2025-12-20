@@ -55,7 +55,7 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.10.0")
     implementation("androidx.compose.material:material:1.10.0")
     implementation("androidx.compose.ui:ui-tooling-preview:1.10.0")
-    implementation("androidx.activity:activity-compose:1.12.1")
+    implementation("androidx.activity:activity-compose:1.12.2")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
 
