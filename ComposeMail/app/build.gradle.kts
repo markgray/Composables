@@ -90,7 +90,7 @@ dependencies {
     //noinspection GradleDependency TODO: Newer version breaks compilation!
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha07")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
-    implementation("androidx.activity:activity-compose:1.12.1")
+    implementation("androidx.activity:activity-compose:1.12.2")
     implementation("androidx.window:window:1.5.1")
     implementation("io.coil-kt:coil-compose:2.7.0")
 
