@@ -87,9 +87,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
 
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.activity:activity-ktx:1.12.1")
+    implementation("androidx.activity:activity-ktx:1.12.2")
     implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.activity:activity-compose:1.12.1")
+    implementation("androidx.activity:activity-compose:1.12.2")
     implementation("androidx.navigation:navigation-compose:2.9.6")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
