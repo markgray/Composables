@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -51,7 +52,7 @@ class RallyActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState = savedInstanceState)
         setContent {
-            RallyApp()
+            RallyApp(modifier = Modifier.safeContentPadding())
         }
     }
 }
@@ -75,13 +76,17 @@ class RallyActivity : ComponentActivity() {
  * `currentScreen` with its `onScreenChange` argument set to a lambda that captures the
  * [RallyScreen] passed the lambda in variable `screen` then sets [MutableState] wrapped
  * [RallyScreen] variable `currentScreen` to the value of `screen`.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior.
  */
 @Composable
-fun RallyApp() {
+fun RallyApp(modifier: Modifier = Modifier) {
     RallyTheme {
         val allScreens: EnumEntries<RallyScreen> = RallyScreen.entries
         var currentScreen: RallyScreen by rememberSaveable { mutableStateOf(RallyScreen.Overview) }
         Scaffold(
+            modifier = modifier,
             topBar = {
                 RallyTopAppBar(
                     allScreens = allScreens,
