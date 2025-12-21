@@ -86,7 +86,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.10.0")
     implementation("androidx.compose.ui:ui-tooling-preview:1.10.0")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("androidx.activity:activity-compose:1.12.1")
+    implementation("androidx.activity:activity-compose:1.12.2")
     debugImplementation("androidx.compose.ui:ui-tooling:1.10.0")
 
     // Testing dependencies
