@@ -69,13 +69,19 @@ import java.util.Locale
  *  as the padding to the [NavGraph].
  *
  * @param finishActivity a lambda that the [NavGraph] can call to finish the main activity.
+ * @param modifier a [Modifier] instance that our caller can use to modify our apperarance and/or
+ * behavior.
  */
 @Composable
-fun OwlApp(finishActivity: () -> Unit) {
+fun OwlApp(
+    finishActivity: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     BlueTheme {
         val tabs: Array<CourseTabs> = remember { CourseTabs.entries.toTypedArray() }
         val navController: NavHostController = rememberNavController()
         Scaffold(
+            modifier = modifier,
             backgroundColor = MaterialTheme.colors.primarySurface,
             bottomBar = { OwlBottomBar(navController = navController, tabs = tabs) }
         ) { innerPaddingModifier: PaddingValues ->

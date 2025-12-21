@@ -22,6 +22,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import com.example.owl.R
 
@@ -38,7 +40,8 @@ class MainActivity : ComponentActivity() {
      * whose `scrim` parameter is the [Color] whose resource ID is `R.color.immersive_sys_ui`. Then
      * we call our super's implementation of `onCreate` and then call the [setContent] method to
      * compose our [OwlApp] composable into this activity's root view with its `finishActivity` a
-     * lambda which calls the [ComponentActivity.finish] method.
+     * lambda which calls the [ComponentActivity.finish] method, and its `modifier` argument a
+     * [Modifier.safeContentPadding] to add padding to accommodate the safe content insets.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
      * down then this Bundle contains the data it most recently supplied in [onSaveInstanceState].
@@ -58,7 +61,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            OwlApp { finish() }
+            OwlApp(
+                modifier = Modifier.safeContentPadding(),
+                finishActivity = { finish() }
+            )
         }
     }
 }
