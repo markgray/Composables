@@ -81,7 +81,7 @@ dependencies {
     implementation("com.google.maps.android:maps-v3-ktx:3.4.0")
     implementation("com.android.volley:volley:1.2.1")
     implementation("com.google.accompanist:accompanist-insets:0.30.1")
-    implementation("androidx.activity:activity-compose:1.12.1")
+    implementation("androidx.activity:activity-compose:1.12.2")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.compose.runtime:runtime:1.10.0")
     implementation("androidx.compose.foundation:foundation:1.10.0")
