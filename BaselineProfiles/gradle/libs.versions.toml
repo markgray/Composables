@@ -46,7 +46,7 @@ junit = "4.13.2"
 kotlin = "2.3.0"
 kotlinx_immutable = "1.10.2"
 ksp = "2.3.4"
-maps-compose = "6.12.2"
+maps-compose = "7.0.0"
 material = "1.13.0"
 # @keep even though it is explicitly set in build.grade.kts file FSR
 minSdk = "23"
