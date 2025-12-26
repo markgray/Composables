@@ -2,6 +2,7 @@
 
 package com.example.examplescomposemotionlayout
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -80,8 +81,8 @@ fun MotionPager() {
 
     HorizontalPager(state = pagerState) { page: Int ->
         // Our page content
-        val pageOffset: Float =
-            pagerState.currentPage - page + pagerState.currentPageOffsetFraction
+        @SuppressLint("FrequentlyChangingValue")
+        val pageOffset: Float = pagerState.currentPage - page + pagerState.currentPageOffsetFraction
         DynamicPages(
             colorValue = graphs[page],
             pagerProgress = pageOffset,

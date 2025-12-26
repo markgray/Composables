@@ -1,5 +1,6 @@
 package com.example.examplescomposemotionlayout
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -21,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
-import java.lang.Float
+import kotlin.math.min
 
 /**
  * A demo of a collapsing toolbar effect built with [MotionLayout].
@@ -115,7 +116,8 @@ fun ToolBarExample() {
         }
     }
 
-    val progress = Float.min(scroll.value / (3f * (250 - 50)), 1f)
+    @SuppressLint("FrequentlyChangingValue")
+    val progress = min(scroll.value / (3f * (250 - 50)), 1f)
 
     MotionLayout(
         modifier = Modifier.fillMaxSize(),

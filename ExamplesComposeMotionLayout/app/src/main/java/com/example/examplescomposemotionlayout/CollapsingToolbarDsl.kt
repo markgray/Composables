@@ -185,6 +185,8 @@ fun ToolBarExampleDsl() {
         }
     }
     val gap: Float = with(receiver = LocalDensity.current) { big.toPx() - small.toPx() }
+
+    @SuppressLint("FrequentlyChangingValue")
     val progress: Float = minOf(a = scroll.value / gap, b = 1f)
 
     MotionLayout(
