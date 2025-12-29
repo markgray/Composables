@@ -21,7 +21,6 @@ package com.example.composemail.ui.mails
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
-import java.util.Map
 
 /**
  * A state holder for a list of mails.
@@ -101,8 +100,8 @@ class MailListState {
      * If the provided [id] is `null`, a default state for an ID of `-1` is used.
      *
      * We start by initializing our [Int] variable `nextId` to our [Int] parameter [id] if it is
-     * not `null` or to `-1` if it is `null`. Then we call the [Map.computeIfAbsent] method of
-     * [conversationStatesById] with the `key` argument `nextId` and the `mappingFunction` lambda
+     * not `null` or to `-1` if it is `null`. Then we call the [MutableMap.computeIfAbsent] method
+     * of [conversationStatesById] with the `key` argument `nextId` and the `mappingFunction` lambda
      * argument that will be called if the key is not present in the map a lambda that accepts the
      * [Int] passed the lambda in variable `id` and the [Boolean] in variable `isSelected`. Then
      * if `isSelected` is `true` it calls the [MutableSet.add] method of [selectedTracker] with its
